@@ -197,7 +197,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "88012ffcd1388e8f3f7fdae0611f21380d00b699"
+                "reference": "7eb55753886d2802f9580751c8650d0ee480433e"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -240,6 +240,7 @@
                 "twig/twig": "^3.30"
             },
             "bin": [
+                "bin/adzercms-check",
                 "bin/adzercms-package-console",
                 "bin/adzercms-pre-commit",
                 "bin/adzercms-refresh"

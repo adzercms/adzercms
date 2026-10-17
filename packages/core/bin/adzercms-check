@@ -1,0 +1,18 @@
+#!/bin/sh
+set -eu
+
+bin/php vendor/bin/php-cs-fixer check --show-progress=none
+bin/phpstan analyse --no-progress
+
+trees=$(ls -d packages modules 2>/dev/null || true)
+[ -n "$trees" ] || exit 0
+# shellcheck disable=SC2086
+bin/php bin/console lint:xliff $trees
+
+locales=$(git ls-files -- '*.xlf' | sed -n 's/.*\.\([A-Za-z_]*\)\.xlf$/--locale=\1/p' | sort -u)
+for package in $(ls -d packages/*/ modules/*/ 2>/dev/null || true); do
+    package=${package%/}
+    # shellcheck disable=SC2086
+    [ ! -d "$package/translations" ] || bin/php vendor/bin/adzercms-package-console "$package" lint:translations $locales
+    [ ! -d "$package/templates" ] || bin/php vendor/bin/adzercms-package-console "$package" lint:twig "$package/templates"
+done

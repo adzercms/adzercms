@@ -74,22 +74,18 @@ git config core.hooksPath .githooks
 Пустая тестовая база — в `.env.test.local`: `DATABASE_URL=...`. Её делят все наборы, первый тест прогона сносит и заново накатывает схему.
 
 ```sh
-bin/phpunit --list-suites
 bin/phpunit --testsuite Core
-bin/phpstan analyse
-vendor/bin/php-cs-fixer check
-bin/console lint:twig packages
-bin/console lint:xliff packages
-bin/console lint:translations
+vendor/bin/adzercms-check
 ```
 
-Хук pre-commit проверяет вносимые файлы. [CI](.github/workflows/ci.yml) гоняет все наборы на MySQL, MariaDB и PostgreSQL с PHP 8.4 и 8.5.
+Наборы — имена `<testsuite>` в `phpunit.dist.xml`, каждый гоняется по имени. `vendor/bin/adzercms-check` проверяет стиль кода, PHPStan, XLIFF, ICU и Twig каждого пакета. Хук pre-commit проверяет вносимые файлы. [CI](.github/workflows/ci.yml) гоняет все наборы на MySQL, MariaDB и PostgreSQL с PHP 8.4 и 8.5. Правила кода, гейты и тесты: [Разработка движка](docs/engine-development.ru.md).
 
 ## Документация
 
 - [Установка](docs/installation.ru.md)
 - [Модули: выбор и настройки](docs/modules.ru.md)
 - [Свой модуль](docs/module-development.ru.md)
+- [Разработка движка](docs/engine-development.ru.md)
 
 ## Участие
 

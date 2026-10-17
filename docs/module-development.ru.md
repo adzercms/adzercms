@@ -36,6 +36,18 @@
 
 Страницы админки и кабинета берутся входами: функции Twig `admin('user', {id: id})` и `cabinet('profile')`, в коде — `AdzerCMS\Core\Ui\Entries::url()` с `AdminEntry` либо `CabinetEntry`. Без модуля рода вход — `null`: страница ссылку не выводит.
 
+## Страницы админки и кабинета
+
+Модуль функции объявляет свои части админки и кабинета службами `AdzerCMS\Contracts\Ui`, выбранный модуль админки либо кабинета рисует их в своём каркасе. Служба с одним из этих интерфейсов регистрируется автоконфигурацией.
+
+- `Menu` — `items()` отдаёт пункты меню области `Area`, админки либо кабинета: `MenuItem` с маршрутом, подписью, весом, ведомыми маршрутами (на них пункт остаётся текущим), группой, счётчиком, признаком диалога, а для нижней панели кабинета — значком набора темы с краткой подписью.
+- `Tabs` — вкладки страницы по её ключу `Tabs::ADMIN_DASHBOARD`, `Tabs::ADMIN_USER` либо `Tabs::CABINET_HOME`: `tabs()` отдаёт `Tab` с ключом, подписью, весом и необязательным числом, `tab()` строит шаблон и контекст только активной вкладки.
+- `Fragment` — фрагмент страницы другого владельца по месту: `Fragment::HEAD`, `HEADER`, `CABINET_HOME`, `ADMIN_DASHBOARD`, `ADMIN_DASHBOARD_ACTIONS`, `ADMIN_USER`; `null` оставляет место пустым.
+- `Columns` — колонки модуля в перечне другого владельца, `Columns::ADMIN_USERS`: `cells()` отдаёт значения `Cell` всех строк страницы одним вызовом, `search()` — строки, найденные модулем по своим полям. По таким колонкам перечень не сортируется.
+- `ContentSource` — источники сверх своего происхождения для директив `form-action`, `script-src`, `connect-src`, `frame-src` и `style-src` Content Security Policy.
+
+Плашка состояния — `Badge::good()`, `warn()`, `bad()` либо `idle()`. Действие отказывает через `AdzerCMS\Contracts\Refusal`: причина и маршрут устранения.
+
 ## Бандл
 
 Бандл наследует `AdzerCMS\Contracts\Module\Module`: `kind()` называет род модуля, `kinds()` перечисляет роды, которые модуль объявляет сам, по умолчанию ни одного. Такой бандл Symfony Flex не вписывает в `config/bundles.php`: модули экземпляр выбирает в своём окружении.
@@ -143,7 +155,7 @@ Redirect URI `https://<хост>/login/<ключ модуля в нижнем р
 ```sh
 composer dump-autoload
 bin/phpunit --testsuite Pigeon
-bin/phpstan analyse
+vendor/bin/adzercms-check
 ```
 
 Тест на базе данных наследует `AdzerCMS\Core\Tests\SchemaTestCase`; ответы внешних сервисов задаёт `AdzerCMS\Core\Tests\HttpAnswers`.

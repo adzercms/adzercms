@@ -74,22 +74,18 @@ The development application runs as an instance: environment and administrator a
 Put an empty test database into `.env.test.local`: `DATABASE_URL=...`. Every suite shares it, the first test of a run drops and migrates it.
 
 ```sh
-bin/phpunit --list-suites
 bin/phpunit --testsuite Core
-bin/phpstan analyse
-vendor/bin/php-cs-fixer check
-bin/console lint:twig packages
-bin/console lint:xliff packages
-bin/console lint:translations
+vendor/bin/adzercms-check
 ```
 
-The pre-commit hook checks the staged files. [CI](.github/workflows/ci.yml) runs every suite on MySQL, MariaDB and PostgreSQL with PHP 8.4 and 8.5.
+The suites are the `<testsuite>` names of `phpunit.dist.xml`, each runs by name. `vendor/bin/adzercms-check` checks code style, PHPStan, XLIFF, ICU and Twig of every package. The pre-commit hook checks the staged files. [CI](.github/workflows/ci.yml) runs every suite on MySQL, MariaDB and PostgreSQL with PHP 8.4 and 8.5. Rules of code, gates and tests: [Engine development](docs/engine-development.md).
 
 ## Documentation
 
 - [Installation](docs/installation.md)
 - [Modules: selection and settings](docs/modules.md)
 - [Writing a module](docs/module-development.md)
+- [Engine development](docs/engine-development.md)
 
 ## Contributing
 

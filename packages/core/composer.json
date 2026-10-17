@@ -57,6 +57,7 @@
         }
     },
     "bin": [
+        "bin/adzercms-check",
         "bin/adzercms-package-console",
         "bin/adzercms-pre-commit",
         "bin/adzercms-refresh"

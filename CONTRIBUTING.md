@@ -12,7 +12,7 @@ Issues and pull requests go to [adzercms/adzercms](https://github.com/adzercms/a
 
 ## Pull requests
 
-Set up the development application as in [Development](README.md#development) and run the checks of [Tests](README.md#tests) before pushing. CI runs every suite on every supported database and PHP version.
+Set up the development application as in [Development](README.md#development) and run the checks of [Tests](README.md#tests) before pushing. CI runs every suite on every supported database and PHP version. The rules of code, gates and tests are in [Engine development](docs/engine-development.md).
 
 A pull request:
 

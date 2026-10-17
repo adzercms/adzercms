@@ -36,6 +36,18 @@ A kind is required by its virtual package `adzercms/<kind key>-implementation`, 
 
 Pages of the admin and the cabinet are reached by entries: the Twig functions `admin('user', {id: id})` and `cabinet('profile')`, in code `AdzerCMS\Core\Ui\Entries::url()` with `AdminEntry` or `CabinetEntry`. Without a module of the kind the entry is `null`: the page leaves the link out.
 
+## Admin and cabinet pages
+
+A feature module declares its parts of the admin and the cabinet by services of `AdzerCMS\Contracts\Ui`, the selected admin or cabinet module draws them in its frame. A service implementing one of these interfaces is registered by autoconfiguration.
+
+- `Menu` — `items()` gives the menu items of an `Area`, the admin or the cabinet: `MenuItem` with its route, label, weight, the routes it leads (the item stays current on them), group, counter, a dialog flag, and an icon of the theme set with a short label for the bottom bar of the cabinet.
+- `Tabs` — tabs of a page by its key `Tabs::ADMIN_DASHBOARD`, `Tabs::ADMIN_USER` or `Tabs::CABINET_HOME`: `tabs()` gives `Tab` with key, label, weight and an optional count, `tab()` builds the template and context of the active tab only.
+- `Fragment` — a fragment of a page of another owner by its place: `Fragment::HEAD`, `HEADER`, `CABINET_HOME`, `ADMIN_DASHBOARD`, `ADMIN_DASHBOARD_ACTIONS`, `ADMIN_USER`; `null` leaves the place empty.
+- `Columns` — columns of the module in a list of another owner, `Columns::ADMIN_USERS`: `cells()` gives the `Cell` values of every row of a page in one call, `search()` gives the rows the module finds by its own fields. The list does not sort by such columns.
+- `ContentSource` — sources beyond the own origin for the directives `form-action`, `script-src`, `connect-src`, `frame-src` and `style-src` of the Content Security Policy.
+
+A status label is `Badge::good()`, `warn()`, `bad()` or `idle()`. An action refuses with `AdzerCMS\Contracts\Refusal`: the reason and the route fixing it.
+
 ## Bundle
 
 The bundle extends `AdzerCMS\Contracts\Module\Module`: `kind()` names the kind of the module, `kinds()` lists the kinds the module declares itself, none by default. Symfony Flex leaves such a bundle out of `config/bundles.php`: the instance selects modules in its environment.
@@ -143,7 +155,7 @@ The suite selects its module, the modules it requires and the modules of its `re
 ```sh
 composer dump-autoload
 bin/phpunit --testsuite Pigeon
-bin/phpstan analyse
+vendor/bin/adzercms-check
 ```
 
 A test on the database extends `AdzerCMS\Core\Tests\SchemaTestCase`; answers of external services come from `AdzerCMS\Core\Tests\HttpAnswers`.
