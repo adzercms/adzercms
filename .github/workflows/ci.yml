@@ -20,15 +20,7 @@ jobs:
           coverage: none
           tools: composer:v2
       - run: composer install --no-interaction --no-progress
-      - run: vendor/bin/php-cs-fixer check --show-progress=none
-      - run: bin/phpstan analyse --no-progress
-      - run: bin/console lint:xliff packages
-      - run: |
-          locales=$(git ls-files -- 'packages/*/translations/*.xlf' | sed -n 's/.*\.\([A-Za-z_]*\)\.xlf$/--locale=\1/p' | sort -u)
-          for package in $(ls packages); do
-            if [ -d "packages/$package/translations" ]; then vendor/bin/adzercms-package-console "packages/$package" lint:translations $locales; fi
-            if [ -d "packages/$package/templates" ]; then vendor/bin/adzercms-package-console "packages/$package" lint:twig "packages/$package/templates"; fi
-          done
+      - run: vendor/bin/adzercms-check
 
   tests:
     runs-on: ubuntu-24.04
