@@ -1,0 +1,21 @@
+{% embed '@Theme/_table.html.twig' %}
+    {% block row %}
+        <tr>
+            <td class="{{ table.aside('at') }}">{{ moment(row.createdAt) }}</td>
+            <td class="{{ table.aside('event') }}">{{ row.event|trans }}</td>
+            <td class="{{ table.aside('user') }}">
+                {%- if row.user -%}
+                    {%- set card = admin('user', {id: row.user.id}) -%}
+                    {% if card %}<a href="{{ card }}"><strong>{{ row.user.id }}</strong></a>{% else %}<strong>{{ row.user.id }}</strong>{% endif %}
+                    {{ caption(row.user.comment) }}
+                {%- else -%}
+                    {{ blank() }}
+                {%- endif -%}
+            </td>
+            <td class="{{ table.aside('recipient') }}">{{ row.recipient }}</td>
+            <td class="{{ table.aside('body') }}">{{ row.body }}</td>
+            <td class="{{ table.aside('status') }}">{{ badge(row.status) }}{{ caption(row.error) }}</td>
+        </tr>
+    {% endblock %}
+
+{% endembed %}

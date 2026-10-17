@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" srcLang="en" trgLang="en" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="messages.en">
+    <unit id="mtsmarketolog.api_url">
+      <segment>
+        <source>mtsmarketolog.api_url</source>
+        <target>API address</target>
+      </segment>
+    </unit>
+    <unit id="mtsmarketolog.login">
+      <segment>
+        <source>mtsmarketolog.login</source>
+        <target>Login</target>
+      </segment>
+    </unit>
+    <unit id="mtsmarketolog.password">
+      <segment>
+        <source>mtsmarketolog.password</source>
+        <target>Password</target>
+      </segment>
+    </unit>
+    <unit id="mtsmarketolog.sender">
+      <segment>
+        <source>mtsmarketolog.sender</source>
+        <target>Sender name</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

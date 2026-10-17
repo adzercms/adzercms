@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+
+root=$(cd "$(dirname "$0")/.." && pwd)
+exec "$root/bin/php" -d memory_limit=1G "$root/vendor/phpstan/phpstan/phpstan" "$@"

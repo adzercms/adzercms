@@ -1,0 +1,88 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'admin.user.title'|trans({id: user.id}) }}{% endblock %}
+
+{% block heading %}<span class="record-title">{{ login(user) }} {{ badge(user.status) }}</span>{% endblock %}
+
+{% block actions %}
+    <button type="button" class="secondary" hx-get="{{ path('admin_user_password_form', {id: user.id}) }}" hx-target="#record">{{ 'admin.user.new_password'|trans }}</button>
+    {% if user.role.value != 'admin' and user.status.value == 'active' %}
+        {% if cabinet('home') %}<a class="button secondary" href="{{ cabinet('home', {_switch_user: user.id}) }}">{{ 'admin.user.switch'|trans }}</a>{% endif %}
+    {% endif %}
+    <a class="button secondary" href="{{ path('admin_users') }}">{{ 'admin.back_to_list'|trans }}</a>
+{% endblock %}
+
+{% block page %}
+<nav class="tabs">
+    <a class="tab {{ tab == 'profile' ? 'active' }}" href="{{ path('admin_user', {id: user.id}) }}">{{ 'admin.user.profile'|trans }}</a>
+    {% for key, entry in tabs %}
+        <a class="tab {{ tab == key ? 'active' }}" href="{{ path('admin_user', {id: user.id, tab: key}) }}">{{ entry.tab.label|trans }}{% if entry.tab.count is not null %} ({{ entry.tab.count }}){% endif %}</a>
+    {% endfor %}
+    <a class="tab {{ tab == 'notes' ? 'active' }}" href="{{ path('admin_user', {id: user.id, tab: 'notes'}) }}">{{ 'admin.user.notes'|trans }}</a>
+</nav>
+
+{% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+
+{% if fragment %}
+    {% include fragment.template with fragment.context %}
+{% elseif tab == 'notes' %}
+    {% include '@Theme/_notes.html.twig' with {action: path('admin_user_note', {id: user.id}), note: user.note} only %}
+{% else %}
+    <div class="section">
+    <div class="section-head">
+        <h3>{{ 'admin.user.profile'|trans }}</h3>
+        {% if user is not same as(app.user) and not (kept and user.status.value == 'archived') %}
+            <div class="card-actions">
+                {% if kept %}
+                    <form method="post" action="{{ path('admin_user_archive', {id: user.id}) }}">
+                        {{ csrf_field() }}
+                        <button type="submit" class="secondary">{{ 'admin.user.archive'|trans }}</button>
+                    </form>
+                {% else %}
+                    <form method="post" action="{{ path('admin_user_drop', {id: user.id}) }}"
+                          data-confirm="{{ 'admin.user.drop_confirm'|trans({id: user.id}) }}">
+                        {{ csrf_field() }}
+                        <button type="submit" class="danger">{{ 'admin.user.drop'|trans }}</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <form method="post">
+        {{ csrf_field() }}
+        <div class="fields">
+            {% include '@Admin/admin/_user_fields.html.twig' %}
+        </div>
+        <button type="submit">{{ 'admin.save'|trans }}</button>
+    </form>
+    </div>
+
+    <div class="section">
+    <div class="section-head">
+        <h3>{{ 'admin.user.info'|trans }}</h3>
+    </div>
+    <div class="info-grid">
+        <div class="info-item">
+            <span class="info-label">ID</span>
+            <span class="info-value">#{{ user.id }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'admin.user.registered'|trans }}</span>
+            <span class="info-value">{{ user.createdAt|date('d.m.Y') }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'admin.user.last_login'|trans }}</span>
+            <span class="info-value">{{ user.lastLoginAt ? user.lastLoginAt|date('d.m.Y H:i') : blank() }}</span>
+        </div>
+        {% if user.deletedAt %}
+            <div class="info-item">
+                <span class="info-label">{{ 'admin.user.deleted'|trans }}</span>
+                <span class="info-value">{{ user.deletedAt|date('d.m.Y H:i') }}</span>
+            </div>
+        {% endif %}
+        {% for part in fragments('admin.user', user.id) %}{% include part.template with part.context only %}{% endfor %}
+    </div>
+    </div>
+{% endif %}
+{% endblock %}

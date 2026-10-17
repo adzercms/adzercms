@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="admin.back_to_list">
+      <segment>
+        <source>admin.back_to_list</source>
+        <target>← К списку</target>
+      </segment>
+    </unit>
+    <unit id="admin.close">
+      <segment>
+        <source>admin.close</source>
+        <target>Закрыть</target>
+      </segment>
+    </unit>
+    <unit id="admin.copy">
+      <segment>
+        <source>admin.copy</source>
+        <target>Скопировать</target>
+      </segment>
+    </unit>
+    <unit id="admin.credentials.cleared">
+      <segment>
+        <source>admin.credentials.cleared</source>
+        <target>Данные доступа очищены</target>
+      </segment>
+    </unit>
+    <unit id="admin.credentials.saved">
+      <segment>
+        <source>admin.credentials.saved</source>
+        <target>Данные доступа сохранены</target>
+      </segment>
+    </unit>
+    <unit id="admin.credentials.webhook">
+      <segment>
+        <source>admin.credentials.webhook</source>
+        <target>{bot}: {failure}</target>
+      </segment>
+    </unit>
+    <unit id="admin.dashboard.archive">
+      <segment>
+        <source>admin.dashboard.archive</source>
+        <target>В архиве</target>
+      </segment>
+    </unit>
+    <unit id="admin.dashboard.users">
+      <segment>
+        <source>admin.dashboard.users</source>
+        <target>Пользователей</target>
+      </segment>
+    </unit>
+    <unit id="admin.menu.dashboard">
+      <segment>
+        <source>admin.menu.dashboard</source>
+        <target>Сводка</target>
+      </segment>
+    </unit>
+    <unit id="admin.menu.modules">
+      <segment>
+        <source>admin.menu.modules</source>
+        <target>Модули</target>
+      </segment>
+    </unit>
+    <unit id="admin.menu.settings">
+      <segment>
+        <source>admin.menu.settings</source>
+        <target>Настройки</target>
+      </segment>
+    </unit>
+    <unit id="admin.menu.users">
+      <segment>
+        <source>admin.menu.users</source>
+        <target>Пользователи</target>
+      </segment>
+    </unit>
+    <unit id="admin.module.module">
+      <segment>
+        <source>admin.module.module</source>
+        <target>Модуль</target>
+      </segment>
+    </unit>
+    <unit id="admin.module.saved">
+      <segment>
+        <source>admin.module.saved</source>
+        <target>Настройки модуля сохранены</target>
+      </segment>
+    </unit>
+    <unit id="admin.module.title">
+      <segment>
+        <source>admin.module.title</source>
+        <target>Модуль {name}</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.empty">
+      <segment>
+        <source>admin.modules.empty</source>
+        <target>Нет модулей</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.kind">
+      <segment>
+        <source>admin.modules.kind</source>
+        <target>Род</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.name">
+      <segment>
+        <source>admin.modules.name</source>
+        <target>Модуль</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.schema">
+      <segment>
+        <source>admin.modules.schema</source>
+        <target>Схема</target>
+      </segment>
+    </unit>
+    <unit id="admin.save">
+      <segment>
+        <source>admin.save</source>
+        <target>Сохранить</target>
+      </segment>
+    </unit>
+    <unit id="admin.setting.change">
+      <segment>
+        <source>admin.setting.change</source>
+        <target>Сменить</target>
+      </segment>
+    </unit>
+    <unit id="admin.setting.container_password">
+      <segment>
+        <source>admin.setting.container_password</source>
+        <target>Пароль контейнера</target>
+      </segment>
+    </unit>
+    <unit id="admin.setting.credentials">
+      <segment>
+        <source>admin.setting.credentials</source>
+        <target>Учётные данные</target>
+      </segment>
+    </unit>
+    <unit id="admin.setting.drop">
+      <segment>
+        <source>admin.setting.drop</source>
+        <target>Убрать</target>
+      </segment>
+    </unit>
+    <unit id="admin.setting.set">
+      <segment>
+        <source>admin.setting.set</source>
+        <target>задано</target>
+      </segment>
+    </unit>
+    <unit id="admin.setting.unset">
+      <segment>
+        <source>admin.setting.unset</source>
+        <target>не задано</target>
+      </segment>
+    </unit>
+    <unit id="admin.settings.saved">
+      <segment>
+        <source>admin.settings.saved</source>
+        <target>Настройки сохранены</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.archive">
+      <segment>
+        <source>admin.user.archive</source>
+        <target>В архив</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.archived">
+      <segment>
+        <source>admin.user.archived</source>
+        <target>Пользователь #{id} в архиве</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.comment">
+      <segment>
+        <source>admin.user.comment</source>
+        <target>Коммент</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.create">
+      <segment>
+        <source>admin.user.create</source>
+        <target>Завести</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.created">
+      <segment>
+        <source>admin.user.created</source>
+        <target>Пользователь #{id} заведён</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.deleted">
+      <segment>
+        <source>admin.user.deleted</source>
+        <target>Удалена пользователем</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.drop">
+      <segment>
+        <source>admin.user.drop</source>
+        <target>Удалить пользователя</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.drop_confirm">
+      <segment>
+        <source>admin.user.drop_confirm</source>
+        <target>Удалить пользователя #{id}? Вместе с ним удалятся его записи в модулях.</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.email">
+      <segment>
+        <source>admin.user.email</source>
+        <target>Почта</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.first_name">
+      <segment>
+        <source>admin.user.first_name</source>
+        <target>Имя</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.info">
+      <segment>
+        <source>admin.user.info</source>
+        <target>Информация</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.last_login">
+      <segment>
+        <source>admin.user.last_login</source>
+        <target>Вход</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.last_name">
+      <segment>
+        <source>admin.user.last_name</source>
+        <target>Фамилия</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.malformed.email">
+      <segment>
+        <source>admin.user.malformed.email</source>
+        <target>Почта задана неверно</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.malformed.phone">
+      <segment>
+        <source>admin.user.malformed.phone</source>
+        <target>Телефон задан неверно</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.middle_name">
+      <segment>
+        <source>admin.user.middle_name</source>
+        <target>Отчество</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.new">
+      <segment>
+        <source>admin.user.new</source>
+        <target>Новый пользователь</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.new_password">
+      <segment>
+        <source>admin.user.new_password</source>
+        <target>Новый пароль</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.note_saved">
+      <segment>
+        <source>admin.user.note_saved</source>
+        <target>Заметки сохранены</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.notes">
+      <segment>
+        <source>admin.user.notes</source>
+        <target>Заметки</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password">
+      <segment>
+        <source>admin.user.password</source>
+        <target>Пароль кабинета</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password_issue">
+      <segment>
+        <source>admin.user.password_issue</source>
+        <target>Выдать</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password_issued">
+      <segment>
+        <source>admin.user.password_issued</source>
+        <target>Сгенерирован кабинетом — можно заменить своим.</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password_mailed">
+      <segment>
+        <source>admin.user.password_mailed</source>
+        <target>Письмо с паролем отправлено на {email}</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password_no_mail">
+      <segment>
+        <source>admin.user.password_no_mail</source>
+        <target>Почты у пользователя нет — письмо не уйдёт.</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password_replaced">
+      <segment>
+        <source>admin.user.password_replaced</source>
+        <target>Пароль пользователя #{id} заменён на новый.</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password_send">
+      <segment>
+        <source>admin.user.password_send</source>
+        <target>Отправить на {email}</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password_unmailed">
+      <segment>
+        <source>admin.user.password_unmailed</source>
+        <target>Письмо не отправлено — передайте пароль пользователю сами.</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.phone">
+      <segment>
+        <source>admin.user.phone</source>
+        <target>Телефон</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.profile">
+      <segment>
+        <source>admin.user.profile</source>
+        <target>Профиль</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.registered">
+      <segment>
+        <source>admin.user.registered</source>
+        <target>Регистрация</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.removed">
+      <segment>
+        <source>admin.user.removed</source>
+        <target>Пользователь #{id} удалён</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.role">
+      <segment>
+        <source>admin.user.role</source>
+        <target>Роль</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.saved">
+      <segment>
+        <source>admin.user.saved</source>
+        <target>Изменения сохранены</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.state">
+      <segment>
+        <source>admin.user.state</source>
+        <target>Состояние</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.switch">
+      <segment>
+        <source>admin.user.switch</source>
+        <target>Войти как пользователь</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.taken.email">
+      <segment>
+        <source>admin.user.taken.email</source>
+        <target>Почта занята пользователем #{id}</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.taken.phone">
+      <segment>
+        <source>admin.user.taken.phone</source>
+        <target>Телефон занят пользователем #{id}</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.title">
+      <segment>
+        <source>admin.user.title</source>
+        <target>Пользователь #{id}</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.add">
+      <segment>
+        <source>admin.users.add</source>
+        <target>+ Пользователь</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.any_state">
+      <segment>
+        <source>admin.users.any_state</source>
+        <target>Любое состояние</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.archive">
+      <segment>
+        <source>admin.users.archive</source>
+        <target>Архив ({count})</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.created">
+      <segment>
+        <source>admin.users.created</source>
+        <target>Регистрация</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.empty">
+      <segment>
+        <source>admin.users.empty</source>
+        <target>Нет пользователей</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.login">
+      <segment>
+        <source>admin.users.login</source>
+        <target>Логин</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.state">
+      <segment>
+        <source>admin.users.state</source>
+        <target>Состояние</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.tab">
+      <segment>
+        <source>admin.users.tab</source>
+        <target>Пользователи ({count})</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

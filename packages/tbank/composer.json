@@ -1,0 +1,36 @@
+{
+    "name": "adzercms/tbank",
+    "type": "adzercms-module",
+    "description": "T-Bank acquiring for AdzerCMS payments",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "payments",
+        "acquiring",
+        "tbank",
+        "tinkoff"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
+        "adzercms/payments": "^1.0"
+    },
+    "provide": {
+        "adzercms/payment-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\TBank\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\TBank\\TBankBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

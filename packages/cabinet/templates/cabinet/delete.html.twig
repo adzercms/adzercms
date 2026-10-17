@@ -1,0 +1,15 @@
+{% extends '@Cabinet/cabinet/auth.html.twig' %}
+
+{% block title %}{{ 'cabinet.deletion.title'|trans }}{% endblock %}
+
+{% block subtitle %}<p class="auth-subtitle">{{ user.email }}</p>{% endblock %}
+
+{% block auth %}
+<form method="post">
+    {{ csrf_field() }}
+    <p class="hint">{{ 'cabinet.deletion.confirm_hint'|trans }}</p>
+    <button class="wide danger" type="submit">{{ 'cabinet.deletion.request'|trans }}</button>
+</form>
+
+<p class="auth-links"><a href="{{ path('cabinet_login') }}">{{ 'cabinet.login.back'|trans }}</a></p>
+{% endblock %}

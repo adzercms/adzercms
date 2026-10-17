@@ -1,0 +1,17 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+{% import '@Core/notice/_macros.html.twig' as mail %}
+
+{% block subject %}{{ 'core.notice.account_deletion.subject'|trans({brand: brand.title, login: user.email ?? user.phone}) }}{% endblock %}
+
+{% block text %}
+{{ 'core.notice.account_deletion.body'|trans({brand: brand.title, login: user.email ?? user.phone}) }} {{ url }}
+{{ 'core.notice.lifetime'|trans({minutes: minutes}) }}
+{{ 'core.notice.account_deletion.note'|trans }}
+{% endblock %}
+
+{% block content %}
+<h2>{{ 'core.notice.account_deletion.title'|trans }}</h2>
+<p>{{ 'core.notice.account_deletion.body'|trans({brand: brand.title, login: user.email ?? user.phone}) }}</p>
+{{ mail.link(url, 'core.notice.account_deletion.action'|trans, minutes) }}
+<p class="note">{{ 'core.notice.account_deletion.note'|trans }}</p>
+{% endblock %}

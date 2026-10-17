@@ -1,0 +1,45 @@
+{%- set w = 600 -%}
+{%- set h = 120 -%}
+{%- set levels = chart.levels|reverse -%}
+<figure class="chart">
+    <div class="chart-legend">
+        {% for line in chart.lines %}
+            <label class="chart-toggle">
+                <input type="checkbox" checked data-line="{{ id }}-{{ line.key }}">
+                <span class="chart-mark chart-{{ line.key }}"></span>{{ line.label }}
+            </label>
+        {% endfor %}
+        <span class="chart-unit">{{ chart.unit }}</span>
+    </div>
+
+    <div class="chart-area">
+        <div class="chart-axis">
+            {% for level in levels %}
+                <span class="chart-level" style="top: {{ ((1 - level / chart.ceiling) * 100)|round(2) }}%">
+                    {{- level|round(chart.ceiling < 10 ? 1 : 0) -}}
+                </span>
+            {% endfor %}
+        </div>
+
+        <svg class="chart-plot" viewBox="0 0 {{ w }} {{ h }}" preserveAspectRatio="none" role="img">
+            {% for level in levels %}
+                {% set y = (h * (1 - level / chart.ceiling))|round(1) %}
+                <line class="chart-grid" x1="0" y1="{{ y }}" x2="{{ w }}" y2="{{ y }}"/>
+            {% endfor %}
+            {% for tick in chart.ticks %}
+                <line class="chart-grid" x1="{{ (tick.share * w)|round(1) }}" y1="0"
+                      x2="{{ (tick.share * w)|round(1) }}" y2="{{ h }}"/>
+            {% endfor %}
+            {% for line in chart.lines %}
+                <polyline id="{{ id }}-{{ line.key }}" class="chart-line chart-{{ line.key }}" fill="none"
+                    points="{% for point in line.points %}{{ ((point.0 - chart.from) / chart.span * w)|round(2) }},{{ (h - min(point.1, chart.ceiling) / chart.ceiling * h)|round(2) }} {% endfor %}"/>
+            {% endfor %}
+        </svg>
+
+        <div class="chart-times">
+            {% for tick in chart.ticks %}
+                <span class="chart-time" style="left: {{ (tick.share * 100)|round(2) }}%">{{ tick.label }}</span>
+            {% endfor %}
+        </div>
+    </div>
+</figure>

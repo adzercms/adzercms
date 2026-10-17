@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="theme.admin">
+      <segment>
+        <source>theme.admin</source>
+        <target>Админка</target>
+      </segment>
+    </unit>
+    <unit id="theme.clear">
+      <segment>
+        <source>theme.clear</source>
+        <target>Очистить</target>
+      </segment>
+    </unit>
+    <unit id="theme.close">
+      <segment>
+        <source>theme.close</source>
+        <target>Закрыть</target>
+      </segment>
+    </unit>
+    <unit id="theme.confirm.no">
+      <segment>
+        <source>theme.confirm.no</source>
+        <target>Нет</target>
+      </segment>
+    </unit>
+    <unit id="theme.confirm.title">
+      <segment>
+        <source>theme.confirm.title</source>
+        <target>Подтверждение</target>
+      </segment>
+    </unit>
+    <unit id="theme.confirm.yes">
+      <segment>
+        <source>theme.confirm.yes</source>
+        <target>Да</target>
+      </segment>
+    </unit>
+    <unit id="theme.credentials">
+      <segment>
+        <source>theme.credentials</source>
+        <target>Учётные данные</target>
+      </segment>
+    </unit>
+    <unit id="theme.credentials_clear_confirm">
+      <segment>
+        <source>theme.credentials_clear_confirm</source>
+        <target>Удалить сохранённые данные? Вход по ним перестанет работать.</target>
+      </segment>
+    </unit>
+    <unit id="theme.drop">
+      <segment>
+        <source>theme.drop</source>
+        <target>Удалить</target>
+      </segment>
+    </unit>
+    <unit id="theme.edit">
+      <segment>
+        <source>theme.edit</source>
+        <target>Изменить</target>
+      </segment>
+    </unit>
+    <unit id="theme.impersonate_exit">
+      <segment>
+        <source>theme.impersonate_exit</source>
+        <target>Вернуться в админку</target>
+      </segment>
+    </unit>
+    <unit id="theme.impersonating">
+      <segment>
+        <source>theme.impersonating</source>
+        <target>Вы вошли под пользователем {login}</target>
+      </segment>
+    </unit>
+    <unit id="theme.logout">
+      <segment>
+        <source>theme.logout</source>
+        <target>Выход</target>
+      </segment>
+    </unit>
+    <unit id="theme.main">
+      <segment>
+        <source>theme.main</source>
+        <target>Основное</target>
+      </segment>
+    </unit>
+    <unit id="theme.menu">
+      <segment>
+        <source>theme.menu</source>
+        <target>Меню</target>
+      </segment>
+    </unit>
+    <unit id="theme.notes">
+      <segment>
+        <source>theme.notes</source>
+        <target>Заметки</target>
+      </segment>
+    </unit>
+    <unit id="theme.profile">
+      <segment>
+        <source>theme.profile</source>
+        <target>Профиль</target>
+      </segment>
+    </unit>
+    <unit id="theme.save">
+      <segment>
+        <source>theme.save</source>
+        <target>Сохранить</target>
+      </segment>
+    </unit>
+    <unit id="theme.show">
+      <segment>
+        <source>theme.show</source>
+        <target>Показать</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

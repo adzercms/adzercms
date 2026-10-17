@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+
+root=$(cd "$(dirname "$0")/.." && pwd)
+exec "$(git -C "$root" config adzercms.php || echo php)" -d memory_limit=-1 "$@"

@@ -1,0 +1,9 @@
+<form class="table-filters" method="get" action="{{ path(route, params|default({})) }}">
+    {% for name, value in params|default({}) %}
+        <input type="hidden" name="{{ name }}" value="{{ value }}">
+    {% endfor %}
+    {% for filter in periods %}
+        {% include '@Theme/_filter_field.html.twig' with {filter: filter} only %}
+    {% endfor %}
+    <button type="submit" class="secondary">{{ 'theme.show'|trans }}</button>
+</form>

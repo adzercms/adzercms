@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+
+jobs:
+  static:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        php: ['8.4', '8.5']
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+      - run: composer install --no-interaction --no-progress
+      - run: vendor/bin/php-cs-fixer check --show-progress=none
+      - run: bin/phpstan analyse --no-progress
+      - run: bin/console lint:xliff packages
+      - run: |
+          locales=$(git ls-files -- 'packages/*/translations/*.xlf' | sed -n 's/.*\.\([A-Za-z_]*\)\.xlf$/--locale=\1/p' | sort -u)
+          for package in $(ls packages); do
+            if [ -d "packages/$package/translations" ]; then vendor/bin/adzercms-package-console "packages/$package" lint:translations $locales; fi
+            if [ -d "packages/$package/templates" ]; then vendor/bin/adzercms-package-console "packages/$package" lint:twig "packages/$package/templates"; fi
+          done
+
+  tests:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.4', '8.5']
+        db:
+          - image: mysql:lts
+            port: 3306
+            health: mysqladmin ping -h 127.0.0.1 -padzercms
+            url: mysql://root:adzercms@127.0.0.1:3306/adzercms_test?charset=utf8mb4
+          - image: mariadb:lts
+            port: 3306
+            health: healthcheck.sh --connect --innodb_initialized
+            url: mysql://root:adzercms@127.0.0.1:3306/adzercms_test?charset=utf8mb4
+          - image: postgres:latest
+            port: 5432
+            health: pg_isready -U postgres
+            url: postgresql://postgres:adzercms@127.0.0.1:5432/adzercms_test?charset=utf8
+    services:
+      db:
+        image: ${{ matrix.db.image }}
+        env:
+          MYSQL_ROOT_PASSWORD: adzercms
+          MYSQL_DATABASE: adzercms_test
+          MARIADB_ROOT_PASSWORD: adzercms
+          MARIADB_DATABASE: adzercms_test
+          POSTGRES_PASSWORD: adzercms
+          POSTGRES_DB: adzercms_test
+        ports:
+          - ${{ matrix.db.port }}:${{ matrix.db.port }}
+        options: >-
+          --health-cmd "${{ matrix.db.health }}"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
+    env:
+      DATABASE_URL: ${{ matrix.db.url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+      - run: composer install --no-interaction --no-progress
+      - run: |
+          for suite in $(sed -n 's/.*<testsuite name="\([^"]*\)".*/\1/p' phpunit.dist.xml); do
+            bin/phpunit --testsuite "$suite"
+          done
+
+  passed:
+    needs: [static, tests]
+    runs-on: ubuntu-24.04
+    steps:
+      - run: 'true'

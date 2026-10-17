@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}" class="{{ app.user and is_granted('ROLE_ADMIN') ? 'admin' }} {{ is_granted('IS_IMPERSONATOR') ? 'impersonating' }}"
+      data-theme="{{ brand.theme(app.user ? app.user.theme : null).value }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ brand.title }}{% endblock %}</title>
+    {% if brand.icon %}<link rel="icon" href="{{ brand.icon }}">{% endif %}
+    <link rel="preload" href="{{ asset('bundles/theme/fonts/golos-cyrillic.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('bundles/theme/fonts/golos-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="{{ asset('bundles/theme/style.css') }}">
+    {{ importmap('theme', {nonce: script_nonce()}) }}
+    {% for part in fragments('head') %}{% include part.template with part.context only %}{% endfor %}
+</head>
+<body class="{% block bodyclass %}{% endblock %}">
+{% block shell %}
+{% if is_granted('IS_IMPERSONATOR') %}
+    <div class="impersonate-bar">
+        <span class="impersonate-who">{{ 'theme.impersonating'|trans({login: login(app.user)}) }}</span>
+        {% set exit = cabinet('home', {_switch_user: '_exit'}) %}
+        {% if exit %}<a class="impersonate-exit" href="{{ exit }}">{{ 'theme.impersonate_exit'|trans }}</a>{% endif %}
+    </div>
+{% endif %}
+<input type="checkbox" id="sidebar-toggle" class="sidebar-toggle" hidden>
+<div class="panel-layout">
+    <header class="panel-header">
+        <div class="header-inner">
+            {% if app.user %}
+                <label class="menu-toggle" for="sidebar-toggle" aria-label="{{ 'theme.menu'|trans }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <path d="M4 7h16M4 12h16M4 17h16"/>
+                    </svg>
+                </label>
+            {% endif %}
+            <a class="header-logo" href="{% block home %}{{ home() }}{% endblock %}">
+                {% include '@Theme/_brand.html.twig' %}
+            </a>
+            {% if app.user %}
+                <div class="header-right">
+                    {% include '@Theme/_theme.html.twig' %}
+                    {% block header_side %}{% endblock %}
+                </div>
+            {% endif %}
+        </div>
+    </header>
+    {% if app.user %}{% include '@Theme/_admin_bar.html.twig' %}{% endif %}
+
+    <div class="panel-main">
+        {% if app.user %}
+            <aside class="panel-sidebar">
+                <nav class="sidebar-nav">{% block nav %}{% endblock %}</nav>
+            </aside>
+        {% endif %}
+
+        <main class="panel-content">
+            {% block body %}{% endblock %}
+        </main>
+    </div>
+    {% if app.user %}{% include '@Theme/_bottom_nav.html.twig' %}{% endif %}
+</div>
+{% endblock %}
+{% include '@Theme/_toasts.html.twig' %}
+{% if app.user %}
+    <dialog class="modal" id="record" tabindex="-1"></dialog>
+    <dialog class="modal" id="confirm">
+        <div class="modal-header">
+            <h2>{{ 'theme.confirm.title'|trans }}</h2>
+            <form method="dialog"><button class="modal-close">{{ 'theme.close'|trans }}</button></form>
+        </div>
+        <p class="modal-body" data-confirm-text></p>
+        <form class="modal-footer" method="dialog">
+            <button class="secondary">{{ 'theme.confirm.no'|trans }}</button>
+            <button class="danger" value="yes">{{ 'theme.confirm.yes'|trans }}</button>
+        </form>
+    </dialog>
+{% endif %}
+</body>
+</html>

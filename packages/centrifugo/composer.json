@@ -1,0 +1,35 @@
+{
+    "name": "adzercms/centrifugo",
+    "type": "adzercms-module",
+    "description": "Centrifugo hub for AdzerCMS real-time page updates",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "centrifugo",
+        "realtime",
+        "websocket"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/realtime": "^1.0",
+        "firebase/php-jwt": "^7.2"
+    },
+    "provide": {
+        "adzercms/hub-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Centrifugo\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Centrifugo\\CentrifugoBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

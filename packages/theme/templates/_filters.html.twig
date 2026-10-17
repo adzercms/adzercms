@@ -1,0 +1,17 @@
+{% if table.filters %}
+    {% set action = path(table.route, table.base()) %}
+    <form class="table-filters" hx-get="{{ action }}" hx-target="#{{ table.id }}" hx-select="#{{ table.id }}" hx-swap="outerHTML"
+          hx-push-url="true" hx-sync="closest form:replace" hx-trigger="submit">
+        {% for filter in table.filters %}
+            {% include '@Theme/_filter_field.html.twig' with {
+                filter: filter,
+                name: table.field(filter),
+                value: table.value(filter.name) ?: filter.selected,
+                id: table.id ~ '-' ~ filter.name,
+                action: action,
+                data: table.id ~ '-data',
+                live: true,
+            } only %}
+        {% endfor %}
+    </form>
+{% endif %}

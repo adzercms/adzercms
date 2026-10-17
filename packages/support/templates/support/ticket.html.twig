@@ -1,0 +1,146 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'support.ticket.title'|trans({id: ticket.id}) }}{% endblock %}
+
+{% block actions %}
+    <a class="button secondary" href="{{ path('support_tickets') }}">{{ 'support.ticket.back'|trans }}</a>
+{% endblock %}
+
+{% block page %}
+{% import '@Theme/_icons.html.twig' as icon %}
+<div class="ticket-layout">
+    <div class="ticket-main">
+        <div class="section-head">
+            <h3>{{ ticket.subject }}</h3>
+        </div>
+
+        <div class="chat" id="live-chat" data-live>
+            {% for message in ticket.messages %}
+                {% set own = staff ? message.fromStaff : not message.fromStaff %}
+                <div class="chat-message {{ own ? 'own' : 'other' }}">
+                    <div class="chat-bubble">
+                        <div class="chat-head">
+                            <span class="chat-author">{{ message.fromStaff ? support_label : ticket.user.id }}</span>
+                            <span class="chat-time">{{ message.createdAt|date('d.m.Y H:i') }}</span>
+                            {% if staff and not ticket.status.closed %}
+                                <button type="button" class="icon-act" data-modal="edit-{{ message.id }}" aria-label="{{ 'theme.edit'|trans }}" title="{{ 'theme.edit'|trans }}">{{ icon.edit() }}</button>
+                                <form method="post" action="{{ path('support_message', {id: message.id, action: 'drop'}) }}"
+                                      data-confirm="{{ 'support.message.drop_confirm'|trans }}">
+                                    {{ csrf_field() }}
+                                    <button type="submit" class="icon-act" aria-label="{{ 'theme.drop'|trans }}" title="{{ 'theme.drop'|trans }}">{{ icon.drop() }}</button>
+                                </form>
+                            {% endif %}
+                        </div>
+
+                        <div class="chat-text">
+                            {{ message.body|links|nl2br }}
+                            {% if message.editedAt %}<span class="chat-edited">{{ 'support.message.edited'|trans }}</span>{% endif %}
+                        </div>
+
+                        {% if message.attachments|length %}
+                            <div class="chat-files">
+                                {% for attachment in message.attachments %}
+                                    {% set href = path('support_attachment', {id: attachment.id}) %}
+                                    {% if attachment.picture %}
+                                        <a class="chat-picture" href="{{ href }}" target="_blank"><img src="{{ href }}" alt="{{ attachment.name }}"></a>
+                                    {% else %}
+                                        <a class="chat-file" href="{{ href }}" target="_blank">{{ attachment.name }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {% if staff and not ticket.status.closed %}
+                        <dialog class="modal" id="edit-{{ message.id }}">
+                            <div class="modal-header">
+                                <h2>{{ 'support.ticket.message'|trans }}</h2>
+                                <form method="dialog"><button class="modal-close">{{ 'theme.close'|trans }}</button></form>
+                            </div>
+                            <form class="modal-body" method="post" enctype="multipart/form-data"
+                                  action="{{ path('support_message', {id: message.id, action: 'edit'}) }}">
+                                {{ csrf_field() }}
+                                <label>{{ 'support.message.text'|trans }}<textarea name="body" rows="6" required>{{ message.body }}</textarea></label>
+                                {% for attachment in message.attachments %}
+                                    <label class="check">
+                                        <input type="checkbox" name="dropped[]" value="{{ attachment.id }}">
+                                        {{ 'support.message.unattach'|trans({name: attachment.name}) }}
+                                    </label>
+                                {% endfor %}
+                                <label>{{ 'support.message.attach'|trans }}
+                                    <input type="file" name="files[]" accept="{{ accept }}" multiple>
+                                    <p class="hint">{{ 'support.ticket.limit'|trans({megabytes: megabytes}) }}</p>
+                                </label>
+                                <button type="submit">{{ 'theme.save'|trans }}</button>
+                            </form>
+                        </dialog>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <div id="live-reply" data-live>
+            {% if ticket.status.closed %}
+                <p class="chat-closed">{{ 'support.ticket.closed'|trans }}</p>
+            {% else %}
+                <form class="chat-reply" method="post" enctype="multipart/form-data" action="{{ path('support_ticket_reply', {id: ticket.id}) }}">
+                    {{ csrf_field() }}
+                    <label>{{ 'support.ticket.message'|trans }}<textarea name="body" rows="4" required></textarea></label>
+                    <label>{{ 'support.ticket.attachments'|trans }}
+                        <input type="file" name="files[]" accept="{{ accept }}" multiple>
+                        <p class="hint">{{ 'support.ticket.limit'|trans({megabytes: megabytes}) }}</p>
+                    </label>
+                    <div class="button-row">
+                        <button type="submit">{{ 'support.ticket.send'|trans }}</button>
+                        <button type="submit" class="secondary" form="close-ticket">{{ 'support.ticket.close'|trans }}</button>
+                    </div>
+                </form>
+
+                {% if staff and help %}
+                    <div class="help-insert">
+                        <input type="search" name="q" aria-label="{{ 'support.help.article'|trans }}" placeholder="{{ 'support.help.article'|trans }}" autocomplete="off"
+                               hx-get="{{ path('help_ticket', {id: ticket.id}) }}" hx-trigger="load, input changed delay:300ms, search"
+                               hx-target="next .help-results">
+                        <div class="help-results"></div>
+                    </div>
+                {% endif %}
+
+                <form id="close-ticket" method="post" action="{{ path('support_ticket_close', {id: ticket.id}) }}">{{ csrf_field() }}</form>
+            {% endif %}
+        </div>
+    </div>
+
+    <aside class="ticket-side info-grid" id="live-ticket" data-live>
+        <div class="info-item">
+            <span class="info-label">{{ 'support.ticket.department'|trans }}</span>
+            <span class="info-value">{{ ticket.department }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'support.ticket.state'|trans }}</span>
+            <span class="info-value">{{ badge(ticket.status) }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'support.ticket.created'|trans }}</span>
+            <span class="info-value">{{ ticket.createdAt|date('d.m.Y H:i') }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'support.ticket.updated'|trans }}</span>
+            <span class="info-value">{{ ticket.lastMessageAt|date('d.m.Y H:i') }}</span>
+        </div>
+        {% for link in subjects %}{{ link|raw }}{% endfor %}
+        {% if staff %}
+            <div class="info-item">
+                <span class="info-label">{{ 'support.ticket.user'|trans }}</span>
+                {% set card = admin('user', {id: ticket.user.id}) %}
+                <span class="info-value">{% if card %}<a href="{{ card }}">{{ ticket.user.id }}</a>{% else %}{{ ticket.user.id }}{% endif %}{{ caption(ticket.user.comment) }}</span>
+            </div>
+            {% if ticket.user.note %}
+                <div class="info-item">
+                    <span class="info-label">{{ 'theme.notes'|trans }}</span>
+                    <span class="info-value">{{ ticket.user.note|nl2br }}</span>
+                </div>
+            {% endif %}
+        {% endif %}
+    </aside>
+</div>
+{% endblock %}

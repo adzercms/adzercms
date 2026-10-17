@@ -1,0 +1,13 @@
+{% import '@Theme/_icons.html.twig' as icon %}
+<td class="row-actions">
+    {% if edit|default(null) %}
+        <button type="button" class="icon-act" data-record="{{ edit }}" aria-label="{{ 'theme.edit'|trans }}" title="{{ 'theme.edit'|trans }}">{{ icon.edit() }}</button>
+    {% endif %}
+    {% if drop|default(null) %}
+        <form method="post" action="{{ drop }}" data-confirm="{{ confirm }}">
+            {{ csrf_field() }}{{ back_field() }}
+            {% for name, value in hidden|default({}) %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+            <button type="submit" class="icon-act" aria-label="{{ 'theme.drop'|trans }}" title="{{ 'theme.drop'|trans }}">{{ icon.drop() }}</button>
+        </form>
+    {% endif %}
+</td>

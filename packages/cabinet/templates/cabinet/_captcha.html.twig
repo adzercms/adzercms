@@ -1,0 +1,4 @@
+{% if captcha|default({}) %}
+    <div class="{{ captcha.class }} captcha-widget" data-sitekey="{{ captcha.site_key }}"></div>
+    <script src="{{ captcha.js }}" async defer></script>
+{% endif %}

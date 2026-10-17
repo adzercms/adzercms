@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="smspilot.api_url">
+      <segment>
+        <source>smspilot.api_url</source>
+        <target>Адрес API</target>
+      </segment>
+    </unit>
+    <unit id="smspilot.apikey">
+      <segment>
+        <source>smspilot.apikey</source>
+        <target>Ключ API</target>
+      </segment>
+    </unit>
+    <unit id="smspilot.sender">
+      <segment>
+        <source>smspilot.sender</source>
+        <target>Имя отправителя</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -1,0 +1,35 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'admin.module.title'|trans({name: module.name}) }}{% endblock %}
+
+{% block heading %}<span class="record-title">{{ module.name }}</span>{% endblock %}
+
+{% block actions %}
+    <a class="button secondary" href="{{ path('admin_modules') }}">{{ 'admin.back_to_list'|trans }}</a>
+{% endblock %}
+
+{% block page %}
+<div class="section">
+    <div class="section-head">
+        <h3>{{ 'admin.module.module'|trans }}</h3>
+    </div>
+    <div class="info-grid">
+        <div class="info-item">
+            <span class="info-label">{{ 'admin.modules.kind'|trans }}</span>
+            <span class="info-value">{{ module.kind|trans }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'admin.modules.schema'|trans }}</span>
+            <span class="info-value">{{ schema ?: blank() }}</span>
+        </div>
+    </div>
+</div>
+
+{% if sections %}
+    <form method="post" enctype="multipart/form-data">
+        {{ csrf_field() }}
+        {% include '@Admin/admin/_setting_fields.html.twig' with {sections: sections, values: values} %}
+        <button type="submit">{{ 'admin.save'|trans }}</button>
+    </form>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,255 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'cabinet.profile.title'|trans }}{% endblock %}
+
+{% block page %}
+<nav class="tabs">
+    {% for key in tabs %}
+        <a class="tab {{ tab == key ? 'active' }}"
+           href="{{ path('cabinet_profile', key == 'account' ? {} : {tab: key}) }}">{{ ('cabinet.profile.tab.' ~ key)|trans }}</a>
+    {% endfor %}
+</nav>
+
+{% if tab == 'notices' %}
+    <form method="post" action="{{ path('cabinet_profile_notices') }}">
+        {{ csrf_field() }}
+        <div class="section">
+            <div class="section-head">
+                <h3>{{ 'cabinet.notices.title'|trans }}</h3>
+            </div>
+            <p class="hint">{{ 'cabinet.notices.order'|trans }}</p>
+
+            <div class="checkbox-list">
+                {% for notice in notices %}
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="channels[]" value="{{ notice.channel.key }}"
+                               {{ notice.on ? 'checked' }} {{ notice.ready ? '' : 'disabled' }}>
+                        <span class="checkbox-label">{{ notice.channel.label|trans }}</span>
+                        {% if not notice.ready %}
+                            <span class="hint"><a href="{{ path('cabinet_profile') }}">{{ notice.missing|trans }}</a></span>
+                        {% endif %}
+                    </label>
+                {% else %}
+                    <p class="hint">{{ 'cabinet.notices.none'|trans }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button type="submit">{{ 'cabinet.notices.save'|trans }}</button>
+    </form>
+{% elseif tab == 'security' %}
+    <div class="section">
+        <div class="section-head">
+            <h3>{{ 'cabinet.password.title'|trans }}</h3>
+        </div>
+        {% if mailReady %}
+            <p class="hint">{{ 'cabinet.password.hint'|trans({email: user.email}) }}</p>
+            <form method="post" action="{{ path('cabinet_password_request') }}">
+                {{ csrf_field() }}
+                <button type="submit" class="warning">{{ 'cabinet.password.change'|trans }}</button>
+            </form>
+        {% else %}
+            <p class="flash flash-error"><a href="{{ path('cabinet_profile') }}">{{ 'cabinet.password.no_mail'|trans }}</a></p>
+            <button type="button" class="warning" disabled>{{ 'cabinet.password.change'|trans }}</button>
+        {% endif %}
+    </div>
+
+    <div class="section" id="sessions">
+        <div class="section-head">
+            <h3>{{ 'cabinet.sessions.title'|trans }}</h3>
+            {% if sessions|length > 1 %}
+                <form method="post" action="{{ path('cabinet_sessions_end') }}" class="card-actions"
+                      data-confirm="{{ 'cabinet.sessions.end_others_confirm'|trans }}">
+                    {{ csrf_field() }}
+                    <button type="submit" class="secondary small">{{ 'cabinet.sessions.end_others'|trans }}</button>
+                </form>
+            {% endif %}
+        </div>
+        <div class="fields">
+            {% for login in sessions %}
+                <div class="field">
+                    <label>{{ login.device ?: blank() }}
+                        {{ login.handle == current ? badge(thisLogin) }}
+                    </label>
+                    <div class="settings-value">
+                        {{ [login.place, login.address]|filter(part => part)|join(', ') ?: blank() }}<br>
+                        <span class="muted">{{ 'cabinet.sessions.times'|trans({seen: login.seenAt, entered: login.enteredAt}) }}</span>
+                    </div>
+                    {% if login.handle != current %}
+                        <form method="post" action="{{ path('cabinet_session_end', {handle: login.handle}) }}" class="contact-change"
+                              data-confirm="{{ 'cabinet.sessions.end_confirm'|trans({device: login.device ?? ''}) }}">
+                            {{ csrf_field() }}
+                            <button class="danger small" type="submit">{{ 'cabinet.sessions.end'|trans }}</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if deletion %}
+        <div class="section">
+            <div class="section-head">
+                <h3>{{ 'cabinet.deletion.title'|trans }}</h3>
+            </div>
+            {% if mailReady %}
+                <p class="hint">{{ 'cabinet.deletion.hint'|trans({email: user.email}) }}</p>
+                <form method="post" action="{{ path('cabinet_delete_request') }}">
+                    {{ csrf_field() }}
+                    <button type="submit" class="danger">{{ 'cabinet.deletion.request'|trans }}</button>
+                </form>
+            {% else %}
+                <p class="flash flash-error"><a href="{{ path('cabinet_profile') }}">{{ 'cabinet.deletion.no_mail'|trans }}</a></p>
+                <button type="button" class="danger" disabled>{{ 'cabinet.deletion.request'|trans }}</button>
+            {% endif %}
+        </div>
+    {% endif %}
+{% else %}
+    <form method="post" action="{{ path('cabinet_profile_name') }}" class="section">
+        {{ csrf_field() }}
+        <div class="section-head">
+            <h3>{{ 'cabinet.profile.name'|trans }}</h3>
+        </div>
+        <div class="fields">
+            <label>{{ 'cabinet.profile.last_name'|trans }}
+                <input type="text" name="last_name" value="{{ user.lastName }}" maxlength="60" autocomplete="family-name">
+            </label>
+            <label>{{ 'cabinet.profile.first_name'|trans }}
+                <input type="text" name="first_name" value="{{ user.firstName }}" maxlength="60" autocomplete="given-name">
+            </label>
+            <label>{{ 'cabinet.profile.middle_name'|trans }}
+                <input type="text" name="middle_name" value="{{ user.middleName }}" maxlength="60" autocomplete="additional-name">
+            </label>
+        </div>
+        <button type="submit">{{ 'cabinet.profile.save'|trans }}</button>
+    </form>
+
+    <div class="section">
+        <div class="section-head">
+            <h3>{{ 'cabinet.theme.title'|trans }}</h3>
+        </div>
+        {% include '@Theme/_picker.html.twig' with {action: path('cabinet_profile_theme'), name: 'theme', choices: brand.themes, current: brand.theme(user.theme).value} %}
+    </div>
+
+    <div class="section">
+        <div class="section-head">
+            <h3>{{ 'cabinet.language.title'|trans }}</h3>
+        </div>
+        {% include '@Theme/_picker.html.twig' with {action: path('cabinet_profile_language'), name: 'language', choices: languages, current: app.request.locale} %}
+    </div>
+
+    <div class="section">
+        <div class="section-head">
+            <h3>{{ 'cabinet.contact.title'|trans }}</h3>
+        </div>
+
+        {% if awaited %}
+            <form method="post" action="{{ path('cabinet_profile_contact_code') }}" class="inline-change-form">
+                {{ csrf_field() }}
+                <label>{{ 'cabinet.contact.code_label'|trans({contact: awaited}) }}
+                    <input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" required>
+                </label>
+                <button type="submit">{{ 'cabinet.contact.confirm'|trans }}</button>
+                <button type="submit" class="secondary" form="contact-cancel">{{ 'cabinet.contact.cancel'|trans }}</button>
+            </form>
+            <form id="contact-cancel" method="post" action="{{ path('cabinet_profile_contact_cancel') }}">{{ csrf_field() }}</form>
+        {% else %}
+            <div class="fields">
+                {% for contact in contacts %}
+                    <div class="field">
+                        <label>{{ contact.kind.label|trans }}
+                            {{ badge(contact.state) }}
+                        </label>
+                        <div class="settings-value">{{ contact.value ?? blank() }}</div>
+                        {% if contact.open %}
+                            <details class="reveal contact-change">
+                                <summary class="button secondary small">{{ (contact.value ? 'cabinet.contact.change' : 'cabinet.contact.add')|trans }}</summary>
+                                <form method="post" action="{{ path('cabinet_profile_contact') }}" class="inline-change-form">
+                                    {{ csrf_field() }}
+                                    <input type="{{ contact.kind.value == 'phone' ? 'tel' : 'email' }}" name="contact"
+                                           autocomplete="{{ contact.kind.value == 'phone' ? 'tel' : 'email' }}" required>
+                                    <button type="submit">{{ 'cabinet.contact.own'|trans }}</button>
+                                </form>
+                            </details>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                {% for bot in bots %}
+                    {% set service = bot.gateway.service %}
+                    <div class="field">
+                        <label>{{ bot.label|trans }}</label>
+                        {% if botCode and botCode.bot == bot.key and linked[service] is not defined %}
+                            <div class="settings-value">{{ 'cabinet.notices.bot_code'|trans({code: botCode.code}) }}</div>
+                        {% else %}
+                            <div class="settings-value">{{ linked[service].account ?? blank() }}</div>
+                        {% endif %}
+                        {% if linked[service] is defined %}
+                            <form method="post" action="{{ path('cabinet_service_unlink', {service: service}) }}"
+                                  class="contact-change"
+                                  data-confirm="{{ 'cabinet.notices.bot_unlink_confirm'|trans({bot: bot.label|trans}) }}">
+                                {{ csrf_field() }}
+                                <button class="danger small" type="submit">{{ 'cabinet.services.unlink'|trans }}</button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{{ path('cabinet_bot_link', {bot: bot.key}) }}" class="contact-change">
+                                {{ csrf_field() }}
+                                <button class="small" type="submit">{{ 'cabinet.services.link'|trans }}</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if contacts|filter(contact => contact.open)|length == 0 %}
+                <p class="hint">{{ 'cabinet.contact.operator'|trans }}</p>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    {% if logins %}
+        <div class="section">
+            <div class="section-head">
+                <h3>{{ 'cabinet.services.title'|trans }}</h3>
+            </div>
+
+            <div class="fields">
+                {% for service, module in logins %}
+                    <div class="field">
+                        <label>{{ module.name|trans }}</label>
+                        <div class="settings-value">{{ linked[service].account ?? blank() }}</div>
+                        {% if linked[service] is defined %}
+                            <form method="post" action="{{ path('cabinet_service_unlink', {service: service}) }}"
+                                  class="contact-change"
+                                  data-confirm="{{ 'cabinet.services.unlink_confirm'|trans({service: module.name|trans}) }}">
+                                {{ csrf_field() }}
+                                <button class="danger small" type="submit">{{ 'cabinet.services.unlink'|trans }}</button>
+                            </form>
+                        {% else %}
+                            <div class="contact-change">
+                                <a class="button small" href="{{ path('login_service', {service: service}) }}">{{ 'cabinet.services.link'|trans }}</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="section">
+        <div class="section-head">
+            <h3>{{ 'cabinet.profile.info'|trans }}</h3>
+        </div>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">{{ 'cabinet.profile.id'|trans }}</span>
+                <span class="info-value">{{ user.id }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">{{ 'cabinet.profile.since'|trans }}</span>
+                <span class="info-value">{{ user.createdAt|date('d.m.Y') }}</span>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

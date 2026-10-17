@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+
+cd "$(dirname "$0")/.."
+[ -x vendor/bin/adzercms-pre-commit ] || { printf 'commit gate needs composer install\n'; exit 1; }
+exec vendor/bin/adzercms-pre-commit

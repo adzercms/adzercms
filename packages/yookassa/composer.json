@@ -1,0 +1,35 @@
+{
+    "name": "adzercms/yookassa",
+    "type": "adzercms-module",
+    "description": "YooKassa acquiring for AdzerCMS payments",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "payments",
+        "acquiring",
+        "yookassa"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
+        "adzercms/payments": "^1.0"
+    },
+    "provide": {
+        "adzercms/payment-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\YooKassa\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\YooKassa\\YooKassaBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

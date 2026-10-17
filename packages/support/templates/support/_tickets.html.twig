@@ -1,0 +1,20 @@
+{% embed '@Theme/_table.html.twig' with {live: true} %}
+    {% block row %}
+        <tr class="clickable-row" data-href="{{ path('support_ticket', {id: row.id}) }}">
+            <td class="{{ table.aside('number') }}"><strong>{{ row.id }}</strong></td>
+            {% if staff %}
+                <td class="{{ table.aside('user') }}">
+                    {% set card = admin('user', {id: row.user.id}) %}
+                    {% if card %}<a href="{{ card }}">{% endif %}<strong>{{ row.user.id }}</strong>
+                        {{ caption(row.user.comment) }}
+                    {% if card %}</a>{% endif %}
+                </td>
+            {% endif %}
+            <td class="{{ table.aside('subject') }}"><a href="{{ path('support_ticket', {id: row.id}) }}">{{ clip(row.subject, 60) }}</a></td>
+            <td class="{{ table.aside('department') }}">{{ row.department }}</td>
+            <td class="{{ table.aside('at') }}">{{ moment(row.lastMessageAt) }}</td>
+            <td class="{{ table.aside('status') }}">{{ badge(row.status) }}</td>
+        </tr>
+    {% endblock %}
+
+{% endembed %}

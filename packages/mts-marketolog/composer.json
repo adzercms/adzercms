@@ -1,0 +1,35 @@
+{
+    "name": "adzercms/mts-marketolog",
+    "type": "adzercms-module",
+    "description": "MTS Marketolog SMS gateway for AdzerCMS notices and confirmation codes",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "sms",
+        "sms-gateway",
+        "mts"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
+        "symfony/uid": "7.4.*"
+    },
+    "provide": {
+        "adzercms/sms-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\MtsMarketolog\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\MtsMarketolog\\MtsMarketologBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

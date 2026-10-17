@@ -1,0 +1,35 @@
+{
+    "name": "adzercms/mailing",
+    "type": "adzercms-module",
+    "description": "Broadcasts for AdzerCMS: messages to chosen users by email, SMS and messenger bots",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "mailing",
+        "broadcast",
+        "newsletter"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
+        "adzercms/theme-implementation": "^1.0"
+    },
+    "require-dev": {
+        "adzercms/admin": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Mailing\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Mailing\\MailingBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

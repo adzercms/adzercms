@@ -1,0 +1,8 @@
+{% macro button(url, label) %}
+<div class="action"><a class="button" href="{{ url }}">{{ label }}</a></div>
+{% endmacro %}
+
+{% macro link(url, label, minutes) %}
+{{ _self.button(url, label) }}
+<p class="copy">{% if minutes %}{{ 'core.notice.lifetime'|trans({minutes: minutes}) }} {% endif %}{{ 'core.notice.copy'|trans }}<br><a href="{{ url }}">{{ url }}</a></p>
+{% endmacro %}

@@ -1,0 +1,11 @@
+{% if is_granted('ROLE_ADMIN') %}
+    <nav class="admin-bar">
+        <div class="admin-bar-inner">
+            {% for group in menu('admin') %}
+                {% for entry in group.items %}
+                    <a class="admin-bar-link {{ entry.active ? 'active' }}" href="{{ path(entry.item.route) }}">{{ entry.item.label|trans }}</a>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </nav>
+{% endif %}

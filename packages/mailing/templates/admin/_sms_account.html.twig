@@ -1,0 +1,28 @@
+<div id="gateway" class="section">
+    <div class="section-head">
+        <h3>{{ 'mailing.gateway.title'|trans }}</h3>
+        <div class="card-actions">
+            <button type="button" class="secondary" hx-get="{{ path('admin_notice_gateway') }}"
+                    hx-target="#gateway" hx-swap="outerHTML" hx-headers='{"X-Rescan": "1"}'>{{ 'mailing.gateway.rescan'|trans }}</button>
+        </div>
+    </div>
+
+    {% if account_fault %}
+        <p class="flash flash-error">{{ account_fault }}</p>
+    {% elseif account %}
+        <div class="info-grid">
+            {% for key in account_fields %}
+                <div class="info-item">
+                    <span class="info-label">{{ ('mailing.gateway.' ~ key)|trans }}</span>
+                    <span class="info-value">{{ account[key]|default('') ?: blank() }}</span>
+                </div>
+            {% endfor %}
+            <div class="info-item">
+                <span class="info-label">{{ 'mailing.gateway.at'|trans }}</span>
+                <span class="info-value">{{ account_at|date('d.m.Y H:i') }}</span>
+            </div>
+        </div>
+    {% else %}
+        <p class="muted">{{ 'mailing.gateway.unread'|trans }}</p>
+    {% endif %}
+</div>

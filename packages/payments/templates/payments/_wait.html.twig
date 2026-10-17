@@ -1,0 +1,4 @@
+<p class="muted"
+   hx-get="{{ path('payment_state', {number: payment.number}) }}"
+   hx-trigger="load delay:3s"
+   hx-swap="outerHTML">{{ 'payments.code.wait'|trans }}</p>

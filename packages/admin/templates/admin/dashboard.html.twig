@@ -1,0 +1,19 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'admin.menu.dashboard'|trans }}{% endblock %}
+
+{% block actions %}{% for part in fragments('admin.dashboard.actions') %}{% include part.template with part.context only %}{% endfor %}{% endblock %}
+
+{% block page %}
+{% include '@Admin/admin/_dashboard_stats.html.twig' %}
+
+{% if tabs %}
+    <nav class="tabs">
+        {% for key, entry in tabs %}
+            <a class="tab {{ key == tab ? 'active' }}" href="{{ path('admin_dashboard', {tab: key}) }}">{{ entry.tab.label|trans }}{% if entry.tab.count is not null %} ({{ entry.tab.count }}){% endif %}</a>
+        {% endfor %}
+    </nav>
+
+    {% include fragment.template with fragment.context %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+{% import '@Core/notice/_macros.html.twig' as mail %}
+
+{% block subject %}{{ 'mailing.notice.subject'|trans({brand: brand.title}) }}{% endblock %}
+
+{% block text %}{{ body }}{% endblock %}
+
+{% block content %}
+<p class="message">{{ body }}</p>
+{% if cabinet('home', absolute: true) %}{{ mail.button(cabinet('home', absolute: true), 'mailing.notice.cabinet'|trans) }}{% endif %}
+{% endblock %}

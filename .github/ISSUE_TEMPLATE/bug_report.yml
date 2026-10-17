@@ -1,0 +1,38 @@
+name: Bug report
+description: The engine or a module works wrong
+labels: [bug]
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happens
+      description: The behavior you see and the behavior you expect.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions
+      description: Output of `composer show 'adzercms/*'`, PHP version, database and its version.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      render: text
+  - type: input
+    id: ai
+    attributes:
+      label: AI assistance
+      description: The agent and the model that helped to write this report, or "none".
+      placeholder: "Claude:claude-opus-5-5"
+    validations:
+      required: true

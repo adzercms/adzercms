@@ -1,0 +1,31 @@
+name: Feature request
+description: A new feature or a change of a contract
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What you cannot do now and who needs it.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: The change you suggest, including changes of `packages/contracts`.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Other ways you considered.
+  - type: input
+    id: ai
+    attributes:
+      label: AI assistance
+      description: The agent and the model that helped to write this request, or "none".
+      placeholder: "Claude:claude-opus-5-5"
+    validations:
+      required: true

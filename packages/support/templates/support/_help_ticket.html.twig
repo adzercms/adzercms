@@ -1,0 +1,12 @@
+{% if links is null %}
+    <p class="help-empty">{{ constant('AdzerCMS\\Support\\HelpView::Missing').label|trans }}</p>
+{% else %}
+    {% for link in links %}
+        <button type="button" class="help-link" data-help-insert="{{ link.title }} — {{ link.url }}">
+            <strong>{{ link.title }}</strong>
+            {% if link.summary %}<span>{{ link.summary }}</span>{% endif %}
+        </button>
+    {% else %}
+        <p class="help-empty">{{ 'support.help.nothing'|trans }}</p>
+    {% endfor %}
+{% endif %}

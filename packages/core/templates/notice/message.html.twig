@@ -1,0 +1,9 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+
+{% block subject %}{% if brand.title %}{{ brand.title }}: {% endif %}{{ subject }}{% endblock %}
+
+{% block text %}{{ text }}{% endblock %}
+
+{% block content %}
+<p class="message">{{ text }}</p>
+{% endblock %}

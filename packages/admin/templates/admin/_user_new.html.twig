@@ -1,0 +1,22 @@
+<div class="modal-header">
+    <h2>{{ 'admin.user.new'|trans }}</h2>
+    <form method="dialog"><button class="modal-close">{{ 'admin.close'|trans }}</button></form>
+</div>
+
+<div class="modal-body">
+    {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+
+    <form hx-post="{{ path('admin_user_new') }}" hx-target="#record">
+        {{ csrf_field() }}
+        <div class="fields">
+            {% include '@Admin/admin/_user_fields.html.twig' %}
+            <label>{{ 'admin.user.notes'|trans }}
+                <textarea name="note" rows="3">{{ user.note }}</textarea>
+            </label>
+            <label>{{ 'admin.user.password'|trans }}
+                <input type="text" name="password" minlength="{{ password_min }}">
+            </label>
+        </div>
+        <button type="submit">{{ 'admin.user.create'|trans }}</button>
+    </form>
+</div>

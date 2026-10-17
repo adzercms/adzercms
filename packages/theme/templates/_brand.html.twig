@@ -1,0 +1,5 @@
+{% if brand.logo %}
+    <img src="{{ brand.logo }}" alt="{{ brand.title }}">
+{% else %}
+    <span>{{ brand.title }}</span>
+{% endif %}

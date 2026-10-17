@@ -1,0 +1,34 @@
+{% extends '@Cabinet/cabinet/auth.html.twig' %}
+
+{% block title %}{{ 'cabinet.register.title'|trans }}{% endblock %}
+
+{% block auth %}
+{% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+
+{% if active is null %}
+    <p class="flash">{{ 'cabinet.register.no_channel'|trans }}</p>
+{% else %}
+    {% if kinds|length > 1 %}
+        <nav class="tabs">
+            {% for kind in kinds %}
+                <a class="tab {{ kind == active ? 'active' }}" href="{{ path('cabinet_register', {kind: kind.value}) }}">{{ kind.label|trans }}</a>
+            {% endfor %}
+        </nav>
+    {% endif %}
+
+    <form method="post">
+        {{ csrf_field() }}
+        <label>{{ active.label|trans }}
+            <input type="{{ active.value == 'phone' ? 'tel' : 'email' }}" name="contact" value="{{ contact }}"
+                   autocomplete="{{ active.value == 'phone' ? 'tel' : 'email' }}" required autofocus>
+        </label>
+        {% include '@Cabinet/cabinet/_captcha.html.twig' %}
+        <button class="wide" type="submit">{{ 'cabinet.reset.send_code'|trans }}</button>
+    </form>
+{% endif %}
+
+{% include '@Cabinet/cabinet/_logins.html.twig' %}
+{% include '@Cabinet/cabinet/_terms.html.twig' %}
+
+<p class="auth-links"><a href="{{ path('cabinet_login') }}">{{ 'cabinet.login.back'|trans }}</a></p>
+{% endblock %}

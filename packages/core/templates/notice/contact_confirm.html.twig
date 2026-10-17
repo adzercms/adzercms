@@ -1,0 +1,17 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+{% import '@Core/notice/_macros.html.twig' as mail %}
+
+{% block subject %}{{ 'core.notice.contact_confirm.subject'|trans({brand: brand.title, login: user.email ?? user.phone, contact: contact|default('')}) }}{% endblock %}
+
+{% block text %}
+{{ 'core.notice.contact_confirm.body'|trans({brand: brand.title, login: user.email ?? user.phone, contact: contact|default('')}) }} {{ url }}
+{{ 'core.notice.lifetime'|trans({minutes: minutes}) }}
+{{ 'core.notice.contact_confirm.note'|trans }}
+{% endblock %}
+
+{% block content %}
+<h2>{{ 'core.notice.contact_confirm.title'|trans }}</h2>
+<p>{{ 'core.notice.contact_confirm.body'|trans({brand: brand.title, login: user.email ?? user.phone, contact: contact|default('')}) }}</p>
+{{ mail.link(url, 'core.notice.contact_confirm.action'|trans, minutes) }}
+<p class="note">{{ 'core.notice.contact_confirm.note'|trans }}</p>
+{% endblock %}

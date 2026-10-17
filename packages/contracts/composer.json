@@ -1,0 +1,29 @@
+{
+    "name": "adzercms/contracts",
+    "type": "library",
+    "description": "Interfaces, module kinds and events that AdzerCMS modules build on",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "contracts",
+        "interfaces",
+        "modules"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "symfony/http-kernel": "7.4.*",
+        "symfony/translation": "7.4.*",
+        "symfony/translation-contracts": "^3.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Contracts\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

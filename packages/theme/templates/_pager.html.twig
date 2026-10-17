@@ -1,0 +1,25 @@
+{% macro page(table, number, label, active) %}
+    {%- set url = path(table.route, table.pageLink(number)) -%}
+    <a class="page-num {{ active ? 'active' }}" href="{{ url }}" hx-get="{{ url }}" hx-select="#{{ table.id }}" hx-push-url="true">{{ label }}</a>
+{% endmacro %}
+
+{% set pages = table.pages %}
+{% if pages > 1 %}
+    {% import _self as pager %}
+    {% set window = 2 %}
+    {% set first = max(1, table.page - window) %}
+    {% set last = min(pages, table.page + window) %}
+    <nav class="pager">
+        {% if table.page > 1 %}{{ pager.page(table, table.page - 1, '‹', false) }}{% endif %}
+        {% if first > 1 %}
+            {{ pager.page(table, 1, 1, false) }}
+            {% if first > 2 %}<span class="page-gap">…</span>{% endif %}
+        {% endif %}
+        {% for number in first..last %}{{ pager.page(table, number, number, number == table.page) }}{% endfor %}
+        {% if last < pages %}
+            {% if last < pages - 1 %}<span class="page-gap">…</span>{% endif %}
+            {{ pager.page(table, pages, pages, false) }}
+        {% endif %}
+        {% if table.page < pages %}{{ pager.page(table, table.page + 1, '›', false) }}{% endif %}
+    </nav>
+{% endif %}

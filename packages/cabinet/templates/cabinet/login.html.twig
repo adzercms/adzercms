@@ -1,0 +1,30 @@
+{% extends '@Cabinet/cabinet/auth.html.twig' %}
+
+{% block title %}{{ 'cabinet.login.title'|trans }}{% endblock %}
+
+{% block auth %}
+<form method="post" action="{{ path('login') }}">
+    {% if error %}<p class="flash flash-error">{{ error.messageKey|trans(error.messageData, 'security') }}</p>{% endif %}
+
+    <label>{{ 'cabinet.login.login'|trans }}
+        <input type="text" name="_username" value="{{ login }}" autocomplete="username" required autofocus>
+    </label>
+    <label>{{ 'cabinet.login.password'|trans }}
+        <input type="password" name="_password" autocomplete="current-password" required>
+    </label>
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+    <div class="auth-row">
+        <a href="{{ path('cabinet_forgot', restore ? {login: login} : {}) }}">{{ (restore ? 'cabinet.login.restore' : 'cabinet.login.forgot')|trans }}</a>
+    </div>
+
+    <button class="wide" type="submit">{{ 'cabinet.login.enter'|trans }}</button>
+</form>
+
+{% include '@Cabinet/cabinet/_logins.html.twig' %}
+{% if register and logins %}{% include '@Cabinet/cabinet/_terms.html.twig' %}{% endif %}
+
+{% if register %}
+    <p class="auth-links">{{ 'cabinet.login.no_account'|trans }} <a href="{{ path('cabinet_register') }}">{{ 'cabinet.login.register'|trans }}</a></p>
+{% endif %}
+{% endblock %}

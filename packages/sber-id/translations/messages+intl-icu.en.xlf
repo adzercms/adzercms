@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" srcLang="en" trgLang="en" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="messages.en">
+    <unit id="sberid.container">
+      <segment>
+        <source>sberid.container</source>
+        <target>PKCS#12 certificate container</target>
+      </segment>
+    </unit>
+    <unit id="sberid.foreign">
+      <segment>
+        <source>sberid.foreign</source>
+        <target>The Sber ID answer does not belong to this login</target>
+      </segment>
+    </unit>
+    <unit id="sberid.name">
+      <segment>
+        <source>sberid.name</source>
+        <target>Sber ID</target>
+      </segment>
+    </unit>
+    <unit id="sberid.unconfirmed">
+      <segment>
+        <source>sberid.unconfirmed</source>
+        <target>Sber ID did not confirm the login</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

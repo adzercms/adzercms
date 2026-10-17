@@ -1,0 +1,30 @@
+{% apply inline_css(source('@Core/notice/mail.css')) %}
+<!DOCTYPE html>
+<html lang="{{ app.locale }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<table class="frame" role="presentation" width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+        <td align="center">
+            <table class="sheet" role="presentation" width="600" cellpadding="0" cellspacing="0">
+                {% if brand.logo or brand.title %}
+                <tr>
+                    <td class="head">{% if brand.logo %}<img class="logo" src="{{ brand.logo }}" alt="{{ brand.title }}" height="28">{% else %}{{ brand.title }}{% endif %}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td class="content">{% block content %}{% endblock %}</td>
+                </tr>
+                <tr>
+                    <td class="foot"><a href="{{ absolute_url('/') }}">{{ absolute_url('/') }}</a></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
+{% endapply %}

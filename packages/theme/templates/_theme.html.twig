@@ -1,0 +1,20 @@
+{% set switch = cabinet('theme') %}
+{% if switch %}
+{% set other = brand.theme(app.user.theme).other %}
+<form class="theme-switch" method="post" action="{{ switch }}">
+    {{ csrf_field() }}{{ back_field() }}
+    <input type="hidden" name="theme" value="{{ other.value }}">
+    <button type="submit" title="{{ other.label|trans }}" aria-label="{{ other.label|trans }}">
+        {% if other.value == 'dark' %}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+            </svg>
+        {% else %}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4.2"/>
+                <path d="M12 2.6v2.2M12 19.2v2.2M4.2 12H2M22 12h-2.2M6.3 6.3 4.8 4.8M19.2 19.2l-1.5-1.5M6.3 17.7l-1.5 1.5M19.2 4.8l-1.5 1.5"/>
+            </svg>
+        {% endif %}
+    </button>
+</form>
+{% endif %}

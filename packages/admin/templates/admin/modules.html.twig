@@ -1,0 +1,15 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'admin.menu.modules'|trans }}{% endblock %}
+
+{% block page %}
+{% embed '@Theme/_table.html.twig' %}
+    {% block row %}
+        <tr class="clickable-row" data-href="{{ path('admin_module', {key: row.key}) }}">
+            <td class="{{ table.aside('name') }}"><strong>{{ row.name }}</strong></td>
+            <td class="{{ table.aside('kind') }}">{{ row.kind }}</td>
+            <td class="{{ table.aside('schema') }}">{{ row.schema ?: blank() }}</td>
+        </tr>
+    {% endblock %}
+{% endembed %}
+{% endblock %}

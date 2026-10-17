@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" srcLang="en" trgLang="en" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="messages.en">
+    <unit id="payments.code.cancel">
+      <segment>
+        <source>payments.code.cancel</source>
+        <target>Cancel payment</target>
+      </segment>
+    </unit>
+    <unit id="payments.code.image">
+      <segment>
+        <source>payments.code.image</source>
+        <target>Payment QR code</target>
+      </segment>
+    </unit>
+    <unit id="payments.code.open">
+      <segment>
+        <source>payments.code.open</source>
+        <target>Open in the bank app</target>
+      </segment>
+    </unit>
+    <unit id="payments.code.scan">
+      <segment>
+        <source>payments.code.scan</source>
+        <target>Scan the code with the phone camera or the bank app</target>
+      </segment>
+    </unit>
+    <unit id="payments.code.title">
+      <segment>
+        <source>payments.code.title</source>
+        <target>Payment by QR code</target>
+      </segment>
+    </unit>
+    <unit id="payments.code.wait">
+      <segment>
+        <source>payments.code.wait</source>
+        <target>Waiting for the bank to confirm</target>
+      </segment>
+    </unit>
+    <unit id="payments.flash.bound">
+      <segment>
+        <source>payments.flash.bound</source>
+        <target>Card saved</target>
+      </segment>
+    </unit>
+    <unit id="payments.flash.confirmed">
+      <segment>
+        <source>payments.flash.confirmed</source>
+        <target>Payment confirmed</target>
+      </segment>
+    </unit>
+    <unit id="payments.flash.pending">
+      <segment>
+        <source>payments.flash.pending</source>
+        <target>The bank has not confirmed the payment yet</target>
+      </segment>
+    </unit>
+    <unit id="payments.flash.rejected">
+      <segment>
+        <source>payments.flash.rejected</source>
+        <target>Payment failed</target>
+      </segment>
+    </unit>
+    <unit id="payments.flash.unbound">
+      <segment>
+        <source>payments.flash.unbound</source>
+        <target>Card not saved</target>
+      </segment>
+    </unit>
+    <unit id="payments.kind">
+      <segment>
+        <source>payments.kind</source>
+        <target>Payment acceptance</target>
+      </segment>
+    </unit>
+    <unit id="payments.refusal.binding">
+      <segment>
+        <source>payments.refusal.binding</source>
+        <target>Card binding is unavailable</target>
+      </segment>
+    </unit>
+    <unit id="payments.refusal.closing">
+      <segment>
+        <source>payments.refusal.closing</source>
+        <target>A closing receipt is only for a prepaid payment</target>
+      </segment>
+    </unit>
+    <unit id="payments.refusal.contact">
+      <segment>
+        <source>payments.refusal.contact</source>
+        <target>Enter a phone or email for the receipt</target>
+      </segment>
+    </unit>
+    <unit id="payments.refusal.floor">
+      <segment>
+        <source>payments.refusal.floor</source>
+        <target>The amount is less than {floor} ₽</target>
+      </segment>
+    </unit>
+    <unit id="payments.refusal.method">
+      <segment>
+        <source>payments.refusal.method</source>
+        <target>No such payment method</target>
+      </segment>
+    </unit>
+    <unit id="payments.refusal.provider">
+      <segment>
+        <source>payments.refusal.provider</source>
+        <target>The payment service refused: {reason}</target>
+      </segment>
+    </unit>
+    <unit id="payments.refusal.saving">
+      <segment>
+        <source>payments.refusal.saving</source>
+        <target>Payment by a saved card is unavailable</target>
+      </segment>
+    </unit>
+    <unit id="payments.status.cancelled">
+      <segment>
+        <source>payments.status.cancelled</source>
+        <target>Cancelled</target>
+      </segment>
+    </unit>
+    <unit id="payments.status.confirmed">
+      <segment>
+        <source>payments.status.confirmed</source>
+        <target>Confirmed</target>
+      </segment>
+    </unit>
+    <unit id="payments.status.pending">
+      <segment>
+        <source>payments.status.pending</source>
+        <target>Awaiting payment</target>
+      </segment>
+    </unit>
+    <unit id="payments.status.rejected">
+      <segment>
+        <source>payments.status.rejected</source>
+        <target>Rejected</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

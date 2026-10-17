@@ -1,0 +1,27 @@
+#!/bin/sh
+set -eu
+
+[ -f .env.local ] || exit 0
+
+mkdir -p var/lock
+exec 9> var/lock/refresh
+flock 9
+
+stamp=var/composer.installed
+locked=$(sha256sum composer.lock | cut -d' ' -f1)
+
+if [ "$(cat "$stamp" 2>/dev/null || true)" != "$locked" ]; then
+    bin/php "$(command -v composer)" install --no-interaction --no-progress --no-scripts
+    printf '%s\n' "$locked" > "$stamp"
+    exec "$0"
+fi
+
+APP_BUILD=$(date +%Y%m%d%H%M%S)-$(git rev-parse --short=12 HEAD)
+export APP_BUILD
+
+bin/php bin/console cache:warmup
+bin/php bin/console importmap:install --no-interaction
+bin/php bin/console asset-map:compile --no-interaction
+bin/php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+bin/php bin/console doctrine:schema:validate || true
+bin/php bin/console adzercms:cache

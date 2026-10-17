@@ -1,0 +1,19 @@
+{% if answer.links is empty %}
+    <p class="help-empty">
+        {% if answer.missing %}
+            {{ answer.view.label|trans }}
+        {% else %}
+            {{ 'support.help.nothing'|trans }} <a href="{{ path('support_ticket_new') }}">{{ 'support.ticket.new'|trans }}</a>
+        {% endif %}
+    </p>
+{% else %}
+    <h4 class="help-group">{{ answer.view.label|trans }}</h4>
+    {% for link in answer.links %}
+        <a class="help-link" href="{{ link.url }}" target="_blank" rel="noopener">
+            <strong>{{ link.title }}</strong>
+            {% if link.category %}<span class="muted">{{ link.category }}</span>{% endif %}
+            {% if link.summary %}<span>{{ link.summary }}</span>{% endif %}
+        </a>
+    {% endfor %}
+{% endif %}
+<a class="button secondary" href="{{ answer.home }}" target="_blank" rel="noopener">{{ 'support.help.open'|trans }}</a>

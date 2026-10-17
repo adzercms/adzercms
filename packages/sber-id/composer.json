@@ -1,0 +1,34 @@
+{
+    "name": "adzercms/sber-id",
+    "type": "adzercms-module",
+    "description": "Sign-in with Sber ID for AdzerCMS: OpenID Connect and account linking",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "sber-id",
+        "openid-connect",
+        "social-login"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0"
+    },
+    "provide": {
+        "adzercms/login-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\SberId\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\SberId\\SberIdBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "name": "adzercms/realtime",
+    "type": "adzercms-module",
+    "description": "Real-time page updates for AdzerCMS: live blocks refreshed through a hub module",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "realtime",
+        "live-updates",
+        "websocket"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Realtime\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Realtime\\RealtimeBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

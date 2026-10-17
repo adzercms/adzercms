@@ -1,0 +1,6 @@
+<form class="picker" method="post" action="{{ action }}">
+    {{ csrf_field() }}{{ back_field() }}
+    {% for value, label in choices %}
+        <button type="submit" name="{{ name }}" value="{{ value }}" class="{{ value == current ? '' : 'secondary' }}">{{ label|trans }}</button>
+    {% endfor %}
+</form>

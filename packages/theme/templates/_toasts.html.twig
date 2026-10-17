@@ -1,0 +1,7 @@
+<div class="toasts" popover="manual">
+    {%- for label, messages in app.flashes -%}
+        {%- for message in messages -%}
+            <p class="toast toast-{{ label }}">{{ message|trans }}</p>
+        {%- endfor -%}
+    {%- endfor -%}
+</div>

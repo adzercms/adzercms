@@ -1,0 +1,20 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+{% import '@Core/notice/_macros.html.twig' as mail %}
+
+{% block subject %}{{ 'support.notice.closed.subject'|trans({brand: brand.title, count: tickets|length, id: tickets[0].id}) }}{% endblock %}
+
+{% block text %}
+{% for ticket in tickets %}
+{{ 'support.notice.closed.ticket'|trans({id: ticket.id, subject: ticket.subject, days: days}) }}
+{% endfor %}
+{{ 'support.notice.closed.again'|trans }} {{ url('support_ticket_new') }}
+{% endblock %}
+
+{% block content %}
+<h2>{{ 'support.notice.closed.title'|trans({count: tickets|length}) }}</h2>
+{% for ticket in tickets %}
+<p>{{ 'support.notice.closed.ticket'|trans({id: ticket.id, subject: ticket.subject, days: days}) }}</p>
+{% endfor %}
+<p>{{ 'support.notice.closed.again'|trans }}</p>
+{{ mail.button(url('support_ticket_new'), 'support.ticket.new'|trans) }}
+{% endblock %}

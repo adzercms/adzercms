@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" srcLang="en" trgLang="en" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="messages.en">
+    <unit id="support.column.at">
+      <segment>
+        <source>support.column.at</source>
+        <target>Updated</target>
+      </segment>
+    </unit>
+    <unit id="support.column.department">
+      <segment>
+        <source>support.column.department</source>
+        <target>Department</target>
+      </segment>
+    </unit>
+    <unit id="support.column.number">
+      <segment>
+        <source>support.column.number</source>
+        <target>No.</target>
+      </segment>
+    </unit>
+    <unit id="support.column.status">
+      <segment>
+        <source>support.column.status</source>
+        <target>Status</target>
+      </segment>
+    </unit>
+    <unit id="support.column.subject">
+      <segment>
+        <source>support.column.subject</source>
+        <target>Subject</target>
+      </segment>
+    </unit>
+    <unit id="support.column.user">
+      <segment>
+        <source>support.column.user</source>
+        <target>User</target>
+      </segment>
+    </unit>
+    <unit id="support.default_departments">
+      <segment>
+        <source>support.default_departments</source>
+        <target>Technical support, Finance</target>
+      </segment>
+    </unit>
+    <unit id="support.digest.fresh">
+      <segment>
+        <source>support.digest.fresh</source>
+        <target>#{number} {user}, {department}, {subject}</target>
+      </segment>
+    </unit>
+    <unit id="support.digest.more">
+      <segment>
+        <source>support.digest.more</source>
+        <target>… {count} more</target>
+      </segment>
+    </unit>
+    <unit id="support.digest.tickets">
+      <segment>
+        <source>support.digest.tickets</source>
+        <target>Tickets awaiting an answer: {count}</target>
+      </segment>
+    </unit>
+    <unit id="support.digest.waiting">
+      <segment>
+        <source>support.digest.waiting</source>
+        <target>#{number} {user}, waiting {hours} h, {subject}{overdue, select, yes { — overdue} other {}}</target>
+      </segment>
+    </unit>
+    <unit id="support.empty">
+      <segment>
+        <source>support.empty</source>
+        <target>No tickets</target>
+      </segment>
+    </unit>
+    <unit id="support.event.ticket_closed">
+      <segment>
+        <source>support.event.ticket_closed</source>
+        <target>Ticket auto-closing</target>
+      </segment>
+    </unit>
+    <unit id="support.event.ticket_reply">
+      <segment>
+        <source>support.event.ticket_reply</source>
+        <target>Support answer</target>
+      </segment>
+    </unit>
+    <unit id="support.filter.status">
+      <segment>
+        <source>support.filter.status</source>
+        <target>State</target>
+      </segment>
+    </unit>
+    <unit id="support.flash.closed">
+      <segment>
+        <source>support.flash.closed</source>
+        <target>Ticket closed</target>
+      </segment>
+    </unit>
+    <unit id="support.flash.dropped">
+      <segment>
+        <source>support.flash.dropped</source>
+        <target>Message removed</target>
+      </segment>
+    </unit>
+    <unit id="support.flash.edited">
+      <segment>
+        <source>support.flash.edited</source>
+        <target>Message corrected</target>
+      </segment>
+    </unit>
+    <unit id="support.flash.opened">
+      <segment>
+        <source>support.flash.opened</source>
+        <target>Ticket No. {number} created</target>
+      </segment>
+    </unit>
+    <unit id="support.flash.sent">
+      <segment>
+        <source>support.flash.sent</source>
+        <target>Message sent</target>
+      </segment>
+    </unit>
+    <unit id="support.help.article">
+      <segment>
+        <source>support.help.article</source>
+        <target>Knowledge base article</target>
+      </segment>
+    </unit>
+    <unit id="support.help.nothing">
+      <segment>
+        <source>support.help.nothing</source>
+        <target>Nothing found.</target>
+      </segment>
+    </unit>
+    <unit id="support.help.open">
+      <segment>
+        <source>support.help.open</source>
+        <target>Open the knowledge base</target>
+      </segment>
+    </unit>
+    <unit id="support.help.search">
+      <segment>
+        <source>support.help.search</source>
+        <target>Search the knowledge base</target>
+      </segment>
+    </unit>
+    <unit id="support.help.title">
+      <segment>
+        <source>support.help.title</source>
+        <target>Knowledge base</target>
+      </segment>
+    </unit>
+    <unit id="support.help_view.categories">
+      <segment>
+        <source>support.help_view.categories</source>
+        <target>Categories</target>
+      </segment>
+    </unit>
+    <unit id="support.help_view.found">
+      <segment>
+        <source>support.help_view.found</source>
+        <target>Found</target>
+      </segment>
+    </unit>
+    <unit id="support.help_view.missing">
+      <segment>
+        <source>support.help_view.missing</source>
+        <target>The knowledge base is unavailable</target>
+      </segment>
+    </unit>
+    <unit id="support.help_view.page">
+      <segment>
+        <source>support.help_view.page</source>
+        <target>On this page</target>
+      </segment>
+    </unit>
+    <unit id="support.menu.group">
+      <segment>
+        <source>support.menu.group</source>
+        <target>Support</target>
+      </segment>
+    </unit>
+    <unit id="support.menu.help">
+      <segment>
+        <source>support.menu.help</source>
+        <target>Knowledge base</target>
+      </segment>
+    </unit>
+    <unit id="support.menu.tickets">
+      <segment>
+        <source>support.menu.tickets</source>
+        <target>Tickets</target>
+      </segment>
+    </unit>
+    <unit id="support.message.attach">
+      <segment>
+        <source>support.message.attach</source>
+        <target>Add attachments</target>
+      </segment>
+    </unit>
+    <unit id="support.message.drop_confirm">
+      <segment>
+        <source>support.message.drop_confirm</source>
+        <target>Delete the message from the conversation?</target>
+      </segment>
+    </unit>
+    <unit id="support.message.edited">
+      <segment>
+        <source>support.message.edited</source>
+        <target>corrected</target>
+      </segment>
+    </unit>
+    <unit id="support.message.text">
+      <segment>
+        <source>support.message.text</source>
+        <target>Text</target>
+      </segment>
+    </unit>
+    <unit id="support.message.unattach">
+      <segment>
+        <source>support.message.unattach</source>
+        <target>remove {name}</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.closed.again">
+      <segment>
+        <source>support.notice.closed.again</source>
+        <target>If the question is still relevant, open a new ticket.</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.closed.short">
+      <segment>
+        <source>support.notice.closed.short</source>
+        <target>{count, plural, one {Ticket #{ids} was closed} other {Tickets #{ids} were closed}} without your answer. A relevant question — by a new ticket:</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.closed.subject">
+      <segment>
+        <source>support.notice.closed.subject</source>
+        <target>{brand}: {count, plural, one {ticket No. {id} closed} other {tickets closed}}</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.closed.ticket">
+      <segment>
+        <source>support.notice.closed.ticket</source>
+        <target>Ticket No. {id} «{subject}» closed: no answer for more than {days, plural, one {# day} other {# days}}</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.closed.title">
+      <segment>
+        <source>support.notice.closed.title</source>
+        <target>{count, plural, one {Ticket closed} other {Tickets closed}}</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.reply.action">
+      <segment>
+        <source>support.notice.reply.action</source>
+        <target>Open the ticket</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.reply.body">
+      <segment>
+        <source>support.notice.reply.body</source>
+        <target>Support answered ticket No. {id} «{subject}».</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.reply.short">
+      <segment>
+        <source>support.notice.reply.short</source>
+        <target>Support answered ticket No. {id}. The answer is in the cabinet.</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.reply.subject">
+      <segment>
+        <source>support.notice.reply.subject</source>
+        <target>{brand}: answer to ticket No. {id}</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.reply.title">
+      <segment>
+        <source>support.notice.reply.title</source>
+        <target>Support answer</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.reply.where">
+      <segment>
+        <source>support.notice.reply.where</source>
+        <target>The answer is in the cabinet:</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.body">
+      <segment>
+        <source>support.refusal.body</source>
+        <target>The message is empty</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.closed">
+      <segment>
+        <source>support.refusal.closed</source>
+        <target>The ticket is closed — changes are not accepted</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.department">
+      <segment>
+        <source>support.refusal.department</source>
+        <target>Wrong department</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.oversize">
+      <segment>
+        <source>support.refusal.oversize</source>
+        <target>The attachment is larger than {megabytes} MB</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.subject">
+      <segment>
+        <source>support.refusal.subject</source>
+        <target>The ticket subject is empty</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.type">
+      <segment>
+        <source>support.refusal.type</source>
+        <target>The attachment type is not accepted: {extension}</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.upload">
+      <segment>
+        <source>support.refusal.upload</source>
+        <target>The attachment was not uploaded</target>
+      </segment>
+    </unit>
+    <unit id="support.setting.area">
+      <segment>
+        <source>support.setting.area</source>
+        <target>Support</target>
+      </segment>
+    </unit>
+    <unit id="support.setting.attachment_max_mb">
+      <segment>
+        <source>support.setting.attachment_max_mb</source>
+        <target>Attachment size, MB</target>
+      </segment>
+    </unit>
+    <unit id="support.setting.attachment_types">
+      <segment>
+        <source>support.setting.attachment_types</source>
+        <target>Attachment types, comma-separated</target>
+      </segment>
+    </unit>
+    <unit id="support.setting.auto_close_days">
+      <segment>
+        <source>support.setting.auto_close_days</source>
+        <target>Ticket auto-closing, days</target>
+      </segment>
+    </unit>
+    <unit id="support.setting.departments">
+      <segment>
+        <source>support.setting.departments</source>
+        <target>Support departments, comma-separated</target>
+      </segment>
+    </unit>
+    <unit id="support.setting.help_index">
+      <segment>
+        <source>support.setting.help_index</source>
+        <target>Address of the knowledge base JSON index</target>
+      </segment>
+    </unit>
+    <unit id="support.setting.overdue_hours">
+      <segment>
+        <source>support.setting.overdue_hours</source>
+        <target>Ticket overdue after, hours</target>
+      </segment>
+    </unit>
+    <unit id="support.tab.active">
+      <segment>
+        <source>support.tab.active</source>
+        <target>Active ({count})</target>
+      </segment>
+    </unit>
+    <unit id="support.tab.archive">
+      <segment>
+        <source>support.tab.archive</source>
+        <target>Archive ({count})</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.attachments">
+      <segment>
+        <source>support.ticket.attachments</source>
+        <target>Attachments</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.back">
+      <segment>
+        <source>support.ticket.back</source>
+        <target>Back to list</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.close">
+      <segment>
+        <source>support.ticket.close</source>
+        <target>Close the ticket</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.closed">
+      <segment>
+        <source>support.ticket.closed</source>
+        <target>The ticket is closed. If the question remains, open a new one.</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.created">
+      <segment>
+        <source>support.ticket.created</source>
+        <target>Opened</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.department">
+      <segment>
+        <source>support.ticket.department</source>
+        <target>Department</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.limit">
+      <segment>
+        <source>support.ticket.limit</source>
+        <target>up to {megabytes} MB</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.message">
+      <segment>
+        <source>support.ticket.message</source>
+        <target>Message</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.new">
+      <segment>
+        <source>support.ticket.new</source>
+        <target>New ticket</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.send">
+      <segment>
+        <source>support.ticket.send</source>
+        <target>Send</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.state">
+      <segment>
+        <source>support.ticket.state</source>
+        <target>State</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.subject">
+      <segment>
+        <source>support.ticket.subject</source>
+        <target>Subject</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.title">
+      <segment>
+        <source>support.ticket.title</source>
+        <target>Ticket No. {id}</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.updated">
+      <segment>
+        <source>support.ticket.updated</source>
+        <target>Updated</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.user">
+      <segment>
+        <source>support.ticket.user</source>
+        <target>User</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket_status.closed">
+      <segment>
+        <source>support.ticket_status.closed</source>
+        <target>Closed</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket_status.open">
+      <segment>
+        <source>support.ticket_status.open</source>
+        <target>New</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket_status.waiting_staff">
+      <segment>
+        <source>support.ticket_status.waiting_staff</source>
+        <target>Awaiting answer</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket_status.waiting_user">
+      <segment>
+        <source>support.ticket_status.waiting_user</source>
+        <target>Awaiting user</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

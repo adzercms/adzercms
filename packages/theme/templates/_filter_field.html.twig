@@ -1,0 +1,20 @@
+{% set live = live|default(false) %}
+{% set value = value|default(filter.selected) %}
+
+{% if filter.search %}
+    <input type="search" id="{{ id|default('') }}" name="{{ name|default(filter.name) }}" value="{{ value }}"
+           placeholder="{{ filter.label|trans }}"
+           {% if live %}hx-get="{{ action }}" hx-trigger="input changed delay:300ms" hx-include="closest form"
+           hx-target="#{{ data }}" hx-select="#{{ data }}"{% endif %}>
+{% elseif filter.day %}
+    <input type="date" id="{{ id|default('') }}" name="{{ name|default(filter.name) }}" value="{{ value }}" {{ filter.hidden ? 'hidden' }}
+           {% if live %}hx-get="{{ action }}" hx-trigger="change" hx-include="closest form"{% endif %}>
+{% else %}
+    <select id="{{ id|default('') }}" name="{{ name|default(filter.name) }}" {{ filter.hidden ? 'hidden' }}
+            {% if live %}hx-get="{{ action }}" hx-trigger="change" hx-include="closest form"{% endif %}>
+        {% if not filter.required %}<option value="">{{ filter.label|trans }}</option>{% endif %}
+        {% for option, label in filter.options %}
+            <option value="{{ option }}" {{ value == option ? 'selected' }}>{{ label|trans }}</option>
+        {% endfor %}
+    </select>
+{% endif %}

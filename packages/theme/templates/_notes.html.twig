@@ -1,0 +1,13 @@
+<div class="section">
+    <div class="section-head">
+        <h3>{{ 'theme.notes'|trans }}</h3>
+    </div>
+
+    <form method="post" action="{{ action }}">
+        {{ csrf_field() }}{{ back_field() }}
+        <label class="field-wide">
+            <textarea class="note" name="note">{{ note }}</textarea>
+        </label>
+        <button type="submit">{{ 'theme.save'|trans }}</button>
+    </form>
+</div>

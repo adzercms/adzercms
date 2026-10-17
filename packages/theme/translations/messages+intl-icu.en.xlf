@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="theme.admin">
+      <segment>
+        <source>theme.admin</source>
+        <target>Admin</target>
+      </segment>
+    </unit>
+    <unit id="theme.clear">
+      <segment>
+        <source>theme.clear</source>
+        <target>Clear</target>
+      </segment>
+    </unit>
+    <unit id="theme.close">
+      <segment>
+        <source>theme.close</source>
+        <target>Close</target>
+      </segment>
+    </unit>
+    <unit id="theme.confirm.no">
+      <segment>
+        <source>theme.confirm.no</source>
+        <target>No</target>
+      </segment>
+    </unit>
+    <unit id="theme.confirm.title">
+      <segment>
+        <source>theme.confirm.title</source>
+        <target>Confirmation</target>
+      </segment>
+    </unit>
+    <unit id="theme.confirm.yes">
+      <segment>
+        <source>theme.confirm.yes</source>
+        <target>Yes</target>
+      </segment>
+    </unit>
+    <unit id="theme.credentials">
+      <segment>
+        <source>theme.credentials</source>
+        <target>Credentials</target>
+      </segment>
+    </unit>
+    <unit id="theme.credentials_clear_confirm">
+      <segment>
+        <source>theme.credentials_clear_confirm</source>
+        <target>Delete the saved data? Access by it will stop working.</target>
+      </segment>
+    </unit>
+    <unit id="theme.drop">
+      <segment>
+        <source>theme.drop</source>
+        <target>Delete</target>
+      </segment>
+    </unit>
+    <unit id="theme.edit">
+      <segment>
+        <source>theme.edit</source>
+        <target>Edit</target>
+      </segment>
+    </unit>
+    <unit id="theme.impersonate_exit">
+      <segment>
+        <source>theme.impersonate_exit</source>
+        <target>Back to admin</target>
+      </segment>
+    </unit>
+    <unit id="theme.impersonating">
+      <segment>
+        <source>theme.impersonating</source>
+        <target>You are logged in as user {login}</target>
+      </segment>
+    </unit>
+    <unit id="theme.logout">
+      <segment>
+        <source>theme.logout</source>
+        <target>Log out</target>
+      </segment>
+    </unit>
+    <unit id="theme.main">
+      <segment>
+        <source>theme.main</source>
+        <target>Main</target>
+      </segment>
+    </unit>
+    <unit id="theme.menu">
+      <segment>
+        <source>theme.menu</source>
+        <target>Menu</target>
+      </segment>
+    </unit>
+    <unit id="theme.notes">
+      <segment>
+        <source>theme.notes</source>
+        <target>Notes</target>
+      </segment>
+    </unit>
+    <unit id="theme.profile">
+      <segment>
+        <source>theme.profile</source>
+        <target>Profile</target>
+      </segment>
+    </unit>
+    <unit id="theme.save">
+      <segment>
+        <source>theme.save</source>
+        <target>Save</target>
+      </segment>
+    </unit>
+    <unit id="theme.show">
+      <segment>
+        <source>theme.show</source>
+        <target>Show</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

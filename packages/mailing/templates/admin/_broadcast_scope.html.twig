@@ -1,0 +1,37 @@
+<div id="scope"
+     hx-get="{{ path('admin_broadcast_recipients') }}"
+     hx-trigger="change"
+     hx-target="#scope"
+     hx-swap="outerHTML"
+     hx-include="#scope">
+    <div class="stats">
+        <div class="stat-card">
+            <span class="stat-value">{{ recipients }}</span>
+            <span class="stat-label">{{ 'mailing.recipients'|trans }}</span>
+        </div>
+    </div>
+
+    <div class="fields">
+        <label>{{ 'mailing.channel'|trans }}
+            <select name="channel">
+                <option value="">{{ 'mailing.channel_any'|trans }}</option>
+                {% for item in sendable %}
+                    <option value="{{ item.key }}" {{ channel == item.key ? 'selected' }}>{{ item.label|trans }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>{{ 'mailing.scope'|trans }}
+            <select name="scope">
+                <option value="{{ everyone }}" {{ scope == everyone ? 'selected' }}>{{ 'mailing.scope_all'|trans }}</option>
+                {% for key, item in audiences %}
+                    <option value="{{ key }}" {{ scope == key ? 'selected' }}>{{ item.label|trans }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        {% if filter %}
+            <label>{{ audiences[scope].label|trans }}
+                {% include '@Theme/_filter_field.html.twig' with {filter: filter, value: value} only %}
+            </label>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="core.bot.linked">
+      <segment>
+        <source>core.bot.linked</source>
+        <target>The bot is connected to the record: notices will come here</target>
+      </segment>
+    </unit>
+    <unit id="core.bot.token">
+      <segment>
+        <source>core.bot.token</source>
+        <target>Bot token</target>
+      </segment>
+    </unit>
+    <unit id="core.captcha.secret">
+      <segment>
+        <source>core.captcha.secret</source>
+        <target>Secret key</target>
+      </segment>
+    </unit>
+    <unit id="core.captcha.site_key">
+      <segment>
+        <source>core.captcha.site_key</source>
+        <target>Site key</target>
+      </segment>
+    </unit>
+    <unit id="core.channel.mail">
+      <segment>
+        <source>core.channel.mail</source>
+        <target>Email</target>
+      </segment>
+    </unit>
+    <unit id="core.channel.sms">
+      <segment>
+        <source>core.channel.sms</source>
+        <target>SMS</target>
+      </segment>
+    </unit>
+    <unit id="core.confirmation.too_often">
+      <segment>
+        <source>core.confirmation.too_often</source>
+        <target>The confirmation was already sent, wait for it or try again later</target>
+      </segment>
+    </unit>
+    <unit id="core.consent_kind.offer">
+      <segment>
+        <source>core.consent_kind.offer</source>
+        <target>Offer</target>
+      </segment>
+    </unit>
+    <unit id="core.consent_kind.personal">
+      <segment>
+        <source>core.consent_kind.personal</source>
+        <target>Personal data processing</target>
+      </segment>
+    </unit>
+    <unit id="core.contact.email">
+      <segment>
+        <source>core.contact.email</source>
+        <target>Email</target>
+      </segment>
+    </unit>
+    <unit id="core.contact.phone">
+      <segment>
+        <source>core.contact.phone</source>
+        <target>Phone</target>
+      </segment>
+    </unit>
+    <unit id="core.deletion.no_mail">
+      <segment>
+        <source>core.deletion.no_mail</source>
+        <target>Deletion goes by a link to the email: confirm it in contacts</target>
+      </segment>
+    </unit>
+    <unit id="core.deletion.operator">
+      <segment>
+        <source>core.deletion.operator</source>
+        <target>An administrator record is deleted by another administrator</target>
+      </segment>
+    </unit>
+    <unit id="core.deletion.unsent">
+      <segment>
+        <source>core.deletion.unsent</source>
+        <target>The deletion link was not sent, try again later</target>
+      </segment>
+    </unit>
+    <unit id="core.event.account_deletion">
+      <segment>
+        <source>core.event.account_deletion</source>
+        <target>Record deletion</target>
+      </segment>
+    </unit>
+    <unit id="core.event.contact_confirm">
+      <segment>
+        <source>core.event.contact_confirm</source>
+        <target>Contact confirmation</target>
+      </segment>
+    </unit>
+    <unit id="core.event.contact_release">
+      <segment>
+        <source>core.event.contact_release</source>
+        <target>Former email consent</target>
+      </segment>
+    </unit>
+    <unit id="core.event.message">
+      <segment>
+        <source>core.event.message</source>
+        <target>Message</target>
+      </segment>
+    </unit>
+    <unit id="core.event.password_issued">
+      <segment>
+        <source>core.event.password_issued</source>
+        <target>Issued password</target>
+      </segment>
+    </unit>
+    <unit id="core.event.password_reset">
+      <segment>
+        <source>core.event.password_reset</source>
+        <target>Password recovery</target>
+      </segment>
+    </unit>
+    <unit id="core.event.registration">
+      <segment>
+        <source>core.event.registration</source>
+        <target>Sign-up code</target>
+      </segment>
+    </unit>
+    <unit id="core.event.registration_known">
+      <segment>
+        <source>core.event.registration_known</source>
+        <target>Sign-up with a known contact</target>
+      </segment>
+    </unit>
+    <unit id="core.filter.search">
+      <segment>
+        <source>core.filter.search</source>
+        <target>Search…</target>
+      </segment>
+    </unit>
+    <unit id="core.image.size">
+      <segment>
+        <source>core.image.size</source>
+        <target>{field} is larger than {kb} KB</target>
+      </segment>
+    </unit>
+    <unit id="core.image.type">
+      <segment>
+        <source>core.image.type</source>
+        <target>{field} accepts a png, jpeg, svg, webp or ico image</target>
+      </segment>
+    </unit>
+    <unit id="core.keychain.unreadable">
+      <segment>
+        <source>core.keychain.unreadable</source>
+        <target>{field}: the container is unreadable — check the file and the password</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.admin">
+      <segment>
+        <source>core.kind.admin</source>
+        <target>Admin</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.bot">
+      <segment>
+        <source>core.kind.bot</source>
+        <target>Bot</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.cabinet">
+      <segment>
+        <source>core.kind.cabinet</source>
+        <target>Cabinet</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.captcha">
+      <segment>
+        <source>core.kind.captcha</source>
+        <target>Bot check</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.feature">
+      <segment>
+        <source>core.kind.feature</source>
+        <target>Feature</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.login">
+      <segment>
+        <source>core.kind.login</source>
+        <target>Login service</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.sms">
+      <segment>
+        <source>core.kind.sms</source>
+        <target>SMS gateway</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.theme">
+      <segment>
+        <source>core.kind.theme</source>
+        <target>Theme</target>
+      </segment>
+    </unit>
+    <unit id="core.login.absent">
+      <segment>
+        <source>core.login.absent</source>
+        <target>{service} is not connected</target>
+      </segment>
+    </unit>
+    <unit id="core.login.alien">
+      <segment>
+        <source>core.login.alien</source>
+        <target>{service} issued a token of another application</target>
+      </segment>
+    </unit>
+    <unit id="core.login.cancelled">
+      <segment>
+        <source>core.login.cancelled</source>
+        <target>{service} did not confirm the sign-in</target>
+      </segment>
+    </unit>
+    <unit id="core.login.client_id">
+      <segment>
+        <source>core.login.client_id</source>
+        <target>Application ID</target>
+      </segment>
+    </unit>
+    <unit id="core.login.client_secret">
+      <segment>
+        <source>core.login.client_secret</source>
+        <target>Application secret</target>
+      </segment>
+    </unit>
+    <unit id="core.login.connected">
+      <segment>
+        <source>core.login.connected</source>
+        <target>{service} is connected</target>
+      </segment>
+    </unit>
+    <unit id="core.login.declined">
+      <segment>
+        <source>core.login.declined</source>
+        <target>{service} declined the request: {error}</target>
+      </segment>
+    </unit>
+    <unit id="core.login.expired">
+      <segment>
+        <source>core.login.expired</source>
+        <target>The sign-in is not confirmed: start again</target>
+      </segment>
+    </unit>
+    <unit id="core.login.invalid">
+      <segment>
+        <source>core.login.invalid</source>
+        <target>{service} issued an invalid token</target>
+      </segment>
+    </unit>
+    <unit id="core.login.last_way">
+      <segment>
+        <source>core.login.last_way</source>
+        <target>This is the only way to sign in: set a password first</target>
+      </segment>
+    </unit>
+    <unit id="core.login.nameless">
+      <segment>
+        <source>core.login.nameless</source>
+        <target>{service} did not name the profile</target>
+      </segment>
+    </unit>
+    <unit id="core.login.other">
+      <segment>
+        <source>core.login.other</source>
+        <target>Another {service} profile is connected to the record</target>
+      </segment>
+    </unit>
+    <unit id="core.login.silent">
+      <segment>
+        <source>core.login.silent</source>
+        <target>{service} does not answer</target>
+      </segment>
+    </unit>
+    <unit id="core.login.taken">
+      <segment>
+        <source>core.login.taken</source>
+        <target>This {service} profile is connected to another record</target>
+      </segment>
+    </unit>
+    <unit id="core.login.unavailable">
+      <segment>
+        <source>core.login.unavailable</source>
+        <target>This way of signing in is unavailable</target>
+      </segment>
+    </unit>
+    <unit id="core.login.unknown">
+      <segment>
+        <source>core.login.unknown</source>
+        <target>No record has this {service} profile: sign in with your login and connect {service} in the profile</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.account_deletion.action">
+      <segment>
+        <source>core.notice.account_deletion.action</source>
+        <target>Confirm deletion</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.account_deletion.body">
+      <segment>
+        <source>core.notice.account_deletion.body</source>
+        <target>Deletion of record {login}: confirm it by the link.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.account_deletion.note">
+      <segment>
+        <source>core.notice.account_deletion.note</source>
+        <target>If you did not request the deletion, ignore this letter — the record stays.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.account_deletion.subject">
+      <segment>
+        <source>core.notice.account_deletion.subject</source>
+        <target>{brand}: record deletion</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.account_deletion.title">
+      <segment>
+        <source>core.notice.account_deletion.title</source>
+        <target>Record deletion</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_confirm.action">
+      <segment>
+        <source>core.notice.contact_confirm.action</source>
+        <target>Confirm email</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_confirm.body">
+      <segment>
+        <source>core.notice.contact_confirm.body</source>
+        <target>Confirm email {contact} for record {login}.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_confirm.code">
+      <segment>
+        <source>core.notice.contact_confirm.code</source>
+        <target>Phone confirmation code: {code}, valid for {minutes, plural, one {# minute} other {# minutes}}</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_confirm.note">
+      <segment>
+        <source>core.notice.contact_confirm.note</source>
+        <target>If you did not request the email change, ignore this letter.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_confirm.subject">
+      <segment>
+        <source>core.notice.contact_confirm.subject</source>
+        <target>{brand}: email confirmation</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_confirm.title">
+      <segment>
+        <source>core.notice.contact_confirm.title</source>
+        <target>Email confirmation</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_release.action">
+      <segment>
+        <source>core.notice.contact_release.action</source>
+        <target>Agree to the change</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_release.body">
+      <segment>
+        <source>core.notice.contact_release.body</source>
+        <target>Email change of record {login} to {contact}: agree to it by the link.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_release.note">
+      <segment>
+        <source>core.notice.contact_release.note</source>
+        <target>If you did not request the change, ignore this letter — the email stays.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_release.subject">
+      <segment>
+        <source>core.notice.contact_release.subject</source>
+        <target>{brand}: email change</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_release.title">
+      <segment>
+        <source>core.notice.contact_release.title</source>
+        <target>Email change</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.copy">
+      <segment>
+        <source>core.notice.copy</source>
+        <target>If the button does not open, copy the link:</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.lifetime">
+      <segment>
+        <source>core.notice.lifetime</source>
+        <target>The link is valid for {minutes, plural, one {# minute} other {# minutes}}.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.lifetime_code">
+      <segment>
+        <source>core.notice.lifetime_code</source>
+        <target>Enter it in the cabinet — the code is valid for {minutes, plural, one {# minute} other {# minutes}}.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_issued.action">
+      <segment>
+        <source>core.notice.password_issued.action</source>
+        <target>Log in to the cabinet</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_issued.body">
+      <segment>
+        <source>core.notice.password_issued.body</source>
+        <target>The operator issued a new cabinet password. The former one no longer works.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_issued.login">
+      <segment>
+        <source>core.notice.password_issued.login</source>
+        <target>Login: {login}</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_issued.note">
+      <segment>
+        <source>core.notice.password_issued.note</source>
+        <target>Replace the issued password with your own in the cabinet profile.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_issued.password">
+      <segment>
+        <source>core.notice.password_issued.password</source>
+        <target>Password: {password}</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_issued.subject">
+      <segment>
+        <source>core.notice.password_issued.subject</source>
+        <target>{brand}: new cabinet password</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_issued.title">
+      <segment>
+        <source>core.notice.password_issued.title</source>
+        <target>New cabinet password</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_reset.action">
+      <segment>
+        <source>core.notice.password_reset.action</source>
+        <target>Set password</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_reset.body">
+      <segment>
+        <source>core.notice.password_reset.body</source>
+        <target>Password change of record {login}: set a new password by the link.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_reset.code">
+      <segment>
+        <source>core.notice.password_reset.code</source>
+        <target>Password change code: {code}, valid for {minutes, plural, one {# minute} other {# minutes}}</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_reset.note">
+      <segment>
+        <source>core.notice.password_reset.note</source>
+        <target>If you did not request the change, ignore this letter — the password stays.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_reset.subject">
+      <segment>
+        <source>core.notice.password_reset.subject</source>
+        <target>{brand}: password change</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_reset.title">
+      <segment>
+        <source>core.notice.password_reset.title</source>
+        <target>Password change</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration.code">
+      <segment>
+        <source>core.notice.registration.code</source>
+        <target>Sign-up code: {code}, valid for {minutes, plural, one {# minute} other {# minutes}}</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration.note">
+      <segment>
+        <source>core.notice.registration.note</source>
+        <target>If you did not request the sign-up, ignore this letter.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration.subject">
+      <segment>
+        <source>core.notice.registration.subject</source>
+        <target>{brand}: sign-up code</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration.title">
+      <segment>
+        <source>core.notice.registration.title</source>
+        <target>Sign-up code</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration_known.action">
+      <segment>
+        <source>core.notice.registration_known.action</source>
+        <target>Restore access</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration_known.body">
+      <segment>
+        <source>core.notice.registration_known.body</source>
+        <target>A record already exists for {contact}: log in with this contact and the password, a forgotten password is returned by access recovery.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration_known.subject">
+      <segment>
+        <source>core.notice.registration_known.subject</source>
+        <target>{brand}: record already exists</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration_known.title">
+      <segment>
+        <source>core.notice.registration_known.title</source>
+        <target>Record already exists</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.status.deferred">
+      <segment>
+        <source>core.notice.status.deferred</source>
+        <target>Awaiting the end of quiet hours</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.status.failed">
+      <segment>
+        <source>core.notice.status.failed</source>
+        <target>Gateway refusal</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.status.sent">
+      <segment>
+        <source>core.notice.status.sent</source>
+        <target>Sent</target>
+      </segment>
+    </unit>
+    <unit id="core.once.repeat">
+      <segment>
+        <source>core.once.repeat</source>
+        <target>The same action was just done — the repeat is skipped</target>
+      </segment>
+    </unit>
+    <unit id="core.password.short">
+      <segment>
+        <source>core.password.short</source>
+        <target>Password is shorter than {min, plural, one {# character} other {# characters}}</target>
+      </segment>
+    </unit>
+    <unit id="core.period_scale.custom">
+      <segment>
+        <source>core.period_scale.custom</source>
+        <target>Custom term</target>
+      </segment>
+    </unit>
+    <unit id="core.period_scale.month">
+      <segment>
+        <source>core.period_scale.month</source>
+        <target>Month</target>
+      </segment>
+    </unit>
+    <unit id="core.period_scale.year">
+      <segment>
+        <source>core.period_scale.year</source>
+        <target>Year</target>
+      </segment>
+    </unit>
+    <unit id="core.role.admin">
+      <segment>
+        <source>core.role.admin</source>
+        <target>Administrator</target>
+      </segment>
+    </unit>
+    <unit id="core.role.user">
+      <segment>
+        <source>core.role.user</source>
+        <target>User</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.area.brand">
+      <segment>
+        <source>core.setting.area.brand</source>
+        <target>Brand</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.area.confirmation">
+      <segment>
+        <source>core.setting.area.confirmation</source>
+        <target>Confirmations</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.area.legal">
+      <segment>
+        <source>core.setting.area.legal</source>
+        <target>Documents</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.area.mail">
+      <segment>
+        <source>core.setting.area.mail</source>
+        <target>Email</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.area.notice">
+      <segment>
+        <source>core.setting.area.notice</source>
+        <target>Notices</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.choice">
+      <segment>
+        <source>core.setting.choice</source>
+        <target>{field}: no such value</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.confirmation_pause_minutes">
+      <segment>
+        <source>core.setting.confirmation_pause_minutes</source>
+        <target>Pause between confirmations, minutes</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.decimal">
+      <segment>
+        <source>core.setting.decimal</source>
+        <target>{field}: a number is required</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.enabled">
+      <segment>
+        <source>core.setting.enabled</source>
+        <target>Enabled</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.icon">
+      <segment>
+        <source>core.setting.icon</source>
+        <target>Icon</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.language">
+      <segment>
+        <source>core.setting.language</source>
+        <target>Interface language</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.legal_revision">
+      <segment>
+        <source>core.setting.legal_revision</source>
+        <target>Document revision</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.logo">
+      <segment>
+        <source>core.setting.logo</source>
+        <target>Logo</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.mail_host">
+      <segment>
+        <source>core.setting.mail_host</source>
+        <target>Outgoing mail server</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.mail_login">
+      <segment>
+        <source>core.setting.mail_login</source>
+        <target>Login</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.mail_password">
+      <segment>
+        <source>core.setting.mail_password</source>
+        <target>Password</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.mail_port">
+      <segment>
+        <source>core.setting.mail_port</source>
+        <target>Port</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.mail_sender">
+      <segment>
+        <source>core.setting.mail_sender</source>
+        <target>Sender address</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.no_file">
+      <segment>
+        <source>core.setting.no_file</source>
+        <target>File {path} does not exist</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.notice_keep_days">
+      <segment>
+        <source>core.setting.notice_keep_days</source>
+        <target>Keep the notice journal, days</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.notice_quiet_from">
+      <segment>
+        <source>core.setting.notice_quiet_from</source>
+        <target>Quiet hours from</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.notice_quiet_to">
+      <segment>
+        <source>core.setting.notice_quiet_to</source>
+        <target>Quiet hours till</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.offer_url">
+      <segment>
+        <source>core.setting.offer_url</source>
+        <target>Offer address</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.privacy_url">
+      <segment>
+        <source>core.setting.privacy_url</source>
+        <target>Personal data policy address</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.theme">
+      <segment>
+        <source>core.setting.theme</source>
+        <target>Default theme</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.time">
+      <segment>
+        <source>core.setting.time</source>
+        <target>{field} takes a time of day as HH:MM</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.title">
+      <segment>
+        <source>core.setting.title</source>
+        <target>Title</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.toggle">
+      <segment>
+        <source>core.setting.toggle</source>
+        <target>{field} takes 1 to switch on or 0 to switch off</target>
+      </segment>
+    </unit>
+    <unit id="core.status.active">
+      <segment>
+        <source>core.status.active</source>
+        <target>Active</target>
+      </segment>
+    </unit>
+    <unit id="core.status.archived">
+      <segment>
+        <source>core.status.archived</source>
+        <target>Archived</target>
+      </segment>
+    </unit>
+    <unit id="core.status.stopped">
+      <segment>
+        <source>core.status.stopped</source>
+        <target>Stopped</target>
+      </segment>
+    </unit>
+    <unit id="core.theme.dark">
+      <segment>
+        <source>core.theme.dark</source>
+        <target>Dark</target>
+      </segment>
+    </unit>
+    <unit id="core.theme.light">
+      <segment>
+        <source>core.theme.light</source>
+        <target>Light</target>
+      </segment>
+    </unit>
+    <unit id="core.toggle.off">
+      <segment>
+        <source>core.toggle.off</source>
+        <target>Off</target>
+      </segment>
+    </unit>
+    <unit id="core.toggle.on">
+      <segment>
+        <source>core.toggle.on</source>
+        <target>On</target>
+      </segment>
+    </unit>
+    <unit id="core.user.remove_self">
+      <segment>
+        <source>core.user.remove_self</source>
+        <target>The operator does not delete their own record</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

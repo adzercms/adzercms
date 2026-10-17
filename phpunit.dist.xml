@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         colors="true"
+         failOnDeprecation="true"
+         failOnNotice="true"
+         failOnWarning="true"
+         bootstrap="vendor/autoload.php"
+         cacheDirectory=".phpunit.cache"
+         defaultTestSuite="Core"
+>
+    <php>
+        <ini name="display_errors" value="1" />
+        <ini name="error_reporting" value="-1" />
+        <server name="APP_ENV" value="test" force="true" />
+        <server name="SHELL_VERBOSITY" value="-1" />
+    </php>
+
+    <testsuites>
+        <testsuite name="Core">
+            <directory>packages/core/tests</directory>
+        </testsuite>
+        <testsuite name="Telegram">
+            <directory>packages/telegram/tests</directory>
+        </testsuite>
+        <testsuite name="VkId">
+            <directory>packages/vk-id/tests</directory>
+        </testsuite>
+        <testsuite name="YandexId">
+            <directory>packages/yandex-id/tests</directory>
+        </testsuite>
+        <testsuite name="Admin">
+            <directory>packages/admin/tests</directory>
+        </testsuite>
+        <testsuite name="Cabinet">
+            <directory>packages/cabinet/tests</directory>
+        </testsuite>
+        <testsuite name="Centrifugo">
+            <directory>packages/centrifugo/tests</directory>
+        </testsuite>
+        <testsuite name="HCaptcha">
+            <directory>packages/hcaptcha/tests</directory>
+        </testsuite>
+        <testsuite name="Mailing">
+            <directory>packages/mailing/tests</directory>
+        </testsuite>
+        <testsuite name="MaxBot">
+            <directory>packages/max-bot/tests</directory>
+        </testsuite>
+        <testsuite name="MtsMarketolog">
+            <directory>packages/mts-marketolog/tests</directory>
+        </testsuite>
+        <testsuite name="Payments">
+            <directory>packages/payments/tests</directory>
+            <file>packages/core/tests/Schema/MigrationsTest.php</file>
+        </testsuite>
+        <testsuite name="Realtime">
+            <directory>packages/realtime/tests</directory>
+        </testsuite>
+        <testsuite name="SberId">
+            <directory>packages/sber-id/tests</directory>
+        </testsuite>
+        <testsuite name="SmartCaptcha">
+            <directory>packages/smart-captcha/tests</directory>
+        </testsuite>
+        <testsuite name="SmsPilot">
+            <directory>packages/sms-pilot/tests</directory>
+        </testsuite>
+        <testsuite name="Support">
+            <directory>packages/support/tests</directory>
+            <file>packages/core/tests/Schema/MigrationsTest.php</file>
+        </testsuite>
+        <testsuite name="TBank">
+            <directory>packages/tbank/tests</directory>
+        </testsuite>
+        <testsuite name="Theme">
+            <directory>packages/theme/tests</directory>
+        </testsuite>
+        <testsuite name="TelegramBot">
+            <directory>packages/telegram-bot/tests</directory>
+        </testsuite>
+        <testsuite name="Turnstile">
+            <directory>packages/turnstile/tests</directory>
+        </testsuite>
+        <testsuite name="YooKassa">
+            <directory>packages/yookassa/tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <extensions>
+        <bootstrap class="AdzerCMS\Core\Tests\ModuleSuite"/>
+    </extensions>
+
+    <source ignoreSuppressionOfDeprecations="true"
+            ignoreIndirectDeprecations="true"
+            restrictNotices="true"
+            restrictWarnings="true"
+    >
+        <include>
+            <directory>packages/*/src</directory>
+            <directory>packages/*/migrations</directory>
+        </include>
+
+        <deprecationTrigger>
+            <method>Doctrine\Deprecations\Deprecation::trigger</method>
+            <method>Doctrine\Deprecations\Deprecation::delegateTriggerToBackend</method>
+            <function>trigger_deprecation</function>
+        </deprecationTrigger>
+    </source>
+</phpunit>

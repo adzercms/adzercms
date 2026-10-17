@@ -1,0 +1,36 @@
+{
+    "name": "adzercms/theme",
+    "type": "adzercms-module",
+    "description": "Default AdzerCMS theme: page frame, visual language components and assets",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "theme",
+        "twig",
+        "ui"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
+        "symfony/asset": "7.4.*",
+        "symfony/asset-mapper": "7.4.*"
+    },
+    "provide": {
+        "adzercms/theme-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Theme\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Theme\\ThemeBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

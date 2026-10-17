@@ -1,0 +1,36 @@
+{
+    "name": "adzercms/yandex-id",
+    "type": "adzercms-module",
+    "description": "Sign-in with Yandex ID for AdzerCMS: OAuth 2.0 and account linking",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "yandex-id",
+        "oauth2",
+        "social-login"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/http-kernel": "7.4.*",
+        "symfony/translation": "7.4.*"
+    },
+    "provide": {
+        "adzercms/login-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\YandexId\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\YandexId\\YandexIdBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

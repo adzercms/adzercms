@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="tbank.api_url">
+      <segment>
+        <source>tbank.api_url</source>
+        <target>Адрес API</target>
+      </segment>
+    </unit>
+    <unit id="tbank.closing_object">
+      <segment>
+        <source>tbank.closing_object</source>
+        <target>Предмет расчёта закрывающего чека</target>
+      </segment>
+    </unit>
+    <unit id="tbank.fee_page">
+      <segment>
+        <source>tbank.fee_page</source>
+        <target>Комиссия оплаты картой, %</target>
+      </segment>
+    </unit>
+    <unit id="tbank.fee_qr">
+      <segment>
+        <source>tbank.fee_qr</source>
+        <target>Комиссия оплаты по СБП, %</target>
+      </segment>
+    </unit>
+    <unit id="tbank.method.page">
+      <segment>
+        <source>tbank.method.page</source>
+        <target>Картой</target>
+      </segment>
+    </unit>
+    <unit id="tbank.method.qr">
+      <segment>
+        <source>tbank.method.qr</source>
+        <target>По СБП</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method">
+      <segment>
+        <source>tbank.payment_method</source>
+        <target>Способ расчёта</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method.advance">
+      <segment>
+        <source>tbank.payment_method.advance</source>
+        <target>Аванс</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method.credit">
+      <segment>
+        <source>tbank.payment_method.credit</source>
+        <target>Передача в кредит</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method.credit_payment">
+      <segment>
+        <source>tbank.payment_method.credit_payment</source>
+        <target>Оплата кредита</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method.full_payment">
+      <segment>
+        <source>tbank.payment_method.full_payment</source>
+        <target>Полный расчёт</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method.full_prepayment">
+      <segment>
+        <source>tbank.payment_method.full_prepayment</source>
+        <target>Предоплата 100%</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method.partial_payment">
+      <segment>
+        <source>tbank.payment_method.partial_payment</source>
+        <target>Частичный расчёт и кредит</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method.prepayment">
+      <segment>
+        <source>tbank.payment_method.prepayment</source>
+        <target>Частичная предоплата</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object">
+      <segment>
+        <source>tbank.payment_object</source>
+        <target>Предмет расчёта</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.agent_commission">
+      <segment>
+        <source>tbank.payment_object.agent_commission</source>
+        <target>Агентское вознаграждение</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.another">
+      <segment>
+        <source>tbank.payment_object.another</source>
+        <target>Иной предмет расчёта</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.commodity">
+      <segment>
+        <source>tbank.payment_object.commodity</source>
+        <target>Товар</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.composite">
+      <segment>
+        <source>tbank.payment_object.composite</source>
+        <target>Составной предмет расчёта</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.excise">
+      <segment>
+        <source>tbank.payment_object.excise</source>
+        <target>Подакцизный товар</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.gambling_bet">
+      <segment>
+        <source>tbank.payment_object.gambling_bet</source>
+        <target>Ставка азартной игры</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.gambling_prize">
+      <segment>
+        <source>tbank.payment_object.gambling_prize</source>
+        <target>Выигрыш азартной игры</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.intellectual_activity">
+      <segment>
+        <source>tbank.payment_object.intellectual_activity</source>
+        <target>Результат интеллектуальной деятельности</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.job">
+      <segment>
+        <source>tbank.payment_object.job</source>
+        <target>Работа</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.lottery">
+      <segment>
+        <source>tbank.payment_object.lottery</source>
+        <target>Лотерейный билет</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.lottery_prize">
+      <segment>
+        <source>tbank.payment_object.lottery_prize</source>
+        <target>Выигрыш лотереи</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.payment">
+      <segment>
+        <source>tbank.payment_object.payment</source>
+        <target>Платёж</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.service">
+      <segment>
+        <source>tbank.payment_object.service</source>
+        <target>Услуга</target>
+      </segment>
+    </unit>
+    <unit id="tbank.taxation">
+      <segment>
+        <source>tbank.taxation</source>
+        <target>Система налогообложения</target>
+      </segment>
+    </unit>
+    <unit id="tbank.taxation.esn">
+      <segment>
+        <source>tbank.taxation.esn</source>
+        <target>ЕСХН</target>
+      </segment>
+    </unit>
+    <unit id="tbank.taxation.osn">
+      <segment>
+        <source>tbank.taxation.osn</source>
+        <target>ОСН</target>
+      </segment>
+    </unit>
+    <unit id="tbank.taxation.patent">
+      <segment>
+        <source>tbank.taxation.patent</source>
+        <target>Патент</target>
+      </segment>
+    </unit>
+    <unit id="tbank.taxation.usn_income">
+      <segment>
+        <source>tbank.taxation.usn_income</source>
+        <target>УСН доходы</target>
+      </segment>
+    </unit>
+    <unit id="tbank.taxation.usn_income_outcome">
+      <segment>
+        <source>tbank.taxation.usn_income_outcome</source>
+        <target>УСН доходы минус расходы</target>
+      </segment>
+    </unit>
+    <unit id="tbank.terminal_key">
+      <segment>
+        <source>tbank.terminal_key</source>
+        <target>Терминал</target>
+      </segment>
+    </unit>
+    <unit id="tbank.terminal_password">
+      <segment>
+        <source>tbank.terminal_password</source>
+        <target>Пароль терминала</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat">
+      <segment>
+        <source>tbank.vat</source>
+        <target>Ставка НДС</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.none">
+      <segment>
+        <source>tbank.vat.none</source>
+        <target>Без НДС</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat0">
+      <segment>
+        <source>tbank.vat.vat0</source>
+        <target>НДС 0%</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat10">
+      <segment>
+        <source>tbank.vat.vat10</source>
+        <target>НДС 10%</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat105">
+      <segment>
+        <source>tbank.vat.vat105</source>
+        <target>НДС 5/105</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat107">
+      <segment>
+        <source>tbank.vat.vat107</source>
+        <target>НДС 7/107</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat110">
+      <segment>
+        <source>tbank.vat.vat110</source>
+        <target>НДС 10/110</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat122">
+      <segment>
+        <source>tbank.vat.vat122</source>
+        <target>НДС 22/122</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat22">
+      <segment>
+        <source>tbank.vat.vat22</source>
+        <target>НДС 22%</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat5">
+      <segment>
+        <source>tbank.vat.vat5</source>
+        <target>НДС 5%</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat7">
+      <segment>
+        <source>tbank.vat.vat7</source>
+        <target>НДС 7%</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

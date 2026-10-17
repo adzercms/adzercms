@@ -1,0 +1,45 @@
+<div id="{{ table.id }}" {% if heading|default(null) %}class="section" {% endif %}{% if live|default(false) %}data-live {% endif %}hx-target="#{{ table.id }}" hx-swap="outerHTML">
+    {% if heading|default(null) %}
+        <div class="section-head">
+            <h3>{{ heading|trans }}</h3>
+            {% if actions|default([]) %}
+                <div class="card-actions">{% include '@Theme/_actions.html.twig' %}</div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% block above %}{% endblock %}
+
+    {% include '@Theme/_filters.html.twig' %}
+
+    <div id="{{ table.id }}-data">
+        {% if rows is empty %}
+            <p class="empty-state">{{ table.empty|trans }}</p>
+        {% else %}
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                    <tr>
+                        {%- for column in table.columns -%}
+                            {%- set aside = table.aside(column.key) -%}
+                            {%- if table.sortable(column) -%}
+                                {%- set url = path(table.route, table.link(column.key)) -%}
+                                <th class="sortable-header {{ table.mark(column.key) }} {{ aside }}"><a href="{{ url }}" hx-get="{{ url }}" hx-select="#{{ table.id }}" hx-push-url="true">{{ column.label|trans }}</a></th>
+                            {%- else -%}
+                                <th class="{{ aside }}">{{ column.label|trans }}</th>
+                            {%- endif -%}
+                        {%- endfor -%}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in rows %}
+                        {% block row %}{% endblock %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        {% include '@Theme/_pager.html.twig' %}
+    </div>
+</div>

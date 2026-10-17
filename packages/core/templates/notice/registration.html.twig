@@ -1,0 +1,15 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+
+{% block subject %}{{ 'core.notice.registration.subject'|trans({brand: brand.title}) }}{% endblock %}
+
+{% block text %}
+{{ 'core.notice.registration.code'|trans({code: code, minutes: minutes}) }}
+{{ 'core.notice.registration.note'|trans }}
+{% endblock %}
+
+{% block content %}
+<h2>{{ 'core.notice.registration.title'|trans }}</h2>
+<p class="center">{{ 'core.notice.lifetime_code'|trans({minutes: minutes}) }}</p>
+<div class="action"><span class="code">{{ code }}</span></div>
+<p class="note">{{ 'core.notice.registration.note'|trans }}</p>
+{% endblock %}

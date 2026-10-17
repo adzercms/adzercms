@@ -1,0 +1,12 @@
+parameters:
+    level: 8
+    paths:
+        - bin/console
+        - packages
+        - src
+    excludePaths:
+        - packages/skeleton
+    symfony:
+        consoleApplicationLoader: vendor/adzercms/core/tests/console-application.php
+    doctrine:
+        objectManagerLoader: vendor/adzercms/core/tests/object-manager.php

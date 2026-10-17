@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="sberid.container">
+      <segment>
+        <source>sberid.container</source>
+        <target>Контейнер PKCS#12 сертификата</target>
+      </segment>
+    </unit>
+    <unit id="sberid.foreign">
+      <segment>
+        <source>sberid.foreign</source>
+        <target>Ответ Сбер ID не относится к этому входу</target>
+      </segment>
+    </unit>
+    <unit id="sberid.name">
+      <segment>
+        <source>sberid.name</source>
+        <target>Сбер ID</target>
+      </segment>
+    </unit>
+    <unit id="sberid.unconfirmed">
+      <segment>
+        <source>sberid.unconfirmed</source>
+        <target>Сбер ID не подтвердил вход</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

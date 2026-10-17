@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use AdzerCMS\Core\Module\Registry;
+use AdzerCMS\Core\Tests\ModuleSuite;
+use App\Kernel;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+
+require $_composer_autoload_path ?? __DIR__.'/../vendor/autoload.php';
+
+$tokens = (new ArgvInput())->getRawTokens();
+$directory = realpath($tokens[0] ?? '');
+if (false === $directory || !is_file($directory.'/composer.json')) {
+    fwrite(\STDERR, "usage: adzercms-package-console <package directory> <command> [arguments] [--env=test]\n");
+    exit(2);
+}
+
+$input = new ArgvInput([$_SERVER['argv'][0] ?? '', ...array_slice($tokens, 1)]);
+$env = (string) $input->getParameterOption(['--env', '-e'], 'test', true);
+ModuleSuite::environment($env);
+
+if (ModuleSuite::root() !== $directory) {
+    $registry = Registry::installed();
+    $manifest = json_decode((string) file_get_contents($directory.'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
+    $module = $registry->package(is_array($manifest) && is_string($manifest['name'] ?? null) ? $manifest['name'] : '');
+    ModuleSuite::select($registry, null === $module ? [] : [$module]);
+}
+
+exit((new Application(new Kernel($env, true)))->run($input));

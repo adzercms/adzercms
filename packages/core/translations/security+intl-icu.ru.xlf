@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="security.ru">
+    <unit id="core.account.stopped">
+      <segment>
+        <source>core.account.stopped</source>
+        <target>Обслуживание приостановлено</target>
+      </segment>
+    </unit>
+    <unit id="core.account.deleted">
+      <segment>
+        <source>core.account.deleted</source>
+        <target>Запись удалена — вернуть её можно восстановлением доступа</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

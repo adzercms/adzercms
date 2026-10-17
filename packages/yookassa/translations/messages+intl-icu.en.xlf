@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" srcLang="en" trgLang="en" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="messages.en">
+    <unit id="yookassa.api_url">
+      <segment>
+        <source>yookassa.api_url</source>
+        <target>API address</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.closing_subject">
+      <segment>
+        <source>yookassa.closing_subject</source>
+        <target>Payment subject of the closing receipt</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.fee_page">
+      <segment>
+        <source>yookassa.fee_page</source>
+        <target>Card payment fee, %</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.fee_sbp">
+      <segment>
+        <source>yookassa.fee_sbp</source>
+        <target>SBP payment fee, %</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.method.page">
+      <segment>
+        <source>yookassa.method.page</source>
+        <target>By card</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.method.sbp">
+      <segment>
+        <source>yookassa.method.sbp</source>
+        <target>By SBP</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode">
+      <segment>
+        <source>yookassa.payment_mode</source>
+        <target>Payment mode</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode.advance">
+      <segment>
+        <source>yookassa.payment_mode.advance</source>
+        <target>Advance</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode.credit">
+      <segment>
+        <source>yookassa.payment_mode.credit</source>
+        <target>Transfer on credit</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode.credit_payment">
+      <segment>
+        <source>yookassa.payment_mode.credit_payment</source>
+        <target>Credit payment</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode.full_payment">
+      <segment>
+        <source>yookassa.payment_mode.full_payment</source>
+        <target>Full payment</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode.full_prepayment">
+      <segment>
+        <source>yookassa.payment_mode.full_prepayment</source>
+        <target>Prepayment 100%</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode.partial_payment">
+      <segment>
+        <source>yookassa.payment_mode.partial_payment</source>
+        <target>Partial payment and credit</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode.partial_prepayment">
+      <segment>
+        <source>yookassa.payment_mode.partial_prepayment</source>
+        <target>Partial prepayment</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject">
+      <segment>
+        <source>yookassa.payment_subject</source>
+        <target>Payment subject</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.agent_commission">
+      <segment>
+        <source>yookassa.payment_subject.agent_commission</source>
+        <target>Agent commission</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.another">
+      <segment>
+        <source>yookassa.payment_subject.another</source>
+        <target>Other payment subject</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.commodity">
+      <segment>
+        <source>yookassa.payment_subject.commodity</source>
+        <target>Commodity</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.composite">
+      <segment>
+        <source>yookassa.payment_subject.composite</source>
+        <target>Composite payment subject</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.excise">
+      <segment>
+        <source>yookassa.payment_subject.excise</source>
+        <target>Excise commodity</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.gambling_bet">
+      <segment>
+        <source>yookassa.payment_subject.gambling_bet</source>
+        <target>Gambling bet</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.gambling_prize">
+      <segment>
+        <source>yookassa.payment_subject.gambling_prize</source>
+        <target>Gambling prize</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.insurance_premium">
+      <segment>
+        <source>yookassa.payment_subject.insurance_premium</source>
+        <target>Insurance premiums</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.intellectual_activity">
+      <segment>
+        <source>yookassa.payment_subject.intellectual_activity</source>
+        <target>Intellectual activity result</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.job">
+      <segment>
+        <source>yookassa.payment_subject.job</source>
+        <target>Job</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.lottery">
+      <segment>
+        <source>yookassa.payment_subject.lottery</source>
+        <target>Lottery ticket</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.lottery_prize">
+      <segment>
+        <source>yookassa.payment_subject.lottery_prize</source>
+        <target>Lottery prize</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.non_operating_gain">
+      <segment>
+        <source>yookassa.payment_subject.non_operating_gain</source>
+        <target>Non-operating gain</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.payment">
+      <segment>
+        <source>yookassa.payment_subject.payment</source>
+        <target>Payment</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.property_right">
+      <segment>
+        <source>yookassa.payment_subject.property_right</source>
+        <target>Property right</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.resort_fee">
+      <segment>
+        <source>yookassa.payment_subject.resort_fee</source>
+        <target>Resort fee</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.sales_tax">
+      <segment>
+        <source>yookassa.payment_subject.sales_tax</source>
+        <target>Sales tax</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.service">
+      <segment>
+        <source>yookassa.payment_subject.service</source>
+        <target>Service</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.secret_key">
+      <segment>
+        <source>yookassa.secret_key</source>
+        <target>Secret key</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.shop_id">
+      <segment>
+        <source>yookassa.shop_id</source>
+        <target>Shop ID</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.taxation">
+      <segment>
+        <source>yookassa.taxation</source>
+        <target>Taxation system</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.taxation.1">
+      <segment>
+        <source>yookassa.taxation.1</source>
+        <target>OSN</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.taxation.2">
+      <segment>
+        <source>yookassa.taxation.2</source>
+        <target>USN income</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.taxation.3">
+      <segment>
+        <source>yookassa.taxation.3</source>
+        <target>USN income minus expenses</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.taxation.4">
+      <segment>
+        <source>yookassa.taxation.4</source>
+        <target>ENVD</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.taxation.5">
+      <segment>
+        <source>yookassa.taxation.5</source>
+        <target>ESKhN</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.taxation.6">
+      <segment>
+        <source>yookassa.taxation.6</source>
+        <target>Patent</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat">
+      <segment>
+        <source>yookassa.vat</source>
+        <target>VAT rate</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.1">
+      <segment>
+        <source>yookassa.vat.1</source>
+        <target>No VAT</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.10">
+      <segment>
+        <source>yookassa.vat.10</source>
+        <target>VAT 7/107</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.11">
+      <segment>
+        <source>yookassa.vat.11</source>
+        <target>VAT 22%</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.12">
+      <segment>
+        <source>yookassa.vat.12</source>
+        <target>VAT 22/122</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.2">
+      <segment>
+        <source>yookassa.vat.2</source>
+        <target>VAT 0%</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.3">
+      <segment>
+        <source>yookassa.vat.3</source>
+        <target>VAT 10%</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.4">
+      <segment>
+        <source>yookassa.vat.4</source>
+        <target>VAT 20%</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.5">
+      <segment>
+        <source>yookassa.vat.5</source>
+        <target>VAT 10/110</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.6">
+      <segment>
+        <source>yookassa.vat.6</source>
+        <target>VAT 20/120</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.7">
+      <segment>
+        <source>yookassa.vat.7</source>
+        <target>VAT 5%</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.8">
+      <segment>
+        <source>yookassa.vat.8</source>
+        <target>VAT 7%</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.9">
+      <segment>
+        <source>yookassa.vat.9</source>
+        <target>VAT 5/105</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

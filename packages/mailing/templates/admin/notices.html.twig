@@ -1,0 +1,39 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'mailing.title'|trans }}{% endblock %}
+
+{% block page %}
+<nav class="tabs">
+    <a class="tab {{ view == 'broadcast' ? 'active' }}" href="{{ path('admin_notices') }}">{{ 'mailing.broadcast'|trans }}</a>
+    <a class="tab {{ view == 'journal' ? 'active' }}" href="{{ path('admin_notices', {view: 'journal', tab: tab}) }}">{{ 'mailing.journal'|trans }}</a>
+</nav>
+
+{% if view == 'broadcast' %}
+    <form method="post" action="{{ path('admin_broadcast') }}">
+        {{ csrf_field() }}
+
+        {% include '@Mailing/admin/_broadcast_scope.html.twig' %}
+
+        <label>{{ 'mailing.body'|trans }}
+            <textarea name="body" maxlength="{{ limit }}" required></textarea>
+        </label>
+
+        <button type="submit">{{ 'mailing.send'|trans }}</button>
+    </form>
+{% else %}
+    <nav class="tabs">
+        {% for item in channels %}
+            <a class="tab {{ tab == item.key ? 'active' }}"
+               href="{{ path('admin_notices', {view: 'journal', tab: item.key}) }}">{{ item.label|trans }}</a>
+        {% endfor %}
+    </nav>
+
+    {% if not configured %}
+        <p class="flash flash-error">{{ 'mailing.unconfigured'|trans }}</p>
+    {% elseif tab == sms %}
+        {% include '@Mailing/admin/_sms_account.html.twig' %}
+    {% endif %}
+
+    {% include '@Mailing/admin/_notices.html.twig' %}
+{% endif %}
+{% endblock %}

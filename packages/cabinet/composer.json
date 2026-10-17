@@ -1,0 +1,35 @@
+{
+    "name": "adzercms/cabinet",
+    "type": "adzercms-module",
+    "description": "User cabinet for AdzerCMS: sign-up and sign-in, profile, login security and module pages",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "user-account",
+        "dashboard",
+        "login"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
+        "adzercms/theme-implementation": "^1.0"
+    },
+    "provide": {
+        "adzercms/cabinet-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Cabinet\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Cabinet\\CabinetBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

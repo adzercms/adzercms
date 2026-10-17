@@ -1,0 +1,4 @@
+<label class="check">
+    <input type="checkbox" name="{{ name }}" value="1" {{ on ? 'checked' }}>
+    {{ label }}{% if tip is defined %} {{ hint(tip) }}{% endif %}
+</label>

@@ -1,0 +1,34 @@
+{
+    "name": "adzercms/smart-captcha",
+    "type": "adzercms-module",
+    "description": "Yandex SmartCaptcha for AdzerCMS forms",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "captcha",
+        "smartcaptcha",
+        "yandex"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0"
+    },
+    "provide": {
+        "adzercms/captcha-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\SmartCaptcha\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\SmartCaptcha\\SmartCaptchaBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

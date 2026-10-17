@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="support.column.at">
+      <segment>
+        <source>support.column.at</source>
+        <target>Обновлена</target>
+      </segment>
+    </unit>
+    <unit id="support.column.department">
+      <segment>
+        <source>support.column.department</source>
+        <target>Отдел</target>
+      </segment>
+    </unit>
+    <unit id="support.column.number">
+      <segment>
+        <source>support.column.number</source>
+        <target>№</target>
+      </segment>
+    </unit>
+    <unit id="support.column.status">
+      <segment>
+        <source>support.column.status</source>
+        <target>Статус</target>
+      </segment>
+    </unit>
+    <unit id="support.column.subject">
+      <segment>
+        <source>support.column.subject</source>
+        <target>Тема</target>
+      </segment>
+    </unit>
+    <unit id="support.column.user">
+      <segment>
+        <source>support.column.user</source>
+        <target>Пользователь</target>
+      </segment>
+    </unit>
+    <unit id="support.default_departments">
+      <segment>
+        <source>support.default_departments</source>
+        <target>Техническая поддержка, Финансы</target>
+      </segment>
+    </unit>
+    <unit id="support.digest.fresh">
+      <segment>
+        <source>support.digest.fresh</source>
+        <target>#{number} {user}, {department}, {subject}</target>
+      </segment>
+    </unit>
+    <unit id="support.digest.more">
+      <segment>
+        <source>support.digest.more</source>
+        <target>… ещё {count}</target>
+      </segment>
+    </unit>
+    <unit id="support.digest.tickets">
+      <segment>
+        <source>support.digest.tickets</source>
+        <target>Заявок ждут ответа: {count}</target>
+      </segment>
+    </unit>
+    <unit id="support.digest.waiting">
+      <segment>
+        <source>support.digest.waiting</source>
+        <target>#{number} {user}, ждёт {hours} ч, {subject}{overdue, select, yes { — просрочена} other {}}</target>
+      </segment>
+    </unit>
+    <unit id="support.empty">
+      <segment>
+        <source>support.empty</source>
+        <target>Нет заявок</target>
+      </segment>
+    </unit>
+    <unit id="support.event.ticket_closed">
+      <segment>
+        <source>support.event.ticket_closed</source>
+        <target>Автозакрытие заявки</target>
+      </segment>
+    </unit>
+    <unit id="support.event.ticket_reply">
+      <segment>
+        <source>support.event.ticket_reply</source>
+        <target>Ответ поддержки</target>
+      </segment>
+    </unit>
+    <unit id="support.filter.status">
+      <segment>
+        <source>support.filter.status</source>
+        <target>Состояние</target>
+      </segment>
+    </unit>
+    <unit id="support.flash.closed">
+      <segment>
+        <source>support.flash.closed</source>
+        <target>Заявка закрыта</target>
+      </segment>
+    </unit>
+    <unit id="support.flash.dropped">
+      <segment>
+        <source>support.flash.dropped</source>
+        <target>Сообщение снято</target>
+      </segment>
+    </unit>
+    <unit id="support.flash.edited">
+      <segment>
+        <source>support.flash.edited</source>
+        <target>Сообщение исправлено</target>
+      </segment>
+    </unit>
+    <unit id="support.flash.opened">
+      <segment>
+        <source>support.flash.opened</source>
+        <target>Заявка №{number} создана</target>
+      </segment>
+    </unit>
+    <unit id="support.flash.sent">
+      <segment>
+        <source>support.flash.sent</source>
+        <target>Сообщение отправлено</target>
+      </segment>
+    </unit>
+    <unit id="support.help.article">
+      <segment>
+        <source>support.help.article</source>
+        <target>Статья базы знаний</target>
+      </segment>
+    </unit>
+    <unit id="support.help.nothing">
+      <segment>
+        <source>support.help.nothing</source>
+        <target>Ничего не найдено.</target>
+      </segment>
+    </unit>
+    <unit id="support.help.open">
+      <segment>
+        <source>support.help.open</source>
+        <target>Открыть базу знаний</target>
+      </segment>
+    </unit>
+    <unit id="support.help.search">
+      <segment>
+        <source>support.help.search</source>
+        <target>Поиск по базе знаний</target>
+      </segment>
+    </unit>
+    <unit id="support.help.title">
+      <segment>
+        <source>support.help.title</source>
+        <target>База знаний</target>
+      </segment>
+    </unit>
+    <unit id="support.help_view.categories">
+      <segment>
+        <source>support.help_view.categories</source>
+        <target>Категории</target>
+      </segment>
+    </unit>
+    <unit id="support.help_view.found">
+      <segment>
+        <source>support.help_view.found</source>
+        <target>Найдено</target>
+      </segment>
+    </unit>
+    <unit id="support.help_view.missing">
+      <segment>
+        <source>support.help_view.missing</source>
+        <target>База знаний недоступна</target>
+      </segment>
+    </unit>
+    <unit id="support.help_view.page">
+      <segment>
+        <source>support.help_view.page</source>
+        <target>По этой странице</target>
+      </segment>
+    </unit>
+    <unit id="support.menu.group">
+      <segment>
+        <source>support.menu.group</source>
+        <target>Поддержка</target>
+      </segment>
+    </unit>
+    <unit id="support.menu.help">
+      <segment>
+        <source>support.menu.help</source>
+        <target>База знаний</target>
+      </segment>
+    </unit>
+    <unit id="support.menu.tickets">
+      <segment>
+        <source>support.menu.tickets</source>
+        <target>Заявки</target>
+      </segment>
+    </unit>
+    <unit id="support.message.attach">
+      <segment>
+        <source>support.message.attach</source>
+        <target>Добавить вложения</target>
+      </segment>
+    </unit>
+    <unit id="support.message.drop_confirm">
+      <segment>
+        <source>support.message.drop_confirm</source>
+        <target>Удалить сообщение из переписки?</target>
+      </segment>
+    </unit>
+    <unit id="support.message.edited">
+      <segment>
+        <source>support.message.edited</source>
+        <target>исправлено</target>
+      </segment>
+    </unit>
+    <unit id="support.message.text">
+      <segment>
+        <source>support.message.text</source>
+        <target>Текст</target>
+      </segment>
+    </unit>
+    <unit id="support.message.unattach">
+      <segment>
+        <source>support.message.unattach</source>
+        <target>снять {name}</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.closed.again">
+      <segment>
+        <source>support.notice.closed.again</source>
+        <target>Если вопрос ещё актуален — заведите новую заявку.</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.closed.short">
+      <segment>
+        <source>support.notice.closed.short</source>
+        <target>{count, plural, one {Заявка №{ids} закрыта} other {Заявки №{ids} закрыты}} без вашего ответа. Актуальный вопрос — новой заявкой:</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.closed.subject">
+      <segment>
+        <source>support.notice.closed.subject</source>
+        <target>{brand}: {count, plural, one {заявка №{id} закрыта} other {заявки закрыты}}</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.closed.ticket">
+      <segment>
+        <source>support.notice.closed.ticket</source>
+        <target>Заявка №{id} «{subject}» закрыта: ответа не было больше {days, plural, one {# дня} other {# дней}}</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.closed.title">
+      <segment>
+        <source>support.notice.closed.title</source>
+        <target>{count, plural, one {Заявка закрыта} other {Заявки закрыты}}</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.reply.action">
+      <segment>
+        <source>support.notice.reply.action</source>
+        <target>Открыть заявку</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.reply.body">
+      <segment>
+        <source>support.notice.reply.body</source>
+        <target>Поддержка ответила по заявке №{id} «{subject}».</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.reply.short">
+      <segment>
+        <source>support.notice.reply.short</source>
+        <target>Поддержка ответила по заявке №{id}. Ответ в кабинете.</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.reply.subject">
+      <segment>
+        <source>support.notice.reply.subject</source>
+        <target>{brand}: ответ по заявке №{id}</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.reply.title">
+      <segment>
+        <source>support.notice.reply.title</source>
+        <target>Ответ поддержки</target>
+      </segment>
+    </unit>
+    <unit id="support.notice.reply.where">
+      <segment>
+        <source>support.notice.reply.where</source>
+        <target>Ответ виден в кабинете:</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.body">
+      <segment>
+        <source>support.refusal.body</source>
+        <target>Сообщение пусто</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.closed">
+      <segment>
+        <source>support.refusal.closed</source>
+        <target>Заявка закрыта — изменения не принимаются</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.department">
+      <segment>
+        <source>support.refusal.department</source>
+        <target>Отдел выбран неверно</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.oversize">
+      <segment>
+        <source>support.refusal.oversize</source>
+        <target>Вложение больше {megabytes} МБ</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.subject">
+      <segment>
+        <source>support.refusal.subject</source>
+        <target>Тема заявки пуста</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.type">
+      <segment>
+        <source>support.refusal.type</source>
+        <target>Тип вложения не принимается: {extension}</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.upload">
+      <segment>
+        <source>support.refusal.upload</source>
+        <target>Вложение не загрузилось</target>
+      </segment>
+    </unit>
+    <unit id="support.setting.area">
+      <segment>
+        <source>support.setting.area</source>
+        <target>Поддержка</target>
+      </segment>
+    </unit>
+    <unit id="support.setting.attachment_max_mb">
+      <segment>
+        <source>support.setting.attachment_max_mb</source>
+        <target>Размер вложения, МБ</target>
+      </segment>
+    </unit>
+    <unit id="support.setting.attachment_types">
+      <segment>
+        <source>support.setting.attachment_types</source>
+        <target>Типы вложений через запятую</target>
+      </segment>
+    </unit>
+    <unit id="support.setting.auto_close_days">
+      <segment>
+        <source>support.setting.auto_close_days</source>
+        <target>Автозакрытие заявки, дней</target>
+      </segment>
+    </unit>
+    <unit id="support.setting.departments">
+      <segment>
+        <source>support.setting.departments</source>
+        <target>Отделы поддержки через запятую</target>
+      </segment>
+    </unit>
+    <unit id="support.setting.help_index">
+      <segment>
+        <source>support.setting.help_index</source>
+        <target>Адрес JSON-индекса базы знаний</target>
+      </segment>
+    </unit>
+    <unit id="support.setting.overdue_hours">
+      <segment>
+        <source>support.setting.overdue_hours</source>
+        <target>Заявка просрочена через, часов</target>
+      </segment>
+    </unit>
+    <unit id="support.tab.active">
+      <segment>
+        <source>support.tab.active</source>
+        <target>Активные ({count})</target>
+      </segment>
+    </unit>
+    <unit id="support.tab.archive">
+      <segment>
+        <source>support.tab.archive</source>
+        <target>Архив ({count})</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.attachments">
+      <segment>
+        <source>support.ticket.attachments</source>
+        <target>Вложения</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.back">
+      <segment>
+        <source>support.ticket.back</source>
+        <target>К списку</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.close">
+      <segment>
+        <source>support.ticket.close</source>
+        <target>Закрыть заявку</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.closed">
+      <segment>
+        <source>support.ticket.closed</source>
+        <target>Заявка закрыта. Если вопрос остался, заведите новую.</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.created">
+      <segment>
+        <source>support.ticket.created</source>
+        <target>Заведена</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.department">
+      <segment>
+        <source>support.ticket.department</source>
+        <target>Отдел</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.limit">
+      <segment>
+        <source>support.ticket.limit</source>
+        <target>до {megabytes} МБ</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.message">
+      <segment>
+        <source>support.ticket.message</source>
+        <target>Сообщение</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.new">
+      <segment>
+        <source>support.ticket.new</source>
+        <target>Новая заявка</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.send">
+      <segment>
+        <source>support.ticket.send</source>
+        <target>Отправить</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.state">
+      <segment>
+        <source>support.ticket.state</source>
+        <target>Состояние</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.subject">
+      <segment>
+        <source>support.ticket.subject</source>
+        <target>Тема</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.title">
+      <segment>
+        <source>support.ticket.title</source>
+        <target>Заявка №{id}</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.updated">
+      <segment>
+        <source>support.ticket.updated</source>
+        <target>Обновлена</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.user">
+      <segment>
+        <source>support.ticket.user</source>
+        <target>Пользователь</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket_status.closed">
+      <segment>
+        <source>support.ticket_status.closed</source>
+        <target>Закрыта</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket_status.open">
+      <segment>
+        <source>support.ticket_status.open</source>
+        <target>Новая</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket_status.waiting_staff">
+      <segment>
+        <source>support.ticket_status.waiting_staff</source>
+        <target>Ждёт ответа</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket_status.waiting_user">
+      <segment>
+        <source>support.ticket_status.waiting_user</source>
+        <target>Ждёт пользователя</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

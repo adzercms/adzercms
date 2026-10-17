@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" srcLang="en" trgLang="en" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="messages.en">
+    <unit id="mailing.body">
+      <segment>
+        <source>mailing.body</source>
+        <target>Message</target>
+      </segment>
+    </unit>
+    <unit id="mailing.broadcast">
+      <segment>
+        <source>mailing.broadcast</source>
+        <target>Broadcast</target>
+      </segment>
+    </unit>
+    <unit id="mailing.channel">
+      <segment>
+        <source>mailing.channel</source>
+        <target>Channel</target>
+      </segment>
+    </unit>
+    <unit id="mailing.channel_any">
+      <segment>
+        <source>mailing.channel_any</source>
+        <target>first available to the user</target>
+      </segment>
+    </unit>
+    <unit id="mailing.column.at">
+      <segment>
+        <source>mailing.column.at</source>
+        <target>Registered</target>
+      </segment>
+    </unit>
+    <unit id="mailing.column.body">
+      <segment>
+        <source>mailing.column.body</source>
+        <target>Message</target>
+      </segment>
+    </unit>
+    <unit id="mailing.column.event">
+      <segment>
+        <source>mailing.column.event</source>
+        <target>Event</target>
+      </segment>
+    </unit>
+    <unit id="mailing.column.recipient">
+      <segment>
+        <source>mailing.column.recipient</source>
+        <target>Recipient</target>
+      </segment>
+    </unit>
+    <unit id="mailing.column.status">
+      <segment>
+        <source>mailing.column.status</source>
+        <target>Status</target>
+      </segment>
+    </unit>
+    <unit id="mailing.column.user">
+      <segment>
+        <source>mailing.column.user</source>
+        <target>User</target>
+      </segment>
+    </unit>
+    <unit id="mailing.empty">
+      <segment>
+        <source>mailing.empty</source>
+        <target>No notices</target>
+      </segment>
+    </unit>
+    <unit id="mailing.event.broadcast">
+      <segment>
+        <source>mailing.event.broadcast</source>
+        <target>Operator broadcast</target>
+      </segment>
+    </unit>
+    <unit id="mailing.filter.status">
+      <segment>
+        <source>mailing.filter.status</source>
+        <target>Outcome</target>
+      </segment>
+    </unit>
+    <unit id="mailing.flash.sent">
+      <segment>
+        <source>mailing.flash.sent</source>
+        <target>Sent {sent}, deferred till the end of quiet hours {deferred}, refused {failed}</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.at">
+      <segment>
+        <source>mailing.gateway.at</source>
+        <target>Taken</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.balance">
+      <segment>
+        <source>mailing.gateway.balance</source>
+        <target>Balance, ₽</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.email">
+      <segment>
+        <source>mailing.gateway.email</source>
+        <target>Email</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.id">
+      <segment>
+        <source>mailing.gateway.id</source>
+        <target>Contract</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.name">
+      <segment>
+        <source>mailing.gateway.name</source>
+        <target>Owner</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.phone">
+      <segment>
+        <source>mailing.gateway.phone</source>
+        <target>Phone</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.rescan">
+      <segment>
+        <source>mailing.gateway.rescan</source>
+        <target>Poll</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.senders">
+      <segment>
+        <source>mailing.gateway.senders</source>
+        <target>Sender names</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.title">
+      <segment>
+        <source>mailing.gateway.title</source>
+        <target>Message gateway</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.unread">
+      <segment>
+        <source>mailing.gateway.unread</source>
+        <target>The gateway has not been polled yet.</target>
+      </segment>
+    </unit>
+    <unit id="mailing.journal">
+      <segment>
+        <source>mailing.journal</source>
+        <target>Journal</target>
+      </segment>
+    </unit>
+    <unit id="mailing.menu.notices">
+      <segment>
+        <source>mailing.menu.notices</source>
+        <target>Notices</target>
+      </segment>
+    </unit>
+    <unit id="mailing.notice.cabinet">
+      <segment>
+        <source>mailing.notice.cabinet</source>
+        <target>Open the cabinet</target>
+      </segment>
+    </unit>
+    <unit id="mailing.notice.subject">
+      <segment>
+        <source>mailing.notice.subject</source>
+        <target>{brand}: message to users</target>
+      </segment>
+    </unit>
+    <unit id="mailing.recipients">
+      <segment>
+        <source>mailing.recipients</source>
+        <target>Recipients</target>
+      </segment>
+    </unit>
+    <unit id="mailing.refusal.empty">
+      <segment>
+        <source>mailing.refusal.empty</source>
+        <target>An empty message is not sent</target>
+      </segment>
+    </unit>
+    <unit id="mailing.refusal.long">
+      <segment>
+        <source>mailing.refusal.long</source>
+        <target>The message is longer than {limit, plural, one {# character} other {# characters}}</target>
+      </segment>
+    </unit>
+    <unit id="mailing.scope">
+      <segment>
+        <source>mailing.scope</source>
+        <target>Scope</target>
+      </segment>
+    </unit>
+    <unit id="mailing.scope_all">
+      <segment>
+        <source>mailing.scope_all</source>
+        <target>all users</target>
+      </segment>
+    </unit>
+    <unit id="mailing.send">
+      <segment>
+        <source>mailing.send</source>
+        <target>Send</target>
+      </segment>
+    </unit>
+    <unit id="mailing.title">
+      <segment>
+        <source>mailing.title</source>
+        <target>Notices</target>
+      </segment>
+    </unit>
+    <unit id="mailing.unconfigured">
+      <segment>
+        <source>mailing.unconfigured</source>
+        <target>The channel is not set up, events go by the next set up one</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

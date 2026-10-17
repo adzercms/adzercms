@@ -1,0 +1,58 @@
+name: Split
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_call:
+    secrets:
+      SPLIT_TOKEN:
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  packages:
+    runs-on: ubuntu-24.04
+    outputs:
+      names: ${{ steps.list.outputs.names }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - id: list
+        run: echo "names=$(ls packages | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_OUTPUT"
+
+  split:
+    needs: packages
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.packages.outputs.names) }}
+    concurrency:
+      group: split-${{ matrix.package }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - working-directory: packages/${{ matrix.package }}
+        run: |
+          if [ "$(jq -r .type composer.json)" = project ]; then exit 0; fi
+          jq -r --arg monorepo "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" \
+            '"# \(.name)\n\n\(.description)\n\nRead-only package repository: changes go to the monorepository \($monorepo)."' \
+            composer.json > README.md
+          if [ -f ../../LICENSE ]; then cp ../../LICENSE LICENSE; fi
+      - uses: danharrin/monorepo-split-github-action@14e42e2437f674b8987c1f50ca3689116aea1893
+        env:
+          GITHUB_TOKEN: ${{ secrets.SPLIT_TOKEN }}
+        with:
+          package_directory: packages/${{ matrix.package }}
+          repository_organization: ${{ github.repository_owner }}
+          repository_name: ${{ matrix.package }}
+          branch: main
+          tag: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com

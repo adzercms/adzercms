@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="admin.back_to_list">
+      <segment>
+        <source>admin.back_to_list</source>
+        <target>← Back to list</target>
+      </segment>
+    </unit>
+    <unit id="admin.close">
+      <segment>
+        <source>admin.close</source>
+        <target>Close</target>
+      </segment>
+    </unit>
+    <unit id="admin.copy">
+      <segment>
+        <source>admin.copy</source>
+        <target>Copy</target>
+      </segment>
+    </unit>
+    <unit id="admin.credentials.cleared">
+      <segment>
+        <source>admin.credentials.cleared</source>
+        <target>Access data cleared</target>
+      </segment>
+    </unit>
+    <unit id="admin.credentials.saved">
+      <segment>
+        <source>admin.credentials.saved</source>
+        <target>Access data saved</target>
+      </segment>
+    </unit>
+    <unit id="admin.credentials.webhook">
+      <segment>
+        <source>admin.credentials.webhook</source>
+        <target>{bot}: {failure}</target>
+      </segment>
+    </unit>
+    <unit id="admin.dashboard.archive">
+      <segment>
+        <source>admin.dashboard.archive</source>
+        <target>Archived</target>
+      </segment>
+    </unit>
+    <unit id="admin.dashboard.users">
+      <segment>
+        <source>admin.dashboard.users</source>
+        <target>Users</target>
+      </segment>
+    </unit>
+    <unit id="admin.menu.dashboard">
+      <segment>
+        <source>admin.menu.dashboard</source>
+        <target>Dashboard</target>
+      </segment>
+    </unit>
+    <unit id="admin.menu.modules">
+      <segment>
+        <source>admin.menu.modules</source>
+        <target>Modules</target>
+      </segment>
+    </unit>
+    <unit id="admin.menu.settings">
+      <segment>
+        <source>admin.menu.settings</source>
+        <target>Settings</target>
+      </segment>
+    </unit>
+    <unit id="admin.menu.users">
+      <segment>
+        <source>admin.menu.users</source>
+        <target>Users</target>
+      </segment>
+    </unit>
+    <unit id="admin.module.module">
+      <segment>
+        <source>admin.module.module</source>
+        <target>Module</target>
+      </segment>
+    </unit>
+    <unit id="admin.module.saved">
+      <segment>
+        <source>admin.module.saved</source>
+        <target>Module settings saved</target>
+      </segment>
+    </unit>
+    <unit id="admin.module.title">
+      <segment>
+        <source>admin.module.title</source>
+        <target>Module {name}</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.empty">
+      <segment>
+        <source>admin.modules.empty</source>
+        <target>No modules</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.kind">
+      <segment>
+        <source>admin.modules.kind</source>
+        <target>Kind</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.name">
+      <segment>
+        <source>admin.modules.name</source>
+        <target>Module</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.schema">
+      <segment>
+        <source>admin.modules.schema</source>
+        <target>Schema</target>
+      </segment>
+    </unit>
+    <unit id="admin.save">
+      <segment>
+        <source>admin.save</source>
+        <target>Save</target>
+      </segment>
+    </unit>
+    <unit id="admin.setting.change">
+      <segment>
+        <source>admin.setting.change</source>
+        <target>Change</target>
+      </segment>
+    </unit>
+    <unit id="admin.setting.container_password">
+      <segment>
+        <source>admin.setting.container_password</source>
+        <target>Container password</target>
+      </segment>
+    </unit>
+    <unit id="admin.setting.credentials">
+      <segment>
+        <source>admin.setting.credentials</source>
+        <target>Credentials</target>
+      </segment>
+    </unit>
+    <unit id="admin.setting.drop">
+      <segment>
+        <source>admin.setting.drop</source>
+        <target>Remove</target>
+      </segment>
+    </unit>
+    <unit id="admin.setting.set">
+      <segment>
+        <source>admin.setting.set</source>
+        <target>set</target>
+      </segment>
+    </unit>
+    <unit id="admin.setting.unset">
+      <segment>
+        <source>admin.setting.unset</source>
+        <target>not set</target>
+      </segment>
+    </unit>
+    <unit id="admin.settings.saved">
+      <segment>
+        <source>admin.settings.saved</source>
+        <target>Settings saved</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.archive">
+      <segment>
+        <source>admin.user.archive</source>
+        <target>Archive</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.archived">
+      <segment>
+        <source>admin.user.archived</source>
+        <target>User #{id} archived</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.comment">
+      <segment>
+        <source>admin.user.comment</source>
+        <target>Comment</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.create">
+      <segment>
+        <source>admin.user.create</source>
+        <target>Create</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.created">
+      <segment>
+        <source>admin.user.created</source>
+        <target>User #{id} created</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.deleted">
+      <segment>
+        <source>admin.user.deleted</source>
+        <target>Deleted by the user</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.drop">
+      <segment>
+        <source>admin.user.drop</source>
+        <target>Delete user</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.drop_confirm">
+      <segment>
+        <source>admin.user.drop_confirm</source>
+        <target>Delete user #{id}? Their records in modules will be deleted too.</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.email">
+      <segment>
+        <source>admin.user.email</source>
+        <target>Email</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.first_name">
+      <segment>
+        <source>admin.user.first_name</source>
+        <target>First name</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.info">
+      <segment>
+        <source>admin.user.info</source>
+        <target>Information</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.last_login">
+      <segment>
+        <source>admin.user.last_login</source>
+        <target>Last login</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.last_name">
+      <segment>
+        <source>admin.user.last_name</source>
+        <target>Last name</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.malformed.email">
+      <segment>
+        <source>admin.user.malformed.email</source>
+        <target>Email is malformed</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.malformed.phone">
+      <segment>
+        <source>admin.user.malformed.phone</source>
+        <target>Phone is malformed</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.middle_name">
+      <segment>
+        <source>admin.user.middle_name</source>
+        <target>Middle name</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.new">
+      <segment>
+        <source>admin.user.new</source>
+        <target>New user</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.new_password">
+      <segment>
+        <source>admin.user.new_password</source>
+        <target>New password</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.note_saved">
+      <segment>
+        <source>admin.user.note_saved</source>
+        <target>Notes saved</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.notes">
+      <segment>
+        <source>admin.user.notes</source>
+        <target>Notes</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password">
+      <segment>
+        <source>admin.user.password</source>
+        <target>Cabinet password</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password_issue">
+      <segment>
+        <source>admin.user.password_issue</source>
+        <target>Issue</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password_issued">
+      <segment>
+        <source>admin.user.password_issued</source>
+        <target>Generated by the cabinet — you may replace it with your own.</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password_mailed">
+      <segment>
+        <source>admin.user.password_mailed</source>
+        <target>The letter with the password was sent to {email}</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password_no_mail">
+      <segment>
+        <source>admin.user.password_no_mail</source>
+        <target>The user has no email — no letter will be sent.</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password_replaced">
+      <segment>
+        <source>admin.user.password_replaced</source>
+        <target>The password of user #{id} was replaced with a new one.</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password_send">
+      <segment>
+        <source>admin.user.password_send</source>
+        <target>Send to {email}</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.password_unmailed">
+      <segment>
+        <source>admin.user.password_unmailed</source>
+        <target>The letter was not sent — hand the password to the user yourself.</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.phone">
+      <segment>
+        <source>admin.user.phone</source>
+        <target>Phone</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.profile">
+      <segment>
+        <source>admin.user.profile</source>
+        <target>Profile</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.registered">
+      <segment>
+        <source>admin.user.registered</source>
+        <target>Registered</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.removed">
+      <segment>
+        <source>admin.user.removed</source>
+        <target>User #{id} deleted</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.role">
+      <segment>
+        <source>admin.user.role</source>
+        <target>Role</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.saved">
+      <segment>
+        <source>admin.user.saved</source>
+        <target>Changes saved</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.state">
+      <segment>
+        <source>admin.user.state</source>
+        <target>State</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.switch">
+      <segment>
+        <source>admin.user.switch</source>
+        <target>Log in as the user</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.taken.email">
+      <segment>
+        <source>admin.user.taken.email</source>
+        <target>Email is taken by user #{id}</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.taken.phone">
+      <segment>
+        <source>admin.user.taken.phone</source>
+        <target>Phone is taken by user #{id}</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.title">
+      <segment>
+        <source>admin.user.title</source>
+        <target>User #{id}</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.add">
+      <segment>
+        <source>admin.users.add</source>
+        <target>+ User</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.any_state">
+      <segment>
+        <source>admin.users.any_state</source>
+        <target>Any state</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.archive">
+      <segment>
+        <source>admin.users.archive</source>
+        <target>Archive ({count})</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.created">
+      <segment>
+        <source>admin.users.created</source>
+        <target>Registered</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.empty">
+      <segment>
+        <source>admin.users.empty</source>
+        <target>No users</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.login">
+      <segment>
+        <source>admin.users.login</source>
+        <target>Login</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.state">
+      <segment>
+        <source>admin.users.state</source>
+        <target>State</target>
+      </segment>
+    </unit>
+    <unit id="admin.users.tab">
+      <segment>
+        <source>admin.users.tab</source>
+        <target>Users ({count})</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

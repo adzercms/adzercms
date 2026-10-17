@@ -1,0 +1,61 @@
+{% set type = 'AdzerCMS\\Contracts\\Setting\\Type::' %}
+{% for block in sections %}
+    <div class="section">
+    {% if block.section %}<div class="section-head"><h3>{{ block.section|trans }}</h3></div>{% endif %}
+
+    <div class="fields">
+        {% for field in block.fields %}
+            <div class="field">
+                <label>{{ field.label|trans }}
+                    {% if field.type == constant(type ~ 'Toggle') %}
+                        <select name="value[{{ field.name }}]">
+                            {% for case in enum('AdzerCMS\\Core\\Setting\\Toggle').cases %}
+                                <option value="{{ case.value }}" {{ values[field.name] == case.value ? 'selected' }}>{{ ('core.toggle.' ~ case.name|lower)|trans }}</option>
+                            {% endfor %}
+                        </select>
+                    {% elseif field.type == constant(type ~ 'Image') %}
+                        <input type="file" name="file[{{ field.name }}]" accept="image/png,image/jpeg,image/svg+xml,image/webp,image/vnd.microsoft.icon">
+                    {% elseif field.type == constant(type ~ 'Container') %}
+                        <input type="file" name="file[{{ field.name }}]" accept=".p12,.pfx">
+                    {% elseif field.type == constant(type ~ 'Choice') %}
+                        <select name="value[{{ field.name }}]">
+                            {% for choice, caption in field.choices %}
+                                <option value="{{ choice }}" {{ values[field.name] == choice ? 'selected' }}>{{ caption|trans }}</option>
+                            {% endfor %}
+                        </select>
+                    {% elseif field.type == constant(type ~ 'Secret') %}
+                        <input type="text" class="secret" name="value[{{ field.name }}]" autocomplete="off" spellcheck="false">
+                    {% else %}
+                        <input type="text" name="value[{{ field.name }}]" value="{{ values[field.name] }}">
+                    {% endif %}
+                </label>
+
+                {% if field.type == constant(type ~ 'Container') %}
+                    <label>{{ 'admin.setting.container_password'|trans }}
+                        <input type="text" class="secret" name="pass[{{ field.name }}]" autocomplete="off" spellcheck="false">
+                    </label>
+                {% endif %}
+
+                {% if field.type == constant(type ~ 'Image') and values[field.name] %}
+                    <img class="brand-preview" src="{{ path('setting_image', {name: field.name}) }}" alt="{{ values[field.name] }}">
+                {% endif %}
+
+                {% if field.type in [constant(type ~ 'Image'), constant(type ~ 'Container')] and values[field.name] %}
+                    <button type="submit" class="secondary small" name="drop[{{ field.name }}]" value="1" formnovalidate>{{ 'admin.setting.drop'|trans }}</button>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        {% for key, credential in block.credentials %}
+            <div class="field credential">
+                <span class="credential-label">{{ 'admin.setting.credentials'|trans }}</span>
+                <span class="credential-row">
+                    {{ badge(credential) }}
+                    <button type="button" class="secondary"
+                            hx-get="{{ path('admin_settings_credentials', {key: key}) }}" hx-target="#record">{{ 'admin.setting.change'|trans }}</button>
+                </span>
+            </div>
+        {% endfor %}
+    </div>
+    </div>
+{% endfor %}

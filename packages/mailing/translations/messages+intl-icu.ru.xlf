@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="mailing.body">
+      <segment>
+        <source>mailing.body</source>
+        <target>Сообщение</target>
+      </segment>
+    </unit>
+    <unit id="mailing.broadcast">
+      <segment>
+        <source>mailing.broadcast</source>
+        <target>Рассылка</target>
+      </segment>
+    </unit>
+    <unit id="mailing.channel">
+      <segment>
+        <source>mailing.channel</source>
+        <target>Канал</target>
+      </segment>
+    </unit>
+    <unit id="mailing.channel_any">
+      <segment>
+        <source>mailing.channel_any</source>
+        <target>первый доступный пользователю</target>
+      </segment>
+    </unit>
+    <unit id="mailing.column.at">
+      <segment>
+        <source>mailing.column.at</source>
+        <target>Регистрация</target>
+      </segment>
+    </unit>
+    <unit id="mailing.column.body">
+      <segment>
+        <source>mailing.column.body</source>
+        <target>Сообщение</target>
+      </segment>
+    </unit>
+    <unit id="mailing.column.event">
+      <segment>
+        <source>mailing.column.event</source>
+        <target>Событие</target>
+      </segment>
+    </unit>
+    <unit id="mailing.column.recipient">
+      <segment>
+        <source>mailing.column.recipient</source>
+        <target>Адресат</target>
+      </segment>
+    </unit>
+    <unit id="mailing.column.status">
+      <segment>
+        <source>mailing.column.status</source>
+        <target>Статус</target>
+      </segment>
+    </unit>
+    <unit id="mailing.column.user">
+      <segment>
+        <source>mailing.column.user</source>
+        <target>Пользователь</target>
+      </segment>
+    </unit>
+    <unit id="mailing.empty">
+      <segment>
+        <source>mailing.empty</source>
+        <target>Нет оповещений</target>
+      </segment>
+    </unit>
+    <unit id="mailing.event.broadcast">
+      <segment>
+        <source>mailing.event.broadcast</source>
+        <target>Рассылка оператора</target>
+      </segment>
+    </unit>
+    <unit id="mailing.filter.status">
+      <segment>
+        <source>mailing.filter.status</source>
+        <target>Итог</target>
+      </segment>
+    </unit>
+    <unit id="mailing.flash.sent">
+      <segment>
+        <source>mailing.flash.sent</source>
+        <target>Отправлено {sent}, отложено до конца тишины {deferred}, отказов {failed}</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.at">
+      <segment>
+        <source>mailing.gateway.at</source>
+        <target>Снято</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.balance">
+      <segment>
+        <source>mailing.gateway.balance</source>
+        <target>Остаток, ₽</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.email">
+      <segment>
+        <source>mailing.gateway.email</source>
+        <target>Почта</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.id">
+      <segment>
+        <source>mailing.gateway.id</source>
+        <target>Договор</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.name">
+      <segment>
+        <source>mailing.gateway.name</source>
+        <target>Владелец</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.phone">
+      <segment>
+        <source>mailing.gateway.phone</source>
+        <target>Телефон</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.rescan">
+      <segment>
+        <source>mailing.gateway.rescan</source>
+        <target>Опросить</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.senders">
+      <segment>
+        <source>mailing.gateway.senders</source>
+        <target>Имена отправителя</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.title">
+      <segment>
+        <source>mailing.gateway.title</source>
+        <target>Шлюз сообщений</target>
+      </segment>
+    </unit>
+    <unit id="mailing.gateway.unread">
+      <segment>
+        <source>mailing.gateway.unread</source>
+        <target>Шлюз ещё не опрошен.</target>
+      </segment>
+    </unit>
+    <unit id="mailing.journal">
+      <segment>
+        <source>mailing.journal</source>
+        <target>Журнал</target>
+      </segment>
+    </unit>
+    <unit id="mailing.menu.notices">
+      <segment>
+        <source>mailing.menu.notices</source>
+        <target>Оповещения</target>
+      </segment>
+    </unit>
+    <unit id="mailing.notice.cabinet">
+      <segment>
+        <source>mailing.notice.cabinet</source>
+        <target>Открыть кабинет</target>
+      </segment>
+    </unit>
+    <unit id="mailing.notice.subject">
+      <segment>
+        <source>mailing.notice.subject</source>
+        <target>{brand}: сообщение пользователям</target>
+      </segment>
+    </unit>
+    <unit id="mailing.recipients">
+      <segment>
+        <source>mailing.recipients</source>
+        <target>Адресатов</target>
+      </segment>
+    </unit>
+    <unit id="mailing.refusal.empty">
+      <segment>
+        <source>mailing.refusal.empty</source>
+        <target>Пустое сообщение не отправляется</target>
+      </segment>
+    </unit>
+    <unit id="mailing.refusal.long">
+      <segment>
+        <source>mailing.refusal.long</source>
+        <target>Сообщение длиннее {limit, plural, one {# знака} few {# знаков} many {# знаков} other {# знака}}</target>
+      </segment>
+    </unit>
+    <unit id="mailing.scope">
+      <segment>
+        <source>mailing.scope</source>
+        <target>Охват</target>
+      </segment>
+    </unit>
+    <unit id="mailing.scope_all">
+      <segment>
+        <source>mailing.scope_all</source>
+        <target>все пользователи</target>
+      </segment>
+    </unit>
+    <unit id="mailing.send">
+      <segment>
+        <source>mailing.send</source>
+        <target>Отправить</target>
+      </segment>
+    </unit>
+    <unit id="mailing.title">
+      <segment>
+        <source>mailing.title</source>
+        <target>Оповещения</target>
+      </segment>
+    </unit>
+    <unit id="mailing.unconfigured">
+      <segment>
+        <source>mailing.unconfigured</source>
+        <target>Канал не настроен, события уходят следующим настроенным</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

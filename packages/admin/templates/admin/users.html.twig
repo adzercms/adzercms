@@ -1,0 +1,16 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'admin.menu.users'|trans }}{% endblock %}
+
+{% block actions %}
+    <button type="button" hx-get="{{ path('admin_user_new') }}" hx-target="#record">{{ 'admin.users.add'|trans }}</button>
+{% endblock %}
+
+{% block page %}
+<nav class="tabs">
+    <a class="tab {{ archive ? '' : 'active' }}" href="{{ path('admin_users') }}">{{ 'admin.users.tab'|trans({count: counts.users}) }}</a>
+    <a class="tab {{ archive ? 'active' }}" href="{{ path('admin_users', {tab: 'archive'}) }}">{{ 'admin.users.archive'|trans({count: counts.archive}) }}</a>
+</nav>
+
+{% include '@Admin/admin/_users.html.twig' %}
+{% endblock %}

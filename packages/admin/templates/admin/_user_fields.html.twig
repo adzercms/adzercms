@@ -1,0 +1,41 @@
+<label>{{ 'admin.user.comment'|trans }}
+    <input type="text" name="comment" maxlength="{{ constant('AdzerCMS\\Core\\Entity\\User::COMMENT_LIMIT') }}" value="{{ user.comment }}">
+</label>
+<label>{{ 'admin.user.last_name'|trans }}
+    <input type="text" name="last_name" value="{{ user.lastName }}" maxlength="60">
+</label>
+<label>{{ 'admin.user.first_name'|trans }}
+    <input type="text" name="first_name" value="{{ user.firstName }}" maxlength="60">
+</label>
+<label>{{ 'admin.user.middle_name'|trans }}
+    <input type="text" name="middle_name" value="{{ user.middleName }}" maxlength="60">
+</label>
+<label>{{ 'admin.user.phone'|trans }}
+    <input type="text" name="phone" value="{{ user.phone }}" inputmode="numeric">
+</label>
+<label>{{ 'admin.user.email'|trans }}
+    <input type="email" name="email" value="{{ user.email }}">
+</label>
+{% if user is same as(app.user) %}
+    <label>{{ 'admin.user.state'|trans }}
+        <input type="text" value="{{ user.status.label|trans }}" readonly>
+    </label>
+    <label>{{ 'admin.user.role'|trans }}
+        <input type="text" value="{{ user.role.label|trans }}" readonly>
+    </label>
+{% else %}
+    <label>{{ 'admin.user.state'|trans }}
+        <select name="status" id="user-status">
+            {% for case in enum('AdzerCMS\\Core\\Account\\Status').cases %}
+                <option value="{{ case.value }}" {{ user.id and user.status == case ? 'selected' }}>{{ case.label|trans }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>{{ 'admin.user.role'|trans }}
+        <select name="role">
+            {% for case in enum('AdzerCMS\\Core\\Account\\Role').cases %}
+                <option value="{{ case.value }}" {{ user.id and user.role == case ? 'selected' }}>{{ case.label|trans }}</option>
+            {% endfor %}
+        </select>
+    </label>
+{% endif %}

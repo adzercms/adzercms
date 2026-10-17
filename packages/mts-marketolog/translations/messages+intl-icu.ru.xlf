@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="mtsmarketolog.api_url">
+      <segment>
+        <source>mtsmarketolog.api_url</source>
+        <target>Адрес API</target>
+      </segment>
+    </unit>
+    <unit id="mtsmarketolog.login">
+      <segment>
+        <source>mtsmarketolog.login</source>
+        <target>Логин</target>
+      </segment>
+    </unit>
+    <unit id="mtsmarketolog.password">
+      <segment>
+        <source>mtsmarketolog.password</source>
+        <target>Пароль</target>
+      </segment>
+    </unit>
+    <unit id="mtsmarketolog.sender">
+      <segment>
+        <source>mtsmarketolog.sender</source>
+        <target>Имя отправителя</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

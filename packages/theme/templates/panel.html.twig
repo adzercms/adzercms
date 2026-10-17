@@ -1,0 +1,38 @@
+{% extends '@Theme/page.html.twig' %}
+
+{% block header_side %}
+    {% for part in fragments('header', app.user.id) %}{% include part.template with part.context only %}{% endfor %}
+    <details class="menu">
+        <summary>{{ login(app.user) }}</summary>
+        <nav>
+            {% if cabinet('profile') %}<a href="{{ cabinet('profile') }}">{{ 'theme.profile'|trans }}</a>{% endif %}
+            <a href="{{ logout_path() }}">{{ 'theme.logout'|trans }}</a>
+        </nav>
+    </details>
+{% endblock %}
+
+{% macro items(area, title, class) %}
+    {% for group in menu(area) %}
+        <div class="nav-section {{ class }}">
+            {% if group.group or title %}<div class="nav-section-title">{{ (group.group ?? title)|trans }}</div>{% endif %}
+            {% for entry in group.items %}
+                {% set item = entry.item %}
+                {% if item.dialog %}
+                    <button type="button" class="nav-item" data-record="{{ path(item.route) }}">{{ item.label|trans }}</button>
+                {% else %}
+                    <a class="nav-item {{ entry.active ? 'active' }}" href="{{ path(item.route) }}"
+                       {% if item.count is not null %}id="live-menu-{{ area }}-{{ item.route }}" data-live{% endif %}>
+                        {{ item.label|trans }}{% if item.count %} <span class="badge badge-warning">{{ item.count }}</span>{% endif %}
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endmacro %}
+
+{% block nav %}
+    {% if is_granted('ROLE_ADMIN') %}
+        {{ _self.items('admin', 'theme.admin', 'nav-section-admin') }}
+    {% endif %}
+    {{ _self.items('cabinet', 'theme.main', '') }}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'support.ticket.new'|trans }}{% endblock %}
+
+{% block actions %}
+    <a class="button secondary" href="{{ path('support_tickets') }}">{{ 'support.ticket.back'|trans }}</a>
+{% endblock %}
+
+{% block page %}
+<form method="post" enctype="multipart/form-data">
+    {{ csrf_field() }}
+
+    <div class="fields">
+        <label>{{ 'support.ticket.department'|trans }}
+            <select name="department">
+                {% for name in departments %}
+                    <option value="{{ name }}" {{ department == name ? 'selected' }}>{{ name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        {% for field in subjects %}{{ field|raw }}{% endfor %}
+        <label>{{ 'support.ticket.subject'|trans }}
+            <input type="text" name="subject" maxlength="190" value="{{ subject }}" required>
+        </label>
+    </div>
+
+    <label>{{ 'support.ticket.message'|trans }}
+        <textarea name="body" rows="8" required>{{ body }}</textarea>
+    </label>
+
+    <label>{{ 'support.ticket.attachments'|trans }}
+        <input type="file" name="files[]" accept="{{ accept }}" multiple>
+        <p class="hint">{{ 'support.ticket.limit'|trans({megabytes: megabytes}) }}</p>
+    </label>
+
+    <button type="submit">{{ 'support.ticket.send'|trans }}</button>
+</form>
+{% endblock %}

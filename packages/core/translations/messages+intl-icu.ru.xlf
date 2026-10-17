@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="core.bot.linked">
+      <segment>
+        <source>core.bot.linked</source>
+        <target>Бот подключён к записи: оповещения придут сюда</target>
+      </segment>
+    </unit>
+    <unit id="core.bot.token">
+      <segment>
+        <source>core.bot.token</source>
+        <target>Токен бота</target>
+      </segment>
+    </unit>
+    <unit id="core.captcha.secret">
+      <segment>
+        <source>core.captcha.secret</source>
+        <target>Ключ проверки</target>
+      </segment>
+    </unit>
+    <unit id="core.captcha.site_key">
+      <segment>
+        <source>core.captcha.site_key</source>
+        <target>Ключ страницы</target>
+      </segment>
+    </unit>
+    <unit id="core.channel.mail">
+      <segment>
+        <source>core.channel.mail</source>
+        <target>Почта</target>
+      </segment>
+    </unit>
+    <unit id="core.channel.sms">
+      <segment>
+        <source>core.channel.sms</source>
+        <target>SMS</target>
+      </segment>
+    </unit>
+    <unit id="core.confirmation.too_often">
+      <segment>
+        <source>core.confirmation.too_often</source>
+        <target>Подтверждение уже отправлено, дождитесь его либо повторите позже</target>
+      </segment>
+    </unit>
+    <unit id="core.consent_kind.offer">
+      <segment>
+        <source>core.consent_kind.offer</source>
+        <target>Оферта</target>
+      </segment>
+    </unit>
+    <unit id="core.consent_kind.personal">
+      <segment>
+        <source>core.consent_kind.personal</source>
+        <target>Обработка персональных данных</target>
+      </segment>
+    </unit>
+    <unit id="core.contact.email">
+      <segment>
+        <source>core.contact.email</source>
+        <target>Почта</target>
+      </segment>
+    </unit>
+    <unit id="core.contact.phone">
+      <segment>
+        <source>core.contact.phone</source>
+        <target>Телефон</target>
+      </segment>
+    </unit>
+    <unit id="core.deletion.no_mail">
+      <segment>
+        <source>core.deletion.no_mail</source>
+        <target>Удаление идёт ссылкой на почту: подтвердите её в контактах</target>
+      </segment>
+    </unit>
+    <unit id="core.deletion.operator">
+      <segment>
+        <source>core.deletion.operator</source>
+        <target>Запись администратора удаляет другой администратор</target>
+      </segment>
+    </unit>
+    <unit id="core.deletion.unsent">
+      <segment>
+        <source>core.deletion.unsent</source>
+        <target>Ссылка удаления не отправилась, повторите позже</target>
+      </segment>
+    </unit>
+    <unit id="core.event.account_deletion">
+      <segment>
+        <source>core.event.account_deletion</source>
+        <target>Удаление записи</target>
+      </segment>
+    </unit>
+    <unit id="core.event.contact_confirm">
+      <segment>
+        <source>core.event.contact_confirm</source>
+        <target>Подтверждение контакта</target>
+      </segment>
+    </unit>
+    <unit id="core.event.contact_release">
+      <segment>
+        <source>core.event.contact_release</source>
+        <target>Согласие прежней почты</target>
+      </segment>
+    </unit>
+    <unit id="core.event.message">
+      <segment>
+        <source>core.event.message</source>
+        <target>Сообщение</target>
+      </segment>
+    </unit>
+    <unit id="core.event.password_issued">
+      <segment>
+        <source>core.event.password_issued</source>
+        <target>Выданный пароль</target>
+      </segment>
+    </unit>
+    <unit id="core.event.password_reset">
+      <segment>
+        <source>core.event.password_reset</source>
+        <target>Восстановление пароля</target>
+      </segment>
+    </unit>
+    <unit id="core.event.registration">
+      <segment>
+        <source>core.event.registration</source>
+        <target>Код регистрации</target>
+      </segment>
+    </unit>
+    <unit id="core.event.registration_known">
+      <segment>
+        <source>core.event.registration_known</source>
+        <target>Регистрация на известный контакт</target>
+      </segment>
+    </unit>
+    <unit id="core.filter.search">
+      <segment>
+        <source>core.filter.search</source>
+        <target>Поиск…</target>
+      </segment>
+    </unit>
+    <unit id="core.image.size">
+      <segment>
+        <source>core.image.size</source>
+        <target>{field} больше {kb} КБ</target>
+      </segment>
+    </unit>
+    <unit id="core.image.type">
+      <segment>
+        <source>core.image.type</source>
+        <target>{field} принимается картинкой png, jpeg, svg, webp либо ico</target>
+      </segment>
+    </unit>
+    <unit id="core.keychain.unreadable">
+      <segment>
+        <source>core.keychain.unreadable</source>
+        <target>{field}: контейнер не читается — проверьте файл и пароль</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.admin">
+      <segment>
+        <source>core.kind.admin</source>
+        <target>Админка</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.bot">
+      <segment>
+        <source>core.kind.bot</source>
+        <target>Бот</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.cabinet">
+      <segment>
+        <source>core.kind.cabinet</source>
+        <target>Кабинет</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.captcha">
+      <segment>
+        <source>core.kind.captcha</source>
+        <target>Проверка «не робот»</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.feature">
+      <segment>
+        <source>core.kind.feature</source>
+        <target>Функция</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.login">
+      <segment>
+        <source>core.kind.login</source>
+        <target>Сервис входа</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.sms">
+      <segment>
+        <source>core.kind.sms</source>
+        <target>Шлюз SMS</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.theme">
+      <segment>
+        <source>core.kind.theme</source>
+        <target>Тема</target>
+      </segment>
+    </unit>
+    <unit id="core.login.absent">
+      <segment>
+        <source>core.login.absent</source>
+        <target>Сервис не подключён</target>
+      </segment>
+    </unit>
+    <unit id="core.login.alien">
+      <segment>
+        <source>core.login.alien</source>
+        <target>{service} выдал токен другого приложения</target>
+      </segment>
+    </unit>
+    <unit id="core.login.cancelled">
+      <segment>
+        <source>core.login.cancelled</source>
+        <target>{service} не подтвердил вход</target>
+      </segment>
+    </unit>
+    <unit id="core.login.client_id">
+      <segment>
+        <source>core.login.client_id</source>
+        <target>Идентификатор приложения</target>
+      </segment>
+    </unit>
+    <unit id="core.login.client_secret">
+      <segment>
+        <source>core.login.client_secret</source>
+        <target>Секрет приложения</target>
+      </segment>
+    </unit>
+    <unit id="core.login.connected">
+      <segment>
+        <source>core.login.connected</source>
+        <target>{service} подключён</target>
+      </segment>
+    </unit>
+    <unit id="core.login.declined">
+      <segment>
+        <source>core.login.declined</source>
+        <target>{service} отклонил запрос: {error}</target>
+      </segment>
+    </unit>
+    <unit id="core.login.expired">
+      <segment>
+        <source>core.login.expired</source>
+        <target>Вход не подтверждён — начните заново</target>
+      </segment>
+    </unit>
+    <unit id="core.login.invalid">
+      <segment>
+        <source>core.login.invalid</source>
+        <target>{service} выдал негодный токен</target>
+      </segment>
+    </unit>
+    <unit id="core.login.last_way">
+      <segment>
+        <source>core.login.last_way</source>
+        <target>Это единственный способ входа — сперва задайте пароль</target>
+      </segment>
+    </unit>
+    <unit id="core.login.nameless">
+      <segment>
+        <source>core.login.nameless</source>
+        <target>{service} не назвал профиль</target>
+      </segment>
+    </unit>
+    <unit id="core.login.other">
+      <segment>
+        <source>core.login.other</source>
+        <target>К записи уже подключён другой профиль {service}</target>
+      </segment>
+    </unit>
+    <unit id="core.login.silent">
+      <segment>
+        <source>core.login.silent</source>
+        <target>{service} не отвечает</target>
+      </segment>
+    </unit>
+    <unit id="core.login.taken">
+      <segment>
+        <source>core.login.taken</source>
+        <target>Этот профиль {service} подключён к другой записи</target>
+      </segment>
+    </unit>
+    <unit id="core.login.unavailable">
+      <segment>
+        <source>core.login.unavailable</source>
+        <target>Этот способ входа недоступен</target>
+      </segment>
+    </unit>
+    <unit id="core.login.unknown">
+      <segment>
+        <source>core.login.unknown</source>
+        <target>Записи с этим профилем {service} нет: войдите логином и подключите {service} в профиле</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.account_deletion.action">
+      <segment>
+        <source>core.notice.account_deletion.action</source>
+        <target>Подтвердить удаление</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.account_deletion.body">
+      <segment>
+        <source>core.notice.account_deletion.body</source>
+        <target>Удаление записи {login}: подтвердите его по ссылке.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.account_deletion.note">
+      <segment>
+        <source>core.notice.account_deletion.note</source>
+        <target>Если удаление запрашивали не вы, письмо можно не читать — запись останется.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.account_deletion.subject">
+      <segment>
+        <source>core.notice.account_deletion.subject</source>
+        <target>{brand}: удаление записи</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.account_deletion.title">
+      <segment>
+        <source>core.notice.account_deletion.title</source>
+        <target>Удаление записи</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_confirm.action">
+      <segment>
+        <source>core.notice.contact_confirm.action</source>
+        <target>Подтвердить почту</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_confirm.body">
+      <segment>
+        <source>core.notice.contact_confirm.body</source>
+        <target>Подтвердите почту {contact} для записи {login}.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_confirm.code">
+      <segment>
+        <source>core.notice.contact_confirm.code</source>
+        <target>Код подтверждения телефона: {code}, действует {minutes, plural, one {# минуту} few {# минуты} other {# минут}}</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_confirm.note">
+      <segment>
+        <source>core.notice.contact_confirm.note</source>
+        <target>Если смену почты запрашивали не вы, письмо можно не читать.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_confirm.subject">
+      <segment>
+        <source>core.notice.contact_confirm.subject</source>
+        <target>{brand}: подтверждение почты</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_confirm.title">
+      <segment>
+        <source>core.notice.contact_confirm.title</source>
+        <target>Подтверждение почты</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_release.action">
+      <segment>
+        <source>core.notice.contact_release.action</source>
+        <target>Согласиться на смену</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_release.body">
+      <segment>
+        <source>core.notice.contact_release.body</source>
+        <target>Смена почты записи {login} на {contact}: согласитесь на неё по ссылке.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_release.note">
+      <segment>
+        <source>core.notice.contact_release.note</source>
+        <target>Если смену запрашивали не вы, письмо можно не читать — почта останется прежней.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_release.subject">
+      <segment>
+        <source>core.notice.contact_release.subject</source>
+        <target>{brand}: смена почты</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.contact_release.title">
+      <segment>
+        <source>core.notice.contact_release.title</source>
+        <target>Смена почты</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.copy">
+      <segment>
+        <source>core.notice.copy</source>
+        <target>Если кнопка не открывается, скопируйте ссылку:</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.lifetime">
+      <segment>
+        <source>core.notice.lifetime</source>
+        <target>Ссылка действует {minutes, plural, one {# минуту} few {# минуты} other {# минут}}.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.lifetime_code">
+      <segment>
+        <source>core.notice.lifetime_code</source>
+        <target>Введите его в кабинете — код действует {minutes, plural, one {# минуту} few {# минуты} other {# минут}}.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_issued.action">
+      <segment>
+        <source>core.notice.password_issued.action</source>
+        <target>Войти в кабинет</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_issued.body">
+      <segment>
+        <source>core.notice.password_issued.body</source>
+        <target>Оператор выдал новый пароль от кабинета. Прежний больше не работает.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_issued.login">
+      <segment>
+        <source>core.notice.password_issued.login</source>
+        <target>Логин: {login}</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_issued.note">
+      <segment>
+        <source>core.notice.password_issued.note</source>
+        <target>Смените выданный пароль на свой в профиле кабинета.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_issued.password">
+      <segment>
+        <source>core.notice.password_issued.password</source>
+        <target>Пароль: {password}</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_issued.subject">
+      <segment>
+        <source>core.notice.password_issued.subject</source>
+        <target>{brand}: новый пароль от кабинета</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_issued.title">
+      <segment>
+        <source>core.notice.password_issued.title</source>
+        <target>Новый пароль от кабинета</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_reset.action">
+      <segment>
+        <source>core.notice.password_reset.action</source>
+        <target>Задать пароль</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_reset.body">
+      <segment>
+        <source>core.notice.password_reset.body</source>
+        <target>Смена пароля записи {login}: задайте новый пароль по ссылке.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_reset.code">
+      <segment>
+        <source>core.notice.password_reset.code</source>
+        <target>Код для смены пароля: {code}, действует {minutes, plural, one {# минуту} few {# минуты} other {# минут}}</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_reset.note">
+      <segment>
+        <source>core.notice.password_reset.note</source>
+        <target>Если смену запрашивали не вы, письмо можно не читать — пароль остался прежним.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_reset.subject">
+      <segment>
+        <source>core.notice.password_reset.subject</source>
+        <target>{brand}: смена пароля</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.password_reset.title">
+      <segment>
+        <source>core.notice.password_reset.title</source>
+        <target>Смена пароля</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration.code">
+      <segment>
+        <source>core.notice.registration.code</source>
+        <target>Код регистрации: {code}, действует {minutes, plural, one {# минуту} few {# минуты} other {# минут}}</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration.note">
+      <segment>
+        <source>core.notice.registration.note</source>
+        <target>Если регистрацию запрашивали не вы, письмо можно не читать.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration.subject">
+      <segment>
+        <source>core.notice.registration.subject</source>
+        <target>{brand}: код регистрации</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration.title">
+      <segment>
+        <source>core.notice.registration.title</source>
+        <target>Код регистрации</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration_known.action">
+      <segment>
+        <source>core.notice.registration_known.action</source>
+        <target>Восстановить доступ</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration_known.body">
+      <segment>
+        <source>core.notice.registration_known.body</source>
+        <target>На {contact} уже заведена запись: вход — этим контактом с паролем, забытый пароль возвращает восстановление доступа.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration_known.subject">
+      <segment>
+        <source>core.notice.registration_known.subject</source>
+        <target>{brand}: запись уже заведена</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration_known.title">
+      <segment>
+        <source>core.notice.registration_known.title</source>
+        <target>Запись уже заведена</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.status.deferred">
+      <segment>
+        <source>core.notice.status.deferred</source>
+        <target>Ждёт конца тишины</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.status.failed">
+      <segment>
+        <source>core.notice.status.failed</source>
+        <target>Отказ шлюза</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.status.sent">
+      <segment>
+        <source>core.notice.status.sent</source>
+        <target>Отправлено</target>
+      </segment>
+    </unit>
+    <unit id="core.once.repeat">
+      <segment>
+        <source>core.once.repeat</source>
+        <target>Это же действие только что выполнено — повтор пропущен</target>
+      </segment>
+    </unit>
+    <unit id="core.password.short">
+      <segment>
+        <source>core.password.short</source>
+        <target>Пароль короче {min, plural, one {# знака} few {# знаков} many {# знаков} other {# знака}}</target>
+      </segment>
+    </unit>
+    <unit id="core.period_scale.custom">
+      <segment>
+        <source>core.period_scale.custom</source>
+        <target>За свой срок</target>
+      </segment>
+    </unit>
+    <unit id="core.period_scale.month">
+      <segment>
+        <source>core.period_scale.month</source>
+        <target>За месяц</target>
+      </segment>
+    </unit>
+    <unit id="core.period_scale.year">
+      <segment>
+        <source>core.period_scale.year</source>
+        <target>За год</target>
+      </segment>
+    </unit>
+    <unit id="core.role.admin">
+      <segment>
+        <source>core.role.admin</source>
+        <target>Администратор</target>
+      </segment>
+    </unit>
+    <unit id="core.role.user">
+      <segment>
+        <source>core.role.user</source>
+        <target>Пользователь</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.area.brand">
+      <segment>
+        <source>core.setting.area.brand</source>
+        <target>Марка</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.area.confirmation">
+      <segment>
+        <source>core.setting.area.confirmation</source>
+        <target>Подтверждения</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.area.legal">
+      <segment>
+        <source>core.setting.area.legal</source>
+        <target>Документы</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.area.mail">
+      <segment>
+        <source>core.setting.area.mail</source>
+        <target>Почта</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.area.notice">
+      <segment>
+        <source>core.setting.area.notice</source>
+        <target>Оповещения</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.choice">
+      <segment>
+        <source>core.setting.choice</source>
+        <target>{field}: такого значения нет</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.confirmation_pause_minutes">
+      <segment>
+        <source>core.setting.confirmation_pause_minutes</source>
+        <target>Пауза между подтверждениями, минут</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.decimal">
+      <segment>
+        <source>core.setting.decimal</source>
+        <target>{field}: нужно число</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.enabled">
+      <segment>
+        <source>core.setting.enabled</source>
+        <target>Включён</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.icon">
+      <segment>
+        <source>core.setting.icon</source>
+        <target>Значок</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.language">
+      <segment>
+        <source>core.setting.language</source>
+        <target>Язык интерфейса</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.legal_revision">
+      <segment>
+        <source>core.setting.legal_revision</source>
+        <target>Редакция документов</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.logo">
+      <segment>
+        <source>core.setting.logo</source>
+        <target>Логотип</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.mail_host">
+      <segment>
+        <source>core.setting.mail_host</source>
+        <target>Сервер исходящей почты</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.mail_login">
+      <segment>
+        <source>core.setting.mail_login</source>
+        <target>Логин</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.mail_password">
+      <segment>
+        <source>core.setting.mail_password</source>
+        <target>Пароль</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.mail_port">
+      <segment>
+        <source>core.setting.mail_port</source>
+        <target>Порт</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.mail_sender">
+      <segment>
+        <source>core.setting.mail_sender</source>
+        <target>Адрес отправителя</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.no_file">
+      <segment>
+        <source>core.setting.no_file</source>
+        <target>Файла {path} нет</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.notice_keep_days">
+      <segment>
+        <source>core.setting.notice_keep_days</source>
+        <target>Хранить журнал оповещений, дней</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.notice_quiet_from">
+      <segment>
+        <source>core.setting.notice_quiet_from</source>
+        <target>Тишина с</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.notice_quiet_to">
+      <segment>
+        <source>core.setting.notice_quiet_to</source>
+        <target>Тишина до</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.offer_url">
+      <segment>
+        <source>core.setting.offer_url</source>
+        <target>Адрес оферты</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.privacy_url">
+      <segment>
+        <source>core.setting.privacy_url</source>
+        <target>Адрес политики обработки персональных данных</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.theme">
+      <segment>
+        <source>core.setting.theme</source>
+        <target>Тема по умолчанию</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.time">
+      <segment>
+        <source>core.setting.time</source>
+        <target>{field} — время суток в виде ЧЧ:ММ</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.title">
+      <segment>
+        <source>core.setting.title</source>
+        <target>Название</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.toggle">
+      <segment>
+        <source>core.setting.toggle</source>
+        <target>{field}: 1 включает, 0 выключает</target>
+      </segment>
+    </unit>
+    <unit id="core.status.active">
+      <segment>
+        <source>core.status.active</source>
+        <target>Действует</target>
+      </segment>
+    </unit>
+    <unit id="core.status.archived">
+      <segment>
+        <source>core.status.archived</source>
+        <target>В архиве</target>
+      </segment>
+    </unit>
+    <unit id="core.status.stopped">
+      <segment>
+        <source>core.status.stopped</source>
+        <target>Остановлен</target>
+      </segment>
+    </unit>
+    <unit id="core.theme.dark">
+      <segment>
+        <source>core.theme.dark</source>
+        <target>Тёмная</target>
+      </segment>
+    </unit>
+    <unit id="core.theme.light">
+      <segment>
+        <source>core.theme.light</source>
+        <target>Светлая</target>
+      </segment>
+    </unit>
+    <unit id="core.toggle.off">
+      <segment>
+        <source>core.toggle.off</source>
+        <target>Выключено</target>
+      </segment>
+    </unit>
+    <unit id="core.toggle.on">
+      <segment>
+        <source>core.toggle.on</source>
+        <target>Включено</target>
+      </segment>
+    </unit>
+    <unit id="core.user.remove_self">
+      <segment>
+        <source>core.user.remove_self</source>
+        <target>Свою запись оператор не удаляет</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

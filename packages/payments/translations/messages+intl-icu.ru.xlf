@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="payments.code.cancel">
+      <segment>
+        <source>payments.code.cancel</source>
+        <target>Отменить оплату</target>
+      </segment>
+    </unit>
+    <unit id="payments.code.image">
+      <segment>
+        <source>payments.code.image</source>
+        <target>QR-код оплаты</target>
+      </segment>
+    </unit>
+    <unit id="payments.code.open">
+      <segment>
+        <source>payments.code.open</source>
+        <target>Открыть в приложении банка</target>
+      </segment>
+    </unit>
+    <unit id="payments.code.scan">
+      <segment>
+        <source>payments.code.scan</source>
+        <target>Отсканируйте код камерой телефона либо приложением банка</target>
+      </segment>
+    </unit>
+    <unit id="payments.code.title">
+      <segment>
+        <source>payments.code.title</source>
+        <target>Оплата по QR-коду</target>
+      </segment>
+    </unit>
+    <unit id="payments.code.wait">
+      <segment>
+        <source>payments.code.wait</source>
+        <target>Ждём подтверждения банка</target>
+      </segment>
+    </unit>
+    <unit id="payments.flash.bound">
+      <segment>
+        <source>payments.flash.bound</source>
+        <target>Карта сохранена</target>
+      </segment>
+    </unit>
+    <unit id="payments.flash.confirmed">
+      <segment>
+        <source>payments.flash.confirmed</source>
+        <target>Платёж подтверждён</target>
+      </segment>
+    </unit>
+    <unit id="payments.flash.pending">
+      <segment>
+        <source>payments.flash.pending</source>
+        <target>Платёж ещё не подтверждён банком</target>
+      </segment>
+    </unit>
+    <unit id="payments.flash.rejected">
+      <segment>
+        <source>payments.flash.rejected</source>
+        <target>Платёж не прошёл</target>
+      </segment>
+    </unit>
+    <unit id="payments.flash.unbound">
+      <segment>
+        <source>payments.flash.unbound</source>
+        <target>Карта не сохранена</target>
+      </segment>
+    </unit>
+    <unit id="payments.kind">
+      <segment>
+        <source>payments.kind</source>
+        <target>Приём платежей</target>
+      </segment>
+    </unit>
+    <unit id="payments.refusal.binding">
+      <segment>
+        <source>payments.refusal.binding</source>
+        <target>Привязка карты недоступна</target>
+      </segment>
+    </unit>
+    <unit id="payments.refusal.closing">
+      <segment>
+        <source>payments.refusal.closing</source>
+        <target>Закрывающий чек — только у платежа предоплатой</target>
+      </segment>
+    </unit>
+    <unit id="payments.refusal.contact">
+      <segment>
+        <source>payments.refusal.contact</source>
+        <target>Укажите телефон либо почту для чека</target>
+      </segment>
+    </unit>
+    <unit id="payments.refusal.floor">
+      <segment>
+        <source>payments.refusal.floor</source>
+        <target>Сумма меньше {floor} ₽</target>
+      </segment>
+    </unit>
+    <unit id="payments.refusal.method">
+      <segment>
+        <source>payments.refusal.method</source>
+        <target>Такого способа оплаты нет</target>
+      </segment>
+    </unit>
+    <unit id="payments.refusal.provider">
+      <segment>
+        <source>payments.refusal.provider</source>
+        <target>Платёжный сервис отказал: {reason}</target>
+      </segment>
+    </unit>
+    <unit id="payments.refusal.saving">
+      <segment>
+        <source>payments.refusal.saving</source>
+        <target>Оплата сохранённой картой недоступна</target>
+      </segment>
+    </unit>
+    <unit id="payments.status.cancelled">
+      <segment>
+        <source>payments.status.cancelled</source>
+        <target>Отменён</target>
+      </segment>
+    </unit>
+    <unit id="payments.status.confirmed">
+      <segment>
+        <source>payments.status.confirmed</source>
+        <target>Подтверждён</target>
+      </segment>
+    </unit>
+    <unit id="payments.status.pending">
+      <segment>
+        <source>payments.status.pending</source>
+        <target>Ждёт оплаты</target>
+      </segment>
+    </unit>
+    <unit id="payments.status.rejected">
+      <segment>
+        <source>payments.status.rejected</source>
+        <target>Отклонён</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

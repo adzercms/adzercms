@@ -1,0 +1,755 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="cabinet.contact.add">
+      <segment>
+        <source>cabinet.contact.add</source>
+        <target>Add</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.cancel">
+      <segment>
+        <source>cabinet.contact.cancel</source>
+        <target>Cancel the change</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.cancelled">
+      <segment>
+        <source>cabinet.contact.cancelled</source>
+        <target>Contact change cancelled</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.change">
+      <segment>
+        <source>cabinet.contact.change</source>
+        <target>Change</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.code">
+      <segment>
+        <source>cabinet.contact.code</source>
+        <target>The code is wrong or expired</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.code_label">
+      <segment>
+        <source>cabinet.contact.code_label</source>
+        <target>Code sent to {contact}</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.confirm">
+      <segment>
+        <source>cabinet.contact.confirm</source>
+        <target>Confirm</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.confirmed">
+      <segment>
+        <source>cabinet.contact.confirmed</source>
+        <target>confirmed</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.email_confirmed">
+      <segment>
+        <source>cabinet.contact.email_confirmed</source>
+        <target>Email confirmed</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.empty">
+      <segment>
+        <source>cabinet.contact.empty</source>
+        <target>not set</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.former">
+      <segment>
+        <source>cabinet.contact.former</source>
+        <target>The consent link for the change was sent to the former email {contact}</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.link">
+      <segment>
+        <source>cabinet.contact.link</source>
+        <target>The link is invalid or expired</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.malformed">
+      <segment>
+        <source>cabinet.contact.malformed</source>
+        <target>This is neither a phone nor an email</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.operator">
+      <segment>
+        <source>cabinet.contact.operator</source>
+        <target>Contacts are changed by the operator: no confirmation delivery channels are set up.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.own">
+      <segment>
+        <source>cabinet.contact.own</source>
+        <target>Confirm ownership</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.phone_confirmed">
+      <segment>
+        <source>cabinet.contact.phone_confirmed</source>
+        <target>Phone confirmed</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.release_link">
+      <segment>
+        <source>cabinet.contact.release_link</source>
+        <target>The consent link is invalid or expired</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.sent">
+      <segment>
+        <source>cabinet.contact.sent</source>
+        <target>Confirmation sent to {contact}</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.taken">
+      <segment>
+        <source>cabinet.contact.taken</source>
+        <target>The contact is taken by another user</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.title">
+      <segment>
+        <source>cabinet.contact.title</source>
+        <target>Contacts</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.unreachable">
+      <segment>
+        <source>cabinet.contact.unreachable</source>
+        <target>The operator has not set up confirmation for this contact</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.unsent">
+      <segment>
+        <source>cabinet.contact.unsent</source>
+        <target>The confirmation was not sent, try again later</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.deletion.confirm_hint">
+      <segment>
+        <source>cabinet.deletion.confirm_hint</source>
+        <target>After deletion the cabinet closes; the record can be restored by access recovery.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.deletion.done">
+      <segment>
+        <source>cabinet.deletion.done</source>
+        <target>Record deleted</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.deletion.hint">
+      <segment>
+        <source>cabinet.deletion.hint</source>
+        <target>The deletion link will come to {email}; the record can be restored by access recovery.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.deletion.link">
+      <segment>
+        <source>cabinet.deletion.link</source>
+        <target>The deletion link is invalid or expired</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.deletion.no_mail">
+      <segment>
+        <source>cabinet.deletion.no_mail</source>
+        <target>Deletion goes by a link to the email: confirm it in contacts.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.deletion.request">
+      <segment>
+        <source>cabinet.deletion.request</source>
+        <target>Delete record</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.deletion.sent">
+      <segment>
+        <source>cabinet.deletion.sent</source>
+        <target>The deletion link was sent to {email}</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.deletion.title">
+      <segment>
+        <source>cabinet.deletion.title</source>
+        <target>Record deletion</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.language.title">
+      <segment>
+        <source>cabinet.language.title</source>
+        <target>Language</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.language.unknown">
+      <segment>
+        <source>cabinet.language.unknown</source>
+        <target>No such language</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.login.back">
+      <segment>
+        <source>cabinet.login.back</source>
+        <target>Back to login</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.login.enter">
+      <segment>
+        <source>cabinet.login.enter</source>
+        <target>Log in</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.login.forgot">
+      <segment>
+        <source>cabinet.login.forgot</source>
+        <target>Forgot password?</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.login.login">
+      <segment>
+        <source>cabinet.login.login</source>
+        <target>Email or phone</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.login.no_account">
+      <segment>
+        <source>cabinet.login.no_account</source>
+        <target>No record?</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.login.password">
+      <segment>
+        <source>cabinet.login.password</source>
+        <target>Password</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.login.register">
+      <segment>
+        <source>cabinet.login.register</source>
+        <target>Sign up</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.login.restore">
+      <segment>
+        <source>cabinet.login.restore</source>
+        <target>Restore access</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.login.title">
+      <segment>
+        <source>cabinet.login.title</source>
+        <target>Cabinet login</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.login.with">
+      <segment>
+        <source>cabinet.login.with</source>
+        <target>Log in with</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.menu.account">
+      <segment>
+        <source>cabinet.menu.account</source>
+        <target>Record</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.menu.home">
+      <segment>
+        <source>cabinet.menu.home</source>
+        <target>Home</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.menu.logout">
+      <segment>
+        <source>cabinet.menu.logout</source>
+        <target>Log out</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.menu.profile">
+      <segment>
+        <source>cabinet.menu.profile</source>
+        <target>Profile</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.notices.bot_code">
+      <segment>
+        <source>cabinet.notices.bot_code</source>
+        <target>Send the bot the code {code}</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.notices.bot_off">
+      <segment>
+        <source>cabinet.notices.bot_off</source>
+        <target>The bot is switched off by the operator</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.notices.bot_unlink_confirm">
+      <segment>
+        <source>cabinet.notices.bot_unlink_confirm</source>
+        <target>Disconnect {bot}? Notices will stop coming by this channel.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.notices.missing_bot">
+      <segment>
+        <source>cabinet.notices.missing_bot</source>
+        <target>connect the bot</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.notices.missing_mail">
+      <segment>
+        <source>cabinet.notices.missing_mail</source>
+        <target>confirm the email</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.notices.missing_sms">
+      <segment>
+        <source>cabinet.notices.missing_sms</source>
+        <target>confirm the phone</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.notices.none">
+      <segment>
+        <source>cabinet.notices.none</source>
+        <target>The operator has not set up any channel.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.notices.order">
+      <segment>
+        <source>cabinet.notices.order</source>
+        <target>An event goes by the first available channel of the checked ones.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.notices.save">
+      <segment>
+        <source>cabinet.notices.save</source>
+        <target>Save settings</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.notices.saved">
+      <segment>
+        <source>cabinet.notices.saved</source>
+        <target>Notice channels saved</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.notices.title">
+      <segment>
+        <source>cabinet.notices.title</source>
+        <target>Notice channels</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.password.change">
+      <segment>
+        <source>cabinet.password.change</source>
+        <target>Change password</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.password.hint">
+      <segment>
+        <source>cabinet.password.hint</source>
+        <target>The password change link will come to {email}, the current login stays.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.password.new">
+      <segment>
+        <source>cabinet.password.new</source>
+        <target>New password</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.password.no_mail">
+      <segment>
+        <source>cabinet.password.no_mail</source>
+        <target>Password change goes by a link to the email: confirm it in contacts.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.password.repeat">
+      <segment>
+        <source>cabinet.password.repeat</source>
+        <target>Repeat password</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.password.save">
+      <segment>
+        <source>cabinet.password.save</source>
+        <target>Save</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.password.sent">
+      <segment>
+        <source>cabinet.password.sent</source>
+        <target>The password change link was sent to {email}</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.password.title">
+      <segment>
+        <source>cabinet.password.title</source>
+        <target>Password</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.password.unsent">
+      <segment>
+        <source>cabinet.password.unsent</source>
+        <target>The link was not sent, try again later</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.profile.first_name">
+      <segment>
+        <source>cabinet.profile.first_name</source>
+        <target>First name</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.profile.id">
+      <segment>
+        <source>cabinet.profile.id</source>
+        <target>Record number</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.profile.info">
+      <segment>
+        <source>cabinet.profile.info</source>
+        <target>Information</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.profile.last_name">
+      <segment>
+        <source>cabinet.profile.last_name</source>
+        <target>Last name</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.profile.middle_name">
+      <segment>
+        <source>cabinet.profile.middle_name</source>
+        <target>Middle name</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.profile.name">
+      <segment>
+        <source>cabinet.profile.name</source>
+        <target>Full name</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.profile.name_saved">
+      <segment>
+        <source>cabinet.profile.name_saved</source>
+        <target>Full name saved</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.profile.save">
+      <segment>
+        <source>cabinet.profile.save</source>
+        <target>Save changes</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.profile.since">
+      <segment>
+        <source>cabinet.profile.since</source>
+        <target>Registered</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.profile.tab.account">
+      <segment>
+        <source>cabinet.profile.tab.account</source>
+        <target>Profile</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.profile.tab.notices">
+      <segment>
+        <source>cabinet.profile.tab.notices</source>
+        <target>Notices</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.profile.tab.security">
+      <segment>
+        <source>cabinet.profile.tab.security</source>
+        <target>Security</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.profile.title">
+      <segment>
+        <source>cabinet.profile.title</source>
+        <target>Profile</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.captcha">
+      <segment>
+        <source>cabinet.register.captcha</source>
+        <target>Confirm that you are not a robot</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.code">
+      <segment>
+        <source>cabinet.register.code</source>
+        <target>The code is wrong or expired</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.code_label">
+      <segment>
+        <source>cabinet.register.code_label</source>
+        <target>Code from the message</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.confirm_title">
+      <segment>
+        <source>cabinet.register.confirm_title</source>
+        <target>Sign-up confirmation</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.create">
+      <segment>
+        <source>cabinet.register.create</source>
+        <target>Create cabinet</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.done">
+      <segment>
+        <source>cabinet.register.done</source>
+        <target>Cabinet created</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.mismatch">
+      <segment>
+        <source>cabinet.register.mismatch</source>
+        <target>Passwords do not match</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.no_channel">
+      <segment>
+        <source>cabinet.register.no_channel</source>
+        <target>Sign-up by code is unavailable: the operator has not set up any delivery channel</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.other">
+      <segment>
+        <source>cabinet.register.other</source>
+        <target>Other data</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.title">
+      <segment>
+        <source>cabinet.register.title</source>
+        <target>Sign up</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.unavailable">
+      <segment>
+        <source>cabinet.register.unavailable</source>
+        <target>The code was not sent, check the contact or try again later</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.release.agree">
+      <segment>
+        <source>cabinet.release.agree</source>
+        <target>Agree to the change</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.release.hint">
+      <segment>
+        <source>cabinet.release.hint</source>
+        <target>New email — {contact}: the confirmation link goes to it, logins with the former email expire after the change.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.release.title">
+      <segment>
+        <source>cabinet.release.title</source>
+        <target>Email change</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.reset.changed">
+      <segment>
+        <source>cabinet.reset.changed</source>
+        <target>Password changed, log in with it</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.reset.code">
+      <segment>
+        <source>cabinet.reset.code</source>
+        <target>The code is wrong or expired</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.reset.code_hint">
+      <segment>
+        <source>cabinet.reset.code_hint</source>
+        <target>The code comes to the user's phone, without a phone — a link to their email.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.reset.code_sent">
+      <segment>
+        <source>cabinet.reset.code_sent</source>
+        <target>If the user exists, the code was sent to their phone, without a phone — a link to the email</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.reset.done">
+      <segment>
+        <source>cabinet.reset.done</source>
+        <target>Password set, log in with it</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.reset.link">
+      <segment>
+        <source>cabinet.reset.link</source>
+        <target>The link is invalid or expired — request the password change again</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.reset.link_hint">
+      <segment>
+        <source>cabinet.reset.link_hint</source>
+        <target>The password change link comes to the user's email.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.reset.link_sent">
+      <segment>
+        <source>cabinet.reset.link_sent</source>
+        <target>If the user exists, the password change link was sent to their email</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.reset.new_title">
+      <segment>
+        <source>cabinet.reset.new_title</source>
+        <target>New password</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.reset.send_code">
+      <segment>
+        <source>cabinet.reset.send_code</source>
+        <target>Send code</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.reset.send_link">
+      <segment>
+        <source>cabinet.reset.send_link</source>
+        <target>Send link</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.reset.title">
+      <segment>
+        <source>cabinet.reset.title</source>
+        <target>Access recovery</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.services.link">
+      <segment>
+        <source>cabinet.services.link</source>
+        <target>Connect</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.services.title">
+      <segment>
+        <source>cabinet.services.title</source>
+        <target>Login methods</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.services.unlink">
+      <segment>
+        <source>cabinet.services.unlink</source>
+        <target>Disconnect</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.services.unlink_confirm">
+      <segment>
+        <source>cabinet.services.unlink_confirm</source>
+        <target>Disconnect login with {service}?</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.services.unlinked">
+      <segment>
+        <source>cabinet.services.unlinked</source>
+        <target>Service disconnected</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.sessions.end">
+      <segment>
+        <source>cabinet.sessions.end</source>
+        <target>End</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.sessions.end_confirm">
+      <segment>
+        <source>cabinet.sessions.end_confirm</source>
+        <target>End login {device}? That device will have to log in again.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.sessions.end_others">
+      <segment>
+        <source>cabinet.sessions.end_others</source>
+        <target>End the others</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.sessions.end_others_confirm">
+      <segment>
+        <source>cabinet.sessions.end_others_confirm</source>
+        <target>End all logins except this one? Those devices will have to log in again.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.sessions.ended">
+      <segment>
+        <source>cabinet.sessions.ended</source>
+        <target>Login ended</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.sessions.gone">
+      <segment>
+        <source>cabinet.sessions.gone</source>
+        <target>Login already ended</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.sessions.others_ended">
+      <segment>
+        <source>cabinet.sessions.others_ended</source>
+        <target>Other logins ended</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.sessions.this">
+      <segment>
+        <source>cabinet.sessions.this</source>
+        <target>this login</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.sessions.times">
+      <segment>
+        <source>cabinet.sessions.times</source>
+        <target>active {seen, date, short} {seen, time, short}, logged in {entered, date, short} {entered, time, short}</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.sessions.title">
+      <segment>
+        <source>cabinet.sessions.title</source>
+        <target>Logins</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.terms">
+      <segment>
+        <source>cabinet.terms</source>
+        <target>By continuing, you accept the {offer}. {privacy}.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.terms.offer">
+      <segment>
+        <source>cabinet.terms.offer</source>
+        <target>offer</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.terms.privacy">
+      <segment>
+        <source>cabinet.terms.privacy</source>
+        <target>Personal data policy</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.theme.title">
+      <segment>
+        <source>cabinet.theme.title</source>
+        <target>Theme</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.theme.unknown">
+      <segment>
+        <source>cabinet.theme.unknown</source>
+        <target>No such theme</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

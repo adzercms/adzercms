@@ -1,0 +1,69 @@
+{
+    "name": "adzercms/core",
+    "type": "symfony-bundle",
+    "description": "Core Symfony bundle of AdzerCMS: module registry, accounts and login, settings with encrypted secrets, notices",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "cms",
+        "authentication",
+        "settings",
+        "notifications"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "ext-intl": "*",
+        "ext-openssl": "*",
+        "endroid/qr-code": "^6.1.3",
+        "ext-sodium": "*",
+        "adzercms/contracts": "^1.0",
+        "composer-runtime-api": "^2.2",
+        "doctrine/dbal": "^4.5",
+        "doctrine/doctrine-bundle": "^3.3",
+        "doctrine/doctrine-migrations-bundle": "^4.0",
+        "doctrine/migrations": "^3.9",
+        "doctrine/orm": "^3.7",
+        "facile-it/doctrine-mysql-come-back": "^3.0",
+        "firebase/php-jwt": "^7.2",
+        "geoip2/geoip2": "^3.4",
+        "matomo/device-detector": "^6.5",
+        "symfony/asset": "7.4.*",
+        "symfony/asset-mapper": "7.4.*",
+        "symfony/clock": "7.4.*",
+        "symfony/config": "7.4.*",
+        "symfony/console": "7.4.*",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/filesystem": "7.4.*",
+        "symfony/framework-bundle": "7.4.*",
+        "symfony/http-client": "7.4.*",
+        "symfony/http-foundation": "7.4.*",
+        "symfony/http-kernel": "7.4.*",
+        "symfony/mailer": "7.4.*",
+        "symfony/mime": "7.4.*",
+        "symfony/password-hasher": "7.4.*",
+        "symfony/routing": "7.4.*",
+        "symfony/security-bundle": "7.4.*",
+        "symfony/security-core": "7.4.*",
+        "symfony/service-contracts": "^3.7",
+        "symfony/translation": "7.4.*",
+        "symfony/twig-bundle": "7.4.*",
+        "twig/cssinliner-extra": "^3.26",
+        "twig/twig": "^3.30"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Core\\": "src/"
+        }
+    },
+    "bin": [
+        "bin/adzercms-package-console",
+        "bin/adzercms-pre-commit",
+        "bin/adzercms-refresh"
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

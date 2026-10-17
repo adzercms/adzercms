@@ -1,0 +1,5 @@
+<div class="stats" id="stats" {{ oob|default(false) ? 'hx-swap-oob="true"' }}>
+    <div class="stat-card"><span class="stat-value">{{ counts.users }}</span><span class="stat-label">{{ 'admin.dashboard.users'|trans }}</span></div>
+    <div class="stat-card"><span class="stat-value">{{ counts.archive }}</span><span class="stat-label">{{ 'admin.dashboard.archive'|trans }}</span></div>
+    {% for part in fragments('admin.dashboard') %}{% include part.template with part.context only %}{% endfor %}
+</div>

@@ -1,0 +1,20 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'admin.menu.settings'|trans }}{% endblock %}
+
+{% block page %}
+<nav class="tabs">
+    {% for key, group in groups %}
+        <a class="tab {{ tab == key ? 'active' }}" href="{{ path('admin_settings', {tab: key}) }}">{{ group.label|trans }}</a>
+    {% endfor %}
+</nav>
+
+<form method="post" enctype="multipart/form-data">
+    {{ csrf_field() }}
+    <input type="hidden" name="tab" value="{{ tab }}">
+
+    {% include '@Admin/admin/_setting_fields.html.twig' with {sections: sections, values: values} %}
+
+    <button type="submit">{{ 'admin.save'|trans }}</button>
+</form>
+{% endblock %}

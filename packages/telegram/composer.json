@@ -1,0 +1,36 @@
+{
+    "name": "adzercms/telegram",
+    "type": "adzercms-module",
+    "description": "Sign-in with Telegram for AdzerCMS: OpenID Connect and account linking",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "telegram",
+        "openid-connect",
+        "social-login"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/http-kernel": "7.4.*",
+        "symfony/translation": "7.4.*"
+    },
+    "provide": {
+        "adzercms/login-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Telegram\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Telegram\\TelegramBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

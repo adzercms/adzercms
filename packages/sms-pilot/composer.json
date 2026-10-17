@@ -1,0 +1,34 @@
+{
+    "name": "adzercms/sms-pilot",
+    "type": "adzercms-module",
+    "description": "SMSPilot SMS gateway for AdzerCMS notices and confirmation codes",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "sms",
+        "sms-gateway",
+        "smspilot"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0"
+    },
+    "provide": {
+        "adzercms/sms-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\SmsPilot\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\SmsPilot\\SmsPilotBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

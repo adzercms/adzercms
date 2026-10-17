@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="yookassa.api_url">
+      <segment>
+        <source>yookassa.api_url</source>
+        <target>Адрес API</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.closing_subject">
+      <segment>
+        <source>yookassa.closing_subject</source>
+        <target>Предмет расчёта закрывающего чека</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.fee_page">
+      <segment>
+        <source>yookassa.fee_page</source>
+        <target>Комиссия оплаты картой, %</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.fee_sbp">
+      <segment>
+        <source>yookassa.fee_sbp</source>
+        <target>Комиссия оплаты по СБП, %</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.method.page">
+      <segment>
+        <source>yookassa.method.page</source>
+        <target>Картой</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.method.sbp">
+      <segment>
+        <source>yookassa.method.sbp</source>
+        <target>По СБП</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode">
+      <segment>
+        <source>yookassa.payment_mode</source>
+        <target>Способ расчёта</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode.advance">
+      <segment>
+        <source>yookassa.payment_mode.advance</source>
+        <target>Аванс</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode.credit">
+      <segment>
+        <source>yookassa.payment_mode.credit</source>
+        <target>Передача в кредит</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode.credit_payment">
+      <segment>
+        <source>yookassa.payment_mode.credit_payment</source>
+        <target>Оплата кредита</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode.full_payment">
+      <segment>
+        <source>yookassa.payment_mode.full_payment</source>
+        <target>Полный расчёт</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode.full_prepayment">
+      <segment>
+        <source>yookassa.payment_mode.full_prepayment</source>
+        <target>Предоплата 100%</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode.partial_payment">
+      <segment>
+        <source>yookassa.payment_mode.partial_payment</source>
+        <target>Частичный расчёт и кредит</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_mode.partial_prepayment">
+      <segment>
+        <source>yookassa.payment_mode.partial_prepayment</source>
+        <target>Частичная предоплата</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject">
+      <segment>
+        <source>yookassa.payment_subject</source>
+        <target>Предмет расчёта</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.agent_commission">
+      <segment>
+        <source>yookassa.payment_subject.agent_commission</source>
+        <target>Агентское вознаграждение</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.another">
+      <segment>
+        <source>yookassa.payment_subject.another</source>
+        <target>Иной предмет расчёта</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.commodity">
+      <segment>
+        <source>yookassa.payment_subject.commodity</source>
+        <target>Товар</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.composite">
+      <segment>
+        <source>yookassa.payment_subject.composite</source>
+        <target>Составной предмет расчёта</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.excise">
+      <segment>
+        <source>yookassa.payment_subject.excise</source>
+        <target>Подакцизный товар</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.gambling_bet">
+      <segment>
+        <source>yookassa.payment_subject.gambling_bet</source>
+        <target>Ставка азартной игры</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.gambling_prize">
+      <segment>
+        <source>yookassa.payment_subject.gambling_prize</source>
+        <target>Выигрыш азартной игры</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.insurance_premium">
+      <segment>
+        <source>yookassa.payment_subject.insurance_premium</source>
+        <target>Страховые взносы</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.intellectual_activity">
+      <segment>
+        <source>yookassa.payment_subject.intellectual_activity</source>
+        <target>Результат интеллектуальной деятельности</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.job">
+      <segment>
+        <source>yookassa.payment_subject.job</source>
+        <target>Работа</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.lottery">
+      <segment>
+        <source>yookassa.payment_subject.lottery</source>
+        <target>Лотерейный билет</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.lottery_prize">
+      <segment>
+        <source>yookassa.payment_subject.lottery_prize</source>
+        <target>Выигрыш лотереи</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.non_operating_gain">
+      <segment>
+        <source>yookassa.payment_subject.non_operating_gain</source>
+        <target>Внереализационный доход</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.payment">
+      <segment>
+        <source>yookassa.payment_subject.payment</source>
+        <target>Платёж</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.property_right">
+      <segment>
+        <source>yookassa.payment_subject.property_right</source>
+        <target>Имущественное право</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.resort_fee">
+      <segment>
+        <source>yookassa.payment_subject.resort_fee</source>
+        <target>Курортный сбор</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.sales_tax">
+      <segment>
+        <source>yookassa.payment_subject.sales_tax</source>
+        <target>Торговый сбор</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.payment_subject.service">
+      <segment>
+        <source>yookassa.payment_subject.service</source>
+        <target>Услуга</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.secret_key">
+      <segment>
+        <source>yookassa.secret_key</source>
+        <target>Секретный ключ</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.shop_id">
+      <segment>
+        <source>yookassa.shop_id</source>
+        <target>Идентификатор магазина</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.taxation">
+      <segment>
+        <source>yookassa.taxation</source>
+        <target>Система налогообложения</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.taxation.1">
+      <segment>
+        <source>yookassa.taxation.1</source>
+        <target>ОСН</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.taxation.2">
+      <segment>
+        <source>yookassa.taxation.2</source>
+        <target>УСН доходы</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.taxation.3">
+      <segment>
+        <source>yookassa.taxation.3</source>
+        <target>УСН доходы минус расходы</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.taxation.4">
+      <segment>
+        <source>yookassa.taxation.4</source>
+        <target>ЕНВД</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.taxation.5">
+      <segment>
+        <source>yookassa.taxation.5</source>
+        <target>ЕСХН</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.taxation.6">
+      <segment>
+        <source>yookassa.taxation.6</source>
+        <target>Патент</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat">
+      <segment>
+        <source>yookassa.vat</source>
+        <target>Ставка НДС</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.1">
+      <segment>
+        <source>yookassa.vat.1</source>
+        <target>Без НДС</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.10">
+      <segment>
+        <source>yookassa.vat.10</source>
+        <target>НДС 7/107</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.11">
+      <segment>
+        <source>yookassa.vat.11</source>
+        <target>НДС 22%</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.12">
+      <segment>
+        <source>yookassa.vat.12</source>
+        <target>НДС 22/122</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.2">
+      <segment>
+        <source>yookassa.vat.2</source>
+        <target>НДС 0%</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.3">
+      <segment>
+        <source>yookassa.vat.3</source>
+        <target>НДС 10%</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.4">
+      <segment>
+        <source>yookassa.vat.4</source>
+        <target>НДС 20%</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.5">
+      <segment>
+        <source>yookassa.vat.5</source>
+        <target>НДС 10/110</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.6">
+      <segment>
+        <source>yookassa.vat.6</source>
+        <target>НДС 20/120</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.7">
+      <segment>
+        <source>yookassa.vat.7</source>
+        <target>НДС 5%</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.8">
+      <segment>
+        <source>yookassa.vat.8</source>
+        <target>НДС 7%</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.vat.9">
+      <segment>
+        <source>yookassa.vat.9</source>
+        <target>НДС 5/105</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

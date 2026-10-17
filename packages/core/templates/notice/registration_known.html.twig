@@ -1,0 +1,16 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+{% import '@Core/notice/_macros.html.twig' as mail %}
+
+{% block subject %}{{ 'core.notice.registration_known.subject'|trans({brand: brand.title}) }}{% endblock %}
+
+{% block text %}
+{{ 'core.notice.registration_known.body'|trans({brand: brand.title, contact: contact}) }} {{ url }}
+{{ 'core.notice.registration.note'|trans }}
+{% endblock %}
+
+{% block content %}
+<h2>{{ 'core.notice.registration_known.title'|trans }}</h2>
+<p>{{ 'core.notice.registration_known.body'|trans({brand: brand.title, contact: contact}) }}</p>
+{{ mail.link(url, 'core.notice.registration_known.action'|trans) }}
+<p class="note">{{ 'core.notice.registration.note'|trans }}</p>
+{% endblock %}

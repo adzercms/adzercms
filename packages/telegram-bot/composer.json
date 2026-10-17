@@ -1,0 +1,34 @@
+{
+    "name": "adzercms/telegram-bot",
+    "type": "adzercms-module",
+    "description": "Telegram bot channel for AdzerCMS notices",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "telegram",
+        "bot",
+        "notifications"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0"
+    },
+    "provide": {
+        "adzercms/bot-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\TelegramBot\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\TelegramBot\\TelegramBotBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

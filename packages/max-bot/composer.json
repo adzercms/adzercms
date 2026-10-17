@@ -1,0 +1,34 @@
+{
+    "name": "adzercms/max-bot",
+    "type": "adzercms-module",
+    "description": "MAX messenger bot channel for AdzerCMS notices",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "max",
+        "bot",
+        "notifications"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0"
+    },
+    "provide": {
+        "adzercms/bot-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\MaxBot\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\MaxBot\\MaxBotBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

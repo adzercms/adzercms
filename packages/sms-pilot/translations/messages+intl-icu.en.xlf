@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" srcLang="en" trgLang="en" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="messages.en">
+    <unit id="smspilot.api_url">
+      <segment>
+        <source>smspilot.api_url</source>
+        <target>API address</target>
+      </segment>
+    </unit>
+    <unit id="smspilot.apikey">
+      <segment>
+        <source>smspilot.apikey</source>
+        <target>API key</target>
+      </segment>
+    </unit>
+    <unit id="smspilot.sender">
+      <segment>
+        <source>smspilot.sender</source>
+        <target>Sender name</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

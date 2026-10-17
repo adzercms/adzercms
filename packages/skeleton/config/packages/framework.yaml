@@ -1,0 +1,8 @@
+framework:
+    secret: '%env(APP_SECRET)%'
+
+when@test:
+    framework:
+        test: true
+        http_client:
+            mock_response_factory: AdzerCMS\Core\Tests\HttpAnswers

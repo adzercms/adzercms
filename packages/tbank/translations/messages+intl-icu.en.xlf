@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" srcLang="en" trgLang="en" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="messages.en">
+    <unit id="tbank.api_url">
+      <segment>
+        <source>tbank.api_url</source>
+        <target>API address</target>
+      </segment>
+    </unit>
+    <unit id="tbank.closing_object">
+      <segment>
+        <source>tbank.closing_object</source>
+        <target>Payment object of the closing receipt</target>
+      </segment>
+    </unit>
+    <unit id="tbank.fee_page">
+      <segment>
+        <source>tbank.fee_page</source>
+        <target>Card payment fee, %</target>
+      </segment>
+    </unit>
+    <unit id="tbank.fee_qr">
+      <segment>
+        <source>tbank.fee_qr</source>
+        <target>SBP payment fee, %</target>
+      </segment>
+    </unit>
+    <unit id="tbank.method.page">
+      <segment>
+        <source>tbank.method.page</source>
+        <target>By card</target>
+      </segment>
+    </unit>
+    <unit id="tbank.method.qr">
+      <segment>
+        <source>tbank.method.qr</source>
+        <target>By SBP</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method">
+      <segment>
+        <source>tbank.payment_method</source>
+        <target>Payment method</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method.advance">
+      <segment>
+        <source>tbank.payment_method.advance</source>
+        <target>Advance</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method.credit">
+      <segment>
+        <source>tbank.payment_method.credit</source>
+        <target>Transfer on credit</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method.credit_payment">
+      <segment>
+        <source>tbank.payment_method.credit_payment</source>
+        <target>Credit payment</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method.full_payment">
+      <segment>
+        <source>tbank.payment_method.full_payment</source>
+        <target>Full payment</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method.full_prepayment">
+      <segment>
+        <source>tbank.payment_method.full_prepayment</source>
+        <target>Prepayment 100%</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method.partial_payment">
+      <segment>
+        <source>tbank.payment_method.partial_payment</source>
+        <target>Partial payment and credit</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_method.prepayment">
+      <segment>
+        <source>tbank.payment_method.prepayment</source>
+        <target>Partial prepayment</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object">
+      <segment>
+        <source>tbank.payment_object</source>
+        <target>Payment object</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.agent_commission">
+      <segment>
+        <source>tbank.payment_object.agent_commission</source>
+        <target>Agent commission</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.another">
+      <segment>
+        <source>tbank.payment_object.another</source>
+        <target>Other payment object</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.commodity">
+      <segment>
+        <source>tbank.payment_object.commodity</source>
+        <target>Commodity</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.composite">
+      <segment>
+        <source>tbank.payment_object.composite</source>
+        <target>Composite payment object</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.excise">
+      <segment>
+        <source>tbank.payment_object.excise</source>
+        <target>Excise commodity</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.gambling_bet">
+      <segment>
+        <source>tbank.payment_object.gambling_bet</source>
+        <target>Gambling bet</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.gambling_prize">
+      <segment>
+        <source>tbank.payment_object.gambling_prize</source>
+        <target>Gambling prize</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.intellectual_activity">
+      <segment>
+        <source>tbank.payment_object.intellectual_activity</source>
+        <target>Intellectual activity result</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.job">
+      <segment>
+        <source>tbank.payment_object.job</source>
+        <target>Job</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.lottery">
+      <segment>
+        <source>tbank.payment_object.lottery</source>
+        <target>Lottery ticket</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.lottery_prize">
+      <segment>
+        <source>tbank.payment_object.lottery_prize</source>
+        <target>Lottery prize</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.payment">
+      <segment>
+        <source>tbank.payment_object.payment</source>
+        <target>Payment</target>
+      </segment>
+    </unit>
+    <unit id="tbank.payment_object.service">
+      <segment>
+        <source>tbank.payment_object.service</source>
+        <target>Service</target>
+      </segment>
+    </unit>
+    <unit id="tbank.taxation">
+      <segment>
+        <source>tbank.taxation</source>
+        <target>Taxation system</target>
+      </segment>
+    </unit>
+    <unit id="tbank.taxation.esn">
+      <segment>
+        <source>tbank.taxation.esn</source>
+        <target>ESKhN</target>
+      </segment>
+    </unit>
+    <unit id="tbank.taxation.osn">
+      <segment>
+        <source>tbank.taxation.osn</source>
+        <target>OSN</target>
+      </segment>
+    </unit>
+    <unit id="tbank.taxation.patent">
+      <segment>
+        <source>tbank.taxation.patent</source>
+        <target>Patent</target>
+      </segment>
+    </unit>
+    <unit id="tbank.taxation.usn_income">
+      <segment>
+        <source>tbank.taxation.usn_income</source>
+        <target>USN income</target>
+      </segment>
+    </unit>
+    <unit id="tbank.taxation.usn_income_outcome">
+      <segment>
+        <source>tbank.taxation.usn_income_outcome</source>
+        <target>USN income minus expenses</target>
+      </segment>
+    </unit>
+    <unit id="tbank.terminal_key">
+      <segment>
+        <source>tbank.terminal_key</source>
+        <target>Terminal</target>
+      </segment>
+    </unit>
+    <unit id="tbank.terminal_password">
+      <segment>
+        <source>tbank.terminal_password</source>
+        <target>Terminal password</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat">
+      <segment>
+        <source>tbank.vat</source>
+        <target>VAT rate</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.none">
+      <segment>
+        <source>tbank.vat.none</source>
+        <target>No VAT</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat0">
+      <segment>
+        <source>tbank.vat.vat0</source>
+        <target>VAT 0%</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat10">
+      <segment>
+        <source>tbank.vat.vat10</source>
+        <target>VAT 10%</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat105">
+      <segment>
+        <source>tbank.vat.vat105</source>
+        <target>VAT 5/105</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat107">
+      <segment>
+        <source>tbank.vat.vat107</source>
+        <target>VAT 7/107</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat110">
+      <segment>
+        <source>tbank.vat.vat110</source>
+        <target>VAT 10/110</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat122">
+      <segment>
+        <source>tbank.vat.vat122</source>
+        <target>VAT 22/122</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat22">
+      <segment>
+        <source>tbank.vat.vat22</source>
+        <target>VAT 22%</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat5">
+      <segment>
+        <source>tbank.vat.vat5</source>
+        <target>VAT 5%</target>
+      </segment>
+    </unit>
+    <unit id="tbank.vat.vat7">
+      <segment>
+        <source>tbank.vat.vat7</source>
+        <target>VAT 7%</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

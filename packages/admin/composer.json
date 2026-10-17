@@ -1,0 +1,38 @@
+{
+    "name": "adzercms/admin",
+    "type": "adzercms-module",
+    "description": "Admin panel for AdzerCMS: renders the sections, lists, forms and settings that modules declare",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "admin",
+        "admin-panel",
+        "backoffice"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
+        "adzercms/theme-implementation": "^1.0"
+    },
+    "require-dev": {
+        "adzercms/cabinet": "^1.0"
+    },
+    "provide": {
+        "adzercms/admin-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Admin\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Admin\\AdminBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

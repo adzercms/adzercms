@@ -1,0 +1,1 @@
+{{ 'support.notice.closed.short'|trans({count: tickets|length, ids: tickets|map(ticket => ticket.id)|join(', ')}) }} {{ url('support_ticket_new') }}

@@ -1,0 +1,22 @@
+{% extends '@Cabinet/cabinet/auth.html.twig' %}
+
+{% block title %}{{ 'cabinet.reset.new_title'|trans }}{% endblock %}
+
+{% block auth %}
+<form method="post">
+    {{ csrf_field() }}
+    {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+    <label>{{ 'cabinet.login.login'|trans }}
+        <input type="text" name="login" value="{{ login }}" autocomplete="username" required>
+    </label>
+    <label>{{ 'cabinet.register.code_label'|trans }}
+        <input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" required autofocus>
+    </label>
+    <label>{{ 'cabinet.password.new'|trans }}
+        <input type="password" name="password" autocomplete="new-password" minlength="{{ password_min }}" required>
+    </label>
+    <button class="wide" type="submit">{{ 'cabinet.password.save'|trans }}</button>
+</form>
+
+<p class="auth-links"><a href="{{ path('cabinet_login') }}">{{ 'cabinet.login.back'|trans }}</a></p>
+{% endblock %}

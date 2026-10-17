@@ -1,0 +1,39 @@
+{
+    "name": "adzercms/support",
+    "type": "adzercms-module",
+    "description": "Support tickets for AdzerCMS with attachments, staff digest and help article suggestions",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "support",
+        "helpdesk",
+        "tickets"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
+        "adzercms/theme-implementation": "^1.0"
+    },
+    "require-dev": {
+        "adzercms/admin": "^1.0",
+        "adzercms/cabinet": "^1.0"
+    },
+    "suggest": {
+        "adzercms/realtime": "tickets and their messages as live entities"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Support\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Support\\SupportBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

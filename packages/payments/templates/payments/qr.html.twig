@@ -1,0 +1,17 @@
+{% extends '@Theme/page.html.twig' %}
+
+{% block title %}{{ 'payments.code.title'|trans({amount: payment.amount|money}) }}{% endblock %}
+
+{% block page %}
+<div class="pay">
+    <img class="qr" src="{{ image }}" alt="{{ 'payments.code.image'|trans }}" width="260" height="260">
+    <p class="muted">{{ 'payments.code.scan'|trans }}</p>
+
+    {% include '@Payments/payments/_wait.html.twig' %}
+
+    <div class="pay-methods">
+        <a class="button secondary" href="{{ link }}">{{ 'payments.code.open'|trans }}</a>
+        <a class="button secondary" href="{{ payment.back }}">{{ 'payments.code.cancel'|trans }}</a>
+    </div>
+</div>
+{% endblock %}

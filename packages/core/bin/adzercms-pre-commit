@@ -1,0 +1,84 @@
+#!/bin/sh
+set -eu
+
+refuse() {
+    [ -z "$2" ] || { printf '%s:\n%s\n' "$1" "$2"; exit 1; }
+}
+
+staged() {
+    git diff --cached --name-only --relative "$@"
+}
+
+home() {
+    package=$(printf '%s\n' "$1" | sed -n 's#^\([^/]*/[^/]*\)/.*#\1#p')
+    if [ -n "$package" ] && [ -f "$package/composer.json" ]; then printf '%s\n' "$package"; else printf '.\n'; fi
+}
+
+within() {
+    while read -r file; do
+        [ -z "$file" ] || [ "$(home "$file")" != "$1" ] || printf '%s\n' "$file"
+    done
+}
+
+console() {
+    out=$(bin/php vendor/bin/adzercms-package-console "$@" 2>&1) || { printf '%s\n' "$out"; exit 1; }
+}
+
+envs=$(staged --diff-filter=ACMR -- '.env' '.env.*' | grep -v -e '^\.env\.test$' -e '\.local$' || true)
+# shellcheck disable=SC2086
+[ -z "$envs" ] || refuse 'secret of the environment template stays empty, its value goes to .env.local' "$(git grep --cached -lP '^\w*(SECRET|PASSWORD|TOKEN)\w*=\S' -- $envs || true)"
+
+catalogs=$(staged --diff-filter=ACMR -- '*.xlf')
+templates=$(staged --diff-filter=ACMR -- '*.twig')
+locales=$(git ls-files -- '*.xlf' | sed -n 's/.*\.\([A-Za-z_]*\)\.xlf$/--locale=\1/p' | sort -u)
+for package in $(printf '%s\n%s\n' "$catalogs" "$templates" | while read -r file; do [ -z "$file" ] || home "$file"; done | sort -u); do
+    own=$(printf '%s\n' "$catalogs" | within "$package")
+    # shellcheck disable=SC2086
+    [ -z "$own" ] || { console "$package" lint:xliff $own; console "$package" lint:translations $locales; }
+    own=$(printf '%s\n' "$templates" | within "$package")
+    # shellcheck disable=SC2086
+    [ -z "$own" ] || console "$package" lint:twig $own
+done
+
+php=$(staged --diff-filter=ACM -- '*.php' bin/console public/index.php)
+[ -n "$php" ] || exit 0
+
+[ -x vendor/bin/php-cs-fixer ] || { printf 'commit gate needs composer install\n'; exit 1; }
+
+for added in $(staged --diff-filter=AR -- '*/migrations/*.php'); do
+    [ "$( { git ls-files -- '*/migrations/*.php'; find vendor -path '*/migrations/Version*.php'; } | grep -c "/$(basename "$added")$")" -le 1 ] \
+        || refuse 'migration version is taken by another set' "$added"
+done
+
+migrations=$(printf '%s\n' "$php" | grep '/migrations/' || true)
+for migration in $migrations; do
+    package=${migration%%/migrations/*}
+    foreign=$( { git ls-files -- '*/src/Entity/*.php' | grep -v "^$package/"; find vendor -path '*/src/Entity/*.php'; } \
+        | xargs -r grep -hoP "ORM\\\\Table\(name: '\K[a-z0-9_]+" | sort -u | paste -sd '|')
+    [ -z "$foreign" ] || refuse 'migration changes a table of another set, it belongs to the set of the table owner' "$(grep -lizP \
+        "Table::editor\(\)\s*->setUnquotedName\('($foreign)'|(getTable|TableByUnquotedName)\(\s*'($foreign)'|(INSERT INTO|UPDATE|DELETE FROM|ALTER TABLE|DROP TABLE)\s+[\`\"]?($foreign)\b" \
+        "$migration" || true)"
+done
+
+[ -z "$migrations" ] || {
+    # shellcheck disable=SC2086
+    refuse 'migration holds an application class, values go as literals' "$(grep -lP '^(?!namespace |use Doctrine\\).*(?<![\w\\])\\?(?!Doctrine\\)[A-Z]\w*\\\w' $migrations || true)"
+    # shellcheck disable=SC2086
+    refuse 'schema change is a Table object and platform SQL, not a DDL string' "$(grep -liP "addSql\(\s*['\"]\s*(CREATE|ALTER|DROP|RENAME|TRUNCATE)\b" $migrations || true)"
+}
+
+for changed in $(staged --diff-filter=M -- '*/migrations/*.php'); do
+    if git diff --cached -- "$changed" | grep -q '^[-+]namespace '; then
+        refuse 'namespace of a migration set is not renamed' "$changed"
+    fi
+done
+
+native=$( {
+    printf '%s\n' "$php" | xargs -r grep -lP 'new \\DateTime(Immutable)?\((\)|\x27(now|today|tomorrow|yesterday|midnight|[+-]))|(?<![\w>:$])(?<!function )\\?date\(' || true
+    printf '%s\n' "$php" | grep -E '(^|/)src/' | xargs -r grep -lP '(?<![\w>:$])time\(\)' || true
+} | sort -u)
+refuse 'current moment is now() of the Symfony clock' "$native"
+
+# shellcheck disable=SC2086
+out=$(bin/php vendor/bin/php-cs-fixer check --show-progress=none --config=.php-cs-fixer.dist.php $php 2>&1) \
+    || { printf '%s\n' "$out"; exit 1; }

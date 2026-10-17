@@ -1,0 +1,15 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+{% import '@Core/notice/_macros.html.twig' as mail %}
+
+{% block subject %}{{ 'support.notice.reply.subject'|trans({brand: brand.title, id: number}) }}{% endblock %}
+
+{% block text %}
+{{ 'support.notice.reply.body'|trans({id: number, subject: subject}) }}
+{{ 'support.notice.reply.where'|trans }} {{ url('support_ticket', {id: number}) }}
+{% endblock %}
+
+{% block content %}
+<h2>{{ 'support.notice.reply.title'|trans }}</h2>
+<p>{{ 'support.notice.reply.body'|trans({id: number, subject: subject}) }}</p>
+{{ mail.button(url('support_ticket', {id: number}), 'support.notice.reply.action'|trans) }}
+{% endblock %}
