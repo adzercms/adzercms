@@ -123,6 +123,6 @@
     "scripts": {
         "post-install-cmd": ["@importmap"],
         "post-update-cmd": ["@importmap"],
-        "importmap": "for map in packages/*/importmap.php; do \"$PHP_BINARY\" vendor/bin/adzercms-package-console \"$(dirname \"$map\")\" importmap:install --env=dev || exit 1; done"
+        "importmap": "for map in vendor/adzercms/*/importmap.php; do \"$PHP_BINARY\" vendor/bin/adzercms-package-console \"$(dirname \"$map\")\" importmap:install --env=dev || exit 1; done"
     }
 }
