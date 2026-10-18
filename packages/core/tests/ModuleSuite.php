@@ -103,7 +103,9 @@ final class ModuleSuite implements Extension
             }
         }
         foreach ($registry->required($module) as $kind) {
-            self::add(self::provider($kind, $registry), $registry, $selection);
+            if ([] === $selection[$kind->environment()]) {
+                self::add(self::provider($kind, $registry), $registry, $selection);
+            }
         }
     }
 
