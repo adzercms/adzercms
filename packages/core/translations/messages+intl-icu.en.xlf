@@ -205,6 +205,18 @@
         <target>Theme</target>
       </segment>
     </unit>
+    <unit id="core.layout.side">
+      <segment>
+        <source>core.layout.side</source>
+        <target>Sections on the side</target>
+      </segment>
+    </unit>
+    <unit id="core.layout.top">
+      <segment>
+        <source>core.layout.top</source>
+        <target>Sections on top</target>
+      </segment>
+    </unit>
     <unit id="core.login.absent">
       <segment>
         <source>core.login.absent</source>
@@ -665,6 +677,12 @@
       <segment>
         <source>core.setting.language</source>
         <target>Interface language</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.layout">
+      <segment>
+        <source>core.setting.layout</source>
+        <target>Panel layout</target>
       </segment>
     </unit>
     <unit id="core.setting.legal_revision">

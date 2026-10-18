@@ -8,6 +8,7 @@ interface Fragment
 {
     public const HEAD = 'head';
     public const HEADER = 'header';
+    public const TOP = 'top';
     public const CABINET_HOME = 'cabinet.home';
     public const ADMIN_DASHBOARD = 'admin.dashboard';
     public const ADMIN_DASHBOARD_ACTIONS = 'admin.dashboard.actions';

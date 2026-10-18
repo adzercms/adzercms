@@ -13,6 +13,7 @@ use AdzerCMS\Core\Tests\Setting\Fixture\Shop;
 use AdzerCMS\Core\Tests\Translation\Fixture\LocaleController;
 use AdzerCMS\Core\Tests\Ui\Fixture\FrameController;
 use AdzerCMS\Core\Tests\Ui\Fixture\Ledger;
+use AdzerCMS\Core\Tests\Ui\Fixture\Masthead;
 use AdzerCMS\Mailing\MailingBundle;
 use AdzerCMS\Mailing\Tests\Fixture\CommentAudience;
 use AdzerCMS\Realtime\HubKind;
@@ -29,6 +30,7 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
     $services->set(HttpAnswers::class)->public();
     $services->set(OpenPolicy::class)->autoconfigure()->public();
     $services->set(Ledger::class)->autoconfigure()->public();
+    $services->set(Masthead::class)->autoconfigure();
     $services->set(Shop::class)->autoconfigure();
     $services->set(RelaySettings::class)->autoconfigure();
     $services->set(AccountNumbers::class)->autoconfigure();

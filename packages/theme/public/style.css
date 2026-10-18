@@ -1345,3 +1345,23 @@ fieldset.choices label .muted { grid-column: 2; margin: 0; font-size: 12px; line
 .chart-tx { color: var(--error); stroke: var(--error); }
 
 .doc-sheet { padding: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow-x: auto; }
+
+:root.layout-top { --chrome-height: var(--impersonate-height); }
+:root.layout-top .panel-layout { padding-top: var(--impersonate-height); }
+:root.layout-top .panel-header,
+:root.layout-top .admin-bar { position: static; }
+:root.layout-top .panel-content { padding-top: 16px; }
+
+@media (max-width: 900px) {
+    :root.layout-top .panel-main { padding-top: 0; }
+}
+
+@media (min-width: 901px) {
+    :root.layout-top .panel-main { flex-direction: column; padding-left: 0; }
+    :root.layout-top .panel-sidebar { position: static; align-self: stretch; width: auto; min-width: 0; margin-top: 0; background: none; border-right: 0; border-radius: 0; }
+    :root.layout-top .sidebar-nav { display: flex; flex-wrap: wrap; padding: 0 20px; }
+    :root.layout-top .nav-section { display: flex; flex-wrap: wrap; margin-bottom: 0; }
+    :root.layout-top .nav-section-title { display: none; }
+    :root.layout-top .nav-item { width: auto; padding: 12px 14px; border-width: 0 0 3px; border-style: solid; border-color: transparent; }
+    :root.layout-top .nav-item.active { background: none; border-bottom-color: var(--primary); }
+}
