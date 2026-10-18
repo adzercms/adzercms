@@ -1,0 +1,19 @@
+<div class="modal-header">
+    <h2>{{ message }}</h2>
+    <form method="dialog"><button class="modal-close">{{ 'admin.close'|trans }}</button></form>
+</div>
+
+<div class="modal-body">
+    {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+    <form hx-post="{{ path('admin_text', {domain: domain, message: message}) }}" hx-target="#record">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label class="field-wide">{{ 'admin.text.value'|trans }}
+                <textarea name="value" rows="4" required>{{ value }}</textarea>
+            </label>
+            {% if stored %}<p class="field-wide">{{ 'admin.text.catalog'|trans }}: {{ catalog }}</p>{% endif %}
+        </div>
+        <button type="submit">{{ 'admin.text.save'|trans }}</button>
+        {% if stored %}<button type="submit" class="secondary" name="reset" value="1" formnovalidate>{{ 'admin.text.reset'|trans }}</button>{% endif %}
+    </form>
+</div>

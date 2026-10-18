@@ -805,6 +805,12 @@
         <target>Stopped</target>
       </segment>
     </unit>
+    <unit id="core.text.broken">
+      <segment>
+        <source>core.text.broken</source>
+        <target>The text is not saved: a placeholder in curly braces is broken</target>
+      </segment>
+    </unit>
     <unit id="core.theme.dark">
       <segment>
         <source>core.theme.dark</source>

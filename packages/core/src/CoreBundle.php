@@ -25,6 +25,8 @@ use AdzerCMS\Core\Security\UserChecker;
 use AdzerCMS\Core\Security\UserProvider;
 use AdzerCMS\Core\Session\Logins;
 use AdzerCMS\Core\Setting\Brand;
+use AdzerCMS\Core\Text\TextLoader;
+use AdzerCMS\Core\Text\Texts;
 use AdzerCMS\Core\Ui\Column;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\Migrations\Version\Comparator;
@@ -48,6 +50,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
     private const TEST_MAILER = 'null://null';
     private const LOCKS = 'flock://%kernel.project_dir%/var/lock/%kernel.environment%';
     private const TRANSLATOR = 'adzercms.translator';
+    private const TRANSLATOR_DEFAULT = 'translator.default';
     private const IMPORTMAP_READER = 'asset_mapper.importmap.config_reader';
     private const IMPORTMAPS = 'adzercms.importmaps';
     private const IMPORTMAP_VENDOR = 'assets/vendor';
@@ -146,6 +149,8 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
 
     public function process(ContainerBuilder $container): void
     {
+        self::texts($container);
+
         if (!$container->hasDefinition(self::IMPORTMAP_READER)) {
             return;
         }
@@ -167,6 +172,31 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
     public static function engine(string $bundle): bool
     {
         return self::class === $bundle || is_subclass_of($bundle, Module::class);
+    }
+
+    private static function texts(ContainerBuilder $container): void
+    {
+        $roots = array_column(self::engineBundles($container), 'path');
+        $files = [];
+
+        if ($container->hasDefinition(self::TRANSLATOR_DEFAULT)) {
+            $translator = $container->getDefinition(self::TRANSLATOR_DEFAULT);
+            foreach ($translator->getArgument(4)['resource_files'] ?? [] as $locale => $paths) {
+                foreach ($paths as $path) {
+                    if (str_ends_with($path, '.xlf') && array_any($roots, static fn (string $root): bool => str_starts_with($path, $root.'/'))) {
+                        $files[$locale][] = $path;
+                    }
+                }
+            }
+
+            foreach ($files as $locale => $paths) {
+                foreach (array_unique(array_map(Texts::domain(...), $paths)) as $domain) {
+                    $translator->addMethodCall('addResource', [TextLoader::FORMAT, TextLoader::FORMAT, $locale, $domain]);
+                }
+            }
+        }
+
+        $container->setParameter(Texts::FILES, $files);
     }
 
     /** @return array<string, array{class: class-string, path: string, namespace: string}> */
