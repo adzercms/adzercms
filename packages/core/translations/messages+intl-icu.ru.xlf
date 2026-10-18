@@ -805,6 +805,12 @@
         <target>Остановлен</target>
       </segment>
     </unit>
+    <unit id="core.text.broken">
+      <segment>
+        <source>core.text.broken</source>
+        <target>Текст не сохранён: ошибка в подстановке в фигурных скобках</target>
+      </segment>
+    </unit>
     <unit id="core.theme.dark">
       <segment>
         <source>core.theme.dark</source>

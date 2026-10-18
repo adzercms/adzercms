@@ -67,6 +67,12 @@
         <target>Settings</target>
       </segment>
     </unit>
+    <unit id="admin.menu.texts">
+      <segment>
+        <source>admin.menu.texts</source>
+        <target>Texts</target>
+      </segment>
+    </unit>
     <unit id="admin.menu.users">
       <segment>
         <source>admin.menu.users</source>
@@ -161,6 +167,48 @@
       <segment>
         <source>admin.settings.saved</source>
         <target>Settings saved</target>
+      </segment>
+    </unit>
+    <unit id="admin.text.catalog">
+      <segment>
+        <source>admin.text.catalog</source>
+        <target>Original</target>
+      </segment>
+    </unit>
+    <unit id="admin.text.reset">
+      <segment>
+        <source>admin.text.reset</source>
+        <target>Restore the original</target>
+      </segment>
+    </unit>
+    <unit id="admin.text.save">
+      <segment>
+        <source>admin.text.save</source>
+        <target>Save</target>
+      </segment>
+    </unit>
+    <unit id="admin.text.value">
+      <segment>
+        <source>admin.text.value</source>
+        <target>Text</target>
+      </segment>
+    </unit>
+    <unit id="admin.texts.empty">
+      <segment>
+        <source>admin.texts.empty</source>
+        <target>No texts found</target>
+      </segment>
+    </unit>
+    <unit id="admin.texts.message">
+      <segment>
+        <source>admin.texts.message</source>
+        <target>Key</target>
+      </segment>
+    </unit>
+    <unit id="admin.texts.text">
+      <segment>
+        <source>admin.texts.text</source>
+        <target>Text</target>
       </segment>
     </unit>
     <unit id="admin.user.archive">

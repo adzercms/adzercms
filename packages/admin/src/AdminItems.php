@@ -18,6 +18,7 @@ final readonly class AdminItems implements Menu
             new MenuItem('admin_dashboard', t('admin.menu.dashboard'), 0),
             new MenuItem('admin_users', t('admin.menu.users'), 100, ['admin_user']),
             new MenuItem('admin_modules', t('admin.menu.modules'), 900, ['admin_module']),
+            new MenuItem('admin_texts', t('admin.menu.texts'), 950, ['admin_text']),
             new MenuItem('admin_settings', t('admin.menu.settings'), 1000, ['admin_setting']),
         ] : [];
     }

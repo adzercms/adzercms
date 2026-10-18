@@ -23,6 +23,7 @@ return static function (ContainerConfigurator $container): void {
     $services->load('AdzerCMS\\Core\\Security\\', '../src/Security/');
     $services->load('AdzerCMS\\Core\\Session\\', '../src/Session/');
     $services->load('AdzerCMS\\Core\\Setting\\', '../src/Setting/');
+    $services->load('AdzerCMS\\Core\\Text\\', '../src/Text/');
     $services->load('AdzerCMS\\Core\\Ui\\', '../src/Ui/');
     $services->set(Snapshot::class);
     $services->set(Switches::class);
