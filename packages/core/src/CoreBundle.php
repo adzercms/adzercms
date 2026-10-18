@@ -7,6 +7,7 @@ namespace AdzerCMS\Core;
 use AdzerCMS\Contracts\Account\Identifier;
 use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Contracts\Module\Switchable;
+use AdzerCMS\Contracts\Notice\BotListener;
 use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Contracts\Setting\Rule;
 use AdzerCMS\Contracts\Ui\Columns;
@@ -137,7 +138,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
         $container->parameters()->set('env(GEOIP_CITY_DB)', '');
         $container->import('../config/services.php');
         $builder->setAlias(self::TRANSLATOR, 'translator')->setPublic(true);
-        foreach ([Owner::class, Rule::class, Identifier::class, Switchable::class, ContentSource::class, Fragment::class, Menu::class, Tabs::class, Columns::class] as $contract) {
+        foreach ([Owner::class, Rule::class, Identifier::class, Switchable::class, ContentSource::class, Fragment::class, Menu::class, Tabs::class, Columns::class, BotListener::class] as $contract) {
             $builder->registerForAutoconfiguration($contract)->addTag($contract);
         }
     }

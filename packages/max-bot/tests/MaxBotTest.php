@@ -14,6 +14,7 @@ use AdzerCMS\Core\Repository\ConnectedServiceRepository;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\HttpAnswers;
+use AdzerCMS\Core\Tests\Notice\Fixture\EchoListener;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\MaxBot\MaxBotGateway;
 use PHPUnit\Framework\Attributes\Group;
@@ -31,6 +32,8 @@ final class MaxBotTest extends SchemaTestCase
 
     /** @var list<string> */
     private array $calls = [];
+    /** @var list<string> */
+    private array $bodies = [];
 
     /** @var array<string, array<string, mixed>> */
     private array $answers = [];
@@ -42,8 +45,9 @@ final class MaxBotTest extends SchemaTestCase
             self::SETTINGS.Switches::ENABLED => '1',
             self::SETTINGS.BotGateway::TOKEN => 'bot-token',
         ]);
-        self::service(HttpAnswers::class)->respond(function (string $method, string $url): JsonMockResponse {
+        self::service(HttpAnswers::class)->respond(function (string $method, string $url, array $options): JsonMockResponse {
             $this->calls[] = $method.' '.$url;
+            $this->bodies[] = (string) ($options['body'] ?? '');
 
             return new JsonMockResponse($this->answers[(string) parse_url($url, \PHP_URL_PATH)] ?? []);
         });
@@ -88,6 +92,22 @@ final class MaxBotTest extends SchemaTestCase
         self::assertSame(self::SENDER, $linked->getProfile(), 'the sender of the code becomes the address of notices');
         self::assertSame('@tester', $linked->getAccount(), 'the link holds the visible name of the account');
         self::assertSame('POST '.MaxBotGateway::API.'/messages?user_id='.self::SENDER, end($this->calls), 'a personal dialog is addressed by the interlocutor, not by the chat');
+    }
+
+    public function testModuleListenerAnswersMessageTheCoreDoesNotTake(): void
+    {
+        $this->update([
+            'update_type' => 'message_created',
+            'message' => [
+                'body' => ['text' => EchoListener::HEARD],
+                'sender' => ['user_id' => (int) self::SENDER, 'username' => 'tester'],
+                'recipient' => ['chat_id' => 777, 'user_id' => 55],
+            ],
+        ], self::service(Channels::class)->webhookSecret(self::BOT));
+
+        self::assertResponseIsSuccessful();
+        self::assertSame('POST '.MaxBotGateway::API.'/messages?user_id='.self::SENDER, end($this->calls));
+        self::assertSame(self::BOT.' '.MaxBotGateway::SERVICE.' pong', json_decode((string) end($this->bodies), true)['text'] ?? null);
     }
 
     #[Group('ACMS-CORE-0123')]
