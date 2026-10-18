@@ -44,7 +44,7 @@ final class ModuleSuiteTest extends TestCase
         $_SERVER['TEST_GATEWAY'] = 'Cash';
 
         try {
-            ModuleSuite::select($registry, array_values(array_filter([$registry->find('Card')])));
+            ModuleSuite::select($registry, array_filter([$registry->find('Card')]));
             self::assertSame(['Card', 'Shop,Till'], [$_SERVER['TEST_GATEWAY'], $_SERVER['MODULES']]);
         } finally {
             [$_SERVER, $_ENV] = [$server, $env];
