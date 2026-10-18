@@ -1358,7 +1358,7 @@ fieldset.choices label .muted { grid-column: 2; margin: 0; font-size: 12px; line
 
 @media (min-width: 901px) {
     :root.layout-top .panel-main { flex-direction: column; padding-left: 0; }
-    :root.layout-top .panel-sidebar { position: static; align-self: stretch; width: auto; min-width: 0; margin-top: 0; background: none; border-right: 0; border-radius: 0; }
+    :root.layout-top .panel-sidebar { position: static; align-self: stretch; width: auto; min-width: 0; margin: 0; background: none; border-right: 0; border-radius: 0; }
     :root.layout-top .sidebar-nav { display: flex; flex-wrap: wrap; padding: 0 20px; }
     :root.layout-top .nav-section { display: flex; flex-wrap: wrap; margin-bottom: 0; }
     :root.layout-top .nav-section-title { display: none; }
