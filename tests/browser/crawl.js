@@ -34,7 +34,13 @@ const measure = () => {
     const counted = new Map();
     document.querySelectorAll('[id]').forEach((el) => counted.set(el.id, (counted.get(el.id) ?? 0) + 1));
 
+    const logo = document.querySelector('.header-logo');
+    const column = [...document.querySelectorAll('.panel-sidebar .nav-item, .panel-content > *')]
+        .find((el) => el.getClientRects().length > 0);
+    const left = column?.getBoundingClientRect().left ?? 0;
+
     return {
+        edge: logo && left > 0 ? Math.round(left - logo.getBoundingClientRect().left) : 0,
         repeated: [...counted].filter(([, count]) => count > 1).map(([id]) => id).slice(0, 4),
         overflow: document.documentElement.scrollWidth - width,
         outside: [...new Set(outside)].slice(0, 4),
@@ -120,6 +126,10 @@ const crawl = async (page, seed, faults, { limit, skip, stop = async () => false
                 faults.push(`${path}: +${facts.overflow}px ${facts.outside.join(', ')}`);
             }
 
+            if (facts.edge !== 0) {
+                faults.push(`${path}: column ${facts.edge}px off the logo`);
+            }
+
             if (facts.stretched.length > 0) {
                 faults.push(`${path}: stretched switch — ${facts.stretched.join(', ')}`);
             }
@@ -157,4 +167,4 @@ const records = async (page) => {
         .evaluateAll((found) => found.map((el) => el.getAttribute('data-href') ?? el.getAttribute('href'))))];
 };
 
-module.exports = { WALK, crawl, records };
+module.exports = { WALK, crawl, measure, records };
