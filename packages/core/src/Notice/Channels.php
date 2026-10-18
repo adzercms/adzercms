@@ -13,14 +13,18 @@ use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Repository\ConnectedServiceRepository;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final readonly class Channels implements ContentSource
 {
+    /** @param iterable<Channel> $modules */
     public function __construct(
         private SmsChannel $sms,
         private MailChannel $mail,
+        #[AutowireIterator(Channel::class, exclude: [SmsChannel::class, MailChannel::class])]
+        private iterable $modules,
         private Switches $switches,
         private ConnectedServiceRepository $services,
         private UrlGeneratorInterface $urls,
@@ -126,7 +130,7 @@ final readonly class Channels implements ContentSource
     /** @return list<Channel> */
     public function all(): array
     {
-        return [...$this->bots(), $this->sms, $this->mail];
+        return [...$this->bots(), ...iterator_to_array($this->modules, false), $this->sms, $this->mail];
     }
 
     /** @return list<BotChannel> */

@@ -113,6 +113,10 @@ final class PigeonGateway implements SmsGateway
 
 The service lives in the namespace of its bundle: that is how the core binds it to the module.
 
+## Notice channel
+
+A feature module brings a notice channel of its own by a service of `AdzerCMS\Core\Notice\Channel`, registered by autoconfiguration. The channel stands right after the bots, before the phone and the mail, in the order of every notice, the switches of the cabinet and the journal; `missing()` tells a user without a recipient what makes the channel reach them. A way to connect the channel comes with a `Fragment` of the cabinet.
+
 ## Bot messages
 
 A feature module takes what people send to the bots by a service of `AdzerCMS\Contracts\Notice\BotListener`, registered by autoconfiguration. `heard()` gets the module key of the bot, its login service and the `Incoming` message and gives the answer to the sender or `null` when the message is not for the module. The listeners are asked in order, the connection codes of the core first; the first answer goes to the sender and ends the round. `AdzerCMS\Core\Notice\BotLink::code()` gives a code of the core alphabet, `hash()` the stored hash of a typed code.

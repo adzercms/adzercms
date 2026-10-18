@@ -19,6 +19,7 @@ use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Delivery;
+use AdzerCMS\Core\Tests\Notice\Fixture\Flare\FlareChannel;
 use AdzerCMS\Core\Tests\Notice\Fixture\NoticeController;
 use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelayGateway;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -88,6 +89,19 @@ final class NotifierTest extends SchemaTestCase
         self::assertEmailCount(0);
         $notice = $this->journal($user)[0];
         self::assertSame([ContactKind::Phone->channel(), '79001112233', Status::Sent], [$notice->getChannel(), $notice->getRecipient(), $notice->getStatus()]);
+    }
+
+    #[Group('ACMS-CORE-0121')]
+    public function testModuleChannelGoesBeforePhoneAndMail(): void
+    {
+        $this->configure(self::MAIL + self::RELAY + [FlareChannel::READY => '1']);
+        $user = $this->record('+7 900 111-22-33', 'owner@example.org');
+
+        self::assertSame(self::SENT, $this->message($user, 'Service suspended', 'Top up to resume.'));
+
+        self::assertSame([['flare:79001112233', 'Top up to resume.']], self::service(FlareChannel::class)->sent);
+        self::assertSame([], $this->relay()->sent);
+        self::assertEmailCount(0);
     }
 
     #[Group('ACMS-CORE-0121')]

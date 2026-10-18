@@ -371,7 +371,7 @@ final class CabinetWebTest extends SchemaTestCase
 
         $page = $this->client->request('GET', '/profile?tab=notices');
         self::assertSame([$mail], $page->filter('.checkbox-item input:not([disabled])')->each(static fn (Crawler $box): string => (string) $box->attr('value')), 'a channel without recipient is not offered to mark');
-        self::assertStringContainsString(self::phrase('cabinet.notices.missing_sms'), $page->filter('.checkbox-list')->text());
+        self::assertStringContainsString(self::phrase('core.channel.missing_sms'), $page->filter('.checkbox-list')->text());
 
         $this->post('/profile/notices');
         self::assertResponseRedirects('/profile?tab=notices');

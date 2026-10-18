@@ -15,6 +15,8 @@ interface Channel
 
     public function ready(): bool;
 
+    public function missing(): TranslatableInterface;
+
     public function markup(): bool;
 
     /**

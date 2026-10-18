@@ -50,6 +50,11 @@ final class MailChannel extends ContactChannel implements Owner
         return t('core.channel.mail');
     }
 
+    public function missing(): TranslatableInterface
+    {
+        return t('core.channel.missing_mail');
+    }
+
     public function ready(): bool
     {
         return '' !== $this->settings->get(self::HOST) && '' !== $this->settings->get(self::SENDER);
