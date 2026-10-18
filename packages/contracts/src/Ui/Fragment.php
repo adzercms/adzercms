@@ -10,6 +10,7 @@ interface Fragment
     public const HEADER = 'header';
     public const TOP = 'top';
     public const CABINET_HOME = 'cabinet.home';
+    public const CABINET_PROFILE = 'cabinet.profile';
     public const ADMIN_DASHBOARD = 'admin.dashboard';
     public const ADMIN_DASHBOARD_ACTIONS = 'admin.dashboard.actions';
     public const ADMIN_USER = 'admin.user';

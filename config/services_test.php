@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use AdzerCMS\Cabinet\Tests\Fixture\Pager;
 use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Core\Tests\Account\Fixture\OpenPolicy;
 use AdzerCMS\Core\Tests\HttpAnswers;
@@ -33,6 +34,7 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
     $services->set(OpenPolicy::class)->autoconfigure()->public();
     $services->set(Ledger::class)->autoconfigure()->public();
     $services->set(Masthead::class)->autoconfigure();
+    $services->set(Pager::class)->autoconfigure();
     $services->set(EchoListener::class)->autoconfigure();
     $services->set(FlareChannel::class)->autoconfigure()->autowire()->public();
     $services->set(Shop::class)->autoconfigure();

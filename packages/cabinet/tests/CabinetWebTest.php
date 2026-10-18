@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Cabinet\Tests;
 
+use AdzerCMS\Cabinet\Tests\Fixture\Pager;
 use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Entity\ConnectedService;
 use AdzerCMS\Core\Module\Switches;
@@ -121,6 +122,15 @@ final class CabinetWebTest extends SchemaTestCase
         self::assertResponseRedirects('/profile');
         $named = $this->reread($user);
         self::assertSame(['Petrov', 'Ivan', 'Sergeevich'], [$named->getLastName(), $named->getFirstName(), $named->getMiddleName()]);
+    }
+
+    #[Group('ACMS-UI-0001')]
+    public function testProfileCarriesFragmentsOfModulesUnderContacts(): void
+    {
+        $user = $this->record('79990000010');
+        $this->client->loginUser($user);
+
+        self::assertCount(1, $this->client->request('GET', '/profile')->filter('a[href="'.Pager::HREF.$user->getId().'"]'));
     }
 
     #[Group('ACMS-CORE-0168')]

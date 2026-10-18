@@ -207,6 +207,8 @@
         {% endif %}
     </div>
 
+    {% for part in fragments('cabinet.profile', user.id) %}{% include part.template with part.context only %}{% endfor %}
+
     {% if logins %}
         <div class="section">
             <div class="section-head">
