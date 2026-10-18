@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Repository;
 
 use AdzerCMS\Contracts\Account\Identifier;
 use AdzerCMS\Core\Account\ContactKind;
+use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Account\Status;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Ui\Filter;
@@ -32,6 +33,19 @@ final class UserRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('u')
             ->where('u.status <> :archived')
+            ->setParameter('archived', Status::Archived)
+            ->orderBy('u.id', \SortDirection::Ascending)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** @return list<User> */
+    public function admins(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.role = :admin')
+            ->andWhere('u.status <> :archived')
+            ->setParameter('admin', Role::Admin)
             ->setParameter('archived', Status::Archived)
             ->orderBy('u.id', \SortDirection::Ascending)
             ->getQuery()

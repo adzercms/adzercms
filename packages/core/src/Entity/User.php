@@ -22,6 +22,7 @@ use function Symfony\Component\Clock\now;
 #[ORM\Table(name: 'users')]
 #[ORM\UniqueConstraint(name: 'uniq_users_phone', columns: ['phone'])]
 #[ORM\UniqueConstraint(name: 'uniq_users_email', columns: ['email'])]
+#[ORM\Index(name: 'idx_users_role_status', columns: ['role', 'status'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface
 {
     public const COMMENT_LIMIT = 64;
