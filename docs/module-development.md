@@ -121,6 +121,10 @@ A feature module brings a notice channel of its own by a service of `AdzerCMS\Co
 
 A feature module takes what people send to the bots by a service of `AdzerCMS\Contracts\Notice\BotListener`, registered by autoconfiguration. `heard()` gets the module key of the bot, its login service and the `Incoming` message and gives the answer to the sender or `null` when the message is not for the module. The listeners are asked in order, the connection codes of the core first; the first answer goes to the sender and ends the round. `AdzerCMS\Core\Notice\BotLink::code()` gives a code of the core alphabet, `hash()` the stored hash of a typed code.
 
+## Login listeners
+
+A feature module that waits for a login takes the profile of the login service instead of the entry by a service of `AdzerCMS\Contracts\Login\LoginListener`, registered by autoconfiguration. `entered()` gets the key of the login service, its `Profile` and the request of the return and gives the response or `null` when the login is not for the module; the first response ends the return, nobody is signed in or connected.
+
 ## Login service
 
 A login service implements `AdzerCMS\Contracts\Login\LoginService`. `authorization()` returns the authorization endpoint with the client id and scope, `pkce: false` for a service without PKCE, `nonce: true` for a service checking `nonce` in its `id_token`, and extra query parameters. The core adds `state`, the redirect URI and the one-time secret: `code_challenge` for PKCE, the `nonce` value as is.

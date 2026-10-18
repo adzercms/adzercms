@@ -14,6 +14,7 @@ use AdzerCMS\Core\Repository\ConsentRepository;
 use AdzerCMS\Core\Tests\Account\Fixture\OpenPolicy;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Configuration;
+use AdzerCMS\Core\Tests\Login\Fixture\CatchListener;
 use AdzerCMS\Core\Tests\Login\Fixture\Latch\LatchService;
 use AdzerCMS\Core\Tests\Login\Fixture\Wicket\WicketService;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -194,6 +195,18 @@ final class LoginServiceTest extends SchemaTestCase
         $this->em->flush();
         $this->returned(['code' => 'c1']);
         self::assertSame('core.login.taken', $this->flashed('error', '/')->getMessage());
+    }
+
+    public function testModuleListenerTakesTheProfileInsteadOfTheEntry(): void
+    {
+        $this->answers = [new JsonMockResponse(['access_token' => 'token']), new JsonMockResponse(['id' => CatchListener::PROFILE, 'login' => 'ivan'])];
+
+        $this->returned(['code' => 'c1']);
+
+        self::assertSame('latch '.CatchListener::PROFILE, $this->client->getResponse()->getContent());
+        self::assertNull(self::service(ConnectedServiceRepository::class)->findOneBy(['service' => 'latch']));
+        $this->client->request('GET', '/fixture/account');
+        self::assertResponseRedirects('/login');
     }
 
     /** @param array<string, string> $query */
