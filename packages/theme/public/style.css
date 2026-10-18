@@ -20,6 +20,7 @@
     color-scheme: light dark;
     --primary: light-dark(#0066cc, #4d9dff);
     --primary-hover: light-dark(#0052a3, #6aaeff);
+    --primary-text: var(--primary);
     --on-primary: #fff;
     --success: #4caf50;
     --error: light-dark(#f44336, #ef5350);
@@ -92,7 +93,7 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-a { color: var(--primary); text-decoration: none; }
+a { color: var(--primary-text); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 .panel-layout { display: flex; flex-direction: column; min-height: 100vh; }
@@ -287,7 +288,7 @@ summary::-webkit-details-marker { display: none; }
 
 .nav-item.active {
     background: var(--surface);
-    color: var(--primary);
+    color: var(--primary-text);
     font-weight: 500;
     border-left-color: var(--primary);
 }
@@ -397,7 +398,7 @@ button.nav-item {
 
     .bottom-nav-item svg { width: 22px; height: 22px; }
     .bottom-nav-item:hover { text-decoration: none; }
-    .bottom-nav-item.active { color: var(--primary); }
+    .bottom-nav-item.active { color: var(--primary-text); }
 
     .bottom-nav-badge {
         position: absolute;
@@ -554,7 +555,7 @@ select:not([multiple]) option {
 
 select:not([multiple]) option::checkmark { display: none; }
 select:not([multiple]) option:hover, select:not([multiple]) option:focus { background: var(--bg-light); }
-select:not([multiple]) option:checked { color: var(--primary); font-weight: 500; }
+select:not([multiple]) option:checked { color: var(--primary-text); font-weight: 500; }
 
 .hint { display: block; margin: 0.25rem 0 0.75rem; font-size: 13px; font-weight: 400; color: var(--text-gray); }
 
@@ -674,7 +675,7 @@ button:disabled { opacity: 0.5; pointer-events: none; }
 }
 
 .tab:hover { background: var(--chip-hover); text-decoration: none; }
-.tab.active { background: var(--surface); color: var(--primary); box-shadow: var(--shadow-sm); }
+.tab.active { background: var(--surface); color: var(--primary-text); box-shadow: var(--shadow-sm); }
 
 button.tab { border: 0; cursor: pointer; background: transparent; color: var(--text-gray); }
 .tab-pane { display: none; }
@@ -726,7 +727,7 @@ tbody tr:hover { background: var(--row-hover); }
 .badge-success { background: var(--success-soft); color: var(--success-strong); }
 .badge-warning { background: var(--warning-soft); color: var(--warning-strong); }
 .badge-danger { background: var(--error-soft); color: var(--error-strong); }
-.badge-info { background: var(--info-soft); color: var(--primary); }
+.badge-info { background: var(--info-soft); color: var(--primary-text); }
 .badge-secondary { background: var(--bg-light); color: var(--text-gray); }
 
 .offer-grid {
@@ -759,7 +760,7 @@ tbody tr:hover { background: var(--row-hover); }
 .offer-extra ul { list-style: none; margin: 0.35rem 0 0; padding: 0; }
 .offer-extra li { padding-top: 0.2rem; padding-bottom: 0.2rem; }
 .offer-extra strong { color: var(--text); }
-.offer-extra li::before { content: "•"; color: var(--primary); }
+.offer-extra li::before { content: "•"; color: var(--primary-text); }
 .offer-actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: auto; }
 .offer-actions form { margin: 0; }
 .offer-actions .button, .offer-actions button { width: 100%; }
@@ -1298,7 +1299,7 @@ fieldset.choices label .muted { grid-column: 2; margin: 0; font-size: 12px; line
     color: var(--text-gray);
     text-decoration: none;
 }
-.chart-window.is-active { border-color: var(--primary); color: var(--primary); }
+.chart-window.is-active { border-color: var(--primary); color: var(--primary-text); }
 
 .chart-node { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.2rem; }
 .chart-node h3 { grid-column: 1 / -1; margin: 0; font-size: 1rem; }
@@ -1340,7 +1341,7 @@ fieldset.choices label .muted { grid-column: 2; margin: 0; font-size: 12px; line
 .chart-line { stroke-width: 2; vector-effect: non-scaling-stroke; }
 .chart-line.is-off { display: none; }
 
-.chart-cpu { color: var(--primary); stroke: var(--primary); }
+.chart-cpu { color: var(--primary-text); stroke: var(--primary); }
 .chart-ram { color: var(--warning); stroke: var(--warning); }
 .chart-rx { color: var(--success); stroke: var(--success); }
 .chart-tx { color: var(--error); stroke: var(--error); }
