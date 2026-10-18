@@ -33,6 +33,11 @@ final readonly class BotChannel implements Channel
         return t($this->key.'.name');
     }
 
+    public function missing(): TranslatableInterface
+    {
+        return t('core.channel.missing_bot');
+    }
+
     public function ready(): bool
     {
         return true;

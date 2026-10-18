@@ -295,24 +295,6 @@
         <target>Отключить {bot}? Оповещения этим каналом приходить перестанут.</target>
       </segment>
     </unit>
-    <unit id="cabinet.notices.missing_bot">
-      <segment>
-        <source>cabinet.notices.missing_bot</source>
-        <target>подключите бота</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.notices.missing_mail">
-      <segment>
-        <source>cabinet.notices.missing_mail</source>
-        <target>подтвердите почту</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.notices.missing_sms">
-      <segment>
-        <source>cabinet.notices.missing_sms</source>
-        <target>подтвердите телефон</target>
-      </segment>
-    </unit>
     <unit id="cabinet.notices.none">
       <segment>
         <source>cabinet.notices.none</source>

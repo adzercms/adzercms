@@ -295,24 +295,6 @@
         <target>Disconnect {bot}? Notices will stop coming by this channel.</target>
       </segment>
     </unit>
-    <unit id="cabinet.notices.missing_bot">
-      <segment>
-        <source>cabinet.notices.missing_bot</source>
-        <target>connect the bot</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.notices.missing_mail">
-      <segment>
-        <source>cabinet.notices.missing_mail</source>
-        <target>confirm the email</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.notices.missing_sms">
-      <segment>
-        <source>cabinet.notices.missing_sms</source>
-        <target>confirm the phone</target>
-      </segment>
-    </unit>
     <unit id="cabinet.notices.none">
       <segment>
         <source>cabinet.notices.none</source>

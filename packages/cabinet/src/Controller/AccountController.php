@@ -34,7 +34,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
 
@@ -91,7 +90,7 @@ final class AccountController extends AbstractController
                 'channel' => $channel,
                 'on' => $user->hears($channel->key()),
                 'ready' => [] !== $channel->recipients([$user]),
-                'missing' => self::missing($channel),
+                'missing' => $channel->missing(),
             ], $offered),
             'mailReady' => null !== $user->getEmail() && $notifier->reachable(ContactKind::Email),
             'contacts' => array_map(static fn (ContactKind $kind): array => [
@@ -375,15 +374,6 @@ final class AccountController extends AbstractController
         $this->addFlash(null === $refusal ? 'success' : 'error', $refusal->reason ?? t('cabinet.deletion.done'));
 
         return $this->redirectToRoute('cabinet_login');
-    }
-
-    private static function missing(Channel $channel): TranslatableInterface
-    {
-        return match ($channel->key()) {
-            'mail' => t('cabinet.notices.missing_mail'),
-            'sms' => t('cabinet.notices.missing_sms'),
-            default => t('cabinet.notices.missing_bot'),
-        };
     }
 
     private function deletable(AccountDeletion $deletion): void

@@ -31,6 +31,24 @@
         <target>Email</target>
       </segment>
     </unit>
+    <unit id="core.channel.missing_bot">
+      <segment>
+        <source>core.channel.missing_bot</source>
+        <target>connect the bot</target>
+      </segment>
+    </unit>
+    <unit id="core.channel.missing_mail">
+      <segment>
+        <source>core.channel.missing_mail</source>
+        <target>confirm the email</target>
+      </segment>
+    </unit>
+    <unit id="core.channel.missing_sms">
+      <segment>
+        <source>core.channel.missing_sms</source>
+        <target>confirm the phone</target>
+      </segment>
+    </unit>
     <unit id="core.channel.sms">
       <segment>
         <source>core.channel.sms</source>

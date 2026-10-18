@@ -18,7 +18,7 @@ return static function (ContainerConfigurator $container): void {
     $services->load('AdzerCMS\\Core\\Confirmation\\', '../src/Confirmation/');
     $services->load('AdzerCMS\\Core\\Controller\\', '../src/Controller/');
     $services->load('AdzerCMS\\Core\\Login\\', '../src/Login/');
-    $services->load('AdzerCMS\\Core\\Notice\\', '../src/Notice/');
+    $services->load('AdzerCMS\\Core\\Notice\\', '../src/Notice/')->exclude('../src/Notice/BotChannel.php');
     $services->load('AdzerCMS\\Core\\Repository\\', '../src/Repository/');
     $services->load('AdzerCMS\\Core\\Security\\', '../src/Security/');
     $services->load('AdzerCMS\\Core\\Session\\', '../src/Session/');

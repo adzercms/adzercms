@@ -23,6 +23,11 @@ final class SmsChannel extends ContactChannel
         return t('core.channel.sms');
     }
 
+    public function missing(): TranslatableInterface
+    {
+        return t('core.channel.missing_sms');
+    }
+
     public function ready(): bool
     {
         return null !== $this->switches->first(SmsGateway::class);
