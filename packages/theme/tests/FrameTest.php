@@ -84,10 +84,11 @@ final class FrameTest extends SchemaTestCase
     }
 
     #[Group('ACMS-UI-0064')]
-    public function testTopLayoutPutsSectionsUnderPlaceAboveHeader(): void
+    public function testTopLayoutPutsSectionsAndPlaceAboveHeader(): void
     {
         $page = $this->frame();
         self::assertStringContainsString('layout-side', (string) $page->filter('html')->attr('class'));
+        self::assertSame('panel-header', $page->filter('.panel-layout > *')->first()->attr('class'));
 
         self::service(Settings::class)->save(new Field(Brand::LAYOUT, t('core.setting.layout'), Type::Choice, choices: ['top' => t('core.layout.top')]), Layout::Top->value);
         $this->em->flush();

@@ -23,7 +23,7 @@
 {% endif %}
 <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle" hidden>
 <div class="panel-layout">
-    {% for part in fragments('top', app.user ? app.user.id : null) %}{% include part.template with part.context only %}{% endfor %}
+    {% if brand.layout.value == 'top' %}{% for part in fragments('top', app.user ? app.user.id : null) %}{% include part.template with part.context only %}{% endfor %}{% endif %}
     <header class="panel-header">
         <div class="header-inner">
             {% if app.user %}
