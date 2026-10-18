@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests\Module;
 
-use AdzerCMS\Contracts\Module\CoreKind;
-use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Core\Module\Installed;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Module\Selection;
@@ -85,7 +83,7 @@ final class SelectionTest extends TestCase
     {
         $this->expectExceptionObject(new \LogicException('module key "Card" is taken by packages acme/card and other/card'));
 
-        Registry::of(['acme/card' => self::manifest(Fixture\CardBundle::class), 'other/card' => self::manifest(Fixture\Twin\CardBundle::class)]);
+        Registry::of(['acme/card' => Fixture\Manifest::of(Fixture\CardBundle::class), 'other/card' => Fixture\Manifest::of(Fixture\Twin\CardBundle::class)]);
     }
 
     #[Group('ACMS-CORE-0151')]
@@ -117,29 +115,15 @@ final class SelectionTest extends TestCase
     private static function select(array $environment): Selection
     {
         $registry = Registry::of([
-            'acme/shop' => self::manifest(Fixture\ShopBundle::class),
-            'acme/card' => self::manifest(Fixture\CardBundle::class, 'acme/shop'),
-            'acme/cash' => self::manifest(Fixture\CashBundle::class, 'acme/shop'),
-            'acme/pigeon' => self::manifest(Fixture\PigeonBundle::class, 'acme/card'),
-            'acme/drum' => self::manifest(Fixture\DrumBundle::class),
-            'acme/till' => self::manifest(Fixture\TillBundle::class, 'adzercms/gateway-implementation'),
+            'acme/shop' => Fixture\Manifest::of(Fixture\ShopBundle::class),
+            'acme/card' => Fixture\Manifest::of(Fixture\CardBundle::class, 'acme/shop'),
+            'acme/cash' => Fixture\Manifest::of(Fixture\CashBundle::class, 'acme/shop'),
+            'acme/pigeon' => Fixture\Manifest::of(Fixture\PigeonBundle::class, 'acme/card'),
+            'acme/drum' => Fixture\Manifest::of(Fixture\DrumBundle::class),
+            'acme/till' => Fixture\Manifest::of(Fixture\TillBundle::class, 'adzercms/gateway-implementation'),
         ]);
 
         return Selection::of($registry, static fn (string $name): string => $environment[$name] ?? '');
-    }
-
-    /**
-     * @param class-string<Module> $bundle
-     *
-     * @return array<string, mixed>
-     */
-    private static function manifest(string $bundle, string ...$requires): array
-    {
-        return [
-            'require' => array_fill_keys(['php', ...$requires], '*'),
-            'provide' => CoreKind::Feature === $bundle::kind() ? [] : [Registry::implementation($bundle::kind()) => '*'],
-            'extra' => ['adzercms' => ['bundle' => $bundle]],
-        ];
     }
 
     /** @return list<string> */
