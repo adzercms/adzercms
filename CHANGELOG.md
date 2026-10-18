@@ -7,6 +7,6 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 ### Added
 
 - First public version: the core, contracts, project template, admin, cabinet, theme and the modules listed in [Repository](README.md#repository)
-- Panel layout `brand.layout`: sections on the side or in a bar under the header; fragment place `Fragment::TOP` above the panel header
+- Panel layout `brand.layout`: sections on the side or in a bar under the header; fragment place `Fragment::TOP` of the top layout: its fragments replace the panel header, the admin bar and the sidebar
 
 [Unreleased]: https://github.com/adzercms/adzercms/commits/main

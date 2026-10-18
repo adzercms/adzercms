@@ -84,7 +84,7 @@ final class FrameTest extends SchemaTestCase
     }
 
     #[Group('ACMS-UI-0064')]
-    public function testTopLayoutPutsSectionsAndPlaceAboveHeader(): void
+    public function testTopLayoutGivesChromeToPlace(): void
     {
         $page = $this->frame();
         self::assertStringContainsString('layout-side', (string) $page->filter('html')->attr('class'));
@@ -95,7 +95,8 @@ final class FrameTest extends SchemaTestCase
         $page = $this->client->request('GET', self::FRAME);
 
         self::assertStringContainsString('layout-top', (string) $page->filter('html')->attr('class'));
-        self::assertSame(['span', 'header'], $page->filter('.panel-layout > *')->slice(0, 2)->each(static fn (Crawler $node): string => $node->nodeName()));
+        self::assertSame('span', $page->filter('.panel-layout > *')->first()->nodeName());
+        self::assertCount(0, $page->filter('.panel-header, .admin-bar, .panel-sidebar, .bottom-nav'));
     }
 
     private function frame(): Crawler
