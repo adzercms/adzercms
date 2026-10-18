@@ -11,6 +11,8 @@ use AdzerCMS\Core\Entity\ConnectedService;
 use AdzerCMS\Core\Entity\Notice;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Module\Switches;
+use AdzerCMS\Core\Notice\Channel;
+use AdzerCMS\Core\Notice\Channels;
 use AdzerCMS\Core\Notice\QuietHours;
 use AdzerCMS\Core\Notice\Status;
 use AdzerCMS\Core\Repository\NoticeRepository;
@@ -171,7 +173,7 @@ final class BroadcastTest extends SchemaTestCase
         $this->configure(self::RELAY);
 
         $mail = $this->client->request('GET', '/admin/notices?view=journal&tab=mail');
-        self::assertSame(['sms', 'mail'], $mail->filter('.tabs')->last()->filter('a')->each(static fn (Crawler $tab): string => self::tab((string) $tab->attr('href'))), 'the journal has a tab of every channel');
+        self::assertSame(array_map(static fn (Channel $channel): string => $channel->key(), self::service(Channels::class)->all()), $mail->filter('.tabs')->last()->filter('a')->each(static fn (Crawler $tab): string => self::tab((string) $tab->attr('href'))), 'the journal has a tab of every channel');
         self::assertSame(self::phrase('mailing.unconfigured'), trim($mail->filter('.flash-error')->text()));
 
         $default = $this->client->request('GET', '/admin/notices?view=journal&tab=unknown');
