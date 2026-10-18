@@ -244,12 +244,13 @@ summary::-webkit-details-marker { display: none; }
 }
 .card-actions > .menu > summary:hover { background: var(--border-light); }
 
-.panel-main { display: flex; width: 100%; max-width: var(--page-width); margin: 0 auto; padding-left: 20px; }
+.panel-main { display: flex; width: 100%; max-width: var(--page-width); margin: 0 auto; }
 
 .panel-sidebar {
     position: sticky;
     top: var(--chrome-height);
     margin-top: var(--chrome-height);
+    margin-left: 20px;
     align-self: flex-start;
     width: 180px;
     min-width: 180px;
@@ -350,8 +351,8 @@ button.nav-item {
 
 @media (max-width: 900px) {
     :root.admin { --admin-bar-height: 42px; }
-    .panel-sidebar { display: none; position: static; width: 100%; margin-top: 0; top: 0; border-radius: 0; }
-    .panel-main { flex-direction: column; padding-top: var(--chrome-height); padding-left: 0; }
+    .panel-sidebar { display: none; position: static; width: 100%; margin: 0; top: 0; border-radius: 0; }
+    .panel-main { flex-direction: column; padding-top: var(--chrome-height); }
     .admin-bar { display: flex; }
     .admin-bar-inner { padding: 0 12px; }
     .nav-section-admin { display: none; }
