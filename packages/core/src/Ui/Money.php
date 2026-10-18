@@ -97,13 +97,13 @@ final class Money
     #[AsTwigFilter('money')]
     public static function rubles(string|float|int $value): string
     {
-        return number_format((float) $value, 0, ',', ' ');
+        return number_format((float) $value, 0, ',', "\u{a0}");
     }
 
     #[AsTwigFilter('exact')]
     public static function exact(string|float|int $value): string
     {
-        return number_format((float) $value, self::SCALE, ',', ' ');
+        return number_format((float) $value, self::SCALE, ',', "\u{a0}");
     }
 
     #[AsTwigFilter('precise')]
