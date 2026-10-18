@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Cabinet\Tests\Fixture\Pager;
+use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Core\Tests\Account\Fixture\OpenPolicy;
 use AdzerCMS\Core\Tests\HttpAnswers;
 use AdzerCMS\Core\Tests\Notice\Fixture\EchoListener;
