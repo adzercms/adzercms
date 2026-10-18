@@ -39,8 +39,14 @@ final class ModuleSuite implements Extension
 
     public static function root(): string
     {
-        return realpath(InstalledVersions::getRootPackage()['install_path'])
-            ?: throw new \LogicException('root package of the instance has no install path');
+        foreach (InstalledVersions::getAllRawData() as $installed) {
+            $root = realpath($installed['root']['install_path']);
+            if (false !== $root) {
+                return $root;
+            }
+        }
+
+        throw new \LogicException('root package of the instance has no install path');
     }
 
     public static function environment(string $env): void
