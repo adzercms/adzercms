@@ -66,9 +66,15 @@ final readonly class BotChannel implements Channel
         }
     }
 
+    /** @phpstan-assert-if-true BotEvents $this->gateway */
+    public function linksByCode(): bool
+    {
+        return $this->gateway instanceof BotEvents;
+    }
+
     public function startLink(string $code): ?string
     {
-        if (!$this->gateway instanceof BotEvents) {
+        if (!$this->linksByCode()) {
             return null;
         }
 

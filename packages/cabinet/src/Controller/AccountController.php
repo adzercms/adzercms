@@ -259,6 +259,10 @@ final class AccountController extends AbstractController
             return $this->redirectToRoute('cabinet_profile');
         }
 
+        if (!$channel->linksByCode()) {
+            return $this->redirectToRoute('login_service', ['service' => $channel->gateway->service()]);
+        }
+
         $code = $links->request($user, $bot);
         $request->getSession()->set('bot_code', ['bot' => $bot, 'code' => $code]);
         $start = $channel->startLink($code);

@@ -17,6 +17,7 @@ use AdzerCMS\Core\Repository\NoticeRepository;
 use AdzerCMS\Core\Setting\Catalog;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Tests\Accounts;
+use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\HttpAnswers;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -28,6 +29,7 @@ use Symfony\Component\HttpClient\Response\JsonMockResponse;
 final class TelegramBotTest extends SchemaTestCase
 {
     use Accounts;
+    use Browser;
     use Configuration;
 
     private const CHANNEL = 'telegrambot';
@@ -59,6 +61,17 @@ final class TelegramBotTest extends SchemaTestCase
         self::assertSame(Status::Sent, $notice->getStatus());
         self::assertSame(\sprintf(TelegramBotGateway::API, 'bot-token'), $answer->getRequestUrl());
         self::assertSame(['chat_id' => self::CHAT, 'text' => 'Fresh backup is done'], json_decode((string) ($answer->getRequestOptions()['body'] ?? ''), true));
+    }
+
+    #[Group('ACMS-CORE-0905')]
+    public function testProfileLinksTheBotThroughTheTelegramLogin(): void
+    {
+        $this->client->loginUser($this->record('79990000001'));
+        $this->em->flush();
+
+        $this->post('/profile/bot/'.self::CHANNEL);
+
+        self::assertResponseRedirects('/login/'.TelegramBotGateway::SERVICE);
     }
 
     #[Group('ACMS-CORE-0121')]
