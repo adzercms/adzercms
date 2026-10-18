@@ -103,7 +103,7 @@ final class ThemeExtension extends AbstractExtension
             default => '',
         };
 
-        return sprintf('<strong%s>%s ₽</strong>', $class, Money::rubles($value));
+        return sprintf("<strong%s>%s\u{a0}₽</strong>", $class, Money::rubles($value));
     }
 
     public function badge(Badged $case): string
