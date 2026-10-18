@@ -19,6 +19,7 @@ final class Brand implements Owner
     public const LOGO = 'brand.logo';
     public const ICON = 'brand.icon';
     public const THEME = 'brand.theme';
+    public const LAYOUT = 'brand.layout';
 
     public function __construct(
         private readonly Settings $settings,
@@ -34,16 +35,14 @@ final class Brand implements Owner
             self::logoField(),
             self::iconField(),
             new Field(self::THEME, t('core.setting.theme'), Type::Choice, choices: self::themes()),
+            new Field(self::LAYOUT, t('core.setting.layout'), Type::Choice, choices: self::choices(Layout::cases())),
         ];
     }
 
     /** @return array<string, TranslatableInterface> */
     public static function themes(): array
     {
-        return array_combine(
-            array_column(Theme::cases(), 'value'),
-            array_map(static fn (Theme $theme): TranslatableInterface => $theme->label(), Theme::cases()),
-        );
+        return self::choices(Theme::cases());
     }
 
     public function title(): string
@@ -66,11 +65,29 @@ final class Brand implements Owner
         return $chosen ?? Theme::tryFrom($this->settings->get(self::THEME)) ?? Theme::Light;
     }
 
+    public function layout(): Layout
+    {
+        return Layout::tryFrom($this->settings->get(self::LAYOUT)) ?? Layout::Side;
+    }
+
     private function image(Field $field): ?string
     {
         return null === $this->images->path($field)
             ? null
             : $this->urls->generate('setting_image', ['name' => $field->name], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param list<Theme|Layout> $cases
+     *
+     * @return array<string, TranslatableInterface>
+     */
+    private static function choices(array $cases): array
+    {
+        return array_combine(
+            array_map(static fn (Theme|Layout $case): string => $case->value, $cases),
+            array_map(static fn (Theme|Layout $case): TranslatableInterface => $case->label(), $cases),
+        );
     }
 
     private static function logoField(): Field

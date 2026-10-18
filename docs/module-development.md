@@ -42,7 +42,7 @@ A feature module declares its parts of the admin and the cabinet by services of 
 
 - `Menu` — `items()` gives the menu items of an `Area`, the admin or the cabinet: `MenuItem` with its route, label, weight, the routes it leads (the item stays current on them), group, counter, a dialog flag, and an icon of the theme set with a short label for the bottom bar of the cabinet.
 - `Tabs` — tabs of a page by its key `Tabs::ADMIN_DASHBOARD`, `Tabs::ADMIN_USER` or `Tabs::CABINET_HOME`: `tabs()` gives `Tab` with key, label, weight and an optional count, `tab()` builds the template and context of the active tab only.
-- `Fragment` — a fragment of a page of another owner by its place: `Fragment::HEAD`, `HEADER`, `CABINET_HOME`, `ADMIN_DASHBOARD`, `ADMIN_DASHBOARD_ACTIONS`, `ADMIN_USER`; `null` leaves the place empty.
+- `Fragment` — a fragment of a page of another owner by its place: `Fragment::HEAD`, `TOP` — header and navigation of the top layout in place of the panel ones, `HEADER`, `CABINET_HOME`, `ADMIN_DASHBOARD`, `ADMIN_DASHBOARD_ACTIONS`, `ADMIN_USER`; `null` leaves the place empty.
 - `Columns` — columns of the module in a list of another owner, `Columns::ADMIN_USERS`: `cells()` gives the `Cell` values of every row of a page in one call, `search()` gives the rows the module finds by its own fields. The list does not sort by such columns.
 - `ContentSource` — sources beyond the own origin for the directives `form-action`, `script-src`, `connect-src`, `frame-src` and `style-src` of the Content Security Policy.
 

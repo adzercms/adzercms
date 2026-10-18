@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.locale }}" class="{{ app.user and is_granted('ROLE_ADMIN') ? 'admin' }} {{ is_granted('IS_IMPERSONATOR') ? 'impersonating' }}"
+<html lang="{{ app.request.locale }}" class="layout-{{ brand.layout.value }} {{ app.user and is_granted('ROLE_ADMIN') ? 'admin' }} {{ is_granted('IS_IMPERSONATOR') ? 'impersonating' }}"
       data-theme="{{ brand.theme(app.user ? app.user.theme : null).value }}">
 <head>
     <meta charset="utf-8">
@@ -23,6 +23,9 @@
 {% endif %}
 <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle" hidden>
 <div class="panel-layout">
+    {% set top = brand.layout.value == 'top' ? fragments('top', app.user ? app.user.id : null) : [] %}
+    {% for part in top %}{% include part.template with part.context only %}{% endfor %}
+    {% if top is empty %}
     <header class="panel-header">
         <div class="header-inner">
             {% if app.user %}
@@ -44,9 +47,10 @@
         </div>
     </header>
     {% if app.user %}{% include '@Theme/_admin_bar.html.twig' %}{% endif %}
+    {% endif %}
 
     <div class="panel-main">
-        {% if app.user %}
+        {% if app.user and top is empty %}
             <aside class="panel-sidebar">
                 <nav class="sidebar-nav">{% block nav %}{% endblock %}</nav>
             </aside>
@@ -56,7 +60,7 @@
             {% block body %}{% endblock %}
         </main>
     </div>
-    {% if app.user %}{% include '@Theme/_bottom_nav.html.twig' %}{% endif %}
+    {% if app.user and top is empty %}{% include '@Theme/_bottom_nav.html.twig' %}{% endif %}
 </div>
 {% endblock %}
 {% include '@Theme/_toasts.html.twig' %}
