@@ -16,6 +16,21 @@ if [ "$(cat "$stamp" 2>/dev/null || true)" != "$locked" ]; then
     exec "$0"
 fi
 
+patched=var/patches.installed
+
+if { [ -f patches.lock.json ] || [ -f "$patched" ]; } && ! cmp -s patches.lock.json "$patched"; then
+    # shellcheck disable=SC2016
+    changed=$(bin/php -r '
+        $patches = static fn (string $file): array => is_file($file) ? json_decode(file_get_contents($file), true)["patches"] ?? [] : [];
+        [$new, $old] = [$patches("patches.lock.json"), $patches($argv[1])];
+        echo implode(" ", array_filter(array_keys($new + $old), static fn (string $package): bool => ($new[$package] ?? null) != ($old[$package] ?? null) && is_dir("vendor/".$package)));
+    ' "$patched")
+    # shellcheck disable=SC2086
+    [ -z "$changed" ] || bin/php "$(command -v composer)" reinstall --no-interaction --no-progress $changed
+    if [ -f patches.lock.json ]; then cp patches.lock.json "$patched"; else rm "$patched"; fi
+    exec "$0"
+fi
+
 APP_BUILD=$(date +%Y%m%d%H%M%S)-$(git rev-parse --short=12 HEAD)
 export APP_BUILD
 

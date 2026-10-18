@@ -61,7 +61,7 @@ git commit -m 'Instance'
 
 - `adzercms.php` is the PHP binary of the scripts in `bin/` and of the hooks; without it they run `php`
 - The `pre-commit` hook stops a commit with a style error in its PHP files, a migration breaking the migration rules, a broken template or catalog, or a secret in `.env`
-- The `post-commit` and `post-merge` hooks run `vendor/bin/adzercms-refresh` after every commit and `git pull`: it brings the instance to its tree — dependencies of a changed `composer.lock`, a new cache build, importmap libraries and compiled assets, migrations, then switches the instance to the new build; without `.env.local` it does nothing
+- The `post-commit` and `post-merge` hooks run `vendor/bin/adzercms-refresh` after every commit and `git pull`: it brings the instance to its tree — dependencies of a changed `composer.lock`, packages whose patches changed in `patches.lock.json` of cweagans/composer-patches, a new cache build, importmap libraries and compiled assets, migrations, then switches the instance to the new build; without `.env.local` it does nothing
 - An instance in a subdirectory of a git repository takes `git config core.hooksPath <subdirectory>/.githooks`
 - The document root of the web server is `public/`
 
