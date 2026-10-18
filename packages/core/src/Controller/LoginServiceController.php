@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Controller;
 
+use AdzerCMS\Contracts\Login\LoginListener;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Ui\CabinetEntry;
 use AdzerCMS\Core\Entity\User;
@@ -12,6 +13,7 @@ use AdzerCMS\Core\Login\ConnectedServices;
 use AdzerCMS\Core\Ui\Entries;
 use AdzerCMS\Core\Ui\Intent;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,6 +32,7 @@ final class LoginServiceController
 {
     private const LOGIN = 'login';
 
+    /** @param iterable<LoginListener> $listeners */
     public function __construct(
         private readonly Authorizations $authorizations,
         private readonly ConnectedServices $connected,
@@ -37,6 +40,8 @@ final class LoginServiceController
         private readonly HttpUtils $http,
         private readonly Intent $intent,
         private readonly Entries $entries,
+        #[AutowireIterator(LoginListener::class)]
+        private readonly iterable $listeners,
     ) {
     }
 
@@ -54,6 +59,13 @@ final class LoginServiceController
         $profile = $this->authorizations->profile($service, $request);
         if ($profile instanceof Refusal) {
             return $this->refused($request, $user, $profile);
+        }
+
+        foreach ($this->listeners as $listener) {
+            $response = $listener->entered($service, $profile, $request);
+            if (null !== $response) {
+                return $response;
+            }
         }
 
         if (null === $user) {

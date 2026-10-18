@@ -6,6 +6,7 @@ use AdzerCMS\Cabinet\Tests\Fixture\Pager;
 use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Core\Tests\Account\Fixture\OpenPolicy;
 use AdzerCMS\Core\Tests\HttpAnswers;
+use AdzerCMS\Core\Tests\Login\Fixture\CatchListener;
 use AdzerCMS\Core\Tests\Notice\Fixture\EchoListener;
 use AdzerCMS\Core\Tests\Notice\Fixture\Flare\FlareChannel;
 use AdzerCMS\Core\Tests\Notice\Fixture\NoticeController;
@@ -36,6 +37,7 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
     $services->set(Masthead::class)->autoconfigure();
     $services->set(Pager::class)->autoconfigure();
     $services->set(EchoListener::class)->autoconfigure();
+    $services->set(CatchListener::class)->autoconfigure();
     $services->set(FlareChannel::class)->autoconfigure()->autowire()->public();
     $services->set(Shop::class)->autoconfigure();
     $services->set(RelaySettings::class)->autoconfigure();
