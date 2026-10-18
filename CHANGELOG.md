@@ -12,5 +12,6 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - The admin section "Texts": the admin changes any text of the enabled packages in the language of the instance without code, clearing it brings back the catalog text
 - `BotListener`: a feature module takes what people send to the bots
 - Notice channels of modules: a feature module brings its own channel after the bots
+- Fragment place `Fragment::CABINET_PROFILE`: the profile under the contacts
 
 [Unreleased]: https://github.com/adzercms/adzercms/commits/main
