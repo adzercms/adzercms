@@ -16,5 +16,6 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - Fragment place `Fragment::CABINET_PROFILE`: the profile under the contacts
 - Manual order of a list `Order`: rows are dragged by a handle within their group with SortableJS, the list posts the new order to its route; `Order::arrange()` puts the moved ids into the places they held
 - Going back closes a modal dialog by the gesture and the browser button: the core script `adzercms/dialogs` keeps a history entry per open dialog, the theme imports it
+- A renamed namespace of a migration set or a migration moved to another set does not run again: the migrations console moves its mark to the migration with the same version number
 
 [Unreleased]: https://github.com/adzercms/adzercms/commits/main

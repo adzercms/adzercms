@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests\Schema;
 
+use AdzerCMS\Core\Schema\MigrationOrder;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\DriverException;
@@ -11,10 +12,13 @@ use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\DependencyFactory;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
+use Doctrine\Migrations\Version\Direction;
+use Doctrine\Migrations\Version\ExecutionResult;
 use Doctrine\Migrations\Version\Version;
 use Doctrine\ORM\Mapping\JoinColumnMapping;
 use Doctrine\ORM\Mapping\ToOneOwningSideMapping;
 use Doctrine\ORM\Tools\SchemaTool;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
 final class MigrationsTest extends SchemaTestCase
@@ -47,6 +51,34 @@ final class MigrationsTest extends SchemaTestCase
             new Version('AdzerCMS\Zeta\Migrations\Version20260101000000'),
             new Version('AdzerCMS\Alpha\Migrations\Version20260201000000'),
         ));
+    }
+
+    #[Group('ACMS-CORE-0013')]
+    #[DataProvider('moves')]
+    public function testMarkOfMovedMigrationGoesToItsVersionInAnotherSet(bool $markedInNewSet): void
+    {
+        $dependencies = self::service(DependencyFactory::class, 'doctrine.migrations.dependency_factory');
+        $storage = $dependencies->getMetadataStorage();
+        $version = $dependencies->getMigrationRepository()->getMigrations()->getItems()[0]->getVersion();
+        $applied = $storage->getExecutedMigrations()->getMigration($version);
+        $old = new Version('Acme\Renamed\Migrations\Version'.MigrationOrder::moment($version));
+        $storage->complete(new ExecutionResult($old, Direction::UP, $applied->getExecutedAt()));
+        if (!$markedInNewSet) {
+            $storage->complete(new ExecutionResult($version, Direction::DOWN));
+        }
+
+        $storage->ensureInitialized();
+
+        $marks = $storage->getExecutedMigrations();
+        self::assertFalse($marks->hasMigration($old), 'the mark of the old set is gone');
+        self::assertEquals($applied->getExecutedAt(), $marks->getMigration($version)->getExecutedAt(), 'the migration keeps its execution date');
+    }
+
+    /** @return iterable<string, array{bool}> */
+    public static function moves(): iterable
+    {
+        yield 'mark of the old set only' => [false];
+        yield 'marks of both sets' => [true];
     }
 
     #[Group('ACMS-CORE-0034')]

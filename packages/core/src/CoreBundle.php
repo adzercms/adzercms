@@ -22,6 +22,7 @@ use AdzerCMS\Core\Asset\ModuleImportMap;
 use AdzerCMS\Core\Confirmation\Confirmations;
 use AdzerCMS\Core\Notice\Channel;
 use AdzerCMS\Core\Notice\MailTransport;
+use AdzerCMS\Core\Schema\MigrationMarks;
 use AdzerCMS\Core\Schema\MigrationOrder;
 use AdzerCMS\Core\Security\RecordProvider;
 use AdzerCMS\Core\Security\UserChecker;
@@ -32,6 +33,7 @@ use AdzerCMS\Core\Text\TextLoader;
 use AdzerCMS\Core\Text\Texts;
 use AdzerCMS\Core\Ui\Column;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
+use Doctrine\Migrations\Metadata\Storage\MetadataStorage;
 use Doctrine\Migrations\Version\Comparator;
 use Facile\DoctrineMySQLComeBack\Doctrine\DBAL\Connection;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -56,6 +58,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
     private const IMPORTMAP_READER = 'asset_mapper.importmap.config_reader';
     private const IMPORTMAPS = 'adzercms.importmaps';
     private const IMPORTMAP_VENDOR = 'assets/vendor';
+    private const MIGRATION_MARKS = 'adzercms.migration_marks';
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
@@ -95,6 +98,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
             'migrations_paths' => $migrations,
             'custom_template' => $this->getPath().'/config/migration.tpl',
             'services' => [Comparator::class => MigrationOrder::class],
+            'factories' => [MetadataStorage::class => self::MIGRATION_MARKS],
         ]);
 
         $test = array_any($builder->getExtensionConfig('framework'), static fn (array $config): bool => true === ($config['test'] ?? null));
@@ -140,6 +144,9 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
         $container->parameters()->set('env(GEOIP_CITY_DB)', '');
         $container->import('../config/services.php');
         $builder->setAlias(self::TRANSLATOR, 'translator')->setPublic(true);
+        $builder->register(self::MIGRATION_MARKS, \Closure::class)
+            ->setFactory([\Closure::class, 'fromCallable'])
+            ->setArguments([[MigrationMarks::class, 'of']]);
         foreach ([Owner::class, Rule::class, Identifier::class, Switchable::class, ContentSource::class, Fragment::class, Menu::class, Tabs::class, Columns::class, BotListener::class, LoginListener::class, Channel::class] as $contract) {
             $builder->registerForAutoconfiguration($contract)->addTag($contract);
         }
