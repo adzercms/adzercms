@@ -13,7 +13,7 @@ A module is a Composer package with a Symfony bundle. It depends on `adzercms/co
     "license": "MIT",
     "require": {
         "adzercms/contracts": "^1.0",
-        "symfony/http-kernel": "7.4.*",
+        "symfony/dependency-injection": "7.4.*",
         "symfony/translation": "7.4.*"
     },
     "provide": {
@@ -31,6 +31,8 @@ A module is a Composer package with a Symfony bundle. It depends on `adzercms/co
 `extra.adzercms.bundle` names the bundle class. Its name without `Bundle` is the module key, unique among installed modules. A module that requires the package of another module needs that module selected too.
 
 A kind is required by its virtual package `adzercms/<kind key>-implementation`, not by the package of a module: every module of the kind lists it in `provide` with the engine version whose contracts it implements, and a module of a kind without it stops the build. Composer installs the requiring module only next to a module of the kind, and the instance builds only with one selected. A module with pages requires a theme: `"adzercms/theme-implementation": "^1.0"`. A module the tests need, such as the admin, goes to `require-dev`: the suite of the module selects it.
+
+The package requires every package and PHP extension whose classes, functions or constants its code uses: a dependency taken through another package breaks when that package drops it. `vendor/bin/adzercms-check` refuses a missing, unused or misplaced requirement found by [composer-dependency-analyser](https://github.com/shipmonk-rnd/composer-dependency-analyser) in the PHP files of the package outside `tests/`. A dependency used only by the bundle configuration or by templates is ignored as unused by `composer-dependency-analyser.php` at the package root, a configuration of the analyser. A package the module uses only when it is installed goes to `suggest`.
 
 ## Links to the admin and the cabinet
 

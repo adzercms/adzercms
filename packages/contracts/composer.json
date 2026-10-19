@@ -12,6 +12,7 @@
     "license": "MIT",
     "require": {
         "php": ">=8.4",
+        "symfony/http-foundation": "7.4.*",
         "symfony/http-kernel": "7.4.*",
         "symfony/translation": "7.4.*",
         "symfony/translation-contracts": "^3.7"

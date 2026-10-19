@@ -78,7 +78,7 @@ bin/phpunit --testsuite Core
 vendor/bin/adzercms-check
 ```
 
-The suites are the `<testsuite>` names of `phpunit.dist.xml`, each runs by name. `vendor/bin/adzercms-check` checks code style, PHPStan, XLIFF, ICU and Twig of every package. The pre-commit hook checks the staged files. [CI](.github/workflows/ci.yml) runs every suite on MySQL, MariaDB and PostgreSQL with PHP 8.4 and 8.5. Rules of code, gates and tests: [Engine development](docs/engine-development.md).
+The suites are the `<testsuite>` names of `phpunit.dist.xml`, each runs by name. `vendor/bin/adzercms-check` checks code style, PHPStan, XLIFF, ICU, Twig and the requirements of every package. The pre-commit hook checks the staged files. [CI](.github/workflows/ci.yml) runs every suite on MySQL, MariaDB and PostgreSQL with PHP 8.4 and 8.5. Rules of code, gates and tests: [Engine development](docs/engine-development.md).
 
 ## Documentation
 

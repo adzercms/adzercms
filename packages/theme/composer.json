@@ -12,10 +12,14 @@
     "license": "MIT",
     "require": {
         "php": ">=8.4",
+        "ext-mbstring": "*",
         "adzercms/contracts": "^1.0",
         "adzercms/core": "^1.0",
         "symfony/asset": "7.4.*",
-        "symfony/asset-mapper": "7.4.*"
+        "symfony/asset-mapper": "7.4.*",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/translation-contracts": "^3.7",
+        "twig/twig": "^3.30"
     },
     "provide": {
         "adzercms/theme-implementation": "self.version"

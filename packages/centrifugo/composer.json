@@ -14,7 +14,11 @@
         "php": ">=8.4",
         "adzercms/contracts": "^1.0",
         "adzercms/realtime": "^1.0",
-        "firebase/php-jwt": "^7.2"
+        "firebase/php-jwt": "^7.2",
+        "symfony/clock": "7.4.*",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/http-client-contracts": "^3.7",
+        "symfony/http-foundation": "7.4.*"
     },
     "provide": {
         "adzercms/hub-implementation": "self.version"

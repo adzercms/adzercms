@@ -1,0 +1,40 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Composer\Autoload\ClassLoader;
+
+require $_composer_autoload_path ?? __DIR__.'/../vendor/autoload.php';
+
+$directory = realpath($argv[1] ?? '');
+if (false === $directory || !is_file($directory.'/composer.json')) {
+    fwrite(\STDERR, "usage: adzercms-package-dependencies <package directory>\n");
+    exit(2);
+}
+
+$manifest = json_decode((string) file_get_contents($directory.'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
+if ('project' === ($manifest['type'] ?? null)) {
+    exit(0);
+}
+
+$vendor = (string) array_key_first(ClassLoader::getRegisteredLoaders());
+
+$analysed = (string) tempnam(sys_get_temp_dir(), 'adzercms-dependencies-');
+file_put_contents($analysed, json_encode([
+    'require' => $manifest['require'] ?? [],
+    'require-dev' => $manifest['require-dev'] ?? [],
+    'config' => ['vendor-dir' => $vendor],
+], \JSON_THROW_ON_ERROR));
+
+putenv('ADZERCMS_PACKAGE='.$directory);
+$analyser = proc_open([
+    \PHP_BINARY,
+    $vendor.'/bin/composer-dependency-analyser',
+    '--composer-json='.$analysed,
+    '--config='.__DIR__.'/../tests/package-dependencies.php',
+], [\STDIN, \STDOUT, \STDERR], $pipes);
+$code = false === $analyser ? 1 : proc_close($analyser);
+unlink($analysed);
+
+exit($code);

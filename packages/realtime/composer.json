@@ -13,7 +13,21 @@
     "require": {
         "php": ">=8.4",
         "adzercms/contracts": "^1.0",
-        "adzercms/core": "^1.0"
+        "adzercms/core": "^1.0",
+        "doctrine/doctrine-bundle": "^3.3",
+        "doctrine/orm": "^3.7",
+        "symfony/console": "7.4.*",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/event-dispatcher": "7.4.*",
+        "symfony/framework-bundle": "7.4.*",
+        "symfony/http-foundation": "7.4.*",
+        "symfony/http-kernel": "7.4.*",
+        "symfony/routing": "7.4.*",
+        "symfony/security-bundle": "7.4.*",
+        "symfony/security-http": "7.4.*",
+        "symfony/service-contracts": "^3.7",
+        "symfony/translation": "7.4.*",
+        "symfony/translation-contracts": "^3.7"
     },
     "autoload": {
         "psr-4": {

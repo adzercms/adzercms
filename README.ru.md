@@ -78,7 +78,7 @@ bin/phpunit --testsuite Core
 vendor/bin/adzercms-check
 ```
 
-Наборы — имена `<testsuite>` в `phpunit.dist.xml`, каждый гоняется по имени. `vendor/bin/adzercms-check` проверяет стиль кода, PHPStan, XLIFF, ICU и Twig каждого пакета. Хук pre-commit проверяет вносимые файлы. [CI](.github/workflows/ci.yml) гоняет все наборы на MySQL, MariaDB и PostgreSQL с PHP 8.4 и 8.5. Правила кода, гейты и тесты: [Разработка движка](docs/engine-development.ru.md).
+Наборы — имена `<testsuite>` в `phpunit.dist.xml`, каждый гоняется по имени. `vendor/bin/adzercms-check` проверяет стиль кода, PHPStan, XLIFF, ICU, Twig и требования каждого пакета. Хук pre-commit проверяет вносимые файлы. [CI](.github/workflows/ci.yml) гоняет все наборы на MySQL, MariaDB и PostgreSQL с PHP 8.4 и 8.5. Правила кода, гейты и тесты: [Разработка движка](docs/engine-development.ru.md).
 
 ## Документация
 

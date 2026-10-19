@@ -14,8 +14,8 @@
         "php": ">=8.4",
         "adzercms/contracts": "^1.0",
         "symfony/dependency-injection": "7.4.*",
-        "symfony/http-kernel": "7.4.*",
-        "symfony/translation": "7.4.*"
+        "symfony/translation": "7.4.*",
+        "symfony/translation-contracts": "^3.7"
     },
     "provide": {
         "adzercms/login-implementation": "self.version"

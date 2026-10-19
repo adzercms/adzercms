@@ -14,7 +14,18 @@
         "php": ">=8.4",
         "adzercms/contracts": "^1.0",
         "adzercms/core": "^1.0",
-        "adzercms/theme-implementation": "^1.0"
+        "adzercms/theme-implementation": "^1.0",
+        "doctrine/migrations": "^3.9",
+        "doctrine/orm": "^3.7",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/framework-bundle": "7.4.*",
+        "symfony/http-foundation": "7.4.*",
+        "symfony/password-hasher": "7.4.*",
+        "symfony/polyfill-php86": "^1.43",
+        "symfony/routing": "7.4.*",
+        "symfony/security-http": "7.4.*",
+        "symfony/translation": "7.4.*",
+        "symfony/translation-contracts": "^3.7"
     },
     "require-dev": {
         "adzercms/cabinet": "^1.0"
