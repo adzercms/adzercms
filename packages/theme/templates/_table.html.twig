@@ -16,10 +16,14 @@
         {% if rows is empty %}
             <p class="empty-state">{{ table.empty|trans }}</p>
         {% else %}
+            {% if table.order %}
+                <form id="{{ table.id }}-order" hx-post="{{ path(table.order.route, table.params()) }}" hidden>{{ csrf_field() }}</form>
+            {% endif %}
             <div class="table-responsive">
                 <table>
                     <thead>
                     <tr>
+                        {%- if table.order -%}<th class="row-handle"></th>{%- endif -%}
                         {%- for column in table.columns -%}
                             {%- set aside = table.aside(column.key) -%}
                             {%- if table.sortable(column) -%}
@@ -31,7 +35,7 @@
                         {%- endfor -%}
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody{% if table.order %} data-order="{{ table.id }}-order"{% endif %}>
                     {% for row in rows %}
                         {% block row %}{% endblock %}
                     {% endfor %}

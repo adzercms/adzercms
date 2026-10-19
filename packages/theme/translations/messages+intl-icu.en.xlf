@@ -91,6 +91,12 @@
         <target>Menu</target>
       </segment>
     </unit>
+    <unit id="theme.move">
+      <segment>
+        <source>theme.move</source>
+        <target>Move</target>
+      </segment>
+    </unit>
     <unit id="theme.notes">
       <segment>
         <source>theme.notes</source>
