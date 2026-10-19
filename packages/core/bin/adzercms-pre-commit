@@ -24,6 +24,10 @@ console() {
     out=$(bin/php vendor/bin/adzercms-package-console "$@" 2>&1) || { printf '%s\n' "$out"; exit 1; }
 }
 
+tables() {
+    xargs -r grep -hoP "ORM\\\\Table\(name: '\K[a-z0-9_]+|const TABLE = '\K[a-z0-9_]+" | sort -u | paste -sd '|'
+}
+
 envs=$(staged --diff-filter=ACMR -- '.env' '.env.*' | grep -v -e '^\.env\.test$' -e '\.local$' || true)
 # shellcheck disable=SC2086
 [ -z "$envs" ] || refuse 'secret of the environment template stays empty, its value goes to .env.local' "$(git grep --cached -lP '^\w*(SECRET|PASSWORD|TOKEN)\w*=\S' -- $envs || true)"
@@ -53,10 +57,14 @@ done
 migrations=$(printf '%s\n' "$php" | grep '/migrations/' || true)
 for migration in $migrations; do
     package=${migration%%/migrations/*}
-    foreign=$( { git ls-files -- '*/src/Entity/*.php' | grep -v "^$package/"; find vendor -path '*/src/Entity/*.php'; } \
-        | xargs -r grep -hoP "ORM\\\\Table\(name: '\K[a-z0-9_]+" | sort -u | paste -sd '|')
-    [ -z "$foreign" ] || refuse 'migration changes a table of another set, it belongs to the set of the table owner' "$(grep -lizP \
-        "Table::editor\(\)\s*->setUnquotedName\('($foreign)'|(getTable|TableByUnquotedName)\(\s*'($foreign)'|(INSERT INTO|UPDATE|DELETE FROM|ALTER TABLE|DROP TABLE)\s+[\`\"]?($foreign)\b" \
+    entities=$( { git ls-files -- '*/src/Entity/*.php' | grep -v "^$package/"; find vendor -path '*/src/Entity/*.php'; } )
+    core=$(printf '%s\n' "$entities" | grep -E '^(packages|vendor/adzercms)/core/src/Entity/' | tables)
+    modules=$(printf '%s\n' "$entities" | grep -vE '^(packages|vendor/adzercms)/core/src/Entity/' | tables)
+    [ -z "$modules" ] || refuse 'migration changes a table of another module, it belongs to the set of the table owner' "$(grep -lizP \
+        "Table::editor\(\)\s*->setUnquotedName\('($modules)'|(getTable|TableByUnquotedName)\(\s*'($modules)'|(INSERT INTO|UPDATE|DELETE FROM|ALTER TABLE|DROP TABLE)\s+[\`\"]?($modules)\b" \
+        "$migration" || true)"
+    [ -z "$core" ] || refuse 'migration changes the schema of a core table, it belongs to the core set' "$(grep -lizP \
+        "Table::editor\(\)\s*->setUnquotedName\('($core)'|(getTable|TableByUnquotedName)\(\s*'($core)'|(ALTER TABLE|DROP TABLE)\s+[\`\"]?($core)\b" \
         "$migration" || true)"
 done
 
