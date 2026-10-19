@@ -451,40 +451,10 @@
         <target>+ Пользователь</target>
       </segment>
     </unit>
-    <unit id="admin.users.any_state">
-      <segment>
-        <source>admin.users.any_state</source>
-        <target>Любое состояние</target>
-      </segment>
-    </unit>
     <unit id="admin.users.archive">
       <segment>
         <source>admin.users.archive</source>
         <target>Архив ({count})</target>
-      </segment>
-    </unit>
-    <unit id="admin.users.created">
-      <segment>
-        <source>admin.users.created</source>
-        <target>Регистрация</target>
-      </segment>
-    </unit>
-    <unit id="admin.users.empty">
-      <segment>
-        <source>admin.users.empty</source>
-        <target>Нет пользователей</target>
-      </segment>
-    </unit>
-    <unit id="admin.users.login">
-      <segment>
-        <source>admin.users.login</source>
-        <target>Логин</target>
-      </segment>
-    </unit>
-    <unit id="admin.users.state">
-      <segment>
-        <source>admin.users.state</source>
-        <target>Состояние</target>
       </segment>
     </unit>
     <unit id="admin.users.tab">

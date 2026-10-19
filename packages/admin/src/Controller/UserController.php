@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Admin\Controller;
 
-use AdzerCMS\Admin\UserRows;
 use AdzerCMS\Contracts\Ui\Tabs;
 use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Account\Password;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Account\Status;
 use AdzerCMS\Core\Account\UserRemoval;
+use AdzerCMS\Core\Account\UserRows;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Notice\CoreEvent;
 use AdzerCMS\Core\Notice\Notifier;

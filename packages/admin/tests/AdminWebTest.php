@@ -272,9 +272,9 @@ final class AdminWebTest extends SchemaTestCase
 
         $listing = $this->fragment('/admin/users');
 
-        $login = self::phrase('admin.users.login');
+        $login = self::phrase('core.user.login');
         self::assertSame(
-            [$login, self::phrase('admin.users.created'), Ledger::LABEL, self::phrase('admin.users.state')],
+            [$login, self::phrase('core.user.created'), Ledger::LABEL, self::phrase('core.user.state')],
             $listing->filter('thead th')->each(static fn (Crawler $head): string => trim($head->text())),
         );
         self::assertCount(0, $listing->filter('thead th a')->reduce(static fn (Crawler $link): bool => Ledger::LABEL === trim($link->text())), 'a column of a module is not sorted');

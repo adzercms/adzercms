@@ -853,10 +853,40 @@
         <target>Включено</target>
       </segment>
     </unit>
+    <unit id="core.user.any_state">
+      <segment>
+        <source>core.user.any_state</source>
+        <target>Любое состояние</target>
+      </segment>
+    </unit>
+    <unit id="core.user.created">
+      <segment>
+        <source>core.user.created</source>
+        <target>Регистрация</target>
+      </segment>
+    </unit>
+    <unit id="core.user.empty">
+      <segment>
+        <source>core.user.empty</source>
+        <target>Нет пользователей</target>
+      </segment>
+    </unit>
+    <unit id="core.user.login">
+      <segment>
+        <source>core.user.login</source>
+        <target>Логин</target>
+      </segment>
+    </unit>
     <unit id="core.user.remove_self">
       <segment>
         <source>core.user.remove_self</source>
         <target>Свою запись оператор не удаляет</target>
+      </segment>
+    </unit>
+    <unit id="core.user.state">
+      <segment>
+        <source>core.user.state</source>
+        <target>Состояние</target>
       </segment>
     </unit>
   </file>

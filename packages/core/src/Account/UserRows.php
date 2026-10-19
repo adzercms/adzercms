@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-namespace AdzerCMS\Admin;
+namespace AdzerCMS\Core\Account;
 
 use AdzerCMS\Contracts\Ui\Columns;
-use AdzerCMS\Core\Account\LoginNames;
-use AdzerCMS\Core\Account\Status;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Repository\UserRepository;
 use AdzerCMS\Core\Ui\Column;
@@ -42,7 +40,7 @@ final readonly class UserRows
     {
         $filters = [Filter::search()];
         if (!$archive) {
-            $filters[] = Filter::cases(self::STATE, t('admin.users.any_state'), [Status::Active, Status::Stopped]);
+            $filters[] = Filter::cases(self::STATE, t('core.user.any_state'), [Status::Active, Status::Stopped]);
         }
 
         $modules = array_values(array_filter([...$this->columns], static fn (Columns $columns): bool => Columns::ADMIN_USERS === $columns->listing()));
@@ -54,11 +52,11 @@ final readonly class UserRows
         }
 
         $table = Table::of($request, $route, [
-            Column::of('id', t('admin.users.login'), 's.id'),
-            Column::of('created', t('admin.users.created'), 's.createdAt')->aside(),
+            Column::of('id', t('core.user.login'), 's.id'),
+            Column::of('created', t('core.user.created'), 's.createdAt')->aside(),
             ...$extra,
-            Column::of('state', t('admin.users.state'), 's.status'),
-        ], 'created', t('admin.users.empty'), false, filters: $filters, sticky: $sticky);
+            Column::of('state', t('core.user.state'), 's.status'),
+        ], 'created', t('core.user.empty'), false, filters: $filters, sticky: $sticky);
 
         $term = trim($table->term());
         $found = [];

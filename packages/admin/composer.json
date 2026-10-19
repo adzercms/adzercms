@@ -21,7 +21,6 @@
         "symfony/framework-bundle": "7.4.*",
         "symfony/http-foundation": "7.4.*",
         "symfony/password-hasher": "7.4.*",
-        "symfony/polyfill-php86": "^1.43",
         "symfony/routing": "7.4.*",
         "symfony/security-http": "7.4.*",
         "symfony/translation": "7.4.*",

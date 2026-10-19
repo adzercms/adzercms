@@ -451,40 +451,10 @@
         <target>+ User</target>
       </segment>
     </unit>
-    <unit id="admin.users.any_state">
-      <segment>
-        <source>admin.users.any_state</source>
-        <target>Any state</target>
-      </segment>
-    </unit>
     <unit id="admin.users.archive">
       <segment>
         <source>admin.users.archive</source>
         <target>Archive ({count})</target>
-      </segment>
-    </unit>
-    <unit id="admin.users.created">
-      <segment>
-        <source>admin.users.created</source>
-        <target>Registered</target>
-      </segment>
-    </unit>
-    <unit id="admin.users.empty">
-      <segment>
-        <source>admin.users.empty</source>
-        <target>No users</target>
-      </segment>
-    </unit>
-    <unit id="admin.users.login">
-      <segment>
-        <source>admin.users.login</source>
-        <target>Login</target>
-      </segment>
-    </unit>
-    <unit id="admin.users.state">
-      <segment>
-        <source>admin.users.state</source>
-        <target>State</target>
       </segment>
     </unit>
     <unit id="admin.users.tab">
