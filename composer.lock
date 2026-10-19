@@ -197,7 +197,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "7eb55753886d2802f9580751c8650d0ee480433e"
+                "reference": "bc6e849810ca5f3162a32a928621eb3edd6a64cc"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -227,6 +227,7 @@
                 "symfony/http-client": "7.4.*",
                 "symfony/http-foundation": "7.4.*",
                 "symfony/http-kernel": "7.4.*",
+                "symfony/lock": "7.4.*",
                 "symfony/mailer": "7.4.*",
                 "symfony/mime": "7.4.*",
                 "symfony/password-hasher": "7.4.*",
@@ -835,7 +836,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/telegram-bot",
-                "reference": "3c3038ba17e7a146ad500545238abddda873089e"
+                "reference": "81c2c9ba03b82484c00034d32be4bf0325d2e45d"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -844,6 +845,9 @@
             },
             "provide": {
                 "adzercms/bot-implementation": "self.version"
+            },
+            "require-dev": {
+                "adzercms/cabinet": "^1.0"
             },
             "type": "adzercms-module",
             "extra": {
@@ -5318,6 +5322,89 @@
                 }
             ],
             "time": "2026-10-14T06:44:08+00:00"
+        },
+        {
+            "name": "symfony/lock",
+            "version": "v7.4.21",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/lock.git",
+                "reference": "a349566fa790ecad53f8445e1812c39ebf741801"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/lock/zipball/a349566fa790ecad53f8445e1812c39ebf741801",
+                "reference": "a349566fa790ecad53f8445e1812c39ebf741801",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "psr/log": "^1|^2|^3"
+            },
+            "conflict": {
+                "doctrine/dbal": "<3.6",
+                "symfony/cache": "<6.4"
+            },
+            "require-dev": {
+                "doctrine/dbal": "^3.6|^4",
+                "predis/predis": "^1.1|^2.0",
+                "symfony/serializer": "^6.4|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Lock\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jérémy Derussé",
+                    "email": "jeremy@derusse.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Creates and manages locks, a mechanism to provide exclusive access to a shared resource",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "cas",
+                "flock",
+                "locking",
+                "mutex",
+                "redlock",
+                "semaphore"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/lock/tree/v7.4.21"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-10-04T15:19:50+00:00"
         },
         {
             "name": "symfony/mailer",

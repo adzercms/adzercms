@@ -39,7 +39,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
-use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -114,7 +113,8 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
             'translator' => ['fallbacks' => [self::FALLBACK_LOCALE]],
             'mailer' => ['dsn' => $test ? self::TEST_MAILER : MailTransport::DSN],
             'asset_mapper' => ['paths' => [self::IMPORTMAP_VENDOR => 'vendor'], 'missing_import_mode' => 'strict', 'importmap_polyfill' => false],
-        ] + (class_exists(LockFactory::class) ? ['lock' => self::LOCKS] : []));
+            'lock' => self::LOCKS,
+        ]);
 
         $builder->prependExtensionConfig('twig', ['globals' => ['brand' => '@'.Brand::class, 'password_min' => Password::MIN_LENGTH], 'paths' => $templates]);
 

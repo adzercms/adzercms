@@ -1,4 +1,7 @@
 {
+    "adzercms/core": {
+        "version": "dev-main"
+    },
     "doctrine/deprecations": {
         "version": "1.1",
         "recipe": {
@@ -46,6 +49,9 @@
         "files": [
             ".php-cs-fixer.dist.php"
         ]
+    },
+    "phpstan/phpstan": {
+        "version": "2.3.1"
     },
     "phpunit/phpunit": {
         "version": "13.4",
