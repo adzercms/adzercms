@@ -14,5 +14,6 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `LoginListener`: a feature module that waits for a login takes the profile of the login service instead of the entry
 - Notice channels of modules: a feature module brings its own channel after the bots
 - Fragment place `Fragment::CABINET_PROFILE`: the profile under the contacts
+- Manual order of a list `Order`: rows are dragged by a handle within their group with SortableJS, the list posts the new order to its route; `Order::arrange()` puts the moved ids into the places they held
 
 [Unreleased]: https://github.com/adzercms/adzercms/commits/main

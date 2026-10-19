@@ -1,4 +1,5 @@
 import htmx from 'htmx.org';
+import Sortable from 'sortablejs';
 
 const openPane = tab => {
     const scope = tab.closest('[data-panes]');
@@ -54,7 +55,7 @@ document.addEventListener('click', event => {
     }
 
     const opener = event.target.closest('[data-modal], [data-record]');
-    if (opener && (opener.tagName !== 'TR' || !event.target.closest('a, button, input, select, form'))) {
+    if (opener && (opener.tagName !== 'TR' || !event.target.closest('a, button, input, select, form, [data-order-id]'))) {
         if (opener.dataset.record) {
             htmx.ajax('GET', opener.dataset.record, {target: '#record'});
         } else {
@@ -64,7 +65,7 @@ document.addEventListener('click', event => {
     }
 
     const row = event.target.closest('[data-href]');
-    if (row && !event.target.closest('a, button, input, select, form')) {
+    if (row && !event.target.closest('a, button, input, select, form, [data-order-id]')) {
         location.assign(row.dataset.href);
     }
 });
@@ -228,6 +229,39 @@ document.addEventListener('htmx:beforeSwap', event => {
 });
 
 document.addEventListener('htmx:load', event => conditionals(event.target));
+
+const ORDER_FIELD = 'ids[]';
+const ORDER_ANIMATION = 150;
+
+const groupOf = row => row.querySelector('[data-order-id]').dataset.orderGroup;
+
+const arrange = scope => scope.querySelectorAll('tbody[data-order]').forEach(body => {
+    if (Sortable.get(body)) {
+        return;
+    }
+
+    Sortable.create(body, {
+        handle: '[data-order-id]',
+        animation: ORDER_ANIMATION,
+        onMove: event => groupOf(event.related) === groupOf(event.dragged),
+        onEnd: event => {
+            if (event.oldIndex === event.newIndex) {
+                return;
+            }
+
+            const form = document.getElementById(body.dataset.order);
+            const group = groupOf(event.item);
+            form.querySelectorAll(`input[name="${ORDER_FIELD}"]`).forEach(input => input.remove());
+            body.querySelectorAll(`[data-order-group="${CSS.escape(group)}"]`).forEach(handle => {
+                form.append(Object.assign(document.createElement('input'), {type: 'hidden', name: ORDER_FIELD, value: handle.dataset.orderId}));
+            });
+            form.requestSubmit();
+        },
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => arrange(document));
+document.addEventListener('htmx:load', event => arrange(event.target));
 
 document.addEventListener('htmx:afterSwap', event => {
     if (event.target.id !== 'record') {

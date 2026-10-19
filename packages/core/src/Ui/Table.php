@@ -35,6 +35,7 @@ final class Table
         public readonly int $size,
         public readonly bool $live,
         public readonly string $id,
+        public readonly ?Order $order,
     ) {
     }
 
@@ -55,9 +56,10 @@ final class Table
         int $size = self::SIZE,
         bool $live = false,
         string $id = self::ROWS,
+        ?Order $order = null,
     ): self {
         $sortable = [];
-        foreach ($columns as $column) {
+        foreach (null === $order ? $columns : [] as $column) {
             if ($live ? null !== $column->value : [] !== $column->fields) {
                 $sortable[$column->key] = true;
             }
@@ -77,11 +79,12 @@ final class Table
             array_filter($sticky, static fn (mixed $value): bool => '' !== $value && null !== $value),
             $key,
             $empty,
-            $ascending,
+            null === $order ? $ascending : true,
             max(1, $request->query->getInt(self::param($id, 'page'), 1)),
             $size,
             $live,
             $id,
+            $order,
         );
         $table->values = self::values($request, $filters, $id);
 
@@ -125,6 +128,10 @@ final class Table
     /** @return array<string, mixed> */
     public function base(): array
     {
+        if (null !== $this->order) {
+            return $this->sticky;
+        }
+
         return $this->sticky + [
             self::param($this->id, 'sort') => $this->key,
             self::param($this->id, 'order') => $this->ascending ? 'asc' : 'desc',
@@ -176,7 +183,7 @@ final class Table
 
     public function sortable(Column $column): bool
     {
-        return $this->live ? null !== $column->value : [] !== $column->fields;
+        return null === $this->order && ($this->live ? null !== $column->value : [] !== $column->fields);
     }
 
     public function offset(): int
@@ -200,7 +207,7 @@ final class Table
     {
         $direction = $this->ascending ? \SortDirection::Ascending : \SortDirection::Descending;
 
-        foreach ($this->column($this->key)->fields ?? [] as $field) {
+        foreach ($this->fields() as $field) {
             $builder->addOrderBy($field, $direction);
         }
 
@@ -212,7 +219,7 @@ final class Table
         $direction = $this->ascending ? 'ASC' : 'DESC';
         $parts = [];
 
-        foreach ($this->column($this->key)->fields ?? [] as $field) {
+        foreach ($this->fields() as $field) {
             $parts[] = $field.' '.$direction;
         }
 
@@ -234,7 +241,7 @@ final class Table
             $rows = array_filter($rows, fn (mixed $row): bool => $this->matches($row, $term));
         }
 
-        $column = $this->column($this->key);
+        $column = null === $this->order ? $this->column($this->key) : null;
 
         if (null !== $column?->value) {
             $direction = $this->ascending ? 1 : -1;
@@ -252,6 +259,12 @@ final class Table
     private static function param(string $id, string $name): string
     {
         return self::ROWS === $id ? $name : $id.'_'.$name;
+    }
+
+    /** @return list<string> */
+    private function fields(): array
+    {
+        return $this->order->fields ?? $this->column($this->key)->fields ?? [];
     }
 
     private function column(string $key): ?Column

@@ -17,6 +17,7 @@ use AdzerCMS\Core\Tests\Setting\Fixture\Shop;
 use AdzerCMS\Core\Tests\Translation\Fixture\LocaleController;
 use AdzerCMS\Core\Tests\Ui\Fixture\FrameController;
 use AdzerCMS\Core\Tests\Ui\Fixture\Ledger;
+use AdzerCMS\Core\Tests\Ui\Fixture\ListController;
 use AdzerCMS\Core\Tests\Ui\Fixture\Masthead;
 use AdzerCMS\Mailing\MailingBundle;
 use AdzerCMS\Mailing\Tests\Fixture\CommentAudience;
@@ -46,6 +47,7 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
     $services->set(NoticeController::class)->autoconfigure()->autowire();
     $services->set(LocaleController::class)->autoconfigure()->autowire();
     $services->set(FrameController::class)->autoconfigure()->autowire();
+    $services->set(ListController::class)->autoconfigure()->autowire();
     $services->set('logger', NullLogger::class);
 
     $bundles = $builder->getParameter('kernel.bundles');
