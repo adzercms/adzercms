@@ -81,9 +81,29 @@ final class Filter
     /** @param list<string> $fields */
     public static function matching(QueryBuilder $builder, string $term, array $fields): Orx
     {
-        $builder->setParameter('term', '%'.addcslashes(mb_strtolower(trim($term)), '%_\\').'%');
+        $builder->setParameter('term', self::pattern($term));
 
-        return $builder->expr()->orX(...array_map(static fn (string $field): string => \sprintf('LOWER(%s) LIKE :term', $field), $fields));
+        return $builder->expr()->orX(...array_map(self::like(...), $fields));
+    }
+
+    /**
+     * @param list<string> $fields
+     *
+     * @return array{string, array{term: string}}
+     */
+    public static function matchingSql(string $term, array $fields): array
+    {
+        return ['('.implode(' OR ', array_map(self::like(...), $fields)).')', ['term' => self::pattern($term)]];
+    }
+
+    private static function pattern(string $term): string
+    {
+        return '%'.addcslashes(mb_strtolower(trim($term)), '%_\\').'%';
+    }
+
+    private static function like(string $field): string
+    {
+        return \sprintf('LOWER(%s) LIKE :term', $field);
     }
 
     public static function number(string $term): ?int
