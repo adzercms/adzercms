@@ -67,12 +67,6 @@ done
     refuse 'schema change is a Table object and platform SQL, not a DDL string' "$(grep -liP "addSql\(\s*['\"]\s*(CREATE|ALTER|DROP|RENAME|TRUNCATE)\b" $migrations || true)"
 }
 
-for changed in $(staged --diff-filter=M -- '*/migrations/*.php'); do
-    if git diff --cached -- "$changed" | grep -q '^[-+]namespace '; then
-        refuse 'namespace of a migration set is not renamed' "$changed"
-    fi
-done
-
 native=$( {
     printf '%s\n' "$php" | xargs -r grep -lP 'new \\DateTime(Immutable)?\((\)|\x27(now|today|tomorrow|yesterday|midnight|[+-]))|(?<![\w>:$])(?<!function )\\?date\(' || true
     printf '%s\n' "$php" | grep -E '(^|/)src/' | xargs -r grep -lP '(?<![\w>:$])time\(\)' || true

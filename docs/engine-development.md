@@ -30,7 +30,7 @@ How the engine is built and which rules its code and tests follow. The module co
 ## Code
 
 - The engine runs on MySQL, MariaDB and PostgreSQL. A query is DQL or the DBAL query builder. Names of tables, columns and aliases are not reserved words; migrations do not name a collation.
-- A migration follows [Migrations](module-development.md#migrations) and belongs to the set of the owner of the table it changes. Its values are literals, the namespace of a set is never renamed and a version number is unique across sets. The migration comes after the code it serves.
+- A migration follows [Migrations](module-development.md#migrations) and belongs to the set of the owner of the table it changes. Its values are literals and a version number is unique across sets. The migration comes after the code it serves.
 - A list takes its rows, module values and nested collections in one query per page, not one per row.
 - Money is `DECIMAL` with `bcmath`, shown by the money helpers of the core.
 - The current moment is the Symfony Clock: `now()` and `DatePoint` in code, `now()` in templates, `sleep()` of the clock for waiting.

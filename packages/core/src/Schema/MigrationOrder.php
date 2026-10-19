@@ -16,7 +16,7 @@ final class MigrationOrder implements Comparator
         return self::moment($a) <=> self::moment($b);
     }
 
-    private static function moment(Version $version): string
+    public static function moment(Version $version): string
     {
         $name = (string) $version;
         $position = strrpos($name, self::PREFIX);
