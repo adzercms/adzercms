@@ -1,3 +1,4 @@
+import 'adzercms/dialogs';
 import htmx from 'htmx.org';
 import Sortable from 'sortablejs';
 
