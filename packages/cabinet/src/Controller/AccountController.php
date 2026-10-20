@@ -41,7 +41,13 @@ final class AccountController extends AbstractController
 {
     private const PROFILE_TABS = ['account', 'notices', 'security'];
 
-    #[Route('/', name: 'cabinet_account', methods: ['GET'])]
+    #[Route('/', name: 'cabinet_root', methods: ['GET'], priority: -1)]
+    public function root(): Response
+    {
+        return $this->redirectToRoute('cabinet_account');
+    }
+
+    #[Route('/cabinet', name: 'cabinet_account', methods: ['GET'])]
     #[IsGranted(Role::USER)]
     public function account(#[CurrentUser] User $user, Request $request, PageTabs $pages): Response
     {

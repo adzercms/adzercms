@@ -34,6 +34,14 @@ final class CabinetWebTest extends SchemaTestCase
     use Delivery;
     use ServiceLogin;
 
+    #[Group('ACMS-UI-0068')]
+    public function testRootWithoutPublicHomeLeadsToCabinetHome(): void
+    {
+        $this->client->request('GET', '/');
+
+        self::assertResponseRedirects('/cabinet');
+    }
+
     #[Group('ACMS-UI-0035')]
     #[Group('ACMS-US-0001')]
     public function testLoginServiceButtonTakesColorOfService(): void
