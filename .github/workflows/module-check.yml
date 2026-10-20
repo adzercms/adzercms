@@ -1,0 +1,125 @@
+name: Module check
+
+on:
+  workflow_call:
+    inputs:
+      package:
+        type: string
+        default: ''
+      version:
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    services:
+      postgresql:
+        image: postgres:latest
+        env:
+          POSTGRES_PASSWORD: adzercms
+          POSTGRES_DB: adzercms_test
+          POSTGRES_INITDB_ARGS: --locale-provider=icu --icu-locale=und
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
+      mysql:
+        image: mysql:lts
+        env:
+          MYSQL_ROOT_PASSWORD: adzercms
+          MYSQL_DATABASE: adzercms_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 -padzercms"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
+      mariadb:
+        image: mariadb:lts
+        env:
+          MARIADB_ROOT_PASSWORD: adzercms
+          MARIADB_DATABASE: adzercms_test
+        ports:
+          - 3307:3306
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
+    env:
+      DATABASE_URL: postgresql://postgres:adzercms@127.0.0.1:5432/adzercms_test?charset=utf8
+      MODULE_CHECK_DATABASES: >-
+        postgresql://postgres:adzercms@127.0.0.1:5432/adzercms_test?charset=utf8
+        mysql://root:adzercms@127.0.0.1:3306/adzercms_test?charset=utf8mb4
+        mysql://root:adzercms@127.0.0.1:3307/adzercms_test?charset=utf8mb4
+    steps:
+      - if: inputs.version == ''
+        uses: actions/checkout@v7
+        with:
+          path: module
+          persist-credentials: false
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+          tools: composer:v2
+      - id: cache
+        run: |
+          echo "dir=$(composer config --global cache-files-dir)" >> "$GITHUB_OUTPUT"
+          echo "day=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v6
+        with:
+          path: ${{ steps.cache.outputs.dir }}
+          key: module-check-${{ steps.cache.outputs.day }}
+          restore-keys: module-check-
+      - id: check
+        env:
+          PACKAGE: ${{ inputs.package }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          set +e -uo pipefail
+          composer create-project adzercms/skeleton "$RUNNER_TEMP/instance" --stability=dev --no-interaction || exit 1
+          cd "$RUNNER_TEMP/instance" || exit 1
+          if [ -n "$VERSION" ]; then
+            requirement="$PACKAGE:$VERSION"
+          else
+            PACKAGE=$(jq -r .name "$GITHUB_WORKSPACE/module/composer.json")
+            composer config repositories.module path "$GITHUB_WORKSPACE/module" || exit 1
+            requirement="$PACKAGE:*@dev"
+          fi
+          engine=$(curl -fsS --max-time 60 'https://packagist.org/packages/list.json?vendor=adzercms&type=adzercms-module') || exit 1
+          mapfile -t modules < <(jq -r --arg package "$PACKAGE" '.packageNames[] | select(. != $package)' <<<"$engine")
+          composer require --no-interaction "${modules[@]}" "$requirement"
+          case $? in
+            0)
+              bin/php vendor/bin/adzercms-module-check "$PACKAGE" | tee "$RUNNER_TEMP/check"
+              case ${PIPESTATUS[0]} in
+                0) outcome=passed ;;
+                1) outcome=$(sed -n 's/^module check failed: //p' "$RUNNER_TEMP/check") ;;
+                *) exit 1 ;;
+              esac
+              ;;
+            2) outcome=install ;;
+            *) exit 1 ;;
+          esac
+          if [ -z "$VERSION" ]; then
+            [ "$outcome" = passed ]
+            exit
+          fi
+          artifact="outcome-${PACKAGE//\//--}"
+          jq -n --arg package "$PACKAGE" --arg outcome "$outcome" '{$package, $outcome}' > "$RUNNER_TEMP/$artifact.json"
+          echo "artifact=$artifact" >> "$GITHUB_OUTPUT"
+      - if: inputs.version != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.check.outputs.artifact }}
+          path: ${{ runner.temp }}/${{ steps.check.outputs.artifact }}.json
+          retention-days: 1

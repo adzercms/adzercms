@@ -78,6 +78,11 @@ trait CatalogAnswers
         $this->packages[$name] = [self::manifest($name, $version, $type, $provide, $categories)];
     }
 
+    private function branch(string $name, string $alias): void
+    {
+        $this->packages[$name.'~dev'] = [['default-branch' => true] + array_replace_recursive(self::manifest($name, 'dev-main'), ['extra' => ['branch-alias' => ['dev-main' => $alias]]])];
+    }
+
     private function host(string $repository, string $name, string $version): void
     {
         $this->hosted[$repository][$name] = [self::manifest($name, $version)];
@@ -129,10 +134,10 @@ trait CatalogAnswers
     }
 
     /** @param array<string, list<array<string, mixed>>> $packages */
-    private static function minified(array $packages, string $name): MockResponse
+    private static function minified(array $packages, string $file): MockResponse
     {
-        return isset($packages[$name])
-            ? new JsonMockResponse(['minified' => 'composer/2.0', 'packages' => [$name => MetadataMinifier::minify($packages[$name])]])
+        return isset($packages[$file])
+            ? new JsonMockResponse(['minified' => 'composer/2.0', 'packages' => [explode('~', $file)[0] => MetadataMinifier::minify($packages[$file])]])
             : new MockResponse('', ['http_code' => 404]);
     }
 }

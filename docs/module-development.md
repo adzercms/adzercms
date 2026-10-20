@@ -192,8 +192,22 @@ bin/php vendor/bin/adzercms-module-check acme/pigeon
 - `audit` — `composer audit` finds no advisory for the packages the module alone adds to the instance
 - `phpstan` — PHPStan of the module's `src/` at the engine's level
 - `psalm` — Psalm taint analysis of the module's `src/` with the Symfony plugin: request data doesn't reach the sinks Psalm tracks, such as SQL, shell commands and file paths
+- `boundary` — the module doesn't override or decorate services of other packages and keeps their routes, console commands and translations; its migrations create and change only the tables of its own entities. The schema is checked on each database address listed in `MODULE_CHECK_DATABASES` separated by spaces; without the variable on the test database, and an empty variable skips it
+- `theme` — only for a theme: it has every template, Twig function, filter and test of the engine theme `adzercms/theme` and the style classes that templates of the other installed `adzercms/*` packages use
 
 A failed check ends the run with exit code 1 and its name in the last line.
+
+In CI, the module repository calls the module check workflow of the engine:
+
+```yaml
+jobs:
+  module-check:
+    uses: adzercms/adzercms/.github/workflows/module-check.yml@main
+```
+
+It creates an instance from `adzercms/skeleton` with every engine module and the module from the repository and runs the check on PostgreSQL, MySQL and MariaDB. If Composer can't resolve the module's requirements, the check fails as `install`.
+
+Once a version is published on Packagist, the engine checks it the same way within a day. A version that passes gets the verified mark in the module catalog of every site. Each commit is checked once, and the mark stays while the version is published.
 
 ## Migrations
 

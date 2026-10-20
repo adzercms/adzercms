@@ -67,6 +67,16 @@ final readonly class Package
     /**
      * @param array<mixed> $answer
      *
+     * @return list<string>
+     */
+    public static function references(string $name, array $answer): array
+    {
+        return array_values(array_filter(array_map(self::reference(...), self::versions($name, $answer))));
+    }
+
+    /**
+     * @param array<mixed> $answer
+     *
      * @return list<array{version: string, ...<mixed>}>
      */
     private static function versions(string $name, array $answer): array

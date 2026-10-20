@@ -142,6 +142,40 @@ final readonly class Repositories
         return new Lookup($packages, array_values(array_unique($down)), array_intersect_key($deciders, array_filter($packages)));
     }
 
+    /**
+     * @param list<string> $names
+     *
+     * @return array<string, array{array<mixed>, array<mixed>}>|null
+     */
+    public function answers(Source $source, array $names): ?array
+    {
+        $template = $this->template($source);
+        if (null === $template) {
+            return null;
+        }
+
+        $responses = [];
+        $answers = [];
+        try {
+            foreach ($names as $name) {
+                $responses[$name] = [$this->get(str_replace(self::NAME, $name, $template), $source), $this->get(str_replace(self::NAME, $name.self::BRANCHES, $template), $source)];
+            }
+            foreach ($responses as $name => [$tagged, $branches]) {
+                $answers[$name] = [self::answer($tagged), self::answer($branches)];
+            }
+        } catch (ExceptionInterface) {
+            return null;
+        }
+
+        return $answers;
+    }
+
+    /** @return array<mixed> */
+    private static function answer(ResponseInterface $response): array
+    {
+        return 404 === $response->getStatusCode() ? [] : $response->toArray();
+    }
+
     private function template(Source $source): ?string
     {
         $template = $this->root($source)['metadata-url'] ?? null;

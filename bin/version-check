@@ -1,0 +1,36 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use AdzerCMS\Core\Composer\Repositories;
+use AdzerCMS\Core\Tests\VersionCheck;
+use Symfony\Component\HttpClient\HttpClient;
+
+require dirname(__DIR__).'/vendor/autoload.php';
+
+[$command, $registry, $outcomes] = [$argv[1] ?? '', $argv[2] ?? '', $argv[3] ?? ''];
+$usable = is_file($registry) && match ($command) {
+    'pending' => true,
+    'record' => '' !== $outcomes && !is_file($outcomes),
+    default => false,
+};
+if (!$usable) {
+    fwrite(\STDERR, "usage: version-check pending <registry> | version-check record <registry> <outcomes> < <pending>\n");
+    exit(2);
+}
+
+$json = static function (string $path): array {
+    $value = json_decode((string) file_get_contents($path), true, flags: \JSON_THROW_ON_ERROR);
+
+    return is_array($value) ? $value : throw new UnexpectedValueException(sprintf('%s is not a JSON object', $path));
+};
+$check = new VersionCheck(new Repositories(HttpClient::create()));
+
+if ('pending' === $command) {
+    echo json_encode($check->pending($json($registry)), \JSON_UNESCAPED_SLASHES | \JSON_THROW_ON_ERROR), "\n";
+    exit(0);
+}
+
+$recorded = $check->record($json($registry), $json('php://stdin'), array_map($json, glob($outcomes.'/*.json') ?: []));
+file_put_contents($registry, json_encode($recorded, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_FORCE_OBJECT | \JSON_THROW_ON_ERROR)."\n");

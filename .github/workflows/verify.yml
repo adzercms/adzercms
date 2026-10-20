@@ -1,0 +1,82 @@
+name: Verify
+
+on:
+  schedule:
+    - cron: '23 2 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: verify
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  pending:
+    runs-on: ubuntu-24.04
+    outputs:
+      versions: ${{ steps.pending.outputs.versions }}
+    steps:
+      - uses: actions/checkout@v7
+      - &php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+          tools: composer:v2
+      - uses: ramsey/composer-install@v4
+      - &registry
+        name: Registry
+        run: |
+          code=0
+          git ls-remote --exit-code --heads origin verified > /dev/null || code=$?
+          case $code in
+            0) git fetch --quiet --depth=1 origin verified && git show FETCH_HEAD:verified.json > "$RUNNER_TEMP/verified.json" ;;
+            2) echo '{}' > "$RUNNER_TEMP/verified.json" ;;
+            *) exit "$code" ;;
+          esac
+      - id: pending
+        run: echo "versions=$(bin/version-check pending "$RUNNER_TEMP/verified.json")" >> "$GITHUB_OUTPUT"
+
+  check:
+    needs: pending
+    if: needs.pending.outputs.versions != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.pending.outputs.versions) }}
+    uses: ./.github/workflows/module-check.yml
+    with:
+      package: ${{ matrix.package }}
+      version: ${{ matrix.require }}
+
+  record:
+    needs: [pending, check]
+    if: ${{ !cancelled() && needs.pending.result == 'success' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - *php
+      - uses: ramsey/composer-install@v4
+      - *registry
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: outcome-*
+          merge-multiple: true
+          path: ${{ runner.temp }}/outcomes
+      - env:
+          VERSIONS: ${{ needs.pending.outputs.versions }}
+        run: |
+          cp "$RUNNER_TEMP/verified.json" "$RUNNER_TEMP/held.json"
+          bin/version-check record "$RUNNER_TEMP/verified.json" "$RUNNER_TEMP/outcomes" <<<"$VERSIONS"
+          if cmp -s "$RUNNER_TEMP/verified.json" "$RUNNER_TEMP/held.json"; then
+            exit 0
+          fi
+          git switch --quiet --orphan verified
+          cp "$RUNNER_TEMP/verified.json" verified.json
+          git add verified.json
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit --quiet --message 'Verified module versions'
+          git push --quiet --force origin verified
