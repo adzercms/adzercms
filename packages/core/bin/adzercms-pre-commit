@@ -54,6 +54,8 @@ for added in $(staged --diff-filter=AR -- '*/migrations/*.php'); do
         || refuse 'migration version is taken by another set' "$added"
 done
 
+refuse 'committed migration is immutable, a schema change goes to a new migration' "$(staged --diff-filter=M -- '*/migrations/*.php')"
+
 migrations=$(printf '%s\n' "$php" | grep '/migrations/' || true)
 for migration in $migrations; do
     package=${migration%%/migrations/*}

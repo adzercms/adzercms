@@ -182,7 +182,7 @@ bin/console doctrine:migrations:generate --namespace='Acme\Shop\Migrations'
 
 The generated class aborts until you write it. Build tables with DBAL `Table` objects and `$this->platform` SQL, not SQL strings: the module then runs on MySQL, MariaDB and PostgreSQL. Keep migrations free of module classes.
 
-An applied migration is marked by its class name. A new namespace of the module or a migration moved to another set does not run it again: the migrations console moves the mark to the migration with the same version number.
+An applied migration is marked by its class name. A new namespace of the module or a migration moved to another set does not run it again: the migrations console moves the mark to the migration with the same version number. A committed migration does not change: an instance that has applied it never runs it again, so a schema change goes to a new migration, and the `pre-commit` hook stops an edit of a committed one.
 
 ## Settings
 
