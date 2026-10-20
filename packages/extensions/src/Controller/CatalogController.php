@@ -19,7 +19,7 @@ use function Symfony\Component\Translation\t;
 
 final class CatalogController extends AbstractController
 {
-    private const PAGE = 'extensions';
+    public const PAGE = 'extensions';
 
     public function __construct(private readonly ExtensionRepository $extensions)
     {

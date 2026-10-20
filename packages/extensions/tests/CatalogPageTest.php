@@ -6,6 +6,8 @@ namespace AdzerCMS\Extensions\Tests;
 
 use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Core\Composer\Package;
+use AdzerCMS\Core\Seo\Indexing;
+use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Queries;
 use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Extensions\ExtensionType;
@@ -16,6 +18,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class CatalogPageTest extends CatalogTestCase
 {
+    use Configuration;
     use Queries;
 
     private const PAGE = '/extensions';
@@ -112,6 +115,19 @@ final class CatalogPageTest extends CatalogTestCase
             array_map(static fn (array $element): array => [$element['position'], $element['item']['name'], $element['item']['url'], $element['item']['offers']['price']], $schema['mainEntity']['itemListElement']),
         );
         self::assertSame([Money::CURRENCY], array_values(array_unique(array_map(static fn (array $element): string => $element['item']['offers']['priceCurrency'], $schema['mainEntity']['itemListElement']))));
+    }
+
+    #[Group('ACMS-EXT-0005')]
+    public function testSitemapDatesPageByItsEntries(): void
+    {
+        $this->configure([Indexing::NAME => '1']);
+        $this->entry('acme/seo', package: self::package('SEO module'));
+
+        $this->client->request('GET', '/sitemap.xml');
+        $sitemap = new \SimpleXMLElement((string) $this->client->getResponse()->getContent());
+        $sitemap->registerXPathNamespace('s', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+
+        self::assertCount(1, $sitemap->xpath(\sprintf('//s:url[s:loc="%s"]/s:lastmod', self::service(UrlGeneratorInterface::class)->generate('extensions', [], UrlGeneratorInterface::ABSOLUTE_URL))) ?: []);
     }
 
     #[Group('ACMS-UI-0079')]
