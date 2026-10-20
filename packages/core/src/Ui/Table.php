@@ -160,6 +160,15 @@ final class Table
     }
 
     /** @return array<string, mixed> */
+    public function tab(Filter $filter, string $value): array
+    {
+        $query = $this->query();
+        unset($query[$this->field($filter)]);
+
+        return ('' === $value ? [] : [$this->field($filter) => $value]) + $query + $this->base();
+    }
+
+    /** @return array<string, mixed> */
     public function pageLink(int $number): array
     {
         return [self::param($this->id, 'page') => $number] + $this->params();

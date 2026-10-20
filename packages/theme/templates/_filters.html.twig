@@ -1,8 +1,23 @@
-{% if table.filters %}
+{% macro tab(table, filter, value, label) %}
+    {% set url = path(table.route, table.tab(filter, value)) %}
+    <a class="tab {{ table.value(filter.name) == value ? 'active' }}" href="{{ url }}" hx-get="{{ url }}" hx-select="#{{ table.id }}" hx-push-url="true">{{ label|trans }}</a>
+{% endmacro %}
+
+{% for filter in table.filters|filter(filter => filter.tabs) %}
+    <nav class="tabs">
+        {{ _self.tab(table, filter, '', filter.label) }}
+        {% for value, label in filter.options %}{{ _self.tab(table, filter, value, label) }}{% endfor %}
+    </nav>
+{% endfor %}
+{% set fields = table.filters|filter(filter => not filter.tabs) %}
+{% if fields %}
     {% set action = path(table.route, table.base()) %}
     <form class="table-filters" hx-get="{{ action }}" hx-target="#{{ table.id }}" hx-select="#{{ table.id }}" hx-swap="outerHTML"
           hx-push-url="true" hx-sync="closest form:replace" hx-trigger="submit">
-        {% for filter in table.filters %}
+        {% for filter in table.filters|filter(filter => filter.tabs and table.value(filter.name)) %}
+            <input type="hidden" name="{{ table.field(filter) }}" value="{{ table.value(filter.name) }}">
+        {% endfor %}
+        {% for filter in fields %}
             {% include '@Theme/_filter_field.html.twig' with {
                 filter: filter,
                 name: table.field(filter),

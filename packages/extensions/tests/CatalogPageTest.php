@@ -66,8 +66,25 @@ final class CatalogPageTest extends CatalogTestCase
 
         self::assertSame($names, self::names($list));
         foreach ($query as $name => $value) {
-            self::assertSame($value, $list->filter(\sprintf('select[name="%s"] option[selected]', $name))->attr('value'));
+            self::assertSame($value, $list->filter(\sprintf('form input[name="%1$s"], select[name="%1$s"] option[selected]', $name))->attr('value'));
         }
+    }
+
+    #[Group('ACMS-UI-0080')]
+    #[Group('ACMS-US-0034')]
+    public function testTypeTabsKeepOtherFilters(): void
+    {
+        $tabs = [['', self::phrase('extensions.tab.all')]];
+        foreach (ExtensionType::cases() as $type) {
+            $tabs[] = [$type->value, self::phrase($type->tab())];
+        }
+
+        $list = $this->fragment(self::PAGE.'?type=theme&price=paid&page=2');
+
+        self::assertSame(
+            array_map(static fn (array $tab): array => [$tab[1], self::PAGE.'?'.http_build_query(array_filter(['type' => $tab[0], 'price' => 'paid'])), 'theme' === $tab[0]], $tabs),
+            $list->filter('.tabs .tab')->each(static fn (Crawler $tab): array => [$tab->text(), $tab->attr('href'), str_contains((string) $tab->attr('class'), 'active')]),
+        );
     }
 
     /** @return iterable<string, array{array<string, string>, list<string>}> */

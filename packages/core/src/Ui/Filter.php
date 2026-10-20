@@ -26,6 +26,7 @@ final class Filter
         public readonly string $selected,
         public readonly bool $hidden,
         public readonly bool $day = false,
+        public readonly bool $tabs = false,
     ) {
     }
 
@@ -44,6 +45,12 @@ final class Filter
     public static function choice(string $name, array $options, string $selected, bool $hidden = false): self
     {
         return new self($name, null, $options, false, $selected, $hidden);
+    }
+
+    /** @param array<array-key, string|TranslatableInterface> $options */
+    public static function tabs(string $name, TranslatableInterface $any, array $options): self
+    {
+        return new self($name, $any, $options, false, '', false, tabs: true);
     }
 
     public static function date(string $name, string $selected, bool $hidden = false): self

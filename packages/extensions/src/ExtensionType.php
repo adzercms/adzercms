@@ -21,4 +21,15 @@ enum ExtensionType: string implements Titled
     {
         return t('extensions.type.'.$this->value);
     }
+
+    public function tab(): TranslatableInterface
+    {
+        return t('extensions.tab.'.$this->value);
+    }
+
+    /** @return array<string, TranslatableInterface> */
+    public static function tabs(): array
+    {
+        return array_combine(array_column(self::cases(), 'value'), array_map(static fn (self $type): TranslatableInterface => $type->tab(), self::cases()));
+    }
 }

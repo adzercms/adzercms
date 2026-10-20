@@ -217,6 +217,42 @@
         <target>On the site</target>
       </segment>
     </unit>
+    <unit id="extensions.tab.all">
+      <segment>
+        <source>extensions.tab.all</source>
+        <target>All</target>
+      </segment>
+    </unit>
+    <unit id="extensions.tab.app">
+      <segment>
+        <source>extensions.tab.app</source>
+        <target>Mini apps</target>
+      </segment>
+    </unit>
+    <unit id="extensions.tab.integration">
+      <segment>
+        <source>extensions.tab.integration</source>
+        <target>Integrations</target>
+      </segment>
+    </unit>
+    <unit id="extensions.tab.module">
+      <segment>
+        <source>extensions.tab.module</source>
+        <target>Modules</target>
+      </segment>
+    </unit>
+    <unit id="extensions.tab.template">
+      <segment>
+        <source>extensions.tab.template</source>
+        <target>Site templates</target>
+      </segment>
+    </unit>
+    <unit id="extensions.tab.theme">
+      <segment>
+        <source>extensions.tab.theme</source>
+        <target>Themes</target>
+      </segment>
+    </unit>
     <unit id="extensions.type.app">
       <segment>
         <source>extensions.type.app</source>
