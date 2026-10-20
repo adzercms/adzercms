@@ -31,7 +31,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\TBank\\TBankBundle"
+            "bundle": "AdzerCMS\\TBank\\TBankBundle",
+            "categories": ["payments"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

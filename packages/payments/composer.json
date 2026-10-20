@@ -37,7 +37,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\Payments\\PaymentsBundle"
+            "bundle": "AdzerCMS\\Payments\\PaymentsBundle",
+            "categories": ["payments"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

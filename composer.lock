@@ -318,7 +318,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/extensions",
-                "reference": "a5626f7308a2b38e33d1719f9fbaeed9d3689dc6"
+                "reference": "f4d92ee3eb7da2cf3e8e8ebca32c7d953cf0d3e8"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -351,7 +351,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\Extensions\\ExtensionsBundle"
+                    "bundle": "AdzerCMS\\Extensions\\ExtensionsBundle",
+                    "categories": [
+                        "content"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -384,7 +387,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/hcaptcha",
-                "reference": "41e56aa2e7ecb76dfadc1813b0cd7c8009fe6528"
+                "reference": "61a6d3db4bef9bdcc2cacc50b1726a8bdc715947"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -397,7 +400,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\HCaptcha\\HCaptchaBundle"
+                    "bundle": "AdzerCMS\\HCaptcha\\HCaptchaBundle",
+                    "categories": [
+                        "security"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -429,7 +435,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/mailing",
-                "reference": "9ee7eea2b15655c7c1807c9f1b84eed3297f88e0"
+                "reference": "cd6a01ad0513f5096d1ecd5c4e624ba7af99bbc6"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -451,7 +457,11 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\Mailing\\MailingBundle"
+                    "bundle": "AdzerCMS\\Mailing\\MailingBundle",
+                    "categories": [
+                        "messaging",
+                        "marketing"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -484,7 +494,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/max-bot",
-                "reference": "793c309cba9bfbcac71a2e598c6692b904c2e089"
+                "reference": "eb7f421beb05b726f21636e0a1441a8c8e1c1401"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -500,7 +510,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\MaxBot\\MaxBotBundle"
+                    "bundle": "AdzerCMS\\MaxBot\\MaxBotBundle",
+                    "categories": [
+                        "messaging"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -533,7 +546,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/mts-marketolog",
-                "reference": "03f0ad9deb0bc65a161b71bf78174435b9f7c7ee"
+                "reference": "57f75eedb0ae3e65c0e2256a724718ca8ebf660e"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -549,7 +562,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\MtsMarketolog\\MtsMarketologBundle"
+                    "bundle": "AdzerCMS\\MtsMarketolog\\MtsMarketologBundle",
+                    "categories": [
+                        "messaging"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -582,7 +598,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/payments",
-                "reference": "e344206903dfbcf108226bbf44af9e868320dfd0"
+                "reference": "f10964d53ce6e1f4bfdb8bb10370735a0c171743"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -608,7 +624,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\Payments\\PaymentsBundle"
+                    "bundle": "AdzerCMS\\Payments\\PaymentsBundle",
+                    "categories": [
+                        "payments"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -697,7 +716,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/sber-id",
-                "reference": "e1b7d9666fe910965566ad2dc2d4a0415315a4dd"
+                "reference": "2c52fca2366175ea16c1f3fe73cad3c6dca9cfb7"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -712,7 +731,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\SberId\\SberIdBundle"
+                    "bundle": "AdzerCMS\\SberId\\SberIdBundle",
+                    "categories": [
+                        "security"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -745,7 +767,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/smart-captcha",
-                "reference": "9ecd406919488c0fd732017c967557361a356114"
+                "reference": "cfe113d1cdcfb88ce753d9def23e02561b2347fa"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -758,7 +780,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\SmartCaptcha\\SmartCaptchaBundle"
+                    "bundle": "AdzerCMS\\SmartCaptcha\\SmartCaptchaBundle",
+                    "categories": [
+                        "security"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -791,7 +816,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/sms-pilot",
-                "reference": "c4fb896898d88d468e63c79c96cd79de1d6ba130"
+                "reference": "8346c8f80c2397c92821d933360794aeb4109baa"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -806,7 +831,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\SmsPilot\\SmsPilotBundle"
+                    "bundle": "AdzerCMS\\SmsPilot\\SmsPilotBundle",
+                    "categories": [
+                        "messaging"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -839,7 +867,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/support",
-                "reference": "d3db7692523f6313cdc2f3e1bbdb88ce7786e0a2"
+                "reference": "6a9e6de06dc4b2238682e792391389731ae7301c"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -876,7 +904,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\Support\\SupportBundle"
+                    "bundle": "AdzerCMS\\Support\\SupportBundle",
+                    "categories": [
+                        "support"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -909,7 +940,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/tbank",
-                "reference": "6b6a138a94a059e37a4066b6fe7632a5d0fdac9d"
+                "reference": "d8f4166fd468026b3df872138c6d531927020419"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -927,7 +958,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\TBank\\TBankBundle"
+                    "bundle": "AdzerCMS\\TBank\\TBankBundle",
+                    "categories": [
+                        "payments"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -961,7 +995,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/telegram",
-                "reference": "259e92ff280c3e368b02690857994de01774f36a"
+                "reference": "e3fcfe453462d5bf87ee29d0eaa5100391323246"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -976,7 +1010,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\Telegram\\TelegramBundle"
+                    "bundle": "AdzerCMS\\Telegram\\TelegramBundle",
+                    "categories": [
+                        "security"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1009,7 +1046,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/telegram-bot",
-                "reference": "037b5f5a75682c1434a382577612714d3008633a"
+                "reference": "acc270727700030a4d22c6c2fc0c272352a77374"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1027,7 +1064,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\TelegramBot\\TelegramBotBundle"
+                    "bundle": "AdzerCMS\\TelegramBot\\TelegramBotBundle",
+                    "categories": [
+                        "messaging"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1112,7 +1152,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/turnstile",
-                "reference": "2b3979df41fe28cc48e9ea2c38c6fe07cc35cc7f"
+                "reference": "d4ec66ba6a7c246b719197fb768bd86fef22e823"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1125,7 +1165,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\Turnstile\\TurnstileBundle"
+                    "bundle": "AdzerCMS\\Turnstile\\TurnstileBundle",
+                    "categories": [
+                        "security"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1158,7 +1201,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/vk-id",
-                "reference": "15cbc6f09ed79e10bb7d06d839c9a9aa0a2c5737"
+                "reference": "ab335e303d556cc1aa3acb7c236cee626c4fdbf5"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1173,7 +1216,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\VkId\\VkIdBundle"
+                    "bundle": "AdzerCMS\\VkId\\VkIdBundle",
+                    "categories": [
+                        "security"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1206,7 +1252,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/yandex-id",
-                "reference": "1abdde4cf8a22b2cb45c61be8f465f057e9ced47"
+                "reference": "2bbb576d078699175ddc787126f3c83fdf5abd74"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1221,7 +1267,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\YandexId\\YandexIdBundle"
+                    "bundle": "AdzerCMS\\YandexId\\YandexIdBundle",
+                    "categories": [
+                        "security"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1254,7 +1303,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/yookassa",
-                "reference": "9de1e4d84e3e90f6ec46c81513fca37f20084adb"
+                "reference": "ae7d9a56c689400865d8773324fd6bedd1d85ddd"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1273,7 +1322,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\YooKassa\\YooKassaBundle"
+                    "bundle": "AdzerCMS\\YooKassa\\YooKassaBundle",
+                    "categories": [
+                        "payments"
+                    ]
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"

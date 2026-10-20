@@ -24,7 +24,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\HCaptcha\\HCaptchaBundle"
+            "bundle": "AdzerCMS\\HCaptcha\\HCaptchaBundle",
+            "categories": ["security"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

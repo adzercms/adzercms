@@ -25,7 +25,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\Turnstile\\TurnstileBundle"
+            "bundle": "AdzerCMS\\Turnstile\\TurnstileBundle",
+            "categories": ["security"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

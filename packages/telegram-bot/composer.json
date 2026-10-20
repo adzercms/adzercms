@@ -30,7 +30,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\TelegramBot\\TelegramBotBundle"
+            "bundle": "AdzerCMS\\TelegramBot\\TelegramBotBundle",
+            "categories": ["messaging"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

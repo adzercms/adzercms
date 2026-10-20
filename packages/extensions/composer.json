@@ -45,7 +45,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\Extensions\\ExtensionsBundle"
+            "bundle": "AdzerCMS\\Extensions\\ExtensionsBundle",
+            "categories": ["content"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

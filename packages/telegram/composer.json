@@ -27,7 +27,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\Telegram\\TelegramBundle"
+            "bundle": "AdzerCMS\\Telegram\\TelegramBundle",
+            "categories": ["security"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

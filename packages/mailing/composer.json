@@ -34,7 +34,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\Mailing\\MailingBundle"
+            "bundle": "AdzerCMS\\Mailing\\MailingBundle",
+            "categories": ["messaging", "marketing"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

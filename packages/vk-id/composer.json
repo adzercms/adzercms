@@ -27,7 +27,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\VkId\\VkIdBundle"
+            "bundle": "AdzerCMS\\VkId\\VkIdBundle",
+            "categories": ["security"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

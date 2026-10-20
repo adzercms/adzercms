@@ -31,7 +31,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\YooKassa\\YooKassaBundle"
+            "bundle": "AdzerCMS\\YooKassa\\YooKassaBundle",
+            "categories": ["payments"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

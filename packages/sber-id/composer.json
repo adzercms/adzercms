@@ -27,7 +27,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\SberId\\SberIdBundle"
+            "bundle": "AdzerCMS\\SberId\\SberIdBundle",
+            "categories": ["security"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

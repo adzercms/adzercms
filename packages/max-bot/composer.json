@@ -28,7 +28,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\MaxBot\\MaxBotBundle"
+            "bundle": "AdzerCMS\\MaxBot\\MaxBotBundle",
+            "categories": ["messaging"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

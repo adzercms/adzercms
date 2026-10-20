@@ -28,7 +28,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\MtsMarketolog\\MtsMarketologBundle"
+            "bundle": "AdzerCMS\\MtsMarketolog\\MtsMarketologBundle",
+            "categories": ["messaging"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

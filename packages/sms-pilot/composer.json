@@ -27,7 +27,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\SmsPilot\\SmsPilotBundle"
+            "bundle": "AdzerCMS\\SmsPilot\\SmsPilotBundle",
+            "categories": ["messaging"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

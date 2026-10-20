@@ -25,7 +25,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\SmartCaptcha\\SmartCaptchaBundle"
+            "bundle": "AdzerCMS\\SmartCaptcha\\SmartCaptchaBundle",
+            "categories": ["security"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

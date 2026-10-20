@@ -25,6 +25,72 @@
         <target>Site key</target>
       </segment>
     </unit>
+    <unit id="core.category.accounting">
+      <segment>
+        <source>core.category.accounting</source>
+        <target>Invoices, banks and organizations</target>
+      </segment>
+    </unit>
+    <unit id="core.category.billing">
+      <segment>
+        <source>core.category.billing</source>
+        <target>Billing and services</target>
+      </segment>
+    </unit>
+    <unit id="core.category.commerce">
+      <segment>
+        <source>core.category.commerce</source>
+        <target>Shop and orders</target>
+      </segment>
+    </unit>
+    <unit id="core.category.content">
+      <segment>
+        <source>core.category.content</source>
+        <target>Content and SEO</target>
+      </segment>
+    </unit>
+    <unit id="core.category.data">
+      <segment>
+        <source>core.category.data</source>
+        <target>Data and directories</target>
+      </segment>
+    </unit>
+    <unit id="core.category.marketing">
+      <segment>
+        <source>core.category.marketing</source>
+        <target>Analytics and advertising</target>
+      </segment>
+    </unit>
+    <unit id="core.category.messaging">
+      <segment>
+        <source>core.category.messaging</source>
+        <target>Messages and bots</target>
+      </segment>
+    </unit>
+    <unit id="core.category.other">
+      <segment>
+        <source>core.category.other</source>
+        <target>Other</target>
+      </segment>
+    </unit>
+    <unit id="core.category.payments">
+      <segment>
+        <source>core.category.payments</source>
+        <target>Payments</target>
+      </segment>
+    </unit>
+    <unit id="core.category.security">
+      <segment>
+        <source>core.category.security</source>
+        <target>Sign-in and security</target>
+      </segment>
+    </unit>
+    <unit id="core.category.support">
+      <segment>
+        <source>core.category.support</source>
+        <target>Support</target>
+      </segment>
+    </unit>
     <unit id="core.channel.mail">
       <segment>
         <source>core.channel.mail</source>

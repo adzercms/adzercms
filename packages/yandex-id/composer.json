@@ -27,7 +27,8 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\YandexId\\YandexIdBundle"
+            "bundle": "AdzerCMS\\YandexId\\YandexIdBundle",
+            "categories": ["security"]
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"
