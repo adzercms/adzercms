@@ -204,6 +204,16 @@ if (interface_exists(LiveEntities::class)) {
 
 A real-time server module returns `AdzerCMS\Realtime\HubKind::Hub` from `kind()` and implements `AdzerCMS\Realtime\RealtimeHub`. `client()` names its browser client: an ES module in the package's `public/` that exports `connect(settings, event)`. `settings` carries the connection address and token, the channels with their subscription tokens and the `renew(channel)` function, which fetches a new token or `null` when the current sign-in gets none. `event()` is called on a publication and when history is lost.
 
+## Catalog for OPOTOPO
+
+With the `opotopo` module installed, a feature module offers its catalog for sale on [OPOTOPO](modules.md#sell-on-opotopo) through a service implementing `AdzerCMS\Opotopo\Catalog`:
+
+- `name()` — the catalog name, unique among the modules; the `--catalog` option of `adzercms:opotopo` takes it
+- `mapping()` — which record values become the listing fields, the OPOTOPO category, attributes, images, the 3D model and variants, in the format of the [PHP client](https://opotopo.com/en/knowledge/developers/klient-na-php)
+- `records()` — the catalog items built by `AdzerCMS\Opotopo\Records::record()` from a key that never changes for the item and its values by the paths of the mapping. A media value that isn't an `http://` or `https://` address is a path to a file in the site's files directory
+
+The module lists `adzercms/opotopo` in `suggest` and registers the service only when `AdzerCMS\Opotopo\Catalog` exists, the same way as a live block.
+
 ## Contracts
 
 `adzercms/contracts` follows SemVer: a breaking change to a contract ships only in a new major version. The kinds and events of a feature module are contracts of its own package.

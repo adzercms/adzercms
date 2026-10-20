@@ -96,8 +96,10 @@ printf '%s' "$PASSWORD" | bin/console adzercms:admin admin@example.com --stdin
 */5 * * * *  /path/bin/php /path/bin/console adzercms:payments
 10 3 * * *   /path/bin/php /path/bin/console adzercms:support
 20 3 * * *   /path/bin/php /path/bin/console adzercms:extensions
+30 * * * *   /path/bin/php /path/bin/console adzercms:opotopo
 ```
 
 - `adzercms:payments` — проверяет у платёжного сервиса статус незавершённых платежей
 - `adzercms:support` — закрывает обращения, по которым пользователь долго не отвечает
 - `adzercms:extensions` — обновляет описания пакетов каталога расширений из их репозиториев Composer
+- `adzercms:opotopo` — выгружает каталоги модулей на [OPOTOPO](modules.ru.md#продавать-на-opotopo): отправляет новые и изменённые позиции, снимает в архив объявления выпавших; `--full` отправляет все позиции, `--catalog <имя>` — только один каталог

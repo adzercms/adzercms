@@ -17,7 +17,7 @@ Version 1.0 is still in development: the module API may change before it ships.
 - Settings live in the database with encrypted secrets; change them in the admin panel or from the console
 - Notifications by email, SMS and Telegram and MAX bots, quiet hours, a delivery log
 - Admin panel and customer account area, a replaceable theme
-- Ready modules: payments, support, newsletters, real-time page updates, extension catalog
+- Ready modules: payments, support, newsletters, real-time page updates, extension catalog, catalog export to the OPOTOPO marketplace
 - MySQL, MariaDB or PostgreSQL; sessions in Valkey or Redis, or in files without them
 - English and Russian
 
@@ -34,7 +34,7 @@ Each `packages/<name>` directory is the `adzercms/<name>` package:
 
 - `contracts` — interfaces for modules, `core` — the core (a Symfony bundle), `skeleton` — the new project template
 - `admin`, `cabinet`, `theme` — admin panel, customer account area and the default theme
-- `payments`, `support`, `mailing`, `realtime`, `extensions` — payments, support, newsletters, real-time updates, extension catalog
+- `payments`, `support`, `mailing`, `realtime`, `extensions`, `opotopo` — payments, support, newsletters, real-time updates, extension catalog, export to OPOTOPO
 - `vk-id`, `yandex-id`, `sber-id`, `telegram` — sign-in with these services
 - `sms-pilot`, `mts-marketolog` — SMS delivery; `telegram-bot`, `max-bot` — messenger bots
 - `smart-captcha`, `turnstile`, `hcaptcha` — captcha

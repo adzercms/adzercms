@@ -96,8 +96,10 @@ Module jobs, if the modules are enabled:
 */5 * * * *  /path/bin/php /path/bin/console adzercms:payments
 10 3 * * *   /path/bin/php /path/bin/console adzercms:support
 20 3 * * *   /path/bin/php /path/bin/console adzercms:extensions
+30 * * * *   /path/bin/php /path/bin/console adzercms:opotopo
 ```
 
 - `adzercms:payments` — checks the status of unfinished payments with the payment service
 - `adzercms:support` — closes requests the user hasn't answered for a long time
 - `adzercms:extensions` — refreshes package descriptions in the extension catalog from their Composer repositories
+- `adzercms:opotopo` — exports the module catalogs to [OPOTOPO](modules.md#sell-on-opotopo): sends new and changed items, archives the listings of dropped ones; `--full` sends every item, `--catalog <name>` exports one catalog

@@ -6,7 +6,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 
 ### Added
 
-- First public version: the core, contracts, project template, admin, cabinet, theme and the modules listed in [Repository](README.md#repository)
+- First public version: the core, contracts, project template, admin, cabinet, theme and the modules listed in [What's in the repository](README.md#whats-in-the-repository)
 - Panel layout `brand.layout`: sections on the side or in a bar under the header; fragment place `Fragment::TOP` of the top layout: its fragments replace the panel header, the admin bar and the sidebar
 - `adzercms-refresh` reinstalls the installed packages whose patches changed in `patches.lock.json` of cweagans/composer-patches
 - The admin section "Texts": the admin changes any text of the enabled packages in the language of the instance without code, clearing it brings back the catalog text
