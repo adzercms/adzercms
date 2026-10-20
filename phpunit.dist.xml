@@ -39,6 +39,10 @@
         <testsuite name="Centrifugo">
             <directory>packages/centrifugo/tests</directory>
         </testsuite>
+        <testsuite name="Extensions">
+            <directory>packages/extensions/tests</directory>
+            <file>packages/core/tests/Schema/MigrationsTest.php</file>
+        </testsuite>
         <testsuite name="HCaptcha">
             <directory>packages/hcaptcha/tests</directory>
         </testsuite>

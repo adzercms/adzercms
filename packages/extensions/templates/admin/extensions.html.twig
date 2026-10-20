@@ -1,0 +1,11 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'extensions.menu'|trans }}{% endblock %}
+
+{% block actions %}
+    <button type="button" hx-get="{{ path('admin_extension_new') }}" hx-target="#record">{{ 'extensions.add'|trans }}</button>
+{% endblock %}
+
+{% block page %}
+{% include '@Extensions/admin/_extensions.html.twig' %}
+{% endblock %}

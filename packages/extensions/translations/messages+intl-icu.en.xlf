@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" srcLang="en" trgLang="en" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="messages.en">
+    <unit id="extensions.add">
+      <segment>
+        <source>extensions.add</source>
+        <target>+ Extension</target>
+      </segment>
+    </unit>
+    <unit id="extensions.column.demo">
+      <segment>
+        <source>extensions.column.demo</source>
+        <target>Demo</target>
+      </segment>
+    </unit>
+    <unit id="extensions.column.name">
+      <segment>
+        <source>extensions.column.name</source>
+        <target>Package</target>
+      </segment>
+    </unit>
+    <unit id="extensions.column.price">
+      <segment>
+        <source>extensions.column.price</source>
+        <target>Price</target>
+      </segment>
+    </unit>
+    <unit id="extensions.column.type">
+      <segment>
+        <source>extensions.column.type</source>
+        <target>Type</target>
+      </segment>
+    </unit>
+    <unit id="extensions.confirm_drop">
+      <segment>
+        <source>extensions.confirm_drop</source>
+        <target>Remove {name} from the catalog?</target>
+      </segment>
+    </unit>
+    <unit id="extensions.empty">
+      <segment>
+        <source>extensions.empty</source>
+        <target>No extensions</target>
+      </segment>
+    </unit>
+    <unit id="extensions.filter.type">
+      <segment>
+        <source>extensions.filter.type</source>
+        <target>Type</target>
+      </segment>
+    </unit>
+    <unit id="extensions.flash.dropped">
+      <segment>
+        <source>extensions.flash.dropped</source>
+        <target>{name} is removed from the catalog</target>
+      </segment>
+    </unit>
+    <unit id="extensions.flash.saved">
+      <segment>
+        <source>extensions.flash.saved</source>
+        <target>{name} is saved</target>
+      </segment>
+    </unit>
+    <unit id="extensions.free">
+      <segment>
+        <source>extensions.free</source>
+        <target>Free</target>
+      </segment>
+    </unit>
+    <unit id="extensions.menu">
+      <segment>
+        <source>extensions.menu</source>
+        <target>Extensions</target>
+      </segment>
+    </unit>
+    <unit id="extensions.new">
+      <segment>
+        <source>extensions.new</source>
+        <target>New extension</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.demo">
+      <segment>
+        <source>extensions.refusal.demo</source>
+        <target>The demo is a link starting with http:// or https://</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.name">
+      <segment>
+        <source>extensions.refusal.name</source>
+        <target>The package is a Composer name vendor/package in lowercase Latin letters</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.price">
+      <segment>
+        <source>extensions.refusal.price</source>
+        <target>The price is a positive amount, a free extension has none</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.taken">
+      <segment>
+        <source>extensions.refusal.taken</source>
+        <target>{name} is already in the catalog</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.type">
+      <segment>
+        <source>extensions.refusal.type</source>
+        <target>Choose the type</target>
+      </segment>
+    </unit>
+    <unit id="extensions.save">
+      <segment>
+        <source>extensions.save</source>
+        <target>Save</target>
+      </segment>
+    </unit>
+    <unit id="extensions.type.app">
+      <segment>
+        <source>extensions.type.app</source>
+        <target>Mini app</target>
+      </segment>
+    </unit>
+    <unit id="extensions.type.integration">
+      <segment>
+        <source>extensions.type.integration</source>
+        <target>Integration</target>
+      </segment>
+    </unit>
+    <unit id="extensions.type.module">
+      <segment>
+        <source>extensions.type.module</source>
+        <target>Module</target>
+      </segment>
+    </unit>
+    <unit id="extensions.type.template">
+      <segment>
+        <source>extensions.type.template</source>
+        <target>Site template</target>
+      </segment>
+    </unit>
+    <unit id="extensions.type.theme">
+      <segment>
+        <source>extensions.type.theme</source>
+        <target>Theme</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

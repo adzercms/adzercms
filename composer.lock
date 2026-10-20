@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e24235d24bdbc85db217c4bfd870bdc7",
+    "content-hash": "03fd513900df3380a8d91d1d59cc8161",
     "packages": [
         {
             "name": "adzercms/admin",
@@ -305,6 +305,66 @@
                 "cms",
                 "notifications",
                 "settings",
+                "symfony"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "adzercms/extensions",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/extensions",
+                "reference": "d521ad24ca722ac5b12be213f98ea2580cceb3db"
+            },
+            "require": {
+                "adzercms/contracts": "^1.0",
+                "adzercms/core": "^1.0",
+                "adzercms/theme-implementation": "^1.0",
+                "doctrine/dbal": "^4.5",
+                "doctrine/doctrine-bundle": "^3.3",
+                "doctrine/migrations": "^3.9",
+                "doctrine/orm": "^3.7",
+                "doctrine/persistence": "^4.2",
+                "ext-filter": "*",
+                "php": ">=8.4",
+                "symfony/dependency-injection": "7.4.*",
+                "symfony/framework-bundle": "7.4.*",
+                "symfony/http-foundation": "7.4.*",
+                "symfony/routing": "7.4.*",
+                "symfony/security-http": "7.4.*",
+                "symfony/translation": "7.4.*",
+                "symfony/translation-contracts": "^3.7"
+            },
+            "require-dev": {
+                "adzercms/admin": "^1.0"
+            },
+            "type": "adzercms-module",
+            "extra": {
+                "adzercms": {
+                    "bundle": "AdzerCMS\\Extensions\\ExtensionsBundle"
+                },
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AdzerCMS\\Extensions\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Extension catalog for AdzerCMS: Composer packages with type, price and demo in a manual order",
+            "keywords": [
+                "adzercms",
+                "catalog",
+                "composer",
+                "extensions",
                 "symfony"
             ],
             "transport-options": {
@@ -11986,6 +12046,7 @@
         "adzercms/centrifugo": 20,
         "adzercms/contracts": 20,
         "adzercms/core": 20,
+        "adzercms/extensions": 20,
         "adzercms/hcaptcha": 20,
         "adzercms/mailing": 20,
         "adzercms/max-bot": 20,

@@ -1,0 +1,48 @@
+{
+    "name": "adzercms/extensions",
+    "type": "adzercms-module",
+    "description": "Extension catalog for AdzerCMS: Composer packages with type, price and demo in a manual order",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "extensions",
+        "catalog",
+        "composer"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "ext-filter": "*",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
+        "adzercms/theme-implementation": "^1.0",
+        "doctrine/dbal": "^4.5",
+        "doctrine/doctrine-bundle": "^3.3",
+        "doctrine/migrations": "^3.9",
+        "doctrine/orm": "^3.7",
+        "doctrine/persistence": "^4.2",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/framework-bundle": "7.4.*",
+        "symfony/http-foundation": "7.4.*",
+        "symfony/routing": "7.4.*",
+        "symfony/security-http": "7.4.*",
+        "symfony/translation": "7.4.*",
+        "symfony/translation-contracts": "^3.7"
+    },
+    "require-dev": {
+        "adzercms/admin": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Extensions\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Extensions\\ExtensionsBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

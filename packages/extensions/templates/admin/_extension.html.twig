@@ -1,0 +1,32 @@
+{% set action = extension.id ? path('admin_extension', {id: extension.id}) : path('admin_extension_new') %}
+{% set type = input.type ?? extension.type.value %}
+<div class="modal-header">
+    <h2>{{ extension.id ? extension.name : 'extensions.new'|trans }}</h2>
+    <form method="dialog"><button class="modal-close">{{ 'theme.close'|trans }}</button></form>
+</div>
+
+<div class="modal-body">
+    {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+    <form hx-post="{{ action }}" hx-target="#record">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label>{{ 'extensions.column.name'|trans }}
+                <input type="text" name="name" maxlength="190" value="{{ input.name ?? extension.name }}" placeholder="vendor/package" required>
+            </label>
+            <label>{{ 'extensions.column.type'|trans }}
+                <select name="type">
+                    {% for case in types %}
+                        <option value="{{ case.value }}" {{ type == case.value ? 'selected' }}>{{ case.label|trans }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>{{ 'extensions.column.price'|trans }}
+                <input type="text" name="price" inputmode="decimal" value="{{ input.price ?? (extension.price ? extension.price|plain) }}" placeholder="{{ 'extensions.free'|trans }}">
+            </label>
+            <label>{{ 'extensions.column.demo'|trans }}
+                <input type="url" name="demo" maxlength="255" value="{{ input.demo ?? extension.demo }}">
+            </label>
+        </div>
+        <button type="submit">{{ 'extensions.save'|trans }}</button>
+    </form>
+</div>

@@ -17,7 +17,7 @@ Status: version 1.0 in development. Contracts may change until its release.
 - Settings in the database with encrypted secrets, edited in the admin and by `bin/console adzercms:setting`
 - Notices by email, phone message gateways and messenger bots, quiet hours, one journal
 - Admin and cabinet modules on one frame, a replaceable theme
-- Feature modules: payments, support tickets, mailing, real-time page updates
+- Feature modules: payments, support tickets, mailing, real-time page updates, extension catalog
 - MySQL, MariaDB or PostgreSQL; sessions in Valkey or Redis, files without them
 - English and Russian translations
 
@@ -34,7 +34,7 @@ Package `packages/<name>` is `adzercms/<name>`:
 
 - `contracts` — interfaces modules rely on; `core` — the core Symfony bundle; `skeleton` — the project template
 - `admin`, `cabinet`, `theme` — admin, cabinet and default theme
-- `payments`, `support`, `mailing`, `realtime` — feature modules
+- `payments`, `support`, `mailing`, `realtime`, `extensions` — feature modules
 - `vk-id`, `yandex-id`, `sber-id`, `telegram` — login through a service
 - `sms-pilot`, `mts-marketolog` — phone message gateways; `telegram-bot`, `max-bot` — messenger bots
 - `smart-captcha`, `turnstile`, `hcaptcha` — captcha

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" srcLang="en" trgLang="ru" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="messages.ru">
+    <unit id="extensions.add">
+      <segment>
+        <source>extensions.add</source>
+        <target>+ Расширение</target>
+      </segment>
+    </unit>
+    <unit id="extensions.column.demo">
+      <segment>
+        <source>extensions.column.demo</source>
+        <target>Демо</target>
+      </segment>
+    </unit>
+    <unit id="extensions.column.name">
+      <segment>
+        <source>extensions.column.name</source>
+        <target>Пакет</target>
+      </segment>
+    </unit>
+    <unit id="extensions.column.price">
+      <segment>
+        <source>extensions.column.price</source>
+        <target>Цена</target>
+      </segment>
+    </unit>
+    <unit id="extensions.column.type">
+      <segment>
+        <source>extensions.column.type</source>
+        <target>Тип</target>
+      </segment>
+    </unit>
+    <unit id="extensions.confirm_drop">
+      <segment>
+        <source>extensions.confirm_drop</source>
+        <target>Снять {name} с каталога?</target>
+      </segment>
+    </unit>
+    <unit id="extensions.empty">
+      <segment>
+        <source>extensions.empty</source>
+        <target>Нет расширений</target>
+      </segment>
+    </unit>
+    <unit id="extensions.filter.type">
+      <segment>
+        <source>extensions.filter.type</source>
+        <target>Тип</target>
+      </segment>
+    </unit>
+    <unit id="extensions.flash.dropped">
+      <segment>
+        <source>extensions.flash.dropped</source>
+        <target>{name} снято с каталога</target>
+      </segment>
+    </unit>
+    <unit id="extensions.flash.saved">
+      <segment>
+        <source>extensions.flash.saved</source>
+        <target>{name} сохранено</target>
+      </segment>
+    </unit>
+    <unit id="extensions.free">
+      <segment>
+        <source>extensions.free</source>
+        <target>Бесплатно</target>
+      </segment>
+    </unit>
+    <unit id="extensions.menu">
+      <segment>
+        <source>extensions.menu</source>
+        <target>Расширения</target>
+      </segment>
+    </unit>
+    <unit id="extensions.new">
+      <segment>
+        <source>extensions.new</source>
+        <target>Новое расширение</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.demo">
+      <segment>
+        <source>extensions.refusal.demo</source>
+        <target>Демо — ссылка, начинающаяся с http:// либо https://</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.name">
+      <segment>
+        <source>extensions.refusal.name</source>
+        <target>Пакет — имя Composer vendor/package строчной латиницей</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.price">
+      <segment>
+        <source>extensions.refusal.price</source>
+        <target>Цена — положительная сумма, у бесплатного расширения её нет</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.taken">
+      <segment>
+        <source>extensions.refusal.taken</source>
+        <target>{name} уже в каталоге</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.type">
+      <segment>
+        <source>extensions.refusal.type</source>
+        <target>Выберите тип</target>
+      </segment>
+    </unit>
+    <unit id="extensions.save">
+      <segment>
+        <source>extensions.save</source>
+        <target>Сохранить</target>
+      </segment>
+    </unit>
+    <unit id="extensions.type.app">
+      <segment>
+        <source>extensions.type.app</source>
+        <target>Мини-приложение</target>
+      </segment>
+    </unit>
+    <unit id="extensions.type.integration">
+      <segment>
+        <source>extensions.type.integration</source>
+        <target>Интеграция</target>
+      </segment>
+    </unit>
+    <unit id="extensions.type.module">
+      <segment>
+        <source>extensions.type.module</source>
+        <target>Модуль</target>
+      </segment>
+    </unit>
+    <unit id="extensions.type.template">
+      <segment>
+        <source>extensions.type.template</source>
+        <target>Шаблон сайта</target>
+      </segment>
+    </unit>
+    <unit id="extensions.type.theme">
+      <segment>
+        <source>extensions.type.theme</source>
+        <target>Тема</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>
