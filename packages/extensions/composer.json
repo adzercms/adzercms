@@ -25,7 +25,6 @@
         "symfony/console": "7.4.*",
         "symfony/dependency-injection": "7.4.*",
         "symfony/framework-bundle": "7.4.*",
-        "symfony/http-client-contracts": "^3.7",
         "symfony/http-foundation": "7.4.*",
         "symfony/routing": "7.4.*",
         "symfony/security-http": "7.4.*",

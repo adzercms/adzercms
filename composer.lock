@@ -320,7 +320,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/extensions",
-                "reference": "e57dacdb1faa6e9dbb525698da6914237fd5c2a9"
+                "reference": "374c7d77c89e0d5d9745308889a9830513d96824"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -337,7 +337,6 @@
                 "symfony/console": "7.4.*",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/framework-bundle": "7.4.*",
-                "symfony/http-client-contracts": "^3.7",
                 "symfony/http-foundation": "7.4.*",
                 "symfony/routing": "7.4.*",
                 "symfony/security-http": "7.4.*",
