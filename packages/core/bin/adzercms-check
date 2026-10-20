@@ -5,10 +5,14 @@ bin/php vendor/bin/php-cs-fixer check --show-progress=none
 bin/phpstan analyse --no-progress
 
 trees=$(ls -d translations packages modules 2>/dev/null || true)
-# shellcheck disable=SC2086
-[ -z "$trees" ] || bin/php bin/console lint:xliff $trees
+locales=
+if [ -n "$trees" ]; then
+    # shellcheck disable=SC2086
+    bin/php bin/console lint:xliff $trees
+    # shellcheck disable=SC2086
+    locales=$(find $trees -name '*.xlf' | sed -n 's/.*\.\([A-Za-z_]*\)\.xlf$/--locale=\1/p' | sort -u)
+fi
 
-locales=$(git ls-files -- '*.xlf' | sed -n 's/.*\.\([A-Za-z_]*\)\.xlf$/--locale=\1/p' | sort -u)
 for package in . $(ls -d packages/*/ modules/*/ 2>/dev/null || true); do
     package=${package%/}
     # shellcheck disable=SC2086
