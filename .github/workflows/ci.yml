@@ -19,7 +19,7 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: none
           tools: composer:v2
-      - run: composer install --no-interaction --no-progress
+      - uses: ramsey/composer-install@v4
       - run: vendor/bin/adzercms-check
 
   tests:
@@ -68,7 +68,7 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: none
           tools: composer:v2
-      - run: composer install --no-interaction --no-progress
+      - uses: ramsey/composer-install@v4
       - run: |
           for suite in $(sed -n 's/.*<testsuite name="\([^"]*\)".*/\1/p' phpunit.dist.xml); do
             bin/phpunit --testsuite "$suite"
