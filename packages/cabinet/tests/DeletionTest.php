@@ -107,7 +107,7 @@ final class DeletionTest extends SchemaTestCase
         $this->client->loginUser($user);
         $policy->refused = new Refusal(t('Pay off the debt first'), 'cabinet_account');
         $this->post('/profile/delete');
-        self::assertResponseRedirects('/');
+        self::assertResponseRedirects('/cabinet');
         self::assertEmailCount(0, null, 'an unmet condition sends no link');
 
         $policy->refused = null;
