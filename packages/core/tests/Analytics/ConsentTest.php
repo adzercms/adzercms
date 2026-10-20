@@ -22,7 +22,7 @@ final class ConsentTest extends SchemaTestCase
     use Browser;
     use Configuration;
 
-    private const FRAME = '/fixture/frame';
+    private const PAGE = '/fixture/head';
     private const POLICY = 'https://site.test/privacy';
     private const SITE = 'shop';
 
@@ -54,7 +54,8 @@ final class ConsentTest extends SchemaTestCase
         $this->em->flush();
         $this->client->loginUser($viewer);
 
-        $page = $this->arrive(self::FRAME.($impersonating ? '?_switch_user='.$record->getUserIdentifier() : ''));
+        $page = $this->arrive(self::PAGE.($impersonating ? '?_switch_user='.$record->getUserIdentifier() : ''));
+        self::assertResponseIsSuccessful();
 
         $window = $page->filter('script[data-consent]');
         $config = 0 === $window->count() ? null : json_decode((string) $window->attr('data-consent'), true, flags: \JSON_THROW_ON_ERROR);

@@ -38,13 +38,15 @@ final class YandexMetrikaTest extends SchemaTestCase
         );
 
         $sources = self::service(Counters::class)->sources(new Request());
-        foreach ([ContentSource::SCRIPT, ContentSource::CONNECT, ContentSource::IMG, ContentSource::FRAME, ContentSource::WORKER] as $directive) {
-            self::assertContains('https://mc.yandex.ru', $sources[$directive] ?? [], $directive);
+        foreach ([
+            ContentSource::SCRIPT => ['https://mc.yandex.ru', 'https://yastatic.net'],
+            ContentSource::CONNECT => ['https://mc.yandex.ru', 'wss://mc.webvisor.org'],
+            ContentSource::IMG => ['https://mc.yandex.ru'],
+            ContentSource::FRAME => ['blob:', 'https://mc.yandex.ru'],
+            ContentSource::WORKER => ['blob:', 'https://mc.yandex.ru'],
+            ContentSource::FRAME_ANCESTORS => ['https://metrika.yandex.ru'],
+        ] as $directive => $origins) {
+            self::assertSame([], array_values(array_diff($origins, $sources[$directive] ?? [])), $directive);
         }
-        self::assertContains('https://yastatic.net', $sources[ContentSource::SCRIPT] ?? []);
-        self::assertContains('wss://mc.webvisor.org', $sources[ContentSource::CONNECT] ?? []);
-        self::assertContains('blob:', $sources[ContentSource::FRAME] ?? []);
-        self::assertContains('blob:', $sources[ContentSource::WORKER] ?? []);
-        self::assertContains('https://metrika.yandex.ru', $sources[ContentSource::FRAME_ANCESTORS] ?? []);
     }
 }
