@@ -73,6 +73,12 @@
         <target>No extensions</target>
       </segment>
     </unit>
+    <unit id="extensions.filter.category">
+      <segment>
+        <source>extensions.filter.category</source>
+        <target>Category</target>
+      </segment>
+    </unit>
     <unit id="extensions.filter.price">
       <segment>
         <source>extensions.filter.price</source>

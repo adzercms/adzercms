@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions\Repository;
 
+use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\Entity\Extension;
 use AdzerCMS\Extensions\ExtensionPrice;
 use AdzerCMS\Extensions\ExtensionType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -37,13 +39,7 @@ class ExtensionRepository extends ServiceEntityRepository
     /** @return list<Extension> */
     public function published(Table $table): array
     {
-        $table->total((int) $this->catalog($table)->select('COUNT(e.id)')->getQuery()->getSingleScalarResult());
-
-        return self::placed($this->catalog($table))
-            ->setMaxResults($table->size)
-            ->setFirstResult($table->offset())
-            ->getQuery()
-            ->getResult();
+        return $table->paginate(self::placed($this->catalog($table))->leftJoin('e.categories', 'c')->addSelect('c')->getQuery());
     }
 
     /** @return list<Extension> */
@@ -76,6 +72,11 @@ class ExtensionRepository extends ServiceEntityRepository
     private function catalog(Table $table): QueryBuilder
     {
         $builder = self::typed($this->createQueryBuilder('e')->andWhere('e.version IS NOT NULL'), $table);
+
+        $category = Category::tryFrom($table->value('category'));
+        if (null !== $category) {
+            $builder->innerJoin('e.categories', 'f', Join::WITH, 'f.category = :category')->setParameter('category', $category);
+        }
 
         return match (ExtensionPrice::tryFrom($table->value('price'))) {
             ExtensionPrice::Free => $builder->andWhere('e.price IS NULL'),

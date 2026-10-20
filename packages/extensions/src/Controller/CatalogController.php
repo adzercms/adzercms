@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions\Controller;
 
+use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\ExtensionPrice;
@@ -29,6 +30,7 @@ final class CatalogController extends AbstractController
     {
         $table = Table::of($request, self::PAGE, [], '', t('extensions.empty'), filters: [
             Filter::cases('type', t('extensions.filter.type'), ExtensionType::cases()),
+            Filter::cases('category', t('extensions.filter.category'), Category::cases()),
             Filter::cases('price', t('extensions.filter.price'), ExtensionPrice::cases()),
         ]);
         $context = ['table' => $table, 'rows' => $this->extensions->published($table)];

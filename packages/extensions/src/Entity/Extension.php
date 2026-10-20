@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions\Entity;
 
+use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Core\Ui\Placed;
 use AdzerCMS\Extensions\ExtensionState;
 use AdzerCMS\Extensions\ExtensionType;
@@ -22,7 +23,6 @@ class Extension implements Placed
 {
     private const VERSION = 64;
     private const LINK = 255;
-    private const CATEGORY = 64;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -115,13 +115,10 @@ class Extension implements Placed
         return $this->homepage;
     }
 
-    /** @return list<string> */
+    /** @return list<Category> */
     public function getCategories(): array
     {
-        $categories = $this->categories->map(static fn (ExtensionCategory $category): string => $category->getCategory())->toArray();
-        sort($categories);
-
-        return $categories;
+        return Category::ordered($this->categories->map(static fn (ExtensionCategory $held): Category => $held->getCategory())->toArray());
     }
 
     public function state(): ExtensionState
@@ -150,14 +147,16 @@ class Extension implements Placed
         $this->source = self::fit($package?->source, self::LINK);
         $this->homepage = self::fit($package?->homepage, self::LINK);
 
-        $categories = array_filter($package->categories ?? [], static fn (string $category): bool => null !== self::fit($category, self::CATEGORY));
+        $categories = $package->categories ?? [];
         foreach ($this->categories as $held) {
             if (!\in_array($held->getCategory(), $categories, true)) {
                 $this->categories->removeElement($held);
             }
         }
-        foreach (array_diff(array_unique($categories), $this->getCategories()) as $category) {
-            $this->categories->add(new ExtensionCategory($this, $category));
+        foreach ($categories as $category) {
+            if (!$this->categories->exists(static fn (int $key, ExtensionCategory $held): bool => $category === $held->getCategory())) {
+                $this->categories->add(new ExtensionCategory($this, $category));
+            }
         }
 
         return $this;

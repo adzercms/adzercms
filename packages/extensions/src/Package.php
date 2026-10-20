@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions;
 
+use AdzerCMS\Contracts\Module\Category;
 use Composer\MetadataMinifier\MetadataMinifier;
 use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
@@ -13,7 +14,7 @@ final readonly class Package
     private const MINIFIED = 'composer/2.0';
     private const STABLE = 'stable';
 
-    /** @param list<string> $categories */
+    /** @param list<Category> $categories */
     public function __construct(
         public string $description,
         public string $version,
@@ -76,7 +77,7 @@ final readonly class Package
         return new self(
             self::text($version['description'] ?? null) ?? '',
             $label,
-            array_values(array_unique(array_filter(\is_array($extra['categories'] ?? null) ? $extra['categories'] : [], \is_string(...)))),
+            Category::of(\is_array($extra['categories'] ?? null) ? $extra['categories'] : []),
             self::link($version['source']['url'] ?? null),
             self::link($version['homepage'] ?? null),
         );

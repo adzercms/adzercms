@@ -46,6 +46,16 @@ enum Category: string implements Titled
         }
         $chosen = \array_slice($chosen, 0, self::LIMIT);
 
-        return [] === $chosen ? [self::Other] : array_values(array_filter(self::cases(), static fn (self $case): bool => \in_array($case, $chosen, true)));
+        return [] === $chosen ? [self::Other] : self::ordered($chosen);
+    }
+
+    /**
+     * @param array<self> $categories
+     *
+     * @return list<self>
+     */
+    public static function ordered(array $categories): array
+    {
+        return array_values(array_filter(self::cases(), static fn (self $case): bool => \in_array($case, $categories, true)));
     }
 }

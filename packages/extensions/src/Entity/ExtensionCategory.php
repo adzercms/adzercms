@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions\Entity;
 
+use AdzerCMS\Contracts\Module\Category;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -17,21 +18,16 @@ class ExtensionCategory
     private Extension $extension;
 
     #[ORM\Id]
-    #[ORM\Column(length: 64)]
-    private string $category;
+    #[ORM\Column(length: 64, enumType: Category::class)]
+    private Category $category;
 
-    public function __construct(Extension $extension, string $category)
+    public function __construct(Extension $extension, Category $category)
     {
         $this->extension = $extension;
         $this->category = $category;
     }
 
-    public function getExtension(): Extension
-    {
-        return $this->extension;
-    }
-
-    public function getCategory(): string
+    public function getCategory(): Category
     {
         return $this->category;
     }

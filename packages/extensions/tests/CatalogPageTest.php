@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions\Tests;
 
+use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Core\Tests\Queries;
 use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Extensions\ExtensionType;
@@ -25,7 +26,7 @@ final class CatalogPageTest extends CatalogTestCase
     #[Group('ACMS-US-0034')]
     public function testVisitorSeesPublishedEntriesInOperatorOrder(): void
     {
-        $this->entry('acme/shop', ExtensionType::Theme, '1500.00', self::package('Shop theme', 'https://shop.example.test'), 'https://demo.example.test');
+        $this->entry('acme/shop', ExtensionType::Theme, '1500.00', self::package('Shop theme', 'https://shop.example.test', [Category::Commerce, Category::Content]), 'https://demo.example.test');
         $this->entry('acme/draft');
         $this->entry('acme/seo', package: self::package('SEO module'))->place(0);
         $this->em->flush();
@@ -36,7 +37,10 @@ final class CatalogPageTest extends CatalogTestCase
         self::assertSame(['acme/seo', 'acme/shop'], self::names($page));
 
         $shop = $page->filter('.offer-card')->last();
-        self::assertSame(self::phrase('extensions.edition', ['type' => self::phrase(ExtensionType::Theme->label()), 'version' => '1.0.0']), $shop->filter('.muted')->text());
+        self::assertSame(
+            [self::phrase('extensions.edition', ['type' => self::phrase(ExtensionType::Theme->label()), 'version' => '1.0.0']), self::phrase(Category::Commerce->label()).', '.self::phrase(Category::Content->label())],
+            $shop->filter('.muted')->each(static fn (Crawler $line): string => $line->text()),
+        );
         self::assertStringContainsString(Money::rubles('1500.00'), $shop->filter('.offer-price')->text());
         self::assertSame('Shop theme', $shop->filter('p')->text());
         self::assertSame(['https://demo.example.test', 'https://shop.example.test', self::SOURCE], self::links($shop));
@@ -55,7 +59,7 @@ final class CatalogPageTest extends CatalogTestCase
     #[DataProvider('narrowed')]
     public function testFilterKeepsItsChoiceInAddress(array $query, array $names): void
     {
-        $this->entry('acme/theme', ExtensionType::Theme, '900.00', self::package('Theme'));
+        $this->entry('acme/theme', ExtensionType::Theme, '900.00', self::package('Theme', categories: [Category::Commerce, Category::Content]));
         $this->entry('acme/module', package: self::package('Module'));
 
         $list = $this->fragment(self::PAGE.'?'.http_build_query($query));
@@ -70,6 +74,7 @@ final class CatalogPageTest extends CatalogTestCase
     public static function narrowed(): iterable
     {
         yield 'type' => [['type' => 'theme'], ['acme/theme']];
+        yield 'category' => [['category' => 'content'], ['acme/theme']];
         yield 'free' => [['price' => 'free'], ['acme/module']];
         yield 'paid' => [['price' => 'paid'], ['acme/theme']];
         yield 'type and price apart' => [['type' => 'theme', 'price' => 'free'], []];
@@ -116,9 +121,10 @@ final class CatalogPageTest extends CatalogTestCase
         });
     }
 
-    private static function package(string $description, ?string $homepage = null): Package
+    /** @param list<Category> $categories */
+    private static function package(string $description, ?string $homepage = null, array $categories = [Category::Other]): Package
     {
-        return new Package($description, '1.0.0', [], self::SOURCE, $homepage);
+        return new Package($description, '1.0.0', $categories, self::SOURCE, $homepage);
     }
 
     /** @return list<string> */
