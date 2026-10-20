@@ -13,6 +13,7 @@
     "require": {
         "php": ">=8.4",
         "ext-filter": "*",
+        "ext-mbstring": "*",
         "adzercms/contracts": "^1.0",
         "adzercms/core": "^1.0",
         "adzercms/theme-implementation": "^1.0",

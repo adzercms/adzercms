@@ -318,7 +318,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/extensions",
-                "reference": "1e0763aaf0aee0f6661f8c5048f4dd51dd95f4d6"
+                "reference": "a5626f7308a2b38e33d1719f9fbaeed9d3689dc6"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -333,6 +333,7 @@
                 "doctrine/orm": "^3.7",
                 "doctrine/persistence": "^4.2",
                 "ext-filter": "*",
+                "ext-mbstring": "*",
                 "php": ">=8.4",
                 "symfony/console": "7.4.*",
                 "symfony/dependency-injection": "7.4.*",
