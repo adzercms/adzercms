@@ -13,6 +13,8 @@ use AdzerCMS\Core\Tests\Notice\Fixture\NoticeController;
 use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelaySettings;
 use AdzerCMS\Core\Tests\Security\Fixture\AccountController;
 use AdzerCMS\Core\Tests\Security\Fixture\AccountNumbers;
+use AdzerCMS\Core\Tests\Seo\Fixture\GuideController;
+use AdzerCMS\Core\Tests\Seo\Fixture\GuidePages;
 use AdzerCMS\Core\Tests\Setting\Fixture\Shop;
 use AdzerCMS\Core\Tests\Translation\Fixture\LocaleController;
 use AdzerCMS\Core\Tests\Ui\Fixture\FrameController;
@@ -48,6 +50,8 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
     $services->set(LocaleController::class)->autoconfigure()->autowire();
     $services->set(FrameController::class)->autoconfigure()->autowire();
     $services->set(ListController::class)->autoconfigure()->autowire();
+    $services->set(GuidePages::class)->autoconfigure();
+    $services->set(GuideController::class)->autoconfigure()->autowire();
     $services->set('logger', NullLogger::class);
 
     $bundles = $builder->getParameter('kernel.bundles');

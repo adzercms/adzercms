@@ -22,6 +22,7 @@ return static function (ContainerConfigurator $container): void {
     $services->load('AdzerCMS\\Core\\Notice\\', '../src/Notice/')->exclude('../src/Notice/BotChannel.php');
     $services->load('AdzerCMS\\Core\\Repository\\', '../src/Repository/');
     $services->load('AdzerCMS\\Core\\Security\\', '../src/Security/');
+    $services->load('AdzerCMS\\Core\\Seo\\', '../src/Seo/')->exclude('../src/Seo/Head.php');
     $services->load('AdzerCMS\\Core\\Session\\', '../src/Session/');
     $services->load('AdzerCMS\\Core\\Setting\\', '../src/Setting/');
     $services->load('AdzerCMS\\Core\\Text\\', '../src/Text/');

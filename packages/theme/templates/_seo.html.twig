@@ -1,11 +1,12 @@
-{% set canonical = url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %}
+{% set head = page_head() %}
 <meta name="description" content="{{ description }}">
-<link rel="canonical" href="{{ canonical }}">
+{% if not head.indexed %}<meta name="robots" content="noindex, nofollow">{% endif %}
+<link rel="canonical" href="{{ head.canonical }}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{{ brand.title }}">
 <meta property="og:locale" content="{{ 'theme.seo.locale'|trans }}">
 <meta property="og:title" content="{{ title }}">
 <meta property="og:description" content="{{ description }}">
-<meta property="og:url" content="{{ canonical }}">
+<meta property="og:url" content="{{ head.canonical }}">
 {% if brand.logo %}<meta property="og:image" content="{{ brand.logo }}">{% endif %}
 <meta name="twitter:card" content="summary">

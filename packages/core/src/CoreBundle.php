@@ -9,6 +9,7 @@ use AdzerCMS\Contracts\Login\LoginListener;
 use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Contracts\Module\Switchable;
 use AdzerCMS\Contracts\Notice\BotListener;
+use AdzerCMS\Contracts\Seo\Pages;
 use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Contracts\Setting\Rule;
 use AdzerCMS\Contracts\Ui\Columns;
@@ -148,7 +149,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
         $builder->register(self::MIGRATION_MARKS, \Closure::class)
             ->setFactory([\Closure::class, 'fromCallable'])
             ->setArguments([[MigrationMarks::class, 'of']]);
-        foreach ([Owner::class, Rule::class, Identifier::class, Switchable::class, ContentSource::class, Fragment::class, Menu::class, Tabs::class, Columns::class, BotListener::class, LoginListener::class, Channel::class] as $contract) {
+        foreach ([Owner::class, Rule::class, Identifier::class, Switchable::class, ContentSource::class, Fragment::class, Menu::class, Tabs::class, Columns::class, BotListener::class, LoginListener::class, Channel::class, Pages::class] as $contract) {
             $builder->registerForAutoconfiguration($contract)->addTag($contract);
         }
     }

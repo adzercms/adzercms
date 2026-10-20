@@ -727,6 +727,12 @@
         <target>Оповещения</target>
       </segment>
     </unit>
+    <unit id="core.setting.area.seo">
+      <segment>
+        <source>core.setting.area.seo</source>
+        <target>SEO</target>
+      </segment>
+    </unit>
     <unit id="core.setting.choice">
       <segment>
         <source>core.setting.choice</source>
@@ -755,6 +761,12 @@
       <segment>
         <source>core.setting.icon</source>
         <target>Значок</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.indexing">
+      <segment>
+        <source>core.setting.indexing</source>
+        <target>Индексация поисковиками</target>
       </segment>
     </unit>
     <unit id="core.setting.language">

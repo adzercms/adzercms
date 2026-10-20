@@ -9,4 +9,5 @@ return static function (RoutingConfigurator $routes): void {
     $routes->import('../../../packages/core/tests/Notice/Fixture', 'attribute');
     $routes->import('../../../packages/core/tests/Translation/Fixture', 'attribute');
     $routes->import('../../../packages/core/tests/Ui/Fixture', 'attribute');
+    $routes->import('../../../packages/core/tests/Seo/Fixture', 'attribute');
 };
