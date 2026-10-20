@@ -45,7 +45,7 @@ final class CatalogPageTest extends CatalogTestCase
             [self::phrase('extensions.edition', ['type' => self::phrase(ExtensionType::Theme->label()), 'version' => '1.0.0']), self::phrase(Category::Commerce->label()).', '.self::phrase(Category::Content->label())],
             $shop->filter('.muted')->each(static fn (Crawler $line): string => $line->text()),
         );
-        self::assertStringContainsString(Money::rubles('1500.00'), $shop->filter('.offer-price')->text());
+        self::assertSame(self::phrase(Money::rubles('1500.00')), $shop->filter('.offer-price')->text());
         self::assertSame('Shop theme', $shop->filter('p')->text());
         self::assertSame(['https://demo.example.test', 'https://shop.example.test', self::SOURCE], self::links($shop));
 

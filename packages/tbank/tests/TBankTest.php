@@ -187,7 +187,7 @@ final class TBankTest extends SchemaTestCase
             'payments.refusal.floor' => $service->order([['name' => 'Hosting', 'quantity' => 1, 'price' => '9.99']], 'page', 'Hosting', self::PHONE, null, self::BACK),
         ] as $reason => $refusal) {
             self::assertInstanceOf(Refusal::class, $refusal, $reason);
-            self::assertSame(self::phrase($reason, ['floor' => '10']), self::phrase($refusal->reason));
+            self::assertSame(self::phrase($reason, ['floor' => Money::rubles('10')]), self::phrase($refusal->reason));
         }
 
         self::assertSame([], $this->requests);

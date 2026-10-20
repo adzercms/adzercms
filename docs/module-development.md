@@ -148,6 +148,8 @@ The core wires up the entities, migrations and routes of an enabled module by it
 
 Show dates in the reader's language through the translator, not with Twig's `date` filter. Inside a phrase, a date is an ICU argument with a skeleton, such as `{until, date, ::yMMdd}`. A date on its own takes a core key: `core.moment.day`, `core.moment.time`, `core.moment.day_time` or `core.moment.month` with the `at` argument. An instance changes how dates look by overriding these keys in its own catalog.
 
+Sums go out with the ruble sign in the reader's language: the `money` filter gives whole rubles, `precise` adds kopecks when there are any. In code, `AdzerCMS\Core\Ui\Money::rubles()` and `precise()` give a translatable sum for a phrase argument. Don't append the sign yourself; a field or column label names the unit in its own phrase.
+
 Buttons of a general action take core keys: `core.action.close`, `core.action.save`, `core.action.edit` and `core.action.drop`. An action on a particular object and a field label take keys of your module. A modal window starts with the theme's header `@Theme/_modal_header.html.twig` with the `title` argument; it holds the close button.
 
 ## Tests

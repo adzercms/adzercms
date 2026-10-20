@@ -94,7 +94,7 @@
     <unit id="payments.refusal.floor">
       <segment>
         <source>payments.refusal.floor</source>
-        <target>The amount is less than {floor} ₽</target>
+        <target>The amount is less than {floor}</target>
       </segment>
     </unit>
     <unit id="payments.refusal.method">

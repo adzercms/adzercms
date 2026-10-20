@@ -95,24 +95,20 @@ final class Money
         return str_contains($value, '.') ? rtrim(rtrim($value, '0'), '.') : $value;
     }
 
-    #[AsTwigFilter('money')]
-    public static function rubles(string|float|int $value): string
+    public static function rubles(string|float|int $value): Sum
     {
-        return number_format((float) $value, 0, ',', "\u{a0}");
+        return new Sum($value);
+    }
+
+    public static function precise(string|float|int $value): Sum
+    {
+        return new Sum($value, kopecks: true);
     }
 
     #[AsTwigFilter('exact')]
     public static function exact(string|float|int $value): string
     {
         return number_format((float) $value, self::SCALE, ',', "\u{a0}");
-    }
-
-    #[AsTwigFilter('precise')]
-    public static function precise(string|float|int $value): string
-    {
-        $value = self::numeric(self::normalize((string) $value));
-
-        return self::isZero(bcsub($value, bcadd($value, '0', 0), self::SCALE)) ? self::rubles($value) : self::exact($value);
     }
 
     public static function wholeUp(string $value): string
