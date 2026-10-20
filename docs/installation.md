@@ -60,7 +60,7 @@ git add -A
 git commit -m 'Site'
 ```
 
-- `adzercms.php` — the PHP used by `bin/` scripts and hooks; plain `php` if it isn't set
+- `adzercms.php` — the PHP used by `bin/` scripts and hooks unless the `PHP_BINARY` environment variable sets it; plain `php` if neither is set
 - The `pre-commit` hook blocks PHP with style errors, a migration that breaks the rules, a broken template or translation file, and secrets in `.env`
 - The `post-commit` and `post-merge` hooks run `vendor/bin/adzercms-refresh` after every commit and `git pull`. It brings the site in line with the code: installs dependencies from a changed `composer.lock` and packages with new patches in `patches.lock.json` (cweagans/composer-patches), runs migrations, builds a new cache, importmap libraries and assets, then switches the site to the new build. Without `.env.local` it does nothing
 - If the site lives in a subdirectory of the repository, set `git config core.hooksPath <subdirectory>/.githooks`
@@ -85,8 +85,9 @@ Add the jobs to the crontab of the user the site runs as; `/path` is the site di
 ```
 
 - `adzercms:notices` sends notifications held back by quiet hours
-- `adzercms:sweep` removes ended sessions, old log entries and confirmations
+- `adzercms:sweep` removes ended sessions, old log entries and confirmations, and the cache of module sets the site has left
 - `adzercms:modules` applies module requests from the admin panel and refreshes the module catalog from Packagist once a day
+- A site without git has no `adzercms.php`: put `PHP_BINARY=/usr/bin/php8.4` at the top of the crontab
 
 Module jobs, if the modules are enabled:
 

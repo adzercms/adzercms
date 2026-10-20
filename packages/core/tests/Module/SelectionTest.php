@@ -7,6 +7,7 @@ namespace AdzerCMS\Core\Tests\Module;
 use AdzerCMS\Core\Module\Installed;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Module\Selection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
@@ -111,10 +112,54 @@ final class SelectionTest extends TestCase
         self::assertNotSame(self::select($card)->id(), self::select(['MODULES' => 'Shop', 'TEST_GATEWAY' => 'Cash'])->id());
     }
 
+    /**
+     * @param array<string, string> $environment
+     * @param array{string, string} $expected
+     */
+    #[Group('ACMS-CORE-0938')]
+    #[DataProvider('toggles')]
+    public function testToggleRewritesKindKeyOfModule(array $environment, string $key, bool $on, array $expected): void
+    {
+        self::assertSame($expected, self::toggle($environment, $key, $on));
+    }
+
+    /** @return iterable<string, array{array<string, string>, string, bool, array{string, string}}> */
+    public static function toggles(): iterable
+    {
+        yield 'enabling appends to a list' => [['MODULES' => 'Shop', 'TEST_GATEWAY' => 'Card', 'SMS_MODULES' => 'Pigeon'], 'Drum', true, ['SMS_MODULES', 'Pigeon,Drum']];
+        yield 'enabling replaces the one of its kind' => [['MODULES' => 'Shop', 'TEST_GATEWAY' => 'Card'], 'Cash', true, ['TEST_GATEWAY', 'Cash']];
+        yield 'disabling removes' => [['MODULES' => 'Shop', 'TEST_GATEWAY' => 'Card', 'SMS_MODULES' => 'Pigeon, Drum'], 'Pigeon', false, ['SMS_MODULES', 'Drum']];
+    }
+
+    #[Group('ACMS-CORE-0938')]
+    public function testToggleBreakingSelectionStopsLikeBuild(): void
+    {
+        $this->expectExceptionObject(new \LogicException('module "Pigeon" requires module "Card" selected in TEST_GATEWAY'));
+
+        self::toggle(['MODULES' => 'Shop', 'TEST_GATEWAY' => 'Card', 'SMS_MODULES' => 'Pigeon'], 'Card', false);
+    }
+
     /** @param array<string, string> $environment */
     private static function select(array $environment): Selection
     {
-        $registry = Registry::of([
+        return Selection::of(self::registry(), static fn (string $name): string => $environment[$name] ?? '');
+    }
+
+    /**
+     * @param array<string, string> $environment
+     *
+     * @return array{string, string}
+     */
+    private static function toggle(array $environment, string $key, bool $on): array
+    {
+        $registry = self::registry();
+
+        return Selection::toggled($registry, static fn (string $name): string => $environment[$name] ?? '', $registry->find($key) ?? self::fail('no fixture module '.$key), $on);
+    }
+
+    private static function registry(): Registry
+    {
+        return Registry::of([
             'acme/shop' => Fixture\Manifest::of(Fixture\ShopBundle::class),
             'acme/card' => Fixture\Manifest::of(Fixture\CardBundle::class, 'acme/shop'),
             'acme/cash' => Fixture\Manifest::of(Fixture\CashBundle::class, 'acme/shop'),
@@ -122,8 +167,6 @@ final class SelectionTest extends TestCase
             'acme/drum' => Fixture\Manifest::of(Fixture\DrumBundle::class),
             'acme/till' => Fixture\Manifest::of(Fixture\TillBundle::class, 'adzercms/gateway-implementation'),
         ]);
-
-        return Selection::of($registry, static fn (string $name): string => $environment[$name] ?? '');
     }
 
     /** @return list<string> */

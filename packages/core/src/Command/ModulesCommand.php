@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Command;
 
 use AdzerCMS\Core\Module\Catalog;
+use AdzerCMS\Core\Module\ModuleAction;
+use AdzerCMS\Core\Module\Requests;
 use AdzerCMS\Core\Module\RequestState;
 use AdzerCMS\Core\Repository\ModuleRequestRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,7 +23,8 @@ final class ModulesCommand
 
     public function __construct(
         private readonly Catalog $catalog,
-        private readonly ModuleRequestRepository $requests,
+        private readonly Requests $requests,
+        private readonly ModuleRequestRepository $queue,
         private readonly EntityManagerInterface $em,
         private readonly LockFactory $locks,
         private readonly TranslatorInterface $translator,
@@ -35,10 +38,18 @@ final class ModulesCommand
             return Command::SUCCESS;
         }
 
-        foreach ($this->requests->inState(RequestState::Running) as $interrupted) {
+        foreach ($this->queue->inState(RequestState::Running) as $interrupted) {
             $interrupted->finish($this->translator->trans('core.module.refusal.interrupted'));
         }
         $this->em->flush();
+
+        $request = $this->queue->next();
+        if (null !== $request && \in_array($request->getAction(), [ModuleAction::Enable, ModuleAction::Disable], true)) {
+            $request->start();
+            $this->em->flush();
+            $request->finish($this->requests->apply($request));
+            $this->em->flush();
+        }
 
         $down = $this->catalog->due() ? $this->catalog->refresh() : [];
         foreach ($down as $repository) {

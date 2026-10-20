@@ -40,6 +40,10 @@ bin/console doctrine:migrations:migrate
 
 An installed module that isn't enabled adds nothing: no services, routes, commands or tables. If a module name is unknown, or a module it depends on isn't enabled, the build stops and lists the available names.
 
+## Enable a module from the admin panel
+
+On a site outside git the module catalog of the admin panel has an action button on each row. A button files a request, and the `adzercms:modules` job applies one request a minute. Enabling or disabling checks the new module list the way the build does, refreshes the site with it, and only then writes the variable into `.env.local`. The request keeps its outcome and the error output. A site under git changes modules by commit, so its catalog has no buttons.
+
 ## Turn on sign-in, SMS, a bot or captcha
 
 Such a module works once it's switched on and its credentials are set. Settings are named `<kind>.<module>.<field>`:

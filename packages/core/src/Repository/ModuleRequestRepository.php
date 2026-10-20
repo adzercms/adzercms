@@ -30,6 +30,17 @@ class ModuleRequestRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function next(): ?ModuleRequest
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.state = :state')
+            ->setParameter('state', RequestState::Pending->value)
+            ->orderBy('r.id')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     /** @return list<ModuleRequest> */
     public function inState(RequestState $state): array
     {

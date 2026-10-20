@@ -22,8 +22,10 @@ use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelayGateway;
 use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelaySettings;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use Composer\InstalledVersions;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Filesystem\Filesystem;
 
 final class ModuleWebTest extends SchemaTestCase
 {
@@ -33,11 +35,21 @@ final class ModuleWebTest extends SchemaTestCase
 
     private const SENDER = RelayGateway::SETTINGS.RelayGateway::SENDER;
 
+    private ?string $tree = null;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
         $this->em->flush();
+    }
+
+    protected function tearDown(): void
+    {
+        if (null !== $this->tree) {
+            (new Filesystem())->remove($this->tree);
+        }
+        parent::tearDown();
     }
 
     #[Group('ACMS-CORE-0023')]
@@ -136,7 +148,7 @@ final class ModuleWebTest extends SchemaTestCase
     #[Group('ACMS-US-0004')]
     public function testCatalogRowFilesRequestOfItsActionsOnePerPackage(): void
     {
-        self::getContainer()->set(Tree::class, new Tree(sys_get_temp_dir()));
+        $this->tree();
         $this->answerCatalog();
         $this->listed(['acme/shop']);
         $this->offer('acme/shop', '1.0.0');
@@ -168,6 +180,46 @@ final class ModuleWebTest extends SchemaTestCase
         $this->em->clear();
         $interrupted = self::service(ModuleRequestRepository::class)->find($running->getId()) ?? self::fail('the request is gone');
         self::assertSame([RequestState::Failed, self::phrase('core.module.refusal.interrupted')], [$interrupted->getState(), $interrupted->getOutput()]);
+    }
+
+    #[Group('ACMS-CORE-0938')]
+    #[Group('ACMS-US-0004')]
+    #[DataProvider('refreshes')]
+    public function testEnablingRefreshesSiteOnNewSelectionBeforeWritingIt(?string $refusal, RequestState $state, string $environment): void
+    {
+        $tree = $this->tree();
+        file_put_contents($tree.'/.env.local', "APP_SECRET=kept\nSMS_MODULES=Stale\n");
+        if (null !== $refusal) {
+            file_put_contents($tree.'/refusal', $refusal);
+        }
+
+        $this->post('/admin/modules/request/enable?package=adzercms/sms-pilot');
+        self::command('adzercms:modules')->execute([]);
+        $this->em->clear();
+        $request = self::service(ModuleRequestRepository::class)->findOneBy(['package' => 'adzercms/sms-pilot']) ?? self::fail('the request is not filed');
+        $refreshed = file($tree.'/refreshed.env', \FILE_IGNORE_NEW_LINES) ?: [];
+
+        self::assertContains('SMS_MODULES=SmsPilot', $refreshed, 'the refresh builds the new selection');
+        self::assertContains('PHP_BINARY='.\PHP_BINARY, $refreshed);
+        self::assertSame([], preg_grep('/^(APP_SECRET|SYMFONY_DOTENV_VARS)=/', $refreshed), 'the refresh reads the environment files itself');
+        self::assertSame([$state, $refusal], [$request->getState(), $request->getOutput()]);
+        self::assertSame($environment, file_get_contents($tree.'/.env.local'));
+    }
+
+    /** @return iterable<string, array{?string, RequestState, string}> */
+    public static function refreshes(): iterable
+    {
+        yield 'refreshed' => [null, RequestState::Done, "APP_SECRET=kept\nSMS_MODULES=SmsPilot\n"];
+        yield 'refresh failed' => ['migration failed', RequestState::Failed, "APP_SECRET=kept\nSMS_MODULES=Stale\n"];
+    }
+
+    private function tree(): string
+    {
+        $this->tree = sys_get_temp_dir().'/adzercms-tree-'.bin2hex(random_bytes(4));
+        (new Filesystem())->mkdir($this->tree);
+        self::getContainer()->set(Tree::class, new Tree($this->tree, __DIR__.'/Fixture/refresh'));
+
+        return $this->tree;
     }
 
     /** @return list<string> */

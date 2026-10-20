@@ -63,17 +63,55 @@ final readonly class Builds
     {
         $current = $this->current();
 
-        if (null === $current) {
+        return null === $current ? [] : $this->remove(array_diff($this->names(), [$current]));
+    }
+
+    /** @return list<string> */
+    public function retire(self $live): array
+    {
+        $pointed = $this->pointed();
+        $behind = $live->pointed();
+
+        if (null === $pointed || null === $behind || $pointed >= $behind) {
             return [];
         }
 
-        $removed = [];
-        $names = array_unique(array_map(
+        $names = $this->names();
+        $removed = $this->remove($names);
+
+        if (\count($removed) === \count($names)) {
+            (new Filesystem())->remove($this->root);
+        }
+
+        return $removed;
+    }
+
+    private function pointed(): ?int
+    {
+        $pointer = $this->root.'/'.self::POINTER;
+
+        return is_file($pointer) ? (int) filemtime($pointer) : null;
+    }
+
+    /** @return list<string> */
+    private function names(): array
+    {
+        return array_values(array_unique(array_map(
             static fn (string $entry): string => str_ends_with($entry, self::LOCK) ? substr($entry, 0, -\strlen(self::LOCK)) : $entry,
             array_diff(scandir($this->root) ?: [], ['.', '..', self::POINTER]),
-        ));
+        )));
+    }
 
-        foreach (array_diff($names, [$current]) as $name) {
+    /**
+     * @param array<string> $names
+     *
+     * @return list<string>
+     */
+    private function remove(array $names): array
+    {
+        $removed = [];
+
+        foreach ($names as $name) {
             $lock = $this->lock($name);
 
             if (flock($lock, \LOCK_EX | \LOCK_NB)) {

@@ -16,10 +16,7 @@ final readonly class Selection
     {
         $chosen = [];
         foreach ($registry->kinds() as $kind) {
-            $keys = array_values(array_unique(array_filter(
-                array_map(trim(...), explode(',', $environment($kind->environment()))),
-                static fn (string $key): bool => '' !== $key,
-            )));
+            $keys = self::keys($environment($kind->environment()));
 
             if ($kind->single() && \count($keys) > 1) {
                 throw new \LogicException(sprintf('%s selects one module, selected: %s', $kind->environment(), implode(', ', $keys)));
@@ -45,11 +42,41 @@ final readonly class Selection
         return new self($ordered);
     }
 
+    /**
+     * @param \Closure(string): string $environment
+     *
+     * @return array{string, string}
+     */
+    public static function toggled(Registry $registry, \Closure $environment, Installed $module, bool $on): array
+    {
+        $name = $module->kind->environment();
+        $kept = $module->kind->single() && $on ? [] : array_diff(self::keys($environment($name)), [$module->key]);
+        $value = implode(',', $on ? [...$kept, $module->key] : $kept);
+
+        self::of($registry, static fn (string $variable): string => $name === $variable ? $value : $environment($variable));
+
+        return [$name, $value];
+    }
+
+    public static function environment(string $name): string
+    {
+        return (string) ($_SERVER[$name] ?? $_ENV[$name] ?? '');
+    }
+
     public function id(): string
     {
         return [] === $this->modules
             ? ''
             : substr(hash('xxh128', implode(',', array_map(static fn (Installed $module): string => $module->key, $this->modules))), 0, 16);
+    }
+
+    /** @return list<string> */
+    private static function keys(string $value): array
+    {
+        return array_values(array_unique(array_filter(
+            array_map(trim(...), explode(',', $value)),
+            static fn (string $key): bool => '' !== $key,
+        )));
     }
 
     /**

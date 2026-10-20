@@ -59,6 +59,17 @@ abstract class Kernel extends BaseKernel
         return new Builds($this->buildsRoot());
     }
 
+    /** @return list<Builds> */
+    public function otherBuilds(): array
+    {
+        $roots = array_filter(
+            [$this->configuredCacheDir(), ...preg_grep('~_[0-9a-f]{16}$~', glob($this->configuredCacheDir().'_*', \GLOB_ONLYDIR) ?: []) ?: []],
+            fn (string $root): bool => $root !== $this->buildsRoot() && is_dir($root),
+        );
+
+        return array_values(array_map(static fn (string $root): Builds => new Builds($root), $roots));
+    }
+
     public function shutdown(): void
     {
         parent::shutdown();
@@ -69,10 +80,7 @@ abstract class Kernel extends BaseKernel
 
     public function modules(): Selection
     {
-        return $this->modules ??= Selection::of(
-            Registry::installed(),
-            static fn (string $name): string => (string) ($_SERVER[$name] ?? $_ENV[$name] ?? ''),
-        );
+        return $this->modules ??= Selection::of(Registry::installed(), Selection::environment(...));
     }
 
     private function configureRoutes(RoutingConfigurator $routes): void

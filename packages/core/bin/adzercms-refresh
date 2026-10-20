@@ -31,7 +31,7 @@ if { [ -f patches.lock.json ] || [ -f "$patched" ]; } && ! cmp -s patches.lock.j
     exec "$0"
 fi
 
-APP_BUILD=$(date +%Y%m%d%H%M%S)-$(git rev-parse --short=12 HEAD)
+APP_BUILD=$(date +%Y%m%d%H%M%S)-$$
 export APP_BUILD
 
 bin/php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration

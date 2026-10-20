@@ -60,7 +60,7 @@ composer install
 git config core.hooksPath .githooks
 ```
 
-Set up the development app like any project: environment and administrator as in [Installation](docs/installation.md#environment), the database with `bin/console doctrine:migrations:migrate`. Scripts in `bin/` run the PHP set in `git config adzercms.php`, or plain `php` if it isn't set.
+Set up the development app like any project: environment and administrator as in [Installation](docs/installation.md#environment), the database with `bin/console doctrine:migrations:migrate`. Scripts in `bin/` run the PHP of the `PHP_BINARY` environment variable, otherwise the one set in `git config adzercms.php`, or plain `php` if neither is set.
 
 ## Console
 

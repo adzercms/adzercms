@@ -60,7 +60,7 @@ composer install
 git config core.hooksPath .githooks
 ```
 
-Приложение для разработки настраивается как обычный проект: окружение и администратор — по [установке](docs/installation.ru.md#окружение), база — `bin/console doctrine:migrations:migrate`. Скрипты из `bin/` запускают PHP, указанный в `git config adzercms.php`, а если он не задан — `php`.
+Приложение для разработки настраивается как обычный проект: окружение и администратор — по [установке](docs/installation.ru.md#окружение), база — `bin/console doctrine:migrations:migrate`. Скрипты из `bin/` запускают PHP из переменной окружения `PHP_BINARY`, без неё — указанный в `git config adzercms.php`, а если не задан и он — `php`.
 
 ## Консоль
 

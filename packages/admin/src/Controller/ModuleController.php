@@ -102,7 +102,7 @@ final class ModuleController extends AbstractController
     #[Route('/request/{action}', name: 'admin_module_request', methods: ['POST'])]
     public function request(ModuleAction $action, Request $request): Response
     {
-        $refusal = $this->requests->file($this->catalog->row($request->query->getString('package')), $action);
+        $refusal = $this->requests->file($request->query->getString('package'), $action);
         $this->addFlash(null === $refusal ? 'success' : 'error', $refusal->reason ?? t('admin.requests.done'));
 
         return $this->redirectToRoute('admin_modules');

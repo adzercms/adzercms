@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/admin",
-                "reference": "a6fc4b91bf6a58bde3ee8f153f18f9a929731e41"
+                "reference": "821d95e0aafaa62854ee9223059886527c74c15d"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -53,7 +53,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Admin panel for AdzerCMS: renders the sections, lists, forms and settings that modules declare",
+            "description": "Admin panel for AdzerCMS: manage your site's content, users and settings in one place",
             "keywords": [
                 "admin",
                 "admin-panel",
@@ -72,7 +72,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/cabinet",
-                "reference": "d9ae71b2dc294c1985f08fba30ac815fdd0d1d34"
+                "reference": "76099c15c935bad51cc245345811cb6475ab69c8"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -108,7 +108,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "User cabinet for AdzerCMS: sign-up and sign-in, profile, login security and module pages",
+            "description": "Customer account for AdzerCMS: sign-up and sign-in, profile, active sessions and pages from modules",
             "keywords": [
                 "adzercms",
                 "dashboard",
@@ -127,7 +127,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/centrifugo",
-                "reference": "2761bac846129af2bbb86675b6416cdb6de5970c"
+                "reference": "206e592e11953a6c2202b9af011a5176ee41e597"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -159,7 +159,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Centrifugo hub for AdzerCMS real-time page updates",
+            "description": "Live page updates for AdzerCMS through a Centrifugo server",
             "keywords": [
                 "adzercms",
                 "centrifugo",
@@ -220,7 +220,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "b527dec16e1c15c0d2c817aee4b860b317ae8a8f"
+                "reference": "4c449e5b0daa8a1b774f4cd18387717127110356"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -268,6 +268,7 @@
                 "symfony/mime": "7.4.*",
                 "symfony/password-hasher": "7.4.*",
                 "symfony/polyfill-php86": "^1.43",
+                "symfony/process": "7.4.*",
                 "symfony/routing": "7.4.*",
                 "symfony/security-bundle": "7.4.*",
                 "symfony/security-core": "7.4.*",
@@ -301,7 +302,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Core Symfony bundle of AdzerCMS: module registry, accounts and login, settings with encrypted secrets, notices",
+            "description": "The AdzerCMS core: modules, accounts and sign-in, settings with encrypted secrets and notifications",
             "keywords": [
                 "adzercms",
                 "authentication",
@@ -321,7 +322,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/extensions",
-                "reference": "374c7d77c89e0d5d9745308889a9830513d96824"
+                "reference": "eacd05e471897a25d816d1dc02d383ff67664844"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -367,7 +368,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Extension catalog for AdzerCMS: Composer packages with type, price and demo in a manual order",
+            "description": "Extension catalog for AdzerCMS: modules, themes and site templates with prices and demos",
             "keywords": [
                 "adzercms",
                 "catalog",
@@ -386,7 +387,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/hcaptcha",
-                "reference": "61a6d3db4bef9bdcc2cacc50b1726a8bdc715947"
+                "reference": "b35fb0c80bac409f6f971daf9a809c4e3fe43bae"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -416,7 +417,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "hCaptcha for AdzerCMS forms",
+            "description": "hCaptcha spam protection for AdzerCMS forms",
             "keywords": [
                 "adzercms",
                 "captcha",
@@ -434,7 +435,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/mailing",
-                "reference": "cd6a01ad0513f5096d1ecd5c4e624ba7af99bbc6"
+                "reference": "80cb8b31d345109bb1ea0d4ec6f91c8b07770f7a"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -474,7 +475,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Broadcasts for AdzerCMS: messages to chosen users by email, SMS and messenger bots",
+            "description": "Mailings for AdzerCMS: send messages to the users you choose by email, SMS and messenger bots",
             "keywords": [
                 "adzercms",
                 "broadcast",
@@ -493,7 +494,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/max-bot",
-                "reference": "eb7f421beb05b726f21636e0a1441a8c8e1c1401"
+                "reference": "4a9a24aa9dc3f4aab45a1db34dd4761e5b889da7"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -526,7 +527,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "MAX messenger bot channel for AdzerCMS notices",
+            "description": "MAX messenger bot for AdzerCMS notifications",
             "keywords": [
                 "adzercms",
                 "bot",
@@ -545,7 +546,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/mts-marketolog",
-                "reference": "57f75eedb0ae3e65c0e2256a724718ca8ebf660e"
+                "reference": "ae89ceb2b786528d0b46c7dbcba74fe6f36cc339"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -578,7 +579,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "MTS Marketolog SMS gateway for AdzerCMS notices and confirmation codes",
+            "description": "SMS through MTS Marketolog for AdzerCMS notifications and confirmation codes",
             "keywords": [
                 "adzercms",
                 "mts",
@@ -597,7 +598,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/payments",
-                "reference": "f10964d53ce6e1f4bfdb8bb10370735a0c171743"
+                "reference": "602a78c2877ed54cdb15ba4b70bd1ff360b1ff0d"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -640,7 +641,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Online payments for AdzerCMS: payment records, confirmation and acquiring modules",
+            "description": "Online payments for AdzerCMS: payment history, confirmations and payment provider modules",
             "keywords": [
                 "acquiring",
                 "adzercms",
@@ -658,7 +659,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/realtime",
-                "reference": "f39e2e5ceaac262e76b32baecff1c5efafef89cc"
+                "reference": "59f51e045f9fbbb8eccffe05efe55424bbf56ccb"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -696,7 +697,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Real-time page updates for AdzerCMS: live blocks refreshed through a hub module",
+            "description": "Live page updates for AdzerCMS: parts of a page refresh without reloading",
             "keywords": [
                 "adzercms",
                 "live-updates",
@@ -715,7 +716,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/sber-id",
-                "reference": "2c52fca2366175ea16c1f3fe73cad3c6dca9cfb7"
+                "reference": "2bdbb1938c229d0a46975fa7e788a12d0ecce5ca"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -747,7 +748,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Sign-in with Sber ID for AdzerCMS: OpenID Connect and account linking",
+            "description": "Sign in to an AdzerCMS site with Sber ID and link it to your account",
             "keywords": [
                 "adzercms",
                 "openid-connect",
@@ -766,7 +767,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/smart-captcha",
-                "reference": "cfe113d1cdcfb88ce753d9def23e02561b2347fa"
+                "reference": "47ad8971835bd7913d655099887e775a392fd1b1"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -796,7 +797,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Yandex SmartCaptcha for AdzerCMS forms",
+            "description": "Yandex SmartCaptcha spam protection for AdzerCMS forms",
             "keywords": [
                 "adzercms",
                 "captcha",
@@ -815,7 +816,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/sms-pilot",
-                "reference": "8346c8f80c2397c92821d933360794aeb4109baa"
+                "reference": "57f44ecc87c8a5c020dadac248f020b01497a1b2"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -847,7 +848,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "SMSPilot SMS gateway for AdzerCMS notices and confirmation codes",
+            "description": "SMS through SMSPilot for AdzerCMS notifications and confirmation codes",
             "keywords": [
                 "adzercms",
                 "sms",
@@ -866,7 +867,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/support",
-                "reference": "6a9e6de06dc4b2238682e792391389731ae7301c"
+                "reference": "87232ecc5bd7db4c50e478f143bed9f60ef0a953"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -920,7 +921,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Support tickets for AdzerCMS with attachments, staff digest and help article suggestions",
+            "description": "Customer support for AdzerCMS: tickets with attachments, a digest for staff and help article suggestions",
             "keywords": [
                 "adzercms",
                 "helpdesk",
@@ -939,7 +940,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/tbank",
-                "reference": "d8f4166fd468026b3df872138c6d531927020419"
+                "reference": "786dc871275b88a688cd4c9d6ca3c48c4a8a8ca6"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -974,7 +975,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "T-Bank acquiring for AdzerCMS payments",
+            "description": "T-Bank online payments for AdzerCMS",
             "keywords": [
                 "acquiring",
                 "adzercms",
@@ -994,7 +995,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/telegram",
-                "reference": "e3fcfe453462d5bf87ee29d0eaa5100391323246"
+                "reference": "e26058c3ec0aed72859a8e3c133594388dfe21f4"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1026,7 +1027,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Sign-in with Telegram for AdzerCMS: OpenID Connect and account linking",
+            "description": "Sign in to an AdzerCMS site with Telegram and link it to your account",
             "keywords": [
                 "adzercms",
                 "openid-connect",
@@ -1045,7 +1046,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/telegram-bot",
-                "reference": "acc270727700030a4d22c6c2fc0c272352a77374"
+                "reference": "5d5bb6fe16662c84be4103e658a2c8c007417e61"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1080,7 +1081,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Telegram bot channel for AdzerCMS notices",
+            "description": "Telegram bot for AdzerCMS notifications",
             "keywords": [
                 "adzercms",
                 "bot",
@@ -1099,7 +1100,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/theme",
-                "reference": "37eb7e21c5eaa55109a2705937c73a7fc23f37b1"
+                "reference": "bcc31687b7830451116022b832ada358c3560c9f"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1132,7 +1133,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Default AdzerCMS theme: page frame, visual language components and assets",
+            "description": "Default AdzerCMS theme: page layout, interface components and styles",
             "keywords": [
                 "adzercms",
                 "symfony",
@@ -1151,7 +1152,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/turnstile",
-                "reference": "d4ec66ba6a7c246b719197fb768bd86fef22e823"
+                "reference": "3e405f761a62ebb26457996b8d4b0db0de5557d9"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1181,7 +1182,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Cloudflare Turnstile captcha for AdzerCMS forms",
+            "description": "Cloudflare Turnstile spam protection for AdzerCMS forms",
             "keywords": [
                 "adzercms",
                 "captcha",
@@ -1200,7 +1201,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/vk-id",
-                "reference": "ab335e303d556cc1aa3acb7c236cee626c4fdbf5"
+                "reference": "6c15d5a48f53d05f5865fe0d9962685aa39ec729"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1232,7 +1233,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Sign-in with VK ID for AdzerCMS: OAuth 2.0 with PKCE and account linking",
+            "description": "Sign in to an AdzerCMS site with VK ID and link it to your account",
             "keywords": [
                 "adzercms",
                 "oauth2",
@@ -1251,7 +1252,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/yandex-id",
-                "reference": "2bbb576d078699175ddc787126f3c83fdf5abd74"
+                "reference": "a0b6d7c7266ef7a1152f77434af9ae238398d5f8"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1283,7 +1284,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Sign-in with Yandex ID for AdzerCMS: OAuth 2.0 and account linking",
+            "description": "Sign in to an AdzerCMS site with Yandex ID and link it to your account",
             "keywords": [
                 "adzercms",
                 "oauth2",
@@ -1302,7 +1303,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/yookassa",
-                "reference": "ae7d9a56c689400865d8773324fd6bedd1d85ddd"
+                "reference": "e0aa7ed876938b65c83bb90bfad3d4f91fc9b045"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1338,7 +1339,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "YooKassa acquiring for AdzerCMS payments",
+            "description": "YooKassa online payments for AdzerCMS",
             "keywords": [
                 "acquiring",
                 "adzercms",
@@ -6536,6 +6537,71 @@
                 }
             ],
             "time": "2026-09-24T05:20:52+00:00"
+        },
+        {
+            "name": "symfony/process",
+            "version": "v7.4.21",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/process.git",
+                "reference": "e5247f4a5e0797d232ad8e8e6803aeb341843c83"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/process/zipball/e5247f4a5e0797d232ad8e8e6803aeb341843c83",
+                "reference": "e5247f4a5e0797d232ad8e8e6803aeb341843c83",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Process\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Executes commands in sub-processes",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/process/tree/v7.4.21"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-10-08T16:56:12+00:00"
         },
         {
             "name": "symfony/property-access",
@@ -12043,71 +12109,6 @@
                 }
             ],
             "time": "2026-03-24T13:12:05+00:00"
-        },
-        {
-            "name": "symfony/process",
-            "version": "v7.4.21",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/process.git",
-                "reference": "e5247f4a5e0797d232ad8e8e6803aeb341843c83"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/e5247f4a5e0797d232ad8e8e6803aeb341843c83",
-                "reference": "e5247f4a5e0797d232ad8e8e6803aeb341843c83",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Process\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Executes commands in sub-processes",
-            "homepage": "https://symfony.com",
-            "support": {
-                "source": "https://github.com/symfony/process/tree/v7.4.21"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://github.com/nicolas-grekas",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2026-10-08T16:56:12+00:00"
         },
         {
             "name": "theseer/tokenizer",

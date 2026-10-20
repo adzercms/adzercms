@@ -71,12 +71,43 @@ final class BuildsTest extends TestCase
         self::assertSame(['b1'], $builds->prune());
     }
 
+    #[Group('ACMS-CORE-0939')]
+    public function testFormerModuleSetGoesBehindLiveOneOnceItsBuildsAreFree(): void
+    {
+        $live = $this->set('prod_live', 'b2', 0);
+        $former = $this->set('prod_former', 'b1', -60);
+        $later = $this->set('prod_later', 'b3', 60);
+
+        self::assertSame([], $later->retire($live), 'a set switched after the live one stays');
+
+        $job = $this->holding('prod_former/b1');
+
+        self::assertSame([], $former->retire($live));
+        self::assertDirectoryExists($this->root.'/prod_former/b1');
+
+        $job->stop(0);
+
+        self::assertSame(['b1'], $former->retire($live));
+        self::assertDirectoryDoesNotExist($this->root.'/prod_former');
+        self::assertDirectoryExists($this->root.'/prod_live/b2');
+    }
+
     #[Group('ACMS-CORE-0045')]
     public function testBuildNameIsChecked(): void
     {
         $this->expectExceptionObject(new \LogicException('cache build name "../prod" is invalid'));
 
         (new Builds($this->root))->switchTo('../prod');
+    }
+
+    private function set(string $root, string $build, int $switched): Builds
+    {
+        $builds = new Builds($this->root.'/'.$root);
+        $builds->switchTo($build);
+        (new Filesystem())->mkdir($this->root.'/'.$root.'/'.$build);
+        touch($this->root.'/'.$root.'/build', time() + $switched);
+
+        return $builds;
     }
 
     private function holding(string $build): Process
