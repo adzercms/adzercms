@@ -20,6 +20,10 @@ abstract class Kernel extends BaseKernel
         configureRoutes as private configuredRoutes;
     }
 
+    public const ASSETS = 'adzercms.assets';
+
+    private const ASSETS_ROOT = '/assets/';
+
     private ?Selection $modules = null;
     private ?HeldBuild $held = null;
     private ?string $cacheDir = null;
@@ -85,18 +89,24 @@ abstract class Kernel extends BaseKernel
 
     protected function getContainerClass(): string
     {
-        return parent::getContainerClass().$this->suffix();
+        return parent::getContainerClass().$this->mark('_');
+    }
+
+    /** @return array<string, array<mixed>|bool|string|int|float|\UnitEnum|null> */
+    protected function getKernelParameters(): array
+    {
+        return parent::getKernelParameters() + [self::ASSETS => self::ASSETS_ROOT.$this->mark('', '/')];
     }
 
     private function buildsRoot(): string
     {
-        return $this->configuredCacheDir().$this->suffix();
+        return $this->configuredCacheDir().$this->mark('_');
     }
 
-    private function suffix(): string
+    private function mark(string $before, string $after = ''): string
     {
         $id = $this->modules()->id();
 
-        return '' === $id ? '' : '_'.$id;
+        return '' === $id ? '' : $before.$id.$after;
     }
 }

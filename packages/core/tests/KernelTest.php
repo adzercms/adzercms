@@ -9,9 +9,11 @@ use AdzerCMS\Core\Kernel;
 use AdzerCMS\Core\Module\Installed;
 use AdzerCMS\Core\Module\Registry;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\AssetMapper\Path\PublicAssetsPathResolverInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LazyCommand;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -23,12 +25,31 @@ final class KernelTest extends KernelTestCase
     use Container;
 
     #[Group('ACMS-CORE-0018')]
-    public function testKernelWithoutModulesKeepsPlainCacheAndContainer(): void
+    #[DataProvider('moduleSets')]
+    public function testCacheContainerAndStaticCarryModuleSet(?string $module, string $cache, string $container, string $static): void
     {
-        $kernel = self::bootKernel();
+        [$server, $env] = [$_SERVER, $_ENV];
+        $registry = Registry::installed();
+        ModuleSuite::select($registry, array_filter([null === $module ? null : $registry->find($module)]));
 
-        self::assertStringEndsWith('/var/cache/test', $kernel->getCacheDir());
-        self::assertStringEndsWith('\App_KernelTestDebugContainer', $kernel->getContainer()::class);
+        try {
+            $kernel = self::bootKernel();
+            $id = $kernel instanceof Kernel ? $kernel->modules()->id() : self::fail('the kernel of the development application is not the engine kernel');
+
+            self::assertSame(\sprintf($cache, $id), basename($kernel->getCacheDir()));
+            self::assertSame(\sprintf($container, $id), (new \ReflectionClass($kernel->getContainer()))->getShortName());
+            self::assertSame(\sprintf($static, $id), self::service(PublicAssetsPathResolverInterface::class, 'asset_mapper.public_assets_path_resolver')->resolvePublicPath(''));
+        } finally {
+            self::ensureKernelShutdown();
+            [$_SERVER, $_ENV] = [$server, $env];
+        }
+    }
+
+    /** @return iterable<string, array{?string, string, string, string}> */
+    public static function moduleSets(): iterable
+    {
+        yield 'without modules' => [null, 'test', 'App_KernelTestDebugContainer', '/assets/'];
+        yield 'with modules' => ['Theme', 'test_%s', 'App_KernelTestDebugContainer_%s', '/assets/%s/'];
     }
 
     #[Group('ACMS-CORE-0045')]

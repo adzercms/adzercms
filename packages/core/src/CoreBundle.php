@@ -117,7 +117,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
             'enabled_locales' => self::LOCALES,
             'translator' => ['fallbacks' => [self::FALLBACK_LOCALE]],
             'mailer' => ['dsn' => $test ? self::TEST_MAILER : MailTransport::DSN],
-            'asset_mapper' => ['paths' => [self::IMPORTMAP_VENDOR => 'vendor'], 'missing_import_mode' => 'strict', 'importmap_polyfill' => false],
+            'asset_mapper' => ['paths' => [self::IMPORTMAP_VENDOR => 'vendor'], 'public_prefix' => '%'.Kernel::ASSETS.'%', 'missing_import_mode' => 'strict', 'importmap_polyfill' => false],
             'lock' => self::LOCKS,
         ]);
 
