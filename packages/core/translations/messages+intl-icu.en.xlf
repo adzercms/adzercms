@@ -979,6 +979,12 @@
         <target>{field}: no such value</target>
       </segment>
     </unit>
+    <unit id="core.setting.color">
+      <segment>
+        <source>core.setting.color</source>
+        <target>{field} takes a color as #RRGGBB</target>
+      </segment>
+    </unit>
     <unit id="core.setting.confirmation_pause_minutes">
       <segment>
         <source>core.setting.confirmation_pause_minutes</source>

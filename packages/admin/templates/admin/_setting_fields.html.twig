@@ -23,6 +23,8 @@
                                 <option value="{{ choice }}" {{ values[field.name] == choice ? 'selected' }}>{{ caption|trans }}</option>
                             {% endfor %}
                         </select>
+                    {% elseif field.type == constant(type ~ 'Color') %}
+                        <input type="color" name="value[{{ field.name }}]" value="{{ values[field.name] ?: '#000000' }}">
                     {% elseif field.type == constant(type ~ 'Secret') %}
                         <input type="text" class="secret" name="value[{{ field.name }}]" autocomplete="off" spellcheck="false">
                     {% else %}

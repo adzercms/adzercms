@@ -13,6 +13,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `BotListener`: a feature module takes what people send to the bots
 - `LoginListener`: a feature module that waits for a login takes the profile of the login service instead of the entry
 - Notice channels of modules: a feature module brings its own channel after the bots
+- Setting field `Type::Color`: the admin picks the color in the browser's color picker, the setting keeps `#rrggbb`
 - Fragment place `Fragment::CABINET_PROFILE`: the profile under the contacts
 - Manual order of a list `Order`: rows are dragged by a handle within their group with SortableJS, the list posts the new order to its route; `Order::place()` puts the moved ids into the places they held
 - Going back closes a modal dialog by the gesture and the browser button: the core script `adzercms/dialogs` keeps a history entry per open dialog, the theme imports it

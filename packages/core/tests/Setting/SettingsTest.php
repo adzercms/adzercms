@@ -18,6 +18,7 @@ final class SettingsTest extends SchemaTestCase
     private const TITLE = 'fixture.title';
     private const TOKEN = 'fixture.token';
     private const PAUSE = 'fixture.pause';
+    private const COLOR = 'fixture.color';
 
     #[Group('ACMS-CORE-0050')]
     #[Group('ACMS-US-0004')]
@@ -64,6 +65,17 @@ final class SettingsTest extends SchemaTestCase
 
         $this->save(new Field(self::PAUSE, t('Pause')), '0');
         self::assertSame(0, $this->settings()->int(self::PAUSE, 7), 'a stored zero is a value');
+    }
+
+    #[Group('ACMS-CORE-0055')]
+    #[Group('ACMS-US-0004')]
+    public function testColorIsKeptAsLowercaseHex(): void
+    {
+        $color = new Field(self::COLOR, t('Color'), Type::Color);
+        $this->save($color, '#C8F031');
+
+        self::assertNotNull($this->settings()->save($color, 'lime'));
+        self::assertSame('#c8f031', $this->settings()->get(self::COLOR));
     }
 
     #[Group('ACMS-CORE-0161')]
