@@ -576,6 +576,7 @@ button, .button {
     border-radius: var(--radius);
     text-align: center;
     vertical-align: middle;
+    overflow-wrap: normal;
     cursor: pointer;
 }
 
@@ -939,7 +940,7 @@ td.row-handle:hover { color: var(--text); }
 .row-actions > form { display: inline-block; }
 .row-actions > * + * { margin-left: 0.4rem; }
 .row-actions > .icon-act + *, .row-actions > * + .icon-act { margin-left: 0.1rem; }
-.row-actions :is(button, .button) { white-space: nowrap; overflow-wrap: normal; }
+.row-actions :is(button, .button) { white-space: nowrap; }
 
 .icon-act { min-height: var(--control-height-sm); padding: 0 0.4rem; color: var(--text-gray); background: none; }
 .icon-act svg { width: 1rem; height: 1rem; }
