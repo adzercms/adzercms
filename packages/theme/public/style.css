@@ -348,7 +348,7 @@ button.nav-item {
 .admin-bar-link:hover { background: var(--admin-bar-hover); color: var(--on-primary); text-decoration: none; }
 .admin-bar-link.active { background: var(--surface); color: var(--text); }
 
-.bottom-nav, .nav-item-exit { display: none; }
+.bottom-nav { display: none; }
 
 @media (max-width: 900px) {
     :root.admin { --admin-bar-height: 42px; }
@@ -363,7 +363,6 @@ button.nav-item {
     .header-right { order: 2; }
     .header-inner { gap: 0.6rem; padding: 0 12px; }
     .header-right > .menu, .balance-display { display: none; }
-    .nav-item-exit { display: block; color: var(--error); }
     .impersonate-bar { gap: 0.5rem; font-size: 12px; }
 
     .bottom-nav {
