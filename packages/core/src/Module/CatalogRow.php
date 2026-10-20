@@ -16,6 +16,7 @@ final readonly class CatalogRow
         public ?string $version,
         public ?string $installed,
         public ?string $repository,
+        public bool $selected,
     ) {
     }
 }

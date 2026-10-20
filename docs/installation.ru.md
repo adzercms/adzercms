@@ -81,12 +81,12 @@ printf '%s' "$PASSWORD" | bin/console adzercms:admin admin@example.com --stdin
 ```crontab
 */15 * * * * /path/bin/php /path/bin/console adzercms:notices
 15 4 * * *   /path/bin/php /path/bin/console adzercms:sweep
-30 4 * * *   /path/bin/php /path/bin/console adzercms:modules
+* * * * *    /path/bin/php /path/bin/console adzercms:modules
 ```
 
 - `adzercms:notices` отправляет уведомления, отложенные из-за тихих часов
 - `adzercms:sweep` удаляет завершённые сеансы, старые записи журнала и подтверждения
-- `adzercms:modules` обновляет каталог модулей админки из Packagist
+- `adzercms:modules` исполняет заявки модулей из админки и раз в сутки обновляет каталог модулей из Packagist
 
 Задания модулей, если они включены:
 

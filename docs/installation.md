@@ -81,12 +81,12 @@ Add the jobs to the crontab of the user the site runs as; `/path` is the site di
 ```crontab
 */15 * * * * /path/bin/php /path/bin/console adzercms:notices
 15 4 * * *   /path/bin/php /path/bin/console adzercms:sweep
-30 4 * * *   /path/bin/php /path/bin/console adzercms:modules
+* * * * *    /path/bin/php /path/bin/console adzercms:modules
 ```
 
 - `adzercms:notices` sends notifications held back by quiet hours
 - `adzercms:sweep` removes ended sessions, old log entries and confirmations
-- `adzercms:modules` refreshes the module catalog of the admin panel from Packagist
+- `adzercms:modules` applies module requests from the admin panel and refreshes the module catalog from Packagist once a day
 
 Module jobs, if the modules are enabled:
 

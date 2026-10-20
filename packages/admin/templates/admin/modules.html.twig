@@ -15,6 +15,7 @@
 {% embed '@Theme/_table.html.twig' with {table: catalog, rows: offers, heading: 'admin.catalog.title'} %}
     {% block above %}
         <p class="muted">{{ taken ? 'admin.catalog.taken'|trans({at: taken}) : 'admin.catalog.untaken'|trans }}</p>
+        {% if versioned %}<p class="hint">{{ 'admin.catalog.versioned'|trans }}</p>{% endif %}
     {% endblock %}
     {% block row %}
         <tr>
@@ -26,6 +27,21 @@
             <td class="{{ table.aside('version') }}">{{ row.version ?: blank() }}</td>
             <td class="{{ table.aside('installed') }}">{{ row.installed ?: blank() }}</td>
             <td class="{{ table.aside('repository') }}">{{ row.repository ?: blank() }}</td>
+            <td class="row-actions">{% include '@Theme/_actions.html.twig' with {actions: row.actions} %}</td>
+        </tr>
+    {% endblock %}
+{% endembed %}
+{% embed '@Theme/_table.html.twig' with {table: requests, rows: filings, heading: 'admin.requests.title'} %}
+    {% block row %}
+        <tr>
+            <td class="{{ table.aside('package') }}"><strong>{{ row.package }}</strong></td>
+            <td class="{{ table.aside('action') }}">{{ row.action.label|trans }}</td>
+            <td class="{{ table.aside('state') }}">
+                {{ badge(row.state) }}
+                {% if row.output %}<pre class="muted">{{ row.output }}</pre>{% endif %}
+            </td>
+            <td class="{{ table.aside('filed') }}">{{ 'core.moment.day_time'|trans({at: row.filed}) }}</td>
+            <td class="{{ table.aside('finished') }}">{{ row.finished ? 'core.moment.day_time'|trans({at: row.finished}) : blank() }}</td>
         </tr>
     {% endblock %}
 {% endembed %}

@@ -61,6 +61,12 @@
         <target>Version</target>
       </segment>
     </unit>
+    <unit id="admin.catalog.versioned">
+      <segment>
+        <source>admin.catalog.versioned</source>
+        <target>The site is under git: modules change by a commit, the catalog takes no requests</target>
+      </segment>
+    </unit>
     <unit id="admin.close">
       <segment>
         <source>admin.close</source>
@@ -173,6 +179,48 @@
       <segment>
         <source>admin.modules.schema</source>
         <target>Schema</target>
+      </segment>
+    </unit>
+    <unit id="admin.requests.action">
+      <segment>
+        <source>admin.requests.action</source>
+        <target>Action</target>
+      </segment>
+    </unit>
+    <unit id="admin.requests.done">
+      <segment>
+        <source>admin.requests.done</source>
+        <target>The request is filed: the module job applies it within a minute</target>
+      </segment>
+    </unit>
+    <unit id="admin.requests.empty">
+      <segment>
+        <source>admin.requests.empty</source>
+        <target>No requests</target>
+      </segment>
+    </unit>
+    <unit id="admin.requests.filed">
+      <segment>
+        <source>admin.requests.filed</source>
+        <target>Filed</target>
+      </segment>
+    </unit>
+    <unit id="admin.requests.finished">
+      <segment>
+        <source>admin.requests.finished</source>
+        <target>Finished</target>
+      </segment>
+    </unit>
+    <unit id="admin.requests.state">
+      <segment>
+        <source>admin.requests.state</source>
+        <target>State</target>
+      </segment>
+    </unit>
+    <unit id="admin.requests.title">
+      <segment>
+        <source>admin.requests.title</source>
+        <target>Requests</target>
       </segment>
     </unit>
     <unit id="admin.save">

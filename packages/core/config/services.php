@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 use AdzerCMS\Core\Composer\Repositories;
 use AdzerCMS\Core\Module\Catalog;
+use AdzerCMS\Core\Module\Requests;
 use AdzerCMS\Core\Module\Snapshot;
 use AdzerCMS\Core\Module\Switches;
+use AdzerCMS\Core\Module\Tree;
 use AdzerCMS\Core\Schema\MigrationOrder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Twig\Extra\CssInliner\CssInlinerExtension;
@@ -31,6 +33,8 @@ return static function (ContainerConfigurator $container): void {
     $services->set(Repositories::class);
     $services->set(Snapshot::class);
     $services->set(Catalog::class);
+    $services->set(Tree::class);
+    $services->set(Requests::class);
     $services->set(Switches::class);
     $services->set(MigrationOrder::class);
     $services->set(CssInlinerExtension::class);

@@ -397,6 +397,84 @@
         <target>Записи с этим профилем {service} нет: войдите логином и подключите {service} в профиле</target>
       </segment>
     </unit>
+    <unit id="core.module.action.disable">
+      <segment>
+        <source>core.module.action.disable</source>
+        <target>Выключить</target>
+      </segment>
+    </unit>
+    <unit id="core.module.action.enable">
+      <segment>
+        <source>core.module.action.enable</source>
+        <target>Включить</target>
+      </segment>
+    </unit>
+    <unit id="core.module.action.install">
+      <segment>
+        <source>core.module.action.install</source>
+        <target>Установить</target>
+      </segment>
+    </unit>
+    <unit id="core.module.action.remove">
+      <segment>
+        <source>core.module.action.remove</source>
+        <target>Удалить</target>
+      </segment>
+    </unit>
+    <unit id="core.module.action.update">
+      <segment>
+        <source>core.module.action.update</source>
+        <target>Обновить</target>
+      </segment>
+    </unit>
+    <unit id="core.module.refusal.action">
+      <segment>
+        <source>core.module.refusal.action</source>
+        <target>Это действие пакету недоступно</target>
+      </segment>
+    </unit>
+    <unit id="core.module.refusal.interrupted">
+      <segment>
+        <source>core.module.refusal.interrupted</source>
+        <target>Заявка прервана до завершения</target>
+      </segment>
+    </unit>
+    <unit id="core.module.refusal.open">
+      <segment>
+        <source>core.module.refusal.open</source>
+        <target>У пакета {package} уже есть заявка в работе</target>
+      </segment>
+    </unit>
+    <unit id="core.module.refusal.versioned">
+      <segment>
+        <source>core.module.refusal.versioned</source>
+        <target>Сайт под git: модули меняет коммит</target>
+      </segment>
+    </unit>
+    <unit id="core.module.state.done">
+      <segment>
+        <source>core.module.state.done</source>
+        <target>Исполнена</target>
+      </segment>
+    </unit>
+    <unit id="core.module.state.failed">
+      <segment>
+        <source>core.module.state.failed</source>
+        <target>Отказ</target>
+      </segment>
+    </unit>
+    <unit id="core.module.state.pending">
+      <segment>
+        <source>core.module.state.pending</source>
+        <target>Ждёт</target>
+      </segment>
+    </unit>
+    <unit id="core.module.state.running">
+      <segment>
+        <source>core.module.state.running</source>
+        <target>Идёт</target>
+      </segment>
+    </unit>
     <unit id="core.moment.day">
       <segment>
         <source>core.moment.day</source>

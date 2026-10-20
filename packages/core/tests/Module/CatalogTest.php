@@ -61,15 +61,22 @@ final class CatalogTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0934')]
+    #[Group('ACMS-CORE-0937')]
     public function testUnlistedPackageLeavesCatalogAndUnavailableRepositoryKeepsHeldOnes(): void
     {
+        self::mockTime('2026-10-20 12:00');
         $this->listed(['acme/till', 'acme/shop']);
         self::command('adzercms:modules')->execute([]);
         $this->listed(['acme/shop']);
         self::command('adzercms:modules')->execute([]);
+        self::assertSame(['acme/shop', 'acme/till'], array_keys(self::offered()), 'the snapshot younger than a day stays');
+
+        self::mockTime('2026-10-21 12:00');
+        self::command('adzercms:modules')->execute([]);
         self::assertSame(['acme/shop'], array_keys(self::offered()));
 
         $this->root = null;
+        self::mockTime('2026-10-22 12:00');
         $job = self::command('adzercms:modules');
 
         self::assertSame(Command::FAILURE, $job->execute([]));

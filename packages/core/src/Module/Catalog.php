@@ -9,6 +9,9 @@ use AdzerCMS\Contracts\Module\Kind;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Composer\Repositories;
 use Composer\InstalledVersions;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+
+use function Symfony\Component\Clock\now;
 
 final readonly class Catalog
 {
@@ -16,11 +19,27 @@ final readonly class Catalog
 
     private const SNAPSHOT = 'core.modules.catalog';
     private const LIFETIME = 604800;
+    private const AGE = '-1 day';
 
+    /** @param array<string, class-string> $bundles */
     public function __construct(
         private Repositories $repositories,
         private Snapshot $snapshot,
+        #[Autowire('%kernel.bundles%')]
+        private array $bundles,
     ) {
+    }
+
+    public function due(): bool
+    {
+        $at = $this->held()['at'];
+
+        return null === $at || $at <= now()->modify(self::AGE);
+    }
+
+    public function row(string $name): ?CatalogRow
+    {
+        return array_values(array_filter($this->rows()['rows'], static fn (CatalogRow $row): bool => $name === $row->name))[0] ?? null;
     }
 
     /** @return list<string> */
@@ -67,19 +86,21 @@ final readonly class Catalog
 
         $rows = [];
         foreach ($held['rows'] as $name => $row) {
-            $rows[$name] = new CatalogRow($name, $row['package'], self::kind($row['package']->kind, $kinds), $row['package']->version, null, $row['repository']);
+            $rows[$name] = new CatalogRow($name, $row['package'], self::kind($row['package']->kind, $kinds), $row['package']->version, null, $row['repository'], false);
         }
         foreach (array_unique(InstalledVersions::getInstalledPackagesByType(Registry::TYPE)) as $name) {
             $installed = (string) InstalledVersions::getPrettyVersion($name);
             $offered = $held['rows'][$name] ?? null;
             $manifest = null === $offered ? Registry::manifest($name) : [];
+            $module = $registry->package($name);
             $rows[$name] = new CatalogRow(
                 $name,
                 $offered['package'] ?? Package::manifest(\is_array($manifest) ? $manifest : [], $installed),
-                $registry->package($name)->kind ?? CoreKind::Feature,
+                $module->kind ?? CoreKind::Feature,
                 $offered['package']->version ?? null,
                 $installed,
                 $offered['repository'] ?? null,
+                null !== $module && \in_array($module->bundle, $this->bundles, true),
             );
         }
 

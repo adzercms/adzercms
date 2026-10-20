@@ -7,6 +7,12 @@ namespace AdzerCMS\Admin\Tests;
 use AdzerCMS\Admin\AssembledModules;
 use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Module\Catalog as ModuleCatalog;
+use AdzerCMS\Core\Module\CatalogRow;
+use AdzerCMS\Core\Module\ModuleAction;
+use AdzerCMS\Core\Module\RequestState;
+use AdzerCMS\Core\Module\Tree;
+use AdzerCMS\Core\Repository\ModuleRequestRepository;
 use AdzerCMS\Core\Setting\Catalog;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Tests\Accounts;
@@ -108,6 +114,68 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertContains('acme/till', $chosen);
         self::assertNotContains('acme/shop', $chosen);
         self::assertNotContains('adzercms/admin', $chosen);
+    }
+
+    #[Group('ACMS-CORE-0145')]
+    #[Group('ACMS-US-0004')]
+    public function testSiteUnderGitTakesNoRequests(): void
+    {
+        $this->answerCatalog();
+        $this->listed(['acme/shop']);
+        $this->offer('acme/shop', '1.0.0');
+        self::command('adzercms:modules')->execute([]);
+
+        self::assertSame([], self::actions($this->client->request('GET', '/admin/modules'), 'acme/shop'));
+        $this->post('/admin/modules/request/install?package=acme/shop');
+        self::assertSame(self::phrase('core.module.refusal.versioned'), self::toast($this->arrive('/admin/modules'), 'error'));
+    }
+
+    #[Group('ACMS-CORE-0935')]
+    #[Group('ACMS-CORE-0936')]
+    #[Group('ACMS-CORE-0937')]
+    #[Group('ACMS-US-0004')]
+    public function testCatalogRowFilesRequestOfItsActionsOnePerPackage(): void
+    {
+        self::getContainer()->set(Tree::class, new Tree(sys_get_temp_dir()));
+        $this->answerCatalog();
+        $this->listed(['acme/shop']);
+        $this->offer('acme/shop', '1.0.0');
+        self::command('adzercms:modules')->execute([]);
+
+        $idle = array_values(array_filter(self::service(ModuleCatalog::class)->rows()['rows'], static fn (CatalogRow $row): bool => null !== $row->installed && !$row->selected))[0] ?? self::fail('the tree has no installed module outside the suite');
+        $page = $this->client->request('GET', '/admin/modules');
+        self::assertSame([self::phrase(ModuleAction::Install->label())], self::actions($page, 'acme/shop'));
+        self::assertSame(array_map(static fn (ModuleAction $action): string => self::phrase($action->label()), [ModuleAction::Update, ModuleAction::Disable]), self::actions($page, 'adzercms/admin'));
+        self::assertSame(array_map(static fn (ModuleAction $action): string => self::phrase($action->label()), [ModuleAction::Update, ModuleAction::Enable, ModuleAction::Remove]), self::actions($page, $idle->name));
+
+        $this->post('/admin/modules/request/install?package=acme/shop');
+        $this->post('/admin/modules/request/remove?package=acme/shop');
+        $page = $this->arrive('/admin/modules');
+        self::assertSame(self::phrase('core.module.refusal.action'), self::toast($page, 'error'));
+        $this->post('/admin/modules/request/enable?package='.$idle->name);
+        $this->post('/admin/modules/request/update?package='.$idle->name);
+        $page = $this->arrive('/admin/modules');
+        self::assertSame(self::phrase('core.module.refusal.open', ['package' => $idle->name]), self::toast($page, 'error'));
+        self::assertSame(
+            [[$idle->name, self::phrase(ModuleAction::Enable->label()), self::phrase(RequestState::Pending->label())], ['acme/shop', self::phrase(ModuleAction::Install->label()), self::phrase(RequestState::Pending->label())]],
+            $page->filter('#requests tbody tr')->each(static fn (Crawler $row): array => \array_slice($row->filter('td')->each(static fn (Crawler $cell): string => trim($cell->text())), 0, 3)),
+        );
+
+        $running = self::service(ModuleRequestRepository::class)->inState(RequestState::Pending)[0] ?? self::fail('the request is not filed');
+        $running->start();
+        $this->em->flush();
+        self::command('adzercms:modules')->execute([]);
+        $this->em->clear();
+        $interrupted = self::service(ModuleRequestRepository::class)->find($running->getId()) ?? self::fail('the request is gone');
+        self::assertSame([RequestState::Failed, self::phrase('core.module.refusal.interrupted')], [$interrupted->getState(), $interrupted->getOutput()]);
+    }
+
+    /** @return list<string> */
+    private static function actions(Crawler $page, string $name): array
+    {
+        $row = $page->filter('#catalog tbody tr')->reduce(static fn (Crawler $row): bool => $name === trim($row->filter('td strong')->text()));
+
+        return $row->filter('td.row-actions button')->each(static fn (Crawler $button): string => trim($button->text()));
     }
 
     /** @return list<string> */
