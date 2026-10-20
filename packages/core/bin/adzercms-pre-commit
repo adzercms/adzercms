@@ -44,6 +44,12 @@ for package in $(printf '%s\n%s\n' "$catalogs" "$templates" | while read -r file
     [ -z "$own" ] || console "$package" lint:twig $own
 done
 
+for package in $(staged -- '*.php' '*/composer.json' | while read -r file; do home "$file"; done | sort -u); do
+    [ "$package" = . ] || {
+        out=$(bin/php vendor/bin/adzercms-package-dependencies "$package" 2>&1) || { printf '%s\n' "$out"; exit 1; }
+    }
+done
+
 php=$(staged --diff-filter=ACM -- '*.php' bin/console public/index.php)
 [ -n "$php" ] || exit 0
 
