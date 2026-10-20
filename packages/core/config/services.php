@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
+use AdzerCMS\Core\Composer\Artifacts;
 use AdzerCMS\Core\Composer\Repositories;
 use AdzerCMS\Core\Module\Catalog;
 use AdzerCMS\Core\Module\ComposerRunner;
 use AdzerCMS\Core\Module\Execution;
 use AdzerCMS\Core\Module\Requests;
 use AdzerCMS\Core\Module\Snapshot;
+use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Module\Staging;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Module\Tree;
@@ -37,6 +39,8 @@ return static function (ContainerConfigurator $container): void {
     $services->load('AdzerCMS\\Core\\Text\\', '../src/Text/');
     $services->load('AdzerCMS\\Core\\Ui\\', '../src/Ui/');
     $services->set(Repositories::class);
+    $services->set(Artifacts::class);
+    $services->set(Sources::class);
     $services->set(Snapshot::class);
     $services->set(Catalog::class);
     $services->set(Tree::class);

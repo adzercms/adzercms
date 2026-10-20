@@ -15,6 +15,7 @@ final readonly class Execution
         private Requests $requests,
         private Tree $tree,
         private Staging $staging,
+        private Sources $sources,
         private TranslatorInterface $translator,
     ) {
     }
@@ -47,7 +48,7 @@ final readonly class Execution
             return $refusal->getMessage();
         }
 
-        $failure = $this->tree->refresh([$name => $value]);
+        $failure = $this->tree->refresh([...$this->sources->environment(), $name => $value]);
         if (null === $failure) {
             $this->tree->choose($name, $value);
         }
@@ -58,6 +59,6 @@ final readonly class Execution
     /** @param list<string> $command */
     private function compose(array $command): ?string
     {
-        return $this->staging->run($command) ?? $this->tree->refresh([]);
+        return $this->staging->run($command) ?? $this->tree->refresh($this->sources->environment());
     }
 }

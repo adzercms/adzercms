@@ -22,6 +22,7 @@
         "ext-session": "*",
         "ext-sodium": "*",
         "ext-xmlwriter": "*",
+        "ext-zip": "*",
         "composer-runtime-api": "^2.2",
         "adzercms/contracts": "^1.0",
         "composer/metadata-minifier": "^1.0.1",

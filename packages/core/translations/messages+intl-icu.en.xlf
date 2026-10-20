@@ -475,6 +475,18 @@
         <target>The site is under git: modules change by a commit</target>
       </segment>
     </unit>
+    <unit id="core.module.source.taken">
+      <segment>
+        <source>core.module.source.taken</source>
+        <target>Source {url} is already connected</target>
+      </segment>
+    </unit>
+    <unit id="core.module.source.url">
+      <segment>
+        <source>core.module.source.url</source>
+        <target>The repository address is an http or https URL up to {max} characters</target>
+      </segment>
+    </unit>
     <unit id="core.module.state.done">
       <segment>
         <source>core.module.state.done</source>
@@ -497,6 +509,24 @@
       <segment>
         <source>core.module.state.running</source>
         <target>Running</target>
+      </segment>
+    </unit>
+    <unit id="core.module.zip.manifest">
+      <segment>
+        <source>core.module.zip.manifest</source>
+        <target>composer.json of the archive needs a Composer package name and a stable version</target>
+      </segment>
+    </unit>
+    <unit id="core.module.zip.taken">
+      <segment>
+        <source>core.module.zip.taken</source>
+        <target>{package} {version} is already uploaded</target>
+      </segment>
+    </unit>
+    <unit id="core.module.zip.unreadable">
+      <segment>
+        <source>core.module.zip.unreadable</source>
+        <target>The archive is not a ZIP with composer.json at its root or in its only top-level folder</target>
       </segment>
     </unit>
     <unit id="core.moment.day">

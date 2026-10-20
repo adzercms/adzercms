@@ -24,9 +24,9 @@ final readonly class Repositories
     }
 
     /** @return list<string>|null */
-    public function names(string $repository, string $type): ?array
+    public function names(Source $source, string $type): ?array
     {
-        $root = $this->root($repository);
+        $root = $this->root($source);
         if (null === $root) {
             return null;
         }
@@ -40,17 +40,17 @@ final readonly class Repositories
 
         $names = [];
         $seen = [];
-        $page = self::absolute($repository, str_replace([self::QUERY, self::TYPE], ['', rawurlencode($type)], $search));
+        $page = self::absolute($source->url, str_replace([self::QUERY, self::TYPE], ['', rawurlencode($type)], $search));
         try {
             while (null !== $page && !isset($seen[$page])) {
                 $seen[$page] = true;
-                $answer = $this->get($page)->toArray();
+                $answer = $this->get($page, $source)->toArray();
                 foreach (\is_array($answer['results'] ?? null) ? $answer['results'] : [] as $result) {
                     if (\is_array($result) && \is_string($result['name'] ?? null)) {
                         $names[] = $result['name'];
                     }
                 }
-                $page = \is_string($answer['next'] ?? null) ? self::absolute($repository, $answer['next']) : null;
+                $page = \is_string($answer['next'] ?? null) ? self::absolute($source->url, $answer['next']) : null;
             }
         } catch (ExceptionInterface) {
             return null;
@@ -60,22 +60,23 @@ final readonly class Repositories
     }
 
     /**
-     * @param list<string> $repositories
+     * @param list<Source> $sources
      * @param list<string> $names
      */
-    public function lookup(array $repositories, array $names): Lookup
+    public function lookup(array $sources, array $names): Lookup
     {
         $pending = array_fill_keys($names, true);
         $packages = [];
-        $sources = [];
+        $deciders = [];
         $down = [];
 
-        foreach ($repositories as $repository) {
+        foreach ($sources as $source) {
             if ([] === $pending) {
                 break;
             }
 
-            $template = $this->template($repository);
+            $repository = $source->url;
+            $template = $this->template($source);
             if (null === $template) {
                 $down[] = $repository;
                 $pending = [];
@@ -85,7 +86,7 @@ final readonly class Repositories
             $responses = [];
             foreach (array_keys($pending) as $name) {
                 try {
-                    $responses[(string) $name] = $this->get(str_replace(self::NAME, (string) $name, $template));
+                    $responses[(string) $name] = $this->get(str_replace(self::NAME, (string) $name, $template), $source);
                 } catch (ExceptionInterface) {
                     unset($pending[$name]);
                     $down[$repository] = $repository;
@@ -107,9 +108,9 @@ final readonly class Repositories
                     }
 
                     $packages[$name] = Package::of($name, $response->toArray(false));
-                    $sources[$name] = $repository;
+                    $deciders[$name] = $repository;
                     if (null === $packages[$name]) {
-                        $branches[$name] = $this->get(str_replace(self::NAME, $name.self::BRANCHES, $template));
+                        $branches[$name] = $this->get(str_replace(self::NAME, $name.self::BRANCHES, $template), $source);
                     }
                 } catch (ExceptionInterface) {
                     unset($pending[$name], $packages[$name]);
@@ -138,21 +139,21 @@ final readonly class Repositories
             $packages[(string) $name] = null;
         }
 
-        return new Lookup($packages, array_values(array_unique($down)), array_intersect_key($sources, array_filter($packages)));
+        return new Lookup($packages, array_values(array_unique($down)), array_intersect_key($deciders, array_filter($packages)));
     }
 
-    private function template(string $repository): ?string
+    private function template(Source $source): ?string
     {
-        $template = $this->root($repository)['metadata-url'] ?? null;
+        $template = $this->root($source)['metadata-url'] ?? null;
 
-        return \is_string($template) && str_contains($template, self::NAME) ? self::absolute($repository, $template) : null;
+        return \is_string($template) && str_contains($template, self::NAME) ? self::absolute($source->url, $template) : null;
     }
 
     /** @return array<mixed>|null */
-    private function root(string $repository): ?array
+    private function root(Source $source): ?array
     {
         try {
-            return $this->get(rtrim($repository, '/').self::ROOT)->toArray();
+            return $this->get(rtrim($source->url, '/').self::ROOT, $source)->toArray();
         } catch (ExceptionInterface) {
             return null;
         }
@@ -163,9 +164,9 @@ final readonly class Repositories
         return str_starts_with($url, '/') ? self::origin($repository).$url : $url;
     }
 
-    private function get(string $url): ResponseInterface
+    private function get(string $url, Source $source): ResponseInterface
     {
-        return $this->httpClient->request('GET', $url, ['timeout' => self::TIMEOUT]);
+        return $this->httpClient->request('GET', $url, ['timeout' => self::TIMEOUT, ...$source->options($url)]);
     }
 
     private static function origin(string $url): string

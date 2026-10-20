@@ -6,10 +6,14 @@ namespace AdzerCMS\Core\Tests\Module;
 
 use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Contracts\Module\CoreKind;
+use AdzerCMS\Core\Composer\Artifacts;
 use AdzerCMS\Core\Composer\Repositories;
+use AdzerCMS\Core\Composer\Source;
 use AdzerCMS\Core\Module\Catalog;
 use AdzerCMS\Core\Module\CatalogRow;
 use AdzerCMS\Core\Module\Registry;
+use AdzerCMS\Core\Module\Sources;
+use AdzerCMS\Core\Repository\ModuleSourceRepository;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -21,6 +25,7 @@ final class CatalogTest extends SchemaTestCase
 
     private const SEARCH = 'https://packagist.example.test/search.json?q=%query%&type=%type%';
     private const PAGE = 'https://packagist.example.test/search.json?q=&type='.Registry::TYPE;
+    private const OWN = 'https://repo.acme.test';
 
     protected function setUp(): void
     {
@@ -100,6 +105,80 @@ final class CatalogTest extends SchemaTestCase
         self::assertSame([CoreKind::Theme, null, null], [$theme->kind, $theme->version, $theme->repository]);
         self::assertNotNull($theme->installed);
         self::assertNotSame('', $theme->package->description);
+    }
+
+    #[Group('ACMS-CORE-0946')]
+    #[Group('ACMS-CORE-0944')]
+    #[Group('ACMS-CORE-0934')]
+    #[DataProvider('grants')]
+    public function testOwnSourceGoesBeforeBaseRepositoriesWithItsCredentialsOnItsHostOnly(string $login, string $authorization): void
+    {
+        self::mockTime('2026-10-20 12:00');
+        $this->listed(['acme/shop']);
+        self::command('adzercms:modules')->execute([]);
+        $this->host(self::OWN, 'acme/shop', '3.0.0');
+        $this->host(self::OWN, 'acme/vault', '1.0.0');
+        $sources = self::service(Sources::class);
+        self::assertNull($sources->add(self::OWN.'/'));
+        $sources->grant(self::service(ModuleSourceRepository::class)->findOneBy(['url' => self::OWN]) ?? self::fail('the source is not kept'), $login, 'secret');
+
+        self::assertSame(Command::SUCCESS, self::command('adzercms:modules')->execute([]), 'a change of sources retakes the snapshot younger than a day');
+        self::assertSame([
+            'acme/shop' => [CoreKind::Feature, '3.0.0', null, self::OWN, [Category::Other]],
+            'acme/vault' => [CoreKind::Feature, '1.0.0', null, self::OWN, [Category::Other]],
+        ], self::offered());
+        self::assertSame([Source::origin(Repositories::PACKAGIST) => null, Source::origin(self::OWN) => $authorization], $this->authorized);
+    }
+
+    /** @return iterable<string, array{string, string}> */
+    public static function grants(): iterable
+    {
+        yield 'token' => ['', 'Authorization: Bearer secret'];
+        yield 'login and token' => ['acme', 'Authorization: Basic '.base64_encode('acme:secret')];
+    }
+
+    #[Group('ACMS-CORE-0946')]
+    #[Group('ACMS-CORE-0934')]
+    public function testZipPackageGoesBeforeRepositoriesWithItsHighestVersion(): void
+    {
+        $this->listed(['acme/shop']);
+        foreach (['1.2.0', '1.10.0'] as $version) {
+            self::assertNull(self::service(Artifacts::class)->upload($this->archive(['composer.json' => json_encode(self::manifest('acme/shop', $version), \JSON_THROW_ON_ERROR)])));
+        }
+
+        self::command('adzercms:modules')->execute([]);
+
+        self::assertSame(['acme/shop' => [CoreKind::Feature, '1.10.0', null, Artifacts::REPOSITORY, [Category::Other]]], self::offered());
+    }
+
+    /**
+     * @param array<string, string>                    $entries
+     * @param array{string, array<string, mixed>}|null $refusal
+     */
+    #[Group('ACMS-CORE-0945')]
+    #[DataProvider('archives')]
+    public function testZipUploadTakesComposerManifestOfStableVersionOnce(array $entries, ?array $refusal): void
+    {
+        $artifacts = self::service(Artifacts::class);
+        self::assertNull($artifacts->upload($this->archive(['composer.json' => json_encode(self::manifest('acme/held', '1.0.0'), \JSON_THROW_ON_ERROR)])));
+
+        $answer = $artifacts->upload($this->archive($entries));
+
+        self::assertSame(null === $refusal ? null : self::phrase(...$refusal), null === $answer ? null : self::phrase($answer->reason));
+        self::assertSame(null === $refusal ? ['acme/held', 'acme/shop'] : ['acme/held'], array_column($artifacts->archives(), 'name'));
+    }
+
+    /** @return iterable<string, array{array<string, string>, array{string, array<string, mixed>}|null}> */
+    public static function archives(): iterable
+    {
+        $manifest = static fn (string $name, string $version): string => json_encode(self::manifest($name, $version), \JSON_THROW_ON_ERROR);
+
+        yield 'manifest at the root' => [['composer.json' => $manifest('acme/shop', 'v1.0.0')], null];
+        yield 'manifest in the only top-level folder' => [['shop-1.0.0/composer.json' => $manifest('acme/shop', '1.0.0'), 'shop-1.0.0/src/Shop.php' => '<?php'], null];
+        yield 'manifest beside a second top-level folder' => [['shop/composer.json' => $manifest('acme/shop', '1.0.0'), 'docs/README.md' => ''], ['core.module.zip.unreadable', []]];
+        yield 'unstable version' => [['composer.json' => $manifest('acme/shop', '1.0.0-beta1')], ['core.module.zip.manifest', []]];
+        yield 'name outside Composer rules' => [['composer.json' => $manifest('Acme/Shop', '1.0.0')], ['core.module.zip.manifest', []]];
+        yield 'uploaded version' => [['composer.json' => $manifest('acme/held', '1.0')], ['core.module.zip.taken', ['package' => 'acme/held', 'version' => '1.0']]];
     }
 
     /** @return array<string, array{mixed, ?string, ?string, ?string, list<Category>}> */

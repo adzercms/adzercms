@@ -16,6 +16,7 @@ final readonly class ComposerRunner implements ComposerProcessRunnerInterface
     public function __construct(
         private ExecutableFinderInterface $executables,
         private ProcessFactoryInterface $processes,
+        private Sources $sources,
     ) {
     }
 
@@ -26,7 +27,7 @@ final readonly class ComposerRunner implements ComposerProcessRunnerInterface
         ?OutputCallbackInterface $callback = null,
         int $timeout = ProcessInterface::DEFAULT_TIMEOUT,
     ): void {
-        $process = $this->processes->create([\PHP_BINARY, $this->executables->find('composer'), ...$command], $cwd, $env);
+        $process = $this->processes->create([\PHP_BINARY, $this->executables->find('composer'), ...$command], $cwd, [...$env, ...$this->sources->environment()]);
         $process->setTimeout($timeout);
         $process->mustRun($callback);
     }

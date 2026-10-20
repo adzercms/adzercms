@@ -475,6 +475,18 @@
         <target>Сайт под git: модули меняет коммит</target>
       </segment>
     </unit>
+    <unit id="core.module.source.taken">
+      <segment>
+        <source>core.module.source.taken</source>
+        <target>Источник {url} уже подключён</target>
+      </segment>
+    </unit>
+    <unit id="core.module.source.url">
+      <segment>
+        <source>core.module.source.url</source>
+        <target>Адрес репозитория — ссылка http либо https до {max} символов</target>
+      </segment>
+    </unit>
     <unit id="core.module.state.done">
       <segment>
         <source>core.module.state.done</source>
@@ -497,6 +509,24 @@
       <segment>
         <source>core.module.state.running</source>
         <target>Идёт</target>
+      </segment>
+    </unit>
+    <unit id="core.module.zip.manifest">
+      <segment>
+        <source>core.module.zip.manifest</source>
+        <target>В composer.json архива нужны имя пакета Composer и стабильная версия</target>
+      </segment>
+    </unit>
+    <unit id="core.module.zip.taken">
+      <segment>
+        <source>core.module.zip.taken</source>
+        <target>{package} {version} уже загружен</target>
+      </segment>
+    </unit>
+    <unit id="core.module.zip.unreadable">
+      <segment>
+        <source>core.module.zip.unreadable</source>
+        <target>Архив — не ZIP с composer.json в корне либо в единственной папке верхнего уровня</target>
       </segment>
     </unit>
     <unit id="core.moment.day">

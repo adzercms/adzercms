@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Module;
 
 use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Module\Kind;
+use AdzerCMS\Core\Composer\Artifacts;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Composer\Repositories;
 use Composer\InstalledVersions;
@@ -15,8 +16,6 @@ use function Symfony\Component\Clock\now;
 
 final readonly class Catalog
 {
-    public const BASE = [Repositories::PACKAGIST];
-
     private const SNAPSHOT = 'core.modules.catalog';
     private const LIFETIME = 604800;
     private const AGE = '-1 day';
@@ -25,6 +24,8 @@ final readonly class Catalog
     public function __construct(
         private Repositories $repositories,
         private Snapshot $snapshot,
+        private Sources $sources,
+        private Artifacts $artifacts,
         #[Autowire('%kernel.bundles%')]
         private array $bundles,
     ) {
@@ -32,9 +33,9 @@ final readonly class Catalog
 
     public function due(): bool
     {
-        $at = $this->held()['at'];
+        $held = $this->held();
 
-        return null === $at || $at <= now()->modify(self::AGE);
+        return null === $held['at'] || $held['at'] <= now()->modify(self::AGE) || $held['sources'] !== $this->sources->fingerprint();
     }
 
     public function row(string $name): ?CatalogRow
@@ -45,19 +46,22 @@ final readonly class Catalog
     /** @return list<string> */
     public function refresh(): array
     {
-        $held = $this->held()['rows'];
+        $fingerprint = $this->sources->fingerprint();
+        $held = $this->held()['packages'];
+        $sources = $this->sources->repositories();
+        $zipped = $this->artifacts->packages();
         $names = [];
         $down = [];
-        foreach (self::BASE as $repository) {
-            $listed = $this->repositories->names($repository, Registry::TYPE);
+        foreach ($sources as $source) {
+            $listed = $this->repositories->names($source, Registry::TYPE);
             if (null === $listed) {
-                $down[] = $repository;
+                $down[] = $source->url;
             }
             array_push($names, ...$listed ?? []);
         }
 
-        $names = array_values(array_unique($names));
-        $lookup = $this->repositories->lookup(self::BASE, $names);
+        $names = array_values(array_diff(array_unique($names), array_keys($zipped)));
+        $lookup = $this->repositories->lookup($sources, $names);
         $rows = array_filter(
             $held,
             static fn (array $row, string $name): bool => \in_array($row['repository'], $down, true) || (\in_array($name, $names, true) && !$lookup->decided($name)),
@@ -68,13 +72,19 @@ final readonly class Catalog
                 $rows[$name] = ['package' => $package, 'repository' => $lookup->sources[$name]];
             }
         }
+        foreach ($zipped as $name => $package) {
+            if (Registry::TYPE === $package->type) {
+                $rows[$name] = ['package' => $package, 'repository' => Artifacts::REPOSITORY];
+            }
+        }
         ksort($rows);
-        $this->snapshot->write(self::SNAPSHOT, $rows, self::LIFETIME);
+        $down = array_values(array_unique([...$down, ...$lookup->down]));
+        $this->snapshot->write(self::SNAPSHOT, ['packages' => $rows, 'down' => $down, 'sources' => $fingerprint], self::LIFETIME);
 
-        return array_values(array_unique([...$down, ...$lookup->down]));
+        return $down;
     }
 
-    /** @return array{at: ?\DateTimeImmutable, rows: list<CatalogRow>} */
+    /** @return array{at: ?\DateTimeImmutable, rows: list<CatalogRow>, down: list<string>} */
     public function rows(): array
     {
         $held = $this->held();
@@ -85,12 +95,12 @@ final readonly class Catalog
         }
 
         $rows = [];
-        foreach ($held['rows'] as $name => $row) {
+        foreach ($held['packages'] as $name => $row) {
             $rows[$name] = new CatalogRow($name, $row['package'], self::kind($row['package']->kind, $kinds), $row['package']->version, null, $row['repository'], false);
         }
         foreach (array_unique(InstalledVersions::getInstalledPackagesByType(Registry::TYPE)) as $name) {
             $installed = (string) InstalledVersions::getPrettyVersion($name);
-            $offered = $held['rows'][$name] ?? null;
+            $offered = $held['packages'][$name] ?? null;
             $manifest = null === $offered ? Registry::manifest($name) : [];
             $module = $registry->package($name);
             $rows[$name] = new CatalogRow(
@@ -104,21 +114,23 @@ final readonly class Catalog
             );
         }
 
-        return ['at' => $held['at'], 'rows' => array_values($rows)];
+        return ['at' => $held['at'], 'rows' => array_values($rows), 'down' => $held['down']];
     }
 
-    /** @return array{at: ?\DateTimeImmutable, rows: array<string, array{package: Package, repository: string}>} */
+    /** @return array{at: ?\DateTimeImmutable, packages: array<string, array{package: Package, repository: string}>, down: list<string>, sources: ?string} */
     private function held(): array
     {
         $held = $this->snapshot->read(self::SNAPSHOT);
-        $rows = [];
-        foreach ($held['rows'] ?? [] as $name => $row) {
+        $taken = $held['rows'] ?? [];
+        $packages = [];
+        foreach (\is_array($taken['packages'] ?? null) ? $taken['packages'] : [] as $name => $row) {
             if (\is_array($row) && ($row['package'] ?? null) instanceof Package && \is_string($row['repository'] ?? null)) {
-                $rows[$name] = ['package' => $row['package'], 'repository' => $row['repository']];
+                $packages[(string) $name] = ['package' => $row['package'], 'repository' => $row['repository']];
             }
         }
+        $down = \is_array($taken['down'] ?? null) ? array_values(array_filter($taken['down'], \is_string(...))) : [];
 
-        return ['at' => $held['at'] ?? null, 'rows' => $rows];
+        return ['at' => $held['at'] ?? null, 'packages' => $packages, 'down' => $down, 'sources' => \is_string($taken['sources'] ?? null) ? $taken['sources'] : null];
     }
 
     /** @param array<string, Kind> $kinds */

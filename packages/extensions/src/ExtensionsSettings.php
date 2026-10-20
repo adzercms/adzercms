@@ -9,6 +9,7 @@ use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Contracts\Setting\Rule;
 use AdzerCMS\Core\Composer\Repositories;
+use AdzerCMS\Core\Composer\Source;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Ui\Split;
 use AdzerCMS\Core\Ui\WebLink;
@@ -43,11 +44,11 @@ final readonly class ExtensionsSettings implements Owner, Rule
         return null;
     }
 
-    /** @return list<string> */
+    /** @return list<Source> */
     public function repositories(): array
     {
         $repositories = Split::items($this->settings->get(self::REPOSITORIES));
 
-        return [] === $repositories ? [Repositories::PACKAGIST] : $repositories;
+        return array_map(static fn (string $url): Source => new Source($url), [] === $repositories ? [Repositories::PACKAGIST] : $repositories);
     }
 }

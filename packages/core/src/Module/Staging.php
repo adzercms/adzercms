@@ -12,6 +12,7 @@ use PhpTuf\ComposerStager\API\Exception\ExceptionInterface;
 use PhpTuf\ComposerStager\API\Path\Factory\PathFactoryInterface;
 use PhpTuf\ComposerStager\API\Path\Factory\PathListFactoryInterface;
 use PhpTuf\ComposerStager\API\Path\Value\PathInterface;
+use PhpTuf\ComposerStager\API\Process\Service\ComposerProcessRunnerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 
@@ -20,6 +21,8 @@ final readonly class Staging
     private const STAGE = 'var/stage';
     private const EXCLUDED = ['var', '.env.local', 'public/assets', 'assets/vendor'];
     private const OPTIONS = ['--no-scripts', '--no-interaction', '--no-progress'];
+    private const ENTRY_OPTIONS = ['--no-plugins', '--no-interaction'];
+    private const MANIFEST = 'composer.json';
 
     public function __construct(
         private Tree $tree,
@@ -27,6 +30,8 @@ final readonly class Staging
         private StagerInterface $stager,
         private CommitterInterface $committer,
         private CleanerInterface $cleaner,
+        private ComposerProcessRunnerInterface $composer,
+        private Sources $sources,
         private PathFactoryInterface $paths,
         private PathListFactoryInterface $lists,
         #[Autowire('%adzercms.files_dir%')]
@@ -44,6 +49,7 @@ final readonly class Staging
         try {
             $this->clean($active, $stage);
             $this->beginner->begin($active, $stage, $excluded, timeout: Tree::TIMEOUT);
+            $this->enter($stage);
             $this->stager->stage([...$command, ...self::OPTIONS], $active, $stage, timeout: Tree::TIMEOUT);
             $this->committer->commit($stage, $active, $excluded, timeout: Tree::TIMEOUT);
             $this->clean($active, $stage);
@@ -54,6 +60,21 @@ final readonly class Staging
         }
 
         return null;
+    }
+
+    private function enter(PathInterface $stage): void
+    {
+        $manifest = json_decode((string) file_get_contents($stage->absolute().'/'.self::MANIFEST), true);
+        $repositories = \is_array($manifest) && \is_array($manifest['repositories'] ?? null) ? $manifest['repositories'] : [];
+        foreach ($repositories as $key => $repository) {
+            $name = \is_string($key) ? $key : (\is_array($repository) ? $repository['name'] ?? null : null);
+            if (\is_string($name) && Sources::entry($name)) {
+                $this->composer->run(['repo', 'remove', $name, ...self::ENTRY_OPTIONS], $stage, timeout: Tree::TIMEOUT);
+            }
+        }
+        foreach ($this->sources->entries() as $name => $entry) {
+            $this->composer->run(['repo', 'add', $name, json_encode($entry, \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_SLASHES), '--append', ...self::ENTRY_OPTIONS], $stage, timeout: Tree::TIMEOUT);
+        }
     }
 
     private function clean(PathInterface $active, PathInterface $stage): void
