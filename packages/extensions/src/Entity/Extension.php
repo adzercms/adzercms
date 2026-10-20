@@ -118,7 +118,10 @@ class Extension implements Placed
     /** @return list<string> */
     public function getCategories(): array
     {
-        return array_values($this->categories->map(static fn (ExtensionCategory $category): string => $category->getCategory())->toArray());
+        $categories = $this->categories->map(static fn (ExtensionCategory $category): string => $category->getCategory())->toArray();
+        sort($categories);
+
+        return $categories;
     }
 
     public function state(): ExtensionState

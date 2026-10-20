@@ -62,7 +62,7 @@ final class MetadataTest extends CatalogTestCase
         $this->post('/admin/extensions/new', ['name' => self::NAME, 'type' => 'module', 'price' => '', 'demo' => '']);
 
         $entry = self::extensions()->named(self::NAME) ?? self::fail('the entry is not in the catalog');
-        self::assertSame(['Shop for AdzerCMS', '1.10.0', ['payments', 'commerce'], 'https://github.com/acme/shop.git', 'https://shop.example.test'],
+        self::assertSame(['Shop for AdzerCMS', '1.10.0', ['commerce', 'payments'], 'https://github.com/acme/shop.git', 'https://shop.example.test'],
             [$entry->getDescription(), $entry->getVersion(), $entry->getCategories(), $entry->getSource(), $entry->getHomepage()]);
         self::assertSame(ExtensionState::Published, $entry->state());
 
@@ -116,7 +116,7 @@ final class MetadataTest extends CatalogTestCase
 
         self::assertSame(Command::SUCCESS, $job->execute([]));
         $kept = $this->reread($kept);
-        self::assertSame(['1.1.0', ['seo', 'content']], [$kept->getVersion(), $kept->getCategories()]);
+        self::assertSame(['1.1.0', ['content', 'seo']], [$kept->getVersion(), $kept->getCategories()]);
         self::assertNull($this->reread($gone)->getVersion());
         self::assertStringContainsString('acme/gone', $job->getDisplay());
 
