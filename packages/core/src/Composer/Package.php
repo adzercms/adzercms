@@ -26,13 +26,14 @@ final readonly class Package
         public ?string $homepage,
         public string $type,
         public ?string $kind,
+        public ?string $reference,
     ) {
     }
 
     /** @param array<mixed> $manifest */
     public static function manifest(array $manifest, string $version): self
     {
-        return self::from($manifest, $version);
+        return self::from($manifest, $version, null);
     }
 
     /** @param array<mixed> $answer */
@@ -46,7 +47,7 @@ final readonly class Package
         $numbers = array_map(static fn (array $version): string => $version['version'], $stable);
         $latest = $stable[(int) array_search(Semver::rsort($numbers)[0], $numbers, true)];
 
-        return self::from($latest, $latest['version']);
+        return self::from($latest, $latest['version'], self::reference($latest));
     }
 
     /** @param array<mixed> $answer */
@@ -56,7 +57,7 @@ final readonly class Package
             if (true === ($version['default-branch'] ?? null)) {
                 $alias = $version['extra']['branch-alias'][$version['version']] ?? null;
 
-                return self::from($version, \is_string($alias) ? $alias : $version['version']);
+                return self::from($version, \is_string($alias) ? $alias : $version['version'], self::reference($version));
             }
         }
 
@@ -81,7 +82,7 @@ final readonly class Package
     }
 
     /** @param array<mixed> $version */
-    private static function from(array $version, string $label): self
+    private static function from(array $version, string $label, ?string $reference): self
     {
         $extra = \is_array($version['extra']['adzercms'] ?? null) ? $version['extra']['adzercms'] : [];
         $kinds = preg_filter(Registry::IMPLEMENTATION, '$1', array_map(strval(...), array_keys(\is_array($version['provide'] ?? null) ? $version['provide'] : [])));
@@ -94,7 +95,14 @@ final readonly class Package
             self::link($version['homepage'] ?? null),
             self::text($version['type'] ?? null) ?? self::LIBRARY,
             [] === $kinds ? null : reset($kinds),
+            $reference,
         );
+    }
+
+    /** @param array<mixed> $version */
+    private static function reference(array $version): ?string
+    {
+        return self::text($version['source']['reference'] ?? null) ?? self::text($version['dist']['reference'] ?? null);
     }
 
     private static function text(mixed $value): ?string

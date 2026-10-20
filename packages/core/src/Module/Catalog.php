@@ -26,6 +26,7 @@ final readonly class Catalog
         private Snapshot $snapshot,
         private Sources $sources,
         private Artifacts $artifacts,
+        private Marks $marks,
         #[Autowire('%kernel.bundles%')]
         private array $bundles,
     ) {
@@ -47,7 +48,9 @@ final readonly class Catalog
     public function refresh(): array
     {
         $fingerprint = $this->sources->fingerprint();
-        $held = $this->held()['packages'];
+        $kept = $this->held();
+        $held = $kept['packages'];
+        $marks = $this->marks->passed();
         $sources = $this->sources->repositories();
         $zipped = $this->artifacts->packages();
         $names = [];
@@ -79,9 +82,10 @@ final readonly class Catalog
         }
         ksort($rows);
         $down = array_values(array_unique([...$down, ...$lookup->down]));
-        $this->snapshot->write(self::SNAPSHOT, ['packages' => $rows, 'down' => $down, 'sources' => $fingerprint], self::LIFETIME);
+        $marked = null === $marks ? $kept['marks'] : array_intersect_key($marks, $rows + array_flip(InstalledVersions::getInstalledPackagesByType(Registry::TYPE)));
+        $this->snapshot->write(self::SNAPSHOT, ['packages' => $rows, 'down' => $down, 'sources' => $fingerprint, 'marks' => $marked], self::LIFETIME);
 
-        return $down;
+        return null === $marks ? [...$down, Marks::REGISTRY] : $down;
     }
 
     /** @return array{at: ?\DateTimeImmutable, rows: list<CatalogRow>, down: list<string>} */
@@ -94,9 +98,10 @@ final readonly class Catalog
             $kinds[$kind->key()] = $kind;
         }
 
+        $marks = $held['marks'];
         $rows = [];
         foreach ($held['packages'] as $name => $row) {
-            $rows[$name] = new CatalogRow($name, $row['package'], self::kind($row['package']->kind, $kinds), $row['package']->version, null, $row['repository'], false);
+            $rows[$name] = new CatalogRow($name, $row['package'], self::kind($row['package']->kind, $kinds), $row['package']->version, null, $row['repository'], false, self::marked($marks, $name, $row['package']->reference), false);
         }
         foreach (array_unique(InstalledVersions::getInstalledPackagesByType(Registry::TYPE)) as $name) {
             $installed = (string) InstalledVersions::getPrettyVersion($name);
@@ -111,13 +116,21 @@ final readonly class Catalog
                 $installed,
                 $offered['repository'] ?? null,
                 null !== $module && \in_array($module->bundle, $this->bundles, true),
+                self::marked($marks, $name, $offered['package']->reference ?? null),
+                self::marked($marks, $name, InstalledVersions::getReference($name)),
             );
         }
 
         return ['at' => $held['at'], 'rows' => array_values($rows), 'down' => $held['down']];
     }
 
-    /** @return array{at: ?\DateTimeImmutable, packages: array<string, array{package: Package, repository: string}>, down: list<string>, sources: ?string} */
+    /** @param array<string, list<string>> $marks */
+    private static function marked(array $marks, string $name, ?string $reference): bool
+    {
+        return null !== $reference && \in_array($reference, $marks[$name] ?? [], true);
+    }
+
+    /** @return array{at: ?\DateTimeImmutable, packages: array<string, array{package: Package, repository: string}>, down: list<string>, sources: ?string, marks: array<string, list<string>>} */
     private function held(): array
     {
         $held = $this->snapshot->read(self::SNAPSHOT);
@@ -129,8 +142,14 @@ final readonly class Catalog
             }
         }
         $down = \is_array($taken['down'] ?? null) ? array_values(array_filter($taken['down'], \is_string(...))) : [];
+        $marks = [];
+        foreach (\is_array($taken['marks'] ?? null) ? $taken['marks'] : [] as $name => $references) {
+            if (\is_array($references)) {
+                $marks[(string) $name] = array_values(array_filter($references, \is_string(...)));
+            }
+        }
 
-        return ['at' => $held['at'] ?? null, 'packages' => $packages, 'down' => $down, 'sources' => \is_string($taken['sources'] ?? null) ? $taken['sources'] : null];
+        return ['at' => $held['at'] ?? null, 'packages' => $packages, 'down' => $down, 'sources' => \is_string($taken['sources'] ?? null) ? $taken['sources'] : null, 'marks' => $marks];
     }
 
     /** @param array<string, Kind> $kinds */

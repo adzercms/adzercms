@@ -55,6 +55,18 @@
         <target>Каталог ещё не снят: его снимает задание adzercms:modules раз в сутки и при смене источников</target>
       </segment>
     </unit>
+    <unit id="admin.catalog.unverified">
+      <segment>
+        <source>admin.catalog.unverified</source>
+        <target>Версия {package} не проверена. Продолжить?</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.verified">
+      <segment>
+        <source>admin.catalog.verified</source>
+        <target>проверен</target>
+      </segment>
+    </unit>
     <unit id="admin.catalog.version">
       <segment>
         <source>admin.catalog.version</source>

@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[AsCommand(name: 'adzercms:modules', description: 'Modules: applies requests of the admin panel and snapshots the module catalog of the base Composer repositories once a day')]
+#[AsCommand(name: 'adzercms:modules', description: 'Modules: applies requests of the admin panel and snapshots the module catalog of its Composer repositories with verified marks once a day')]
 final class ModulesCommand
 {
     private const LOCK = 'adzercms.modules';
@@ -51,8 +51,8 @@ final class ModulesCommand
         }
 
         $down = $this->catalog->due() ? $this->catalog->refresh() : [];
-        foreach ($down as $repository) {
-            $output->writeln(\sprintf('repository unavailable: %s', $repository));
+        foreach ($down as $address) {
+            $output->writeln(\sprintf('unavailable: %s', $address));
         }
 
         return [] === $down ? Command::SUCCESS : Command::FAILURE;

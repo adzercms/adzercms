@@ -7,6 +7,7 @@ use AdzerCMS\Core\Composer\Repositories;
 use AdzerCMS\Core\Module\Catalog;
 use AdzerCMS\Core\Module\ComposerRunner;
 use AdzerCMS\Core\Module\Execution;
+use AdzerCMS\Core\Module\Marks;
 use AdzerCMS\Core\Module\Requests;
 use AdzerCMS\Core\Module\Snapshot;
 use AdzerCMS\Core\Module\Sources;
@@ -43,6 +44,7 @@ return static function (ContainerConfigurator $container): void {
     $services->set(Artifacts::class);
     $services->set(Sources::class);
     $services->set(Snapshot::class);
+    $services->set(Marks::class);
     $services->set(Catalog::class);
     $services->set(Tree::class);
     $services->set(Requests::class);

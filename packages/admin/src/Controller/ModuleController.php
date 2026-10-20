@@ -128,7 +128,7 @@ final class ModuleController extends AbstractController
     /**
      * @param list<CatalogRow> $rows
      *
-     * @return list<array{name: string, description: string, link: ?string, kind: string, version: string, installed: string, repository: string, actions: list<array{label: TranslatableInterface, route: string, params: array<string, string>, post: true}>}>
+     * @return list<array{name: string, description: string, link: ?string, kind: string, version: string, verified: ?Badge, installed: string, installed_verified: ?Badge, repository: string, actions: list<array{label: TranslatableInterface, route: string, params: array<string, string>, post: true, confirm: ?TranslatableInterface}>}>
      */
     private function offers(array $rows, ?Category $category, TranslatorInterface $translator): array
     {
@@ -143,7 +143,9 @@ final class ModuleController extends AbstractController
                 'link' => $row->package->homepage ?? $row->package->source,
                 'kind' => \is_string($row->kind) ? $row->kind : $row->kind->label()->trans($translator),
                 'version' => (string) $row->version,
+                'verified' => $row->verified ? Badge::good(t('admin.catalog.verified')) : null,
                 'installed' => (string) $row->installed,
+                'installed_verified' => $row->installedVerified ? Badge::good(t('admin.catalog.verified')) : null,
                 'repository' => match ($row->repository) {
                     null => '',
                     Artifacts::REPOSITORY => $translator->trans('admin.sources.zip'),
@@ -154,6 +156,7 @@ final class ModuleController extends AbstractController
                     'route' => 'admin_module_request',
                     'params' => ['action' => $action->value, 'package' => $row->name],
                     'post' => true,
+                    'confirm' => $action->takesVersion() && !$row->verified ? t('admin.catalog.unverified', ['package' => $row->name]) : null,
                 ], $this->requests->actions($row)),
             ];
         }

@@ -4,7 +4,7 @@
     {% elseif action.post|default(false) %}
         <form method="post" action="{{ path(action.route, action.params) }}">
             {{ csrf_field() }}
-            <button type="submit">{{ action.label|trans }}</button>
+            <button type="submit"{% if action.confirm|default(null) %} data-confirm="{{ action.confirm|trans }}"{% endif %}>{{ action.label|trans }}</button>
         </form>
     {% else %}
         <button type="button" hx-get="{{ path(action.route, action.params) }}" hx-target="#record">{{ action.label|trans }}</button>

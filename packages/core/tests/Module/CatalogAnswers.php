@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Tests\Module;
 
 use AdzerCMS\Core\Composer\Repositories;
 use AdzerCMS\Core\Composer\Source;
+use AdzerCMS\Core\Module\Marks;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Tests\HttpAnswers;
 use Composer\MetadataMinifier\MetadataMinifier;
@@ -34,6 +35,9 @@ trait CatalogAnswers
     /** @var array<string, ?string> */
     private array $authorized = [];
 
+    /** @var array<string, array<string, array{version: string, outcome: string}>>|null */
+    private ?array $registry = [];
+
     private function answerCatalog(): void
     {
         self::service(HttpAnswers::class)->respond(function (string $method, string $url, array $options): MockResponse {
@@ -50,6 +54,7 @@ trait CatalogAnswers
             }
 
             return match (true) {
+                Marks::REGISTRY === $url => null === $this->registry ? new MockResponse('', ['http_code' => 503]) : new JsonMockResponse($this->registry),
                 Repositories::PACKAGIST.'/packages.json' === $url => null === $this->root ? new MockResponse('', ['http_code' => 503]) : new JsonMockResponse($this->root),
                 isset($this->pages[$url]) => new JsonMockResponse($this->pages[$url]),
                 str_starts_with($url, Repositories::PACKAGIST.'/p2/') => self::minified($this->packages, substr($url, \strlen(Repositories::PACKAGIST.'/p2/'), -5)),
@@ -76,6 +81,16 @@ trait CatalogAnswers
     private function host(string $repository, string $name, string $version): void
     {
         $this->hosted[$repository][$name] = [self::manifest($name, $version)];
+    }
+
+    private function mark(string $name, string $reference, string $outcome = Marks::PASSED): void
+    {
+        $this->registry[$name][$reference] = ['version' => '1.0.0', 'outcome' => $outcome];
+    }
+
+    private static function commit(string $name, string $version): string
+    {
+        return sha1($name.'@'.$version);
     }
 
     /** @param array<string, string> $entries */
@@ -108,6 +123,7 @@ trait CatalogAnswers
             'type' => $type,
             'provide' => $provide,
             'homepage' => 'https://'.strtr($name, '/', '-').'.example.test',
+            'source' => ['type' => 'git', 'url' => 'https://git.example.test/'.$name, 'reference' => self::commit($name, $version)],
             'extra' => ['adzercms' => ['categories' => $categories]],
         ];
     }

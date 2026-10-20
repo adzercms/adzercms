@@ -47,6 +47,7 @@ On a site outside git the module catalog of the admin panel has action buttons o
 
 - Install, update and remove run Composer on a copy of the site made by [Composer Stager](https://github.com/php-tuf/composer-stager). The site gets the result only if Composer succeeds, then the job refreshes it. Updating an engine package updates all `adzercms/*` packages together
 - Enabling or disabling checks the new module list the way the build does, refreshes the site with it, and only then writes the variable into `.env.local`
+- A version marked verified passed the automated module check of the engine; installing or updating to a version without the mark asks for confirmation
 - An enabled module can't be removed: disable it first
 - The enabled admin panel module has no disable button: enabling another admin panel module replaces it
 

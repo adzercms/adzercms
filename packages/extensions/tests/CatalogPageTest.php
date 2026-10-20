@@ -158,7 +158,7 @@ final class CatalogPageTest extends CatalogTestCase
     /** @param list<Category> $categories */
     private static function package(string $description, ?string $homepage = null, array $categories = [Category::Other]): Package
     {
-        return new Package($description, '1.0.0', $categories, self::SOURCE, $homepage, Registry::TYPE, null);
+        return new Package($description, '1.0.0', $categories, self::SOURCE, $homepage, Registry::TYPE, null, null);
     }
 
     /** @return list<string> */

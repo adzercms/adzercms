@@ -21,4 +21,9 @@ enum ModuleAction: string implements Titled
     {
         return t('core.module.action.'.$this->value);
     }
+
+    public function takesVersion(): bool
+    {
+        return self::Install === $this || self::Update === $this;
+    }
 }

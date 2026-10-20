@@ -55,6 +55,18 @@
         <target>The catalog is not taken yet: the adzercms:modules job takes it once a day and on a change of sources</target>
       </segment>
     </unit>
+    <unit id="admin.catalog.unverified">
+      <segment>
+        <source>admin.catalog.unverified</source>
+        <target>The {package} version is not verified. Continue?</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.verified">
+      <segment>
+        <source>admin.catalog.verified</source>
+        <target>verified</target>
+      </segment>
+    </unit>
     <unit id="admin.catalog.version">
       <segment>
         <source>admin.catalog.version</source>

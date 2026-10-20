@@ -131,6 +131,26 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertNotContains('adzercms/admin', $chosen);
     }
 
+    #[Group('ACMS-CORE-0960')]
+    #[Group('ACMS-CORE-0961')]
+    #[Group('ACMS-US-0004')]
+    public function testVersionWithoutMarkGoesAfterConfirmation(): void
+    {
+        $this->tree();
+        $this->answerCatalog();
+        $this->listed(['acme/till', 'acme/shop']);
+        $this->offer('acme/till', '1.2.0');
+        $this->offer('acme/shop', '1.0.0');
+        $this->mark('acme/till', self::commit('acme/till', '1.2.0'));
+        self::command('adzercms:modules')->execute([]);
+        $page = $this->client->request('GET', '/admin/modules');
+        $version = static fn (string $name): string => trim(self::cell($page->filter('#catalog'), $name, self::phrase('admin.catalog.version'))->text());
+
+        self::assertSame(['1.2.0 '.self::phrase('admin.catalog.verified'), '1.0.0'], [$version('acme/till'), $version('acme/shop')]);
+        self::assertSame([null], self::confirmations($page, 'acme/till'));
+        self::assertSame([self::phrase('admin.catalog.unverified', ['package' => 'acme/shop'])], self::confirmations($page, 'acme/shop'));
+    }
+
     #[Group('ACMS-CORE-0145')]
     #[Group('ACMS-US-0004')]
     public function testSiteUnderGitTakesNoRequests(): void
@@ -316,9 +336,18 @@ final class ModuleWebTest extends SchemaTestCase
     /** @return list<string> */
     private static function actions(Crawler $page, string $name): array
     {
-        $row = $page->filter('#catalog tbody tr')->reduce(static fn (Crawler $row): bool => $name === trim($row->filter('td strong')->text()));
+        return self::buttons($page, $name)->each(static fn (Crawler $button): string => trim($button->text()));
+    }
 
-        return $row->filter('td.row-actions button')->each(static fn (Crawler $button): string => trim($button->text()));
+    /** @return list<?string> */
+    private static function confirmations(Crawler $page, string $name): array
+    {
+        return self::buttons($page, $name)->each(static fn (Crawler $button): ?string => $button->attr('data-confirm'));
+    }
+
+    private static function buttons(Crawler $page, string $name): Crawler
+    {
+        return $page->filter('#catalog tbody tr')->reduce(static fn (Crawler $row): bool => $name === trim($row->filter('td strong')->text()))->filter('td.row-actions button');
     }
 
     /** @return list<string> */

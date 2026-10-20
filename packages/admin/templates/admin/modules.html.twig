@@ -24,8 +24,8 @@
                 {% if row.description %}<br><span class="muted">{{ row.description }}</span>{% endif %}
             </td>
             <td class="{{ table.aside('kind') }}">{{ row.kind }}</td>
-            <td class="{{ table.aside('version') }}">{{ row.version ?: blank() }}</td>
-            <td class="{{ table.aside('installed') }}">{{ row.installed ?: blank() }}</td>
+            <td class="{{ table.aside('version') }}">{{ row.version ?: blank() }}{% if row.verified %} {{ badge(row.verified) }}{% endif %}</td>
+            <td class="{{ table.aside('installed') }}">{{ row.installed ?: blank() }}{% if row.installed_verified %} {{ badge(row.installed_verified) }}{% endif %}</td>
             <td class="{{ table.aside('repository') }}">{{ row.repository ?: blank() }}</td>
             <td class="row-actions">{% include '@Theme/_actions.html.twig' with {actions: row.actions} %}</td>
         </tr>

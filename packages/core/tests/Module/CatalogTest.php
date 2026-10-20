@@ -11,10 +11,12 @@ use AdzerCMS\Core\Composer\Repositories;
 use AdzerCMS\Core\Composer\Source;
 use AdzerCMS\Core\Module\Catalog;
 use AdzerCMS\Core\Module\CatalogRow;
+use AdzerCMS\Core\Module\Marks;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Repository\ModuleSourceRepository;
 use AdzerCMS\Core\Tests\SchemaTestCase;
+use Composer\InstalledVersions;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Console\Command\Command;
@@ -107,6 +109,32 @@ final class CatalogTest extends SchemaTestCase
         self::assertNotSame('', $theme->package->description);
     }
 
+    #[Group('ACMS-CORE-0960')]
+    #[Group('ACMS-CORE-0934')]
+    public function testMarkGoesToVersionWhoseCommitPassedAndOutlivesUnavailableRegistry(): void
+    {
+        self::mockTime('2026-10-20 12:00');
+        $this->listed(['acme/till', 'acme/shop']);
+        self::assertNull(self::service(Artifacts::class)->upload($this->archive(['composer.json' => json_encode(self::manifest('acme/kept', '1.0.0'), \JSON_THROW_ON_ERROR)])));
+        $this->mark('acme/shop', self::commit('acme/shop', '1.0.0'));
+        $this->mark('acme/till', self::commit('acme/till', '1.1.0'));
+        $this->mark('acme/till', self::commit('acme/till', '1.2.0'), 'phpstan');
+        $this->mark('acme/kept', self::commit('acme/kept', '1.0.0'));
+        $this->mark('adzercms/admin', InstalledVersions::getReference('adzercms/admin') ?? self::fail('the installed module has no commit'));
+        $marked = ['acme/kept' => [false, false], 'acme/shop' => [true, false], 'acme/till' => [false, false], 'adzercms/admin' => [false, true]];
+
+        self::assertSame(Command::SUCCESS, self::command('adzercms:modules')->execute([]));
+        self::assertSame($marked, self::marks());
+
+        $this->registry = null;
+        self::mockTime('2026-10-21 12:00');
+        $job = self::command('adzercms:modules');
+
+        self::assertSame(Command::FAILURE, $job->execute([]));
+        self::assertStringContainsString(Marks::REGISTRY, $job->getDisplay());
+        self::assertSame($marked, self::marks(), 'an unavailable registry keeps the held marks');
+    }
+
     #[Group('ACMS-CORE-0946')]
     #[Group('ACMS-CORE-0944')]
     #[Group('ACMS-CORE-0934')]
@@ -127,7 +155,7 @@ final class CatalogTest extends SchemaTestCase
             'acme/shop' => [CoreKind::Feature, '3.0.0', null, self::OWN, [Category::Other]],
             'acme/vault' => [CoreKind::Feature, '1.0.0', null, self::OWN, [Category::Other]],
         ], self::offered());
-        self::assertSame([Source::origin(Repositories::PACKAGIST) => null, Source::origin(self::OWN) => $authorization], $this->authorized);
+        self::assertSame([Source::origin(Marks::REGISTRY) => null, Source::origin(Repositories::PACKAGIST) => null, Source::origin(self::OWN) => $authorization], $this->authorized);
     }
 
     /** @return iterable<string, array{string, string}> */
@@ -192,5 +220,19 @@ final class CatalogTest extends SchemaTestCase
         }
 
         return $offered;
+    }
+
+    /** @return array<string, array{bool, bool}> */
+    private static function marks(): array
+    {
+        $marks = [];
+        foreach (self::service(Catalog::class)->rows()['rows'] as $row) {
+            if (str_starts_with($row->name, 'acme/') || 'adzercms/admin' === $row->name) {
+                $marks[$row->name] = [$row->verified, $row->installedVerified];
+            }
+        }
+        ksort($marks);
+
+        return $marks;
     }
 }
