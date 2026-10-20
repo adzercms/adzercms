@@ -12,6 +12,7 @@ final readonly class Repositories
 {
     private const ROOT = '/packages.json';
     private const NAME = '%package%';
+    private const BRANCHES = '~dev';
     private const TIMEOUT = 10.0;
 
     public function __construct(
@@ -49,6 +50,7 @@ final readonly class Repositories
                 }
             }
 
+            $branches = [];
             foreach ($responses as $name => $response) {
                 try {
                     $status = $response->getStatusCode();
@@ -63,8 +65,27 @@ final readonly class Repositories
                     }
 
                     $packages[$name] = Package::of($name, $response->toArray(false));
+                    if (null === $packages[$name]) {
+                        $branches[$name] = $this->get(str_replace(self::NAME, $name.self::BRANCHES, $template));
+                    }
                 } catch (ExceptionInterface) {
-                    unset($pending[$name]);
+                    unset($pending[$name], $packages[$name]);
+                    $down[$repository] = $repository;
+                }
+            }
+
+            foreach ($branches as $name => $response) {
+                try {
+                    $status = $response->getStatusCode();
+                    if (404 !== $status && 200 !== $status) {
+                        unset($packages[$name]);
+                        $down[$repository] = $repository;
+                        continue;
+                    }
+
+                    $packages[$name] = 200 === $status ? Package::branch($name, $response->toArray(false)) : null;
+                } catch (ExceptionInterface) {
+                    unset($packages[$name]);
                     $down[$repository] = $repository;
                 }
             }

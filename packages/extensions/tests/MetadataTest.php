@@ -87,9 +87,24 @@ final class MetadataTest extends CatalogTestCase
         self::assertSame(['1.0.0', null, null], [$entry->getVersion(), $entry->getSource(), $entry->getHomepage()]);
     }
 
+    #[Group('ACMS-EXT-0003')]
+    public function testEntryWithoutStableVersionTakesDefaultBranchByItsAlias(): void
+    {
+        $this->open[self::NAME] = [self::version(self::NAME, '1.0.0-beta2', 'Beta shop', [])];
+        $this->open[self::NAME.'~dev'] = [
+            self::version(self::NAME, 'dev-feature', 'Feature shop', []),
+            ['default-branch' => true, 'extra' => ['branch-alias' => ['dev-main' => '1.0.x-dev']]] + self::version(self::NAME, 'dev-main', 'Shop in development', []),
+        ];
+
+        $this->post('/admin/extensions/new', ['name' => self::NAME, 'type' => 'module', 'price' => '', 'demo' => '']);
+
+        $entry = self::extensions()->named(self::NAME) ?? self::fail('the entry is not in the catalog');
+        self::assertSame(['Shop in development', '1.0.x-dev', ExtensionState::Published], [$entry->getDescription(), $entry->getVersion(), $entry->state()]);
+    }
+
     #[Group('ACMS-EXT-0004')]
     #[Group('ACMS-US-0035')]
-    public function testEntryWithoutStableVersionStaysOffSiteWithStateNamed(): void
+    public function testEntryWithoutStableVersionOrDefaultBranchStaysOffSiteWithStateNamed(): void
     {
         $this->open[self::NAME] = [self::version(self::NAME, '1.0.0-beta2', 'Shop', [])];
 
@@ -142,7 +157,7 @@ final class MetadataTest extends CatalogTestCase
     private static function answer(array $packages, string $name): MockResponse
     {
         return isset($packages[$name])
-            ? new JsonMockResponse(['minified' => 'composer/2.0', 'packages' => [$name => MetadataMinifier::minify($packages[$name])]])
+            ? new JsonMockResponse(['minified' => 'composer/2.0', 'packages' => [strtok($name, '~') => MetadataMinifier::minify($packages[$name])]])
             : new MockResponse('', ['http_code' => 404]);
     }
 
