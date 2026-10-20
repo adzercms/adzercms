@@ -4,52 +4,52 @@
 
 English | [Русский](README.ru.md)
 
-A modular web application engine on Symfony. The core handles accounts and login, settings, notices and the module registry. Everything else comes as modules: Composer packages the instance selects in its environment.
+A free modular engine for websites and web apps, built on Symfony. The core covers accounts and sign-in, settings, notifications and the module list. Everything else is a module: a regular Composer package, so you install only what you need.
 
-Status: version 1.0 in development. Contracts may change until its release.
+Version 1.0 is still in development: the module API may change before it ships.
 
 ## Features
 
-- Registration, login by email, phone or a module-defined identifier and password, access recovery, operator acting as a user
-- Login through service modules: OAuth 2.0 authorization with `state` and PKCE or `nonce`, entering by a connected profile or by its phone or email, connecting a service to a signed-in record
-- Login registry: device, city and activity of every login, ending any of them
-- Contact confirmation by code or link with expiry, attempt limit and resend pause
-- Settings in the database with encrypted secrets, edited in the admin and by `bin/console adzercms:setting`
-- Notices by email, phone message gateways and messenger bots, quiet hours, one journal
-- Admin and cabinet modules on one frame, a replaceable theme
-- Feature modules: payments, support tickets, mailing, real-time page updates, extension catalog
-- MySQL, MariaDB or PostgreSQL; sessions in Valkey or Redis, files without them
-- English and Russian translations
+- Sign-up and sign-in with email or phone and a password, password recovery, admins can act as a user
+- Sign-in with VK ID, Yandex ID, Sber ID and Telegram (OAuth 2.0 with PKCE), linking a service to an existing account
+- Active sessions with device and city, sign out of any of them
+- Email and phone confirmation by code or link
+- Settings live in the database with encrypted secrets; change them in the admin panel or from the console
+- Notifications by email, SMS and Telegram and MAX bots, quiet hours, a delivery log
+- Admin panel and customer account area, a replaceable theme
+- Ready modules: payments, support, newsletters, real-time page updates, extension catalog
+- MySQL, MariaDB or PostgreSQL; sessions in Valkey or Redis, or in files without them
+- English and Russian
 
 ## Requirements
 
 - PHP 8.4 or 8.5 with `intl` and `sodium`
 - Composer 2
 - MySQL, MariaDB or PostgreSQL
-- Optional: Valkey or Redis for sessions, [GeoLite2-City](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data) for login places
+- Optional: Valkey or Redis for sessions, [GeoLite2-City](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data) to show the sign-in city
 
-## Repository
+## What's in the repository
 
-Package `packages/<name>` is `adzercms/<name>`:
+Each `packages/<name>` directory is the `adzercms/<name>` package:
 
-- `contracts` — interfaces modules rely on; `core` — the core Symfony bundle; `skeleton` — the project template
-- `admin`, `cabinet`, `theme` — admin, cabinet and default theme
-- `payments`, `support`, `mailing`, `realtime`, `extensions` — feature modules
-- `vk-id`, `yandex-id`, `sber-id`, `telegram` — login through a service
-- `sms-pilot`, `mts-marketolog` — phone message gateways; `telegram-bot`, `max-bot` — messenger bots
+- `contracts` — interfaces for modules, `core` — the core (a Symfony bundle), `skeleton` — the new project template
+- `admin`, `cabinet`, `theme` — admin panel, customer account area and the default theme
+- `payments`, `support`, `mailing`, `realtime`, `extensions` — payments, support, newsletters, real-time updates, extension catalog
+- `vk-id`, `yandex-id`, `sber-id`, `telegram` — sign-in with these services
+- `sms-pilot`, `mts-marketolog` — SMS delivery; `telegram-bot`, `max-bot` — messenger bots
 - `smart-captcha`, `turnstile`, `hcaptcha` — captcha
-- `tbank`, `yookassa` — payment acquiring; `centrifugo` — real-time updates server
-- root — development application: requires every package from `packages/*`, runs tests and checks
+- `tbank`, `yookassa` — online payments; `centrifugo` — real-time updates server
+- the root is the development app: it pulls in every package and runs the tests and checks
 
-Every push to `main` and every `v*` tag copy each package into its read-only repository `adzercms/<name>`. Changes come to this repository only.
+Every push to `main` and every `v*` tag copies the packages into their own read-only repositories `adzercms/<name>`. Pull requests go here.
 
-## Create an instance
+## New project
 
 ```sh
 composer create-project adzercms/skeleton my-site --stability=dev
 ```
 
-Environment, hooks and scheduler jobs: [Installation](docs/installation.md).
+Environment, hooks and scheduler setup: [Installation](docs/installation.md).
 
 ## Development
 
@@ -60,31 +60,31 @@ composer install
 git config core.hooksPath .githooks
 ```
 
-The development application runs as an instance: environment and administrator as in [Installation](docs/installation.md#environment), the schema of the selection — `bin/console doctrine:migrations:migrate`. Scripts in `bin/` run the PHP binary set by `git config adzercms.php`, plain `php` without it.
+Set up the development app like any project: environment and administrator as in [Installation](docs/installation.md#environment), the database with `bin/console doctrine:migrations:migrate`. Scripts in `bin/` run the PHP set in `git config adzercms.php`, or plain `php` if it isn't set.
 
 ## Console
 
-- `adzercms:admin <login>` — give a record the administrator role, create it with `--stdin` password
-- `adzercms:setting [key] [value]` — list, read and change settings; secrets only with `--stdin`
-- `adzercms:cache` — switch the instance to the cache build of the process and remove builds without processes
-- `adzercms:notices`, `adzercms:sweep` and jobs of modules — [scheduler](docs/installation.md#scheduler)
+- `adzercms:admin <login>` — make a user an administrator or create a new one, the password comes through `--stdin`
+- `adzercms:setting [key] [value]` — view and change settings; secrets only through `--stdin`
+- `adzercms:cache` — switch the site to a fresh cache build and remove builds no process uses
+- `adzercms:notices`, `adzercms:sweep` and module jobs — for the [scheduler](docs/installation.md#scheduler)
 
 ## Tests
 
-Put an empty test database into `.env.test.local`: `DATABASE_URL=...`. Every suite shares it, the first test of a run drops and migrates it.
+Put an empty test database into `.env.test.local`: `DATABASE_URL=...`. All test suites share it, and each run recreates the schema.
 
 ```sh
 bin/phpunit --testsuite Core
 vendor/bin/adzercms-check
 ```
 
-The suites are the `<testsuite>` names of `phpunit.dist.xml`, each runs by name. `vendor/bin/adzercms-check` checks code style, PHPStan, XLIFF, ICU, Twig and the requirements of every package. The pre-commit hook checks the staged files. [CI](.github/workflows/ci.yml) runs every suite on MySQL, MariaDB and PostgreSQL with PHP 8.4 and 8.5. Rules of code, gates and tests: [Engine development](docs/engine-development.md).
+Suite names are the `<testsuite>` entries in `phpunit.dist.xml`. `vendor/bin/adzercms-check` checks code style, PHPStan, translation files, Twig and the dependencies of every package. The pre-commit hook checks the changed files. [CI](.github/workflows/ci.yml) runs every suite on MySQL, MariaDB and PostgreSQL with PHP 8.4 and 8.5. Code and test rules: [Engine development](docs/engine-development.md).
 
 ## Documentation
 
 - [Installation](docs/installation.md)
-- [Modules: selection and settings](docs/modules.md)
-- [Writing a module](docs/module-development.md)
+- [Modules: enabling and settings](docs/modules.md)
+- [Writing your own module](docs/module-development.md)
 - [Engine development](docs/engine-development.md)
 
 ## Contributing
@@ -93,7 +93,7 @@ The suites are the `<testsuite>` names of `phpunit.dist.xml`, each runs by name.
 
 ## Roadmap
 
-Module installation from the admin, checks of third-party modules.
+Installing modules from the admin panel and checking third-party modules.
 
 ## License
 

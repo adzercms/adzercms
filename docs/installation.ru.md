@@ -2,18 +2,18 @@
 
 [English](installation.md) | Русский
 
-## Создать экземпляр
+## Новый проект
 
 ```sh
 composer create-project adzercms/skeleton my-site --stability=dev
 cd my-site
 ```
 
-Шаблон требует ядро с модулями админки, кабинета и темы и выбирает их в `.env`.
+Шаблон сразу ставит ядро, админку, личный кабинет и тему и включает их в `.env`.
 
 ## Окружение
 
-Значения экземпляра — в `.env.local`:
+Настройки сайта — в `.env.local`:
 
 ```dotenv
 APP_SECRET=change-me-to-a-random-string
@@ -23,17 +23,17 @@ SESSION_DSN=redis://127.0.0.1:6379
 GEOIP_CITY_DB=/usr/share/GeoIP/GeoLite2-City.mmdb
 ```
 
-- `APP_SECRET` — случайная строка, например вывод `openssl rand -hex 32`
-- `DEFAULT_URI` — публичный адрес экземпляра: с него начинаются ссылки в сообщениях заданий планировщика
-- `DATABASE_URL` — пустая база данных; адрес MySQL или MariaDB несёт `charset=utf8mb4` и полную версию сервера в `serverVersion`; база PostgreSQL — с провайдером локали ICU и локалью `und`
-- `SESSION_DSN` и `GEOIP_CITY_DB` необязательны: без них сессии хранятся в файлах, а у входов нет места
-- `FILES_DIR` необязателен: записываемый каталог файлов, которые создаёт экземпляр, без него — `var/files/<окружение>`
+- `APP_SECRET` — случайная строка, её даёт `openssl rand -hex 32`
+- `DEFAULT_URI` — адрес сайта; с него начинаются ссылки в письмах, которые отправляет планировщик
+- `DATABASE_URL` — пустая база данных. Для MySQL и MariaDB укажите `charset=utf8mb4` и полную версию сервера в `serverVersion`; базу PostgreSQL создайте с провайдером локали ICU и локалью `und`
+- `SESSION_DSN` и `GEOIP_CITY_DB` — по желанию: без них сессии хранятся в файлах, а город входа не показывается
+- `FILES_DIR` — по желанию: каталог для файлов, которые создаёт сайт; по умолчанию — `var/files/<окружение>`
 
-Модули выбираются ключами окружения: [Модули](modules.ru.md). Тесты и статический анализ `.env.local` не читают: выбор, изменённый там, повторяется в `.env.test`.
+Какие модули включены, задают переменные окружения: [Модули](modules.ru.md). Тесты и статический анализ `.env.local` не читают, поэтому изменения списка модулей повторите в `.env.test`.
 
 ## Обновление страниц в реальном времени
 
-Открытые страницы показывают изменения без перезагрузки, когда выбраны модуль `realtime` и модуль сервера обновлений. Модуль Centrifugo берёт сервер из `.env.local`:
+Чтобы открытые страницы показывали изменения без перезагрузки, включите модуль `realtime` и модуль сервера обновлений. Модуль Centrifugo берёт адрес сервера из `.env.local`:
 
 ```dotenv
 HUB_MODULE=Centrifugo
@@ -43,12 +43,12 @@ REALTIME_TOKEN_SECRET=
 REALTIME_API_KEY=
 ```
 
-- `REALTIME_URL` — адрес API сервера, куда экземпляр публикует события
-- `REALTIME_WS_PATH` — путь на хосте экземпляра, который веб-сервер проксирует на WebSocket Centrifugo
+- `REALTIME_URL` — адрес API сервера, куда сайт отправляет события
+- `REALTIME_WS_PATH` — путь на домене сайта, который веб-сервер проксирует на WebSocket Centrifugo
 - `REALTIME_TOKEN_SECRET` — `client.token.hmac_secret_key` сервера, `REALTIME_API_KEY` — `http_api.key`
-- Пространства сервера: `personal` с `allow_user_limited_channels` и `allow_subscribe_for_client`, `staff`; у обоих история и `force_recovery`
+- На сервере нужны пространства `personal` с `allow_user_limited_channels` и `allow_subscribe_for_client` и `staff`, у обоих включены история и `force_recovery`
 
-Без модуля сервера обновлений или его значений страницы обновляются только перезагрузкой.
+Без модуля сервера или его настроек страницы обновляются только перезагрузкой.
 
 ## Git и обновления
 
@@ -57,36 +57,36 @@ git init
 git config core.hooksPath .githooks
 git config adzercms.php /usr/bin/php8.4
 git add -A
-git commit -m 'Instance'
+git commit -m 'Site'
 ```
 
-- `adzercms.php` — PHP скриптов `bin/` и хуков; без него они запускают `php`
-- Хук `pre-commit` останавливает коммит с ошибкой стиля в его файлах PHP, миграцией вопреки правилам миграций, сломанным шаблоном либо каталогом, секретом в `.env`
-- Хуки `post-commit` и `post-merge` запускают `vendor/bin/adzercms-refresh` после каждого коммита и `git pull`: он приводит экземпляр к его дереву — зависимости изменившегося `composer.lock`, пакеты со сменившимися патчами `patches.lock.json` cweagans/composer-patches, миграции, новая сборка кеша, библиотеки importmap и собранная статика, затем переключение экземпляра на новую сборку; без `.env.local` он ничего не делает
-- Экземпляр в подкаталоге git-репозитория берёт `git config core.hooksPath <подкаталог>/.githooks`
-- Корень сайта веб-сервера — `public/`
+- `adzercms.php` — PHP для скриптов `bin/` и хуков; без него запускается `php`
+- Хук `pre-commit` не даст закоммитить PHP с ошибками стиля, миграцию с нарушением правил, сломанный шаблон или файл перевода и секрет в `.env`
+- Хуки `post-commit` и `post-merge` после каждого коммита и `git pull` запускают `vendor/bin/adzercms-refresh`. Он приводит сайт в соответствие с кодом: ставит зависимости из изменившегося `composer.lock` и пакеты с новыми патчами из `patches.lock.json` (cweagans/composer-patches), накатывает миграции, собирает новый кеш, библиотеки importmap и статику и переключает сайт на новую сборку. Без `.env.local` скрипт ничего не делает
+- Если сайт лежит в подкаталоге репозитория, укажите `git config core.hooksPath <подкаталог>/.githooks`
+- Корень сайта для веб-сервера — `public/`
 
-Администратор, пароль — из stdin:
+Создать администратора (пароль передаётся через stdin):
 
 ```sh
 printf '%s' "$PASSWORD" | bin/console adzercms:admin admin@example.com --stdin
 ```
 
-Обновления движка приходят через `composer update`, сразу за ним `vendor/bin/adzercms-refresh` и коммит `composer.lock`: до запуска скрипта идущая сборка отказывает на новых зависимостях.
+Движок обновляется через `composer update`. Сразу после него запустите `vendor/bin/adzercms-refresh` и закоммитьте `composer.lock`: пока скрипт не отработал, текущая сборка с новыми зависимостями не работает.
 
 ## Планировщик
 
-Задания — в crontab пользователя экземпляра, `/path` — каталог экземпляра. Задание завершается ненулевым кодом при отказе; его вывод не глушится.
+Задания добавляются в crontab пользователя, от которого работает сайт; `/path` — каталог сайта. При ошибке задание завершается с ненулевым кодом, вывод не подавляется.
 
 ```crontab
 */15 * * * * /path/bin/php /path/bin/console adzercms:notices
 15 4 * * *   /path/bin/php /path/bin/console adzercms:sweep
 ```
 
-- `adzercms:notices` отправляет оповещения, отложенные тихими часами
-- `adzercms:sweep` убирает вышедшие входы, старые записи журнала и подтверждения
+- `adzercms:notices` отправляет уведомления, отложенные из-за тихих часов
+- `adzercms:sweep` удаляет завершённые сеансы, старые записи журнала и подтверждения
 
-Задания выбранных модулей:
+Задания модулей, если они включены:
 
 ```crontab
 */5 * * * *  /path/bin/php /path/bin/console adzercms:payments
@@ -94,6 +94,6 @@ printf '%s' "$PASSWORD" | bin/console adzercms:admin admin@example.com --stdin
 20 3 * * *   /path/bin/php /path/bin/console adzercms:extensions
 ```
 
-- `adzercms:payments` (платежи) доводит начатые платежи опросом провайдера
-- `adzercms:support` (поддержка) закрывает заявки, ждущие пользователя дольше срока модуля
-- `adzercms:extensions` (каталог расширений) обновляет метаданные пакетов каталога из его репозиториев Composer
+- `adzercms:payments` — проверяет у платёжного сервиса статус незавершённых платежей
+- `adzercms:support` — закрывает обращения, по которым пользователь долго не отвечает
+- `adzercms:extensions` — обновляет описания пакетов каталога расширений из их репозиториев Composer
