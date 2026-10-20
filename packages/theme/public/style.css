@@ -502,6 +502,11 @@ input[type="radio"], input[type="checkbox"] {
     flex: none;
 }
 
+input[type="color"] {
+    padding: 0.25rem;
+    cursor: pointer;
+}
+
 input:focus-visible, select:focus-visible, textarea:focus-visible {
     outline: 2px solid var(--focus-ring);
     border-color: var(--primary);

@@ -84,6 +84,13 @@ final class Settings implements ResetInterface
             return new Refusal(t('core.setting.choice', ['field' => $field->label]));
         }
 
+        if (Type::Color === $field->type) {
+            if (1 !== preg_match('/^#[0-9a-f]{6}$/i', $value)) {
+                return new Refusal(t('core.setting.color', ['field' => $field->label]));
+            }
+            $value = strtolower($value);
+        }
+
         if (Type::Decimal === $field->type) {
             $value = str_replace(',', '.', $value);
             if (!is_numeric($value)) {
