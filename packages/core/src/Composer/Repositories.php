@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AdzerCMS\Extensions;
+namespace AdzerCMS\Core\Composer;
 
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -15,20 +15,21 @@ final readonly class Repositories
     private const BRANCHES = '~dev';
     private const TIMEOUT = 10.0;
 
-    public function __construct(
-        private HttpClientInterface $httpClient,
-        private ExtensionsSettings $settings,
-    ) {
+    public function __construct(private HttpClientInterface $httpClient)
+    {
     }
 
-    /** @param list<string> $names */
-    public function lookup(array $names): Lookup
+    /**
+     * @param list<string> $repositories
+     * @param list<string> $names
+     */
+    public function lookup(array $repositories, array $names): Lookup
     {
         $pending = array_fill_keys($names, true);
         $packages = [];
         $down = [];
 
-        foreach ($this->settings->repositories() as $repository) {
+        foreach ($repositories as $repository) {
             if ([] === $pending) {
                 break;
             }

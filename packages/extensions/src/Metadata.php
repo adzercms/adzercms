@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions;
 
+use AdzerCMS\Core\Composer\Lookup;
+use AdzerCMS\Core\Composer\Repositories;
 use AdzerCMS\Extensions\Entity\Extension;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -11,6 +13,7 @@ final readonly class Metadata
 {
     public function __construct(
         private Repositories $repositories,
+        private ExtensionsSettings $settings,
         private EntityManagerInterface $em,
     ) {
     }
@@ -18,7 +21,7 @@ final readonly class Metadata
     /** @param list<Extension> $extensions */
     public function refresh(array $extensions): Lookup
     {
-        $lookup = $this->repositories->lookup(array_map(static fn (Extension $extension): string => $extension->getName(), $extensions));
+        $lookup = $this->repositories->lookup($this->settings->repositories(), array_map(static fn (Extension $extension): string => $extension->getName(), $extensions));
 
         foreach ($extensions as $extension) {
             if ($lookup->decided($extension->getName())) {

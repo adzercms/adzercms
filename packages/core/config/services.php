@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use AdzerCMS\Core\Composer\Repositories;
 use AdzerCMS\Core\Module\Snapshot;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Schema\MigrationOrder;
@@ -25,6 +26,7 @@ return static function (ContainerConfigurator $container): void {
     $services->load('AdzerCMS\\Core\\Setting\\', '../src/Setting/');
     $services->load('AdzerCMS\\Core\\Text\\', '../src/Text/');
     $services->load('AdzerCMS\\Core\\Ui\\', '../src/Ui/');
+    $services->set(Repositories::class);
     $services->set(Snapshot::class);
     $services->set(Switches::class);
     $services->set(MigrationOrder::class);

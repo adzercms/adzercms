@@ -12,13 +12,10 @@
     "license": "MIT",
     "require": {
         "php": ">=8.4",
-        "ext-filter": "*",
         "ext-mbstring": "*",
         "adzercms/contracts": "^1.0",
         "adzercms/core": "^1.0",
         "adzercms/theme-implementation": "^1.0",
-        "composer/metadata-minifier": "^1.0.1",
-        "composer/semver": "^3.5.1",
         "doctrine/collections": "^3.1",
         "doctrine/dbal": "^4.5",
         "doctrine/doctrine-bundle": "^3.3",

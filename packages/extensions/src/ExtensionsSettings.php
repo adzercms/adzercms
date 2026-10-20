@@ -10,6 +10,7 @@ use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Contracts\Setting\Rule;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Ui\Split;
+use AdzerCMS\Core\Ui\WebLink;
 
 use function Symfony\Component\Translation\t;
 
@@ -35,7 +36,7 @@ final readonly class ExtensionsSettings implements Owner, Rule
         }
 
         foreach (Split::items($value) as $repository) {
-            if (!self::web($repository)) {
+            if (!WebLink::valid($repository)) {
                 return new Refusal(t('extensions.refusal.repository', ['repository' => $repository]));
             }
         }
@@ -49,11 +50,5 @@ final readonly class ExtensionsSettings implements Owner, Rule
         $repositories = Split::items($this->settings->get(self::REPOSITORIES));
 
         return [] === $repositories ? [self::PACKAGIST] : $repositories;
-    }
-
-    public static function web(string $url): bool
-    {
-        return false !== filter_var($url, \FILTER_VALIDATE_URL)
-            && \in_array(strtolower((string) parse_url($url, \PHP_URL_SCHEME)), ['http', 'https'], true);
     }
 }

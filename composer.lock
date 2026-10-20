@@ -220,11 +220,13 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "ef9379c514a2abaed590e2848b06ee790c02a4a3"
+                "reference": "1788a89ca05b02c3a97f3a6daafda22fbe8d38ec"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
                 "composer-runtime-api": "^2.2",
+                "composer/metadata-minifier": "^1.0.1",
+                "composer/semver": "^3.5.1",
                 "doctrine/dbal": "^4.5",
                 "doctrine/doctrine-bundle": "^3.3",
                 "doctrine/doctrine-migrations-bundle": "^4.0",
@@ -318,21 +320,18 @@
             "dist": {
                 "type": "path",
                 "url": "packages/extensions",
-                "reference": "f4d92ee3eb7da2cf3e8e8ebca32c7d953cf0d3e8"
+                "reference": "e57dacdb1faa6e9dbb525698da6914237fd5c2a9"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
                 "adzercms/core": "^1.0",
                 "adzercms/theme-implementation": "^1.0",
-                "composer/metadata-minifier": "^1.0.1",
-                "composer/semver": "^3.5.1",
                 "doctrine/collections": "^3.1",
                 "doctrine/dbal": "^4.5",
                 "doctrine/doctrine-bundle": "^3.3",
                 "doctrine/migrations": "^3.9",
                 "doctrine/orm": "^3.7",
                 "doctrine/persistence": "^4.2",
-                "ext-filter": "*",
                 "ext-mbstring": "*",
                 "php": ">=8.4",
                 "symfony/console": "7.4.*",

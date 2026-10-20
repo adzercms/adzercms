@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace AdzerCMS\Extensions;
+namespace AdzerCMS\Core\Composer;
 
 use AdzerCMS\Contracts\Module\Category;
+use AdzerCMS\Core\Ui\WebLink;
 use Composer\MetadataMinifier\MetadataMinifier;
 use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
@@ -92,6 +93,6 @@ final readonly class Package
     {
         $link = self::text($value);
 
-        return null !== $link && ExtensionsSettings::web($link) ? $link : null;
+        return null !== $link && WebLink::valid($link) ? $link : null;
     }
 }

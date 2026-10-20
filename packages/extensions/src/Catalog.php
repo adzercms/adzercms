@@ -6,6 +6,7 @@ namespace AdzerCMS\Extensions;
 
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Ui\Money;
+use AdzerCMS\Core\Ui\WebLink;
 use AdzerCMS\Extensions\Entity\Extension;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,7 +50,7 @@ final readonly class Catalog
         }
 
         $demo = trim($input->getString('demo'));
-        if ('' !== $demo && !ExtensionsSettings::web($demo)) {
+        if ('' !== $demo && !WebLink::valid($demo)) {
             return new Refusal(t('extensions.refusal.demo'));
         }
 

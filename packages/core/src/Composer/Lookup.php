@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AdzerCMS\Extensions;
+namespace AdzerCMS\Core\Composer;
 
 final readonly class Lookup
 {
