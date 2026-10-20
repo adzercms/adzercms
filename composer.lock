@@ -220,7 +220,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "1788a89ca05b02c3a97f3a6daafda22fbe8d38ec"
+                "reference": "b527dec16e1c15c0d2c817aee4b860b317ae8a8f"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -242,6 +242,7 @@
                 "ext-openssl": "*",
                 "ext-session": "*",
                 "ext-sodium": "*",
+                "ext-xmlwriter": "*",
                 "facile-it/doctrine-mysql-come-back": "^3.0",
                 "firebase/php-jwt": "^7.2",
                 "geoip2/geoip2": "^3.4",
