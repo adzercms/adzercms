@@ -10,13 +10,53 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 final readonly class Repositories
 {
+    public const PACKAGIST = 'https://repo.packagist.org';
+
     private const ROOT = '/packages.json';
     private const NAME = '%package%';
+    private const QUERY = '%query%';
+    private const TYPE = '%type%';
     private const BRANCHES = '~dev';
     private const TIMEOUT = 10.0;
 
     public function __construct(private HttpClientInterface $httpClient)
     {
+    }
+
+    /** @return list<string>|null */
+    public function names(string $repository, string $type): ?array
+    {
+        $root = $this->root($repository);
+        if (null === $root) {
+            return null;
+        }
+
+        $search = $root['search'] ?? null;
+        if (!\is_string($search) || !str_contains($search, self::TYPE)) {
+            $available = $root['available-packages'] ?? null;
+
+            return \is_array($available) ? array_values(array_unique(array_filter($available, \is_string(...)))) : [];
+        }
+
+        $names = [];
+        $seen = [];
+        $page = self::absolute($repository, str_replace([self::QUERY, self::TYPE], ['', rawurlencode($type)], $search));
+        try {
+            while (null !== $page && !isset($seen[$page])) {
+                $seen[$page] = true;
+                $answer = $this->get($page)->toArray();
+                foreach (\is_array($answer['results'] ?? null) ? $answer['results'] : [] as $result) {
+                    if (\is_array($result) && \is_string($result['name'] ?? null)) {
+                        $names[] = $result['name'];
+                    }
+                }
+                $page = \is_string($answer['next'] ?? null) ? self::absolute($repository, $answer['next']) : null;
+            }
+        } catch (ExceptionInterface) {
+            return null;
+        }
+
+        return array_values(array_unique($names));
     }
 
     /**
@@ -27,6 +67,7 @@ final readonly class Repositories
     {
         $pending = array_fill_keys($names, true);
         $packages = [];
+        $sources = [];
         $down = [];
 
         foreach ($repositories as $repository) {
@@ -66,6 +107,7 @@ final readonly class Repositories
                     }
 
                     $packages[$name] = Package::of($name, $response->toArray(false));
+                    $sources[$name] = $repository;
                     if (null === $packages[$name]) {
                         $branches[$name] = $this->get(str_replace(self::NAME, $name.self::BRANCHES, $template));
                     }
@@ -96,23 +138,29 @@ final readonly class Repositories
             $packages[(string) $name] = null;
         }
 
-        return new Lookup($packages, array_values(array_unique($down)));
+        return new Lookup($packages, array_values(array_unique($down)), array_intersect_key($sources, array_filter($packages)));
     }
 
     private function template(string $repository): ?string
     {
+        $template = $this->root($repository)['metadata-url'] ?? null;
+
+        return \is_string($template) && str_contains($template, self::NAME) ? self::absolute($repository, $template) : null;
+    }
+
+    /** @return array<mixed>|null */
+    private function root(string $repository): ?array
+    {
         try {
-            $root = $this->get(rtrim($repository, '/').self::ROOT)->toArray();
+            return $this->get(rtrim($repository, '/').self::ROOT)->toArray();
         } catch (ExceptionInterface) {
             return null;
         }
+    }
 
-        $template = $root['metadata-url'] ?? null;
-        if (!\is_string($template) || !str_contains($template, self::NAME)) {
-            return null;
-        }
-
-        return str_starts_with($template, '/') ? self::origin($repository).$template : $template;
+    private static function absolute(string $repository, string $url): string
+    {
+        return str_starts_with($url, '/') ? self::origin($repository).$url : $url;
     }
 
     private function get(string $url): ResponseInterface

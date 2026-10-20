@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Admin\Tests;
 
-use AdzerCMS\Admin\ModuleCatalog;
+use AdzerCMS\Admin\AssembledModules;
+use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Setting\Catalog;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
+use AdzerCMS\Core\Tests\Module\CatalogAnswers;
 use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelayGateway;
 use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelaySettings;
 use AdzerCMS\Core\Tests\SchemaTestCase;
+use Composer\InstalledVersions;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -20,6 +23,7 @@ final class ModuleWebTest extends SchemaTestCase
 {
     use Accounts;
     use Browser;
+    use CatalogAnswers;
 
     private const SENDER = RelayGateway::SETTINGS.RelayGateway::SENDER;
 
@@ -34,12 +38,12 @@ final class ModuleWebTest extends SchemaTestCase
     #[Group('ACMS-US-0004')]
     public function testModulesGoOneListingWithKindAndSchema(): void
     {
-        $modules = self::service(ModuleCatalog::class)->modules();
+        $modules = self::service(AssembledModules::class)->modules();
         $listing = $this->client->request('GET', '/admin/modules');
 
         self::assertSame(
             [self::phrase('admin.modules.name'), self::phrase('admin.modules.kind'), self::phrase('admin.modules.schema')],
-            $listing->filter('thead th')->each(static fn (Crawler $head): string => trim($head->text())),
+            $listing->filter('#rows thead th')->each(static fn (Crawler $head): string => trim($head->text())),
         );
         self::assertEqualsCanonicalizing(
             array_map(static fn (string $key): string => '/admin/modules/'.$key, array_keys($modules)),
@@ -78,9 +82,37 @@ final class ModuleWebTest extends SchemaTestCase
         }
     }
 
+    #[Group('ACMS-CORE-0934')]
+    #[Group('ACMS-CORE-0147')]
+    #[Group('ACMS-US-0004')]
+    public function testCatalogListsOfferedAndInstalledModulesAsOfItsSnapshotByCategory(): void
+    {
+        self::assertSame(self::phrase('admin.catalog.untaken'), trim($this->client->request('GET', '/admin/modules')->filter('#catalog p.muted')->text()));
+
+        $this->answerCatalog();
+        $this->listed(['acme/till', 'acme/shop']);
+        $this->offer('acme/till', '1.2.0', provide: ['adzercms/sms-implementation' => '1.0.0'], categories: ['messaging']);
+        $this->offer('acme/shop', '1.0.0', categories: ['commerce']);
+        self::mockTime('2026-10-20 12:30');
+        self::command('adzercms:modules')->execute([]);
+        $catalog = $this->client->request('GET', '/admin/modules')->filter('#catalog');
+
+        self::assertSame(self::phrase('admin.catalog.taken', ['at' => new \DateTimeImmutable('2026-10-20 12:30')]), trim($catalog->filter('p.muted')->text()));
+        self::assertSame(
+            [self::phrase(CoreKind::Sms->label()), '1.2.0', 'repo.packagist.org'],
+            array_map(static fn (string $column): string => trim(self::cell($catalog, 'acme/till', self::phrase($column))->text()), ['admin.modules.kind', 'admin.catalog.version', 'admin.catalog.repository']),
+        );
+        self::assertSame(InstalledVersions::getPrettyVersion('adzercms/admin'), trim(self::cell($catalog, 'adzercms/admin', self::phrase('admin.catalog.installed'))->text()));
+
+        $chosen = $this->fragment('/admin/modules?catalog_category=messaging')->filter('#catalog tbody tr td:first-child strong')->each(static fn (Crawler $name): string => trim($name->text()));
+        self::assertContains('acme/till', $chosen);
+        self::assertNotContains('acme/shop', $chosen);
+        self::assertNotContains('adzercms/admin', $chosen);
+    }
+
     /** @return list<string> */
     private static function cards(Crawler $listing): array
     {
-        return $listing->filter('tbody tr')->each(static fn (Crawler $row): string => (string) $row->attr('data-href'));
+        return $listing->filter('#rows tbody tr')->each(static fn (Crawler $row): string => (string) $row->attr('data-href'));
     }
 }

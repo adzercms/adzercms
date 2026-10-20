@@ -7,6 +7,60 @@
         <target>← Back to list</target>
       </segment>
     </unit>
+    <unit id="admin.catalog.category">
+      <segment>
+        <source>admin.catalog.category</source>
+        <target>Any category</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.empty">
+      <segment>
+        <source>admin.catalog.empty</source>
+        <target>No modules</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.installed">
+      <segment>
+        <source>admin.catalog.installed</source>
+        <target>Installed</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.package">
+      <segment>
+        <source>admin.catalog.package</source>
+        <target>Package</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.repository">
+      <segment>
+        <source>admin.catalog.repository</source>
+        <target>Repository</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.taken">
+      <segment>
+        <source>admin.catalog.taken</source>
+        <target>Catalog as of {at, date, ::yMMddjmm}</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.title">
+      <segment>
+        <source>admin.catalog.title</source>
+        <target>Catalog</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.untaken">
+      <segment>
+        <source>admin.catalog.untaken</source>
+        <target>The catalog has not been taken yet: the adzercms:modules job takes it once a day</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.version">
+      <segment>
+        <source>admin.catalog.version</source>
+        <target>Version</target>
+      </segment>
+    </unit>
     <unit id="admin.close">
       <segment>
         <source>admin.close</source>

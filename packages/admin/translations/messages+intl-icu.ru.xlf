@@ -7,6 +7,60 @@
         <target>← К списку</target>
       </segment>
     </unit>
+    <unit id="admin.catalog.category">
+      <segment>
+        <source>admin.catalog.category</source>
+        <target>Любая категория</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.empty">
+      <segment>
+        <source>admin.catalog.empty</source>
+        <target>Нет модулей</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.installed">
+      <segment>
+        <source>admin.catalog.installed</source>
+        <target>Установлена</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.package">
+      <segment>
+        <source>admin.catalog.package</source>
+        <target>Пакет</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.repository">
+      <segment>
+        <source>admin.catalog.repository</source>
+        <target>Репозиторий</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.taken">
+      <segment>
+        <source>admin.catalog.taken</source>
+        <target>Каталог на {at, date, ::yMMddjmm}</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.title">
+      <segment>
+        <source>admin.catalog.title</source>
+        <target>Каталог</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.untaken">
+      <segment>
+        <source>admin.catalog.untaken</source>
+        <target>Каталог ещё не снят: его снимает задание adzercms:modules раз в сутки</target>
+      </segment>
+    </unit>
+    <unit id="admin.catalog.version">
+      <segment>
+        <source>admin.catalog.version</source>
+        <target>Версия</target>
+      </segment>
+    </unit>
     <unit id="admin.close">
       <segment>
         <source>admin.close</source>

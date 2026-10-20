@@ -12,7 +12,7 @@ use Doctrine\Migrations\DependencyFactory;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
-final readonly class ModuleCatalog
+final readonly class AssembledModules
 {
     /** @param array<string, class-string> $bundles */
     public function __construct(

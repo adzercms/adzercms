@@ -12,4 +12,21 @@
         </tr>
     {% endblock %}
 {% endembed %}
+{% embed '@Theme/_table.html.twig' with {table: catalog, rows: offers, heading: 'admin.catalog.title'} %}
+    {% block above %}
+        <p class="muted">{{ taken ? 'admin.catalog.taken'|trans({at: taken}) : 'admin.catalog.untaken'|trans }}</p>
+    {% endblock %}
+    {% block row %}
+        <tr>
+            <td class="{{ table.aside('name') }}">
+                {% if row.link %}<a href="{{ row.link }}" target="_blank" rel="noopener"><strong>{{ row.name }}</strong></a>{% else %}<strong>{{ row.name }}</strong>{% endif %}
+                {% if row.description %}<br><span class="muted">{{ row.description }}</span>{% endif %}
+            </td>
+            <td class="{{ table.aside('kind') }}">{{ row.kind }}</td>
+            <td class="{{ table.aside('version') }}">{{ row.version ?: blank() }}</td>
+            <td class="{{ table.aside('installed') }}">{{ row.installed ?: blank() }}</td>
+            <td class="{{ table.aside('repository') }}">{{ row.repository ?: blank() }}</td>
+        </tr>
+    {% endblock %}
+{% endembed %}
 {% endblock %}

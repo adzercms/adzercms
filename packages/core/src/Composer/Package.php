@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Composer;
 
 use AdzerCMS\Contracts\Module\Category;
+use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Ui\WebLink;
 use Composer\MetadataMinifier\MetadataMinifier;
 use Composer\Semver\Semver;
@@ -14,6 +15,7 @@ final readonly class Package
 {
     private const MINIFIED = 'composer/2.0';
     private const STABLE = 'stable';
+    private const LIBRARY = 'library';
 
     /** @param list<Category> $categories */
     public function __construct(
@@ -22,7 +24,15 @@ final readonly class Package
         public array $categories,
         public ?string $source,
         public ?string $homepage,
+        public string $type,
+        public ?string $kind,
     ) {
+    }
+
+    /** @param array<mixed> $manifest */
+    public static function manifest(array $manifest, string $version): self
+    {
+        return self::from($manifest, $version);
     }
 
     /** @param array<mixed> $answer */
@@ -74,6 +84,7 @@ final readonly class Package
     private static function from(array $version, string $label): self
     {
         $extra = \is_array($version['extra']['adzercms'] ?? null) ? $version['extra']['adzercms'] : [];
+        $kinds = preg_filter(Registry::IMPLEMENTATION, '$1', array_map(strval(...), array_keys(\is_array($version['provide'] ?? null) ? $version['provide'] : [])));
 
         return new self(
             self::text($version['description'] ?? null) ?? '',
@@ -81,6 +92,8 @@ final readonly class Package
             Category::of(\is_array($extra['categories'] ?? null) ? $extra['categories'] : []),
             self::link($version['source']['url'] ?? null),
             self::link($version['homepage'] ?? null),
+            self::text($version['type'] ?? null) ?? self::LIBRARY,
+            [] === $kinds ? null : reset($kinds),
         );
     }
 

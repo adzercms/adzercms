@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Contracts\Setting\Rule;
+use AdzerCMS\Core\Composer\Repositories;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Ui\Split;
 use AdzerCMS\Core\Ui\WebLink;
@@ -17,8 +18,6 @@ use function Symfony\Component\Translation\t;
 final readonly class ExtensionsSettings implements Owner, Rule
 {
     public const REPOSITORIES = 'extensions.repositories';
-
-    private const PACKAGIST = 'https://repo.packagist.org';
 
     public function __construct(private Settings $settings)
     {
@@ -49,6 +48,6 @@ final readonly class ExtensionsSettings implements Owner, Rule
     {
         $repositories = Split::items($this->settings->get(self::REPOSITORIES));
 
-        return [] === $repositories ? [self::PACKAGIST] : $repositories;
+        return [] === $repositories ? [Repositories::PACKAGIST] : $repositories;
     }
 }

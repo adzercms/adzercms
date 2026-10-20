@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Admin\Controller;
 
-use AdzerCMS\Admin\ModuleCatalog;
+use AdzerCMS\Admin\AssembledModules;
 use AdzerCMS\Admin\SettingForm;
+use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Module\Catalog;
+use AdzerCMS\Core\Module\CatalogRow;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
@@ -24,9 +27,12 @@ use function Symfony\Component\Translation\t;
 final class ModuleController extends AbstractController
 {
     private const ORDER = 'name';
+    private const CATALOG = 'catalog';
+    private const CATEGORY = 'category';
 
     public function __construct(
-        private readonly ModuleCatalog $catalog,
+        private readonly AssembledModules $assembled,
+        private readonly Catalog $catalog,
         private readonly SettingForm $form,
     ) {
     }
@@ -36,12 +42,12 @@ final class ModuleController extends AbstractController
     {
         $rows = [];
 
-        foreach ($this->catalog->modules() as $key => $module) {
+        foreach ($this->assembled->modules() as $key => $module) {
             $rows[] = [
                 'key' => $key,
                 'name' => $module['name'],
                 'kind' => $module['kind']->trans($translator),
-                'schema' => (string) $this->catalog->schema($module['namespace']),
+                'schema' => (string) $this->assembled->schema($module['namespace']),
             ];
         }
 
@@ -51,13 +57,57 @@ final class ModuleController extends AbstractController
             Column::live('schema', t('admin.modules.schema'), static fn (array $row): string => $row['schema'])->aside(),
         ], self::ORDER, t('admin.modules.empty'), filters: [Filter::search()], live: true);
 
-        return $this->render('@Admin/admin/modules.html.twig', ['table' => $table, 'rows' => $table->rows($rows)]);
+        $catalog = Table::of($request, 'admin_modules', [
+            Column::live('name', t('admin.catalog.package'), static fn (array $row): string => $row['name']),
+            Column::live('kind', t('admin.modules.kind'), static fn (array $row): string => $row['kind']),
+            Column::live('version', t('admin.catalog.version'), static fn (array $row): string => $row['version']),
+            Column::live('installed', t('admin.catalog.installed'), static fn (array $row): string => $row['installed']),
+            Column::live('repository', t('admin.catalog.repository'), static fn (array $row): string => $row['repository'])->aside(),
+        ], self::ORDER, t('admin.catalog.empty'), filters: [
+            Filter::search(),
+            Filter::cases(self::CATEGORY, t('admin.catalog.category'), Category::cases()),
+        ], live: true, id: self::CATALOG);
+        $offered = $this->catalog->rows();
+
+        return $this->render('@Admin/admin/modules.html.twig', [
+            'table' => $table,
+            'rows' => $table->rows($rows),
+            'catalog' => $catalog,
+            'offers' => $catalog->rows(self::offers($offered['rows'], Category::tryFrom($catalog->value(self::CATEGORY)), $translator)),
+            'taken' => $offered['at'],
+        ]);
+    }
+
+    /**
+     * @param list<CatalogRow> $rows
+     *
+     * @return list<array{name: string, description: string, link: ?string, kind: string, version: string, installed: string, repository: string}>
+     */
+    private static function offers(array $rows, ?Category $category, TranslatorInterface $translator): array
+    {
+        $offers = [];
+        foreach ($rows as $row) {
+            if (null !== $category && !\in_array($category, $row->package->categories, true)) {
+                continue;
+            }
+            $offers[] = [
+                'name' => $row->name,
+                'description' => $row->package->description,
+                'link' => $row->package->homepage ?? $row->package->source,
+                'kind' => \is_string($row->kind) ? $row->kind : $row->kind->label()->trans($translator),
+                'version' => (string) $row->version,
+                'installed' => (string) $row->installed,
+                'repository' => null === $row->repository ? '' : (string) parse_url($row->repository, \PHP_URL_HOST),
+            ];
+        }
+
+        return $offers;
     }
 
     #[Route('/{key}', name: 'admin_module', methods: ['GET', 'POST'])]
     public function module(string $key, Request $request): Response
     {
-        $module = $this->catalog->modules()[$key] ?? throw $this->createNotFoundException();
+        $module = $this->assembled->modules()[$key] ?? throw $this->createNotFoundException();
         $fields = $module['fields'];
 
         if ($request->isMethod('POST')) {
@@ -74,7 +124,7 @@ final class ModuleController extends AbstractController
 
         return $this->render('@Admin/admin/module.html.twig', [
             'module' => $module,
-            'schema' => $this->catalog->schema($module['namespace']),
+            'schema' => $this->assembled->schema($module['namespace']),
             'values' => $this->form->values($fields),
             'sections' => $this->form->sections($fields),
         ]);

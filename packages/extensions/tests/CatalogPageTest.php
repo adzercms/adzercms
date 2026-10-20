@@ -6,6 +6,7 @@ namespace AdzerCMS\Extensions\Tests;
 
 use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Core\Composer\Package;
+use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Seo\Indexing;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Queries;
@@ -157,7 +158,7 @@ final class CatalogPageTest extends CatalogTestCase
     /** @param list<Category> $categories */
     private static function package(string $description, ?string $homepage = null, array $categories = [Category::Other]): Package
     {
-        return new Package($description, '1.0.0', $categories, self::SOURCE, $homepage);
+        return new Package($description, '1.0.0', $categories, self::SOURCE, $homepage, Registry::TYPE, null);
     }
 
     /** @return list<string> */

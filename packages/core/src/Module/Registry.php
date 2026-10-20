@@ -12,7 +12,7 @@ use Composer\InstalledVersions;
 final class Registry
 {
     public const TYPE = 'adzercms-module';
-    private const IMPLEMENTATION = '~^adzercms/([a-z0-9-]+)-implementation$~';
+    public const IMPLEMENTATION = '~^adzercms/([a-z0-9-]+)-implementation$~';
 
     /** @var array<string, Installed> */
     private array $byPackage = [];
@@ -29,12 +29,18 @@ final class Registry
     {
         $manifests = [];
         foreach (array_unique(InstalledVersions::getInstalledPackagesByType(self::TYPE)) as $package) {
-            $path = InstalledVersions::getInstallPath($package)
-                ?? throw new \LogicException(sprintf('module package %s has no install path', $package));
-            $manifests[$package] = json_decode((string) file_get_contents($path.'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
+            $manifests[$package] = self::manifest($package);
         }
 
         return self::of($manifests);
+    }
+
+    public static function manifest(string $package): mixed
+    {
+        $path = InstalledVersions::getInstallPath($package)
+            ?? throw new \LogicException(sprintf('module package %s has no install path', $package));
+
+        return json_decode((string) file_get_contents($path.'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
     }
 
     /** @param array<string, mixed> $manifests */
