@@ -45,7 +45,6 @@ final readonly class YooKassaService implements AcquiringService
 
     private const SHOP = 'payment.yookassa.shop';
     private const FLOOR = '1.00';
-    private const CURRENCY = 'RUB';
     private const TIMEOUT = 20.0;
     private const CARD = 'bank_card';
     private const METHOD_EVENT = 'payment_method.active';
@@ -204,7 +203,7 @@ final readonly class YooKassaService implements AcquiringService
 
     public function close(Payment $payment, Closing $closing): void
     {
-        $sum = ['value' => Money::normalize($closing->amount), 'currency' => self::CURRENCY];
+        $sum = ['value' => Money::normalize($closing->amount), 'currency' => Money::CURRENCY];
         $answer = $this->call('POST', 'receipts', [
             'type' => 'payment',
             'payment_id' => $payment->getOperationId(),
@@ -289,13 +288,13 @@ final readonly class YooKassaService implements AcquiringService
         $items = array_map(fn (array $item): array => $this->item(
             $item['name'],
             $item['quantity'].'.00',
-            ['value' => Money::normalize($item['price']), 'currency' => self::CURRENCY],
+            ['value' => Money::normalize($item['price']), 'currency' => Money::CURRENCY],
             $mode,
             $this->settings->get(self::PAYMENT_SUBJECT),
         ), $payment->getItems());
 
         $request = [
-            'amount' => ['value' => Money::normalize($payment->getAmount()), 'currency' => self::CURRENCY],
+            'amount' => ['value' => Money::normalize($payment->getAmount()), 'currency' => Money::CURRENCY],
             'capture' => true,
             'description' => $payment->getDescription(),
             'metadata' => ['number' => $payment->getNumber()],

@@ -10,6 +10,7 @@ use Twig\Attribute\AsTwigFunction;
 final class Money
 {
     public const SCALE = 2;
+    public const CURRENCY = 'RUB';
 
     public static function add(string $left, string $right): string
     {
