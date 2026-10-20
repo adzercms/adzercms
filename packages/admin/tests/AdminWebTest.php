@@ -480,7 +480,12 @@ final class AdminWebTest extends SchemaTestCase
         self::assertNotContains($password, $names);
         self::assertCount(1, $page->filter(\sprintf('[hx-get="%s"]', $dialog)));
 
-        $this->client->submit($this->fragment($dialog)->selectButton(self::phrase('core.action.save'))->form([$login => 'robot', $password => 'mail-secret']));
+        $fresh = $this->fragment($dialog);
+        self::assertSame(
+            [self::phrase('core.setting.mail_login'), self::phrase('core.setting.mail_password')],
+            $fresh->filter('form label')->each(static fn (Crawler $label): string => trim($label->text())),
+        );
+        $this->client->submit($fresh->selectButton(self::phrase('core.action.save'))->form([$login => 'robot', $password => 'mail-secret']));
         self::assertResponseRedirects();
         self::assertSame('robot', $settings->get(MailChannel::LOGIN));
         self::assertSame('mail-secret', $settings->get(MailChannel::PASSWORD));
