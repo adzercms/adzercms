@@ -317,11 +317,11 @@ final class CabinetWebTest extends SchemaTestCase
         $link = self::link('#/password/[0-9a-f]{64}#', $this->letterText());
         self::assertCount(1, (new Crawler((string) $this->letter()->getHtmlBody()))->filter(\sprintf('a.button[href$="%s"]', $link)), 'the button of the letter leads by the link');
 
-        $this->client->submit($this->client->request('GET', $link)->selectButton(self::phrase('cabinet.password.save'))->form(['password' => 'renewed-password', 'repeat' => 'another-password']));
+        $this->client->submit($this->client->request('GET', $link)->selectButton(self::phrase('core.action.save'))->form(['password' => 'renewed-password', 'repeat' => 'another-password']));
         self::assertSame(self::phrase('cabinet.register.mismatch'), trim($this->client->getCrawler()->filter('.flash-error')->text()));
         self::assertTrue($hasher->isPasswordValid($this->reread($user), self::PASSWORD));
 
-        $this->client->submit($this->client->request('GET', $link)->selectButton(self::phrase('cabinet.password.save'))->form(['password' => 'renewed-password', 'repeat' => 'renewed-password']));
+        $this->client->submit($this->client->request('GET', $link)->selectButton(self::phrase('core.action.save'))->form(['password' => 'renewed-password', 'repeat' => 'renewed-password']));
         self::assertResponseRedirects('/login');
         self::assertTrue($hasher->isPasswordValid($this->reread($user), 'renewed-password'));
 

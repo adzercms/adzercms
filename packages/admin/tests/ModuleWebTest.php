@@ -83,7 +83,7 @@ final class ModuleWebTest extends SchemaTestCase
     public function testModuleSettingsLiveOnItsCardOnly(): void
     {
         $card = $this->client->request('GET', '/admin/modules/relay');
-        $this->client->submit($card->selectButton(self::phrase('admin.save'))->form([
+        $this->client->submit($card->selectButton(self::phrase('core.action.save'))->form([
             \sprintf('value[%s]', self::SENDER) => 'VILLAGE',
             \sprintf('value[%s]', RelaySettings::SIGNATURE) => 'Village',
         ]));

@@ -13,12 +13,6 @@
         <target>Очистить</target>
       </segment>
     </unit>
-    <unit id="theme.close">
-      <segment>
-        <source>theme.close</source>
-        <target>Закрыть</target>
-      </segment>
-    </unit>
     <unit id="theme.confirm.no">
       <segment>
         <source>theme.confirm.no</source>
@@ -47,18 +41,6 @@
       <segment>
         <source>theme.credentials_clear_confirm</source>
         <target>Удалить сохранённые данные? Вход по ним перестанет работать.</target>
-      </segment>
-    </unit>
-    <unit id="theme.drop">
-      <segment>
-        <source>theme.drop</source>
-        <target>Удалить</target>
-      </segment>
-    </unit>
-    <unit id="theme.edit">
-      <segment>
-        <source>theme.edit</source>
-        <target>Изменить</target>
       </segment>
     </unit>
     <unit id="theme.impersonate_exit">
@@ -107,12 +89,6 @@
       <segment>
         <source>theme.profile</source>
         <target>Профиль</target>
-      </segment>
-    </unit>
-    <unit id="theme.save">
-      <segment>
-        <source>theme.save</source>
-        <target>Сохранить</target>
       </segment>
     </unit>
     <unit id="theme.seo.locale">

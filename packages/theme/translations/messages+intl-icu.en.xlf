@@ -13,12 +13,6 @@
         <target>Clear</target>
       </segment>
     </unit>
-    <unit id="theme.close">
-      <segment>
-        <source>theme.close</source>
-        <target>Close</target>
-      </segment>
-    </unit>
     <unit id="theme.confirm.no">
       <segment>
         <source>theme.confirm.no</source>
@@ -47,18 +41,6 @@
       <segment>
         <source>theme.credentials_clear_confirm</source>
         <target>Delete the saved data? Access by it will stop working.</target>
-      </segment>
-    </unit>
-    <unit id="theme.drop">
-      <segment>
-        <source>theme.drop</source>
-        <target>Delete</target>
-      </segment>
-    </unit>
-    <unit id="theme.edit">
-      <segment>
-        <source>theme.edit</source>
-        <target>Edit</target>
       </segment>
     </unit>
     <unit id="theme.impersonate_exit">
@@ -107,12 +89,6 @@
       <segment>
         <source>theme.profile</source>
         <target>Profile</target>
-      </segment>
-    </unit>
-    <unit id="theme.save">
-      <segment>
-        <source>theme.save</source>
-        <target>Save</target>
       </segment>
     </unit>
     <unit id="theme.seo.locale">

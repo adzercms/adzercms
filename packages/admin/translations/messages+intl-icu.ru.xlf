@@ -67,12 +67,6 @@
         <target>Сайт под git: модули меняет коммит, каталог заявок не принимает</target>
       </segment>
     </unit>
-    <unit id="admin.close">
-      <segment>
-        <source>admin.close</source>
-        <target>Закрыть</target>
-      </segment>
-    </unit>
     <unit id="admin.copy">
       <segment>
         <source>admin.copy</source>
@@ -223,12 +217,6 @@
         <target>Заявки</target>
       </segment>
     </unit>
-    <unit id="admin.save">
-      <segment>
-        <source>admin.save</source>
-        <target>Сохранить</target>
-      </segment>
-    </unit>
     <unit id="admin.setting.change">
       <segment>
         <source>admin.setting.change</source>
@@ -281,12 +269,6 @@
       <segment>
         <source>admin.text.reset</source>
         <target>Вернуть исходный</target>
-      </segment>
-    </unit>
-    <unit id="admin.text.save">
-      <segment>
-        <source>admin.text.save</source>
-        <target>Сохранить</target>
       </segment>
     </unit>
     <unit id="admin.text.value">

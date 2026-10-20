@@ -67,12 +67,6 @@
         <target>The site is under git: modules change by a commit, the catalog takes no requests</target>
       </segment>
     </unit>
-    <unit id="admin.close">
-      <segment>
-        <source>admin.close</source>
-        <target>Close</target>
-      </segment>
-    </unit>
     <unit id="admin.copy">
       <segment>
         <source>admin.copy</source>
@@ -223,12 +217,6 @@
         <target>Requests</target>
       </segment>
     </unit>
-    <unit id="admin.save">
-      <segment>
-        <source>admin.save</source>
-        <target>Save</target>
-      </segment>
-    </unit>
     <unit id="admin.setting.change">
       <segment>
         <source>admin.setting.change</source>
@@ -281,12 +269,6 @@
       <segment>
         <source>admin.text.reset</source>
         <target>Restore the original</target>
-      </segment>
-    </unit>
-    <unit id="admin.text.save">
-      <segment>
-        <source>admin.text.save</source>
-        <target>Save</target>
       </segment>
     </unit>
     <unit id="admin.text.value">

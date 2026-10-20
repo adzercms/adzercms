@@ -1,7 +1,4 @@
-<div class="modal-header">
-    <h2>{{ 'admin.user.new'|trans }}</h2>
-    <form method="dialog"><button class="modal-close">{{ 'admin.close'|trans }}</button></form>
-</div>
+{% include '@Theme/_modal_header.html.twig' with {title: 'admin.user.new'|trans} only %}
 
 <div class="modal-body">
     {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}

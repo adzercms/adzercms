@@ -231,7 +231,7 @@ final class AdminWebTest extends SchemaTestCase
         $page = $this->client->request('GET', \sprintf('/admin/users/%d', $user->getId()));
         self::assertSame(self::phrase('core.moment.day_time', ['at' => new \DateTimeImmutable('2026-09-20 10:15')]), self::tile($page, self::phrase('admin.user.deleted')));
 
-        $this->client->submit($page->selectButton(self::phrase('admin.save'))->form(['status' => Status::Active->value]));
+        $this->client->submit($page->selectButton(self::phrase('core.action.save'))->form(['status' => Status::Active->value]));
 
         $returned = $this->reread($user);
         self::assertSame(Status::Active, $returned->getStatus());
@@ -343,7 +343,7 @@ final class AdminWebTest extends SchemaTestCase
 
         $profile = $this->client->request('GET', \sprintf('/admin/users/%d', $user->getId()));
         self::assertCount(0, $profile->filter('form textarea[name="note"]'), 'the profile carries no notes');
-        $this->client->submit($profile->selectButton(self::phrase('admin.save'))->form(['comment' => 'South 3']));
+        $this->client->submit($profile->selectButton(self::phrase('core.action.save'))->form(['comment' => 'South 3']));
 
         $saved = $this->reread($user);
         self::assertSame('Key at the neighbour', $saved->getNote(), 'the profile leaves the notes as they are');
@@ -438,7 +438,7 @@ final class AdminWebTest extends SchemaTestCase
             $page->filter(\sprintf('select[name="value[%s]"] option', Brand::THEME))->each(static fn (Crawler $option): string => trim($option->text())),
         );
 
-        $this->client->submit($page->selectButton(self::phrase('admin.save'))->form([
+        $this->client->submit($page->selectButton(self::phrase('core.action.save'))->form([
             \sprintf('value[%s]', Brand::TITLE) => 'Village network',
             \sprintf('value[%s]', Brand::THEME) => Theme::Dark->value,
         ]));
@@ -480,14 +480,14 @@ final class AdminWebTest extends SchemaTestCase
         self::assertNotContains($password, $names);
         self::assertCount(1, $page->filter(\sprintf('[hx-get="%s"]', $dialog)));
 
-        $this->client->submit($this->fragment($dialog)->selectButton(self::phrase('theme.save'))->form([$login => 'robot', $password => 'mail-secret']));
+        $this->client->submit($this->fragment($dialog)->selectButton(self::phrase('core.action.save'))->form([$login => 'robot', $password => 'mail-secret']));
         self::assertResponseRedirects();
         self::assertSame('robot', $settings->get(MailChannel::LOGIN));
         self::assertSame('mail-secret', $settings->get(MailChannel::PASSWORD));
 
         $stored = $this->fragment($dialog);
         self::assertSame('', (string) $stored->filter(\sprintf('input[name="%s"]', $password))->attr('value'), 'the secret does not go out');
-        $this->client->submit($stored->selectButton(self::phrase('theme.save'))->form([$login => 'robot2', $password => '']));
+        $this->client->submit($stored->selectButton(self::phrase('core.action.save'))->form([$login => 'robot2', $password => '']));
         self::assertSame('robot2', $settings->get(MailChannel::LOGIN));
         self::assertSame('mail-secret', $settings->get(MailChannel::PASSWORD), 'an empty field keeps the stored secret');
 

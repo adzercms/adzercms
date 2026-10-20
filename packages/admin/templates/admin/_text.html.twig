@@ -1,7 +1,4 @@
-<div class="modal-header">
-    <h2>{{ message }}</h2>
-    <form method="dialog"><button class="modal-close">{{ 'admin.close'|trans }}</button></form>
-</div>
+{% include '@Theme/_modal_header.html.twig' with {title: message} only %}
 
 <div class="modal-body">
     {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
@@ -13,7 +10,7 @@
             </label>
             {% if stored %}<p class="field-wide">{{ 'admin.text.catalog'|trans }}: {{ catalog }}</p>{% endif %}
         </div>
-        <button type="submit">{{ 'admin.text.save'|trans }}</button>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
         {% if stored %}<button type="submit" class="secondary" name="reset" value="1" formnovalidate>{{ 'admin.text.reset'|trans }}</button>{% endif %}
     </form>
 </div>

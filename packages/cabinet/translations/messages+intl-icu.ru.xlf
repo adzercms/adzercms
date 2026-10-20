@@ -355,12 +355,6 @@
         <target>Пароль ещё раз</target>
       </segment>
     </unit>
-    <unit id="cabinet.password.save">
-      <segment>
-        <source>cabinet.password.save</source>
-        <target>Сохранить</target>
-      </segment>
-    </unit>
     <unit id="cabinet.password.sent">
       <segment>
         <source>cabinet.password.sent</source>

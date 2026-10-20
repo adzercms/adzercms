@@ -1,9 +1,6 @@
 {% set action = extension.id ? path('admin_extension', {id: extension.id}) : path('admin_extension_new') %}
 {% set type = input.type ?? extension.type.value %}
-<div class="modal-header">
-    <h2>{{ extension.id ? extension.name : 'extensions.new'|trans }}</h2>
-    <form method="dialog"><button class="modal-close">{{ 'theme.close'|trans }}</button></form>
-</div>
+{% include '@Theme/_modal_header.html.twig' with {title: extension.id ? extension.name : 'extensions.new'|trans} only %}
 
 <div class="modal-body">
     {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
@@ -27,6 +24,6 @@
                 <input type="url" name="demo" maxlength="255" value="{{ input.demo ?? extension.demo }}">
             </label>
         </div>
-        <button type="submit">{{ 'extensions.save'|trans }}</button>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
     </form>
 </div>

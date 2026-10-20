@@ -23,11 +23,11 @@
                             <span class="chat-author">{{ message.fromStaff ? support_label : ticket.user.id }}</span>
                             <span class="chat-time">{{ 'core.moment.day_time'|trans({at: message.createdAt}) }}</span>
                             {% if staff and not ticket.status.closed %}
-                                <button type="button" class="icon-act" data-modal="edit-{{ message.id }}" aria-label="{{ 'theme.edit'|trans }}" title="{{ 'theme.edit'|trans }}">{{ icon.edit() }}</button>
+                                <button type="button" class="icon-act" data-modal="edit-{{ message.id }}" aria-label="{{ 'core.action.edit'|trans }}" title="{{ 'core.action.edit'|trans }}">{{ icon.edit() }}</button>
                                 <form method="post" action="{{ path('support_message', {id: message.id, action: 'drop'}) }}"
                                       data-confirm="{{ 'support.message.drop_confirm'|trans }}">
                                     {{ csrf_field() }}
-                                    <button type="submit" class="icon-act" aria-label="{{ 'theme.drop'|trans }}" title="{{ 'theme.drop'|trans }}">{{ icon.drop() }}</button>
+                                    <button type="submit" class="icon-act" aria-label="{{ 'core.action.drop'|trans }}" title="{{ 'core.action.drop'|trans }}">{{ icon.drop() }}</button>
                                 </form>
                             {% endif %}
                         </div>
@@ -53,10 +53,7 @@
 
                     {% if staff and not ticket.status.closed %}
                         <dialog class="modal" id="edit-{{ message.id }}">
-                            <div class="modal-header">
-                                <h2>{{ 'support.ticket.message'|trans }}</h2>
-                                <form method="dialog"><button class="modal-close">{{ 'theme.close'|trans }}</button></form>
-                            </div>
+                            {% include '@Theme/_modal_header.html.twig' with {title: 'support.ticket.message'|trans} only %}
                             <form class="modal-body" method="post" enctype="multipart/form-data"
                                   action="{{ path('support_message', {id: message.id, action: 'edit'}) }}">
                                 {{ csrf_field() }}
@@ -71,7 +68,7 @@
                                     <input type="file" name="files[]" accept="{{ accept }}" multiple>
                                     <p class="hint">{{ 'support.ticket.limit'|trans({megabytes: megabytes}) }}</p>
                                 </label>
-                                <button type="submit">{{ 'theme.save'|trans }}</button>
+                                <button type="submit">{{ 'core.action.save'|trans }}</button>
                             </form>
                         </dialog>
                     {% endif %}

@@ -148,6 +148,8 @@ The core wires up the entities, migrations and routes of an enabled module by it
 
 Show dates in the reader's language through the translator, not with Twig's `date` filter. Inside a phrase, a date is an ICU argument with a skeleton, such as `{until, date, ::yMMdd}`. A date on its own takes a core key: `core.moment.day`, `core.moment.time`, `core.moment.day_time` or `core.moment.month` with the `at` argument. An instance changes how dates look by overriding these keys in its own catalog.
 
+Buttons of a general action take core keys: `core.action.close`, `core.action.save`, `core.action.edit` and `core.action.drop`. An action on a particular object and a field label take keys of your module. A modal window starts with the theme's header `@Theme/_modal_header.html.twig` with the `title` argument; it holds the close button.
+
 ## Tests
 
 A module's tests run in an instance that keeps the module in `modules/`. Composer reads `autoload-dev` of the root package only, so the instance maps the module's test namespace itself and adds a suite named after the module key to `phpunit.dist.xml`.

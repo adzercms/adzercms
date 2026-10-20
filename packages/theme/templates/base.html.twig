@@ -68,10 +68,7 @@
 {% if app.user %}
     <dialog class="modal" id="record" tabindex="-1"></dialog>
     <dialog class="modal" id="confirm">
-        <div class="modal-header">
-            <h2>{{ 'theme.confirm.title'|trans }}</h2>
-            <form method="dialog"><button class="modal-close">{{ 'theme.close'|trans }}</button></form>
-        </div>
+        {% include '@Theme/_modal_header.html.twig' with {title: 'theme.confirm.title'|trans} only %}
         <p class="modal-body" data-confirm-text></p>
         <form class="modal-footer" method="dialog">
             <button class="secondary">{{ 'theme.confirm.no'|trans }}</button>
