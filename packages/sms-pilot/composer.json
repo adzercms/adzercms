@@ -1,7 +1,7 @@
 {
     "name": "adzercms/sms-pilot",
     "type": "adzercms-module",
-    "description": "SMSPilot SMS gateway for AdzerCMS notices and confirmation codes",
+    "description": "SMS through SMSPilot for AdzerCMS notifications and confirmation codes",
     "keywords": [
         "adzercms",
         "symfony",

@@ -10,7 +10,7 @@
     <unit id="extensions.catalog.description">
       <segment>
         <source>extensions.catalog.description</source>
-        <target>Расширения AdzerCMS: модули, интеграции, темы, шаблоны сайтов и мини-приложения с описанием, версией, ценой и демо</target>
+        <target>Модули, интеграции, темы, шаблоны сайтов и мини-приложения для AdzerCMS — бесплатные и платные, с демо</target>
       </segment>
     </unit>
     <unit id="extensions.catalog.title">
@@ -58,7 +58,7 @@
     <unit id="extensions.confirm_drop">
       <segment>
         <source>extensions.confirm_drop</source>
-        <target>Снять {name} с каталога?</target>
+        <target>Убрать {name} из каталога?</target>
       </segment>
     </unit>
     <unit id="extensions.edition">
@@ -70,7 +70,7 @@
     <unit id="extensions.empty">
       <segment>
         <source>extensions.empty</source>
-        <target>Нет расширений</target>
+        <target>Расширений пока нет</target>
       </segment>
     </unit>
     <unit id="extensions.filter.category">
@@ -94,13 +94,13 @@
     <unit id="extensions.flash.dropped">
       <segment>
         <source>extensions.flash.dropped</source>
-        <target>{name} снято с каталога</target>
+        <target>{name} убрано из каталога</target>
       </segment>
     </unit>
     <unit id="extensions.flash.missing">
       <segment>
         <source>extensions.flash.missing</source>
-        <target>{name} сохранено без метаданных пакета: на сайт не идёт</target>
+        <target>{name} сохранено, но метаданные пакета не найдены — на сайте его не будет</target>
       </segment>
     </unit>
     <unit id="extensions.flash.saved">
@@ -154,25 +154,25 @@
     <unit id="extensions.refusal.demo">
       <segment>
         <source>extensions.refusal.demo</source>
-        <target>Демо — ссылка, начинающаяся с http:// либо https://</target>
+        <target>Ссылка на демо должна начинаться с http:// или https://</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.name">
       <segment>
         <source>extensions.refusal.name</source>
-        <target>Пакет — имя Composer vendor/package строчной латиницей</target>
+        <target>Укажите пакет в виде vendor/package строчными латинскими буквами</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.price">
       <segment>
         <source>extensions.refusal.price</source>
-        <target>Цена — положительная сумма, у бесплатного расширения её нет</target>
+        <target>Укажите цену больше нуля; у бесплатного расширения цены нет</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.repository">
       <segment>
         <source>extensions.refusal.repository</source>
-        <target>{repository} — не адрес http:// либо https://</target>
+        <target>{repository} — не ссылка: адрес должен начинаться с http:// или https://</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.taken">

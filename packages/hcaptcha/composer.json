@@ -1,7 +1,7 @@
 {
     "name": "adzercms/hcaptcha",
     "type": "adzercms-module",
-    "description": "hCaptcha for AdzerCMS forms",
+    "description": "hCaptcha spam protection for AdzerCMS forms",
     "keywords": [
         "adzercms",
         "symfony",

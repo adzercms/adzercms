@@ -1,7 +1,7 @@
 {
     "name": "adzercms/skeleton",
     "type": "project",
-    "description": "Project template of an AdzerCMS application with the admin, cabinet and default theme",
+    "description": "Starter project for an AdzerCMS site with the admin panel, customer account and default theme",
     "keywords": ["adzercms", "symfony", "skeleton", "project-template", "cms"],
     "license": "MIT",
     "minimum-stability": "dev",

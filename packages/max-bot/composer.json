@@ -1,7 +1,7 @@
 {
     "name": "adzercms/max-bot",
     "type": "adzercms-module",
-    "description": "MAX messenger bot channel for AdzerCMS notices",
+    "description": "MAX messenger bot for AdzerCMS notifications",
     "keywords": [
         "adzercms",
         "symfony",

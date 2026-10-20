@@ -1,7 +1,7 @@
 {
     "name": "adzercms/support",
     "type": "adzercms-module",
-    "description": "Support tickets for AdzerCMS with attachments, staff digest and help article suggestions",
+    "description": "Customer support for AdzerCMS: tickets with attachments, a digest for staff and help article suggestions",
     "keywords": [
         "adzercms",
         "symfony",

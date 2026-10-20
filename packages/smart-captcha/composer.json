@@ -1,7 +1,7 @@
 {
     "name": "adzercms/smart-captcha",
     "type": "adzercms-module",
-    "description": "Yandex SmartCaptcha for AdzerCMS forms",
+    "description": "Yandex SmartCaptcha spam protection for AdzerCMS forms",
     "keywords": [
         "adzercms",
         "symfony",

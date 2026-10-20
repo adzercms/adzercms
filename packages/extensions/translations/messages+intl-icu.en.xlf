@@ -10,7 +10,7 @@
     <unit id="extensions.catalog.description">
       <segment>
         <source>extensions.catalog.description</source>
-        <target>AdzerCMS extensions: modules, integrations, themes, site templates and mini apps with description, version, price and demo</target>
+        <target>Modules, integrations, themes, site templates and mini apps for AdzerCMS — free and paid, with demos</target>
       </segment>
     </unit>
     <unit id="extensions.catalog.title">
@@ -70,7 +70,7 @@
     <unit id="extensions.empty">
       <segment>
         <source>extensions.empty</source>
-        <target>No extensions</target>
+        <target>No extensions yet</target>
       </segment>
     </unit>
     <unit id="extensions.filter.category">
@@ -94,19 +94,19 @@
     <unit id="extensions.flash.dropped">
       <segment>
         <source>extensions.flash.dropped</source>
-        <target>{name} is removed from the catalog</target>
+        <target>{name} was removed from the catalog</target>
       </segment>
     </unit>
     <unit id="extensions.flash.missing">
       <segment>
         <source>extensions.flash.missing</source>
-        <target>{name} is saved without package metadata: it stays off the site</target>
+        <target>{name} was saved, but its package metadata wasn't found, so it won't appear on the site</target>
       </segment>
     </unit>
     <unit id="extensions.flash.saved">
       <segment>
         <source>extensions.flash.saved</source>
-        <target>{name} is saved</target>
+        <target>{name} was saved</target>
       </segment>
     </unit>
     <unit id="extensions.free">
@@ -154,25 +154,25 @@
     <unit id="extensions.refusal.demo">
       <segment>
         <source>extensions.refusal.demo</source>
-        <target>The demo is a link starting with http:// or https://</target>
+        <target>The demo link must start with http:// or https://</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.name">
       <segment>
         <source>extensions.refusal.name</source>
-        <target>The package is a Composer name vendor/package in lowercase Latin letters</target>
+        <target>Enter the package as vendor/package in lowercase Latin letters</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.price">
       <segment>
         <source>extensions.refusal.price</source>
-        <target>The price is a positive amount, a free extension has none</target>
+        <target>Enter a price above zero; free extensions have no price</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.repository">
       <segment>
         <source>extensions.refusal.repository</source>
-        <target>{repository} is not an http:// or https:// address</target>
+        <target>{repository} isn't a link: the address must start with http:// or https://</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.taken">

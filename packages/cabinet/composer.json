@@ -1,7 +1,7 @@
 {
     "name": "adzercms/cabinet",
     "type": "adzercms-module",
-    "description": "User cabinet for AdzerCMS: sign-up and sign-in, profile, login security and module pages",
+    "description": "Customer account for AdzerCMS: sign-up and sign-in, profile, active sessions and pages from modules",
     "keywords": [
         "adzercms",
         "symfony",

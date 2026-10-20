@@ -1,7 +1,7 @@
 {
     "name": "adzercms/mailing",
     "type": "adzercms-module",
-    "description": "Broadcasts for AdzerCMS: messages to chosen users by email, SMS and messenger bots",
+    "description": "Mailings for AdzerCMS: send messages to the users you choose by email, SMS and messenger bots",
     "keywords": [
         "adzercms",
         "symfony",

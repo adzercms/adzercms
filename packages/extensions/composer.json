@@ -1,7 +1,7 @@
 {
     "name": "adzercms/extensions",
     "type": "adzercms-module",
-    "description": "Extension catalog for AdzerCMS: Composer packages with type, price and demo in a manual order",
+    "description": "Extension catalog for AdzerCMS: modules, themes and site templates with prices and demos",
     "keywords": [
         "adzercms",
         "symfony",

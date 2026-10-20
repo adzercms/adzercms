@@ -1,7 +1,7 @@
 {
     "name": "adzercms/realtime",
     "type": "adzercms-module",
-    "description": "Real-time page updates for AdzerCMS: live blocks refreshed through a hub module",
+    "description": "Live page updates for AdzerCMS: parts of a page refresh without reloading",
     "keywords": [
         "adzercms",
         "symfony",

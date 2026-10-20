@@ -1,7 +1,7 @@
 {
     "name": "adzercms/centrifugo",
     "type": "adzercms-module",
-    "description": "Centrifugo hub for AdzerCMS real-time page updates",
+    "description": "Live page updates for AdzerCMS through a Centrifugo server",
     "keywords": [
         "adzercms",
         "symfony",

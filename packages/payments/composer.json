@@ -1,7 +1,7 @@
 {
     "name": "adzercms/payments",
     "type": "adzercms-module",
-    "description": "Online payments for AdzerCMS: payment records, confirmation and acquiring modules",
+    "description": "Online payments for AdzerCMS: payment history, confirmations and payment provider modules",
     "keywords": [
         "adzercms",
         "symfony",

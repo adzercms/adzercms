@@ -1,7 +1,7 @@
 {
     "name": "adzercms/yookassa",
     "type": "adzercms-module",
-    "description": "YooKassa acquiring for AdzerCMS payments",
+    "description": "YooKassa online payments for AdzerCMS",
     "keywords": [
         "adzercms",
         "symfony",

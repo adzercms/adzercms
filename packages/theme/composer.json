@@ -1,7 +1,7 @@
 {
     "name": "adzercms/theme",
     "type": "adzercms-module",
-    "description": "Default AdzerCMS theme: page frame, visual language components and assets",
+    "description": "Default AdzerCMS theme: page layout, interface components and styles",
     "keywords": [
         "adzercms",
         "symfony",

@@ -1,7 +1,7 @@
 {
     "name": "adzercms/yandex-id",
     "type": "adzercms-module",
-    "description": "Sign-in with Yandex ID for AdzerCMS: OAuth 2.0 and account linking",
+    "description": "Sign in to an AdzerCMS site with Yandex ID and link it to your account",
     "keywords": [
         "adzercms",
         "symfony",

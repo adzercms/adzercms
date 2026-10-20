@@ -1,7 +1,7 @@
 {
     "name": "adzercms/turnstile",
     "type": "adzercms-module",
-    "description": "Cloudflare Turnstile captcha for AdzerCMS forms",
+    "description": "Cloudflare Turnstile spam protection for AdzerCMS forms",
     "keywords": [
         "adzercms",
         "symfony",

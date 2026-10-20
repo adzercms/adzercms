@@ -1,7 +1,7 @@
 {
     "name": "adzercms/tbank",
     "type": "adzercms-module",
-    "description": "T-Bank acquiring for AdzerCMS payments",
+    "description": "T-Bank online payments for AdzerCMS",
     "keywords": [
         "adzercms",
         "symfony",

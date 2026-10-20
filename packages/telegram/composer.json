@@ -1,7 +1,7 @@
 {
     "name": "adzercms/telegram",
     "type": "adzercms-module",
-    "description": "Sign-in with Telegram for AdzerCMS: OpenID Connect and account linking",
+    "description": "Sign in to an AdzerCMS site with Telegram and link it to your account",
     "keywords": [
         "adzercms",
         "symfony",

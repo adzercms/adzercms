@@ -1,7 +1,7 @@
 {
     "name": "adzercms/sber-id",
     "type": "adzercms-module",
-    "description": "Sign-in with Sber ID for AdzerCMS: OpenID Connect and account linking",
+    "description": "Sign in to an AdzerCMS site with Sber ID and link it to your account",
     "keywords": [
         "adzercms",
         "symfony",

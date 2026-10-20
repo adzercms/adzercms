@@ -1,7 +1,7 @@
 {
     "name": "adzercms/core",
     "type": "symfony-bundle",
-    "description": "Core Symfony bundle of AdzerCMS: module registry, accounts and login, settings with encrypted secrets, notices",
+    "description": "The AdzerCMS core: modules, accounts and sign-in, settings with encrypted secrets and notifications",
     "keywords": [
         "adzercms",
         "symfony",
