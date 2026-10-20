@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Command;
 
 use AdzerCMS\Core\Module\Catalog;
-use AdzerCMS\Core\Module\ModuleAction;
-use AdzerCMS\Core\Module\Requests;
+use AdzerCMS\Core\Module\Execution;
 use AdzerCMS\Core\Module\RequestState;
 use AdzerCMS\Core\Repository\ModuleRequestRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,7 +22,7 @@ final class ModulesCommand
 
     public function __construct(
         private readonly Catalog $catalog,
-        private readonly Requests $requests,
+        private readonly Execution $execution,
         private readonly ModuleRequestRepository $queue,
         private readonly EntityManagerInterface $em,
         private readonly LockFactory $locks,
@@ -44,10 +43,10 @@ final class ModulesCommand
         $this->em->flush();
 
         $request = $this->queue->next();
-        if (null !== $request && \in_array($request->getAction(), [ModuleAction::Enable, ModuleAction::Disable], true)) {
+        if (null !== $request) {
             $request->start();
             $this->em->flush();
-            $request->finish($this->requests->apply($request));
+            $request->finish($this->execution->apply($request));
             $this->em->flush();
         }
 

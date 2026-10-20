@@ -42,7 +42,11 @@ An installed module that isn't enabled adds nothing: no services, routes, comman
 
 ## Enable a module from the admin panel
 
-On a site outside git the module catalog of the admin panel has an action button on each row. A button files a request, and the `adzercms:modules` job applies one request a minute. Enabling or disabling checks the new module list the way the build does, refreshes the site with it, and only then writes the variable into `.env.local`. The request keeps its outcome and the error output. A site under git changes modules by commit, so its catalog has no buttons.
+On a site outside git the module catalog of the admin panel has action buttons on each row: install, update, remove, enable, disable. A button files a request, and the `adzercms:modules` job applies one request a minute. The request keeps its outcome and the error output. A site under git changes modules by commit, so its catalog has no buttons.
+
+- Install, update and remove run Composer on a copy of the site made by [Composer Stager](https://github.com/php-tuf/composer-stager). The site gets the result only if Composer succeeds, then the job refreshes it. Updating an engine package updates all `adzercms/*` packages together
+- Enabling or disabling checks the new module list the way the build does, refreshes the site with it, and only then writes the variable into `.env.local`
+- An enabled module can't be removed: disable it first
 
 ## Turn on sign-in, SMS, a bot or captcha
 

@@ -38,6 +38,7 @@
         "geoip2/geoip2": "^3.4",
         "matomo/device-detector": "^6.5",
         "maxmind-db/reader": "^1.14",
+        "php-tuf/composer-stager": "^2.1.1",
         "psr/cache": "^3.0",
         "psr/event-dispatcher": "^1.0",
         "symfony/asset": "7.4.*",

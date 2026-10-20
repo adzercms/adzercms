@@ -11,14 +11,15 @@ use Symfony\Component\Process\Process;
 
 final readonly class Tree
 {
+    public const TIMEOUT = 1800;
+
     private const REFRESH = __DIR__.'/../../bin/adzercms-refresh';
     private const ENVIRONMENT = '.env.local';
     private const LOADED = 'SYMFONY_DOTENV_VARS';
-    private const TIMEOUT = 1800;
 
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
-        private string $root,
+        public string $root,
         private string $refresh = self::REFRESH,
     ) {
     }

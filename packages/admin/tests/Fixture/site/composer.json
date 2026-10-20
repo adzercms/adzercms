@@ -1,0 +1,20 @@
+{
+    "name": "acme/site",
+    "type": "project",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "modules/*"
+        },
+        {
+            "packagist.org": false
+        }
+    ],
+    "require": {
+        "adzercms/sms-pilot": "^1.0",
+        "adzercms/theme": "^1.0"
+    },
+    "config": {
+        "allow-plugins": false
+    }
+}

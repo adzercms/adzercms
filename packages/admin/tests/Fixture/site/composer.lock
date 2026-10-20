@@ -1,0 +1,45 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "30e6097ff0fde0e6989898506c1724f1",
+    "packages": [
+        {
+            "name": "adzercms/sms-pilot",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/sms-pilot",
+                "reference": "1d3b4e3534be84c4362c73c2db46d9f447bc11e1"
+            },
+            "type": "adzercms-module",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "adzercms/theme",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/theme",
+                "reference": "2e4ef85fb075ccd0de52efe935061aa6b65aa2d7"
+            },
+            "type": "adzercms-module",
+            "transport-options": {
+                "relative": true
+            }
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {},
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
+}

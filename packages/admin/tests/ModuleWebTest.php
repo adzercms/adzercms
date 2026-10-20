@@ -213,10 +213,45 @@ final class ModuleWebTest extends SchemaTestCase
         yield 'refresh failed' => ['migration failed', RequestState::Failed, "APP_SECRET=kept\nSMS_MODULES=Stale\n"];
     }
 
-    private function tree(): string
+    /** @param list<string> $locked */
+    #[Group('ACMS-CORE-0940')]
+    #[Group('ACMS-US-0004')]
+    #[DataProvider('compositions')]
+    public function testComposerRequestRunsInStagedCopyCommittedOnlyOnSuccess(ModuleAction $action, string $package, RequestState $state, array $locked): void
+    {
+        $tree = $this->tree(__DIR__.'/Fixture/site');
+        $this->answerCatalog();
+        $this->listed([$package]);
+        $this->offer($package, '1.0.0');
+        self::command('adzercms:modules')->execute([]);
+
+        $this->post(\sprintf('/admin/modules/request/%s?package=%s', $action->value, $package));
+        self::command('adzercms:modules')->execute([]);
+        $this->em->clear();
+        $request = self::service(ModuleRequestRepository::class)->findOneBy(['package' => $package]) ?? self::fail('the request is not filed');
+        $lock = json_decode((string) file_get_contents($tree.'/composer.lock'), true, flags: \JSON_THROW_ON_ERROR);
+        $manifest = json_decode((string) file_get_contents($tree.'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
+
+        self::assertSame($state, $request->getState(), (string) $request->getOutput());
+        self::assertEqualsCanonicalizing($locked, array_column($lock['packages'], 'name'));
+        self::assertEqualsCanonicalizing($locked, array_keys($manifest['require']));
+        self::assertDirectoryDoesNotExist($tree.'/var/stage');
+        self::assertSame(RequestState::Done === $state, is_file($tree.'/refreshed.env'), 'the refresh follows a committed change only');
+    }
+
+    /** @return iterable<string, array{ModuleAction, string, RequestState, list<string>}> */
+    public static function compositions(): iterable
+    {
+        yield 'install' => [ModuleAction::Install, 'acme/shop', RequestState::Done, ['acme/shop', 'adzercms/sms-pilot', 'adzercms/theme']];
+        yield 'install refused by Composer' => [ModuleAction::Install, 'acme/absent', RequestState::Failed, ['adzercms/sms-pilot', 'adzercms/theme']];
+        yield 'update of an engine package' => [ModuleAction::Update, 'adzercms/sms-pilot', RequestState::Done, ['adzercms/sms-pilot', 'adzercms/theme']];
+        yield 'remove' => [ModuleAction::Remove, 'adzercms/sms-pilot', RequestState::Done, ['adzercms/theme']];
+    }
+
+    private function tree(?string $site = null): string
     {
         $this->tree = sys_get_temp_dir().'/adzercms-tree-'.bin2hex(random_bytes(4));
-        (new Filesystem())->mkdir($this->tree);
+        null === $site ? (new Filesystem())->mkdir($this->tree) : (new Filesystem())->mirror($site, $this->tree);
         self::getContainer()->set(Tree::class, new Tree($this->tree, __DIR__.'/Fixture/refresh'));
 
         return $this->tree;

@@ -88,6 +88,7 @@ printf '%s' "$PASSWORD" | bin/console adzercms:admin admin@example.com --stdin
 - `adzercms:sweep` удаляет завершённые сеансы, старые записи журнала и подтверждения, а также кеш наборов модулей, с которых сайт ушёл
 - `adzercms:modules` исполняет заявки модулей из админки и раз в сутки обновляет каталог модулей из Packagist
 - У сайта без git нет `adzercms.php`: впишите `PHP_BINARY=/usr/bin/php8.4` в начало crontab
+- Заявкам модулей нужны `composer` и `rsync` в `PATH` crontab
 
 Задания модулей, если они включены:
 

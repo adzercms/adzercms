@@ -88,6 +88,7 @@ Add the jobs to the crontab of the user the site runs as; `/path` is the site di
 - `adzercms:sweep` removes ended sessions, old log entries and confirmations, and the cache of module sets the site has left
 - `adzercms:modules` applies module requests from the admin panel and refreshes the module catalog from Packagist once a day
 - A site without git has no `adzercms.php`: put `PHP_BINARY=/usr/bin/php8.4` at the top of the crontab
+- Module requests need `composer` and `rsync` in the `PATH` of the crontab
 
 Module jobs, if the modules are enabled:
 
