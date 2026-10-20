@@ -41,11 +41,12 @@ final class IndexingTest extends SchemaTestCase
         $robots = (string) $this->client->getResponse()->getContent();
         self::assertStringContainsString("Disallow: /vault/\n", $robots);
         self::assertStringNotContainsString('Disallow: /guide', $robots);
+        self::assertStringNotContainsString('Disallow: /shelf/', $robots);
         self::assertStringNotContainsString('Disallow: /setting/', $robots);
         self::assertStringContainsString("Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&yclid&gclid&fbclid\n\nSitemap: http://localhost/sitemap.xml\n", $robots);
 
         $this->client->request('GET', '/sitemap.xml');
-        self::assertSame(['http://localhost/guide'], $this->sitemap('loc'));
+        self::assertSame(['http://localhost/guide', 'http://localhost/shelf/tales'], $this->sitemap('loc'));
         self::assertSame([], $this->sitemap('lastmod'));
 
         $this->em->persist(new Text('ru', 'messages', 'fixture.guide', 'Справочник'));
@@ -57,6 +58,10 @@ final class IndexingTest extends SchemaTestCase
         self::assertSame('http://localhost/guide index', $this->client->getResponse()->getContent());
         $this->client->request('GET', '/vault/7');
         self::assertSame('http://localhost/vault/7 index', $this->client->getResponse()->getContent());
+        $this->client->request('GET', '/shelf/tales.pdf');
+        self::assertSame('http://localhost/shelf/tales index', $this->client->getResponse()->getContent());
+        $this->client->request('GET', '/shelf/other.pdf');
+        self::assertSame('http://localhost/shelf/other.pdf index', $this->client->getResponse()->getContent());
     }
 
     /**

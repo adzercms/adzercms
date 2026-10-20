@@ -52,11 +52,12 @@ final readonly class Indexing implements Owner
     {
         $request = $this->requests->getCurrentRequest() ?? throw new \LogicException('the page head needs a request');
         $route = (string) $request->attributes->get('_route');
-        $page = $this->pages->of($route);
+        $parameters = (array) $request->attributes->get('_route_params');
+        $page = $this->pages->of($route, $parameters);
 
         return new Head(
             $page,
-            null === $page ? $this->router->generate($route, (array) $request->attributes->get('_route_params'), UrlGeneratorInterface::ABSOLUTE_URL) : $this->pages->url($page),
+            null === $page ? $this->router->generate($route, $parameters, UrlGeneratorInterface::ABSOLUTE_URL) : $this->pages->url($page),
             $this->on(),
         );
     }

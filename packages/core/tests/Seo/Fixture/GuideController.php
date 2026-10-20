@@ -19,6 +19,8 @@ final readonly class GuideController
     #[Route('/guide', name: 'fixture_guide', methods: ['GET'])]
     #[Route('/guide/{part}', name: 'fixture_guide_part', methods: ['GET'])]
     #[Route('/guide.pdf', name: 'fixture_guide_file', methods: ['GET'])]
+    #[Route('/shelf/{name}.pdf', name: 'fixture_shelf_file', methods: ['GET'])]
+    #[Route('/shelf/{name}', name: 'fixture_shelf', methods: ['GET'])]
     #[Route('/vault/{id}', name: 'fixture_vault', methods: ['GET'])]
     public function show(): Response
     {

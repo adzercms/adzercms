@@ -31,9 +31,10 @@ final readonly class PageMap
         return $pages;
     }
 
-    public function of(string $route): ?Page
+    /** @param array<string, mixed> $parameters */
+    public function of(string $route, array $parameters = []): ?Page
     {
-        return array_find($this->all(), static fn (Page $page): bool => $route === $page->route || \in_array($route, $page->routes, true));
+        return array_find($this->all(), static fn (Page $page): bool => ($route === $page->route || \in_array($route, $page->routes, true)) && array_intersect_key($parameters, $page->parameters) == $page->parameters);
     }
 
     /** @return list<string> */
@@ -44,12 +45,12 @@ final readonly class PageMap
 
     public function path(Page $page): string
     {
-        return $this->urls->generate($page->route);
+        return $this->urls->generate($page->route, $page->parameters);
     }
 
     public function url(Page $page): string
     {
-        return $this->urls->generate($page->route, referenceType: UrlGeneratorInterface::ABSOLUTE_URL);
+        return $this->urls->generate($page->route, $page->parameters, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     /** @return list<string> */

@@ -13,6 +13,9 @@ final readonly class GuidePages implements Pages
 {
     public function pages(): array
     {
-        return [new Page('fixture_guide', new TranslatableMessage('fixture.guide'), ['fixture_guide_part', 'fixture_guide_file'], [Text::class])];
+        return [
+            new Page('fixture_guide', new TranslatableMessage('fixture.guide'), ['fixture_guide_part', 'fixture_guide_file'], [Text::class]),
+            new Page('fixture_shelf', new TranslatableMessage('fixture.shelf'), ['fixture_shelf_file'], parameters: ['name' => 'tales']),
+        ];
     }
 }
