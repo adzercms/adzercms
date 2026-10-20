@@ -11,8 +11,10 @@ use AdzerCMS\Core\Module\Catalog as ModuleCatalog;
 use AdzerCMS\Core\Module\CatalogRow;
 use AdzerCMS\Core\Module\ModuleAction;
 use AdzerCMS\Core\Module\RequestState;
+use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Module\Tree;
 use AdzerCMS\Core\Repository\ModuleRequestRepository;
+use AdzerCMS\Core\Repository\ModuleSourceRepository;
 use AdzerCMS\Core\Setting\Catalog;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Tests\Accounts;
@@ -34,6 +36,7 @@ final class ModuleWebTest extends SchemaTestCase
     use CatalogAnswers;
 
     private const SENDER = RelayGateway::SETTINGS.RelayGateway::SENDER;
+    private const REPOSITORY = 'https://repo.acme.test';
 
     private ?string $tree = null;
 
@@ -186,6 +189,7 @@ final class ModuleWebTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0938')]
+    #[Group('ACMS-CORE-0944')]
     #[Group('ACMS-US-0004')]
     #[DataProvider('refreshes')]
     public function testEnablingRefreshesSiteOnNewSelectionBeforeWritingIt(?string $refusal, RequestState $state, string $environment): void
@@ -195,6 +199,9 @@ final class ModuleWebTest extends SchemaTestCase
         if (null !== $refusal) {
             file_put_contents($tree.'/refusal', $refusal);
         }
+        $sources = self::service(Sources::class);
+        $sources->add(self::REPOSITORY);
+        $sources->grant(self::service(ModuleSourceRepository::class)->findOneBy(['url' => self::REPOSITORY]) ?? self::fail('the source is not kept'), '', 'secret');
 
         $this->post('/admin/modules/request/enable?package=adzercms/sms-pilot');
         self::command('adzercms:modules')->execute([]);
@@ -204,6 +211,7 @@ final class ModuleWebTest extends SchemaTestCase
 
         self::assertContains('SMS_MODULES=SmsPilot', $refreshed, 'the refresh builds the new selection');
         self::assertContains('PHP_BINARY='.\PHP_BINARY, $refreshed);
+        self::assertContains('COMPOSER_AUTH={"bearer":{"repo.acme.test":"secret"}}', $refreshed, 'Composer of the refresh takes credentials of the own sources');
         self::assertSame([], preg_grep('/^(APP_SECRET|SYMFONY_DOTENV_VARS)=/', $refreshed), 'the refresh reads the environment files itself');
         self::assertSame([$state, $refusal], [$request->getState(), $request->getOutput()]);
         self::assertSame($environment, file_get_contents($tree.'/.env.local'));
@@ -218,14 +226,18 @@ final class ModuleWebTest extends SchemaTestCase
 
     /** @param list<string> $locked */
     #[Group('ACMS-CORE-0940')]
+    #[Group('ACMS-CORE-0946')]
     #[Group('ACMS-US-0004')]
     #[DataProvider('compositions')]
-    public function testComposerRequestRunsInStagedCopyCommittedOnlyOnSuccess(ModuleAction $action, string $package, RequestState $state, array $locked): void
+    public function testComposerRequestRunsInStagedCopyCommittedOnlyOnSuccess(ModuleAction $action, string $package, RequestState $state, array $locked, bool $zipped = false): void
     {
         $tree = $this->tree(__DIR__.'/Fixture/site');
         $this->answerCatalog();
         $this->listed([$package]);
         $this->offer($package, '1.0.0');
+        if ($zipped) {
+            $this->post('/admin/modules/sources/zip', [], ['archive' => $this->archive(['composer.json' => json_encode(self::manifest($package, '1.0.0'), \JSON_THROW_ON_ERROR)])]);
+        }
         self::command('adzercms:modules')->execute([]);
 
         $this->post(\sprintf('/admin/modules/request/%s?package=%s', $action->value, $package));
@@ -238,6 +250,7 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertSame($state, $request->getState(), (string) $request->getOutput());
         self::assertEqualsCanonicalizing($locked, array_column($lock['packages'], 'name'));
         self::assertEqualsCanonicalizing($locked, array_keys($manifest['require']));
+        self::assertSame($zipped, \in_array('adzercms-zip', array_column($manifest['repositories'], 'name'), true), 'the repositories carry the ZIP directory while it holds archives');
         self::assertDirectoryDoesNotExist($tree.'/var/stage');
         self::assertSame(RequestState::Done === $state, is_file($tree.'/refreshed.env'), 'the refresh follows a committed change only');
     }
@@ -249,6 +262,46 @@ final class ModuleWebTest extends SchemaTestCase
         yield 'install refused by Composer' => [ModuleAction::Install, 'acme/absent', RequestState::Failed, ['adzercms/sms-pilot', 'adzercms/theme']];
         yield 'update of an engine package' => [ModuleAction::Update, 'adzercms/sms-pilot', RequestState::Done, ['adzercms/sms-pilot', 'adzercms/theme']];
         yield 'remove' => [ModuleAction::Remove, 'adzercms/sms-pilot', RequestState::Done, ['adzercms/theme']];
+        yield 'install of an uploaded ZIP' => [ModuleAction::Install, 'acme/zipped', RequestState::Done, ['acme/zipped', 'adzercms/sms-pilot', 'adzercms/theme'], true];
+    }
+
+    #[Group('ACMS-CORE-0143')]
+    #[Group('ACMS-CORE-0944')]
+    #[Group('ACMS-US-0004')]
+    public function testOwnSourcesShareCredentialsOfTheirHostAndShowUnavailability(): void
+    {
+        self::assertSame(self::phrase('admin.sources.empty'), trim($this->client->request('GET', '/admin/modules')->filter('#sources .empty-state')->text()));
+
+        $this->connect(self::REPOSITORY.'/one');
+        $this->connect(self::REPOSITORY.'/two');
+        $this->connect(self::REPOSITORY.'/one');
+        self::assertSame(self::phrase('core.module.source.taken', ['url' => self::REPOSITORY.'/one']), self::toast($this->arrive('/admin/modules'), 'error'));
+        $one = self::service(ModuleSourceRepository::class)->findOneBy(['url' => self::REPOSITORY.'/one']) ?? self::fail('the source is not kept');
+        $dialog = $this->client->request('GET', '/admin/modules/sources/'.$one->getId().'/credentials');
+        $this->client->submit($dialog->selectButton(self::phrase('core.action.save'))->form(['token' => 'secret']));
+        $this->connect(self::REPOSITORY.'/three');
+
+        $this->answerCatalog();
+        $this->listed([]);
+        $this->unavailable = [self::REPOSITORY];
+        self::command('adzercms:modules')->execute([]);
+        $sources = $this->client->request('GET', '/admin/modules')->filter('#sources');
+        foreach (['one', 'two', 'three'] as $path) {
+            self::assertSame(self::phrase('admin.setting.set'), trim(self::cell($sources, self::REPOSITORY.'/'.$path, self::phrase('admin.sources.access'))->text()), 'a source takes credentials of its host');
+            self::assertSame(self::phrase('admin.sources.down'), trim(self::cell($sources, self::REPOSITORY.'/'.$path, self::phrase('admin.sources.source'))->filter('.badge')->text()));
+        }
+
+        $this->post('/admin/modules/sources/'.$one->getId().'/drop');
+        self::assertSame(
+            [self::REPOSITORY.'/two', self::REPOSITORY.'/three'],
+            $this->arrive('/admin/modules')->filter('#sources tbody tr td strong')->each(static fn (Crawler $source): string => trim($source->text())),
+        );
+    }
+
+    private function connect(string $url): void
+    {
+        $dialog = $this->client->request('GET', '/admin/modules/sources/new');
+        $this->client->submit($dialog->selectButton(self::phrase('admin.sources.add'))->form(['url' => $url]));
     }
 
     private function tree(?string $site = null): string

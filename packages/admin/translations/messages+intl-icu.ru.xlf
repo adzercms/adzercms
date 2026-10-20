@@ -52,7 +52,7 @@
     <unit id="admin.catalog.untaken">
       <segment>
         <source>admin.catalog.untaken</source>
-        <target>Каталог ещё не снят: его снимает задание adzercms:modules раз в сутки</target>
+        <target>Каталог ещё не снят: его снимает задание adzercms:modules раз в сутки и при смене источников</target>
       </segment>
     </unit>
     <unit id="admin.catalog.version">
@@ -257,6 +257,102 @@
       <segment>
         <source>admin.settings.saved</source>
         <target>Настройки сохранены</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.access">
+      <segment>
+        <source>admin.sources.access</source>
+        <target>Доступ</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.add">
+      <segment>
+        <source>admin.sources.add</source>
+        <target>Подключить репозиторий</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.added">
+      <segment>
+        <source>admin.sources.added</source>
+        <target>Источник подключён</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.archive">
+      <segment>
+        <source>admin.sources.archive</source>
+        <target>Архив пакета</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.down">
+      <segment>
+        <source>admin.sources.down</source>
+        <target>недоступен</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.drop_confirm">
+      <segment>
+        <source>admin.sources.drop_confirm</source>
+        <target>Снять источник {source}?</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.dropped">
+      <segment>
+        <source>admin.sources.dropped</source>
+        <target>Источник снят</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.empty">
+      <segment>
+        <source>admin.sources.empty</source>
+        <target>Своих источников нет</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.login">
+      <segment>
+        <source>admin.sources.login</source>
+        <target>Логин</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.source">
+      <segment>
+        <source>admin.sources.source</source>
+        <target>Источник</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.title">
+      <segment>
+        <source>admin.sources.title</source>
+        <target>Источники модулей</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.token">
+      <segment>
+        <source>admin.sources.token</source>
+        <target>Токен</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.upload">
+      <segment>
+        <source>admin.sources.upload</source>
+        <target>Загрузить ZIP</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.uploaded">
+      <segment>
+        <source>admin.sources.uploaded</source>
+        <target>Архив загружен</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.url">
+      <segment>
+        <source>admin.sources.url</source>
+        <target>Адрес репозитория Composer</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.zip">
+      <segment>
+        <source>admin.sources.zip</source>
+        <target>ZIP</target>
       </segment>
     </unit>
     <unit id="admin.text.catalog">

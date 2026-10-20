@@ -52,7 +52,7 @@
     <unit id="admin.catalog.untaken">
       <segment>
         <source>admin.catalog.untaken</source>
-        <target>The catalog has not been taken yet: the adzercms:modules job takes it once a day</target>
+        <target>The catalog is not taken yet: the adzercms:modules job takes it once a day and on a change of sources</target>
       </segment>
     </unit>
     <unit id="admin.catalog.version">
@@ -257,6 +257,102 @@
       <segment>
         <source>admin.settings.saved</source>
         <target>Settings saved</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.access">
+      <segment>
+        <source>admin.sources.access</source>
+        <target>Access</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.add">
+      <segment>
+        <source>admin.sources.add</source>
+        <target>Connect repository</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.added">
+      <segment>
+        <source>admin.sources.added</source>
+        <target>Source connected</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.archive">
+      <segment>
+        <source>admin.sources.archive</source>
+        <target>Package archive</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.down">
+      <segment>
+        <source>admin.sources.down</source>
+        <target>unavailable</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.drop_confirm">
+      <segment>
+        <source>admin.sources.drop_confirm</source>
+        <target>Remove source {source}?</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.dropped">
+      <segment>
+        <source>admin.sources.dropped</source>
+        <target>Source removed</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.empty">
+      <segment>
+        <source>admin.sources.empty</source>
+        <target>No own sources</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.login">
+      <segment>
+        <source>admin.sources.login</source>
+        <target>Login</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.source">
+      <segment>
+        <source>admin.sources.source</source>
+        <target>Source</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.title">
+      <segment>
+        <source>admin.sources.title</source>
+        <target>Module sources</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.token">
+      <segment>
+        <source>admin.sources.token</source>
+        <target>Token</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.upload">
+      <segment>
+        <source>admin.sources.upload</source>
+        <target>Upload ZIP</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.uploaded">
+      <segment>
+        <source>admin.sources.uploaded</source>
+        <target>Archive uploaded</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.url">
+      <segment>
+        <source>admin.sources.url</source>
+        <target>Composer repository URL</target>
+      </segment>
+    </unit>
+    <unit id="admin.sources.zip">
+      <segment>
+        <source>admin.sources.zip</source>
+        <target>ZIP</target>
       </segment>
     </unit>
     <unit id="admin.text.catalog">

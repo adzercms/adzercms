@@ -49,6 +49,15 @@ On a site outside git the module catalog of the admin panel has action buttons o
 - An enabled module can't be removed: disable it first
 - The enabled admin panel module has no disable button: enabling another admin panel module replaces it
 
+## Add your own module sources
+
+The module sources section of the admin panel takes a private Composer repository by its URL or a module uploaded as a ZIP archive. The catalog picks them up within a minute.
+
+- A repository token goes into the credentials dialog of its row. With a login, Composer sends HTTP Basic, without one a Bearer token. The credentials belong to the host: all repositories of one host share them
+- A ZIP archive needs `composer.json` at its root or in its only top-level folder, with the package name and a stable version. A new version of the package is a new archive
+- A package from a ZIP wins over the repositories, and your repositories win over Packagist
+- The job writes your sources into the `repositories` of `composer.json` under names starting with `adzercms-` before each Composer run
+
 ## Turn on sign-in, SMS, a bot or captcha
 
 Such a module works once it's switched on and its credentials are set. Settings are named `<kind>.<module>.<field>`:

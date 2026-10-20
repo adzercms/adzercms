@@ -1,0 +1,11 @@
+{% include '@Theme/_modal_header.html.twig' with {title: 'admin.sources.add'|trans} only %}
+
+<form class="modal-body" method="post" action="{{ path('admin_module_source_new') }}">
+    {{ csrf_field() }}
+    <label>{{ 'admin.sources.url'|trans }}
+        <input type="url" name="url" required spellcheck="false">
+    </label>
+    <div class="button-row">
+        <button type="submit">{{ 'admin.sources.add'|trans }}</button>
+    </div>
+</form>

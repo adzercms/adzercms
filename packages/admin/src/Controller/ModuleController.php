@@ -7,17 +7,23 @@ namespace AdzerCMS\Admin\Controller;
 use AdzerCMS\Admin\AssembledModules;
 use AdzerCMS\Admin\SettingForm;
 use AdzerCMS\Contracts\Module\Category;
+use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Contracts\Ui\Badge;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Composer\Artifacts;
+use AdzerCMS\Core\Entity\ModuleSource;
 use AdzerCMS\Core\Module\Catalog;
 use AdzerCMS\Core\Module\CatalogRow;
 use AdzerCMS\Core\Module\ModuleAction;
 use AdzerCMS\Core\Module\Requests;
+use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Module\Tree;
 use AdzerCMS\Core\Repository\ModuleRequestRepository;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -35,11 +41,14 @@ final class ModuleController extends AbstractController
     private const CATALOG = 'catalog';
     private const CATEGORY = 'category';
     private const REQUESTS = 'requests';
+    private const SOURCES = 'sources';
 
     public function __construct(
         private readonly AssembledModules $assembled,
         private readonly Catalog $catalog,
         private readonly Requests $requests,
+        private readonly Sources $sources,
+        private readonly Artifacts $artifacts,
         private readonly ModuleRequestRepository $filings,
         private readonly Tree $tree,
         private readonly SettingForm $form,
@@ -79,6 +88,12 @@ final class ModuleController extends AbstractController
         ], live: true, id: self::CATALOG);
         $offered = $this->catalog->rows();
 
+        $sources = Table::of($request, 'admin_modules', [
+            Column::plain('source', t('admin.sources.source')),
+            Column::plain('access', t('admin.sources.access')),
+            Column::plain('actions'),
+        ], 'source', t('admin.sources.empty'), id: self::SOURCES);
+
         $requests = Table::of($request, 'admin_modules', [
             Column::plain('package', t('admin.catalog.package')),
             Column::plain('action', t('admin.requests.action')),
@@ -94,6 +109,8 @@ final class ModuleController extends AbstractController
             'offers' => $catalog->rows($this->offers($offered['rows'], Category::tryFrom($catalog->value(self::CATEGORY)), $translator)),
             'taken' => $offered['at'],
             'versioned' => $this->tree->versioned(),
+            'sources' => $sources,
+            'origins' => $sources->rows($this->origins($offered['down'])),
             'requests' => $requests,
             'filings' => $this->filings->page($requests),
         ]);
@@ -127,7 +144,11 @@ final class ModuleController extends AbstractController
                 'kind' => \is_string($row->kind) ? $row->kind : $row->kind->label()->trans($translator),
                 'version' => (string) $row->version,
                 'installed' => (string) $row->installed,
-                'repository' => null === $row->repository ? '' : (string) parse_url($row->repository, \PHP_URL_HOST),
+                'repository' => match ($row->repository) {
+                    null => '',
+                    Artifacts::REPOSITORY => $translator->trans('admin.sources.zip'),
+                    default => (string) parse_url($row->repository, \PHP_URL_HOST),
+                },
                 'actions' => array_map(static fn (ModuleAction $action): array => [
                     'label' => $action->label(),
                     'route' => 'admin_module_request',
@@ -138,6 +159,108 @@ final class ModuleController extends AbstractController
         }
 
         return $offers;
+    }
+
+    /**
+     * @param list<string> $down
+     *
+     * @return list<array{source: string, down: ?Badge, access: bool, credentials: ?int, drop: string, hidden: array<string, string>}>
+     */
+    private function origins(array $down): array
+    {
+        $origins = [];
+        foreach ($this->artifacts->archives() as $archive) {
+            $origins[] = [
+                'source' => $archive['name'].' '.$archive['version'],
+                'down' => null,
+                'access' => false,
+                'credentials' => null,
+                'drop' => $this->generateUrl('admin_module_zip_drop'),
+                'hidden' => ['package' => $archive['name'], 'version' => $archive['normalized']],
+            ];
+        }
+        foreach ($this->sources->own() as $source) {
+            $origins[] = [
+                'source' => $source->getUrl(),
+                'down' => \in_array($source->getUrl(), $down, true) ? Badge::bad(t('admin.sources.down')) : null,
+                'access' => null !== $source->getTokenCipher(),
+                'credentials' => $source->getId(),
+                'drop' => $this->generateUrl('admin_module_source_drop', ['id' => $source->getId()]),
+                'hidden' => [],
+            ];
+        }
+
+        return $origins;
+    }
+
+    #[Route('/sources/new', name: 'admin_module_source_new', methods: ['GET', 'POST'])]
+    public function sourceNew(Request $request): Response
+    {
+        if (!$request->isMethod('POST')) {
+            return $this->render('@Admin/admin/_source_new.html.twig');
+        }
+
+        $refusal = $this->sources->add($request->request->getString('url'));
+        $this->addFlash(null === $refusal ? 'success' : 'error', $refusal->reason ?? t('admin.sources.added'));
+
+        return $this->redirectToRoute('admin_modules');
+    }
+
+    #[Route('/sources/zip', name: 'admin_module_zip', methods: ['GET', 'POST'])]
+    public function zip(Request $request): Response
+    {
+        if (!$request->isMethod('POST')) {
+            return $this->render('@Admin/admin/_source_zip.html.twig');
+        }
+
+        $file = $request->files->get('archive');
+        $refusal = $file instanceof UploadedFile ? $this->artifacts->upload($file) : new Refusal(t('core.module.zip.unreadable'));
+        $this->addFlash(null === $refusal ? 'success' : 'error', $refusal->reason ?? t('admin.sources.uploaded'));
+
+        return $this->redirectToRoute('admin_modules');
+    }
+
+    #[Route('/sources/zip/drop', name: 'admin_module_zip_drop', methods: ['POST'])]
+    public function zipDrop(Request $request): Response
+    {
+        $this->artifacts->drop($request->request->getString('package'), $request->request->getString('version'));
+        $this->addFlash('success', t('admin.sources.dropped'));
+
+        return $this->redirectToRoute('admin_modules');
+    }
+
+    #[Route('/sources/{id}/credentials', name: 'admin_module_source_credentials', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function sourceCredentials(ModuleSource $source, Request $request): Response
+    {
+        if ($request->isMethod('POST')) {
+            if ($request->request->getBoolean('drop')) {
+                $this->sources->revoke($source);
+                $this->addFlash('success', t('admin.credentials.cleared'));
+            } else {
+                $this->sources->grant($source, $request->request->getString('login'), $request->request->getString('token'));
+                $this->addFlash('success', t('admin.credentials.saved'));
+            }
+
+            return $this->redirectToRoute('admin_modules');
+        }
+
+        return $this->render('@Theme/_credentials.html.twig', [
+            'action' => $this->generateUrl('admin_module_source_credentials', ['id' => $source->getId()]),
+            'fields' => [
+                ['name' => 'login', 'label' => t('admin.sources.login'), 'secret' => false, 'value' => $source->getLogin()],
+                ['name' => 'token', 'label' => t('admin.sources.token'), 'secret' => true, 'stored' => null !== $source->getTokenCipher()],
+            ],
+            'clearable' => null !== $source->getTokenCipher() || null !== $source->getLogin(),
+        ]);
+    }
+
+    #[Route('/sources/{id}/drop', name: 'admin_module_source_drop', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function sourceDrop(ModuleSource $source): Response
+    {
+        $this->sources->drop($source);
+        $this->addFlash('success', t('admin.sources.dropped'));
+
+        return $this->redirectToRoute('admin_modules');
     }
 
     #[Route('/{key}', name: 'admin_module', methods: ['GET', 'POST'])]
