@@ -1,0 +1,10 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  module-check:
+    uses: adzercms/adzercms/.github/workflows/module-check.yml@main

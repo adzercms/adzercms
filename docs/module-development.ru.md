@@ -6,6 +6,15 @@
 
 ## Пакет
 
+Модуль заводится в каталоге `modules/` экземпляра:
+
+```sh
+composer create-project adzercms/module-skeleton modules/pigeon --stability=dev --no-install
+composer require acme/pigeon:@dev
+```
+
+`create-project` спрашивает имя пакета, namespace и класс бандла. Новый пакет — модуль функции с бандлом, тестом, каталогами `en` и `ru` и CI с [проверкой модуля](#проверка-модуля). Его `composer.json` выглядит так:
+
 ```json
 {
     "name": "acme/pigeon",

@@ -1,0 +1,24 @@
+{
+    "name": "adzercms/module-skeleton",
+    "type": "project",
+    "description": "Starter repository for an AdzerCMS module with the bundle, a test, translation catalogs and the module check in CI",
+    "keywords": ["adzercms", "symfony", "module", "skeleton", "bundle"],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vendor\\Module\\": "src/"
+        }
+    },
+    "scripts": {
+        "post-create-project-cmd": "@php setup.php"
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "Vendor\\Module\\ModuleBundle"
+        }
+    }
+}

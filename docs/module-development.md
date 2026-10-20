@@ -6,6 +6,15 @@ A module is a Composer package with a Symfony bundle. It depends on the contract
 
 ## Package
 
+Start a module in the `modules/` directory of an instance:
+
+```sh
+composer create-project adzercms/module-skeleton modules/pigeon --stability=dev --no-install
+composer require acme/pigeon:@dev
+```
+
+`create-project` asks for the package name, the namespace and the bundle class. The new package is a feature module with its bundle, a test, the `en` and `ru` catalogs and CI that runs the [module check](#module-check). Its `composer.json` looks like this:
+
 ```json
 {
     "name": "acme/pigeon",
