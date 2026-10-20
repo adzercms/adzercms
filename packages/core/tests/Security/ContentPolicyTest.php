@@ -27,7 +27,7 @@ final class ContentPolicyTest extends TestCase
 
     /**
      * @param array<ContentSource::IMG|ContentSource::WORKER, list<string>> $declared
-     * @param list<string>                                                 $expected
+     * @param list<string>                                                  $expected
      */
     #[DataProvider('declarations')]
     public function testDeclaredImageAndWorkerSourcesReachThePolicy(array $declared, array $expected): void
