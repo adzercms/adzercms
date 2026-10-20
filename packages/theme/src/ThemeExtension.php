@@ -6,6 +6,7 @@ namespace AdzerCMS\Theme;
 
 use AdzerCMS\Contracts\Ui\Badged;
 use AdzerCMS\Core\Ui\Money;
+use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -59,11 +60,12 @@ final class ThemeExtension extends AbstractExtension
         return '' === trim((string) $value) ? '' : '<br>'.$this->clip($value, self::CAPTION, 'muted');
     }
 
-    /** @param string|list<string>|\DateTimeInterface|null $value */
-    public function cell(string|array|\DateTimeInterface|null $value): string
+    /** @param string|list<string>|\DateTimeInterface|TranslatableInterface|null $value */
+    public function cell(string|array|\DateTimeInterface|TranslatableInterface|null $value): string
     {
         return match (true) {
             $value instanceof \DateTimeInterface => $this->moment($value),
+            $value instanceof TranslatableInterface => htmlspecialchars($value->trans($this->translator), \ENT_QUOTES),
             null === $value, '' === $value, [] === $value => self::BLANK,
             \is_array($value) => $this->lines($value),
             default => htmlspecialchars($value, \ENT_QUOTES),
