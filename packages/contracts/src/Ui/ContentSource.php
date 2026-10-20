@@ -13,7 +13,9 @@ interface ContentSource
     public const CONNECT = 'connect-src';
     public const FRAME = 'frame-src';
     public const STYLE = 'style-src';
+    public const IMG = 'img-src';
+    public const WORKER = 'worker-src';
 
-    /** @return array<self::FORM|self::SCRIPT|self::CONNECT|self::FRAME|self::STYLE, list<string>> */
+    /** @return array<self::FORM|self::SCRIPT|self::CONNECT|self::FRAME|self::STYLE|self::IMG|self::WORKER, list<string>> */
     public function sources(Request $request): array;
 }
