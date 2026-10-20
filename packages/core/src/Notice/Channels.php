@@ -12,7 +12,7 @@ use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Repository\ConnectedServiceRepository;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use AdzerCMS\Core\Setting\Secrets;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -28,8 +28,7 @@ final readonly class Channels implements ContentSource
         private Switches $switches,
         private ConnectedServiceRepository $services,
         private UrlGeneratorInterface $urls,
-        #[Autowire('%kernel.secret%')]
-        private string $secret,
+        private Secrets $secrets,
     ) {
     }
 
@@ -93,7 +92,7 @@ final readonly class Channels implements ContentSource
 
     public function webhookSecret(string $key): string
     {
-        return hash_hmac('sha256', 'bot.'.$key.'.webhook', $this->secret);
+        return $this->secrets->sign('bot.'.$key.'.webhook');
     }
 
     /** @return array<string, string> */

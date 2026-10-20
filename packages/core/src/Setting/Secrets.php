@@ -37,9 +37,18 @@ final class Secrets
         return false === $plain ? throw new \RuntimeException('ciphertext is not decrypted by the instance key') : $plain;
     }
 
+    public function sign(string $subject): string
+    {
+        return hash_hmac('sha256', $subject, $this->secret());
+    }
+
     private function key(): string
     {
-        return '' === $this->secret
-            ? throw new \LogicException('instance key APP_SECRET is not set') : hash('sha256', $this->secret, true);
+        return hash('sha256', $this->secret(), true);
+    }
+
+    private function secret(): string
+    {
+        return '' === $this->secret ? throw new \LogicException('instance key APP_SECRET is not set') : $this->secret;
     }
 }
