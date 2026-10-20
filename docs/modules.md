@@ -2,7 +2,7 @@
 
 English | [Русский](modules.ru.md)
 
-A module is a Composer package of type `adzercms-module` with a Symfony bundle. Some modules add features to the site, others provide a replaceable part: the admin panel, the customer account area, the theme, sign-in with a service, SMS delivery, a messenger bot, captcha.
+A module is a Composer package of type `adzercms-module` with a Symfony bundle. Some modules add features to the site, others provide a replaceable part: the admin panel, the customer account area, the theme, sign-in with a service, SMS delivery, a messenger bot, captcha, an analytics counter.
 
 ## Enable a module
 
@@ -29,6 +29,7 @@ The module name is the bundle class name without `Bundle`: for `ShopBundle` it's
 | `SMS_MODULES` | SMS delivery | several |
 | `BOT_MODULES` | messenger bots | several |
 | `CAPTCHA_MODULES` | captcha | several |
+| `ANALYTICS_MODULES` | analytics counters | several |
 
 Separate several modules with commas. Feature modules can add their own kinds with their own variables.
 
@@ -58,7 +59,7 @@ The module sources section of the admin panel takes a private Composer repositor
 - A package from a ZIP wins over the repositories, and your repositories win over Packagist
 - The job writes your sources into the `repositories` of `composer.json` under names starting with `adzercms-` before each Composer run
 
-## Turn on sign-in, SMS, a bot or captcha
+## Turn on sign-in, SMS, a bot, captcha or a counter
 
 Such a module works once it's switched on and its credentials are set. Settings are named `<kind>.<module>.<field>`:
 
@@ -70,7 +71,9 @@ printf '%s' "$PIGEON_TOKEN" | bin/console adzercms:setting sms.pigeon.token --st
 
 The first command lists all settings. Secrets are accepted only through stdin. Switching a module off keeps its credentials.
 
-SMS and captcha use the first enabled module in list order. Sign-in services and bots all work when enabled.
+SMS and captcha use the first enabled module in list order. Sign-in services, bots and counters all work when enabled.
+
+An enabled counter brings a cookie consent window to the pages: the counter loads only after the visitor accepts statistics. The window links the privacy policy from the `legal.privacy_url` setting. A visitor changes the choice from the customer profile or from any element with the `data-consent-open` attribute; the `consent()` Twig function renders such a button for the footer of your own page layout, and nothing on a page without a counter. Administrators and impersonated records get neither the window nor the counters.
 
 ## A module for one site
 

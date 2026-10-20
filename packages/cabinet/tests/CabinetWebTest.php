@@ -10,6 +10,7 @@ use AdzerCMS\Core\Entity\ConnectedService;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Repository\ConnectedServiceRepository;
 use AdzerCMS\Core\Tests\Accounts;
+use AdzerCMS\Core\Tests\Analytics\Fixture\Tally\TallyCounter;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Delivery;
@@ -42,6 +43,18 @@ final class CabinetWebTest extends SchemaTestCase
         $button = $this->client->request('GET', '/login')->filter('.oauth-buttons a[href="/login/latch"]');
 
         self::assertSame('--service: '.LatchService::COLOR, $button->attr('style'));
+    }
+
+    #[Group('ACMS-CORE-0951')]
+    #[Group('ACMS-US-0036')]
+    public function testProfileReopensConsentWindowOfActiveCounter(): void
+    {
+        $this->client->loginUser($this->record('79990000011'));
+        self::assertCount(0, $this->client->request('GET', '/profile')->filter('[data-consent-open]'), 'a site without a counter has no window to reopen');
+
+        $this->configure([TallyCounter::SETTINGS.Switches::ENABLED => '1', TallyCounter::SETTINGS.TallyCounter::SITE => 'shop']);
+
+        self::assertCount(1, $this->client->request('GET', '/profile')->filter('button[data-consent-open]'));
     }
 
     #[Group('ACMS-CORE-0125')]

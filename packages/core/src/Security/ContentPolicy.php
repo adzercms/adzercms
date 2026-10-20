@@ -28,7 +28,7 @@ final readonly class ContentPolicy
             return;
         }
 
-        $declared = [ContentSource::FORM => [], ContentSource::SCRIPT => [], ContentSource::CONNECT => [], ContentSource::FRAME => [], ContentSource::STYLE => [], ContentSource::IMG => [], ContentSource::WORKER => []];
+        $declared = [ContentSource::FORM => [], ContentSource::SCRIPT => [], ContentSource::CONNECT => [], ContentSource::FRAME => [], ContentSource::STYLE => [], ContentSource::IMG => [], ContentSource::WORKER => [], ContentSource::FRAME_ANCESTORS => []];
         foreach ($this->sources as $source) {
             foreach ($source->sources($event->getRequest()) as $directive => $origins) {
                 $declared[$directive] = [...$declared[$directive], ...$origins];
@@ -44,7 +44,7 @@ final readonly class ContentPolicy
             "default-src 'none'",
             "base-uri 'self'",
             $line(ContentSource::FORM, "'self'"),
-            "frame-ancestors 'self'",
+            $line(ContentSource::FRAME_ANCESTORS, "'self'"),
             $line(ContentSource::IMG, "'self' data:"),
             "font-src 'self'",
             $line(ContentSource::STYLE, "'self' 'unsafe-inline'"),

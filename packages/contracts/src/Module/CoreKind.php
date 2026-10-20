@@ -18,6 +18,7 @@ enum CoreKind: string implements Kind
     case Sms = 'SMS_MODULES';
     case Bot = 'BOT_MODULES';
     case Captcha = 'CAPTCHA_MODULES';
+    case Analytics = 'ANALYTICS_MODULES';
 
     public function key(): string
     {

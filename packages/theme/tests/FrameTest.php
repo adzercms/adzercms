@@ -36,7 +36,10 @@ final class FrameTest extends SchemaTestCase
 
         $addresses = [
             ...$page->filter('link[rel="stylesheet"], link[rel="preload"]')->each(static fn (Crawler $link): string => (string) $link->attr('href')),
-            ...array_values(json_decode($page->filter('script[type="importmap"]')->text(), true, flags: \JSON_THROW_ON_ERROR)['imports']),
+            ...array_filter(
+                array_values(json_decode($page->filter('script[type="importmap"]')->text(), true, flags: \JSON_THROW_ON_ERROR)['imports']),
+                static fn (string $address): bool => !str_starts_with($address, 'data:'),
+            ),
         ];
         self::assertNotSame([], $addresses);
         foreach ($addresses as $address) {

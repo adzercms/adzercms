@@ -25,6 +25,7 @@ return static function (ContainerConfigurator $container): void {
         ->defaults()->autowire()->autoconfigure();
 
     $services->load('AdzerCMS\\Core\\Account\\', '../src/Account/');
+    $services->load('AdzerCMS\\Core\\Analytics\\', '../src/Analytics/');
     $services->load('AdzerCMS\\Core\\Captcha\\', '../src/Captcha/');
     $services->load('AdzerCMS\\Core\\Command\\', '../src/Command/');
     $services->load('AdzerCMS\\Core\\Confirmation\\', '../src/Confirmation/');

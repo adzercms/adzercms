@@ -1,0 +1,20 @@
+{% set services = counters|map(counter => counter.name|trans)|join(', ') %}
+<link rel="stylesheet" href="{{ asset('vendor/vanilla-cookieconsent/dist/cookieconsent.css') }}">
+<script type="module" src="{{ asset('bundles/core/consent.js') }}" data-consent="{{ {
+    language: app.request.locale,
+    texts: {
+        title: 'core.consent.title'|trans,
+        description: 'core.consent.description'|trans({services: services|e, policy: legal('privacy', 'core.consent.policy'|trans)}),
+        acceptAll: 'core.consent.accept_all'|trans,
+        acceptNecessary: 'core.consent.accept_necessary'|trans,
+        preferences: 'core.consent.preferences'|trans,
+        settings: 'core.consent.settings'|trans,
+        save: 'core.consent.save'|trans,
+        close: 'core.action.close'|trans,
+        necessary: 'core.consent.necessary'|trans,
+        necessaryDescription: 'core.consent.necessary_description'|trans,
+        analytics: 'core.consent.analytics'|trans,
+        analyticsDescription: 'core.consent.analytics_description'|trans({services: services|e}),
+    },
+    counters: counters|map(counter => {entry: counter.entry, settings: counter.settings, cookies: counter.cookies}),
+}|json_encode }}"></script>

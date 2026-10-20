@@ -151,6 +151,78 @@
         <target>The confirmation was already sent, wait for it or try again later</target>
       </segment>
     </unit>
+    <unit id="core.consent.accept_all">
+      <segment>
+        <source>core.consent.accept_all</source>
+        <target>Accept all</target>
+      </segment>
+    </unit>
+    <unit id="core.consent.accept_necessary">
+      <segment>
+        <source>core.consent.accept_necessary</source>
+        <target>Necessary only</target>
+      </segment>
+    </unit>
+    <unit id="core.consent.analytics">
+      <segment>
+        <source>core.consent.analytics</source>
+        <target>Statistics</target>
+      </segment>
+    </unit>
+    <unit id="core.consent.analytics_description">
+      <segment>
+        <source>core.consent.analytics_description</source>
+        <target>{services}: where visitors come from and how they use the site.</target>
+      </segment>
+    </unit>
+    <unit id="core.consent.description">
+      <segment>
+        <source>core.consent.description</source>
+        <target>The site uses necessary cookies to work and, with your consent, {services} for visit statistics. {policy}</target>
+      </segment>
+    </unit>
+    <unit id="core.consent.necessary">
+      <segment>
+        <source>core.consent.necessary</source>
+        <target>Necessary</target>
+      </segment>
+    </unit>
+    <unit id="core.consent.necessary_description">
+      <segment>
+        <source>core.consent.necessary_description</source>
+        <target>Site operation and remembering this choice.</target>
+      </segment>
+    </unit>
+    <unit id="core.consent.policy">
+      <segment>
+        <source>core.consent.policy</source>
+        <target>Privacy policy</target>
+      </segment>
+    </unit>
+    <unit id="core.consent.preferences">
+      <segment>
+        <source>core.consent.preferences</source>
+        <target>Customize</target>
+      </segment>
+    </unit>
+    <unit id="core.consent.save">
+      <segment>
+        <source>core.consent.save</source>
+        <target>Save choice</target>
+      </segment>
+    </unit>
+    <unit id="core.consent.settings">
+      <segment>
+        <source>core.consent.settings</source>
+        <target>Cookie settings</target>
+      </segment>
+    </unit>
+    <unit id="core.consent.title">
+      <segment>
+        <source>core.consent.title</source>
+        <target>Cookies and statistics</target>
+      </segment>
+    </unit>
     <unit id="core.consent_kind.offer">
       <segment>
         <source>core.consent_kind.offer</source>
@@ -269,6 +341,12 @@
       <segment>
         <source>core.kind.admin</source>
         <target>Admin</target>
+      </segment>
+    </unit>
+    <unit id="core.kind.analytics">
+      <segment>
+        <source>core.kind.analytics</source>
+        <target>Analytics counter</target>
       </segment>
     </unit>
     <unit id="core.kind.bot">
