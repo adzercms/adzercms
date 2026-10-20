@@ -1277,8 +1277,7 @@ fieldset.choices label .muted { grid-column: 2; margin: 0; font-size: 12px; line
     .subscribe { justify-items: stretch; }
     .subscribe .qr { justify-self: center; }
 
-    .table-responsive { overflow-x: visible; }
-    th, td { padding: 0.5rem 0.4rem; overflow-wrap: anywhere; }
+    th, td { padding: 0.5rem 0.4rem; }
     th { font-size: 10px; letter-spacing: 0; white-space: normal; }
     .clip { white-space: normal; }
     .hide-sm { display: none; }
