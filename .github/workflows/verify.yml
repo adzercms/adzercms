@@ -40,6 +40,7 @@ jobs:
         run: echo "versions=$(bin/version-check pending "$RUNNER_TEMP/verified.json")" >> "$GITHUB_OUTPUT"
 
   check:
+    name: ${{ matrix.package }}
     needs: pending
     if: needs.pending.outputs.versions != '[]'
     strategy:
