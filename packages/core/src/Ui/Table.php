@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Ui;
 
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\OffsetPaginator;
+use Doctrine\ORM\Tools\Pagination\Window;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -212,6 +215,21 @@ final class Table
         }
 
         return $this;
+    }
+
+    /**
+     * @template T
+     *
+     * @param Query<mixed, T> $query
+     *
+     * @return list<T>
+     */
+    public function paginate(Query $query): array
+    {
+        $page = (new OffsetPaginator())->paginate($query, new Window($this->offset(), $this->size));
+        $this->total = $page->getTotalCount();
+
+        return $page->getItems();
     }
 
     public function order(string $tail): string
