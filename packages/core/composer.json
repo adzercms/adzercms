@@ -79,6 +79,7 @@
     },
     "bin": [
         "bin/adzercms-check",
+        "bin/adzercms-module-check",
         "bin/adzercms-package-console",
         "bin/adzercms-package-dependencies",
         "bin/adzercms-pre-commit",

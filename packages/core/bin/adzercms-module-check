@@ -1,0 +1,30 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use AdzerCMS\Core\Module\Registry;
+use AdzerCMS\Core\Tests\ModuleCheck;
+use AdzerCMS\Core\Tests\ModuleSuite;
+
+require $_composer_autoload_path ?? __DIR__.'/../vendor/autoload.php';
+
+$package = strtolower($argv[1] ?? '');
+if (!in_array($package, Composer\InstalledVersions::getInstalledPackagesByType(Registry::TYPE), true)) {
+    fwrite(\STDERR, "usage: adzercms-module-check <installed module package>\n");
+    exit(2);
+}
+
+ModuleSuite::environment('test');
+try {
+    $registry = Registry::installed();
+    ModuleSuite::select($registry, [$registry->package($package) ?? throw new LogicException(sprintf('%s has no module bundle', $package))]);
+    $failed = null;
+} catch (Throwable $error) {
+    fwrite(\STDERR, $error->getMessage()."\n");
+    $failed = ModuleCheck::BUILD;
+}
+$failed ??= (new ModuleCheck(ModuleSuite::root(), $package))->failed();
+
+fwrite(\STDOUT, null === $failed ? "module check passed\n" : sprintf("module check failed: %s\n", $failed));
+exit(null === $failed ? 0 : 1);

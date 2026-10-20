@@ -1,0 +1,6 @@
+parameters:
+    level: 8
+    symfony:
+        consoleApplicationLoader: console-application.php
+    doctrine:
+        objectManagerLoader: object-manager.php

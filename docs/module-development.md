@@ -180,6 +180,21 @@ vendor/bin/adzercms-check
 
 A database test extends `AdzerCMS\Core\Tests\SchemaTestCase`, and responses of external services are set up with `AdzerCMS\Core\Tests\HttpAnswers`.
 
+## Module check
+
+The module check runs in an instance with the module installed. It enables the module the way its test suite does and stops at the first failed check:
+
+```sh
+bin/php vendor/bin/adzercms-module-check acme/pigeon
+```
+
+- `build` — the container builds with the module, and its services get arguments of their declared types
+- `audit` — `composer audit` finds no advisory for the packages the module alone adds to the instance
+- `phpstan` — PHPStan of the module's `src/` at the engine's level
+- `psalm` — Psalm taint analysis of the module's `src/` with the Symfony plugin: request data doesn't reach the sinks Psalm tracks, such as SQL, shell commands and file paths
+
+A failed check ends the run with exit code 1 and its name in the last line.
+
 ## Migrations
 
 ```sh
