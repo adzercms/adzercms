@@ -7,6 +7,7 @@ namespace AdzerCMS\Core\Tests;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Tests\Module\Fixture;
 use Composer\Autoload\ClassLoader;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -32,22 +33,32 @@ final class ModuleSuiteTest extends TestCase
     }
 
     #[Group('ACMS-TEST-0009')]
-    public function testSuiteModuleCoversKindOfItsRequirements(): void
+    #[Group('ACMS-TEST-0011')]
+    #[DataProvider('suites')]
+    public function testSuiteModulesCoverKindOfTheirRequirements(string $suite, string $chosen, string $features): void
     {
         $registry = Registry::of([
             'acme/shop' => Fixture\Manifest::of(Fixture\ShopBundle::class),
             'acme/card' => Fixture\Manifest::of(Fixture\CardBundle::class, 'acme/shop', 'acme/till'),
             'acme/cash' => Fixture\Manifest::of(Fixture\CashBundle::class, 'acme/shop'),
-            'acme/till' => Fixture\Manifest::of(Fixture\TillBundle::class, 'adzercms/gateway-implementation'),
+            'acme/till' => ['require-dev' => ['acme/card' => '*']]
+                + Fixture\Manifest::of(Fixture\TillBundle::class, 'adzercms/gateway-implementation'),
         ]);
         [$server, $env] = [$_SERVER, $_ENV];
-        $_SERVER['TEST_GATEWAY'] = 'Cash';
+        $_SERVER['TEST_GATEWAY'] = $chosen;
 
         try {
-            ModuleSuite::select($registry, array_filter([$registry->find('Card')]));
-            self::assertSame(['Card', 'Shop,Till'], [$_SERVER['TEST_GATEWAY'], $_SERVER['MODULES']]);
+            ModuleSuite::select($registry, array_filter([$registry->find($suite)]));
+            self::assertSame(['Card', $features], [$_SERVER['TEST_GATEWAY'], $_SERVER['MODULES']]);
         } finally {
             [$_SERVER, $_ENV] = [$server, $env];
         }
+    }
+
+    /** @return iterable<string, array{string, string, string}> */
+    public static function suites(): iterable
+    {
+        yield 'suite module of the kind against the instance choice' => ['Card', 'Cash', 'Shop,Till'];
+        yield 'development module of the kind among several installed without a choice' => ['Till', '', 'Till,Shop'];
     }
 }

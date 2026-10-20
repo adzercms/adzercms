@@ -62,12 +62,20 @@ final class ModuleSuite implements Extension
         foreach ($registry->kinds() as $kind) {
             $selection[$kind->environment()] = [];
         }
+        $taken = [];
         foreach ($modules as $module) {
-            self::add($module, $registry, $selection);
+            self::take($module, $registry, $selection, $taken);
             foreach ($module->develops as $package) {
                 $developed = $registry->package($package);
                 if (null !== $developed) {
-                    self::add($developed, $registry, $selection);
+                    self::take($developed, $registry, $selection, $taken);
+                }
+            }
+        }
+        for ($index = 0; $index < \count($taken); ++$index) {
+            foreach ($registry->required($taken[$index]) as $kind) {
+                if ([] === $selection[$kind->environment()]) {
+                    self::take(self::provider($kind, $registry), $registry, $selection, $taken);
                 }
             }
         }
@@ -89,22 +97,21 @@ final class ModuleSuite implements Extension
         }
     }
 
-    /** @param array<string, array<string, string>> $selection */
-    private static function add(Installed $module, Registry $registry, array &$selection): void
+    /**
+     * @param array<string, array<string, string>> $selection
+     * @param list<Installed>                      $taken
+     */
+    private static function take(Installed $module, Registry $registry, array &$selection, array &$taken): void
     {
         if (isset($selection[$module->kind->environment()][$module->key])) {
             return;
         }
         $selection[$module->kind->environment()][$module->key] = $module->key;
+        $taken[] = $module;
         foreach ($module->requires as $package) {
             $required = $registry->package($package);
             if (null !== $required) {
-                self::add($required, $registry, $selection);
-            }
-        }
-        foreach ($registry->required($module) as $kind) {
-            if ([] === $selection[$kind->environment()]) {
-                self::add(self::provider($kind, $registry), $registry, $selection);
+                self::take($required, $registry, $selection, $taken);
             }
         }
     }
