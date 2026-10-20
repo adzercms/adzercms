@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests;
 
+use AdzerCMS\Contracts\Module\CoreKind;
+use AdzerCMS\Core\Module\Installed;
 use AdzerCMS\Core\Module\Registry;
 use Composer\Autoload\ClassLoader;
 use Composer\InstalledVersions;
@@ -18,6 +20,7 @@ final readonly class ModuleCheck
     public const PHPSTAN = 'phpstan';
     public const PSALM = 'psalm';
     public const BOUNDARY = 'boundary';
+    public const THEME = 'theme';
     public const DATABASES = 'MODULE_CHECK_DATABASES';
 
     private const PSALM_CONFIG = '/var/module-check/psalm.xml';
@@ -35,7 +38,7 @@ final readonly class ModuleCheck
             self::PHPSTAN => fn (): bool => $this->passes([\PHP_BINARY, '-d', 'memory_limit=-1', 'vendor/bin/phpstan', 'analyse', '--no-progress', '--configuration='.__DIR__.'/module.neon', $this->source()]),
             self::PSALM => fn (): bool => $this->passes([\PHP_BINARY, '-d', 'memory_limit=-1', 'vendor/bin/psalm', '--taint-analysis', '--no-cache', '--no-progress', '--config='.$this->psalm(), '--root='.$this->root]),
             self::BOUNDARY => $this->bounded(...),
-        ] as $check => $passes) {
+        ] + (CoreKind::Theme === $this->module()->kind ? [self::THEME => $this->complete(...)] : []) as $check => $passes) {
             fwrite(\STDOUT, \sprintf("== %s\n", $check));
             if (!$passes()) {
                 return $check;
@@ -96,13 +99,27 @@ final readonly class ModuleCheck
         $databases = null === $listed
             ? [(string) ($_SERVER['DATABASE_URL'] ?? $_ENV['DATABASE_URL'] ?? '')]
             : (preg_split('~\s+~', (string) $listed, flags: \PREG_SPLIT_NO_EMPTY) ?: []);
-        $crossed = (new ModuleBoundary($registry, $registry->package($this->package) ?? throw new \LogicException(\sprintf('%s has no module bundle', $this->package))))
-            ->crossed($databases);
+        $crossed = (new ModuleBoundary($registry, $this->module()))->crossed($databases);
         foreach ($crossed as $crossing) {
             fwrite(\STDOUT, $crossing."\n");
         }
 
         return [] === $crossed;
+    }
+
+    private function complete(): bool
+    {
+        $missing = (new ThemeCompleteness(Registry::installed(), $this->module()))->missing();
+        foreach ($missing as $absent) {
+            fwrite(\STDOUT, $absent."\n");
+        }
+
+        return [] === $missing;
+    }
+
+    private function module(): Installed
+    {
+        return Registry::installed()->package($this->package) ?? throw new \LogicException(\sprintf('%s has no module bundle', $this->package));
     }
 
     /** @param list<string> $command */

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8decfdbfa44b7bbbb5e8a9819a7536b5",
+    "content-hash": "fc0b44c4a35f791729f99e32ada90ed0",
     "packages": [
         {
             "name": "adzercms/admin",
@@ -9089,6 +9089,44 @@
     ],
     "packages-dev": [
         {
+            "name": "adzercms/threadbare",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/core/tests/Module/Threadbare",
+                "reference": "2811333cafb66c96c607ab0ed2b9694bda12e50b"
+            },
+            "require": {
+                "adzercms/contracts": "^1.0",
+                "php": ">=8.4"
+            },
+            "provide": {
+                "adzercms/theme-implementation": "self.version"
+            },
+            "type": "adzercms-module",
+            "extra": {
+                "adzercms": {
+                    "bundle": "AdzerCMS\\Threadbare\\ThreadbareBundle"
+                },
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AdzerCMS\\Threadbare\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Theme short of what the engine packages take from the engine theme: fixture of the module check",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "adzercms/trespass",
             "version": "dev-main",
             "dist": {
@@ -14734,6 +14772,7 @@
         "adzercms/telegram": 20,
         "adzercms/telegram-bot": 20,
         "adzercms/theme": 20,
+        "adzercms/threadbare": 20,
         "adzercms/trespass": 20,
         "adzercms/turnstile": 20,
         "adzercms/vk-id": 20,

@@ -15,7 +15,7 @@
         },
         {
             "type": "path",
-            "url": "packages/core/tests/Module/Trespass",
+            "url": "packages/core/tests/Module/*",
             "options": {
                 "symlink": true
             }
@@ -57,6 +57,7 @@
         "symfony/yaml": "7.4.*"
     },
     "require-dev": {
+        "adzercms/threadbare": "^1.0@dev",
         "adzercms/trespass": "^1.0@dev",
         "friendsofphp/php-cs-fixer": "^3.95.27",
         "nikic/php-parser": "^5.9",

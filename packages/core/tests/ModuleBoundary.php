@@ -17,7 +17,6 @@ use Doctrine\Migrations\Version\Direction;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ManyToManyOwningSideMapping;
 use Doctrine\ORM\Tools\SchemaTool;
-use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\Routing\Route;
@@ -28,8 +27,11 @@ final readonly class ModuleBoundary
 {
     private const COMMANDS = 'console.command_loader';
 
+    private ModuleBuild $build;
+
     public function __construct(private Registry $registry, private Installed $module)
     {
+        $this->build = new ModuleBuild($registry);
     }
 
     /**
@@ -41,8 +43,8 @@ final readonly class ModuleBoundary
     {
         $with = ModuleSuite::taken($this->registry, [$this->module]);
         $without = $this->without($with);
-        $before = $this->within($without, null, self::surface(...));
-        $after = $this->within($with, null, self::surface(...));
+        $before = $this->build->within($without, null, self::surface(...));
+        $after = $this->build->within($with, null, self::surface(...));
 
         $crossed = [];
         foreach (array_intersect_key($before['services'], $after['services']) as $id => $class) {
@@ -107,8 +109,8 @@ final readonly class ModuleBoundary
     private function schema(string $database, array $without, array $with): array
     {
         ModuleSuite::occupy();
-        $before = $this->within($without, $database, static function (Kernel $kernel): Schema {
-            $em = self::service($kernel, 'doctrine.orm.entity_manager', EntityManagerInterface::class);
+        $before = $this->build->within($without, $database, static function (Kernel $kernel): Schema {
+            $em = ModuleBuild::service($kernel, 'doctrine.orm.entity_manager', EntityManagerInterface::class);
             (new SchemaTool($em))->dropDatabase();
             self::migrate($kernel, '');
 
@@ -116,9 +118,9 @@ final readonly class ModuleBoundary
         });
         $namespace = (new \ReflectionClass($this->module->bundle))->getNamespaceName();
 
-        return $this->within($with, $database, static function (Kernel $kernel) use ($before, $namespace, $database): array {
+        return $this->build->within($with, $database, static function (Kernel $kernel) use ($before, $namespace, $database): array {
             self::migrate($kernel, $namespace.'\\Migrations\\');
-            $em = self::service($kernel, 'doctrine.orm.entity_manager', EntityManagerInterface::class);
+            $em = ModuleBuild::service($kernel, 'doctrine.orm.entity_manager', EntityManagerInterface::class);
             $own = [];
             foreach ($em->getMetadataFactory()->getAllMetadata() as $metadata) {
                 if (str_starts_with($metadata->getName(), $namespace.'\\Entity\\')) {
@@ -151,32 +153,6 @@ final readonly class ModuleBoundary
         });
     }
 
-    /**
-     * @template T
-     *
-     * @param list<Installed>     $modules
-     * @param \Closure(Kernel): T $use
-     *
-     * @return T
-     */
-    private function within(array $modules, ?string $database, \Closure $use): mixed
-    {
-        [$server, $env] = [$_SERVER, $_ENV];
-        ModuleSuite::choose($this->registry, $modules);
-        if (null !== $database) {
-            $_SERVER['DATABASE_URL'] = $_ENV['DATABASE_URL'] = $database;
-        }
-        $kernel = new Kernel('test', true);
-        try {
-            $kernel->boot();
-
-            return $use($kernel);
-        } finally {
-            $kernel->shutdown();
-            [$_SERVER, $_ENV] = [$server, $env];
-        }
-    }
-
     /** @return array{services: array<string, string>, routes: array<string, Route>, commands: array<string, string>, messages: array<string, string>} */
     private static function surface(Kernel $kernel): array
     {
@@ -204,7 +180,7 @@ final readonly class ModuleBoundary
         }
 
         $messages = [];
-        $translator = self::service($kernel, 'translator', TranslatorBagInterface::class);
+        $translator = ModuleBuild::service($kernel, 'translator', TranslatorBagInterface::class);
         $locales = $kernel->getContainer()->getParameter('kernel.enabled_locales');
         foreach (\is_array($locales) ? $locales : [] as $locale) {
             foreach ($translator->getCatalogue((string) $locale)->all() as $domain => $units) {
@@ -216,7 +192,7 @@ final readonly class ModuleBoundary
 
         return [
             'services' => $services,
-            'routes' => self::service($kernel, 'router', RouterInterface::class)->getRouteCollection()->all(),
+            'routes' => ModuleBuild::service($kernel, 'router', RouterInterface::class)->getRouteCollection()->all(),
             'commands' => $commands,
             'messages' => $messages,
         ];
@@ -224,7 +200,7 @@ final readonly class ModuleBoundary
 
     private static function migrate(Kernel $kernel, string $set): void
     {
-        $migrations = self::service($kernel, 'doctrine.migrations.dependency_factory', DependencyFactory::class);
+        $migrations = ModuleBuild::service($kernel, 'doctrine.migrations.dependency_factory', DependencyFactory::class);
         $storage = $migrations->getMetadataStorage();
         $storage->ensureInitialized();
         $executed = $storage->getExecutedMigrations();
@@ -258,20 +234,5 @@ final readonly class ModuleBoundary
         return $path($route) === $path($taken)
             && ('' === $route->getHost() || '' === $taken->getHost() || $route->getHost() === $taken->getHost())
             && ([] === $route->getMethods() || [] === $taken->getMethods() || [] !== array_intersect($route->getMethods(), $taken->getMethods()));
-    }
-
-    /**
-     * @template T of object
-     *
-     * @param class-string<T> $class
-     *
-     * @return T
-     */
-    private static function service(Kernel $kernel, string $id, string $class): object
-    {
-        $container = $kernel->getContainer()->get('test.service_container');
-        $service = $container instanceof ContainerInterface ? $container->get($id) : null;
-
-        return $service instanceof $class ? $service : throw new \LogicException(\sprintf('service %s of the test container is not %s', $id, $class));
     }
 }

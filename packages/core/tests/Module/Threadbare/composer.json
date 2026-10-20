@@ -1,0 +1,26 @@
+{
+    "name": "adzercms/threadbare",
+    "type": "adzercms-module",
+    "description": "Theme short of what the engine packages take from the engine theme: fixture of the module check",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0"
+    },
+    "provide": {
+        "adzercms/theme-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Threadbare\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Threadbare\\ThreadbareBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}
