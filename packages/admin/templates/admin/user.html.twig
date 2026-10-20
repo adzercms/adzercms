@@ -69,16 +69,16 @@
         </div>
         <div class="info-item">
             <span class="info-label">{{ 'admin.user.registered'|trans }}</span>
-            <span class="info-value">{{ user.createdAt|date('d.m.Y') }}</span>
+            <span class="info-value">{{ 'core.moment.day'|trans({at: user.createdAt}) }}</span>
         </div>
         <div class="info-item">
             <span class="info-label">{{ 'admin.user.last_login'|trans }}</span>
-            <span class="info-value">{{ user.lastLoginAt ? user.lastLoginAt|date('d.m.Y H:i') : blank() }}</span>
+            <span class="info-value">{{ user.lastLoginAt ? 'core.moment.day_time'|trans({at: user.lastLoginAt}) : blank() }}</span>
         </div>
         {% if user.deletedAt %}
             <div class="info-item">
                 <span class="info-label">{{ 'admin.user.deleted'|trans }}</span>
-                <span class="info-value">{{ user.deletedAt|date('d.m.Y H:i') }}</span>
+                <span class="info-value">{{ 'core.moment.day_time'|trans({at: user.deletedAt}) }}</span>
             </div>
         {% endif %}
         {% for part in fragments('admin.user', user.id) %}{% include part.template with part.context only %}{% endfor %}

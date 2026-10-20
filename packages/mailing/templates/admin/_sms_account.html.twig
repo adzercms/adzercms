@@ -19,7 +19,7 @@
             {% endfor %}
             <div class="info-item">
                 <span class="info-label">{{ 'mailing.gateway.at'|trans }}</span>
-                <span class="info-value">{{ account_at|date('d.m.Y H:i') }}</span>
+                <span class="info-value">{{ 'core.moment.day_time'|trans({at: account_at}) }}</span>
             </div>
         </div>
     {% else %}

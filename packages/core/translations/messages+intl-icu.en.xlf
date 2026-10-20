@@ -397,6 +397,36 @@
         <target>No record has this {service} profile: sign in with your login and connect {service} in the profile</target>
       </segment>
     </unit>
+    <unit id="core.moment.day">
+      <segment>
+        <source>core.moment.day</source>
+        <target>{at, date, ::yMMdd}</target>
+      </segment>
+    </unit>
+    <unit id="core.moment.day_time">
+      <segment>
+        <source>core.moment.day_time</source>
+        <target>{at, date, ::yMMddjmm}</target>
+      </segment>
+    </unit>
+    <unit id="core.moment.month">
+      <segment>
+        <source>core.moment.month</source>
+        <target>{at, date, ::LLLL}</target>
+      </segment>
+    </unit>
+    <unit id="core.moment.period">
+      <segment>
+        <source>core.moment.period</source>
+        <target>{scale, select, month {{since, date, ::yLLLL}} year {{since, date, ::y}} other {{since, date, ::yMMdd} – {last, date, ::yMMdd}}}</target>
+      </segment>
+    </unit>
+    <unit id="core.moment.time">
+      <segment>
+        <source>core.moment.time</source>
+        <target>{at, time, ::jmm}</target>
+      </segment>
+    </unit>
     <unit id="core.notice.account_deletion.action">
       <segment>
         <source>core.notice.account_deletion.action</source>

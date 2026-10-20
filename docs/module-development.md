@@ -146,6 +146,8 @@ In the application settings on the service side, register the redirect URI `http
 
 The core wires up the entities, migrations and routes of an enabled module by itself.
 
+Show dates in the reader's language through the translator, not with Twig's `date` filter. Inside a phrase, a date is an ICU argument with a skeleton, such as `{until, date, ::yMMdd}`. A date on its own takes a core key: `core.moment.day`, `core.moment.time`, `core.moment.day_time` or `core.moment.month` with the `at` argument. An instance changes how dates look by overriding these keys in its own catalog.
+
 ## Tests
 
 A module's tests run in an instance that keeps the module in `modules/`. Composer reads `autoload-dev` of the root package only, so the instance maps the module's test namespace itself and adds a suite named after the module key to `phpunit.dist.xml`.

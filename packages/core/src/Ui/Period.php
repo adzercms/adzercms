@@ -6,6 +6,9 @@ namespace AdzerCMS\Core\Ui;
 
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function Symfony\Component\Translation\t;
 
 final readonly class Period
 {
@@ -58,13 +61,9 @@ final readonly class Period
         };
     }
 
-    public function label(): string
+    public function label(): TranslatableInterface
     {
-        return match ($this->scale) {
-            PeriodScale::Custom => sprintf('%s — %s', $this->from->format('d.m.Y'), $this->to->format('d.m.Y')),
-            PeriodScale::Year => (string) $this->year,
-            PeriodScale::Month => sprintf('%s %d', self::months()[$this->month], $this->year),
-        };
+        return t('core.moment.period', ['scale' => $this->scale->value, 'since' => $this->since(), 'last' => $this->until()->modify('-1 day')]);
     }
 
     /** @return array<string, string> */
@@ -118,13 +117,12 @@ final readonly class Period
         return false === $day ? null : $day;
     }
 
-    /** @return array<int, string> */
+    /** @return array<int, TranslatableInterface> */
     private static function months(): array
     {
-        $format = new \IntlDateFormatter(null, \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, pattern: 'LLLL');
         $months = [];
         for ($month = 1; $month <= 12; ++$month) {
-            $months[$month] = (string) $format->format(new \DateTimeImmutable(\sprintf('2000-%02d-01', $month)));
+            $months[$month] = t('core.moment.month', ['at' => new \DateTimeImmutable(\sprintf('2000-%02d-01', $month))]);
         }
 
         return $months;

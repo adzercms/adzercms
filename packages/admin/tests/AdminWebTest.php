@@ -229,7 +229,7 @@ final class AdminWebTest extends SchemaTestCase
         $this->client->loginUser($this->admin);
 
         $page = $this->client->request('GET', \sprintf('/admin/users/%d', $user->getId()));
-        self::assertSame('20.09.2026 10:15', self::tile($page, self::phrase('admin.user.deleted')));
+        self::assertSame(self::phrase('core.moment.day_time', ['at' => new \DateTimeImmutable('2026-09-20 10:15')]), self::tile($page, self::phrase('admin.user.deleted')));
 
         $this->client->submit($page->selectButton(self::phrase('admin.save'))->form(['status' => Status::Active->value]));
 

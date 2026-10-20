@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AdzerCMS\Theme;
 
 use AdzerCMS\Contracts\Ui\Badged;
-use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Money;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
@@ -73,7 +72,10 @@ final class ThemeExtension extends AbstractExtension
 
     public function moment(?\DateTimeInterface $at): string
     {
-        return null === $at ? self::BLANK : $this->lines([$at->format(Column::DAY), $at->format(Column::TIME)]);
+        return null === $at ? self::BLANK : $this->lines([
+            $this->translator->trans('core.moment.day', ['at' => $at]),
+            $this->translator->trans('core.moment.time', ['at' => $at]),
+        ]);
     }
 
     public function clip(?string $value, int $length, string $extra = ''): string

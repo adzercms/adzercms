@@ -5,7 +5,7 @@
                 <strong>{{ logins[row.id] }}</strong>
                 {{ caption(row.comment) }}
             </td>
-            <td class="{{ table.aside('created') }}">{{ row.createdAt|date('d.m.Y') }}</td>
+            <td class="{{ table.aside('created') }}">{{ 'core.moment.day'|trans({at: row.createdAt}) }}</td>
             {% for column in extra %}
                 {% set value = cells[row.id][column.key] ?? null %}
                 <td class="{{ table.aside(column.key) }} {{ value and value.sign < 0 ? 'minus' }} {{ value and value.sign > 0 ? 'plus' }}">{{ cell(value ? value.text : null) }}</td>

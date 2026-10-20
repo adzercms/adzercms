@@ -21,7 +21,7 @@
                     <div class="chat-bubble">
                         <div class="chat-head">
                             <span class="chat-author">{{ message.fromStaff ? support_label : ticket.user.id }}</span>
-                            <span class="chat-time">{{ message.createdAt|date('d.m.Y H:i') }}</span>
+                            <span class="chat-time">{{ 'core.moment.day_time'|trans({at: message.createdAt}) }}</span>
                             {% if staff and not ticket.status.closed %}
                                 <button type="button" class="icon-act" data-modal="edit-{{ message.id }}" aria-label="{{ 'theme.edit'|trans }}" title="{{ 'theme.edit'|trans }}">{{ icon.edit() }}</button>
                                 <form method="post" action="{{ path('support_message', {id: message.id, action: 'drop'}) }}"
@@ -121,11 +121,11 @@
         </div>
         <div class="info-item">
             <span class="info-label">{{ 'support.ticket.created'|trans }}</span>
-            <span class="info-value">{{ ticket.createdAt|date('d.m.Y H:i') }}</span>
+            <span class="info-value">{{ 'core.moment.day_time'|trans({at: ticket.createdAt}) }}</span>
         </div>
         <div class="info-item">
             <span class="info-label">{{ 'support.ticket.updated'|trans }}</span>
-            <span class="info-value">{{ ticket.lastMessageAt|date('d.m.Y H:i') }}</span>
+            <span class="info-value">{{ 'core.moment.day_time'|trans({at: ticket.lastMessageAt}) }}</span>
         </div>
         {% for link in subjects %}{{ link|raw }}{% endfor %}
         {% if staff %}

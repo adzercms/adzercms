@@ -7,11 +7,10 @@ namespace AdzerCMS\Core\Ui;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+use function Symfony\Component\Translation\t;
+
 final class Column
 {
-    public const DAY = 'd.m.Y';
-    public const TIME = 'H:i';
-
     private static ?TranslatorInterface $translator = null;
 
     /** @param list<string> $fields */
@@ -65,7 +64,7 @@ final class Column
             null === $value => '',
             $value instanceof TranslatableInterface => null === self::$translator ? '' : $value->trans(self::$translator),
             \is_bool($value) => $value ? '1' : '',
-            $value instanceof \DateTimeInterface => $value->format(self::DAY.' '.self::TIME),
+            $value instanceof \DateTimeInterface => self::scalar(t('core.moment.day_time', ['at' => $value])),
             \is_scalar($value) => (string) $value,
             default => '',
         };

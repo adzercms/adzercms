@@ -249,7 +249,7 @@
             </div>
             <div class="info-item">
                 <span class="info-label">{{ 'cabinet.profile.since'|trans }}</span>
-                <span class="info-value">{{ user.createdAt|date('d.m.Y') }}</span>
+                <span class="info-value">{{ 'core.moment.day'|trans({at: user.createdAt}) }}</span>
             </div>
         </div>
     </div>
