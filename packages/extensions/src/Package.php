@@ -26,7 +26,9 @@ final readonly class Package
     /** @param array<mixed> $answer */
     public static function of(string $name, array $answer): ?self
     {
-        $versions = \is_array($answer['packages'] ?? null) && \is_array($answer['packages'][$name] ?? null) ? $answer['packages'][$name] : [];
+        $versions = \is_array($answer['packages'] ?? null) && \is_array($answer['packages'][$name] ?? null) && array_is_list($answer['packages'][$name])
+            ? $answer['packages'][$name]
+            : [];
         if (self::MINIFIED === ($answer['minified'] ?? null)) {
             $versions = MetadataMinifier::expand($versions);
         }
