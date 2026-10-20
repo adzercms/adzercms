@@ -23,6 +23,8 @@ use AdzerCMS\Core\Tests\Ui\Fixture\ListController;
 use AdzerCMS\Core\Tests\Ui\Fixture\Masthead;
 use AdzerCMS\Mailing\MailingBundle;
 use AdzerCMS\Mailing\Tests\Fixture\CommentAudience;
+use AdzerCMS\Opotopo\OpotopoBundle;
+use AdzerCMS\Opotopo\Tests\Fixture\ShelfCatalog;
 use AdzerCMS\Realtime\HubKind;
 use AdzerCMS\Realtime\RealtimeBundle;
 use AdzerCMS\Realtime\Tests\Fixture\HeraldHub;
@@ -60,6 +62,9 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
     }
     if (\is_array($bundles) && \in_array(MailingBundle::class, $bundles, true)) {
         $services->set(CommentAudience::class)->autoconfigure();
+    }
+    if (\is_array($bundles) && \in_array(OpotopoBundle::class, $bundles, true)) {
+        $services->set(ShelfCatalog::class)->autowire()->autoconfigure()->public();
     }
     if (\is_array($bundles) && \in_array(RealtimeBundle::class, $bundles, true)
         && [] === array_filter($bundles, static fn (string $bundle): bool => is_subclass_of($bundle, Module::class) && HubKind::Hub === $bundle::kind())) {

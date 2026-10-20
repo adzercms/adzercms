@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="opotopo.digest.line">
+      <segment>
+        <source>opotopo.digest.line</source>
+        <target>OPOTOPO refused {catalog} {sku}: {error} {details}</target>
+      </segment>
+    </unit>
+    <unit id="opotopo.digest.summary">
+      <segment>
+        <source>opotopo.digest.summary</source>
+        <target>Items refused by OPOTOPO: {count}</target>
+      </segment>
+    </unit>
+    <unit id="opotopo.refusal.url">
+      <segment>
+        <source>opotopo.refusal.url</source>
+        <target>The marketplace address is not an http or https link</target>
+      </segment>
+    </unit>
+    <unit id="opotopo.setting.area">
+      <segment>
+        <source>opotopo.setting.area</source>
+        <target>OPOTOPO</target>
+      </segment>
+    </unit>
+    <unit id="opotopo.setting.key">
+      <segment>
+        <source>opotopo.setting.key</source>
+        <target>Seller API key</target>
+      </segment>
+    </unit>
+    <unit id="opotopo.setting.organization">
+      <segment>
+        <source>opotopo.setting.organization</source>
+        <target>Seller organization ID</target>
+      </segment>
+    </unit>
+    <unit id="opotopo.setting.publish">
+      <segment>
+        <source>opotopo.setting.publish</source>
+        <target>Publish listings</target>
+      </segment>
+    </unit>
+    <unit id="opotopo.setting.url">
+      <segment>
+        <source>opotopo.setting.url</source>
+        <target>Marketplace address</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

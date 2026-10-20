@@ -58,6 +58,10 @@
         <testsuite name="MtsMarketolog">
             <directory>packages/mts-marketolog/tests</directory>
         </testsuite>
+        <testsuite name="Opotopo">
+            <directory>packages/opotopo/tests</directory>
+            <file>packages/core/tests/Schema/MigrationsTest.php</file>
+        </testsuite>
         <testsuite name="Payments">
             <directory>packages/payments/tests</directory>
             <file>packages/core/tests/Schema/MigrationsTest.php</file>

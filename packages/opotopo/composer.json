@@ -1,0 +1,55 @@
+{
+    "name": "adzercms/opotopo",
+    "type": "adzercms-module",
+    "description": "OPOTOPO export for AdzerCMS: catalogs of the site go to the marketplace as seller listings through the Seller API",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "opotopo",
+        "marketplace",
+        "seller-api"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
+        "doctrine/dbal": "^4.5",
+        "doctrine/migrations": "^3.9",
+        "doctrine/orm": "^3.7",
+        "nyholm/psr7": "^1.8",
+        "opotopo/seller-api": "^1.0",
+        "psr/http-client": "^1.0",
+        "symfony/clock": "7.4.*",
+        "symfony/console": "7.4.*",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/filesystem": "7.4.*",
+        "symfony/http-client": "7.4.*",
+        "symfony/http-client-contracts": "^3.7",
+        "symfony/lock": "7.4.*",
+        "symfony/mime": "7.4.*",
+        "symfony/service-contracts": "^3.7",
+        "symfony/translation": "7.4.*",
+        "symfony/translation-contracts": "^3.7"
+    },
+    "require-dev": {
+        "adzercms/support": "^1.0"
+    },
+    "suggest": {
+        "adzercms/support": "items refused by OPOTOPO in the staff digest"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Opotopo\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Opotopo\\OpotopoBundle",
+            "categories": ["commerce"]
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}
