@@ -26,12 +26,12 @@ final class ModuleCheckTest extends TestCase
     #[Group('ACMS-CORE-0956')]
     public function testModuleGoesThroughChecksInOrder(): void
     {
-        $check = new Process([\PHP_BINARY, 'vendor/bin/adzercms-module-check', 'adzercms/sms-pilot'], ModuleSuite::root(), timeout: null);
+        $check = new Process([\PHP_BINARY, 'vendor/bin/adzercms-module-check', 'adzercms/sms-pilot'], ModuleSuite::root(), [ModuleCheck::DATABASES => ''], timeout: null);
         $check->run();
 
         self::assertSame(0, $check->getExitCode(), $check->getOutput().$check->getErrorOutput());
         preg_match_all('/^== (\S+)$/m', $check->getOutput(), $checks);
-        self::assertSame([ModuleCheck::BUILD, ModuleCheck::AUDIT, ModuleCheck::PHPSTAN, ModuleCheck::PSALM], $checks[1]);
+        self::assertSame([ModuleCheck::BUILD, ModuleCheck::AUDIT, ModuleCheck::PHPSTAN, ModuleCheck::PSALM, ModuleCheck::BOUNDARY], $checks[1]);
         self::assertStringEndsWith("module check passed\n", $check->getOutput());
     }
 }

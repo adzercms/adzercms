@@ -58,6 +58,16 @@ final class ModuleSuite implements Extension
     /** @param list<Installed> $modules */
     public static function select(Registry $registry, array $modules): void
     {
+        self::choose($registry, self::taken($registry, $modules));
+    }
+
+    /**
+     * @param list<Installed> $modules
+     *
+     * @return list<Installed>
+     */
+    public static function taken(Registry $registry, array $modules): array
+    {
         $selection = [];
         foreach ($registry->kinds() as $kind) {
             $selection[$kind->environment()] = [];
@@ -80,6 +90,20 @@ final class ModuleSuite implements Extension
             }
         }
 
+        return $taken;
+    }
+
+    /** @param list<Installed> $modules */
+    public static function choose(Registry $registry, array $modules): void
+    {
+        $selection = [];
+        foreach ($registry->kinds() as $kind) {
+            $selection[$kind->environment()] = [];
+        }
+        foreach ($modules as $module) {
+            $selection[$module->kind->environment()][] = $module->key;
+        }
+
         foreach ($selection as $name => $keys) {
             $_ENV[$name] = $_SERVER[$name] = implode(',', $keys);
         }
@@ -87,14 +111,18 @@ final class ModuleSuite implements Extension
         $_ENV[self::DOTENV_VARS] = $_SERVER[self::DOTENV_VARS] = implode(',', $loaded);
     }
 
-    private static function occupy(): void
+    public static function occupy(): void
     {
+        if (null !== self::$lock) {
+            return;
+        }
         $file = self::root().self::LOCK;
         (new Filesystem())->mkdir(\dirname($file));
-        self::$lock = fopen($file, 'c') ?: null;
-        if (null === self::$lock || !flock(self::$lock, \LOCK_EX)) {
+        $lock = fopen($file, 'c');
+        if (false === $lock || !flock($lock, \LOCK_EX)) {
             throw new \RuntimeException('test run did not take the database: it is shared by all suites');
         }
+        self::$lock = $lock;
     }
 
     /**

@@ -12,6 +12,13 @@
             "options": {
                 "symlink": true
             }
+        },
+        {
+            "type": "path",
+            "url": "packages/core/tests/Module/Trespass",
+            "options": {
+                "symlink": true
+            }
         }
     ],
     "require": {
@@ -50,6 +57,7 @@
         "symfony/yaml": "7.4.*"
     },
     "require-dev": {
+        "adzercms/trespass": "^1.0@dev",
         "friendsofphp/php-cs-fixer": "^3.95.27",
         "nikic/php-parser": "^5.9",
         "phpstan/extension-installer": "^1.4.3",

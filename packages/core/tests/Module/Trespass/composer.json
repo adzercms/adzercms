@@ -1,0 +1,23 @@
+{
+    "name": "adzercms/trespass",
+    "type": "adzercms-module",
+    "description": "Module crossing the module boundary: fixture of the module check",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Trespass\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Trespass\\TrespassBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

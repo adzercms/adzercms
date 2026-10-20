@@ -42,6 +42,11 @@ abstract class SchemaTestCase extends WebTestCase
         $this->em->getConnection()->beginTransaction();
     }
 
+    protected static function remigrate(): void
+    {
+        self::$migrated = false;
+    }
+
     /**
      * @template T of object
      *

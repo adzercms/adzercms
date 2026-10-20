@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests;
 
+use AdzerCMS\Core\Module\Registry;
 use Composer\Autoload\ClassLoader;
 use Composer\InstalledVersions;
 use Symfony\Component\Filesystem\Filesystem;
@@ -16,6 +17,8 @@ final readonly class ModuleCheck
     public const AUDIT = 'audit';
     public const PHPSTAN = 'phpstan';
     public const PSALM = 'psalm';
+    public const BOUNDARY = 'boundary';
+    public const DATABASES = 'MODULE_CHECK_DATABASES';
 
     private const PSALM_CONFIG = '/var/module-check/psalm.xml';
     private const PSALM_PLUGIN = 'Psalm\SymfonyPsalmPlugin\Plugin';
@@ -31,6 +34,7 @@ final readonly class ModuleCheck
             self::AUDIT => $this->audited(...),
             self::PHPSTAN => fn (): bool => $this->passes([\PHP_BINARY, '-d', 'memory_limit=-1', 'vendor/bin/phpstan', 'analyse', '--no-progress', '--configuration='.__DIR__.'/module.neon', $this->source()]),
             self::PSALM => fn (): bool => $this->passes([\PHP_BINARY, '-d', 'memory_limit=-1', 'vendor/bin/psalm', '--taint-analysis', '--no-cache', '--no-progress', '--config='.$this->psalm(), '--root='.$this->root]),
+            self::BOUNDARY => $this->bounded(...),
         ] as $check => $passes) {
             fwrite(\STDOUT, \sprintf("== %s\n", $check));
             if (!$passes()) {
@@ -83,6 +87,22 @@ final readonly class ModuleCheck
         }
 
         return [] === $found;
+    }
+
+    private function bounded(): bool
+    {
+        $registry = Registry::installed();
+        $listed = $_SERVER[self::DATABASES] ?? $_ENV[self::DATABASES] ?? null;
+        $databases = null === $listed
+            ? [(string) ($_SERVER['DATABASE_URL'] ?? $_ENV['DATABASE_URL'] ?? '')]
+            : (preg_split('~\s+~', (string) $listed, flags: \PREG_SPLIT_NO_EMPTY) ?: []);
+        $crossed = (new ModuleBoundary($registry, $registry->package($this->package) ?? throw new \LogicException(\sprintf('%s has no module bundle', $this->package))))
+            ->crossed($databases);
+        foreach ($crossed as $crossing) {
+            fwrite(\STDOUT, $crossing."\n");
+        }
+
+        return [] === $crossed;
     }
 
     /** @param list<string> $command */
