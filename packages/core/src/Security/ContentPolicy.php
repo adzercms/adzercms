@@ -28,7 +28,7 @@ final readonly class ContentPolicy
             return;
         }
 
-        $declared = [ContentSource::FORM => [], ContentSource::SCRIPT => [], ContentSource::CONNECT => [], ContentSource::FRAME => [], ContentSource::STYLE => []];
+        $declared = [ContentSource::FORM => [], ContentSource::SCRIPT => [], ContentSource::CONNECT => [], ContentSource::FRAME => [], ContentSource::STYLE => [], ContentSource::IMG => [], ContentSource::WORKER => []];
         foreach ($this->sources as $source) {
             foreach ($source->sources($event->getRequest()) as $directive => $origins) {
                 $declared[$directive] = [...$declared[$directive], ...$origins];
@@ -40,17 +40,18 @@ final readonly class ContentPolicy
         }
         $line = static fn (string $directive, string $base): string => implode(' ', array_unique(array_filter([$directive, $base, ...$declared[$directive]])));
 
-        $response->headers->set(self::HEADER, implode('; ', [
+        $response->headers->set(self::HEADER, implode('; ', array_filter([
             "default-src 'none'",
             "base-uri 'self'",
             $line(ContentSource::FORM, "'self'"),
             "frame-ancestors 'self'",
-            "img-src 'self' data:",
+            $line(ContentSource::IMG, "'self' data:"),
             "font-src 'self'",
             $line(ContentSource::STYLE, "'self' 'unsafe-inline'"),
             $line(ContentSource::SCRIPT, "'self'"),
             $line(ContentSource::CONNECT, "'self'"),
             [] === $declared[ContentSource::FRAME] ? "frame-src 'none'" : $line(ContentSource::FRAME, ''),
-        ]));
+            [] === $declared[ContentSource::WORKER] ? null : $line(ContentSource::WORKER, ''),
+        ])));
     }
 }
