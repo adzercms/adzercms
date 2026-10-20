@@ -5,13 +5,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{{ brand.title }}{% endblock %}</title>
-    {% block meta %}{% endblock %}
     {% if brand.icon %}<link rel="icon" href="{{ brand.icon }}">{% endif %}
     <link rel="preload" href="{{ asset('bundles/theme/fonts/golos-cyrillic.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="{{ asset('bundles/theme/fonts/golos-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{{ asset('bundles/theme/style.css') }}">
     {{ importmap('theme', {nonce: script_nonce()}) }}
     {% for part in fragments('head') %}{% include part.template with part.context only %}{% endfor %}
+    {% block meta %}{% endblock %}
 </head>
 <body class="{% block bodyclass %}{% endblock %}">
 {% block shell %}
