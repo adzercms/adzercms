@@ -43,6 +43,7 @@ final class ModuleSuiteTest extends TestCase
             'acme/cash' => Fixture\Manifest::of(Fixture\CashBundle::class, 'acme/shop'),
             'acme/till' => ['require-dev' => ['acme/card' => '*']]
                 + Fixture\Manifest::of(Fixture\TillBundle::class, 'adzercms/gateway-implementation'),
+            'acme/pigeon' => Fixture\Manifest::of(Fixture\PigeonBundle::class, 'acme/till'),
         ]);
         [$server, $env] = [$_SERVER, $_ENV];
         $_SERVER['TEST_GATEWAY'] = $chosen;
@@ -60,5 +61,6 @@ final class ModuleSuiteTest extends TestCase
     {
         yield 'suite module of the kind against the instance choice' => ['Card', 'Cash', 'Shop,Till'];
         yield 'development module of the kind among several installed without a choice' => ['Till', '', 'Till,Shop'];
+        yield 'development module of the kind of a required module without a choice' => ['Pigeon', '', 'Till,Shop'];
     }
 }

@@ -75,7 +75,7 @@ final class ModuleSuite implements Extension
         for ($index = 0; $index < \count($taken); ++$index) {
             foreach ($registry->required($taken[$index]) as $kind) {
                 if ([] === $selection[$kind->environment()]) {
-                    self::take(self::provider($kind, $registry), $registry, $selection, $taken);
+                    self::take(self::provider($kind, $taken[$index], $registry), $registry, $selection, $taken);
                 }
             }
         }
@@ -116,16 +116,16 @@ final class ModuleSuite implements Extension
         }
     }
 
-    private static function provider(Kind $kind, Registry $registry): Installed
+    private static function provider(Kind $kind, Installed $requiring, Registry $registry): Installed
     {
         $installed = $registry->ofKind($kind);
-        $selected = array_filter($installed, static fn (Installed $module): bool => \in_array(
-            $module->key,
-            array_map(trim(...), explode(',', (string) ($_SERVER[$kind->environment()] ?? ''))),
-            true,
-        ));
+        $chosen = array_map(trim(...), explode(',', (string) ($_SERVER[$kind->environment()] ?? '')));
 
-        return [...$selected, ...(1 === \count($installed) ? $installed : [])][0]
+        return [
+            ...array_filter($installed, static fn (Installed $module): bool => \in_array($module->key, $chosen, true)),
+            ...array_filter($installed, static fn (Installed $module): bool => \in_array($module->package, $requiring->develops, true)),
+            ...(1 === \count($installed) ? $installed : []),
+        ][0]
             ?? throw new \LogicException(sprintf('suite needs a module of %s: select one of installed in the instance environment, installed: %s', $kind->environment(), implode(', ', array_map(static fn (Installed $module): string => $module->key, $installed)) ?: 'none'));
     }
 }
