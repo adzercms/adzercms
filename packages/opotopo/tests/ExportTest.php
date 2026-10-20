@@ -9,6 +9,7 @@ use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\HttpAnswers;
 use AdzerCMS\Core\Tests\SchemaTestCase;
+use AdzerCMS\Opotopo\ItemDigest;
 use AdzerCMS\Opotopo\OpotopoSettings;
 use AdzerCMS\Opotopo\Tests\Fixture\ShelfCatalog;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -164,21 +165,19 @@ final class ExportTest extends SchemaTestCase
     /** @return list<string> */
     private static function digest(): array
     {
-        $digest = self::command('adzercms:digest');
-        $digest->execute([]);
-        $collected = json_decode($digest->getDisplay(), true, flags: \JSON_THROW_ON_ERROR);
-
-        return \is_array($collected) && \is_array($collected['lines'] ?? null) ? $collected['lines'] : self::fail('the digest has no lines');
+        return self::service(ItemDigest::class)->lines();
     }
 
     /**
      * @param array<string, mixed> $body
      *
-     * @return list<array<string, mixed>>
+     * @return list<mixed>
      */
     private static function items(array $body): array
     {
-        return \is_array($body['items'] ?? null) ? $body['items'] : self::fail('the sync carries no items');
+        $items = $body['items'] ?? null;
+
+        return \is_array($items) && array_is_list($items) ? $items : self::fail('the sync carries no items');
     }
 
     /** @param array<string, mixed> $options */
@@ -228,8 +227,7 @@ final class ExportTest extends SchemaTestCase
     private function store(array $options, string $content): MockResponse
     {
         $last = array_key_last($this->uploads) ?? self::fail('content before the upload is initiated');
-        $this->uploads[$last]['type'] = self::header($options, 'content-type');
-        $this->uploads[$last]['content'] = $content;
+        $this->uploads[$last] = ['request' => $this->uploads[$last]['request'], 'type' => self::header($options, 'content-type'), 'content' => $content];
 
         return new MockResponse('');
     }

@@ -55,6 +55,14 @@ final readonly class FileRegistry implements FileStore
             ->execute();
     }
 
+    /**
+     * @template TKey
+     * @template TResult
+     *
+     * @param Query<TKey, TResult> $query
+     *
+     * @return Query<TKey, TResult>
+     */
     private static function targeted(Query $query, FileTarget $target): Query
     {
         return $query
