@@ -1,0 +1,37 @@
+{
+    "name": "adzercms/yandex-metrika",
+    "type": "adzercms-module",
+    "description": "Yandex Metrica counter on AdzerCMS pages after the visitor's cookie consent",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "yandex-metrica",
+        "analytics",
+        "cookie-consent"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/translation": "7.4.*",
+        "symfony/translation-contracts": "^3.7"
+    },
+    "provide": {
+        "adzercms/analytics-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\YandexMetrika\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\YandexMetrika\\YandexMetrikaBundle",
+            "categories": ["marketing"]
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

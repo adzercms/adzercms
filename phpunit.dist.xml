@@ -30,6 +30,9 @@
         <testsuite name="YandexId">
             <directory>packages/yandex-id/tests</directory>
         </testsuite>
+        <testsuite name="YandexMetrika">
+            <directory>packages/yandex-metrika/tests</directory>
+        </testsuite>
         <testsuite name="Admin">
             <directory>packages/admin/tests</directory>
         </testsuite>

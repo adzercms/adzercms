@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="yandexmetrika.counter">
+      <segment>
+        <source>yandexmetrika.counter</source>
+        <target>Counter number</target>
+      </segment>
+    </unit>
+    <unit id="yandexmetrika.name">
+      <segment>
+        <source>yandexmetrika.name</source>
+        <target>Yandex Metrica</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

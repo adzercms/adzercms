@@ -41,6 +41,7 @@
         "adzercms/turnstile": "^1.0@dev",
         "adzercms/vk-id": "^1.0@dev",
         "adzercms/yandex-id": "^1.0@dev",
+        "adzercms/yandex-metrika": "^1.0@dev",
         "adzercms/yookassa": "^1.0@dev",
         "symfony/dotenv": "7.4.*",
         "symfony/flex": "^2.11",
@@ -99,6 +100,7 @@
             "AdzerCMS\\Turnstile\\Tests\\": "packages/turnstile/tests/",
             "AdzerCMS\\VkId\\Tests\\": "packages/vk-id/tests/",
             "AdzerCMS\\YandexId\\Tests\\": "packages/yandex-id/tests/",
+            "AdzerCMS\\YandexMetrika\\Tests\\": "packages/yandex-metrika/tests/",
             "AdzerCMS\\YooKassa\\Tests\\": "packages/yookassa/tests/"
         }
     },

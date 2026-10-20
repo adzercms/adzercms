@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "03fd513900df3380a8d91d1d59cc8161",
+    "content-hash": "d7828eeae76c7e4869f536fd318a9789",
     "packages": [
         {
             "name": "adzercms/admin",
@@ -1293,6 +1293,57 @@
                 "social-login",
                 "symfony",
                 "yandex-id"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "adzercms/yandex-metrika",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/yandex-metrika",
+                "reference": "006a9e91fabd90946508691ed0814d335395ded6"
+            },
+            "require": {
+                "adzercms/contracts": "^1.0",
+                "php": ">=8.4",
+                "symfony/dependency-injection": "7.4.*",
+                "symfony/translation": "7.4.*",
+                "symfony/translation-contracts": "^3.7"
+            },
+            "provide": {
+                "adzercms/analytics-implementation": "self.version"
+            },
+            "type": "adzercms-module",
+            "extra": {
+                "adzercms": {
+                    "bundle": "AdzerCMS\\YandexMetrika\\YandexMetrikaBundle",
+                    "categories": [
+                        "marketing"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AdzerCMS\\YandexMetrika\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Yandex Metrica counter on AdzerCMS pages after the visitor's cookie consent",
+            "keywords": [
+                "adzercms",
+                "analytics",
+                "cookie-consent",
+                "symfony",
+                "yandex-metrica"
             ],
             "transport-options": {
                 "symlink": true,
@@ -12263,6 +12314,7 @@
         "adzercms/turnstile": 20,
         "adzercms/vk-id": 20,
         "adzercms/yandex-id": 20,
+        "adzercms/yandex-metrika": 20,
         "adzercms/yookassa": 20
     },
     "prefer-stable": true,
