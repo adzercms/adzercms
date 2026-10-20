@@ -25,7 +25,7 @@ GEOIP_CITY_DB=/usr/share/GeoIP/GeoLite2-City.mmdb
 
 - `APP_SECRET` — a random string, such as the output of `openssl rand -hex 32`
 - `DEFAULT_URI` — the public address of the instance: links in messages sent by scheduled jobs start with it
-- `DATABASE_URL` — an empty database; a MySQL or MariaDB address takes `charset=utf8mb4` and the full server version, such as `serverVersion=8.4.6`
+- `DATABASE_URL` — an empty database; a MySQL or MariaDB address takes `charset=utf8mb4` and the full server version in `serverVersion`; a PostgreSQL database takes the ICU locale provider with the `und` locale
 - `SESSION_DSN` and `GEOIP_CITY_DB` are optional: without them sessions go to files and logins have no place
 
 Modules are selected by environment keys: [Modules](modules.md). Tests and static analysis do not read `.env.local`: a selection changed there goes into `.env.test` too.

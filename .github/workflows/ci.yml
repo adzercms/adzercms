@@ -51,6 +51,7 @@ jobs:
           MARIADB_DATABASE: adzercms_test
           POSTGRES_PASSWORD: adzercms
           POSTGRES_DB: adzercms_test
+          POSTGRES_INITDB_ARGS: --locale-provider=icu --icu-locale=und
         ports:
           - ${{ matrix.db.port }}:${{ matrix.db.port }}
         options: >-
