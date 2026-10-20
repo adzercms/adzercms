@@ -104,7 +104,8 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
         $test = array_any($builder->getExtensionConfig('framework'), static fn (array $config): bool => true === ($config['test'] ?? null));
 
         $builder->setParameter(self::IMPORTMAPS, $importmaps);
-        $builder->setParameter('adzercms.files_dir', '%kernel.project_dir%/var/files/%kernel.environment%');
+        $builder->setParameter('adzercms.files_default', '%kernel.project_dir%/var/files/%kernel.environment%');
+        $builder->setParameter('adzercms.files_dir', '%env(default:adzercms.files_default:FILES_DIR)%');
         $builder->setParameter('adzercms.session_files', 'file://%adzercms.files_dir%/sessions');
         $builder->prependExtensionConfig('framework', [
             'session' => [
