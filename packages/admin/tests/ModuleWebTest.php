@@ -154,10 +154,13 @@ final class ModuleWebTest extends SchemaTestCase
         $this->offer('acme/shop', '1.0.0');
         self::command('adzercms:modules')->execute([]);
 
-        $idle = array_values(array_filter(self::service(ModuleCatalog::class)->rows()['rows'], static fn (CatalogRow $row): bool => null !== $row->installed && !$row->selected))[0] ?? self::fail('the tree has no installed module outside the suite');
+        $rows = self::service(ModuleCatalog::class)->rows()['rows'];
+        $idle = array_values(array_filter($rows, static fn (CatalogRow $row): bool => null !== $row->installed && !$row->selected))[0] ?? self::fail('the tree has no installed module outside the suite');
+        $chosen = array_values(array_filter($rows, static fn (CatalogRow $row): bool => $row->selected && CoreKind::Admin !== $row->kind))[0] ?? self::fail('the suite selects no module beside the admin panel');
         $page = $this->client->request('GET', '/admin/modules');
         self::assertSame([self::phrase(ModuleAction::Install->label())], self::actions($page, 'acme/shop'));
-        self::assertSame(array_map(static fn (ModuleAction $action): string => self::phrase($action->label()), [ModuleAction::Update, ModuleAction::Disable]), self::actions($page, 'adzercms/admin'));
+        self::assertSame([self::phrase(ModuleAction::Update->label())], self::actions($page, 'adzercms/admin'));
+        self::assertSame(array_map(static fn (ModuleAction $action): string => self::phrase($action->label()), [ModuleAction::Update, ModuleAction::Disable]), self::actions($page, $chosen->name));
         self::assertSame(array_map(static fn (ModuleAction $action): string => self::phrase($action->label()), [ModuleAction::Update, ModuleAction::Enable, ModuleAction::Remove]), self::actions($page, $idle->name));
 
         $this->post('/admin/modules/request/install?package=acme/shop');

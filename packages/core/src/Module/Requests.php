@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Module;
 
+use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Entity\ModuleRequest;
 use AdzerCMS\Core\Repository\ModuleRequestRepository;
@@ -27,6 +28,7 @@ final readonly class Requests
         return match (true) {
             $this->tree->versioned() => [],
             null === $row->installed => [ModuleAction::Install],
+            $row->selected && CoreKind::Admin === $row->kind => [ModuleAction::Update],
             $row->selected => [ModuleAction::Update, ModuleAction::Disable],
             default => [ModuleAction::Update, ModuleAction::Enable, ModuleAction::Remove],
         };
