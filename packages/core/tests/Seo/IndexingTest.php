@@ -45,13 +45,13 @@ final class IndexingTest extends SchemaTestCase
         self::assertStringContainsString("Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&yclid&gclid&fbclid\n\nSitemap: http://localhost/sitemap.xml\n", $robots);
 
         $this->client->request('GET', '/sitemap.xml');
-        self::assertSame(['http://localhost/guide'], $this->locs());
-        self::assertSame([], $this->lastmods());
+        self::assertSame(['http://localhost/guide'], $this->sitemap('loc'));
+        self::assertSame([], $this->sitemap('lastmod'));
 
         $this->em->persist(new Text('ru', 'messages', 'fixture.guide', 'Справочник'));
         $this->em->flush();
         $this->client->request('GET', '/sitemap.xml');
-        self::assertCount(1, $this->lastmods());
+        self::assertCount(1, $this->sitemap('lastmod'));
 
         $this->client->request('GET', '/guide/intro');
         self::assertSame('http://localhost/guide index', $this->client->getResponse()->getContent());
@@ -59,24 +59,16 @@ final class IndexingTest extends SchemaTestCase
         self::assertSame('http://localhost/vault/7 index', $this->client->getResponse()->getContent());
     }
 
-    /** @return list<string> */
-    private function locs(): array
-    {
-        return $this->sitemap('loc');
-    }
-
-    /** @return list<string> */
-    private function lastmods(): array
-    {
-        return $this->sitemap('lastmod');
-    }
-
-    /** @return list<string> */
+    /**
+     * @phpstan-impure
+     *
+     * @return list<string>
+     */
     private function sitemap(string $element): array
     {
         $xml = new \SimpleXMLElement((string) $this->client->getResponse()->getContent());
         $xml->registerXPathNamespace('s', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 
-        return array_map('strval', $xml->xpath('//s:url/s:'.$element) ?: []);
+        return array_map(strval(...), array_values($xml->xpath('//s:url/s:'.$element) ?: []));
     }
 }
