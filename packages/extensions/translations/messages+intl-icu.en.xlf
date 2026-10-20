@@ -7,6 +7,18 @@
         <target>+ Extension</target>
       </segment>
     </unit>
+    <unit id="extensions.catalog.description">
+      <segment>
+        <source>extensions.catalog.description</source>
+        <target>AdzerCMS extensions: modules, integrations, themes, site templates and mini apps with description, version, price and demo</target>
+      </segment>
+    </unit>
+    <unit id="extensions.catalog.title">
+      <segment>
+        <source>extensions.catalog.title</source>
+        <target>AdzerCMS extensions</target>
+      </segment>
+    </unit>
     <unit id="extensions.column.demo">
       <segment>
         <source>extensions.column.demo</source>
@@ -49,10 +61,22 @@
         <target>Remove {name} from the catalog?</target>
       </segment>
     </unit>
+    <unit id="extensions.edition">
+      <segment>
+        <source>extensions.edition</source>
+        <target>{type}, version {version}</target>
+      </segment>
+    </unit>
     <unit id="extensions.empty">
       <segment>
         <source>extensions.empty</source>
         <target>No extensions</target>
+      </segment>
+    </unit>
+    <unit id="extensions.filter.price">
+      <segment>
+        <source>extensions.filter.price</source>
+        <target>Price</target>
       </segment>
     </unit>
     <unit id="extensions.filter.type">
@@ -85,6 +109,24 @@
         <target>Free</target>
       </segment>
     </unit>
+    <unit id="extensions.link.demo">
+      <segment>
+        <source>extensions.link.demo</source>
+        <target>Demo</target>
+      </segment>
+    </unit>
+    <unit id="extensions.link.homepage">
+      <segment>
+        <source>extensions.link.homepage</source>
+        <target>Extension page</target>
+      </segment>
+    </unit>
+    <unit id="extensions.link.source">
+      <segment>
+        <source>extensions.link.source</source>
+        <target>Code</target>
+      </segment>
+    </unit>
     <unit id="extensions.menu">
       <segment>
         <source>extensions.menu</source>
@@ -95,6 +137,12 @@
       <segment>
         <source>extensions.new</source>
         <target>New extension</target>
+      </segment>
+    </unit>
+    <unit id="extensions.paid">
+      <segment>
+        <source>extensions.paid</source>
+        <target>Paid</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.demo">

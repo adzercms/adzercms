@@ -1,0 +1,23 @@
+{% set schema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'extensions.catalog.title'|trans,
+    description: 'extensions.catalog.description'|trans,
+    url: url('extensions'),
+    mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: rows|map((row, index) => {
+            '@type': 'ListItem',
+            position: table.offset + index + 1,
+            item: {
+                '@type': 'SoftwareApplication',
+                name: row.name,
+                description: row.description,
+                softwareVersion: row.version,
+                url: row.homepage ?? row.source,
+                offers: {'@type': 'Offer', price: row.price ?? '0', priceCurrency: constant('AdzerCMS\\Core\\Ui\\Money::CURRENCY')},
+            }|filter(value => value is not empty),
+        }),
+    },
+} %}
+<script type="application/ld+json">{{ schema|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}</script>

@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{{ brand.title }}{% endblock %}</title>
+    {% block meta %}{% endblock %}
     {% if brand.icon %}<link rel="icon" href="{{ brand.icon }}">{% endif %}
     <link rel="preload" href="{{ asset('bundles/theme/fonts/golos-cyrillic.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="{{ asset('bundles/theme/fonts/golos-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
@@ -26,7 +27,7 @@
     {% set top = brand.layout.value == 'top' ? fragments('top', app.user ? app.user.id : null) : [] %}
     {% for part in top %}{% include part.template with part.context only %}{% endfor %}
     {% if top is empty %}
-    <header class="panel-header">
+    <!--noindex--><header class="panel-header" data-nosnippet>
         <div class="header-inner">
             {% if app.user %}
                 <label class="menu-toggle" for="sidebar-toggle" aria-label="{{ 'theme.menu'|trans }}">
@@ -45,7 +46,7 @@
                 </div>
             {% endif %}
         </div>
-    </header>
+    </header><!--/noindex-->
     {% if app.user %}{% include '@Theme/_admin_bar.html.twig' %}{% endif %}
     {% endif %}
 

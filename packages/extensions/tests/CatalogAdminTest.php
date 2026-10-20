@@ -18,6 +18,12 @@ final class CatalogAdminTest extends CatalogTestCase
 
     private const LIST = '/admin/extensions';
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->operate();
+    }
+
     #[Group('ACMS-EXT-0001')]
     #[Group('ACMS-EXT-0002')]
     #[Group('ACMS-US-0035')]

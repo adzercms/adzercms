@@ -16,6 +16,7 @@
         {% if rows is empty %}
             <p class="empty-state">{{ table.empty|trans }}</p>
         {% else %}
+            {% block items %}
             {% if table.order %}
                 <form id="{{ table.id }}-order" hx-post="{{ path(table.order.route, table.params()) }}" hidden>{{ csrf_field() }}</form>
             {% endif %}
@@ -42,6 +43,7 @@
                     </tbody>
                 </table>
             </div>
+            {% endblock %}
         {% endif %}
 
         {% include '@Theme/_pager.html.twig' %}

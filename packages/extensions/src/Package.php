@@ -48,13 +48,20 @@ final readonly class Package
             self::text($latest['description'] ?? null) ?? '',
             $latest['version'],
             array_values(array_unique(array_filter(\is_array($extra['categories'] ?? null) ? $extra['categories'] : [], \is_string(...)))),
-            self::text($latest['source']['url'] ?? null),
-            self::text($latest['homepage'] ?? null),
+            self::link($latest['source']['url'] ?? null),
+            self::link($latest['homepage'] ?? null),
         );
     }
 
     private static function text(mixed $value): ?string
     {
         return \is_string($value) && '' !== trim($value) ? trim($value) : null;
+    }
+
+    private static function link(mixed $value): ?string
+    {
+        $link = self::text($value);
+
+        return null !== $link && ExtensionsSettings::web($link) ? $link : null;
     }
 }

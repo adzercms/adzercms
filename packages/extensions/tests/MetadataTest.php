@@ -35,6 +35,7 @@ final class MetadataTest extends CatalogTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->operate();
         $this->configure([ExtensionsSettings::REPOSITORIES => self::PAID.', '.self::OPEN]);
 
         self::service(HttpAnswers::class)->respond(fn (string $method, string $url): MockResponse => match (true) {
@@ -70,6 +71,20 @@ final class MetadataTest extends CatalogTestCase
 
         $entry = $this->reread($entry);
         self::assertSame(['Paid shop', '3.0.0', []], [$entry->getDescription(), $entry->getVersion(), $entry->getCategories()]);
+    }
+
+    #[Group('ACMS-EXT-0003')]
+    public function testPackageLinksOutsideWebAreNotKept(): void
+    {
+        $this->open[self::NAME] = [[
+            'homepage' => 'javascript:alert(1)',
+            'source' => ['url' => 'git@github.com:acme/shop.git', 'type' => 'git', 'reference' => 'a6b26c2'],
+        ] + self::version(self::NAME, '1.0.0', 'Shop', [])];
+
+        $this->post('/admin/extensions/new', ['name' => self::NAME, 'type' => 'module', 'price' => '', 'demo' => '']);
+
+        $entry = self::extensions()->named(self::NAME) ?? self::fail('the entry is not in the catalog');
+        self::assertSame(['1.0.0', null, null], [$entry->getVersion(), $entry->getSource(), $entry->getHomepage()]);
     }
 
     #[Group('ACMS-EXT-0004')]

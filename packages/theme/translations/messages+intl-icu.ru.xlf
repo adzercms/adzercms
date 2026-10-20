@@ -115,6 +115,12 @@
         <target>Сохранить</target>
       </segment>
     </unit>
+    <unit id="theme.seo.locale">
+      <segment>
+        <source>theme.seo.locale</source>
+        <target>ru_RU</target>
+      </segment>
+    </unit>
     <unit id="theme.show">
       <segment>
         <source>theme.show</source>

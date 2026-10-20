@@ -115,6 +115,12 @@
         <target>Save</target>
       </segment>
     </unit>
+    <unit id="theme.seo.locale">
+      <segment>
+        <source>theme.seo.locale</source>
+        <target>en_US</target>
+      </segment>
+    </unit>
     <unit id="theme.show">
       <segment>
         <source>theme.show</source>

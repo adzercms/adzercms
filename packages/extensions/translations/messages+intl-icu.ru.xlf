@@ -7,6 +7,18 @@
         <target>+ Расширение</target>
       </segment>
     </unit>
+    <unit id="extensions.catalog.description">
+      <segment>
+        <source>extensions.catalog.description</source>
+        <target>Расширения AdzerCMS: модули, интеграции, темы, шаблоны сайтов и мини-приложения с описанием, версией, ценой и демо</target>
+      </segment>
+    </unit>
+    <unit id="extensions.catalog.title">
+      <segment>
+        <source>extensions.catalog.title</source>
+        <target>Расширения AdzerCMS</target>
+      </segment>
+    </unit>
     <unit id="extensions.column.demo">
       <segment>
         <source>extensions.column.demo</source>
@@ -49,10 +61,22 @@
         <target>Снять {name} с каталога?</target>
       </segment>
     </unit>
+    <unit id="extensions.edition">
+      <segment>
+        <source>extensions.edition</source>
+        <target>{type}, версия {version}</target>
+      </segment>
+    </unit>
     <unit id="extensions.empty">
       <segment>
         <source>extensions.empty</source>
         <target>Нет расширений</target>
+      </segment>
+    </unit>
+    <unit id="extensions.filter.price">
+      <segment>
+        <source>extensions.filter.price</source>
+        <target>Цена</target>
       </segment>
     </unit>
     <unit id="extensions.filter.type">
@@ -85,6 +109,24 @@
         <target>Бесплатно</target>
       </segment>
     </unit>
+    <unit id="extensions.link.demo">
+      <segment>
+        <source>extensions.link.demo</source>
+        <target>Демо</target>
+      </segment>
+    </unit>
+    <unit id="extensions.link.homepage">
+      <segment>
+        <source>extensions.link.homepage</source>
+        <target>Страница расширения</target>
+      </segment>
+    </unit>
+    <unit id="extensions.link.source">
+      <segment>
+        <source>extensions.link.source</source>
+        <target>Код</target>
+      </segment>
+    </unit>
     <unit id="extensions.menu">
       <segment>
         <source>extensions.menu</source>
@@ -95,6 +137,12 @@
       <segment>
         <source>extensions.new</source>
         <target>Новое расширение</target>
+      </segment>
+    </unit>
+    <unit id="extensions.paid">
+      <segment>
+        <source>extensions.paid</source>
+        <target>Платно</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.demo">

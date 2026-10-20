@@ -1,0 +1,24 @@
+{% macro link(url, label, class) %}
+    {% if url %}<a class="button {{ class }}" href="{{ url }}" target="_blank" rel="noreferrer noopener">{{ label|trans }}</a>{% endif %}
+{% endmacro %}
+
+{% embed '@Theme/_table.html.twig' %}
+    {% block items %}
+        {% import '@Extensions/_catalog.html.twig' as card %}
+        <div class="offer-grid">
+            {% for row in rows %}
+                <article class="offer-card">
+                    <h2 class="offer-title">{{ row.name }}</h2>
+                    <span class="muted">{{ 'extensions.edition'|trans({type: row.type.label|trans, version: row.version}) }}</span>
+                    <div class="offer-price">{{ row.price ? amount(row.price, false) : 'extensions.free'|trans }}</div>
+                    {% if row.description %}<p>{{ row.description }}</p>{% endif %}
+                    <div class="offer-actions">
+                        {{ card.link(row.demo, 'extensions.link.demo', '') }}
+                        {{ card.link(row.homepage, 'extensions.link.homepage', 'secondary') }}
+                        {{ card.link(row.source, 'extensions.link.source', 'secondary') }}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% endblock %}
+{% endembed %}

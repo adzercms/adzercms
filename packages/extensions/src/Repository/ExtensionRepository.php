@@ -7,6 +7,7 @@ namespace AdzerCMS\Extensions\Repository;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\Entity\Extension;
+use AdzerCMS\Extensions\ExtensionPrice;
 use AdzerCMS\Extensions\ExtensionType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -34,13 +35,21 @@ class ExtensionRepository extends ServiceEntityRepository
     }
 
     /** @return list<Extension> */
-    public function ordered(): array
+    public function published(Table $table): array
     {
-        return $this->createQueryBuilder('e')
-            ->orderBy('e.position')
-            ->addOrderBy('e.id')
+        $table->total((int) $this->catalog($table)->select('COUNT(e.id)')->getQuery()->getSingleScalarResult());
+
+        return self::placed($this->catalog($table))
+            ->setMaxResults($table->size)
+            ->setFirstResult($table->offset())
             ->getQuery()
             ->getResult();
+    }
+
+    /** @return list<Extension> */
+    public function ordered(): array
+    {
+        return self::placed($this->createQueryBuilder('e'))->getQuery()->getResult();
     }
 
     public function last(): int
@@ -61,11 +70,29 @@ class ExtensionRepository extends ServiceEntityRepository
             $builder->andWhere(Filter::matching($builder, $table->term(), ['e.name']));
         }
 
-        $type = ExtensionType::tryFrom($table->value('type'));
-        if (null !== $type) {
-            $builder->andWhere('e.type = :type')->setParameter('type', $type);
-        }
+        return self::typed($builder, $table);
+    }
 
-        return $builder;
+    private function catalog(Table $table): QueryBuilder
+    {
+        $builder = self::typed($this->createQueryBuilder('e')->andWhere('e.version IS NOT NULL'), $table);
+
+        return match (ExtensionPrice::tryFrom($table->value('price'))) {
+            ExtensionPrice::Free => $builder->andWhere('e.price IS NULL'),
+            ExtensionPrice::Paid => $builder->andWhere('e.price IS NOT NULL'),
+            null => $builder,
+        };
+    }
+
+    private static function typed(QueryBuilder $builder, Table $table): QueryBuilder
+    {
+        $type = ExtensionType::tryFrom($table->value('type'));
+
+        return null === $type ? $builder : $builder->andWhere('e.type = :type')->setParameter('type', $type);
+    }
+
+    private static function placed(QueryBuilder $builder): QueryBuilder
+    {
+        return $builder->orderBy('e.position')->addOrderBy('e.id');
     }
 }

@@ -128,7 +128,7 @@ final class Table
     /** @return array<string, mixed> */
     public function base(): array
     {
-        if (null !== $this->order) {
+        if (!array_any($this->columns, $this->sortable(...))) {
             return $this->sticky;
         }
 

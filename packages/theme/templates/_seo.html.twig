@@ -1,0 +1,11 @@
+{% set canonical = url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %}
+<meta name="description" content="{{ description }}">
+<link rel="canonical" href="{{ canonical }}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ brand.title }}">
+<meta property="og:locale" content="{{ 'theme.seo.locale'|trans }}">
+<meta property="og:title" content="{{ title }}">
+<meta property="og:description" content="{{ description }}">
+<meta property="og:url" content="{{ canonical }}">
+{% if brand.logo %}<meta property="og:image" content="{{ brand.logo }}">{% endif %}
+<meta name="twitter:card" content="summary">
