@@ -4,33 +4,19 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions\Tests;
 
-use AdzerCMS\Core\Account\Role;
-use AdzerCMS\Core\Tests\Accounts;
-use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\Queries;
-use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Extensions\Entity\Extension;
 use AdzerCMS\Extensions\ExtensionType;
-use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 
-final class CatalogAdminTest extends SchemaTestCase
+final class CatalogAdminTest extends CatalogTestCase
 {
-    use Accounts;
-    use Browser;
     use Queries;
 
     private const LIST = '/admin/extensions';
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
-        $this->em->flush();
-    }
 
     #[Group('ACMS-EXT-0001')]
     #[Group('ACMS-EXT-0002')]
@@ -109,20 +95,5 @@ final class CatalogAdminTest extends SchemaTestCase
                 $this->entry('acme/entry-'.$number);
             }
         });
-    }
-
-    private function entry(string $name): Extension
-    {
-        $entry = (new Extension())->describe($name, ExtensionType::Module, null, null);
-        $entry->place(\count(self::extensions()->findAll()) + 1);
-        $this->em->persist($entry);
-        $this->em->flush();
-
-        return $entry;
-    }
-
-    private static function extensions(): ExtensionRepository
-    {
-        return self::service(ExtensionRepository::class);
     }
 }

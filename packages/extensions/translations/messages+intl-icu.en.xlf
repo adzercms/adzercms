@@ -25,10 +25,22 @@
         <target>Price</target>
       </segment>
     </unit>
+    <unit id="extensions.column.state">
+      <segment>
+        <source>extensions.column.state</source>
+        <target>State</target>
+      </segment>
+    </unit>
     <unit id="extensions.column.type">
       <segment>
         <source>extensions.column.type</source>
         <target>Type</target>
+      </segment>
+    </unit>
+    <unit id="extensions.column.version">
+      <segment>
+        <source>extensions.column.version</source>
+        <target>Version</target>
       </segment>
     </unit>
     <unit id="extensions.confirm_drop">
@@ -53,6 +65,12 @@
       <segment>
         <source>extensions.flash.dropped</source>
         <target>{name} is removed from the catalog</target>
+      </segment>
+    </unit>
+    <unit id="extensions.flash.missing">
+      <segment>
+        <source>extensions.flash.missing</source>
+        <target>{name} is saved without package metadata: it stays off the site</target>
       </segment>
     </unit>
     <unit id="extensions.flash.saved">
@@ -97,6 +115,12 @@
         <target>The price is a positive amount, a free extension has none</target>
       </segment>
     </unit>
+    <unit id="extensions.refusal.repository">
+      <segment>
+        <source>extensions.refusal.repository</source>
+        <target>{repository} is not an http:// or https:// address</target>
+      </segment>
+    </unit>
     <unit id="extensions.refusal.taken">
       <segment>
         <source>extensions.refusal.taken</source>
@@ -113,6 +137,30 @@
       <segment>
         <source>extensions.save</source>
         <target>Save</target>
+      </segment>
+    </unit>
+    <unit id="extensions.setting.area">
+      <segment>
+        <source>extensions.setting.area</source>
+        <target>Extension catalog</target>
+      </segment>
+    </unit>
+    <unit id="extensions.setting.repositories">
+      <segment>
+        <source>extensions.setting.repositories</source>
+        <target>Composer repositories</target>
+      </segment>
+    </unit>
+    <unit id="extensions.state.missing">
+      <segment>
+        <source>extensions.state.missing</source>
+        <target>No metadata</target>
+      </segment>
+    </unit>
+    <unit id="extensions.state.published">
+      <segment>
+        <source>extensions.state.published</source>
+        <target>On the site</target>
       </segment>
     </unit>
     <unit id="extensions.type.app">

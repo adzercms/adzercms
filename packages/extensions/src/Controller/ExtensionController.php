@@ -12,6 +12,7 @@ use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\Catalog;
 use AdzerCMS\Extensions\Entity\Extension;
+use AdzerCMS\Extensions\ExtensionState;
 use AdzerCMS\Extensions\ExtensionType;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -87,7 +88,9 @@ final class ExtensionController extends AbstractController
             $refusal = $this->catalog->save($extension, $request->request);
 
             if (null === $refusal) {
-                $this->addFlash('success', t('extensions.flash.saved', ['name' => $extension->getName()]));
+                $this->addFlash(...ExtensionState::Published === $extension->state()
+                    ? ['success', t('extensions.flash.saved', ['name' => $extension->getName()])]
+                    : ['error', t('extensions.flash.missing', ['name' => $extension->getName()])]);
 
                 return Fragment::go($this->generateUrl(self::LIST));
             }
@@ -109,6 +112,8 @@ final class ExtensionController extends AbstractController
             Column::plain('type', t('extensions.column.type')),
             Column::plain('price', t('extensions.column.price')),
             Column::plain('demo', t('extensions.column.demo'))->aside(),
+            Column::plain('version', t('extensions.column.version'))->aside(),
+            Column::plain('state', t('extensions.column.state')),
             Column::plain('actions'),
         ], 'name', t('extensions.empty'),
             filters: [Filter::search(), Filter::cases('type', t('extensions.filter.type'), ExtensionType::cases())],

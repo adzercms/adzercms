@@ -318,12 +318,15 @@
             "dist": {
                 "type": "path",
                 "url": "packages/extensions",
-                "reference": "d521ad24ca722ac5b12be213f98ea2580cceb3db"
+                "reference": "1e0763aaf0aee0f6661f8c5048f4dd51dd95f4d6"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
                 "adzercms/core": "^1.0",
                 "adzercms/theme-implementation": "^1.0",
+                "composer/metadata-minifier": "^1.0.1",
+                "composer/semver": "^3.5.1",
+                "doctrine/collections": "^3.1",
                 "doctrine/dbal": "^4.5",
                 "doctrine/doctrine-bundle": "^3.3",
                 "doctrine/migrations": "^3.9",
@@ -331,8 +334,10 @@
                 "doctrine/persistence": "^4.2",
                 "ext-filter": "*",
                 "php": ">=8.4",
+                "symfony/console": "7.4.*",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/framework-bundle": "7.4.*",
+                "symfony/http-client-contracts": "^3.7",
                 "symfony/http-foundation": "7.4.*",
                 "symfony/routing": "7.4.*",
                 "symfony/security-http": "7.4.*",
@@ -1420,6 +1425,71 @@
                 }
             ],
             "time": "2026-08-21T14:57:29+00:00"
+        },
+        {
+            "name": "composer/metadata-minifier",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/metadata-minifier.git",
+                "reference": "8e86142e3ade750b837d55e55f0cdc786d8da006"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/metadata-minifier/zipball/8e86142e3ade750b837d55e55f0cdc786d8da006",
+                "reference": "8e86142e3ade750b837d55e55f0cdc786d8da006",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.2 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "composer/composer": "^2",
+                "phpstan/phpstan": "^1",
+                "symfony/phpunit-bridge": "^4.2 || ^5 || ^6 || ^7"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\MetadataMinifier\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be"
+                }
+            ],
+            "description": "Small utility library that handles metadata minification and expansion.",
+            "keywords": [
+                "composer",
+                "compression"
+            ],
+            "support": {
+                "issues": "https://github.com/composer/metadata-minifier/issues",
+                "source": "https://github.com/composer/metadata-minifier/tree/1.0.1"
+            },
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-06-30T11:34:59+00:00"
         },
         {
             "name": "composer/semver",

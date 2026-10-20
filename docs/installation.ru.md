@@ -90,7 +90,9 @@ printf '%s' "$PASSWORD" | bin/console adzercms:admin admin@example.com --stdin
 ```crontab
 */5 * * * *  /path/bin/php /path/bin/console adzercms:payments
 10 3 * * *   /path/bin/php /path/bin/console adzercms:support
+20 3 * * *   /path/bin/php /path/bin/console adzercms:extensions
 ```
 
 - `adzercms:payments` (платежи) доводит начатые платежи опросом провайдера
 - `adzercms:support` (поддержка) закрывает заявки, ждущие пользователя дольше срока модуля
+- `adzercms:extensions` (каталог расширений) обновляет метаданные пакетов каталога из его репозиториев Composer

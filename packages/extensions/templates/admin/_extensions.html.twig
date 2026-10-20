@@ -6,6 +6,8 @@
             <td class="{{ table.aside('type') }}">{{ row.type.label|trans }}</td>
             <td class="{{ table.aside('price') }}">{{ row.price ? amount(row.price, false) : 'extensions.free'|trans }}</td>
             <td class="{{ table.aside('demo') }}">{% if row.demo %}<a href="{{ row.demo }}" target="_blank" rel="noreferrer noopener">{{ clip(row.demo, 32) }}</a>{% else %}{{ blank() }}{% endif %}</td>
+            <td class="{{ table.aside('version') }}">{{ row.version ?? blank() }}</td>
+            <td class="{{ table.aside('state') }}">{{ badge(row.state) }}</td>
             {% include '@Theme/_row_actions.html.twig' with {drop: path('admin_extension_drop', {id: row.id}), confirm: 'extensions.confirm_drop'|trans({name: row.name})} %}
         </tr>
     {% endblock %}

@@ -90,7 +90,9 @@ Jobs of selected modules:
 ```crontab
 */5 * * * *  /path/bin/php /path/bin/console adzercms:payments
 10 3 * * *   /path/bin/php /path/bin/console adzercms:support
+20 3 * * *   /path/bin/php /path/bin/console adzercms:extensions
 ```
 
 - `adzercms:payments` (payments) settles started payments by asking the provider
 - `adzercms:support` (support) closes tickets waiting for the user longer than the term of the module
+- `adzercms:extensions` (extensions) refreshes package metadata of the catalog from its Composer repositories

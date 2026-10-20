@@ -25,10 +25,22 @@
         <target>Цена</target>
       </segment>
     </unit>
+    <unit id="extensions.column.state">
+      <segment>
+        <source>extensions.column.state</source>
+        <target>Статус</target>
+      </segment>
+    </unit>
     <unit id="extensions.column.type">
       <segment>
         <source>extensions.column.type</source>
         <target>Тип</target>
+      </segment>
+    </unit>
+    <unit id="extensions.column.version">
+      <segment>
+        <source>extensions.column.version</source>
+        <target>Версия</target>
       </segment>
     </unit>
     <unit id="extensions.confirm_drop">
@@ -53,6 +65,12 @@
       <segment>
         <source>extensions.flash.dropped</source>
         <target>{name} снято с каталога</target>
+      </segment>
+    </unit>
+    <unit id="extensions.flash.missing">
+      <segment>
+        <source>extensions.flash.missing</source>
+        <target>{name} сохранено без метаданных пакета: на сайт не идёт</target>
       </segment>
     </unit>
     <unit id="extensions.flash.saved">
@@ -97,6 +115,12 @@
         <target>Цена — положительная сумма, у бесплатного расширения её нет</target>
       </segment>
     </unit>
+    <unit id="extensions.refusal.repository">
+      <segment>
+        <source>extensions.refusal.repository</source>
+        <target>{repository} — не адрес http:// либо https://</target>
+      </segment>
+    </unit>
     <unit id="extensions.refusal.taken">
       <segment>
         <source>extensions.refusal.taken</source>
@@ -113,6 +137,30 @@
       <segment>
         <source>extensions.save</source>
         <target>Сохранить</target>
+      </segment>
+    </unit>
+    <unit id="extensions.setting.area">
+      <segment>
+        <source>extensions.setting.area</source>
+        <target>Каталог расширений</target>
+      </segment>
+    </unit>
+    <unit id="extensions.setting.repositories">
+      <segment>
+        <source>extensions.setting.repositories</source>
+        <target>Репозитории Composer</target>
+      </segment>
+    </unit>
+    <unit id="extensions.state.missing">
+      <segment>
+        <source>extensions.state.missing</source>
+        <target>Нет метаданных</target>
+      </segment>
+    </unit>
+    <unit id="extensions.state.published">
+      <segment>
+        <source>extensions.state.published</source>
+        <target>На сайте</target>
       </segment>
     </unit>
     <unit id="extensions.type.app">

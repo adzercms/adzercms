@@ -20,6 +20,7 @@ final readonly class Catalog
     public function __construct(
         private EntityManagerInterface $em,
         private ExtensionRepository $extensions,
+        private Metadata $metadata,
     ) {
     }
 
@@ -48,7 +49,7 @@ final readonly class Catalog
         }
 
         $demo = trim($input->getString('demo'));
-        if ('' !== $demo && !self::web($demo)) {
+        if ('' !== $demo && !ExtensionsSettings::web($demo)) {
             return new Refusal(t('extensions.refusal.demo'));
         }
 
@@ -59,14 +60,8 @@ final readonly class Catalog
             $this->em->persist($extension);
         }
 
-        $this->em->flush();
+        $this->metadata->refresh([$extension]);
 
         return null;
-    }
-
-    private static function web(string $url): bool
-    {
-        return false !== filter_var($url, \FILTER_VALIDATE_URL)
-            && \in_array(strtolower((string) parse_url($url, \PHP_URL_SCHEME)), ['http', 'https'], true);
     }
 }
