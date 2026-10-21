@@ -37,6 +37,12 @@
         <target>Сохранить</target>
       </segment>
     </unit>
+    <unit id="core.action.to_list">
+      <segment>
+        <source>core.action.to_list</source>
+        <target>← К списку</target>
+      </segment>
+    </unit>
     <unit id="core.bot.linked">
       <segment>
         <source>core.bot.linked</source>

@@ -37,6 +37,12 @@
         <target>Save</target>
       </segment>
     </unit>
+    <unit id="core.action.to_list">
+      <segment>
+        <source>core.action.to_list</source>
+        <target>← Back to list</target>
+      </segment>
+    </unit>
     <unit id="core.bot.linked">
       <segment>
         <source>core.bot.linked</source>

@@ -9,7 +9,7 @@
     {% if user.role.value != 'admin' and user.status.value == 'active' %}
         {% if cabinet('home') %}<a class="button secondary" href="{{ cabinet('home', {_switch_user: user.id}) }}">{{ 'admin.user.switch'|trans }}</a>{% endif %}
     {% endif %}
-    <a class="button secondary" href="{{ path('admin_users') }}">{{ 'admin.back_to_list'|trans }}</a>
+    <a class="button secondary" href="{{ path('admin_users') }}">{{ 'core.action.to_list'|trans }}</a>
 {% endblock %}
 
 {% block page %}
