@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Controller;
 
+use AdzerCMS\Core\Http\TextResponse;
 use AdzerCMS\Core\Seo\Indexing;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -20,7 +21,7 @@ final readonly class IndexingController
     #[Route('/robots.txt', name: Indexing::ROBOTS, methods: ['GET'])]
     public function robots(): Response
     {
-        return new Response($this->indexing->robots(), headers: ['Content-Type' => 'text/plain; charset=UTF-8']);
+        return new TextResponse($this->indexing->robots());
     }
 
     #[Route('/sitemap.xml', name: Indexing::SITEMAP, methods: ['GET'])]
