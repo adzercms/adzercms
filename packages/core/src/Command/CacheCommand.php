@@ -26,6 +26,7 @@ final class CacheCommand
 
         if (null !== $build) {
             $builds->switchTo($build);
+            $this->kernel->keepSelection();
             $output->writeln(sprintf('instance on build %s', $build));
         }
 

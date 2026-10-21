@@ -9,6 +9,7 @@ use AdzerCMS\Core\Build\HeldBuild;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Module\Selection;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
@@ -23,6 +24,7 @@ abstract class Kernel extends BaseKernel
     public const ASSETS = 'adzercms.assets';
 
     private const ASSETS_ROOT = '/assets/';
+    private const SELECTION = '.selection';
 
     private ?Selection $modules = null;
     private ?HeldBuild $held = null;
@@ -80,7 +82,36 @@ abstract class Kernel extends BaseKernel
 
     public function modules(): Selection
     {
-        return $this->modules ??= Selection::of(Registry::installed(), Selection::environment(...));
+        return $this->modules ??= Selection::of(Registry::installed(), $this->selection());
+    }
+
+    public function keepSelection(): void
+    {
+        $values = [];
+        foreach (Registry::installed()->kinds() as $kind) {
+            $values[$kind->environment()] = Selection::environment($kind->environment());
+        }
+
+        (new Filesystem())->dumpFile($this->selectionFile(), json_encode($values, \JSON_THROW_ON_ERROR));
+    }
+
+    /** @return \Closure(string): string */
+    private function selection(): \Closure
+    {
+        $file = $this->selectionFile();
+
+        if ($this->debug || null !== Builds::fixed() || !is_file($file)) {
+            return Selection::environment(...);
+        }
+
+        $values = json_decode((string) file_get_contents($file), true, flags: \JSON_THROW_ON_ERROR);
+
+        return static fn (string $name): string => \is_array($values) && \is_string($values[$name] ?? null) ? $values[$name] : '';
+    }
+
+    private function selectionFile(): string
+    {
+        return $this->configuredCacheDir().self::SELECTION;
     }
 
     private function configureRoutes(RoutingConfigurator $routes): void

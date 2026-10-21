@@ -81,6 +81,29 @@ final class KernelTest extends KernelTestCase
         }
     }
 
+    #[Group('ACMS-CORE-0045')]
+    public function testKernelWithoutDebugTakesModulesOfSwitchedBuildNotOfLiveEnvironment(): void
+    {
+        $cache = sys_get_temp_dir().'/adzercms-kernel-'.bin2hex(random_bytes(4));
+        $_SERVER['APP_CACHE_DIR'] = $cache;
+
+        try {
+            $_SERVER[Builds::ENV] = 'b1';
+            $refresh = new CommandTester((new Application(self::createKernel(['debug' => false])))->find('adzercms:cache'));
+            self::assertSame(Command::SUCCESS, $refresh->execute([]));
+            unset($_SERVER[Builds::ENV]);
+            $_SERVER['MODULES'] = $_ENV['MODULES'] = 'Nope';
+
+            $running = self::bootKernel(['debug' => false]);
+
+            self::assertSame($cache.'/test/b1', $running->getCacheDir(), 'the selection edited before the refresh stays out of the running instance');
+        } finally {
+            self::ensureKernelShutdown();
+            unset($_SERVER['APP_CACHE_DIR'], $_SERVER[Builds::ENV], $_SERVER['MODULES'], $_ENV['MODULES']);
+            (new Filesystem())->remove($cache);
+        }
+    }
+
     #[Group('ACMS-CORE-0011')]
     #[Group('ACMS-CORE-0012')]
     public function testUnselectedModuleLeavesNoTraceInInstance(): void
