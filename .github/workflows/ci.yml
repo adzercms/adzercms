@@ -24,10 +24,27 @@ jobs:
     steps:
       - &checkout
         uses: actions/checkout@v7
+      - &extensions
+        id: extensions
+        run: |
+          php -r '
+            $lock = json_decode(file_get_contents("composer.lock"), true);
+            $root = json_decode(file_get_contents("composer.json"), true);
+            $names = [];
+            foreach ([...$lock["packages"], ...$lock["packages-dev"], $root] as $package) {
+                foreach ([...array_keys($package["require"] ?? []), ...array_keys($root === $package ? $package["require-dev"] ?? [] : [])] as $name) {
+                    if (str_starts_with($name, "ext-")) {
+                        $names[substr($name, 4)] = true;
+                    }
+                }
+            }
+            echo "list=", implode(",", array_keys($names)), PHP_EOL;
+          ' >> "$GITHUB_OUTPUT"
       - &php-setup
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: ${{ steps.extensions.outputs.list }}, pdo_mysql, pdo_pgsql
           coverage: none
           tools: composer:v2
       - &composer
@@ -71,6 +88,7 @@ jobs:
       DATABASE_URL: ${{ matrix.db.url }}
     steps:
       - *checkout
+      - *extensions
       - *php-setup
       - *composer
       - run: |
