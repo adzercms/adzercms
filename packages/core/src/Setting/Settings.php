@@ -56,6 +56,19 @@ final class Settings implements ResetInterface
         return Toggle::On === Toggle::tryFrom($this->get($name));
     }
 
+    public function moment(string $name): ?\DateTimeImmutable
+    {
+        $value = $this->get($name);
+        $moment = '' === $value ? false : \DateTimeImmutable::createFromFormat(\DATE_ATOM, $value);
+
+        return false === $moment ? null : $moment;
+    }
+
+    public function stamp(Field $field, \DateTimeImmutable $moment): void
+    {
+        $this->save($field, $moment->format(\DATE_ATOM));
+    }
+
     public function save(Field $field, string $value): ?Refusal
     {
         $value = trim($value);
