@@ -79,12 +79,6 @@
         <target>The site is under git: modules change by a commit, the catalog takes no requests</target>
       </segment>
     </unit>
-    <unit id="admin.copy">
-      <segment>
-        <source>admin.copy</source>
-        <target>Copy</target>
-      </segment>
-    </unit>
     <unit id="admin.credentials.cleared">
       <segment>
         <source>admin.credentials.cleared</source>

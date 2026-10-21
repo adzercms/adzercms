@@ -7,6 +7,12 @@
         <target>Close</target>
       </segment>
     </unit>
+    <unit id="core.action.copy">
+      <segment>
+        <source>core.action.copy</source>
+        <target>Copy</target>
+      </segment>
+    </unit>
     <unit id="core.action.create">
       <segment>
         <source>core.action.create</source>

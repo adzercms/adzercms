@@ -79,12 +79,6 @@
         <target>Сайт под git: модули меняет коммит, каталог заявок не принимает</target>
       </segment>
     </unit>
-    <unit id="admin.copy">
-      <segment>
-        <source>admin.copy</source>
-        <target>Скопировать</target>
-      </segment>
-    </unit>
     <unit id="admin.credentials.cleared">
       <segment>
         <source>admin.credentials.cleared</source>
