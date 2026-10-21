@@ -12,19 +12,19 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  GIT_CONFIG_COUNT: 1
+  GIT_CONFIG_KEY_0: safe.directory
+  GIT_CONFIG_VALUE_0: '*'
+
 jobs:
   pending:
     runs-on: ubuntu-24.04
+    container: &php ghcr.io/adzercms/php-ci:8.5
     outputs:
       versions: ${{ steps.pending.outputs.versions }}
     steps:
       - uses: actions/checkout@v7
-      - &php
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.5'
-          coverage: none
-          tools: composer:v2
       - uses: ramsey/composer-install@v4
       - &registry
         name: Registry
@@ -56,11 +56,11 @@ jobs:
     needs: [pending, check]
     if: ${{ !cancelled() && needs.pending.result == 'success' }}
     runs-on: ubuntu-24.04
+    container: *php
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v7
-      - *php
       - uses: ramsey/composer-install@v4
       - *registry
       - uses: actions/download-artifact@v8

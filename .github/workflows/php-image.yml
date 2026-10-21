@@ -1,0 +1,118 @@
+name: PHP image
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        type: string
+      versions:
+        type: string
+        required: true
+      packages:
+        type: string
+    outputs:
+      repository:
+        value: ${{ jobs.plan.outputs.repository }}
+      hash:
+        value: ${{ jobs.plan.outputs.hash }}
+      versions:
+        value: ${{ jobs.plan.outputs.versions }}
+
+env:
+  DOCKERFILE: |
+    ARG PHP
+    FROM php:${PHP}-cli
+    COPY --from=mlocati/php-extension-installer:2 /usr/bin/install-php-extensions /usr/local/bin/
+    COPY --from=composer/composer:2-bin /composer /usr/local/bin/composer
+    ARG EXTENSIONS
+    ARG PACKAGES
+    RUN apt-get update \
+      && apt-get install -y --no-install-recommends git unzip jq rsync $PACKAGES \
+      && install-php-extensions $EXTENSIONS \
+      && rm -rf /var/lib/apt/lists/*
+
+jobs:
+  plan:
+    runs-on: &runner ${{ inputs.runner || 'ubuntu-24.04' }}
+    permissions:
+      contents: read
+      packages: read
+    outputs:
+      repository: ${{ steps.plan.outputs.repository }}
+      hash: ${{ steps.plan.outputs.hash }}
+      extensions: ${{ steps.plan.outputs.extensions }}
+      versions: ${{ inputs.versions }}
+      build: ${{ steps.plan.outputs.build }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - &login
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - id: plan
+        env:
+          VERSIONS: ${{ inputs.versions }}
+          PACKAGES: ${{ inputs.packages }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          extensions=$(jq -rs '[.[0].packages[], .[0]."packages-dev"[], .[1], {require: .[1]."require-dev"}]
+            | map(.require // {} | keys[] | select(startswith("ext-")) | ltrimstr("ext-")) + ["pdo_mysql", "pdo_pgsql"]
+            | unique | join(" ")' composer.lock composer.json)
+          repository=ghcr.io/${OWNER,,}/php-ci
+          hash=$(printf '%s\n' "$DOCKERFILE" "$extensions" "$PACKAGES" | sha256sum | cut -c1-12)
+          build=$(for php in $(jq -r '.[]' <<<"$VERSIONS"); do
+            if [ "$GITHUB_EVENT_NAME" = schedule ] || ! docker manifest inspect "$repository:$php-$hash" > /dev/null 2>&1; then
+              echo "$php"
+            fi
+          done | jq -Rsc 'split("\n") | map(select(. != ""))')
+          {
+            echo "repository=$repository"
+            echo "hash=$hash"
+            echo "extensions=$extensions"
+            echo "build=$build"
+          } >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: plan
+    if: needs.plan.outputs.build != '[]'
+    runs-on: *runner
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        php: ${{ fromJSON(needs.plan.outputs.build) }}
+    steps:
+      - *login
+      - env:
+          PHP: ${{ matrix.php }}
+          IMAGE: ${{ needs.plan.outputs.repository }}:${{ matrix.php }}-${{ needs.plan.outputs.hash }}
+          EXTENSIONS: ${{ needs.plan.outputs.extensions }}
+          PACKAGES: ${{ inputs.packages }}
+        run: |
+          docker build --pull --build-arg "PHP=$PHP" --build-arg "EXTENSIONS=$EXTENSIONS" --build-arg "PACKAGES=$PACKAGES" \
+            --label "org.opencontainers.image.source=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" --tag "$IMAGE" - <<<"$DOCKERFILE"
+          docker push "$IMAGE"
+
+  latest:
+    needs: [plan, build]
+    if: ${{ !cancelled() && !failure() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+    runs-on: *runner
+    permissions:
+      packages: write
+    steps:
+      - *login
+      - env:
+          REPOSITORY: ${{ needs.plan.outputs.repository }}
+          HASH: ${{ needs.plan.outputs.hash }}
+          VERSIONS: ${{ inputs.versions }}
+        run: |
+          for php in $(jq -r '.[]' <<<"$VERSIONS"); do
+            docker pull --quiet "$REPOSITORY:$php-$HASH"
+            docker tag "$REPOSITORY:$php-$HASH" "$REPOSITORY:$php"
+            docker push --quiet "$REPOSITORY:$php"
+          done

@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: '41 3 * * 1'
   workflow_call:
     inputs:
       runner:
@@ -15,54 +17,51 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  packages: read
+
 env:
   GIT_CONFIG_COUNT: 1
   GIT_CONFIG_KEY_0: safe.directory
   GIT_CONFIG_VALUE_0: '*'
 
 jobs:
+  image:
+    uses: ./.github/workflows/php-image.yml
+    permissions:
+      contents: read
+      packages: write
+    with:
+      runner: ${{ inputs.runner }}
+      versions: '["8.4", "8.5"]'
+      packages: ${{ inputs.packages }}
+
   static:
+    needs: image
     runs-on: &runner ${{ inputs.runner || 'ubuntu-24.04' }}
     strategy:
       matrix:
-        php: ['8.4', '8.5']
-    container: &php shivammathur/node:php-${{ matrix.php }}-24.04
+        php: &versions ${{ fromJSON(needs.image.outputs.versions) }}
+    container: &php
+      image: ${{ needs.image.outputs.repository }}:${{ matrix.php }}-${{ needs.image.outputs.hash }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
     steps:
       - &checkout
         uses: actions/checkout@v7
-      - &extensions
-        id: extensions
-        run: |
-          php -r '
-            $lock = json_decode(file_get_contents("composer.lock"), true);
-            $root = json_decode(file_get_contents("composer.json"), true);
-            $names = [];
-            foreach ([...$lock["packages"], ...$lock["packages-dev"], $root] as $package) {
-                foreach ([...array_keys($package["require"] ?? []), ...array_keys($root === $package ? $package["require-dev"] ?? [] : [])] as $name) {
-                    if (str_starts_with($name, "ext-")) {
-                        $names[substr($name, 4)] = true;
-                    }
-                }
-            }
-            echo "list=", implode(",", array_keys($names)), PHP_EOL;
-          ' >> "$GITHUB_OUTPUT"
-      - &php-setup
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: ${{ steps.extensions.outputs.list }}, pdo_mysql, pdo_pgsql
-          coverage: none
-          tools: composer:v2
       - &composer
         uses: ramsey/composer-install@v4
       - run: vendor/bin/adzercms-check
 
   tests:
+    needs: image
     runs-on: *runner
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.4', '8.5']
+        php: *versions
         db:
           - image: mysql:lts
             health: mysqladmin ping -h 127.0.0.1 -padzercms
@@ -94,10 +93,7 @@ jobs:
       DATABASE_URL: ${{ matrix.db.url }}
     steps:
       - *checkout
-      - *extensions
-      - *php-setup
       - *composer
-      - run: apt-get update -qq && apt-get install -y -qq --no-install-recommends rsync ${{ inputs.packages }}
       - run: |
           for suite in $(sed -n 's/.*<testsuite name="\([^"]*\)".*/\1/p' phpunit.dist.xml); do
             bin/phpunit --testsuite "$suite"
