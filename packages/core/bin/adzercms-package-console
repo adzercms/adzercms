@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Tests\ModuleSuite;
+use AdzerCMS\Core\Tests\Translation\Catalogs;
 use App\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -29,4 +30,7 @@ if (ModuleSuite::root() !== $directory) {
     ModuleSuite::select($registry, null === $module ? [] : [$module]);
 }
 
-exit((new Application(new Kernel($env, true)))->run($input));
+$kernel = new Kernel($env, true);
+$application = new Application($kernel);
+$application->addCommand(new Catalogs($kernel));
+exit($application->run($input));

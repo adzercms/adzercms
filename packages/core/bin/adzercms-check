@@ -18,5 +18,6 @@ for package in . $(ls -d packages/*/ modules/*/ 2>/dev/null || true); do
     # shellcheck disable=SC2086
     [ ! -d "$package/translations" ] || bin/php vendor/bin/adzercms-package-console "$package" lint:translations $locales
     [ ! -d "$package/templates" ] || bin/php vendor/bin/adzercms-package-console "$package" lint:twig "$package/templates"
+    [ "$package" = . ] || bin/php vendor/bin/adzercms-package-console "$package" adzercms:catalogs "$package"
     [ "$package" = . ] || bin/php vendor/bin/adzercms-package-dependencies "$package"
 done

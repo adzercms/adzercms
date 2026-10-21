@@ -150,7 +150,7 @@ In the application settings on the service side, register the redirect URI `http
 - `migrations/` — migrations in the `<bundle namespace>\Migrations` namespace
 - `src/Controller/` — controllers with route attributes
 - `templates/` — Twig templates under `@<Module>`
-- `translations/` — XLIFF catalogs `messages+intl-icu.<lang>.xlf`; keys start with the module name, the English catalog is required, and every language has the same set of keys
+- `translations/` — XLIFF catalogs `messages+intl-icu.<lang>.xlf`; keys start with the module name, the English catalog is required, every language has the same set of keys, and every key of the code and templates is in the English catalog of the module or of a module it requires
 - `tests/` — PHPUnit tests
 
 The core wires up the entities, migrations and routes of an enabled module by itself.

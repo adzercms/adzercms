@@ -38,9 +38,15 @@ final readonly class Texts
 
     public function catalogue(string $locale): MessageCatalogue
     {
+        return self::load($locale, $this->files[$locale] ?? []);
+    }
+
+    /** @param list<string> $files */
+    public static function load(string $locale, array $files): MessageCatalogue
+    {
         $catalogue = new MessageCatalogue($locale);
         $loader = new XliffFileLoader();
-        foreach ($this->files[$locale] ?? [] as $file) {
+        foreach ($files as $file) {
             $catalogue->addCatalogue($loader->load($file, $locale, self::domain($file)));
         }
 

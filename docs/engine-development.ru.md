@@ -49,7 +49,7 @@
 - `README.md` или файл в `docs/` изменён без перевода `*.ru.md`;
 - из двух файлов, одинаковых в `HEAD`, — в `packages/skeleton/` и по тому же пути в корне — изменён только один.
 
-`vendor/bin/adzercms-check` проверяет всё дерево: стиль кода, PHPStan на уровне из `phpstan.dist.neon`, XLIFF, ICU, Twig и зависимости каждого пакета. Находку PHPStan исправляют в коде, а не через `ignore` или baseline. [CI](../.github/workflows/ci.yml) запускает проверки и все наборы тестов на MySQL, MariaDB и PostgreSQL со всеми поддерживаемыми версиями PHP при каждом push в `main` и в каждом pull request.
+`vendor/bin/adzercms-check` проверяет всё дерево: стиль кода, PHPStan на уровне из `phpstan.dist.neon`, XLIFF, ICU, Twig, ключи каталогов и зависимости каждого пакета. Находку PHPStan исправляют в коде, а не через `ignore` или baseline. [CI](../.github/workflows/ci.yml) запускает проверки и все наборы тестов на MySQL, MariaDB и PostgreSQL со всеми поддерживаемыми версиями PHP при каждом push в `main` и в каждом pull request.
 
 ## Тесты
 

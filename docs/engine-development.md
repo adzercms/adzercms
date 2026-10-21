@@ -49,7 +49,7 @@ The pre-commit hook runs the same gates as an instance does (see [Git and update
 - `README.md` or a file in `docs/` changes without its `*.ru.md` translation;
 - of two files that are identical in `HEAD` — one in `packages/skeleton/` and one at the same path in the root — only one changes.
 
-`vendor/bin/adzercms-check` checks the whole tree: code style, PHPStan at the level from `phpstan.dist.neon`, XLIFF, ICU, Twig and each package's dependencies. A PHPStan finding is fixed in the code, not with `ignore` or a baseline. [CI](../.github/workflows/ci.yml) runs the checks and every test suite on MySQL, MariaDB and PostgreSQL with every supported PHP version on each push to `main` and in each pull request.
+`vendor/bin/adzercms-check` checks the whole tree: code style, PHPStan at the level from `phpstan.dist.neon`, XLIFF, ICU, Twig, and each package's catalog keys and dependencies. A PHPStan finding is fixed in the code, not with `ignore` or a baseline. [CI](../.github/workflows/ci.yml) runs the checks and every test suite on MySQL, MariaDB and PostgreSQL with every supported PHP version on each push to `main` and in each pull request.
 
 ## Tests
 
