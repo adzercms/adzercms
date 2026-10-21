@@ -8,7 +8,6 @@ use AdzerCMS\Contracts\Module\Kind;
 use AdzerCMS\Core\Module\Installed;
 use AdzerCMS\Core\Module\Registry;
 use App\Kernel;
-use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\Migrations\DependencyFactory;
@@ -75,10 +74,33 @@ final readonly class ModuleBoundary
             }
         }
         foreach ($databases as $database) {
-            array_push($crossed, ...$this->schema($database, $without, $with));
+            array_push($crossed, ...$this->schema($database, $with));
         }
 
         return $crossed;
+    }
+
+    /**
+     * @param list<Installed> $with
+     *
+     * @return list<string>
+     */
+    private function apart(array $with): array
+    {
+        $apart = [$this->module->package];
+        do {
+            $count = \count($apart);
+            foreach ($with as $module) {
+                if (!\in_array($module->package, $apart, true) && [] !== array_intersect($module->requires, $apart)) {
+                    $apart[] = $module->package;
+                }
+            }
+        } while (\count($apart) !== $count);
+
+        return array_map(
+            static fn (Installed $module): string => self::set($module),
+            array_values(array_filter($with, static fn (Installed $module): bool => \in_array($module->package, $apart, true))),
+        );
     }
 
     /**
@@ -101,26 +123,24 @@ final readonly class ModuleBoundary
     }
 
     /**
-     * @param list<Installed> $without
      * @param list<Installed> $with
      *
      * @return list<string>
      */
-    private function schema(string $database, array $without, array $with): array
+    private function schema(string $database, array $with): array
     {
         ModuleSuite::occupy();
-        $before = $this->build->within($without, $database, static function (Kernel $kernel): Schema {
-            $em = ModuleBuild::service($kernel, 'doctrine.orm.entity_manager', EntityManagerInterface::class);
-            (new SchemaTool($em))->dropDatabase();
-            self::migrate($kernel, '');
-
-            return $em->getConnection()->createSchemaManager()->introspectSchema();
-        });
+        $apart = $this->apart($with);
+        $set = self::set($this->module);
         $namespace = (new \ReflectionClass($this->module->bundle))->getNamespaceName();
 
-        return $this->build->within($with, $database, static function (Kernel $kernel) use ($before, $namespace, $database): array {
-            self::migrate($kernel, $namespace.'\\Migrations\\');
+        return $this->build->within($with, $database, static function (Kernel $kernel) use ($apart, $set, $namespace, $database): array {
             $em = ModuleBuild::service($kernel, 'doctrine.orm.entity_manager', EntityManagerInterface::class);
+            (new SchemaTool($em))->dropDatabase();
+            self::migrate($kernel, static fn (string $version): bool => [] === array_filter($apart, static fn (string $prefix): bool => str_starts_with($version, $prefix)));
+            $schemas = $em->getConnection()->createSchemaManager();
+            $before = $schemas->introspectSchema();
+            self::migrate($kernel, static fn (string $version): bool => str_starts_with($version, $set));
             $own = [];
             foreach ($em->getMetadataFactory()->getAllMetadata() as $metadata) {
                 if (str_starts_with($metadata->getName(), $namespace.'\\Entity\\')) {
@@ -132,7 +152,6 @@ final readonly class ModuleBoundary
                     }
                 }
             }
-            $schemas = $em->getConnection()->createSchemaManager();
             $diff = $schemas->createComparator()->compareSchemas($before, $schemas->introspectSchema());
 
             $crossed = [];
@@ -198,7 +217,13 @@ final readonly class ModuleBoundary
         ];
     }
 
-    private static function migrate(Kernel $kernel, string $set): void
+    private static function set(Installed $module): string
+    {
+        return (new \ReflectionClass($module->bundle))->getNamespaceName().'\\Migrations\\';
+    }
+
+    /** @param \Closure(string): bool $taken */
+    private static function migrate(Kernel $kernel, \Closure $taken): void
     {
         $migrations = ModuleBuild::service($kernel, 'doctrine.migrations.dependency_factory', DependencyFactory::class);
         $storage = $migrations->getMetadataStorage();
@@ -207,7 +232,7 @@ final readonly class ModuleBoundary
         $versions = [];
         foreach ($migrations->getMigrationRepository()->getMigrations()->getItems() as $migration) {
             $version = $migration->getVersion();
-            if (!$executed->hasMigration($version) && str_starts_with((string) $version, $set)) {
+            if (!$executed->hasMigration($version) && $taken((string) $version)) {
                 $versions[] = $version;
             }
         }

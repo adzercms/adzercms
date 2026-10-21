@@ -1,0 +1,29 @@
+{
+    "name": "adzercms/underlay",
+    "type": "adzercms-module",
+    "description": "Theme whose table refers to a table of a module that requires a theme: fixture of the module check",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0"
+    },
+    "require-dev": {
+        "adzercms/support": "^1.0"
+    },
+    "provide": {
+        "adzercms/theme-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Underlay\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Underlay\\UnderlayBundle"
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

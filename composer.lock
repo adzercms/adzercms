@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fc0b44c4a35f791729f99e32ada90ed0",
+    "content-hash": "0e4fa729562c70a93c07f3d307222e86",
     "packages": [
         {
             "name": "adzercms/admin",
@@ -9162,6 +9162,47 @@
             }
         },
         {
+            "name": "adzercms/underlay",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/core/tests/Module/Underlay",
+                "reference": "68e1e58b462b42ae1b82132cfe48712d2264667a"
+            },
+            "require": {
+                "adzercms/contracts": "^1.0",
+                "php": ">=8.4"
+            },
+            "provide": {
+                "adzercms/theme-implementation": "self.version"
+            },
+            "require-dev": {
+                "adzercms/support": "^1.0"
+            },
+            "type": "adzercms-module",
+            "extra": {
+                "adzercms": {
+                    "bundle": "AdzerCMS\\Underlay\\UnderlayBundle"
+                },
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AdzerCMS\\Underlay\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Theme whose table refers to a table of a module that requires a theme: fixture of the module check",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "amphp/amp",
             "version": "v3.1.3",
             "source": {
@@ -14775,6 +14816,7 @@
         "adzercms/threadbare": 20,
         "adzercms/trespass": 20,
         "adzercms/turnstile": 20,
+        "adzercms/underlay": 20,
         "adzercms/vk-id": 20,
         "adzercms/yandex-id": 20,
         "adzercms/yandex-metrika": 20,
