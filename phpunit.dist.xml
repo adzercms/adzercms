@@ -33,6 +33,9 @@
         <testsuite name="YandexMetrika">
             <directory>packages/yandex-metrika/tests</directory>
         </testsuite>
+        <testsuite name="GoogleAnalytics">
+            <directory>packages/google-analytics/tests</directory>
+        </testsuite>
         <testsuite name="Admin">
             <directory>packages/admin/tests</directory>
         </testsuite>

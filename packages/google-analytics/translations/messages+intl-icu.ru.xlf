@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="googleanalytics.description">
+      <segment>
+        <source>googleanalytics.description</source>
+        <target>Счётчик Google Analytics на страницах после согласия на cookie</target>
+      </segment>
+    </unit>
+    <unit id="googleanalytics.measurement">
+      <segment>
+        <source>googleanalytics.measurement</source>
+        <target>Идентификатор измерения</target>
+      </segment>
+    </unit>
+    <unit id="googleanalytics.name">
+      <segment>
+        <source>googleanalytics.name</source>
+        <target>Google Analytics</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

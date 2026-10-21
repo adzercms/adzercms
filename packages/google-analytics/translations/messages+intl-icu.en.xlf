@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="googleanalytics.description">
+      <segment>
+        <source>googleanalytics.description</source>
+        <target>Google Analytics counter on pages after cookie consent</target>
+      </segment>
+    </unit>
+    <unit id="googleanalytics.measurement">
+      <segment>
+        <source>googleanalytics.measurement</source>
+        <target>Measurement ID</target>
+      </segment>
+    </unit>
+    <unit id="googleanalytics.name">
+      <segment>
+        <source>googleanalytics.name</source>
+        <target>Google Analytics</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

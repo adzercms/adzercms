@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0e4fa729562c70a93c07f3d307222e86",
+    "content-hash": "a357f5c983660d9e81bab1b7f8e2d277",
     "packages": [
         {
             "name": "adzercms/admin",
@@ -377,6 +377,57 @@
                 "catalog",
                 "composer",
                 "extensions",
+                "symfony"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "adzercms/google-analytics",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/google-analytics",
+                "reference": "60d8f2a722b6956122a49ba765414bfd9e7a1a50"
+            },
+            "require": {
+                "adzercms/contracts": "^1.0",
+                "php": ">=8.4",
+                "symfony/dependency-injection": "7.4.*",
+                "symfony/translation": "7.4.*",
+                "symfony/translation-contracts": "^3.7"
+            },
+            "provide": {
+                "adzercms/analytics-implementation": "self.version"
+            },
+            "type": "adzercms-module",
+            "extra": {
+                "adzercms": {
+                    "bundle": "AdzerCMS\\GoogleAnalytics\\GoogleAnalyticsBundle",
+                    "categories": [
+                        "marketing"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AdzerCMS\\GoogleAnalytics\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Google Analytics counter on AdzerCMS pages after the visitor's cookie consent",
+            "keywords": [
+                "adzercms",
+                "analytics",
+                "cookie-consent",
+                "google-analytics",
                 "symfony"
             ],
             "transport-options": {
@@ -14798,6 +14849,7 @@
         "adzercms/contracts": 20,
         "adzercms/core": 20,
         "adzercms/extensions": 20,
+        "adzercms/google-analytics": 20,
         "adzercms/hcaptcha": 20,
         "adzercms/mailing": 20,
         "adzercms/max-bot": 20,
