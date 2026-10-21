@@ -39,8 +39,11 @@ final readonly class Staging
     ) {
     }
 
-    /** @param list<string> $command */
-    public function run(array $command): ?string
+    /**
+     * @param list<string>          $command
+     * @param array<string, string> $environment
+     */
+    public function run(array $command, array $environment): ?string
     {
         $active = $this->paths->create($this->tree->root);
         $stage = $this->paths->create(self::STAGE, $active);
@@ -51,7 +54,9 @@ final readonly class Staging
             $this->beginner->begin($active, $stage, $excluded, timeout: Tree::TIMEOUT);
             $this->enter($stage);
             $this->stager->stage([...$command, ...self::OPTIONS], $active, $stage, timeout: Tree::TIMEOUT);
-            $this->committer->commit($stage, $active, $excluded, timeout: Tree::TIMEOUT);
+            $refused = $this->tree->refresh($environment, function () use ($stage, $active, $excluded): void {
+                $this->committer->commit($stage, $active, $excluded, timeout: Tree::TIMEOUT);
+            });
             $this->clean($active, $stage);
         } catch (ExceptionInterface $failure) {
             $this->clean($active, $stage);
@@ -59,7 +64,7 @@ final readonly class Staging
             return $failure->getMessage();
         }
 
-        return null;
+        return $refused;
     }
 
     private function enter(PathInterface $stage): void

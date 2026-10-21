@@ -45,7 +45,7 @@ An installed module that isn't enabled adds nothing: no services, routes, comman
 
 On a site outside git the module catalog of the admin panel has action buttons on each row: install, update, remove, enable, disable. A button files a request, and the `adzercms:modules` job applies one request a minute. The request keeps its outcome and the error output. A site under git changes modules by commit, so its catalog has no buttons.
 
-- Install, update and remove run Composer on a copy of the site made by [Composer Stager](https://github.com/php-tuf/composer-stager). The site gets the result only if Composer succeeds, then the job refreshes it. Updating an engine package updates all `adzercms/*` packages together
+- Install, update and remove run Composer on a copy of the site made by [Composer Stager](https://github.com/php-tuf/composer-stager). The site gets the result only if Composer succeeds: the job moves it into the site and refreshes the site under one hold. Updating an engine package updates all `adzercms/*` packages together
 - Enabling or disabling checks the new module list the way the build does, refreshes the site with it, and only then writes the variable into `.env.local`
 - A version marked verified passed the automated module check of the engine; installing or updating to a version without the mark asks for confirmation
 - An enabled module can't be removed: disable it first

@@ -63,6 +63,7 @@ git commit -m 'Site'
 - `adzercms.php` — the PHP used by `bin/` scripts and hooks unless the `PHP_BINARY` environment variable sets it; plain `php` if neither is set
 - The `pre-commit` hook blocks PHP with style errors, a migration that breaks the rules, a broken template or translation file, and secrets in `.env`
 - The `post-commit` and `post-merge` hooks run `vendor/bin/adzercms-refresh` after every commit and `git pull`. It brings the site in line with the code: installs dependencies from a changed `composer.lock` and packages with new patches in `patches.lock.json` (cweagans/composer-patches), runs migrations, builds a new cache, importmap libraries and assets, then switches the site to the new build. Without `.env.local` it does nothing
+- The script starts once the running requests and jobs finish, and holds the site until the switch: a request gets 503 with `Retry-After`, a job waits for the end. Both entries take the hold check `config/hold.php` before the dependencies
 - If the site lives in a subdirectory of the repository, set `git config core.hooksPath <subdirectory>/.githooks`
 - The web server document root is `public/`
 

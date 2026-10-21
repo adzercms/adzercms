@@ -59,6 +59,6 @@ final readonly class Execution
     /** @param list<string> $command */
     private function compose(array $command): ?string
     {
-        return $this->staging->run($command) ?? $this->tree->refresh($this->sources->environment());
+        return $this->staging->run($command, $this->sources->environment());
     }
 }

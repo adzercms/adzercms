@@ -1,0 +1,2 @@
+#!/bin/sh
+printf '%s %s\n' "${ADZERCMS_ENTRY:-}" "$([ -f left ] && echo left || echo running)" >> steps

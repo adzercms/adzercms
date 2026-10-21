@@ -3,9 +3,15 @@ set -eu
 
 [ -f .env.local ] || exit 0
 
-mkdir -p var/lock
-exec 9> var/lock/refresh
-flock 9
+root=$(pwd -P)
+if [ "${ADZERCMS_ENTRY:-}" != "$root" ]; then
+    mkdir -p var/lock
+    exec 9> var/lock/refresh 8> var/lock/entry
+    flock 9
+    flock 8
+    ADZERCMS_ENTRY=$root
+    export ADZERCMS_ENTRY
+fi
 
 stamp=var/composer.installed
 locked=$(sha256sum composer.lock | cut -d' ' -f1)

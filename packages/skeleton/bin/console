@@ -4,6 +4,7 @@
 use App\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
+require_once dirname(__DIR__).'/config/hold.php';
 require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
 
 return static fn (array $context): Application => new Application(new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']));

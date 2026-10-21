@@ -210,6 +210,7 @@ final class ModuleWebTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-0938')]
     #[Group('ACMS-CORE-0944')]
+    #[Group('ACMS-CORE-0967')]
     #[Group('ACMS-US-0004')]
     #[DataProvider('refreshes')]
     public function testEnablingRefreshesSiteOnNewSelectionBeforeWritingIt(?string $refusal, RequestState $state, string $environment): void
@@ -231,6 +232,7 @@ final class ModuleWebTest extends SchemaTestCase
 
         self::assertContains('SMS_MODULES=SmsPilot', $refreshed, 'the refresh builds the new selection');
         self::assertContains('PHP_BINARY='.\PHP_BINARY, $refreshed);
+        self::assertContains('ADZERCMS_ENTRY='.$tree, $refreshed, 'the refresh runs under the hold of the job');
         self::assertContains('COMPOSER_AUTH={"bearer":{"repo.acme.test":"secret"}}', $refreshed, 'Composer of the refresh takes credentials of the own sources');
         self::assertSame([], preg_grep('/^(APP_SECRET|SYMFONY_DOTENV_VARS)=/', $refreshed), 'the refresh reads the environment files itself');
         self::assertSame([$state, $refusal], [$request->getState(), $request->getOutput()]);

@@ -16,6 +16,11 @@ final readonly class Tree
     private const REFRESH = __DIR__.'/../../bin/adzercms-refresh';
     private const ENVIRONMENT = '.env.local';
     private const LOADED = 'SYMFONY_DOTENV_VARS';
+    private const LOCKS = '/var/lock/';
+    private const HOLD = 'refresh';
+    private const ENTRY = 'entry';
+    private const ENTERED = 'adzercms.entry';
+    private const COVERED = 'ADZERCMS_ENTRY';
 
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
@@ -36,14 +41,39 @@ final readonly class Tree
         }
     }
 
+    /**
+     * @param array<string, string>   $environment
+     * @param (\Closure(): void)|null $change
+     */
+    public function refresh(array $environment, ?\Closure $change = null): ?string
+    {
+        $entered = $GLOBALS[self::ENTERED] ?? null;
+        if (\is_resource($entered)) {
+            flock($entered, \LOCK_UN);
+        }
+        $hold = $this->lock(self::HOLD);
+        $entry = $this->lock(self::ENTRY);
+
+        try {
+            if (null !== $change) {
+                $change();
+            }
+
+            return $this->run($environment);
+        } finally {
+            fclose($entry);
+            fclose($hold);
+        }
+    }
+
     /** @param array<string, string> $environment */
-    public function refresh(array $environment): ?string
+    private function run(array $environment): ?string
     {
         $loaded = array_filter(explode(',', Selection::environment(self::LOADED)));
         $process = new Process(
             [$this->refresh],
             $this->root,
-            [...array_fill_keys([...$loaded, self::LOADED], false), 'PHP_BINARY' => \PHP_BINARY, ...$environment],
+            [...array_fill_keys([...$loaded, self::LOADED], false), 'PHP_BINARY' => \PHP_BINARY, self::COVERED => $this->root, ...$environment],
             null,
             self::TIMEOUT,
         );
@@ -58,6 +88,15 @@ final readonly class Tree
         }
 
         return $process->isSuccessful() ? null : trim($output);
+    }
+
+    /** @return resource */
+    private function lock(string $name)
+    {
+        (new Filesystem())->mkdir($this->root.self::LOCKS);
+        $lock = fopen($this->root.self::LOCKS.$name, 'c');
+
+        return false !== $lock && flock($lock, \LOCK_EX) ? $lock : throw new \RuntimeException(\sprintf('lock %s of the instance is not taken', $name));
     }
 
     public function choose(string $name, string $value): void

@@ -3,6 +3,7 @@ parameters:
     paths:
         - bin/console
         - bin/version-check
+        - config/hold.php
         - packages
         - src
     excludePaths:
