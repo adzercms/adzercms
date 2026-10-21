@@ -253,12 +253,6 @@
         <target>Log in with</target>
       </segment>
     </unit>
-    <unit id="cabinet.menu.account">
-      <segment>
-        <source>cabinet.menu.account</source>
-        <target>Record</target>
-      </segment>
-    </unit>
     <unit id="cabinet.menu.home">
       <segment>
         <source>cabinet.menu.home</source>

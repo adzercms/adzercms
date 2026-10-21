@@ -511,6 +511,12 @@
         <target>Записи с этим профилем {service} нет: войдите логином и подключите {service} в профиле</target>
       </segment>
     </unit>
+    <unit id="core.menu.record">
+      <segment>
+        <source>core.menu.record</source>
+        <target>Запись</target>
+      </segment>
+    </unit>
     <unit id="core.module.action.disable">
       <segment>
         <source>core.module.action.disable</source>

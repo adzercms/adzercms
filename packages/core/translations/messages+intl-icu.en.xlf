@@ -511,6 +511,12 @@
         <target>No record has this {service} profile: sign in with your login and connect {service} in the profile</target>
       </segment>
     </unit>
+    <unit id="core.menu.record">
+      <segment>
+        <source>core.menu.record</source>
+        <target>Record</target>
+      </segment>
+    </unit>
     <unit id="core.module.action.disable">
       <segment>
         <source>core.module.action.disable</source>

@@ -32,11 +32,12 @@ final readonly class CabinetItems implements Menu
 
         $user = $this->security->getUser();
         $home = $user instanceof User && [] !== $this->pages->of(Tabs::CABINET_HOME, $user->getId());
+        $record = t('core.menu.record');
 
         return [
             ...$home ? [new MenuItem('cabinet_account', t('cabinet.menu.home'), 0, icon: 'home')] : [],
-            new MenuItem('cabinet_profile', t('cabinet.menu.profile'), 900, ['cabinet_profile'], t('cabinet.menu.account'), icon: 'user'),
-            new MenuItem(self::LOGOUT, t('cabinet.menu.logout'), 1000, [], t('cabinet.menu.account')),
+            new MenuItem('cabinet_profile', t('cabinet.menu.profile'), 900, ['cabinet_profile'], $record, icon: 'user'),
+            new MenuItem(self::LOGOUT, t('cabinet.menu.logout'), 1000, [], $record),
         ];
     }
 }

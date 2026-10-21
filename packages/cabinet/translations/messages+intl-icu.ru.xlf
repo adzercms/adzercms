@@ -253,12 +253,6 @@
         <target>Войти с помощью</target>
       </segment>
     </unit>
-    <unit id="cabinet.menu.account">
-      <segment>
-        <source>cabinet.menu.account</source>
-        <target>Запись</target>
-      </segment>
-    </unit>
     <unit id="cabinet.menu.home">
       <segment>
         <source>cabinet.menu.home</source>
