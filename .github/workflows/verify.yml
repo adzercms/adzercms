@@ -17,6 +17,10 @@ env:
   GIT_CONFIG_KEY_0: safe.directory
   GIT_CONFIG_VALUE_0: '*'
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   pending:
     runs-on: ubuntu-24.04
