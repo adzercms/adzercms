@@ -5,6 +5,9 @@ on:
     branches: [main]
     tags: ['v*']
   workflow_call:
+    inputs:
+      runner:
+        type: string
     secrets:
       SPLIT_TOKEN:
         required: true
@@ -14,7 +17,7 @@ permissions:
 
 jobs:
   packages:
-    runs-on: ubuntu-24.04
+    runs-on: &runner ${{ inputs.runner || 'ubuntu-24.04' }}
     outputs:
       names: ${{ steps.list.outputs.names }}
     steps:
@@ -26,7 +29,7 @@ jobs:
 
   split:
     needs: packages
-    runs-on: ubuntu-24.04
+    runs-on: *runner
     strategy:
       fail-fast: false
       matrix:

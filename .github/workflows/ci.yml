@@ -5,42 +5,47 @@ on:
     branches: [main]
   pull_request:
   workflow_call:
+    inputs:
+      runner:
+        type: string
 
 jobs:
   static:
-    runs-on: ubuntu-24.04
+    runs-on: &runner ${{ inputs.runner || 'ubuntu-24.04' }}
     strategy:
       matrix:
         php: ['8.4', '8.5']
+    container: &php shivammathur/node:php-${{ matrix.php }}-24.04
     steps:
-      - uses: actions/checkout@v7
-      - uses: shivammathur/setup-php@v2
+      - &checkout
+        uses: actions/checkout@v7
+      - &php-setup
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           coverage: none
           tools: composer:v2
-      - uses: ramsey/composer-install@v4
+      - &composer
+        uses: ramsey/composer-install@v4
       - run: vendor/bin/adzercms-check
 
   tests:
-    runs-on: ubuntu-24.04
+    runs-on: *runner
     strategy:
       fail-fast: false
       matrix:
         php: ['8.4', '8.5']
         db:
           - image: mysql:lts
-            port: 3306
             health: mysqladmin ping -h 127.0.0.1 -padzercms
-            url: mysql://root:adzercms@127.0.0.1:3306/adzercms_test?charset=utf8mb4
+            url: mysql://root:adzercms@db:3306/adzercms_test?charset=utf8mb4
           - image: mariadb:lts
-            port: 3306
             health: healthcheck.sh --connect --innodb_initialized
-            url: mysql://root:adzercms@127.0.0.1:3306/adzercms_test?charset=utf8mb4
+            url: mysql://root:adzercms@db:3306/adzercms_test?charset=utf8mb4
           - image: postgres:latest
-            port: 5432
             health: pg_isready -U postgres
-            url: postgresql://postgres:adzercms@127.0.0.1:5432/adzercms_test?charset=utf8
+            url: postgresql://postgres:adzercms@db:5432/adzercms_test?charset=utf8
+    container: *php
     services:
       db:
         image: ${{ matrix.db.image }}
@@ -52,8 +57,6 @@ jobs:
           POSTGRES_PASSWORD: adzercms
           POSTGRES_DB: adzercms_test
           POSTGRES_INITDB_ARGS: --locale-provider=icu --icu-locale=und
-        ports:
-          - ${{ matrix.db.port }}:${{ matrix.db.port }}
         options: >-
           --health-cmd "${{ matrix.db.health }}"
           --health-interval 5s
@@ -62,13 +65,9 @@ jobs:
     env:
       DATABASE_URL: ${{ matrix.db.url }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          coverage: none
-          tools: composer:v2
-      - uses: ramsey/composer-install@v4
+      - *checkout
+      - *php-setup
+      - *composer
       - run: |
           for suite in $(sed -n 's/.*<testsuite name="\([^"]*\)".*/\1/p' phpunit.dist.xml); do
             bin/phpunit --testsuite "$suite"
@@ -76,6 +75,6 @@ jobs:
 
   passed:
     needs: [static, tests]
-    runs-on: ubuntu-24.04
+    runs-on: *runner
     steps:
       - run: 'true'
