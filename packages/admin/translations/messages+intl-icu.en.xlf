@@ -307,12 +307,6 @@
         <target>Source removed</target>
       </segment>
     </unit>
-    <unit id="admin.sources.empty">
-      <segment>
-        <source>admin.sources.empty</source>
-        <target>No own sources</target>
-      </segment>
-    </unit>
     <unit id="admin.sources.login">
       <segment>
         <source>admin.sources.login</source>

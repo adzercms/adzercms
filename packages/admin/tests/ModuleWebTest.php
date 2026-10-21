@@ -37,6 +37,9 @@ final class ModuleWebTest extends SchemaTestCase
 
     private const SENDER = RelayGateway::SETTINGS.RelayGateway::SENDER;
     private const REPOSITORY = 'https://repo.acme.test';
+    private const CATALOG = '/admin/modules?tab=catalog';
+    private const SOURCES = '/admin/modules?tab=sources';
+    private const REQUESTS = '/admin/modules?tab=requests';
 
     private ?string $tree = null;
 
@@ -57,11 +60,22 @@ final class ModuleWebTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-0023')]
     #[Group('ACMS-US-0004')]
-    public function testModulesGoOneListingWithKindAndSchema(): void
+    public function testSectionBuildsOnlyItsActiveTabOpeningOnAssembledModules(): void
     {
         $modules = self::service(AssembledModules::class)->modules();
         $listing = $this->client->request('GET', '/admin/modules');
 
+        self::assertSame(
+            array_map(self::phrase(...), ['admin.menu.modules', 'admin.catalog.title', 'admin.sources.title', 'admin.requests.title']),
+            $listing->filter('nav.tabs a.tab')->each(static fn (Crawler $tab): string => trim($tab->text())),
+        );
+        foreach (['' => 'rows', '?tab=catalog' => 'catalog', '?tab=sources' => 'sources', '?tab=requests' => 'requests', '?tab=absent' => 'rows'] as $query => $table) {
+            self::assertSame(
+                [$table],
+                $this->client->request('GET', '/admin/modules'.$query)->filter('#rows, #catalog, #sources, #requests')->each(static fn (Crawler $built): string => (string) $built->attr('id')),
+                'only the active tab is built',
+            );
+        }
         self::assertSame(
             [self::phrase('admin.modules.name'), self::phrase('admin.modules.kind'), self::phrase('admin.modules.schema')],
             $listing->filter('#rows thead th')->each(static fn (Crawler $head): string => trim($head->text())),
@@ -108,7 +122,7 @@ final class ModuleWebTest extends SchemaTestCase
     #[Group('ACMS-US-0004')]
     public function testCatalogListsOfferedAndInstalledModulesAsOfItsSnapshotByCategory(): void
     {
-        self::assertSame(self::phrase('admin.catalog.untaken'), trim($this->client->request('GET', '/admin/modules')->filter('#catalog p.muted')->text()));
+        self::assertSame(self::phrase('admin.catalog.untaken'), trim($this->client->request('GET', self::CATALOG)->filter('#catalog p.muted')->text()));
 
         $this->answerCatalog();
         $this->listed(['acme/till', 'acme/shop']);
@@ -116,7 +130,7 @@ final class ModuleWebTest extends SchemaTestCase
         $this->offer('acme/shop', '1.0.0', categories: ['commerce']);
         self::mockTime('2026-10-20 12:30');
         self::command('adzercms:modules')->execute([]);
-        $catalog = $this->client->request('GET', '/admin/modules')->filter('#catalog');
+        $catalog = $this->client->request('GET', self::CATALOG)->filter('#catalog');
 
         self::assertSame(self::phrase('admin.catalog.taken', ['at' => new \DateTimeImmutable('2026-10-20 12:30')]), trim($catalog->filter('p.muted')->text()));
         self::assertSame(
@@ -125,7 +139,7 @@ final class ModuleWebTest extends SchemaTestCase
         );
         self::assertSame(InstalledVersions::getPrettyVersion('adzercms/admin'), trim(self::cell($catalog, 'adzercms/admin', self::phrase('admin.catalog.installed'))->text()));
 
-        $chosen = $this->fragment('/admin/modules?catalog_category=messaging')->filter('#catalog tbody tr td:first-child strong')->each(static fn (Crawler $name): string => trim($name->text()));
+        $chosen = $this->fragment(self::CATALOG.'&catalog_category=messaging')->filter('#catalog tbody tr td:first-child strong')->each(static fn (Crawler $name): string => trim($name->text()));
         self::assertContains('acme/till', $chosen);
         self::assertNotContains('acme/shop', $chosen);
         self::assertNotContains('adzercms/admin', $chosen);
@@ -143,7 +157,7 @@ final class ModuleWebTest extends SchemaTestCase
         $this->offer('acme/shop', '1.0.0');
         $this->mark('acme/till', self::commit('acme/till', '1.2.0'));
         self::command('adzercms:modules')->execute([]);
-        $page = $this->client->request('GET', '/admin/modules');
+        $page = $this->client->request('GET', self::CATALOG);
         $version = static fn (string $name): string => trim(self::cell($page->filter('#catalog'), $name, self::phrase('admin.catalog.version'))->text());
 
         self::assertSame(['1.2.0 '.self::phrase('admin.catalog.verified'), '1.0.0'], [$version('acme/till'), $version('acme/shop')]);
@@ -160,9 +174,9 @@ final class ModuleWebTest extends SchemaTestCase
         $this->offer('acme/shop', '1.0.0');
         self::command('adzercms:modules')->execute([]);
 
-        self::assertSame([], self::actions($this->client->request('GET', '/admin/modules'), 'acme/shop'));
+        self::assertSame([], self::actions($this->client->request('GET', self::CATALOG), 'acme/shop'));
         $this->post('/admin/modules/request/install?package=acme/shop');
-        self::assertSame(self::phrase('core.module.refusal.versioned'), self::toast($this->arrive('/admin/modules'), 'error'));
+        self::assertSame(self::phrase('core.module.refusal.versioned'), self::toast($this->arrive(self::REQUESTS), 'error'));
     }
 
     #[Group('ACMS-CORE-0935')]
@@ -180,19 +194,20 @@ final class ModuleWebTest extends SchemaTestCase
         $rows = self::service(ModuleCatalog::class)->rows()['rows'];
         $idle = array_values(array_filter($rows, static fn (CatalogRow $row): bool => null !== $row->installed && !$row->selected))[0] ?? self::fail('the tree has no installed module outside the suite');
         $chosen = array_values(array_filter($rows, static fn (CatalogRow $row): bool => $row->selected && CoreKind::Admin !== $row->kind))[0] ?? self::fail('the suite selects no module beside the admin panel');
-        $page = $this->client->request('GET', '/admin/modules');
+        $page = $this->client->request('GET', self::CATALOG);
         self::assertSame([self::phrase(ModuleAction::Install->label())], self::actions($page, 'acme/shop'));
         self::assertSame([self::phrase(ModuleAction::Update->label())], self::actions($page, 'adzercms/admin'));
         self::assertSame(array_map(static fn (ModuleAction $action): string => self::phrase($action->label()), [ModuleAction::Update, ModuleAction::Disable]), self::actions($page, $chosen->name));
         self::assertSame(array_map(static fn (ModuleAction $action): string => self::phrase($action->label()), [ModuleAction::Update, ModuleAction::Enable, ModuleAction::Remove]), self::actions($page, $idle->name));
 
         $this->post('/admin/modules/request/install?package=acme/shop');
+        self::assertResponseRedirects(self::REQUESTS, message: 'a request goes to its tab');
         $this->post('/admin/modules/request/remove?package=acme/shop');
-        $page = $this->arrive('/admin/modules');
+        $page = $this->arrive(self::REQUESTS);
         self::assertSame(self::phrase('core.module.refusal.action'), self::toast($page, 'error'));
         $this->post('/admin/modules/request/enable?package='.$idle->name);
         $this->post('/admin/modules/request/update?package='.$idle->name);
-        $page = $this->arrive('/admin/modules');
+        $page = $this->arrive(self::REQUESTS);
         self::assertSame(self::phrase('core.module.refusal.open', ['package' => $idle->name]), self::toast($page, 'error'));
         self::assertSame(
             [[$idle->name, self::phrase(ModuleAction::Enable->label()), self::phrase(RequestState::Pending->label())], ['acme/shop', self::phrase(ModuleAction::Install->label()), self::phrase(RequestState::Pending->label())]],
@@ -292,12 +307,15 @@ final class ModuleWebTest extends SchemaTestCase
     #[Group('ACMS-US-0004')]
     public function testOwnSourcesShareCredentialsOfTheirHostAndShowUnavailability(): void
     {
-        self::assertSame(self::phrase('admin.sources.empty'), trim($this->client->request('GET', '/admin/modules')->filter('#sources .empty-state')->text()));
+        $base = $this->client->request('GET', self::SOURCES)->filter('#sources tbody tr');
+        self::assertSame(Sources::BASE, $base->filter('td strong')->each(static fn (Crawler $source): string => trim($source->text())));
+        self::assertCount(0, $base->filter('td.row-actions form'), 'a base source is not dropped');
 
         $this->connect(self::REPOSITORY.'/one');
+        self::assertResponseRedirects(self::SOURCES, message: 'a source goes to its tab');
         $this->connect(self::REPOSITORY.'/two');
         $this->connect(self::REPOSITORY.'/one');
-        self::assertSame(self::phrase('core.module.source.taken', ['url' => self::REPOSITORY.'/one']), self::toast($this->arrive('/admin/modules'), 'error'));
+        self::assertSame(self::phrase('core.module.source.taken', ['url' => self::REPOSITORY.'/one']), self::toast($this->arrive(self::SOURCES), 'error'));
         $one = self::service(ModuleSourceRepository::class)->findOneBy(['url' => self::REPOSITORY.'/one']) ?? self::fail('the source is not kept');
         $dialog = $this->client->request('GET', '/admin/modules/sources/'.$one->getId().'/credentials');
         $this->client->submit($dialog->selectButton(self::phrase('core.action.save'))->form(['token' => 'secret']));
@@ -307,7 +325,7 @@ final class ModuleWebTest extends SchemaTestCase
         $this->listed([]);
         $this->unavailable = [self::REPOSITORY];
         self::command('adzercms:modules')->execute([]);
-        $sources = $this->client->request('GET', '/admin/modules')->filter('#sources');
+        $sources = $this->client->request('GET', self::SOURCES)->filter('#sources');
         foreach (['one', 'two', 'three'] as $path) {
             self::assertSame(self::phrase('admin.setting.set'), trim(self::cell($sources, self::REPOSITORY.'/'.$path, self::phrase('admin.sources.access'))->text()), 'a source takes credentials of its host');
             self::assertSame(self::phrase('admin.sources.down'), trim(self::cell($sources, self::REPOSITORY.'/'.$path, self::phrase('admin.sources.source'))->filter('.badge')->text()));
@@ -315,8 +333,8 @@ final class ModuleWebTest extends SchemaTestCase
 
         $this->post('/admin/modules/sources/'.$one->getId().'/drop');
         self::assertSame(
-            [self::REPOSITORY.'/two', self::REPOSITORY.'/three'],
-            $this->arrive('/admin/modules')->filter('#sources tbody tr td strong')->each(static fn (Crawler $source): string => trim($source->text())),
+            [...Sources::BASE, self::REPOSITORY.'/two', self::REPOSITORY.'/three'],
+            $this->arrive(self::SOURCES)->filter('#sources tbody tr td strong')->each(static fn (Crawler $source): string => trim($source->text())),
         );
     }
 

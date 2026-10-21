@@ -124,7 +124,7 @@ final class ModuleController extends AbstractController
             Column::plain('source', t('admin.sources.source')),
             Column::plain('access', t('admin.sources.access')),
             Column::plain('actions'),
-        ], 'source', t('admin.sources.empty'), sticky: ['tab' => self::SOURCES], id: self::SOURCES);
+        ], 'source', sticky: ['tab' => self::SOURCES], id: self::SOURCES);
 
         return ['table' => $table, 'rows' => $table->rows($this->origins($this->catalog->rows()['down']))];
     }

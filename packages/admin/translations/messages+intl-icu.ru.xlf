@@ -307,12 +307,6 @@
         <target>Источник снят</target>
       </segment>
     </unit>
-    <unit id="admin.sources.empty">
-      <segment>
-        <source>admin.sources.empty</source>
-        <target>Своих источников нет</target>
-      </segment>
-    </unit>
     <unit id="admin.sources.login">
       <segment>
         <source>admin.sources.login</source>
