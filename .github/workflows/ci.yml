@@ -11,6 +11,10 @@ on:
       packages:
         type: string
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   GIT_CONFIG_COUNT: 1
   GIT_CONFIG_KEY_0: safe.directory
