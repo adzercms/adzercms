@@ -7,11 +7,11 @@
 
     $locks = $root.'/var/lock';
     is_dir($locks) || @mkdir($locks, 0777, true);
+    $request = 'cli' !== \PHP_SAPI;
     [$hold, $entry] = array_map(
         static fn (string $name) => fopen($locks.'/'.$name, 'c') ?: throw new RuntimeException(sprintf('lock %s of the instance is not opened', $name)),
-        ['refresh', 'entry'],
+        $request ? ['serve', 'served'] : ['refresh', 'entry'],
     );
-    $request = 'cli' !== \PHP_SAPI;
 
     if (!flock($hold, $request ? \LOCK_SH | \LOCK_NB : \LOCK_SH)) {
         $request || throw new RuntimeException('hold of the instance is not awaited');

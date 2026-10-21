@@ -6,9 +6,11 @@ set -eu
 root=$(pwd -P)
 if [ "${ADZERCMS_ENTRY:-}" != "$root" ]; then
     mkdir -p var/lock
-    exec 9> var/lock/refresh 8> var/lock/entry
+    exec 9> var/lock/refresh 8> var/lock/entry 7> var/lock/serve 6> var/lock/served
     flock 9
     flock 8
+    flock 7
+    flock 6
     ADZERCMS_ENTRY=$root
     export ADZERCMS_ENTRY
 fi

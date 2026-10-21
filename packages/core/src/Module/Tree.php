@@ -17,8 +17,7 @@ final readonly class Tree
     private const ENVIRONMENT = '.env.local';
     private const LOADED = 'SYMFONY_DOTENV_VARS';
     private const LOCKS = '/var/lock/';
-    private const HOLD = 'refresh';
-    private const ENTRY = 'entry';
+    private const LOCKED = ['refresh', 'entry', 'serve', 'served'];
     private const ENTERED = 'adzercms.entry';
     private const COVERED = 'ADZERCMS_ENTRY';
 
@@ -51,8 +50,7 @@ final readonly class Tree
         if (\is_resource($entered)) {
             flock($entered, \LOCK_UN);
         }
-        $hold = $this->lock(self::HOLD);
-        $entry = $this->lock(self::ENTRY);
+        $locks = array_map($this->lock(...), self::LOCKED);
 
         try {
             if (null !== $change) {
@@ -61,8 +59,7 @@ final readonly class Tree
 
             return $this->run($environment);
         } finally {
-            fclose($entry);
-            fclose($hold);
+            array_map(fclose(...), array_reverse($locks));
         }
     }
 

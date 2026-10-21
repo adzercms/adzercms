@@ -1,2 +1,2 @@
 #!/bin/sh
-printf '%s %s\n' "${ADZERCMS_ENTRY:-}" "$([ -f left ] && echo left || echo running)" >> steps
+printf '%s %s %s\n' "${ADZERCMS_ENTRY:-}" "$([ -f left ] && echo left || echo running)" "$(flock -n -s var/lock/serve true && echo open || echo closed)" >> steps

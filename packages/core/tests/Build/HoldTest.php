@@ -20,7 +20,12 @@ final class HoldTest extends TestCase
         echo "entered\n";
         $root = dirname(__DIR__);
         if ('leave' === ($argv[1] ?? null)) {
-            usleep(300000);
+            $jobs = fopen($root.'/var/lock/refresh', 'c');
+            while (flock($jobs, LOCK_SH | LOCK_NB)) {
+                flock($jobs, LOCK_UN);
+                usleep(10000);
+            }
+            file_put_contents($root.'/served', file_get_contents($argv[2].'/', false, stream_context_create(['http' => ['ignore_errors' => true, 'timeout' => 10]])));
             touch($root.'/left');
         }
         if ('spawn' === ($argv[1] ?? null)) {
@@ -34,8 +39,8 @@ final class HoldTest extends TestCase
     private const STEP = __DIR__.'/Fixture/step';
 
     private string $root;
-    /** @var resource|null */
-    private $hold;
+    /** @var list<resource> */
+    private array $hold = [];
     private ?Process $server = null;
 
     protected function setUp(): void
@@ -79,14 +84,14 @@ final class HoldTest extends TestCase
     #[Group('ACMS-CORE-0965')]
     #[Group('ACMS-CORE-0967')]
     #[DataProvider('holders')]
-    public function testHolderGoesOnOnceEnteredProcessesLeaveAndCoversItsSteps(bool $job): void
+    public function testHolderServesRequestsUntilEnteredJobsLeaveThenCoversItsStepsClosed(bool $job): void
     {
         $files = new Filesystem();
         $files->symlink(self::STEP, $this->root.'/bin/php');
         $files->dumpFile($this->root.'/.env.local', '');
         $files->dumpFile($this->root.'/composer.lock', '{}');
         $files->dumpFile($this->root.'/var/composer.installed', hash('sha256', '{}')."\n");
-        $entered = $this->console('leave');
+        $entered = $this->console('leave', $this->serve());
         $entered->start();
         $entered->waitUntil(static fn (string $type, string $output): bool => str_contains($output, 'entered'));
 
@@ -97,8 +102,9 @@ final class HoldTest extends TestCase
         }
 
         $steps = file($this->root.'/steps', \FILE_IGNORE_NEW_LINES) ?: [];
+        self::assertSame("entered\n", file_get_contents($this->root.'/served'), 'requests are served while the holder awaits an entered job');
         self::assertNotSame([], $steps);
-        self::assertSame([$this->root.' left'], array_values(array_unique($steps)), 'steps go after the entered process left, covered by the hold');
+        self::assertSame([$this->root.' left closed'], array_values(array_unique($steps)), 'steps go after the entered process left, covered by the hold, requests closed');
     }
 
     /** @return iterable<string, array{bool}> */
@@ -152,13 +158,16 @@ final class HoldTest extends TestCase
 
     private function close(): void
     {
-        $this->hold = fopen($this->root.'/var/lock/refresh', 'ce') ?: self::fail('the hold lock is not opened');
-        flock($this->hold, \LOCK_EX);
+        foreach (['refresh', 'serve'] as $name) {
+            $lock = fopen($this->root.'/var/lock/'.$name, 'ce') ?: self::fail('the hold lock is not opened');
+            flock($lock, \LOCK_EX);
+            $this->hold[] = $lock;
+        }
     }
 
     private function open(): void
     {
-        null === $this->hold || fclose($this->hold);
-        $this->hold = null;
+        array_map(fclose(...), $this->hold);
+        $this->hold = [];
     }
 }
