@@ -619,6 +619,12 @@
         <target>{at, date, ::yMMdd}</target>
       </segment>
     </unit>
+    <unit id="core.moment.day_month">
+      <segment>
+        <source>core.moment.day_month</source>
+        <target>{at, date, ::MMdd}</target>
+      </segment>
+    </unit>
     <unit id="core.moment.day_time">
       <segment>
         <source>core.moment.day_time</source>

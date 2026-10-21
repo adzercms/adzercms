@@ -6,10 +6,10 @@
         {% for line in chart.lines %}
             <label class="chart-toggle">
                 <input type="checkbox" checked data-line="{{ id }}-{{ line.key }}">
-                <span class="chart-mark chart-{{ line.key }}"></span>{{ line.label }}
+                <span class="chart-mark chart-{{ line.key }}"></span>{{ line.label|trans }}
             </label>
         {% endfor %}
-        <span class="chart-unit">{{ chart.unit }}</span>
+        <span class="chart-unit">{{ chart.unit|trans }}</span>
     </div>
 
     <div class="chart-area">
@@ -38,7 +38,7 @@
 
         <div class="chart-times">
             {% for tick in chart.ticks %}
-                <span class="chart-time" style="left: {{ (tick.share * 100)|round(2) }}%">{{ tick.label }}</span>
+                <span class="chart-time" style="left: {{ (tick.share * 100)|round(2) }}%">{{ tick.label|trans }}</span>
             {% endfor %}
         </div>
     </div>

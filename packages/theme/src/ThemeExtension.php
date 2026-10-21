@@ -55,9 +55,11 @@ final class ThemeExtension extends AbstractExtension
         );
     }
 
-    public function caption(?string $value): string
+    public function caption(string|TranslatableInterface|null $value): string
     {
-        return '' === trim((string) $value) ? '' : '<br>'.$this->clip($value, self::CAPTION, 'muted');
+        $text = $value instanceof TranslatableInterface ? $value->trans($this->translator) : (string) $value;
+
+        return '' === trim($text) ? '' : '<br>'.$this->clip($text, self::CAPTION, 'muted');
     }
 
     /** @param string|list<string>|\DateTimeInterface|TranslatableInterface|null $value */
