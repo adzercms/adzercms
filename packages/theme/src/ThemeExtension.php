@@ -62,7 +62,7 @@ final class ThemeExtension extends AbstractExtension
         return '' === trim($text) ? '' : '<br>'.$this->clip($text, self::CAPTION, 'muted');
     }
 
-    /** @param string|list<string>|\DateTimeInterface|TranslatableInterface|null $value */
+    /** @param string|list<string|TranslatableInterface>|\DateTimeInterface|TranslatableInterface|null $value */
     public function cell(string|array|\DateTimeInterface|TranslatableInterface|null $value): string
     {
         return match (true) {
@@ -135,9 +135,10 @@ final class ThemeExtension extends AbstractExtension
         return $html.htmlspecialchars(substr($text, $at), \ENT_QUOTES);
     }
 
-    /** @param non-empty-list<string> $lines */
+    /** @param non-empty-list<string|TranslatableInterface> $lines */
     private function lines(array $lines): string
     {
+        $lines = array_map(fn (string|TranslatableInterface $line): string => $line instanceof TranslatableInterface ? $line->trans($this->translator) : $line, $lines);
         $html = htmlspecialchars(array_shift($lines), \ENT_QUOTES);
 
         foreach ($lines as $line) {
