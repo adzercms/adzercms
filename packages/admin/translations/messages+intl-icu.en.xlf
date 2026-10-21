@@ -421,12 +421,6 @@
         <target>Comment</target>
       </segment>
     </unit>
-    <unit id="admin.user.create">
-      <segment>
-        <source>admin.user.create</source>
-        <target>Create</target>
-      </segment>
-    </unit>
     <unit id="admin.user.created">
       <segment>
         <source>admin.user.created</source>
