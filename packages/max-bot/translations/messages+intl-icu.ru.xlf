@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
+    <unit id="maxbot.description">
+      <segment>
+        <source>maxbot.description</source>
+        <target>Бот мессенджера MAX для оповещений</target>
+      </segment>
+    </unit>
     <unit id="maxbot.name">
       <segment>
         <source>maxbot.name</source>

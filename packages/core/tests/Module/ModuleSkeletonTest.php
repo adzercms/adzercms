@@ -47,14 +47,14 @@ final class ModuleSkeletonTest extends TestCase
         self::assertSame(['name', 'type', 'license', 'require', 'autoload', 'extra'], array_keys($manifest));
         self::assertSame(['adzercms-module', ['psr-4' => [$namespace.'\\' => 'src/']], ['adzercms' => ['bundle' => $namespace.'\\'.$bundle]]], [$manifest['type'], $manifest['autoload'], $manifest['extra']]);
 
-        foreach (["src/{$bundle}.php" => ["namespace {$namespace};", "final class {$bundle} extends Module"], "tests/{$key}Test.php" => ["namespace {$namespace}\\Tests;", "final class {$key}Test", "'{$key}'", "'{$prefix}.name'"]] as $file => $fragments) {
+        foreach (["src/{$bundle}.php" => ["namespace {$namespace};", "final class {$bundle} extends Module"], "tests/{$key}Test.php" => ["namespace {$namespace}\\Tests;", "final class {$key}Test", "'{$key}'", "'{$prefix}.description'"]] as $file => $fragments) {
             (new Process([\PHP_BINARY, '-l', $file], $this->directory))->mustRun();
             foreach ($fragments as $fragment) {
                 self::assertStringContainsString($fragment, (string) file_get_contents($this->directory.'/'.$file));
             }
         }
         foreach (['en', 'ru'] as $language) {
-            self::assertStringContainsString("<unit id=\"{$prefix}.name\">", (string) file_get_contents($this->directory."/translations/messages+intl-icu.{$language}.xlf"));
+            self::assertStringContainsString("<unit id=\"{$prefix}.description\">", (string) file_get_contents($this->directory."/translations/messages+intl-icu.{$language}.xlf"));
         }
     }
 

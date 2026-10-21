@@ -7,6 +7,12 @@
         <target>Адрес API</target>
       </segment>
     </unit>
+    <unit id="mtsmarketolog.description">
+      <segment>
+        <source>mtsmarketolog.description</source>
+        <target>SMS через МТС Маркетолог: оповещения и коды подтверждения</target>
+      </segment>
+    </unit>
     <unit id="mtsmarketolog.login">
       <segment>
         <source>mtsmarketolog.login</source>

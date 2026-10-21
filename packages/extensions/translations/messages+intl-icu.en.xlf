@@ -61,6 +61,12 @@
         <target>Remove {name} from the catalog?</target>
       </segment>
     </unit>
+    <unit id="extensions.description">
+      <segment>
+        <source>extensions.description</source>
+        <target>Extension catalog: modules, themes and site templates with prices and demos</target>
+      </segment>
+    </unit>
     <unit id="extensions.edition">
       <segment>
         <source>extensions.edition</source>

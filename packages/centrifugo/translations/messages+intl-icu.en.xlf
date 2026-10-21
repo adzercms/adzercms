@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" srcLang="en" trgLang="en" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="messages.en">
+    <unit id="centrifugo.description">
+      <segment>
+        <source>centrifugo.description</source>
+        <target>Live page updates through a Centrifugo server</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

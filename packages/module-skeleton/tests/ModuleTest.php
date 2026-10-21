@@ -14,6 +14,6 @@ final class ModuleTest extends KernelTestCase
         $translator = self::getContainer()->get('translator');
 
         self::assertInstanceOf(TranslatorInterface::class, $translator);
-        self::assertSame('Module', $translator->trans('module.name', locale: 'en'));
+        self::assertSame('Module', $translator->trans('module.description', locale: 'en'));
     }
 }

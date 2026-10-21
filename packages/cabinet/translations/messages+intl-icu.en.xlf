@@ -181,6 +181,12 @@
         <target>Record deletion</target>
       </segment>
     </unit>
+    <unit id="cabinet.description">
+      <segment>
+        <source>cabinet.description</source>
+        <target>Customer account: sign-up and sign-in, profile, sessions and pages of modules</target>
+      </segment>
+    </unit>
     <unit id="cabinet.language.title">
       <segment>
         <source>cabinet.language.title</source>

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="2.0" srcLang="en" trgLang="en" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="messages.en">
+    <unit id="realtime.description">
+      <segment>
+        <source>realtime.description</source>
+        <target>Live pages: parts of a page refresh without reloading</target>
+      </segment>
+    </unit>
     <unit id="realtime.kind">
       <segment>
         <source>realtime.kind</source>

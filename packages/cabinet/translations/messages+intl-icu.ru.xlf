@@ -181,6 +181,12 @@
         <target>Удаление записи</target>
       </segment>
     </unit>
+    <unit id="cabinet.description">
+      <segment>
+        <source>cabinet.description</source>
+        <target>Кабинет клиента: регистрация и вход, профиль, сеансы и страницы модулей</target>
+      </segment>
+    </unit>
     <unit id="cabinet.language.title">
       <segment>
         <source>cabinet.language.title</source>

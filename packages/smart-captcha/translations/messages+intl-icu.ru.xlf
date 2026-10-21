@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" srcLang="en" trgLang="ru" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="messages.ru">
+    <unit id="smartcaptcha.description">
+      <segment>
+        <source>smartcaptcha.description</source>
+        <target>Защита форм от спама Yandex SmartCaptcha</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

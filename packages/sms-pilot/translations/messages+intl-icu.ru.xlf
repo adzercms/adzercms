@@ -13,6 +13,12 @@
         <target>Ключ API</target>
       </segment>
     </unit>
+    <unit id="smspilot.description">
+      <segment>
+        <source>smspilot.description</source>
+        <target>SMS через SMSPilot: оповещения и коды подтверждения</target>
+      </segment>
+    </unit>
     <unit id="smspilot.sender">
       <segment>
         <source>smspilot.sender</source>

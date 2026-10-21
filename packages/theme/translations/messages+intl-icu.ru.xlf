@@ -43,6 +43,12 @@
         <target>Удалить сохранённые данные? Вход по ним перестанет работать.</target>
       </segment>
     </unit>
+    <unit id="theme.description">
+      <segment>
+        <source>theme.description</source>
+        <target>Тема по умолчанию: раскладка страниц, компоненты интерфейса и стили</target>
+      </segment>
+    </unit>
     <unit id="theme.impersonate_exit">
       <segment>
         <source>theme.impersonate_exit</source>

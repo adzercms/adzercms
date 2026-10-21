@@ -35,7 +35,7 @@ $names = [
     'Vendor\\Module' => $namespace,
     'ModuleBundle' => $bundle,
     'ModuleTest' => $key.'Test',
-    'module.name' => strtolower($key).'.name',
+    'module.description' => strtolower($key).'.description',
     "'Module'" => "'".$key."'",
     '>Module<' => '>'.$key.'<',
 ];

@@ -13,6 +13,12 @@
         <target>API key</target>
       </segment>
     </unit>
+    <unit id="smspilot.description">
+      <segment>
+        <source>smspilot.description</source>
+        <target>SMS through SMSPilot: notifications and confirmation codes</target>
+      </segment>
+    </unit>
     <unit id="smspilot.sender">
       <segment>
         <source>smspilot.sender</source>

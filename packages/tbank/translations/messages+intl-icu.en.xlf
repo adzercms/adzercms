@@ -13,6 +13,12 @@
         <target>Payment object of the closing receipt</target>
       </segment>
     </unit>
+    <unit id="tbank.description">
+      <segment>
+        <source>tbank.description</source>
+        <target>T-Bank online payments</target>
+      </segment>
+    </unit>
     <unit id="tbank.fee_page">
       <segment>
         <source>tbank.fee_page</source>

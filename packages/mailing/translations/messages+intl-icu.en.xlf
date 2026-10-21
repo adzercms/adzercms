@@ -61,6 +61,12 @@
         <target>User</target>
       </segment>
     </unit>
+    <unit id="mailing.description">
+      <segment>
+        <source>mailing.description</source>
+        <target>Mailings to chosen users by email, SMS and messenger bots</target>
+      </segment>
+    </unit>
     <unit id="mailing.empty">
       <segment>
         <source>mailing.empty</source>

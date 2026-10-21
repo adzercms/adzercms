@@ -7,6 +7,12 @@
         <target>Counter number</target>
       </segment>
     </unit>
+    <unit id="yandexmetrika.description">
+      <segment>
+        <source>yandexmetrika.description</source>
+        <target>Yandex Metrica counter on pages after cookie consent</target>
+      </segment>
+    </unit>
     <unit id="yandexmetrika.name">
       <segment>
         <source>yandexmetrika.name</source>

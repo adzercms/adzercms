@@ -43,6 +43,12 @@
         <target>Technical support, Finance</target>
       </segment>
     </unit>
+    <unit id="support.description">
+      <segment>
+        <source>support.description</source>
+        <target>Customer support: tickets with attachments, a digest for staff and help article suggestions</target>
+      </segment>
+    </unit>
     <unit id="support.digest.fresh">
       <segment>
         <source>support.digest.fresh</source>

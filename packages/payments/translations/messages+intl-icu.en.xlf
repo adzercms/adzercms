@@ -37,6 +37,12 @@
         <target>Waiting for the bank to confirm</target>
       </segment>
     </unit>
+    <unit id="payments.description">
+      <segment>
+        <source>payments.description</source>
+        <target>Online payments: payment history, confirmations and payment provider modules</target>
+      </segment>
+    </unit>
     <unit id="payments.flash.bound">
       <segment>
         <source>payments.flash.bound</source>

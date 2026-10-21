@@ -7,6 +7,12 @@
         <target>Контейнер PKCS#12 сертификата</target>
       </segment>
     </unit>
+    <unit id="sberid.description">
+      <segment>
+        <source>sberid.description</source>
+        <target>Вход через Сбер ID с привязкой к учётной записи</target>
+      </segment>
+    </unit>
     <unit id="sberid.foreign">
       <segment>
         <source>sberid.foreign</source>

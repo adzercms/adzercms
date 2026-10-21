@@ -7,6 +7,12 @@
         <target>PKCS#12 certificate container</target>
       </segment>
     </unit>
+    <unit id="sberid.description">
+      <segment>
+        <source>sberid.description</source>
+        <target>Sign-in with Sber ID linked to the account</target>
+      </segment>
+    </unit>
     <unit id="sberid.foreign">
       <segment>
         <source>sberid.foreign</source>

@@ -43,6 +43,12 @@
         <target>Delete the saved data? Access by it will stop working.</target>
       </segment>
     </unit>
+    <unit id="theme.description">
+      <segment>
+        <source>theme.description</source>
+        <target>Default theme: page layout, interface components and styles</target>
+      </segment>
+    </unit>
     <unit id="theme.impersonate_exit">
       <segment>
         <source>theme.impersonate_exit</source>

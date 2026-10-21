@@ -13,6 +13,12 @@
         <target>Payment subject of the closing receipt</target>
       </segment>
     </unit>
+    <unit id="yookassa.description">
+      <segment>
+        <source>yookassa.description</source>
+        <target>YooKassa online payments</target>
+      </segment>
+    </unit>
     <unit id="yookassa.fee_page">
       <segment>
         <source>yookassa.fee_page</source>
