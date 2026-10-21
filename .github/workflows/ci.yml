@@ -91,6 +91,7 @@ jobs:
       - *extensions
       - *php-setup
       - *composer
+      - run: apt-get update -qq && apt-get install -y -qq --no-install-recommends rsync
       - run: |
           for suite in $(sed -n 's/.*<testsuite name="\([^"]*\)".*/\1/p' phpunit.dist.xml); do
             bin/phpunit --testsuite "$suite"
