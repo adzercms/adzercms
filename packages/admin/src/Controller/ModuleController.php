@@ -38,10 +38,12 @@ use function Symfony\Component\Translation\t;
 final class ModuleController extends AbstractController
 {
     private const ORDER = 'name';
+    private const MODULES = 'modules';
     private const CATALOG = 'catalog';
     private const CATEGORY = 'category';
     private const REQUESTS = 'requests';
     private const SOURCES = 'sources';
+    private const TABS = [self::MODULES, self::CATALOG, self::SOURCES, self::REQUESTS];
 
     public function __construct(
         private readonly AssembledModules $assembled,
@@ -58,8 +60,21 @@ final class ModuleController extends AbstractController
     #[Route('', name: 'admin_modules', methods: ['GET'])]
     public function modules(Request $request, TranslatorInterface $translator): Response
     {
-        $rows = [];
+        $asked = $request->query->getString('tab');
+        $tab = \in_array($asked, self::TABS, true) ? $asked : self::MODULES;
 
+        return $this->render('@Admin/admin/modules.html.twig', ['tabs' => self::TABS, 'tab' => $tab, ...match ($tab) {
+            self::MODULES => $this->assembledTab($request, $translator),
+            self::CATALOG => $this->catalogTab($request, $translator),
+            self::SOURCES => $this->sourcesTab($request),
+            self::REQUESTS => $this->requestsTab($request),
+        }]);
+    }
+
+    /** @return array<string, mixed> */
+    private function assembledTab(Request $request, TranslatorInterface $translator): array
+    {
+        $rows = [];
         foreach ($this->assembled->modules() as $key => $module) {
             $rows[] = [
                 'key' => $key,
@@ -75,7 +90,13 @@ final class ModuleController extends AbstractController
             Column::live('schema', t('admin.modules.schema'), static fn (array $row): string => $row['schema'])->aside(),
         ], self::ORDER, t('admin.modules.empty'), filters: [Filter::search()], live: true);
 
-        $catalog = Table::of($request, 'admin_modules', [
+        return ['table' => $table, 'rows' => $table->rows($rows)];
+    }
+
+    /** @return array<string, mixed> */
+    private function catalogTab(Request $request, TranslatorInterface $translator): array
+    {
+        $table = Table::of($request, 'admin_modules', [
             Column::live('name', t('admin.catalog.package'), static fn (array $row): string => $row['name']),
             Column::live('kind', t('admin.modules.kind'), static fn (array $row): string => $row['kind']),
             Column::live('version', t('admin.catalog.version'), static fn (array $row): string => $row['version']),
@@ -85,35 +106,41 @@ final class ModuleController extends AbstractController
         ], self::ORDER, t('admin.catalog.empty'), filters: [
             Filter::search(),
             Filter::cases(self::CATEGORY, t('admin.catalog.category'), Category::cases()),
-        ], live: true, id: self::CATALOG);
+        ], sticky: ['tab' => self::CATALOG], live: true, id: self::CATALOG);
         $offered = $this->catalog->rows();
 
-        $sources = Table::of($request, 'admin_modules', [
+        return [
+            'table' => $table,
+            'rows' => $table->rows($this->offers($offered['rows'], Category::tryFrom($table->value(self::CATEGORY)), $translator)),
+            'taken' => $offered['at'],
+            'versioned' => $this->tree->versioned(),
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    private function sourcesTab(Request $request): array
+    {
+        $table = Table::of($request, 'admin_modules', [
             Column::plain('source', t('admin.sources.source')),
             Column::plain('access', t('admin.sources.access')),
             Column::plain('actions'),
-        ], 'source', t('admin.sources.empty'), id: self::SOURCES);
+        ], 'source', t('admin.sources.empty'), sticky: ['tab' => self::SOURCES], id: self::SOURCES);
 
-        $requests = Table::of($request, 'admin_modules', [
+        return ['table' => $table, 'rows' => $table->rows($this->origins($this->catalog->rows()['down']))];
+    }
+
+    /** @return array<string, mixed> */
+    private function requestsTab(Request $request): array
+    {
+        $table = Table::of($request, 'admin_modules', [
             Column::plain('package', t('admin.catalog.package')),
             Column::plain('action', t('admin.requests.action')),
             Column::plain('state', t('admin.requests.state')),
             Column::of('filed', t('admin.requests.filed'), 'r.id'),
             Column::plain('finished', t('admin.requests.finished'))->aside(),
-        ], 'filed', t('admin.requests.empty'), ascending: false, id: self::REQUESTS);
+        ], 'filed', t('admin.requests.empty'), ascending: false, sticky: ['tab' => self::REQUESTS], id: self::REQUESTS);
 
-        return $this->render('@Admin/admin/modules.html.twig', [
-            'table' => $table,
-            'rows' => $table->rows($rows),
-            'catalog' => $catalog,
-            'offers' => $catalog->rows($this->offers($offered['rows'], Category::tryFrom($catalog->value(self::CATEGORY)), $translator)),
-            'taken' => $offered['at'],
-            'versioned' => $this->tree->versioned(),
-            'sources' => $sources,
-            'origins' => $sources->rows($this->origins($offered['down'])),
-            'requests' => $requests,
-            'filings' => $this->filings->page($requests),
-        ]);
+        return ['table' => $table, 'rows' => $this->filings->page($table)];
     }
 
     #[Route('/request/{action}', name: 'admin_module_request', methods: ['POST'])]
@@ -122,7 +149,7 @@ final class ModuleController extends AbstractController
         $refusal = $this->requests->file($request->query->getString('package'), $action);
         $this->addFlash(null === $refusal ? 'success' : 'error', $refusal->reason ?? t('admin.requests.done'));
 
-        return $this->redirectToRoute('admin_modules');
+        return $this->redirectToRoute('admin_modules', ['tab' => self::REQUESTS]);
     }
 
     /**
@@ -167,11 +194,21 @@ final class ModuleController extends AbstractController
     /**
      * @param list<string> $down
      *
-     * @return list<array{source: string, down: ?Badge, access: bool, credentials: ?int, drop: string, hidden: array<string, string>}>
+     * @return list<array{source: string, down: ?Badge, access: bool, credentials: ?int, drop: ?string, hidden: array<string, string>}>
      */
     private function origins(array $down): array
     {
         $origins = [];
+        foreach (Sources::BASE as $url) {
+            $origins[] = [
+                'source' => $url,
+                'down' => \in_array($url, $down, true) ? Badge::bad(t('admin.sources.down')) : null,
+                'access' => false,
+                'credentials' => null,
+                'drop' => null,
+                'hidden' => [],
+            ];
+        }
         foreach ($this->artifacts->archives() as $archive) {
             $origins[] = [
                 'source' => $archive['name'].' '.$archive['version'],
@@ -206,7 +243,7 @@ final class ModuleController extends AbstractController
         $refusal = $this->sources->add($request->request->getString('url'));
         $this->addFlash(null === $refusal ? 'success' : 'error', $refusal->reason ?? t('admin.sources.added'));
 
-        return $this->redirectToRoute('admin_modules');
+        return $this->redirectToRoute('admin_modules', ['tab' => self::SOURCES]);
     }
 
     #[Route('/sources/zip', name: 'admin_module_zip', methods: ['GET', 'POST'])]
@@ -220,7 +257,7 @@ final class ModuleController extends AbstractController
         $refusal = $file instanceof UploadedFile ? $this->artifacts->upload($file) : new Refusal(t('core.module.zip.unreadable'));
         $this->addFlash(null === $refusal ? 'success' : 'error', $refusal->reason ?? t('admin.sources.uploaded'));
 
-        return $this->redirectToRoute('admin_modules');
+        return $this->redirectToRoute('admin_modules', ['tab' => self::SOURCES]);
     }
 
     #[Route('/sources/zip/drop', name: 'admin_module_zip_drop', methods: ['POST'])]
@@ -229,7 +266,7 @@ final class ModuleController extends AbstractController
         $this->artifacts->drop($request->request->getString('package'), $request->request->getString('version'));
         $this->addFlash('success', t('admin.sources.dropped'));
 
-        return $this->redirectToRoute('admin_modules');
+        return $this->redirectToRoute('admin_modules', ['tab' => self::SOURCES]);
     }
 
     #[Route('/sources/{id}/credentials', name: 'admin_module_source_credentials', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
@@ -244,7 +281,7 @@ final class ModuleController extends AbstractController
                 $this->addFlash('success', t('admin.credentials.saved'));
             }
 
-            return $this->redirectToRoute('admin_modules');
+            return $this->redirectToRoute('admin_modules', ['tab' => self::SOURCES]);
         }
 
         return $this->render('@Theme/_credentials.html.twig', [
@@ -263,7 +300,7 @@ final class ModuleController extends AbstractController
         $this->sources->drop($source);
         $this->addFlash('success', t('admin.sources.dropped'));
 
-        return $this->redirectToRoute('admin_modules');
+        return $this->redirectToRoute('admin_modules', ['tab' => self::SOURCES]);
     }
 
     #[Route('/{key}', name: 'admin_module', methods: ['GET', 'POST'])]

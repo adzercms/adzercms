@@ -2,68 +2,87 @@
 
 {% block title %}{{ 'admin.menu.modules'|trans }}{% endblock %}
 
+{% block actions %}
+    {% if tab == 'sources' %}
+        {% include '@Theme/_actions.html.twig' with {actions: [
+            {label: 'admin.sources.add', route: 'admin_module_source_new', params: {}},
+            {label: 'admin.sources.upload', route: 'admin_module_zip', params: {}},
+        ]} %}
+    {% endif %}
+{% endblock %}
+
 {% block page %}
-{% embed '@Theme/_table.html.twig' %}
-    {% block row %}
-        <tr class="clickable-row" data-href="{{ path('admin_module', {key: row.key}) }}">
-            <td class="{{ table.aside('name') }}"><strong>{{ row.name }}</strong></td>
-            <td class="{{ table.aside('kind') }}">{{ row.kind }}</td>
-            <td class="{{ table.aside('schema') }}">{{ row.schema ?: blank() }}</td>
-        </tr>
-    {% endblock %}
-{% endembed %}
-{% embed '@Theme/_table.html.twig' with {table: catalog, rows: offers, heading: 'admin.catalog.title'} %}
-    {% block above %}
-        <p class="muted">{{ taken ? 'admin.catalog.taken'|trans({at: taken}) : 'admin.catalog.untaken'|trans }}</p>
-        {% if versioned %}<p class="hint">{{ 'admin.catalog.versioned'|trans }}</p>{% endif %}
-    {% endblock %}
-    {% block row %}
-        <tr>
-            <td class="{{ table.aside('name') }}">
-                {% if row.link %}<a href="{{ row.link }}" target="_blank" rel="noopener"><strong>{{ row.name }}</strong></a>{% else %}<strong>{{ row.name }}</strong>{% endif %}
-                {% if row.description %}<br><span class="muted">{{ row.description }}</span>{% endif %}
-            </td>
-            <td class="{{ table.aside('kind') }}">{{ row.kind }}</td>
-            <td class="{{ table.aside('version') }}">{{ row.version ?: blank() }}{% if row.verified %} {{ badge(row.verified) }}{% endif %}</td>
-            <td class="{{ table.aside('installed') }}">{{ row.installed ?: blank() }}{% if row.installed_verified %} {{ badge(row.installed_verified) }}{% endif %}</td>
-            <td class="{{ table.aside('repository') }}">{{ row.repository ?: blank() }}</td>
-            <td class="row-actions">{% include '@Theme/_actions.html.twig' with {actions: row.actions} %}</td>
-        </tr>
-    {% endblock %}
-{% endembed %}
-{% embed '@Theme/_table.html.twig' with {table: sources, rows: origins, heading: 'admin.sources.title', actions: [
-    {label: 'admin.sources.add', route: 'admin_module_source_new', params: {}},
-    {label: 'admin.sources.upload', route: 'admin_module_zip', params: {}},
-]} %}
-    {% block row %}
-        <tr>
-            <td class="{{ table.aside('source') }}"><strong>{{ row.source }}</strong>{% if row.down %} {{ badge(row.down) }}{% endif %}</td>
-            <td class="{{ table.aside('access') }}">{{ row.access ? 'admin.setting.set'|trans : blank() }}</td>
-            <td class="row-actions">
-                {% if row.credentials %}
-                    {% include '@Theme/_actions.html.twig' with {actions: [{label: 'admin.setting.credentials', route: 'admin_module_source_credentials', params: {id: row.credentials}}]} %}
-                {% endif %}
-                <form method="post" action="{{ row.drop }}" data-confirm="{{ 'admin.sources.drop_confirm'|trans({source: row.source}) }}">
-                    {{ csrf_field() }}
-                    {% for name, value in row.hidden %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
-                    <button type="submit">{{ 'core.action.drop'|trans }}</button>
-                </form>
-            </td>
-        </tr>
-    {% endblock %}
-{% endembed %}
-{% embed '@Theme/_table.html.twig' with {table: requests, rows: filings, heading: 'admin.requests.title'} %}
-    {% block row %}
-        <tr>
-            <td class="{{ table.aside('package') }}"><strong>{{ row.package }}</strong></td>
-            <td class="{{ table.aside('action') }}">{{ row.action.label|trans }}</td>
-            <td class="{{ table.aside('state') }}">
-                {{ badge(row.state) }}
-                {% if row.output %}<pre class="muted">{{ row.output }}</pre>{% endif %}
-            </td>
-            <td class="{{ table.aside('filed') }}">{{ 'core.moment.day_time'|trans({at: row.filed}) }}</td>
-            <td class="{{ table.aside('finished') }}">{{ row.finished ? 'core.moment.day_time'|trans({at: row.finished}) : blank() }}</td>
-        </tr>
-    {% endblock %}
-{% endembed %}
+{% set labels = {modules: 'admin.menu.modules'|trans, catalog: 'admin.catalog.title'|trans, sources: 'admin.sources.title'|trans, requests: 'admin.requests.title'|trans} %}
+<nav class="tabs">
+    {% for key in tabs %}
+        <a class="tab {{ tab == key ? 'active' }}" href="{{ path('admin_modules', {tab: key}) }}">{{ labels[key] }}</a>
+    {% endfor %}
+</nav>
+{% if tab == 'modules' %}
+    {% embed '@Theme/_table.html.twig' %}
+        {% block row %}
+            <tr class="clickable-row" data-href="{{ path('admin_module', {key: row.key}) }}">
+                <td class="{{ table.aside('name') }}"><strong>{{ row.name }}</strong></td>
+                <td class="{{ table.aside('kind') }}">{{ row.kind }}</td>
+                <td class="{{ table.aside('schema') }}">{{ row.schema ?: blank() }}</td>
+            </tr>
+        {% endblock %}
+    {% endembed %}
+{% elseif tab == 'catalog' %}
+    {% embed '@Theme/_table.html.twig' %}
+        {% block above %}
+            <p class="muted">{{ taken ? 'admin.catalog.taken'|trans({at: taken}) : 'admin.catalog.untaken'|trans }}</p>
+            {% if versioned %}<p class="hint">{{ 'admin.catalog.versioned'|trans }}</p>{% endif %}
+        {% endblock %}
+        {% block row %}
+            <tr>
+                <td class="{{ table.aside('name') }}">
+                    {% if row.link %}<a href="{{ row.link }}" target="_blank" rel="noopener"><strong>{{ row.name }}</strong></a>{% else %}<strong>{{ row.name }}</strong>{% endif %}
+                    {% if row.description %}<br><span class="muted">{{ row.description }}</span>{% endif %}
+                </td>
+                <td class="{{ table.aside('kind') }}">{{ row.kind }}</td>
+                <td class="{{ table.aside('version') }}">{{ row.version ?: blank() }}{% if row.verified %} {{ badge(row.verified) }}{% endif %}</td>
+                <td class="{{ table.aside('installed') }}">{{ row.installed ?: blank() }}{% if row.installed_verified %} {{ badge(row.installed_verified) }}{% endif %}</td>
+                <td class="{{ table.aside('repository') }}">{{ row.repository ?: blank() }}</td>
+                <td class="row-actions">{% include '@Theme/_actions.html.twig' with {actions: row.actions} %}</td>
+            </tr>
+        {% endblock %}
+    {% endembed %}
+{% elseif tab == 'sources' %}
+    {% embed '@Theme/_table.html.twig' %}
+        {% block row %}
+            <tr>
+                <td class="{{ table.aside('source') }}"><strong>{{ row.source }}</strong>{% if row.down %} {{ badge(row.down) }}{% endif %}</td>
+                <td class="{{ table.aside('access') }}">{{ row.access ? 'admin.setting.set'|trans : blank() }}</td>
+                <td class="row-actions">
+                    {% if row.credentials %}
+                        {% include '@Theme/_actions.html.twig' with {actions: [{label: 'admin.setting.credentials', route: 'admin_module_source_credentials', params: {id: row.credentials}}]} %}
+                    {% endif %}
+                    {% if row.drop %}
+                        <form method="post" action="{{ row.drop }}" data-confirm="{{ 'admin.sources.drop_confirm'|trans({source: row.source}) }}">
+                            {{ csrf_field() }}
+                            {% for name, value in row.hidden %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+                            <button type="submit">{{ 'core.action.drop'|trans }}</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endblock %}
+    {% endembed %}
+{% else %}
+    {% embed '@Theme/_table.html.twig' %}
+        {% block row %}
+            <tr>
+                <td class="{{ table.aside('package') }}"><strong>{{ row.package }}</strong></td>
+                <td class="{{ table.aside('action') }}">{{ row.action.label|trans }}</td>
+                <td class="{{ table.aside('state') }}">
+                    {{ badge(row.state) }}
+                    {% if row.output %}<pre class="muted">{{ row.output }}</pre>{% endif %}
+                </td>
+                <td class="{{ table.aside('filed') }}">{{ 'core.moment.day_time'|trans({at: row.filed}) }}</td>
+                <td class="{{ table.aside('finished') }}">{{ row.finished ? 'core.moment.day_time'|trans({at: row.finished}) : blank() }}</td>
+            </tr>
+        {% endblock %}
+    {% endembed %}
+{% endif %}
 {% endblock %}

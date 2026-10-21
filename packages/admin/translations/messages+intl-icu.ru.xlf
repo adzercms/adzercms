@@ -46,7 +46,7 @@
     <unit id="admin.catalog.title">
       <segment>
         <source>admin.catalog.title</source>
-        <target>Каталог</target>
+        <target>Пакеты</target>
       </segment>
     </unit>
     <unit id="admin.catalog.untaken">
@@ -328,7 +328,7 @@
     <unit id="admin.sources.title">
       <segment>
         <source>admin.sources.title</source>
-        <target>Источники модулей</target>
+        <target>Источники</target>
       </segment>
     </unit>
     <unit id="admin.sources.token">
