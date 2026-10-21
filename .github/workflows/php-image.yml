@@ -84,19 +84,20 @@ jobs:
       contents: read
       packages: write
     strategy:
+      fail-fast: false
       matrix:
         php: ${{ fromJSON(needs.plan.outputs.build) }}
     steps:
       - *login
+      - uses: docker/setup-buildx-action@v4
       - env:
           PHP: ${{ matrix.php }}
           IMAGE: ${{ needs.plan.outputs.repository }}:${{ matrix.php }}-${{ needs.plan.outputs.hash }}
           EXTENSIONS: ${{ needs.plan.outputs.extensions }}
           PACKAGES: ${{ inputs.packages }}
         run: |
-          docker build --pull --build-arg "PHP=$PHP" --build-arg "EXTENSIONS=$EXTENSIONS" --build-arg "PACKAGES=$PACKAGES" \
+          docker buildx build --pull --push --build-arg "PHP=$PHP" --build-arg "EXTENSIONS=$EXTENSIONS" --build-arg "PACKAGES=$PACKAGES" \
             --label "org.opencontainers.image.source=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" --tag "$IMAGE" - <<<"$DOCKERFILE"
-          docker push "$IMAGE"
 
   latest:
     needs: [plan, build]
@@ -106,13 +107,12 @@ jobs:
       packages: write
     steps:
       - *login
+      - uses: docker/setup-buildx-action@v4
       - env:
           REPOSITORY: ${{ needs.plan.outputs.repository }}
           HASH: ${{ needs.plan.outputs.hash }}
           VERSIONS: ${{ inputs.versions }}
         run: |
           for php in $(jq -r '.[]' <<<"$VERSIONS"); do
-            docker pull --quiet "$REPOSITORY:$php-$HASH"
-            docker tag "$REPOSITORY:$php-$HASH" "$REPOSITORY:$php"
-            docker push --quiet "$REPOSITORY:$php"
+            docker buildx imagetools create --tag "$REPOSITORY:$php" "$REPOSITORY:$php-$HASH"
           done
