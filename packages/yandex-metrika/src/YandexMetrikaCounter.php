@@ -19,7 +19,7 @@ final readonly class YandexMetrikaCounter implements Counter
     public const OPTIONS = ['ssr' => true, 'webvisor' => true, 'clickmap' => true, 'ecommerce' => 'dataLayer', 'accurateTrackBounce' => true, 'trackLinks' => true];
 
     private const ENTRY = 'adzercms/yandex-metrika';
-    private const COOKIES = '^_ym';
+    private const COOKIES = '^(_ym|mdd$|_ytm_preview$)';
     private const BLOB = 'blob:';
     private const HOSTS = [
         'mc.yandex.ru', 'mc.yandex.az', 'mc.yandex.by', 'mc.yandex.co.il', 'mc.yandex.com', 'mc.yandex.com.am', 'mc.yandex.com.ge',
