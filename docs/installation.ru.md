@@ -73,7 +73,7 @@ git commit -m 'Site'
 printf '%s' "$PASSWORD" | bin/console adzercms:admin admin@example.com --stdin
 ```
 
-Движок обновляется через `composer update`. Сразу после него запустите `vendor/bin/adzercms-refresh` и закоммитьте `composer.lock`: пока скрипт не отработал, текущая сборка с новыми зависимостями не работает.
+Движок обновляется через `composer update --no-install` и коммит `composer.lock`: доводка хука ставит новые зависимости под удержанием. Сайт вне git сразу после обновления запускает `vendor/bin/adzercms-refresh`.
 
 ## Планировщик
 

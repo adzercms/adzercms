@@ -73,7 +73,7 @@ Create an administrator (the password comes through stdin):
 printf '%s' "$PASSWORD" | bin/console adzercms:admin admin@example.com --stdin
 ```
 
-The engine updates with `composer update`. Right after it run `vendor/bin/adzercms-refresh` and commit `composer.lock`: until the script finishes, the current build doesn't work with the new dependencies.
+The engine updates with `composer update --no-install` and a commit of `composer.lock`: the refresh of the hook installs the new dependencies under the hold. A site outside git runs `vendor/bin/adzercms-refresh` right after the update.
 
 ## Scheduler
 
