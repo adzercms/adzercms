@@ -12,6 +12,8 @@ use Doctrine\Migrations\DependencyFactory;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
+use function Symfony\Component\Translation\t;
+
 final readonly class AssembledModules
 {
     /** @param array<string, class-string> $bundles */
@@ -24,7 +26,7 @@ final readonly class AssembledModules
     ) {
     }
 
-    /** @return array<string, array{name: string, kind: TranslatableInterface, namespace: string, fields: list<Field>}> */
+    /** @return array<string, array{name: string, description: TranslatableInterface, kind: TranslatableInterface, namespace: string, fields: list<Field>}> */
     public function modules(): array
     {
         $fields = $this->settings->fields();
@@ -39,6 +41,7 @@ final readonly class AssembledModules
             $prefix = Registry::settings($bundle);
             $modules[strtolower($name)] = [
                 'name' => $name,
+                'description' => t(Registry::description($name)),
                 'kind' => $bundle::kind()->label(),
                 'namespace' => substr($bundle, 0, (int) strrpos($bundle, '\\')),
                 'fields' => array_values(array_filter($fields, static fn (Field $field): bool => str_starts_with($field->name, $prefix))),

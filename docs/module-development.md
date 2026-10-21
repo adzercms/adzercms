@@ -150,7 +150,7 @@ In the application settings on the service side, register the redirect URI `http
 - `migrations/` — migrations in the `<bundle namespace>\Migrations` namespace
 - `src/Controller/` — controllers with route attributes
 - `templates/` — Twig templates under `@<Module>`
-- `translations/` — XLIFF catalogs `messages+intl-icu.<lang>.xlf`; keys start with the module name, the English catalog is required, every language has the same set of keys, and every key of the code and templates is in the English catalog of the module or of a module it requires
+- `translations/` — XLIFF catalogs `messages+intl-icu.<lang>.xlf`; keys start with the module name, the English catalog is required, every language has the same set of keys, and every key of the code and templates is in the English catalog of the module or of a module it requires. `<module>.description`, with the module key in lower case, says what the module does; the modules section of the admin panel shows it
 - `tests/` — PHPUnit tests
 
 The core wires up the entities, migrations and routes of an enabled module by itself.
@@ -198,6 +198,7 @@ bin/php vendor/bin/adzercms-module-check acme/pigeon
 ```
 
 - `build` — the container builds with the module, and its services get arguments of their declared types
+- `catalogs` — the module's translation catalogs pass the `translations/` rules above
 - `audit` — `composer audit` finds no advisory for the packages the module alone adds to the instance
 - `phpstan` — PHPStan of the module's `src/` at the engine's level
 - `psalm` — Psalm taint analysis of the module's `src/` with the Symfony plugin: request data doesn't reach the sinks Psalm tracks, such as SQL, shell commands and file paths. The Symfony plugin takes the body of any `Response` for HTML, so a plain text response is `AdzerCMS\Core\Http\TextResponse`

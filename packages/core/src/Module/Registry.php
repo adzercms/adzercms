@@ -150,6 +150,11 @@ final class Registry
         return substr((new \ReflectionClass($bundle))->getShortName(), 0, -\strlen('Bundle'));
     }
 
+    public static function description(string $key): string
+    {
+        return strtolower($key).'.description';
+    }
+
     /** @param class-string<Module> $bundle */
     public static function settings(string $bundle): string
     {

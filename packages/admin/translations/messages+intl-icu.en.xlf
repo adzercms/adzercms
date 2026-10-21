@@ -109,6 +109,12 @@
         <target>Users</target>
       </segment>
     </unit>
+    <unit id="admin.description">
+      <segment>
+        <source>admin.description</source>
+        <target>Admin panel: content, users and settings of the site</target>
+      </segment>
+    </unit>
     <unit id="admin.menu.dashboard">
       <segment>
         <source>admin.menu.dashboard</source>
@@ -157,6 +163,12 @@
         <target>Module {name}</target>
       </segment>
     </unit>
+    <unit id="admin.modules.description">
+      <segment>
+        <source>admin.modules.description</source>
+        <target>Description</target>
+      </segment>
+    </unit>
     <unit id="admin.modules.empty">
       <segment>
         <source>admin.modules.empty</source>
@@ -179,6 +191,12 @@
       <segment>
         <source>admin.modules.schema</source>
         <target>Schema</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.settings">
+      <segment>
+        <source>admin.modules.settings</source>
+        <target>Settings</target>
       </segment>
     </unit>
     <unit id="admin.requests.action">

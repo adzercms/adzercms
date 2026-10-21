@@ -109,6 +109,12 @@
         <target>Пользователей</target>
       </segment>
     </unit>
+    <unit id="admin.description">
+      <segment>
+        <source>admin.description</source>
+        <target>Админка: содержимое, пользователи и настройки сайта</target>
+      </segment>
+    </unit>
     <unit id="admin.menu.dashboard">
       <segment>
         <source>admin.menu.dashboard</source>
@@ -157,6 +163,12 @@
         <target>Модуль {name}</target>
       </segment>
     </unit>
+    <unit id="admin.modules.description">
+      <segment>
+        <source>admin.modules.description</source>
+        <target>Описание</target>
+      </segment>
+    </unit>
     <unit id="admin.modules.empty">
       <segment>
         <source>admin.modules.empty</source>
@@ -179,6 +191,12 @@
       <segment>
         <source>admin.modules.schema</source>
         <target>Схема</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.settings">
+      <segment>
+        <source>admin.modules.settings</source>
+        <target>Настройки</target>
       </segment>
     </unit>
     <unit id="admin.requests.action">

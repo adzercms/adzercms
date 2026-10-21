@@ -23,8 +23,12 @@
         {% block row %}
             <tr class="clickable-row" data-href="{{ path('admin_module', {key: row.key}) }}">
                 <td class="{{ table.aside('name') }}"><strong>{{ row.name }}</strong></td>
-                <td class="{{ table.aside('kind') }}">{{ row.kind }}</td>
-                <td class="{{ table.aside('schema') }}">{{ row.schema ?: blank() }}</td>
+                <td class="{{ table.aside('description') }}">{{ row.description }}</td>
+                <td class="row-actions">
+                    {% if row.settings %}
+                        {% include '@Theme/_actions.html.twig' with {actions: [{label: 'admin.modules.settings', href: path('admin_module', {key: row.key}) ~ '#settings'}]} %}
+                    {% endif %}
+                </td>
             </tr>
         {% endblock %}
     {% endembed %}

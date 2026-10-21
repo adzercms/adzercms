@@ -77,7 +77,7 @@ final class ModuleWebTest extends SchemaTestCase
             );
         }
         self::assertSame(
-            [self::phrase('admin.modules.name'), self::phrase('admin.modules.kind'), self::phrase('admin.modules.schema')],
+            [self::phrase('admin.modules.name'), self::phrase('admin.modules.description'), ''],
             $listing->filter('#rows thead th')->each(static fn (Crawler $head): string => trim($head->text())),
         );
         self::assertEqualsCanonicalizing(
@@ -85,11 +85,23 @@ final class ModuleWebTest extends SchemaTestCase
             self::cards($listing),
             'the section lists every assembled module',
         );
-        self::assertArrayHasKey('relay', $modules);
+        $configured = array_keys(array_filter($modules, static fn (array $module): bool => [] !== $module['fields']));
+        self::assertContains('relay', $configured);
+        self::assertNotSame(array_keys($modules), $configured, 'the suite assembles a module without settings');
+        self::assertEqualsCanonicalizing(
+            array_map(static fn (string $key): string => '/admin/modules/'.$key.'#settings', $configured),
+            $listing->filter('#rows td.row-actions a')->each(static fn (Crawler $link): string => (string) $link->attr('href')),
+            'a module with settings leads to them',
+        );
+        self::assertSame(self::phrase($modules['relay']['description']), trim(self::cell($listing, 'Relay', self::phrase('admin.modules.description'))->text()));
         self::assertSame(['/admin/modules/relay'], self::cards($this->fragment('/admin/modules?q=Relay')));
 
         $card = $this->client->request('GET', '/admin/modules/relay');
-        self::assertSame(self::phrase($modules['relay']['kind']), self::tile($card, self::phrase('admin.modules.kind')));
+        self::assertSame(
+            [self::phrase($modules['relay']['description']), self::phrase($modules['relay']['kind'])],
+            [self::tile($card, self::phrase('admin.modules.description')), self::tile($card, self::phrase('admin.modules.kind'))],
+        );
+        self::assertCount(1, $card->filter('form#settings'));
 
         $this->client->request('GET', '/admin/modules/absent');
         self::assertResponseStatusCodeSame(404);

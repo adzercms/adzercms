@@ -15,6 +15,10 @@
     </div>
     <div class="info-grid">
         <div class="info-item">
+            <span class="info-label">{{ 'admin.modules.description'|trans }}</span>
+            <span class="info-value">{{ module.description|trans }}</span>
+        </div>
+        <div class="info-item">
             <span class="info-label">{{ 'admin.modules.kind'|trans }}</span>
             <span class="info-value">{{ module.kind|trans }}</span>
         </div>
@@ -26,7 +30,7 @@
 </div>
 
 {% if sections %}
-    <form method="post" enctype="multipart/form-data">
+    <form id="settings" method="post" enctype="multipart/form-data">
         {{ csrf_field() }}
         {% include '@Admin/admin/_setting_fields.html.twig' with {sections: sections, values: values} %}
         <button type="submit">{{ 'core.action.save'|trans }}</button>

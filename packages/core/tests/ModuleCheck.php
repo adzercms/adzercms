@@ -16,6 +16,7 @@ use Symfony\Component\Process\Process;
 final readonly class ModuleCheck
 {
     public const BUILD = 'build';
+    public const CATALOGS = 'catalogs';
     public const AUDIT = 'audit';
     public const PHPSTAN = 'phpstan';
     public const PSALM = 'psalm';
@@ -34,8 +35,9 @@ final readonly class ModuleCheck
     {
         foreach ([
             self::BUILD => fn (): bool => $this->passes([\PHP_BINARY, 'bin/console', 'lint:container']),
+            self::CATALOGS => fn (): bool => $this->passes([\PHP_BINARY, 'vendor/bin/adzercms-package-console', $this->path(), 'adzercms:catalogs', $this->path()]),
             self::AUDIT => $this->audited(...),
-            self::PHPSTAN => fn (): bool => $this->passes([\PHP_BINARY, '-d', 'memory_limit=-1', 'vendor/bin/phpstan', 'analyse', '--no-progress', '--configuration='.__DIR__.'/module.neon', $this->source()]),
+            self::PHPSTAN => fn (): bool => $this->passes([\PHP_BINARY, '-d', 'memory_limit=-1', 'vendor/bin/phpstan', 'analyse', '--no-progress', '--configuration='.__DIR__.'/module.neon', $this->path().'/src']),
             self::PSALM => fn (): bool => $this->passes([\PHP_BINARY, '-d', 'memory_limit=-1', 'vendor/bin/psalm', '--taint-analysis', '--no-cache', '--no-progress', '--config='.$this->psalm(), '--root='.$this->root]),
             self::BOUNDARY => $this->bounded(...),
         ] + (CoreKind::Theme === $this->module()->kind ? [self::THEME => $this->complete(...)] : []) as $check => $passes) {
@@ -133,9 +135,9 @@ final readonly class ModuleCheck
         return $process->isSuccessful();
     }
 
-    private function source(): string
+    private function path(): string
     {
-        return (InstalledVersions::getInstallPath($this->package) ?? throw new \RuntimeException(\sprintf('%s is not installed', $this->package))).'/src';
+        return InstalledVersions::getInstallPath($this->package) ?? throw new \RuntimeException(\sprintf('%s is not installed', $this->package));
     }
 
     private function psalm(): string
@@ -146,7 +148,7 @@ final readonly class ModuleCheck
         $psalm->setAttribute('resolveFromConfigFile', 'false');
         $psalm->setAttribute('findUnusedCode', 'false');
         $psalm->setAttribute('findUnusedBaselineEntry', 'false');
-        $psalm->appendChild($config->createElement('projectFiles'))->appendChild($config->createElement('directory'))->setAttribute('name', $this->source());
+        $psalm->appendChild($config->createElement('projectFiles'))->appendChild($config->createElement('directory'))->setAttribute('name', $this->path().'/src');
         $psalm->appendChild($config->createElement('plugins'))->appendChild($config->createElement('pluginClass'))->setAttribute('class', self::PSALM_PLUGIN);
         (new Filesystem())->dumpFile($this->root.self::PSALM_CONFIG, (string) $config->saveXML());
 

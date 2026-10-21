@@ -79,15 +79,15 @@ final class ModuleController extends AbstractController
             $rows[] = [
                 'key' => $key,
                 'name' => $module['name'],
-                'kind' => $module['kind']->trans($translator),
-                'schema' => (string) $this->assembled->schema($module['namespace']),
+                'description' => $module['description']->trans($translator),
+                'settings' => [] !== $module['fields'],
             ];
         }
 
         $table = Table::of($request, 'admin_modules', [
             Column::live('name', t('admin.modules.name'), static fn (array $row): string => $row['name']),
-            Column::live('kind', t('admin.modules.kind'), static fn (array $row): string => $row['kind']),
-            Column::live('schema', t('admin.modules.schema'), static fn (array $row): string => $row['schema'])->aside(),
+            Column::live('description', t('admin.modules.description'), static fn (array $row): string => $row['description'])->aside(),
+            Column::plain('actions'),
         ], self::ORDER, t('admin.modules.empty'), filters: [Filter::search()], live: true);
 
         return ['table' => $table, 'rows' => $table->rows($rows)];
