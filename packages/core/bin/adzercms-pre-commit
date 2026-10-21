@@ -44,6 +44,10 @@ for package in $(printf '%s\n%s\n' "$catalogs" "$templates" | while read -r file
     [ -z "$own" ] || console "$package" lint:twig $own
 done
 
+for package in $(staged -- '*.php' '*.twig' '*.xlf' | while read -r file; do home "$file"; done | sort -u); do
+    [ "$package" = . ] || console "$package" adzercms:catalogs "$package"
+done
+
 for package in $(staged -- '*.php' '*/composer.json' | while read -r file; do home "$file"; done | sort -u); do
     [ "$package" = . ] || {
         out=$(bin/php vendor/bin/adzercms-package-dependencies "$package" 2>&1) || { printf '%s\n' "$out"; exit 1; }
