@@ -22,5 +22,6 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - A renamed namespace of a migration set or a migration moved to another set does not run again: the migrations console moves its mark to the migration with the same version number
 - The verified mark in the module catalog: the version whose commit passed the module check of the engine; installing or updating to a version without it asks for confirmation, the `confirm` key of a row action gives the question
 - `adzercms-module-check` checks an installed module: the build with it, `composer audit` of the packages it adds, PHPStan and Psalm taint analysis of its code; the project template requires Psalm with its Symfony plugin for development
+- `adzercms-check` checks the translation catalogs of each package with its module enabled: the same keys in every language, every key of its code and templates in the English catalogs of the package or of the modules it enables
 
 [Unreleased]: https://github.com/adzercms/adzercms/commits/main
