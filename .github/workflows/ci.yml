@@ -9,6 +9,11 @@ on:
       runner:
         type: string
 
+env:
+  GIT_CONFIG_COUNT: 1
+  GIT_CONFIG_KEY_0: safe.directory
+  GIT_CONFIG_VALUE_0: '*'
+
 jobs:
   static:
     runs-on: &runner ${{ inputs.runner || 'ubuntu-24.04' }}
