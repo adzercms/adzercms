@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Module;
 
-use AdzerCMS\Core\Entity\ModuleRequest;
+use AdzerCMS\Core\Entity\ModuleOperation;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final readonly class Execution
@@ -12,7 +12,7 @@ final readonly class Execution
     private const ENGINE = 'adzercms/';
 
     public function __construct(
-        private Requests $requests,
+        private Operations $operations,
         private Tree $tree,
         private Staging $staging,
         private Sources $sources,
@@ -20,15 +20,15 @@ final readonly class Execution
     ) {
     }
 
-    public function apply(ModuleRequest $request): ?string
+    public function apply(ModuleOperation $operation): ?string
     {
-        $package = $request->getPackage();
-        $refusal = $this->requests->refusal($package, $request->getAction());
+        $package = $operation->getPackage();
+        $refusal = $this->operations->refusal($package, $operation->getAction());
         if (null !== $refusal) {
             return $refusal->reason->trans($this->translator);
         }
 
-        return match ($request->getAction()) {
+        return match ($operation->getAction()) {
             ModuleAction::Enable => $this->toggle($package, true),
             ModuleAction::Disable => $this->toggle($package, false),
             ModuleAction::Install => $this->compose(['require', $package]),

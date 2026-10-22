@@ -70,7 +70,7 @@
     <unit id="admin.catalog.versioned">
       <segment>
         <source>admin.catalog.versioned</source>
-        <target>The site is under git: modules change by a commit, the catalog takes no requests</target>
+        <target>The site is under git: modules change by a commit, the catalog takes no operations</target>
       </segment>
     </unit>
     <unit id="admin.credentials.cleared">
@@ -193,46 +193,46 @@
         <target>Settings</target>
       </segment>
     </unit>
-    <unit id="admin.requests.action">
+    <unit id="admin.operations.action">
       <segment>
-        <source>admin.requests.action</source>
+        <source>admin.operations.action</source>
         <target>Action</target>
       </segment>
     </unit>
-    <unit id="admin.requests.done">
+    <unit id="admin.operations.done">
       <segment>
-        <source>admin.requests.done</source>
-        <target>The request is filed: the module job applies it within a minute</target>
+        <source>admin.operations.done</source>
+        <target>The operation is filed: the module job applies it within a minute</target>
       </segment>
     </unit>
-    <unit id="admin.requests.empty">
+    <unit id="admin.operations.empty">
       <segment>
-        <source>admin.requests.empty</source>
-        <target>No requests</target>
+        <source>admin.operations.empty</source>
+        <target>No operations</target>
       </segment>
     </unit>
-    <unit id="admin.requests.filed">
+    <unit id="admin.operations.filed">
       <segment>
-        <source>admin.requests.filed</source>
+        <source>admin.operations.filed</source>
         <target>Filed</target>
       </segment>
     </unit>
-    <unit id="admin.requests.finished">
+    <unit id="admin.operations.finished">
       <segment>
-        <source>admin.requests.finished</source>
+        <source>admin.operations.finished</source>
         <target>Finished</target>
       </segment>
     </unit>
-    <unit id="admin.requests.state">
+    <unit id="admin.operations.state">
       <segment>
-        <source>admin.requests.state</source>
+        <source>admin.operations.state</source>
         <target>State</target>
       </segment>
     </unit>
-    <unit id="admin.requests.title">
+    <unit id="admin.operations.title">
       <segment>
-        <source>admin.requests.title</source>
-        <target>Requests</target>
+        <source>admin.operations.title</source>
+        <target>Operations</target>
       </segment>
     </unit>
     <unit id="admin.setting.change">

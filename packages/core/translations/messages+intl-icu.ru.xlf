@@ -562,13 +562,13 @@
     <unit id="core.module.refusal.interrupted">
       <segment>
         <source>core.module.refusal.interrupted</source>
-        <target>Заявка прервана до завершения</target>
+        <target>Операция прервана до завершения</target>
       </segment>
     </unit>
     <unit id="core.module.refusal.open">
       <segment>
         <source>core.module.refusal.open</source>
-        <target>У пакета {package} уже есть заявка в работе</target>
+        <target>У пакета {package} уже есть операция в работе</target>
       </segment>
     </unit>
     <unit id="core.module.refusal.versioned">

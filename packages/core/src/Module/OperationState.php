@@ -9,7 +9,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
 
-enum RequestState: string implements Badged
+enum OperationState: string implements Badged
 {
     case Pending = 'pending';
     case Running = 'running';

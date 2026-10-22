@@ -8,7 +8,7 @@ use AdzerCMS\Core\Module\Catalog;
 use AdzerCMS\Core\Module\ComposerRunner;
 use AdzerCMS\Core\Module\Execution;
 use AdzerCMS\Core\Module\Marks;
-use AdzerCMS\Core\Module\Requests;
+use AdzerCMS\Core\Module\Operations;
 use AdzerCMS\Core\Module\Snapshot;
 use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Module\Staging;
@@ -53,7 +53,7 @@ return static function (ContainerConfigurator $container): void {
     $services->set(Marks::class)->arg('$httpClient', new Reference(Repositories::CLIENT));
     $services->set(Catalog::class);
     $services->set(Tree::class);
-    $services->set(Requests::class);
+    $services->set(Operations::class);
     $services->set(Staging::class);
     $services->set(Execution::class);
     $services->set(Switches::class);

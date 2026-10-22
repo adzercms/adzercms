@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block page %}
-{% set labels = {modules: 'admin.menu.modules'|trans, catalog: 'admin.catalog.title'|trans, sources: 'admin.sources.title'|trans, requests: 'admin.requests.title'|trans} %}
+{% set labels = {modules: 'admin.menu.modules'|trans, catalog: 'admin.catalog.title'|trans, sources: 'admin.sources.title'|trans, operations: 'admin.operations.title'|trans} %}
 <nav class="tabs">
     {% for key in tabs %}
         <a class="tab {{ tab == key ? 'active' }}" href="{{ path('admin_modules', {tab: key}) }}">{{ labels[key] }}</a>

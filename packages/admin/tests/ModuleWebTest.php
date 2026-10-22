@@ -10,10 +10,10 @@ use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Module\Catalog as ModuleCatalog;
 use AdzerCMS\Core\Module\CatalogRow;
 use AdzerCMS\Core\Module\ModuleAction;
-use AdzerCMS\Core\Module\RequestState;
+use AdzerCMS\Core\Module\OperationState;
 use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Module\Tree;
-use AdzerCMS\Core\Repository\ModuleRequestRepository;
+use AdzerCMS\Core\Repository\ModuleOperationRepository;
 use AdzerCMS\Core\Repository\ModuleSourceRepository;
 use AdzerCMS\Core\Setting\Catalog;
 use AdzerCMS\Core\Setting\Settings;
@@ -39,7 +39,7 @@ final class ModuleWebTest extends SchemaTestCase
     private const REPOSITORY = 'https://repo.acme.test';
     private const CATALOG = '/admin/modules?tab=catalog';
     private const SOURCES = '/admin/modules?tab=sources';
-    private const REQUESTS = '/admin/modules?tab=requests';
+    private const OPERATIONS = '/admin/modules?tab=operations';
 
     private ?string $tree = null;
 
@@ -66,13 +66,13 @@ final class ModuleWebTest extends SchemaTestCase
         $listing = $this->client->request('GET', '/admin/modules');
 
         self::assertSame(
-            array_map(self::phrase(...), ['admin.menu.modules', 'admin.catalog.title', 'admin.sources.title', 'admin.requests.title']),
+            array_map(self::phrase(...), ['admin.menu.modules', 'admin.catalog.title', 'admin.sources.title', 'admin.operations.title']),
             $listing->filter('nav.tabs a.tab')->each(static fn (Crawler $tab): string => trim($tab->text())),
         );
-        foreach (['' => 'rows', '?tab=catalog' => 'catalog', '?tab=sources' => 'sources', '?tab=requests' => 'requests', '?tab=absent' => 'rows'] as $query => $table) {
+        foreach (['' => 'rows', '?tab=catalog' => 'catalog', '?tab=sources' => 'sources', '?tab=operations' => 'operations', '?tab=absent' => 'rows'] as $query => $table) {
             self::assertSame(
                 [$table],
-                $this->client->request('GET', '/admin/modules'.$query)->filter('#rows, #catalog, #sources, #requests')->each(static fn (Crawler $built): string => (string) $built->attr('id')),
+                $this->client->request('GET', '/admin/modules'.$query)->filter('#rows, #catalog, #sources, #operations')->each(static fn (Crawler $built): string => (string) $built->attr('id')),
                 'only the active tab is built',
             );
         }
@@ -179,7 +179,7 @@ final class ModuleWebTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-0145')]
     #[Group('ACMS-US-0004')]
-    public function testSiteUnderGitTakesNoRequests(): void
+    public function testSiteUnderGitTakesNoOperations(): void
     {
         $this->answerCatalog();
         $this->listed(['acme/shop']);
@@ -187,15 +187,15 @@ final class ModuleWebTest extends SchemaTestCase
         self::command('adzercms:modules')->execute([]);
 
         self::assertSame([], self::actions($this->client->request('GET', self::CATALOG), 'acme/shop'));
-        $this->post('/admin/modules/request/install?package=acme/shop');
-        self::assertSame(self::phrase('core.module.refusal.versioned'), self::toast($this->arrive(self::REQUESTS), 'error'));
+        $this->post('/admin/modules/operation/install?package=acme/shop');
+        self::assertSame(self::phrase('core.module.refusal.versioned'), self::toast($this->arrive(self::OPERATIONS), 'error'));
     }
 
     #[Group('ACMS-CORE-0935')]
     #[Group('ACMS-CORE-0936')]
     #[Group('ACMS-CORE-0937')]
     #[Group('ACMS-US-0004')]
-    public function testCatalogRowFilesRequestOfItsActionsOnePerPackage(): void
+    public function testCatalogRowFilesOperationOfItsActionsOnePerPackage(): void
     {
         $this->tree();
         $this->answerCatalog();
@@ -212,27 +212,27 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertSame(array_map(static fn (ModuleAction $action): string => self::phrase($action->label()), [ModuleAction::Update, ModuleAction::Disable]), self::actions($page, $chosen->name));
         self::assertSame(array_map(static fn (ModuleAction $action): string => self::phrase($action->label()), [ModuleAction::Update, ModuleAction::Enable, ModuleAction::Remove]), self::actions($page, $idle->name));
 
-        $this->post('/admin/modules/request/install?package=acme/shop');
-        self::assertResponseRedirects(self::REQUESTS, message: 'a request goes to its tab');
-        $this->post('/admin/modules/request/remove?package=acme/shop');
-        $page = $this->arrive(self::REQUESTS);
+        $this->post('/admin/modules/operation/install?package=acme/shop');
+        self::assertResponseRedirects(self::OPERATIONS, message: 'an operation goes to its tab');
+        $this->post('/admin/modules/operation/remove?package=acme/shop');
+        $page = $this->arrive(self::OPERATIONS);
         self::assertSame(self::phrase('core.module.refusal.action'), self::toast($page, 'error'));
-        $this->post('/admin/modules/request/enable?package='.$idle->name);
-        $this->post('/admin/modules/request/update?package='.$idle->name);
-        $page = $this->arrive(self::REQUESTS);
+        $this->post('/admin/modules/operation/enable?package='.$idle->name);
+        $this->post('/admin/modules/operation/update?package='.$idle->name);
+        $page = $this->arrive(self::OPERATIONS);
         self::assertSame(self::phrase('core.module.refusal.open', ['package' => $idle->name]), self::toast($page, 'error'));
         self::assertSame(
-            [[$idle->name, self::phrase(ModuleAction::Enable->label()), self::phrase(RequestState::Pending->label())], ['acme/shop', self::phrase(ModuleAction::Install->label()), self::phrase(RequestState::Pending->label())]],
-            $page->filter('#requests tbody tr')->each(static fn (Crawler $row): array => \array_slice($row->filter('td')->each(static fn (Crawler $cell): string => trim($cell->text())), 0, 3)),
+            [[$idle->name, self::phrase(ModuleAction::Enable->label()), self::phrase(OperationState::Pending->label())], ['acme/shop', self::phrase(ModuleAction::Install->label()), self::phrase(OperationState::Pending->label())]],
+            $page->filter('#operations tbody tr')->each(static fn (Crawler $row): array => \array_slice($row->filter('td')->each(static fn (Crawler $cell): string => trim($cell->text())), 0, 3)),
         );
 
-        $running = self::service(ModuleRequestRepository::class)->inState(RequestState::Pending)[0] ?? self::fail('the request is not filed');
+        $running = self::service(ModuleOperationRepository::class)->inState(OperationState::Pending)[0] ?? self::fail('the operation is not filed');
         $running->start();
         $this->em->flush();
         self::command('adzercms:modules')->execute([]);
         $this->em->clear();
-        $interrupted = self::service(ModuleRequestRepository::class)->find($running->getId()) ?? self::fail('the request is gone');
-        self::assertSame([RequestState::Failed, self::phrase('core.module.refusal.interrupted')], [$interrupted->getState(), $interrupted->getOutput()]);
+        $interrupted = self::service(ModuleOperationRepository::class)->find($running->getId()) ?? self::fail('the operation is gone');
+        self::assertSame([OperationState::Failed, self::phrase('core.module.refusal.interrupted')], [$interrupted->getState(), $interrupted->getOutput()]);
     }
 
     #[Group('ACMS-CORE-0938')]
@@ -240,7 +240,7 @@ final class ModuleWebTest extends SchemaTestCase
     #[Group('ACMS-CORE-0967')]
     #[Group('ACMS-US-0004')]
     #[DataProvider('refreshes')]
-    public function testEnablingRefreshesSiteOnNewSelectionBeforeWritingIt(?string $refusal, RequestState $state, string $environment): void
+    public function testEnablingRefreshesSiteOnNewSelectionBeforeWritingIt(?string $refusal, OperationState $state, string $environment): void
     {
         $tree = $this->tree();
         file_put_contents($tree.'/.env.local', "APP_SECRET=kept\nSMS_MODULES=Stale\n");
@@ -251,10 +251,10 @@ final class ModuleWebTest extends SchemaTestCase
         $sources->add(self::REPOSITORY);
         $sources->grant(self::service(ModuleSourceRepository::class)->findOneBy(['url' => self::REPOSITORY]) ?? self::fail('the source is not kept'), '', 'secret');
 
-        $this->post('/admin/modules/request/enable?package=adzercms/sms-pilot');
+        $this->post('/admin/modules/operation/enable?package=adzercms/sms-pilot');
         self::command('adzercms:modules')->execute([]);
         $this->em->clear();
-        $request = self::service(ModuleRequestRepository::class)->findOneBy(['package' => 'adzercms/sms-pilot']) ?? self::fail('the request is not filed');
+        $operation = self::service(ModuleOperationRepository::class)->findOneBy(['package' => 'adzercms/sms-pilot']) ?? self::fail('the operation is not filed');
         $refreshed = file($tree.'/refreshed.env', \FILE_IGNORE_NEW_LINES) ?: [];
 
         self::assertContains('SMS_MODULES=SmsPilot', $refreshed, 'the refresh builds the new selection');
@@ -262,15 +262,15 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertContains('ADZERCMS_ENTRY='.$tree, $refreshed, 'the refresh runs under the hold of the job');
         self::assertContains('COMPOSER_AUTH={"bearer":{"repo.acme.test":"secret"}}', $refreshed, 'Composer of the refresh takes credentials of the own sources');
         self::assertSame([], preg_grep('/^(APP_SECRET|SYMFONY_DOTENV_VARS)=/', $refreshed), 'the refresh reads the environment files itself');
-        self::assertSame([$state, $refusal], [$request->getState(), $request->getOutput()]);
+        self::assertSame([$state, $refusal], [$operation->getState(), $operation->getOutput()]);
         self::assertSame($environment, file_get_contents($tree.'/.env.local'));
     }
 
-    /** @return iterable<string, array{?string, RequestState, string}> */
+    /** @return iterable<string, array{?string, OperationState, string}> */
     public static function refreshes(): iterable
     {
-        yield 'refreshed' => [null, RequestState::Done, "APP_SECRET=kept\nSMS_MODULES=SmsPilot\n"];
-        yield 'refresh failed' => ['migration failed', RequestState::Failed, "APP_SECRET=kept\nSMS_MODULES=Stale\n"];
+        yield 'refreshed' => [null, OperationState::Done, "APP_SECRET=kept\nSMS_MODULES=SmsPilot\n"];
+        yield 'refresh failed' => ['migration failed', OperationState::Failed, "APP_SECRET=kept\nSMS_MODULES=Stale\n"];
     }
 
     /** @param list<string> $locked */
@@ -278,7 +278,7 @@ final class ModuleWebTest extends SchemaTestCase
     #[Group('ACMS-CORE-0946')]
     #[Group('ACMS-US-0004')]
     #[DataProvider('compositions')]
-    public function testComposerRequestRunsInStagedCopyCommittedOnlyOnSuccess(ModuleAction $action, string $package, RequestState $state, array $locked, bool $zipped = false): void
+    public function testComposerOperationRunsInStagedCopyCommittedOnlyOnSuccess(ModuleAction $action, string $package, OperationState $state, array $locked, bool $zipped = false): void
     {
         $tree = $this->tree(__DIR__.'/Fixture/site');
         $this->answerCatalog();
@@ -289,29 +289,29 @@ final class ModuleWebTest extends SchemaTestCase
         }
         self::command('adzercms:modules')->execute([]);
 
-        $this->post(\sprintf('/admin/modules/request/%s?package=%s', $action->value, $package));
+        $this->post(\sprintf('/admin/modules/operation/%s?package=%s', $action->value, $package));
         self::command('adzercms:modules')->execute([]);
         $this->em->clear();
-        $request = self::service(ModuleRequestRepository::class)->findOneBy(['package' => $package]) ?? self::fail('the request is not filed');
+        $operation = self::service(ModuleOperationRepository::class)->findOneBy(['package' => $package]) ?? self::fail('the operation is not filed');
         $lock = json_decode((string) file_get_contents($tree.'/composer.lock'), true, flags: \JSON_THROW_ON_ERROR);
         $manifest = json_decode((string) file_get_contents($tree.'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
 
-        self::assertSame($state, $request->getState(), (string) $request->getOutput());
+        self::assertSame($state, $operation->getState(), (string) $operation->getOutput());
         self::assertEqualsCanonicalizing($locked, array_column($lock['packages'], 'name'));
         self::assertEqualsCanonicalizing($locked, array_keys($manifest['require']));
         self::assertSame($zipped, \in_array('adzercms-zip', array_column($manifest['repositories'], 'name'), true), 'the repositories carry the ZIP directory while it holds archives');
         self::assertDirectoryDoesNotExist($tree.'/var/stage');
-        self::assertSame(RequestState::Done === $state, is_file($tree.'/refreshed.env'), 'the refresh follows a committed change only');
+        self::assertSame(OperationState::Done === $state, is_file($tree.'/refreshed.env'), 'the refresh follows a committed change only');
     }
 
-    /** @return iterable<string, array{ModuleAction, string, RequestState, list<string>}> */
+    /** @return iterable<string, array{ModuleAction, string, OperationState, list<string>}> */
     public static function compositions(): iterable
     {
-        yield 'install' => [ModuleAction::Install, 'acme/shop', RequestState::Done, ['acme/shop', 'adzercms/sms-pilot', 'adzercms/theme']];
-        yield 'install refused by Composer' => [ModuleAction::Install, 'acme/absent', RequestState::Failed, ['adzercms/sms-pilot', 'adzercms/theme']];
-        yield 'update of an engine package' => [ModuleAction::Update, 'adzercms/sms-pilot', RequestState::Done, ['adzercms/sms-pilot', 'adzercms/theme']];
-        yield 'remove' => [ModuleAction::Remove, 'adzercms/sms-pilot', RequestState::Done, ['adzercms/theme']];
-        yield 'install of an uploaded ZIP' => [ModuleAction::Install, 'acme/zipped', RequestState::Done, ['acme/zipped', 'adzercms/sms-pilot', 'adzercms/theme'], true];
+        yield 'install' => [ModuleAction::Install, 'acme/shop', OperationState::Done, ['acme/shop', 'adzercms/sms-pilot', 'adzercms/theme']];
+        yield 'install refused by Composer' => [ModuleAction::Install, 'acme/absent', OperationState::Failed, ['adzercms/sms-pilot', 'adzercms/theme']];
+        yield 'update of an engine package' => [ModuleAction::Update, 'adzercms/sms-pilot', OperationState::Done, ['adzercms/sms-pilot', 'adzercms/theme']];
+        yield 'remove' => [ModuleAction::Remove, 'adzercms/sms-pilot', OperationState::Done, ['adzercms/theme']];
+        yield 'install of an uploaded ZIP' => [ModuleAction::Install, 'acme/zipped', OperationState::Done, ['acme/zipped', 'adzercms/sms-pilot', 'adzercms/theme'], true];
     }
 
     #[Group('ACMS-CORE-0143')]

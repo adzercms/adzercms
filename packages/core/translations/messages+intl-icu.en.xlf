@@ -562,13 +562,13 @@
     <unit id="core.module.refusal.interrupted">
       <segment>
         <source>core.module.refusal.interrupted</source>
-        <target>The request was interrupted before it finished</target>
+        <target>The operation was interrupted before it finished</target>
       </segment>
     </unit>
     <unit id="core.module.refusal.open">
       <segment>
         <source>core.module.refusal.open</source>
-        <target>The package {package} already has a request in progress</target>
+        <target>The package {package} already has an operation in progress</target>
       </segment>
     </unit>
     <unit id="core.module.refusal.versioned">

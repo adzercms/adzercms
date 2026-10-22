@@ -15,10 +15,10 @@ use AdzerCMS\Core\Entity\ModuleSource;
 use AdzerCMS\Core\Module\Catalog;
 use AdzerCMS\Core\Module\CatalogRow;
 use AdzerCMS\Core\Module\ModuleAction;
-use AdzerCMS\Core\Module\Requests;
+use AdzerCMS\Core\Module\Operations;
 use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Module\Tree;
-use AdzerCMS\Core\Repository\ModuleRequestRepository;
+use AdzerCMS\Core\Repository\ModuleOperationRepository;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
@@ -41,17 +41,17 @@ final class ModuleController extends AbstractController
     private const MODULES = 'modules';
     private const CATALOG = 'catalog';
     private const CATEGORY = 'category';
-    private const REQUESTS = 'requests';
+    private const OPERATIONS = 'operations';
     private const SOURCES = 'sources';
-    private const TABS = [self::MODULES, self::CATALOG, self::SOURCES, self::REQUESTS];
+    private const TABS = [self::MODULES, self::CATALOG, self::SOURCES, self::OPERATIONS];
 
     public function __construct(
         private readonly AssembledModules $assembled,
         private readonly Catalog $catalog,
-        private readonly Requests $requests,
+        private readonly Operations $operations,
         private readonly Sources $sources,
         private readonly Artifacts $artifacts,
-        private readonly ModuleRequestRepository $filings,
+        private readonly ModuleOperationRepository $filings,
         private readonly Tree $tree,
         private readonly SettingForm $form,
     ) {
@@ -67,7 +67,7 @@ final class ModuleController extends AbstractController
             self::MODULES => $this->assembledTab($request, $translator),
             self::CATALOG => $this->catalogTab($request, $translator),
             self::SOURCES => $this->sourcesTab($request),
-            self::REQUESTS => $this->requestsTab($request),
+            self::OPERATIONS => $this->operationsTab($request),
         }]);
     }
 
@@ -130,26 +130,26 @@ final class ModuleController extends AbstractController
     }
 
     /** @return array<string, mixed> */
-    private function requestsTab(Request $request): array
+    private function operationsTab(Request $request): array
     {
         $table = Table::of($request, 'admin_modules', [
             Column::plain('package', t('admin.catalog.package')),
-            Column::plain('action', t('admin.requests.action')),
-            Column::plain('state', t('admin.requests.state')),
-            Column::of('filed', t('admin.requests.filed'), 'r.id'),
-            Column::plain('finished', t('admin.requests.finished'))->aside(),
-        ], 'filed', t('admin.requests.empty'), ascending: false, sticky: ['tab' => self::REQUESTS], id: self::REQUESTS);
+            Column::plain('action', t('admin.operations.action')),
+            Column::plain('state', t('admin.operations.state')),
+            Column::of('filed', t('admin.operations.filed'), 'o.id'),
+            Column::plain('finished', t('admin.operations.finished'))->aside(),
+        ], 'filed', t('admin.operations.empty'), ascending: false, sticky: ['tab' => self::OPERATIONS], id: self::OPERATIONS);
 
         return ['table' => $table, 'rows' => $this->filings->page($table)];
     }
 
-    #[Route('/request/{action}', name: 'admin_module_request', methods: ['POST'])]
-    public function request(ModuleAction $action, Request $request): Response
+    #[Route('/operation/{action}', name: 'admin_module_operation', methods: ['POST'])]
+    public function operation(ModuleAction $action, Request $request): Response
     {
-        $refusal = $this->requests->file($request->query->getString('package'), $action);
-        $this->addFlash(null === $refusal ? 'success' : 'error', $refusal->reason ?? t('admin.requests.done'));
+        $refusal = $this->operations->file($request->query->getString('package'), $action);
+        $this->addFlash(null === $refusal ? 'success' : 'error', $refusal->reason ?? t('admin.operations.done'));
 
-        return $this->redirectToRoute('admin_modules', ['tab' => self::REQUESTS]);
+        return $this->redirectToRoute('admin_modules', ['tab' => self::OPERATIONS]);
     }
 
     /**
@@ -180,11 +180,11 @@ final class ModuleController extends AbstractController
                 },
                 'actions' => array_map(static fn (ModuleAction $action): array => [
                     'label' => $action->label(),
-                    'route' => 'admin_module_request',
+                    'route' => 'admin_module_operation',
                     'params' => ['action' => $action->value, 'package' => $row->name],
                     'post' => true,
                     'confirm' => $action->takesVersion() && !$row->verified ? t('admin.catalog.unverified', ['package' => $row->name]) : null,
-                ], $this->requests->actions($row)),
+                ], $this->operations->actions($row)),
             ];
         }
 

@@ -6,16 +6,16 @@ namespace AdzerCMS\Core\Module;
 
 use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Refusal;
-use AdzerCMS\Core\Entity\ModuleRequest;
-use AdzerCMS\Core\Repository\ModuleRequestRepository;
+use AdzerCMS\Core\Entity\ModuleOperation;
+use AdzerCMS\Core\Repository\ModuleOperationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 use function Symfony\Component\Translation\t;
 
-final readonly class Requests
+final readonly class Operations
 {
     public function __construct(
-        private ModuleRequestRepository $requests,
+        private ModuleOperationRepository $operations,
         private EntityManagerInterface $em,
         private Catalog $catalog,
         private Tree $tree,
@@ -50,11 +50,11 @@ final readonly class Requests
         if (null !== $refusal) {
             return $refusal;
         }
-        if (null !== $this->requests->open($package)) {
+        if (null !== $this->operations->open($package)) {
             return new Refusal(t('core.module.refusal.open', ['package' => $package]));
         }
 
-        $this->em->persist(new ModuleRequest($package, $action));
+        $this->em->persist(new ModuleOperation($package, $action));
         $this->em->flush();
 
         return null;
