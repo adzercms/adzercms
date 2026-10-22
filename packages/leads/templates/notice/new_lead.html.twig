@@ -1,0 +1,23 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+{% import '@Core/notice/_macros.html.twig' as mail %}
+
+{% block subject %}{{ 'leads.notice.subject'|trans({brand: brand.title, number: lead.id}) }}{% endblock %}
+
+{% block fields %}
+{% for field, value in {topic: lead.topic, name: lead.name, phone: lead.phone, email: lead.email, message: lead.message} %}
+{% if value is not null %}{{ ('leads.field.' ~ field)|trans }}: {{ value }}
+{% endif %}
+{% endfor %}
+{% endblock %}
+
+{% block text %}
+{{ 'leads.notice.title'|trans({number: lead.id}) }}
+{{ block('fields') }}
+{{ url('admin_lead', {id: lead.id}) }}
+{% endblock %}
+
+{% block content %}
+<h2>{{ 'leads.notice.title'|trans({number: lead.id}) }}</h2>
+<p class="message">{{ block('fields')|trim }}</p>
+{{ mail.button(url('admin_lead', {id: lead.id}), 'leads.notice.action'|trans) }}
+{% endblock %}

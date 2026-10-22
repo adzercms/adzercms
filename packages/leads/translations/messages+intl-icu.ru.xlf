@@ -31,6 +31,12 @@
         <target>Заявок нет</target>
       </segment>
     </unit>
+    <unit id="leads.event.new_lead">
+      <segment>
+        <source>leads.event.new_lead</source>
+        <target>Новая заявка</target>
+      </segment>
+    </unit>
     <unit id="leads.field.amount">
       <segment>
         <source>leads.field.amount</source>
@@ -257,6 +263,24 @@
       <segment>
         <source>leads.new</source>
         <target>Новая заявка</target>
+      </segment>
+    </unit>
+    <unit id="leads.notice.action">
+      <segment>
+        <source>leads.notice.action</source>
+        <target>Открыть заявку</target>
+      </segment>
+    </unit>
+    <unit id="leads.notice.subject">
+      <segment>
+        <source>leads.notice.subject</source>
+        <target>{brand}: новая заявка {number}</target>
+      </segment>
+    </unit>
+    <unit id="leads.notice.title">
+      <segment>
+        <source>leads.notice.title</source>
+        <target>Новая заявка {number}</target>
       </segment>
     </unit>
     <unit id="leads.refusal.amount">

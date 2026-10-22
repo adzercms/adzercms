@@ -6,6 +6,8 @@ namespace AdzerCMS\Leads;
 
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Account\ContactKind;
+use AdzerCMS\Core\Notice\Notifier;
+use AdzerCMS\Core\Repository\UserRepository;
 use AdzerCMS\Core\Ui\Once;
 use AdzerCMS\Leads\Entity\Lead;
 use AdzerCMS\Leads\Repository\StageRepository;
@@ -34,6 +36,8 @@ final readonly class Intake
         private EntityManagerInterface $em,
         private RateLimiterFactoryInterface $leadsLimiter,
         private Once $once,
+        private Notifier $notifier,
+        private UserRepository $users,
     ) {
     }
 
@@ -65,6 +69,7 @@ final readonly class Intake
         $lead = $this->lead($input, mb_substr($page, 0, Lead::PAGE));
         $lead->price($this->subjects->attach($lead, $input));
         $this->em->flush();
+        $this->notifier->each($this->users->admins(), LeadsEvent::NewLead, ['lead' => $lead], (string) $lead->getId());
 
         return [];
     }

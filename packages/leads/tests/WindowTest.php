@@ -5,14 +5,20 @@ declare(strict_types=1);
 namespace AdzerCMS\Leads\Tests;
 
 use AdzerCMS\Core\Account\Consents;
+use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Account\Status;
+use AdzerCMS\Core\Entity\Notice;
+use AdzerCMS\Core\Repository\NoticeRepository;
 use AdzerCMS\Core\Security\CsrfGuard;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\Configuration;
+use AdzerCMS\Core\Tests\Delivery;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Ui\Back;
 use AdzerCMS\Leads\Entity\Lead;
 use AdzerCMS\Leads\Intake;
+use AdzerCMS\Leads\LeadsEvent;
 use AdzerCMS\Leads\Repository\LeadRepository;
 use AdzerCMS\Leads\Repository\StageRepository;
 use AdzerCMS\Leads\StageGroup;
@@ -26,6 +32,7 @@ final class WindowTest extends SchemaTestCase
     use Accounts;
     use Browser;
     use Configuration;
+    use Delivery;
 
     private const WINDOW = '/lead';
     private const PAGE = '/fixture/frame?view=card';
@@ -72,6 +79,29 @@ final class WindowTest extends SchemaTestCase
         );
         self::assertSame([$lead->getId()], array_map(static fn (Lead $attached): ?int => $attached->getId(), self::service(ItemSubject::class)->attached));
         self::assertSame(self::phrase('leads.flash.taken'), self::toast($this->arrive(self::PAGE), 'success'));
+    }
+
+    #[Group('ACMS-LEAD-0013')]
+    #[Group('ACMS-US-0040')]
+    public function testNewLeadNotifiesActiveAdministratorsWithItsFieldsAndPageLink(): void
+    {
+        $this->configure(self::MAIL);
+        $admin = $this->record('79990000011', 'admin@site.test')->setRole(Role::Admin);
+        $this->record('79990000012', 'archived@site.test')->setRole(Role::Admin)->setStatus(Status::Archived);
+        $this->record('79990000013', 'member@site.test');
+        $this->em->flush();
+
+        $this->take([Intake::TOPIC => self::TOPIC, Intake::NAME => 'Анна', Intake::PHONE => '79990000002', Intake::MESSAGE => 'Нужен на неделю']);
+        $this->take([Intake::NAME => 'Борис', Intake::EMAIL => 'boris@site.test']);
+
+        $leads = self::service(LeadRepository::class)->findBy([], ['id' => 'ASC']);
+        $notices = self::service(NoticeRepository::class)->findBy(['event' => LeadsEvent::NewLead->key()], ['id' => 'ASC']);
+        self::assertSame(['admin@site.test', 'admin@site.test'], array_map(static fn (Notice $notice): string => $notice->getRecipient(), $notices), 'each lead reaches the active administrators only');
+        self::assertSame($admin->getId(), $notices[0]->getUser()?->getId());
+        foreach ([self::TOPIC, 'Анна', '79990000002', 'Нужен на неделю', 'http://localhost/admin/leads/'.$leads[0]->getId()] as $field) {
+            self::assertStringContainsString($field, $notices[0]->getBody());
+        }
+        self::assertStringContainsString('/admin/leads/'.$leads[1]->getId(), $notices[1]->getBody());
     }
 
     /** @param array<string, string> $fields */
