@@ -41,6 +41,18 @@ class LeadRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    /** @return list<Lead> */
+    public function overdue(): array
+    {
+        /** @var list<Lead> $leads */
+        $leads = self::sliced($this->createQueryBuilder('l')->join('l.stage', 's'), Slice::Overdue)
+            ->orderBy('l.due', \SortDirection::Ascending)
+            ->getQuery()
+            ->getResult();
+
+        return $leads;
+    }
+
     /** @return list<string> */
     public function topics(): array
     {

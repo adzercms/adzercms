@@ -33,7 +33,11 @@
         "symfony/translation-contracts": "^3.7"
     },
     "require-dev": {
-        "adzercms/admin": "^1.0"
+        "adzercms/admin": "^1.0",
+        "adzercms/support": "^1.0"
+    },
+    "suggest": {
+        "adzercms/support": "overdue leads in the staff digest"
     },
     "autoload": {
         "psr-4": {

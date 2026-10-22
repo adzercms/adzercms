@@ -49,6 +49,18 @@
         <target>Заявки с сайта: окно заявки на любой странице, стадии воронки, менеджеры и сроки</target>
       </segment>
     </unit>
+    <unit id="leads.digest.line">
+      <segment>
+        <source>leads.digest.line</source>
+        <target>заявка {number} {name}, срок {due, date, ::yMMddHHmm}, {topic}</target>
+      </segment>
+    </unit>
+    <unit id="leads.digest.summary">
+      <segment>
+        <source>leads.digest.summary</source>
+        <target>Просроченных заявок: {count}</target>
+      </segment>
+    </unit>
     <unit id="leads.empty">
       <segment>
         <source>leads.empty</source>

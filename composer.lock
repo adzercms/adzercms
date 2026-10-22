@@ -492,7 +492,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/leads",
-                "reference": "0c3a21119c0fa204f31e4ea2e3b83e94db5b8c9b"
+                "reference": "7a80db4802253ff9498046b73f34cf66fad5ef31"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -517,7 +517,11 @@
                 "symfony/translation-contracts": "^3.7"
             },
             "require-dev": {
-                "adzercms/admin": "^1.0"
+                "adzercms/admin": "^1.0",
+                "adzercms/support": "^1.0"
+            },
+            "suggest": {
+                "adzercms/support": "overdue leads in the staff digest"
             },
             "type": "adzercms-module",
             "extra": {

@@ -49,6 +49,18 @@
         <target>Website leads: a lead window on any page, funnel stages, managers and deadlines</target>
       </segment>
     </unit>
+    <unit id="leads.digest.line">
+      <segment>
+        <source>leads.digest.line</source>
+        <target>lead {number} {name}, due {due, date, ::yMMddHHmm}, {topic}</target>
+      </segment>
+    </unit>
+    <unit id="leads.digest.summary">
+      <segment>
+        <source>leads.digest.summary</source>
+        <target>Overdue leads: {count}</target>
+      </segment>
+    </unit>
     <unit id="leads.empty">
       <segment>
         <source>leads.empty</source>

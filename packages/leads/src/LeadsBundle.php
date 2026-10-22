@@ -7,6 +7,7 @@ namespace AdzerCMS\Leads;
 use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Module\Kind;
 use AdzerCMS\Contracts\Module\Module;
+use AdzerCMS\Support\DigestSection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -29,6 +30,10 @@ final class LeadsBundle extends Module
     {
         $container->services()->defaults()->autowire()->autoconfigure()
             ->load('AdzerCMS\\Leads\\', '../src/')
-            ->exclude(['../src/Entity/', '../src/LeadsBundle.php']);
+            ->exclude(['../src/Entity/', '../src/LeadsBundle.php', '../src/OverdueDigest.php']);
+
+        if (interface_exists(DigestSection::class)) {
+            $container->services()->set(OverdueDigest::class)->autowire()->autoconfigure();
+        }
     }
 }
