@@ -257,15 +257,18 @@ final class Table
 
     /**
      * @param list<mixed> $rows
+     * @param list<mixed> $lead
      *
      * @return list<mixed>
      */
-    public function rows(array $rows): array
+    public function rows(array $rows, array $lead = []): array
     {
         $term = $this->term();
 
         if ('' !== $term) {
-            $rows = array_filter($rows, fn (mixed $row): bool => $this->matches($row, $term));
+            $found = fn (mixed $row): bool => $this->matches($row, $term);
+            $rows = array_filter($rows, $found);
+            $lead = array_filter($lead, $found);
         }
 
         $column = null === $this->order ? $this->column($this->key) : null;
@@ -278,9 +281,10 @@ final class Table
             ));
         }
 
+        $rows = [...array_values($lead), ...array_values($rows)];
         $this->total = \count($rows);
 
-        return \array_slice(array_values($rows), $this->offset(), $this->size);
+        return \array_slice($rows, $this->offset(), $this->size);
     }
 
     private static function param(string $id, string $name): string
