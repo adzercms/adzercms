@@ -87,6 +87,7 @@ trait CatalogAnswers
 
     private function branch(string $name, string $alias, ?string $reference = null): void
     {
+        $this->packages[$name] ??= [];
         $this->packages[$name.'~dev'] = [['default-branch' => true] + array_replace_recursive(self::manifest($name, 'dev-main'), [
             'extra' => ['branch-alias' => ['dev-main' => $alias]],
             'source' => ['reference' => $reference ?? self::commit($name, 'dev-main')],

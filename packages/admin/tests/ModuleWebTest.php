@@ -70,7 +70,7 @@ final class ModuleWebTest extends SchemaTestCase
 
         self::assertSame(
             array_map(self::phrase(...), ['admin.menu.modules', 'admin.sources.title', 'admin.operations.title']),
-            $listing->filter('nav.tabs a.tab')->each(static fn (Crawler $tab): string => trim($tab->text())),
+            $listing->filter('nav.tabs a.tab[href*="tab="]')->each(static fn (Crawler $tab): string => trim($tab->text())),
         );
         foreach (['' => 'rows', '?tab=sources' => 'sources', '?tab=operations' => 'operations', '?tab=absent' => 'rows'] as $query => $table) {
             self::assertSame(
