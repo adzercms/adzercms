@@ -39,7 +39,7 @@ document.addEventListener('click', event => {
     if (copier) {
         const source = document.querySelector(copier.dataset.copy);
         navigator.clipboard.writeText(source.value ?? source.textContent).then(() => {
-            copier.textContent = 'Скопировано';
+            copier.textContent = copier.dataset.copied;
         });
         return;
     }
@@ -277,62 +277,9 @@ document.addEventListener('htmx:afterSwap', event => {
     (field ?? event.target).focus();
 });
 
-const ACTION_TICK = 1000;
-const MINUTE = 60;
-
-const left = until => Math.max(0, Math.round((until - Date.now()) / 1000));
-
-const remaining = until => {
-    const seconds = left(until);
-
-    return seconds > 0
-        ? `Осталось ${Math.floor(seconds / MINUTE)}:${String(seconds % MINUTE).padStart(2, '0')}`
-        : 'Время вышло — нажмите «Проверить разрешение»';
-};
-
-const action = () => {
-    const dialog = document.getElementById('setup-action');
-    const wizard = document.querySelector('.wizard');
-
-    if (!dialog || !wizard) {
-        return;
-    }
-
-    const note = wizard.dataset.actionNote;
-
-    if (!note) {
-        dialog.close();
-        delete dialog.dataset.dismissed;
-
-        return;
-    }
-
-    const until = wizard.dataset.actionUntil ? Date.parse(wizard.dataset.actionUntil) : null;
-    const timer = dialog.querySelector('[data-action-countdown]');
-
-    dialog.dataset.request = `${note}|${wizard.dataset.actionUntil ?? ''}`;
-    dialog.querySelector('[data-action-text]').textContent = note;
-    timer.hidden = !until;
-    timer.textContent = until ? remaining(until) : '';
-
-    if (!dialog.open && dialog.dataset.dismissed !== dialog.dataset.request) {
-        dialog.showModal();
-    }
-};
-
 document.addEventListener('change', event => {
     const toggle = event.target.closest('.chart-toggle input[data-line]');
     if (toggle) {
         document.getElementById(toggle.dataset.line)?.classList.toggle('is-off', !toggle.checked);
     }
 });
-
-document.addEventListener('close', event => {
-    if (event.target.id === 'setup-action') {
-        event.target.dataset.dismissed = event.target.dataset.request ?? '';
-    }
-}, true);
-
-document.addEventListener('DOMContentLoaded', action);
-document.addEventListener('htmx:afterSwap', action);
-setInterval(action, ACTION_TICK);

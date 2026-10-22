@@ -7,6 +7,12 @@
         <target>Закрыть</target>
       </segment>
     </unit>
+    <unit id="core.action.copied">
+      <segment>
+        <source>core.action.copied</source>
+        <target>Скопировано</target>
+      </segment>
+    </unit>
     <unit id="core.action.copy">
       <segment>
         <source>core.action.copy</source>
