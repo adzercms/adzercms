@@ -45,14 +45,12 @@ final readonly class LeadRows
      */
     public function listing(Request $request, string $route, array $slices, array $sticky = []): array
     {
+        $first = $slices[0];
         $labels = [];
-        foreach ($slices as $slice) {
+        foreach (\array_slice($slices, 1) as $slice) {
             $labels[$slice->value] = $slice->label($this->leads->total($slice));
         }
-        $first = $slices[0];
-        $any = $labels[$first->value];
-        unset($labels[$first->value]);
-        $tabs = Filter::tabs(self::SLICE, $any, $labels);
+        $tabs = Filter::tabs(self::SLICE, $first->label($this->leads->total($first)), $labels);
         $slice = Slice::tryFrom(Table::values($request, [$tabs])[self::SLICE] ?? '') ?? $first;
 
         $stages = [];
