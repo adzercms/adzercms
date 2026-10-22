@@ -27,6 +27,19 @@ class PaymentRepository extends ServiceEntityRepository
         return $this->findOneBy(['operationId' => $operationId]);
     }
 
+    /** @param list<string> $operations */
+    public function confirmedOf(array $operations): ?Payment
+    {
+        return [] === $operations ? null : $this->createQueryBuilder('p')
+            ->where('p.operationId IN (:operations)')
+            ->andWhere('p.status = :confirmed')
+            ->setParameter('operations', $operations)
+            ->setParameter('confirmed', PaymentStatus::Confirmed->value)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     /** @return list<Payment> */
     public function started(\DateTimeImmutable $after): array
     {
