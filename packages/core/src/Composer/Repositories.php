@@ -11,6 +11,8 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 final readonly class Repositories
 {
     public const PACKAGIST = 'https://repo.packagist.org';
+    public const CLIENT = 'adzercms.composer.http_client';
+    public const RETRIES = 2;
 
     private const ROOT = '/packages.json';
     private const NAME = '%package%';

@@ -89,6 +89,15 @@ final class CatalogTest extends SchemaTestCase
         self::assertSame(Command::FAILURE, $job->execute([]));
         self::assertStringContainsString(Repositories::PACKAGIST, $job->getDisplay());
         self::assertSame(['acme/shop'], array_keys(self::offered()));
+
+        $this->listed(['acme/till', 'acme/shop']);
+        self::mockTime('2026-10-22 12:10');
+        self::command('adzercms:modules')->execute([]);
+        self::assertSame(['acme/shop'], array_keys(self::offered()), 'the snapshot with an unavailable repository waits for the retry age');
+
+        self::mockTime('2026-10-22 12:15');
+        self::command('adzercms:modules')->execute([]);
+        self::assertSame(['acme/shop', 'acme/till'], array_keys(self::offered()), 'the snapshot with an unavailable repository is taken again before a day');
     }
 
     #[Group('ACMS-CORE-0934')]

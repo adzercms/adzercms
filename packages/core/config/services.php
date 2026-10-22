@@ -17,7 +17,11 @@ use AdzerCMS\Core\Module\Tree;
 use AdzerCMS\Core\Schema\MigrationOrder;
 use PhpTuf\ComposerStager\API\Core\BeginnerInterface;
 use PhpTuf\ComposerStager\API\Process\Service\ComposerProcessRunnerInterface;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpClient\Retry\GenericRetryStrategy;
+use Symfony\Component\HttpClient\RetryableHttpClient;
 use Symfony\Component\Process\ExecutableFinder;
 use Twig\Extra\CssInliner\CssInlinerExtension;
 
@@ -40,11 +44,13 @@ return static function (ContainerConfigurator $container): void {
     $services->load('AdzerCMS\\Core\\Setting\\', '../src/Setting/');
     $services->load('AdzerCMS\\Core\\Text\\', '../src/Text/');
     $services->load('AdzerCMS\\Core\\Ui\\', '../src/Ui/');
-    $services->set(Repositories::class);
+    $services->set(Repositories::CLIENT, RetryableHttpClient::class)
+        ->args([new Reference('http_client'), (new Definition(GenericRetryStrategy::class))->setArgument('$delayMs', 0), Repositories::RETRIES]);
+    $services->set(Repositories::class)->arg('$httpClient', new Reference(Repositories::CLIENT));
     $services->set(Artifacts::class);
     $services->set(Sources::class);
     $services->set(Snapshot::class);
-    $services->set(Marks::class);
+    $services->set(Marks::class)->arg('$httpClient', new Reference(Repositories::CLIENT));
     $services->set(Catalog::class);
     $services->set(Tree::class);
     $services->set(Requests::class);

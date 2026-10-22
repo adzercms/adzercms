@@ -19,6 +19,7 @@ final readonly class Catalog
     private const SNAPSHOT = 'core.modules.catalog';
     private const LIFETIME = 604800;
     private const AGE = '-1 day';
+    private const DOWN_AGE = '-15 minutes';
 
     /** @param array<string, class-string> $bundles */
     public function __construct(
@@ -36,7 +37,9 @@ final readonly class Catalog
     {
         $held = $this->held();
 
-        return null === $held['at'] || $held['at'] <= now()->modify(self::AGE) || $held['sources'] !== $this->sources->fingerprint();
+        return null === $held['at']
+            || $held['at'] <= now()->modify([] === $held['down'] ? self::AGE : self::DOWN_AGE)
+            || $held['sources'] !== $this->sources->fingerprint();
     }
 
     public function row(string $name): ?CatalogRow
