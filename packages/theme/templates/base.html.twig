@@ -76,5 +76,6 @@
         </form>
     </dialog>
 {% endif %}
+{% for part in fragments('end', app.user ? app.user.id : null) %}{% include part.template with part.context only %}{% endfor %}
 </body>
 </html>

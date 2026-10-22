@@ -7,6 +7,7 @@ namespace AdzerCMS\Leads\Repository;
 use AdzerCMS\Leads\Entity\Stage;
 use AdzerCMS\Leads\StageGroup;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /** @extends ServiceEntityRepository<Stage> */
@@ -29,12 +30,22 @@ class StageRepository extends ServiceEntityRepository
     /** @return list<Stage> */
     public function ofGroup(StageGroup $group): array
     {
+        return $this->grouped($group)->getQuery()->getResult();
+    }
+
+    public function first(StageGroup $group): Stage
+    {
+        $stage = $this->grouped($group)->setMaxResults(1)->getQuery()->getOneOrNullResult();
+
+        return $stage instanceof Stage ? $stage : throw new \LogicException(\sprintf('the group %s holds no stage', $group->value));
+    }
+
+    private function grouped(StageGroup $group): QueryBuilder
+    {
         return $this->createQueryBuilder('s')
             ->where('s.group = :group')
             ->setParameter('group', $group->value)
             ->orderBy('s.position')
-            ->addOrderBy('s.id')
-            ->getQuery()
-            ->getResult();
+            ->addOrderBy('s.id');
     }
 }

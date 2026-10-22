@@ -22,7 +22,8 @@ class Lead
     public const TOPIC = 190;
     public const NAME = 190;
     public const PHONE = 32;
-    public const EMAIL = 190;
+    public const EMAIL = 254;
+    public const MESSAGE = 5000;
     public const PAGE = 255;
     public const REASON = 255;
 
@@ -127,6 +128,11 @@ class Lead
     public function getAmount(): ?string
     {
         return $this->amount;
+    }
+
+    public function price(?string $amount): void
+    {
+        $this->amount = $amount;
     }
 
     public function getReason(): ?string

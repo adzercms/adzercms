@@ -19,6 +19,12 @@
         <target>Stage removed</target>
       </segment>
     </unit>
+    <unit id="leads.flash.taken">
+      <segment>
+        <source>leads.flash.taken</source>
+        <target>The request is sent, we will contact you soon</target>
+      </segment>
+    </unit>
     <unit id="leads.group.done">
       <segment>
         <source>leads.group.done</source>
@@ -47,6 +53,42 @@
       <segment>
         <source>leads.menu</source>
         <target>Leads</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.contact">
+      <segment>
+        <source>leads.refusal.contact</source>
+        <target>Enter a phone number or an email</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.email">
+      <segment>
+        <source>leads.refusal.email</source>
+        <target>The email address is not recognized</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.message">
+      <segment>
+        <source>leads.refusal.message</source>
+        <target>The message is up to {limit} characters</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.name">
+      <segment>
+        <source>leads.refusal.name</source>
+        <target>The name is up to {limit} characters</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.often">
+      <segment>
+        <source>leads.refusal.often</source>
+        <target>Too many requests from your address, try again later</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.phone">
+      <segment>
+        <source>leads.refusal.phone</source>
+        <target>The phone number is not recognized</target>
       </segment>
     </unit>
     <unit id="leads.refusal.stage_group">
@@ -113,6 +155,54 @@
       <segment>
         <source>leads.stage.title</source>
         <target>Stage</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.email">
+      <segment>
+        <source>leads.window.email</source>
+        <target>Email</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.message">
+      <segment>
+        <source>leads.window.message</source>
+        <target>Message</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.name">
+      <segment>
+        <source>leads.window.name</source>
+        <target>Name</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.phone">
+      <segment>
+        <source>leads.window.phone</source>
+        <target>Phone</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.policy">
+      <segment>
+        <source>leads.window.policy</source>
+        <target>privacy policy</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.privacy">
+      <segment>
+        <source>leads.window.privacy</source>
+        <target>Your data is processed under the {policy}</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.send">
+      <segment>
+        <source>leads.window.send</source>
+        <target>Send</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.title">
+      <segment>
+        <source>leads.window.title</source>
+        <target>Leave a request</target>
       </segment>
     </unit>
   </file>

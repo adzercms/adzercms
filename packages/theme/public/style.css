@@ -562,6 +562,8 @@ select:not([multiple]) option:hover, select:not([multiple]) option:focus { backg
 select:not([multiple]) option:checked { color: var(--primary-text); font-weight: 500; }
 
 .hint { display: block; margin: 0.25rem 0 0.75rem; font-size: 13px; font-weight: 400; color: var(--text-gray); }
+.field-refusal { display: block; margin-top: 0.25rem; font-size: 13px; font-weight: 400; color: var(--error-strong); }
+.trap { position: absolute; width: 1px; height: 1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); }
 
 button, .button {
     display: inline-flex;

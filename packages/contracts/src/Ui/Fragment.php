@@ -14,6 +14,7 @@ interface Fragment
     public const ADMIN_DASHBOARD = 'admin.dashboard';
     public const ADMIN_DASHBOARD_ACTIONS = 'admin.dashboard.actions';
     public const ADMIN_USER = 'admin.user';
+    public const END = 'end';
 
     public function place(): string;
 

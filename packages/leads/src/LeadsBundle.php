@@ -17,6 +17,13 @@ final class LeadsBundle extends Module
         return CoreKind::Feature;
     }
 
+    public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
+    {
+        $builder->prependExtensionConfig('framework', ['rate_limiter' => [
+            Intake::LIMITER => ['policy' => 'fixed_window', 'limit' => Intake::LIMIT, 'interval' => Intake::INTERVAL],
+        ]]);
+    }
+
     /** @param array<string, mixed> $config */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {

@@ -21,6 +21,8 @@ use AdzerCMS\Core\Tests\Ui\Fixture\FrameController;
 use AdzerCMS\Core\Tests\Ui\Fixture\Ledger;
 use AdzerCMS\Core\Tests\Ui\Fixture\ListController;
 use AdzerCMS\Core\Tests\Ui\Fixture\Masthead;
+use AdzerCMS\Leads\LeadsBundle;
+use AdzerCMS\Leads\Tests\Fixture\ItemSubject;
 use AdzerCMS\Mailing\MailingBundle;
 use AdzerCMS\Mailing\Tests\Fixture\CommentAudience;
 use AdzerCMS\Opotopo\OpotopoBundle;
@@ -59,6 +61,9 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
     $bundles = $builder->getParameter('kernel.bundles');
     if (\is_array($bundles) && \in_array(SupportBundle::class, $bundles, true)) {
         $services->set(SubjectFixture::class)->autoconfigure()->public();
+    }
+    if (\is_array($bundles) && \in_array(LeadsBundle::class, $bundles, true)) {
+        $services->set(ItemSubject::class)->autoconfigure()->public();
     }
     if (\is_array($bundles) && \in_array(MailingBundle::class, $bundles, true)) {
         $services->set(CommentAudience::class)->autoconfigure();

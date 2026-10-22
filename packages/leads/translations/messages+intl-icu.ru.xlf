@@ -19,6 +19,12 @@
         <target>Стадия снята</target>
       </segment>
     </unit>
+    <unit id="leads.flash.taken">
+      <segment>
+        <source>leads.flash.taken</source>
+        <target>Заявка отправлена, мы скоро свяжемся с вами</target>
+      </segment>
+    </unit>
     <unit id="leads.group.done">
       <segment>
         <source>leads.group.done</source>
@@ -47,6 +53,42 @@
       <segment>
         <source>leads.menu</source>
         <target>Заявки</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.contact">
+      <segment>
+        <source>leads.refusal.contact</source>
+        <target>Укажите телефон или почту</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.email">
+      <segment>
+        <source>leads.refusal.email</source>
+        <target>Адрес почты не распознан</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.message">
+      <segment>
+        <source>leads.refusal.message</source>
+        <target>Сообщение — до {limit} символов</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.name">
+      <segment>
+        <source>leads.refusal.name</source>
+        <target>Имя — до {limit} символов</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.often">
+      <segment>
+        <source>leads.refusal.often</source>
+        <target>Слишком много заявок с вашего адреса, повторите позже</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.phone">
+      <segment>
+        <source>leads.refusal.phone</source>
+        <target>Номер телефона не распознан</target>
       </segment>
     </unit>
     <unit id="leads.refusal.stage_group">
@@ -113,6 +155,54 @@
       <segment>
         <source>leads.stage.title</source>
         <target>Стадия</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.email">
+      <segment>
+        <source>leads.window.email</source>
+        <target>Почта</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.message">
+      <segment>
+        <source>leads.window.message</source>
+        <target>Сообщение</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.name">
+      <segment>
+        <source>leads.window.name</source>
+        <target>Имя</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.phone">
+      <segment>
+        <source>leads.window.phone</source>
+        <target>Телефон</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.policy">
+      <segment>
+        <source>leads.window.policy</source>
+        <target>политике обработки персональных данных</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.privacy">
+      <segment>
+        <source>leads.window.privacy</source>
+        <target>Данные обрабатываются согласно {policy}</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.send">
+      <segment>
+        <source>leads.window.send</source>
+        <target>Отправить</target>
+      </segment>
+    </unit>
+    <unit id="leads.window.title">
+      <segment>
+        <source>leads.window.title</source>
+        <target>Оставить заявку</target>
       </segment>
     </unit>
   </file>
