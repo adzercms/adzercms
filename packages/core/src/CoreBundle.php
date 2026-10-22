@@ -25,6 +25,7 @@ use AdzerCMS\Core\Notice\Channel;
 use AdzerCMS\Core\Notice\MailTransport;
 use AdzerCMS\Core\Schema\MigrationMarks;
 use AdzerCMS\Core\Schema\MigrationOrder;
+use AdzerCMS\Core\Security\LoginTarget;
 use AdzerCMS\Core\Security\RecordProvider;
 use AdzerCMS\Core\Security\UserChecker;
 use AdzerCMS\Core\Security\UserProvider;
@@ -133,7 +134,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
                 'lazy' => true,
                 'provider' => 'users',
                 'user_checker' => UserChecker::class,
-                'form_login' => ['login_path' => 'login', 'check_path' => 'login', 'enable_csrf' => true],
+                'form_login' => ['login_path' => 'login', 'check_path' => 'login', 'enable_csrf' => true, 'success_handler' => LoginTarget::class],
                 'logout' => ['path' => '/logout'],
                 'switch_user' => ['provider' => 'records'],
             ]],

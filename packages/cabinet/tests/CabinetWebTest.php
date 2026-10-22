@@ -42,6 +42,18 @@ final class CabinetWebTest extends SchemaTestCase
         self::assertResponseRedirects('/cabinet');
     }
 
+    #[Group('ACMS-CORE-0165')]
+    #[Group('ACMS-UI-0068')]
+    public function testLoginWithoutInterruptedPageLeadsToCabinetHome(): void
+    {
+        $this->record('79990000012');
+        $this->em->flush();
+
+        $this->signIn('79990000012', self::PASSWORD);
+
+        self::assertResponseRedirects('/cabinet');
+    }
+
     #[Group('ACMS-UI-0035')]
     #[Group('ACMS-US-0001')]
     public function testLoginServiceButtonTakesColorOfService(): void

@@ -25,6 +25,6 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - A refresh holds the site from its start, a module request from moving the staged copy, until the build switch: it waits for the running requests and jobs, a new request gets 503 with `Retry-After`, a new job waits; the entries `public/index.php` and `bin/console` of a site require `config/hold.php` of the project template before `vendor/autoload_runtime.php`
 - `adzercms-check` checks the translation catalogs of each package with its module enabled: the same keys in every language, every key of its code and templates in the English catalogs of the package or of the modules it enables
 - `TextResponse`: a plain text response that the Psalm taint analysis of the module check doesn't take for HTML
-- The cabinet home lives at `/cabinet`: the root of the instance is the public home of a feature module, without one it leads to the cabinet home
+- The cabinet home lives at `/cabinet`: the root of the instance is the public home of a feature module, without one it leads to the cabinet home; a login without an interrupted page leads to the cabinet home
 
 [Unreleased]: https://github.com/adzercms/adzercms/commits/main
