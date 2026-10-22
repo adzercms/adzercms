@@ -101,6 +101,26 @@ final class CatalogTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0934')]
+    public function testSnapshotIsTakenAgainOnceInstalledModulesChange(): void
+    {
+        $this->listed(['acme/shop']);
+        self::command('adzercms:modules')->execute([]);
+        $this->listed(['acme/till', 'acme/shop']);
+        $installed = InstalledVersions::getAllRawData()[0];
+        $changed = $installed;
+        $changed['versions']['acme/kit'] = ['pretty_version' => '2.0.0', 'version' => '2.0.0.0', 'reference' => self::commit('acme/kit', '2.0.0'), 'type' => Registry::TYPE, 'install_path' => __DIR__, 'aliases' => [], 'dev_requirement' => false];
+
+        InstalledVersions::reload($changed);
+        try {
+            self::command('adzercms:modules')->execute([]);
+        } finally {
+            InstalledVersions::reload($installed);
+        }
+
+        self::assertSame(['acme/shop', 'acme/till'], array_keys(self::offered()));
+    }
+
+    #[Group('ACMS-CORE-0934')]
     #[DataProvider('refusals')]
     public function testTemporaryRefusalIsAskedAgainAtOnce(int $refused, int $outcome): void
     {

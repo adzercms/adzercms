@@ -42,7 +42,7 @@ final readonly class Catalog
 
         return null === $held['at']
             || $held['at'] <= now()->modify([] === $held['down'] ? self::AGE : self::DOWN_AGE)
-            || $held['sources'] !== $this->sources->fingerprint();
+            || $held['fingerprint'] !== $this->fingerprint();
     }
 
     public function row(string $name): ?CatalogRow
@@ -53,7 +53,7 @@ final readonly class Catalog
     /** @return list<string> */
     public function refresh(): array
     {
-        $fingerprint = $this->sources->fingerprint();
+        $fingerprint = $this->fingerprint();
         $kept = $this->held();
         $held = $kept['packages'];
         $marks = $this->marks->passed();
@@ -89,7 +89,7 @@ final readonly class Catalog
         ksort($rows);
         $down = array_values(array_unique([...$down, ...$lookup->down]));
         $marked = null === $marks ? $kept['marks'] : array_intersect_key($marks, $rows + array_flip(InstalledVersions::getInstalledPackagesByType(Registry::TYPE)));
-        $this->snapshot->write(self::SNAPSHOT, ['packages' => $rows, 'down' => $down, 'sources' => $fingerprint, 'marks' => $marked], self::LIFETIME);
+        $this->snapshot->write(self::SNAPSHOT, ['packages' => $rows, 'down' => $down, 'fingerprint' => $fingerprint, 'marks' => $marked], self::LIFETIME);
 
         return null === $marks ? [...$down, Marks::REGISTRY] : $down;
     }
@@ -155,7 +155,18 @@ final readonly class Catalog
         return null !== $reference && \in_array($reference, $marks[$name] ?? [], true);
     }
 
-    /** @return array{at: ?\DateTimeImmutable, packages: array<string, array{package: Package, repository: string}>, down: list<string>, sources: ?string, marks: array<string, list<string>>} */
+    private function fingerprint(): string
+    {
+        $installed = [];
+        foreach (array_unique(InstalledVersions::getInstalledPackagesByType(Registry::TYPE)) as $name) {
+            $installed[$name] = InstalledVersions::getReference($name) ?? InstalledVersions::getPrettyVersion($name);
+        }
+        ksort($installed);
+
+        return hash('xxh128', serialize([$this->sources->fingerprint(), $installed]));
+    }
+
+    /** @return array{at: ?\DateTimeImmutable, packages: array<string, array{package: Package, repository: string}>, down: list<string>, fingerprint: ?string, marks: array<string, list<string>>} */
     private function held(): array
     {
         $held = $this->snapshot->read(self::SNAPSHOT);
@@ -174,7 +185,7 @@ final readonly class Catalog
             }
         }
 
-        return ['at' => $held['at'] ?? null, 'packages' => $packages, 'down' => $down, 'sources' => \is_string($taken['sources'] ?? null) ? $taken['sources'] : null, 'marks' => $marks];
+        return ['at' => $held['at'] ?? null, 'packages' => $packages, 'down' => $down, 'fingerprint' => \is_string($taken['fingerprint'] ?? null) ? $taken['fingerprint'] : null, 'marks' => $marks];
     }
 
     /** @param array<string, Kind> $kinds */
