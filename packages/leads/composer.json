@@ -1,0 +1,50 @@
+{
+    "name": "adzercms/leads",
+    "type": "adzercms-module",
+    "description": "Website leads for AdzerCMS: a lead window on any page, funnel stages and lead handling in the admin panel",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "leads",
+        "crm",
+        "forms"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "ext-mbstring": "*",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
+        "adzercms/theme-implementation": "^1.0",
+        "doctrine/dbal": "^4.5",
+        "doctrine/doctrine-bundle": "^3.3",
+        "doctrine/migrations": "^3.9",
+        "doctrine/orm": "^3.7",
+        "doctrine/persistence": "^4.2",
+        "symfony/clock": "7.4.*",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/framework-bundle": "7.4.*",
+        "symfony/http-foundation": "7.4.*",
+        "symfony/routing": "7.4.*",
+        "symfony/security-http": "7.4.*",
+        "symfony/translation": "7.4.*",
+        "symfony/translation-contracts": "^3.7"
+    },
+    "require-dev": {
+        "adzercms/admin": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Leads\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Leads\\LeadsBundle",
+            "categories": ["marketing"]
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

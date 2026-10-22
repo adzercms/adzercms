@@ -52,6 +52,10 @@
         <testsuite name="HCaptcha">
             <directory>packages/hcaptcha/tests</directory>
         </testsuite>
+        <testsuite name="Leads">
+            <directory>packages/leads/tests</directory>
+            <file>packages/core/tests/Schema/MigrationsTest.php</file>
+        </testsuite>
         <testsuite name="Mailing">
             <directory>packages/mailing/tests</directory>
         </testsuite>

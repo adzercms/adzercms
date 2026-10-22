@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="leads.description">
+      <segment>
+        <source>leads.description</source>
+        <target>Заявки с сайта: окно заявки на любой странице, стадии воронки, менеджеры и сроки</target>
+      </segment>
+    </unit>
+    <unit id="leads.flash.stage_added">
+      <segment>
+        <source>leads.flash.stage_added</source>
+        <target>Стадия {label} добавлена</target>
+      </segment>
+    </unit>
+    <unit id="leads.flash.stage_dropped">
+      <segment>
+        <source>leads.flash.stage_dropped</source>
+        <target>Стадия снята</target>
+      </segment>
+    </unit>
+    <unit id="leads.group.done">
+      <segment>
+        <source>leads.group.done</source>
+        <target>Выполнена</target>
+      </segment>
+    </unit>
+    <unit id="leads.group.new">
+      <segment>
+        <source>leads.group.new</source>
+        <target>Новая</target>
+      </segment>
+    </unit>
+    <unit id="leads.group.refused">
+      <segment>
+        <source>leads.group.refused</source>
+        <target>Отказ</target>
+      </segment>
+    </unit>
+    <unit id="leads.group.work">
+      <segment>
+        <source>leads.group.work</source>
+        <target>В работе</target>
+      </segment>
+    </unit>
+    <unit id="leads.menu">
+      <segment>
+        <source>leads.menu</source>
+        <target>Заявки</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.stage_group">
+      <segment>
+        <source>leads.refusal.stage_group</source>
+        <target>Выберите группу стадии</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.stage_held">
+      <segment>
+        <source>leads.refusal.stage_held</source>
+        <target>На стадии есть заявки: сначала переведите их на другую стадию</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.stage_label">
+      <segment>
+        <source>leads.refusal.stage_label</source>
+        <target>Название стадии — от 1 до {limit} символов</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.stage_last">
+      <segment>
+        <source>leads.refusal.stage_last</source>
+        <target>Последняя стадия группы остаётся</target>
+      </segment>
+    </unit>
+    <unit id="leads.stage.add">
+      <segment>
+        <source>leads.stage.add</source>
+        <target>+ Стадия</target>
+      </segment>
+    </unit>
+    <unit id="leads.stage.confirm_drop">
+      <segment>
+        <source>leads.stage.confirm_drop</source>
+        <target>Снять стадию {label}?</target>
+      </segment>
+    </unit>
+    <unit id="leads.stage.empty">
+      <segment>
+        <source>leads.stage.empty</source>
+        <target>Стадий нет</target>
+      </segment>
+    </unit>
+    <unit id="leads.stage.group">
+      <segment>
+        <source>leads.stage.group</source>
+        <target>Группа</target>
+      </segment>
+    </unit>
+    <unit id="leads.stage.label">
+      <segment>
+        <source>leads.stage.label</source>
+        <target>{label}</target>
+      </segment>
+    </unit>
+    <unit id="leads.stage.new">
+      <segment>
+        <source>leads.stage.new</source>
+        <target>Новая стадия</target>
+      </segment>
+    </unit>
+    <unit id="leads.stage.title">
+      <segment>
+        <source>leads.stage.title</source>
+        <target>Стадия</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

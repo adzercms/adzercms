@@ -1,0 +1,10 @@
+{% embed '@Theme/_table.html.twig' %}
+    {% block row %}
+        <tr>
+            {% include '@Theme/_row_handle.html.twig' with {id: row.id, group: row.group.value} %}
+            <td class="{{ table.aside('label') }}"><strong>{{ row.label|trans }}</strong></td>
+            <td class="{{ table.aside('group') }}">{{ badge(row.group) }}</td>
+            {% include '@Theme/_row_actions.html.twig' with {drop: path('admin_lead_stage_drop', {id: row.id}), confirm: 'leads.stage.confirm_drop'|trans({label: row.label|trans})} %}
+        </tr>
+    {% endblock %}
+{% endembed %}

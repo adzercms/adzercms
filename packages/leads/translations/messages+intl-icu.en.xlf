@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="leads.description">
+      <segment>
+        <source>leads.description</source>
+        <target>Website leads: a lead window on any page, funnel stages, managers and deadlines</target>
+      </segment>
+    </unit>
+    <unit id="leads.flash.stage_added">
+      <segment>
+        <source>leads.flash.stage_added</source>
+        <target>Stage {label} added</target>
+      </segment>
+    </unit>
+    <unit id="leads.flash.stage_dropped">
+      <segment>
+        <source>leads.flash.stage_dropped</source>
+        <target>Stage removed</target>
+      </segment>
+    </unit>
+    <unit id="leads.group.done">
+      <segment>
+        <source>leads.group.done</source>
+        <target>Done</target>
+      </segment>
+    </unit>
+    <unit id="leads.group.new">
+      <segment>
+        <source>leads.group.new</source>
+        <target>New</target>
+      </segment>
+    </unit>
+    <unit id="leads.group.refused">
+      <segment>
+        <source>leads.group.refused</source>
+        <target>Refused</target>
+      </segment>
+    </unit>
+    <unit id="leads.group.work">
+      <segment>
+        <source>leads.group.work</source>
+        <target>In progress</target>
+      </segment>
+    </unit>
+    <unit id="leads.menu">
+      <segment>
+        <source>leads.menu</source>
+        <target>Leads</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.stage_group">
+      <segment>
+        <source>leads.refusal.stage_group</source>
+        <target>Choose the stage group</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.stage_held">
+      <segment>
+        <source>leads.refusal.stage_held</source>
+        <target>The stage has leads: move them to another stage first</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.stage_label">
+      <segment>
+        <source>leads.refusal.stage_label</source>
+        <target>Stage name — from 1 to {limit} characters</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.stage_last">
+      <segment>
+        <source>leads.refusal.stage_last</source>
+        <target>The last stage of a group stays</target>
+      </segment>
+    </unit>
+    <unit id="leads.stage.add">
+      <segment>
+        <source>leads.stage.add</source>
+        <target>+ Stage</target>
+      </segment>
+    </unit>
+    <unit id="leads.stage.confirm_drop">
+      <segment>
+        <source>leads.stage.confirm_drop</source>
+        <target>Remove the stage {label}?</target>
+      </segment>
+    </unit>
+    <unit id="leads.stage.empty">
+      <segment>
+        <source>leads.stage.empty</source>
+        <target>No stages</target>
+      </segment>
+    </unit>
+    <unit id="leads.stage.group">
+      <segment>
+        <source>leads.stage.group</source>
+        <target>Group</target>
+      </segment>
+    </unit>
+    <unit id="leads.stage.label">
+      <segment>
+        <source>leads.stage.label</source>
+        <target>{label}</target>
+      </segment>
+    </unit>
+    <unit id="leads.stage.new">
+      <segment>
+        <source>leads.stage.new</source>
+        <target>New stage</target>
+      </segment>
+    </unit>
+    <unit id="leads.stage.title">
+      <segment>
+        <source>leads.stage.title</source>
+        <target>Stage</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

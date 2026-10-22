@@ -1,0 +1,21 @@
+{% include '@Theme/_modal_header.html.twig' with {title: 'leads.stage.new'|trans} only %}
+
+<div class="modal-body">
+    {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+    <form hx-post="{{ path('admin_lead_stage_new') }}" hx-target="#record">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label>{{ 'leads.stage.title'|trans }}
+                <input type="text" name="label" maxlength="{{ constant('AdzerCMS\\Leads\\Entity\\Stage::LABEL') }}" value="{{ input.label ?? '' }}" required>
+            </label>
+            <label>{{ 'leads.stage.group'|trans }}
+                <select name="group">
+                    {% for group in groups %}
+                        <option value="{{ group.value }}" {{ (input.group ?? '') == group.value ? 'selected' }}>{{ group.label|trans }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
+    </form>
+</div>
