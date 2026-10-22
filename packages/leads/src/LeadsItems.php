@@ -20,7 +20,7 @@ final readonly class LeadsItems implements Menu
     public function items(Area $area): array
     {
         return Area::Admin === $area
-            ? [new MenuItem('admin_leads', t('leads.menu'), 250, ['admin_lead'], count: $this->leads->counts(StageGroup::Fresh)[StageGroup::Fresh->value] ?? 0)]
+            ? [new MenuItem('admin_leads', t('leads.menu'), 250, ['admin_lead'], count: $this->leads->total(Slice::Fresh))]
             : [];
     }
 }

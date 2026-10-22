@@ -37,21 +37,26 @@ final readonly class LeadRows
     ) {
     }
 
-    /** @return array<string, mixed> */
-    public function listing(Request $request, string $route): array
+    /**
+     * @param non-empty-list<Slice> $slices
+     * @param array<string, mixed>  $sticky
+     *
+     * @return array<string, mixed>
+     */
+    public function listing(Request $request, string $route, array $slices, array $sticky = []): array
     {
-        $counts = $this->leads->counts(...StageGroup::cases());
-        $slices = [];
-        foreach (Slice::cases() as $slice) {
-            if (Slice::Fresh !== $slice) {
-                $slices[$slice->value] = $slice->label($counts);
-            }
+        $labels = [];
+        foreach ($slices as $slice) {
+            $labels[$slice->value] = $slice->label($this->leads->total($slice));
         }
-        $tabs = Filter::tabs(self::SLICE, Slice::Fresh->label($counts), $slices);
-        $slice = Slice::tryFrom(Table::values($request, [$tabs])[self::SLICE] ?? '') ?? Slice::Fresh;
+        $first = $slices[0];
+        $any = $labels[$first->value];
+        unset($labels[$first->value]);
+        $tabs = Filter::tabs(self::SLICE, $any, $labels);
+        $slice = Slice::tryFrom(Table::values($request, [$tabs])[self::SLICE] ?? '') ?? $first;
 
         $stages = [];
-        foreach (array_filter($this->stages->funnel(), static fn (Stage $stage): bool => $stage->getGroup()->slice() === $slice) as $stage) {
+        foreach (array_filter($this->stages->funnel(), static fn (Stage $stage): bool => \in_array($stage->getGroup(), $slice->groups(), true)) as $stage) {
             $stages[(string) $stage->getId()] = $stage->label();
         }
         $managers = $this->handling->managers();
@@ -81,7 +86,7 @@ final readonly class LeadRows
             [] === $topics ? null : Filter::select(self::TOPIC, t('leads.filter.topic'), array_combine($topics, $topics)),
             [] === $managers ? null : Filter::select(self::MANAGER, t('leads.filter.manager'), $managers),
             \count($stages) < 2 ? null : Filter::select(self::STAGE, t('leads.filter.stage'), $stages),
-        ])));
+        ])), sticky: $sticky);
 
         $term = trim($table->term());
         $found = [];

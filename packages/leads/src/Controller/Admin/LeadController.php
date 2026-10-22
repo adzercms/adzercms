@@ -13,6 +13,7 @@ use AdzerCMS\Leads\Handling;
 use AdzerCMS\Leads\Intake;
 use AdzerCMS\Leads\LeadPage;
 use AdzerCMS\Leads\LeadRows;
+use AdzerCMS\Leads\Slice;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,7 +43,7 @@ final class LeadController extends AbstractController
     #[Route('', name: self::LIST, methods: ['GET'])]
     public function index(Request $request): Response
     {
-        $context = $this->rows->listing($request, self::LIST);
+        $context = $this->rows->listing($request, self::LIST, Slice::FUNNEL);
 
         if ($request->headers->has('HX-Request')) {
             return $this->render('@Leads/admin/_leads.html.twig', $context);

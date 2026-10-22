@@ -13,6 +13,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
+use function Symfony\Component\Clock\now;
+
 /** @extends ServiceEntityRepository<Lead> */
 class LeadRepository extends ServiceEntityRepository
 {
@@ -32,26 +34,11 @@ class LeadRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    /** @return array<string, int> */
-    public function counts(StageGroup ...$groups): array
+    public function total(Slice $slice): int
     {
-        $rows = $this->createQueryBuilder('l')
-            ->select('s.group AS stage_group', 'COUNT(l.id) AS leads')
-            ->join('l.stage', 's')
-            ->where('s.group IN (:groups)')
-            ->setParameter('groups', array_map(static fn (StageGroup $group): string => $group->value, $groups))
-            ->groupBy('s.group')
+        return (int) self::sliced($this->createQueryBuilder('l')->select('COUNT(l.id)')->join('l.stage', 's'), $slice)
             ->getQuery()
-            ->getArrayResult();
-
-        $counts = [];
-        foreach ($rows as $row) {
-            if ($row['stage_group'] instanceof StageGroup) {
-                $counts[$row['stage_group']->value] = (int) $row['leads'];
-            }
-        }
-
-        return $counts;
+            ->getSingleScalarResult();
     }
 
     /** @return list<string> */
@@ -95,11 +82,7 @@ class LeadRepository extends ServiceEntityRepository
     /** @param list<int> $found */
     public function listing(Slice $slice, string $term, array $found, string $topic, ?int $manager, ?int $stage): QueryBuilder
     {
-        $builder = $this->createQueryBuilder('l')
-            ->join('l.stage', 's')
-            ->leftJoin('l.manager', 'm')
-            ->where('s.group IN (:groups)')
-            ->setParameter('groups', array_map(static fn (StageGroup $group): string => $group->value, $slice->groups()));
+        $builder = self::sliced($this->createQueryBuilder('l')->join('l.stage', 's')->leftJoin('l.manager', 'm'), $slice);
 
         if ('' !== $topic) {
             $builder->andWhere('l.topic = :topic')->setParameter('topic', $topic);
@@ -128,5 +111,21 @@ class LeadRepository extends ServiceEntityRepository
         }
 
         return $builder->andWhere($match);
+    }
+
+    private static function sliced(QueryBuilder $builder, Slice $slice): QueryBuilder
+    {
+        $builder->andWhere('s.group IN (:groups)')
+            ->setParameter('groups', array_map(static fn (StageGroup $group): string => $group->value, $slice->groups()));
+
+        $since = $slice->since();
+        if (null !== $since) {
+            $builder->andWhere('l.arrived >= :since')->setParameter('since', $since);
+        }
+        if (Slice::Overdue === $slice) {
+            $builder->andWhere('l.due < :now')->setParameter('now', now());
+        }
+
+        return $builder;
     }
 }

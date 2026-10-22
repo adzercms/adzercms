@@ -16,6 +16,7 @@ use function Symfony\Component\Clock\now;
 #[ORM\Entity(repositoryClass: LeadRepository::class)]
 #[ORM\Table(name: 'leads')]
 #[ORM\Index(name: 'idx_leads_stage_arrived', columns: ['stage_id', 'arrived'])]
+#[ORM\Index(name: 'idx_leads_arrived', columns: ['arrived'])]
 #[ORM\Index(name: 'idx_leads_phone', columns: ['phone'])]
 #[ORM\Index(name: 'idx_leads_email', columns: ['email'])]
 #[ORM\Index(name: 'idx_leads_due', columns: ['due'])]
@@ -130,7 +131,7 @@ class Lead
 
     public function isOverdue(): bool
     {
-        return null !== $this->due && $this->due < now() && Slice::Closed !== $this->stage->getGroup()->slice();
+        return null !== $this->due && $this->due < now() && \in_array($this->stage->getGroup(), Slice::Overdue->groups(), true);
     }
 
     public function getAmount(): ?string

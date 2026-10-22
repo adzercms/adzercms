@@ -1,0 +1,3 @@
+{% for tile in tiles %}
+    <a class="stat-card" href="{{ path(route, tile.query) }}"><span class="stat-value">{{ tile.count }}</span><span class="stat-label">{{ tile.label|trans }}</span></a>
+{% endfor %}

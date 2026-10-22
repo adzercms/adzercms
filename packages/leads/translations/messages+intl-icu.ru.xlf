@@ -19,6 +19,30 @@
         <target>Заявка</target>
       </segment>
     </unit>
+    <unit id="leads.dashboard.new">
+      <segment>
+        <source>leads.dashboard.new</source>
+        <target>Новые заявки</target>
+      </segment>
+    </unit>
+    <unit id="leads.dashboard.overdue">
+      <segment>
+        <source>leads.dashboard.overdue</source>
+        <target>Просроченные заявки</target>
+      </segment>
+    </unit>
+    <unit id="leads.dashboard.today">
+      <segment>
+        <source>leads.dashboard.today</source>
+        <target>Заявки сегодня</target>
+      </segment>
+    </unit>
+    <unit id="leads.dashboard.week">
+      <segment>
+        <source>leads.dashboard.week</source>
+        <target>Заявки за неделю</target>
+      </segment>
+    </unit>
     <unit id="leads.description">
       <segment>
         <source>leads.description</source>
@@ -395,6 +419,24 @@
       <segment>
         <source>leads.slice.new</source>
         <target>Новые ({count})</target>
+      </segment>
+    </unit>
+    <unit id="leads.slice.overdue">
+      <segment>
+        <source>leads.slice.overdue</source>
+        <target>Просроченные ({count})</target>
+      </segment>
+    </unit>
+    <unit id="leads.slice.today">
+      <segment>
+        <source>leads.slice.today</source>
+        <target>Сегодня ({count})</target>
+      </segment>
+    </unit>
+    <unit id="leads.slice.week">
+      <segment>
+        <source>leads.slice.week</source>
+        <target>За неделю ({count})</target>
       </segment>
     </unit>
     <unit id="leads.slice.work">

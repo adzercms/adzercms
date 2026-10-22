@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Leads\Tests;
 
 use AdzerCMS\Core\Account\Role;
-use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Tests\Queries;
-use AdzerCMS\Leads\Entity\Lead;
 use AdzerCMS\Leads\Entity\Stage;
 use AdzerCMS\Leads\Intake;
 use AdzerCMS\Leads\LeadRows;
@@ -151,17 +149,5 @@ final class ListTest extends LeadsTestCase
         });
 
         self::assertSame(ItemSubject::PRICE, trim(self::cell($this->fragment(self::LIST), 'Клиент 1', ItemSubject::LABEL)->text()));
-    }
-
-    private function assign(Lead $lead, ?User $manager, ?\DateTimeImmutable $due = null): void
-    {
-        $lead->handle($lead->getStage(), null === $manager ? null : $this->reread($manager), $due, $lead->getAmount(), $lead->getReason());
-        $this->em->flush();
-    }
-
-    /** @return list<string> */
-    private static function names(Crawler $listing): array
-    {
-        return $listing->filter('tbody tr td:first-child .clip')->each(static fn (Crawler $name): string => trim($name->text()));
     }
 }

@@ -19,6 +19,30 @@
         <target>Lead</target>
       </segment>
     </unit>
+    <unit id="leads.dashboard.new">
+      <segment>
+        <source>leads.dashboard.new</source>
+        <target>New leads</target>
+      </segment>
+    </unit>
+    <unit id="leads.dashboard.overdue">
+      <segment>
+        <source>leads.dashboard.overdue</source>
+        <target>Overdue leads</target>
+      </segment>
+    </unit>
+    <unit id="leads.dashboard.today">
+      <segment>
+        <source>leads.dashboard.today</source>
+        <target>Leads today</target>
+      </segment>
+    </unit>
+    <unit id="leads.dashboard.week">
+      <segment>
+        <source>leads.dashboard.week</source>
+        <target>Leads this week</target>
+      </segment>
+    </unit>
     <unit id="leads.description">
       <segment>
         <source>leads.description</source>
@@ -395,6 +419,24 @@
       <segment>
         <source>leads.slice.new</source>
         <target>New ({count})</target>
+      </segment>
+    </unit>
+    <unit id="leads.slice.overdue">
+      <segment>
+        <source>leads.slice.overdue</source>
+        <target>Overdue ({count})</target>
+      </segment>
+    </unit>
+    <unit id="leads.slice.today">
+      <segment>
+        <source>leads.slice.today</source>
+        <target>Today ({count})</target>
+      </segment>
+    </unit>
+    <unit id="leads.slice.week">
+      <segment>
+        <source>leads.slice.week</source>
+        <target>This week ({count})</target>
       </segment>
     </unit>
     <unit id="leads.slice.work">
