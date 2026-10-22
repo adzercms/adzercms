@@ -32,6 +32,8 @@ trait CatalogAnswers
     /** @var list<string> */
     private array $unavailable = [];
 
+    private int $refused = 0;
+
     /** @var array<string, ?string> */
     private array $authorized = [];
 
@@ -42,6 +44,11 @@ trait CatalogAnswers
     {
         self::service(HttpAnswers::class)->respond(function (string $method, string $url, array $options): MockResponse {
             $this->authorized[Source::origin($url)] = $options['normalized_headers']['authorization'][0] ?? null;
+            if ($this->refused > 0) {
+                --$this->refused;
+
+                return new MockResponse('', ['http_code' => 503]);
+            }
             if (array_any($this->unavailable, static fn (string $repository): bool => str_starts_with($url, $repository.'/'))) {
                 return new MockResponse('', ['http_code' => 503]);
             }

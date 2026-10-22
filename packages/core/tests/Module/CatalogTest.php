@@ -101,6 +101,23 @@ final class CatalogTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0934')]
+    #[DataProvider('refusals')]
+    public function testTemporaryRefusalIsAskedAgainAtOnce(int $refused, int $outcome): void
+    {
+        $this->listed(['acme/shop']);
+        $this->refused = $refused;
+
+        self::assertSame($outcome, self::command('adzercms:modules')->execute([]));
+    }
+
+    /** @return iterable<string, array{int, int}> */
+    public static function refusals(): iterable
+    {
+        yield 'refusals within the retries' => [Repositories::RETRIES, Command::SUCCESS];
+        yield 'refusals beyond the retries' => [Repositories::RETRIES + 1, Command::FAILURE];
+    }
+
+    #[Group('ACMS-CORE-0934')]
     public function testInstalledModuleGoesWithItsVersionBesideOfferedOne(): void
     {
         $this->listed(['adzercms/admin']);
