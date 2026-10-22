@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Support\Controller;
 
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Attachment\Attachments;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
@@ -19,10 +20,8 @@ use AdzerCMS\Support\SupportSettings;
 use AdzerCMS\Support\Tickets;
 use AdzerCMS\Support\TicketStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -37,6 +36,7 @@ final class SupportController extends AbstractController
         private readonly TicketRepository $tickets,
         private readonly TicketMessageRepository $messages,
         private readonly TicketAttachmentRepository $attachments,
+        private readonly Attachments $files,
         private readonly Subjects $subjects,
         private readonly SupportSettings $support,
         private readonly Tickets $service,
@@ -114,8 +114,7 @@ final class SupportController extends AbstractController
         return $this->render('@Support/support/new.html.twig', [
             'departments' => $this->support->departments(),
             'subjects' => $this->subjects->fields($user, $request),
-            'megabytes' => $this->support->attachmentMegabytes(),
-            'accept' => $this->support->attachmentAccept(),
+            'allowance' => $this->support->attachments(),
             'department' => (string) $request->request->get('department'),
             'subject' => (string) $request->request->get('subject'),
             'body' => (string) $request->request->get('body'),
@@ -132,8 +131,7 @@ final class SupportController extends AbstractController
             'subjects' => $this->subjects->links($ticket, $user),
             'staff' => $this->staff($user),
             'support_label' => $ticket->getDepartment(),
-            'megabytes' => $this->support->attachmentMegabytes(),
-            'accept' => $this->support->attachmentAccept(),
+            'allowance' => $this->support->attachments(),
             'help' => $this->support->helpEnabled(),
         ]);
     }
@@ -206,21 +204,7 @@ final class SupportController extends AbstractController
             $this->owner($user),
         ));
 
-        $path = $this->service->path($attachment);
-        if (!is_file($path)) {
-            throw $this->createNotFoundException();
-        }
-
-        $response = new BinaryFileResponse($path);
-        $response->headers->set('Content-Type', $attachment->getMime());
-        $response->headers->set('X-Content-Type-Options', 'nosniff');
-        $response->setContentDisposition(
-            $attachment->isInline() ? ResponseHeaderBag::DISPOSITION_INLINE : ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $attachment->getName(),
-            (string) $attachment->getId(),
-        );
-
-        return $response;
+        return $this->files->response($attachment);
     }
 
     private function found(?Ticket $ticket): Ticket

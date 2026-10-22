@@ -313,28 +313,10 @@
         <target>Wrong department</target>
       </segment>
     </unit>
-    <unit id="support.refusal.oversize">
-      <segment>
-        <source>support.refusal.oversize</source>
-        <target>The attachment is larger than {megabytes} MB</target>
-      </segment>
-    </unit>
     <unit id="support.refusal.subject">
       <segment>
         <source>support.refusal.subject</source>
         <target>The ticket subject is empty</target>
-      </segment>
-    </unit>
-    <unit id="support.refusal.type">
-      <segment>
-        <source>support.refusal.type</source>
-        <target>The attachment type is not accepted: {extension}</target>
-      </segment>
-    </unit>
-    <unit id="support.refusal.upload">
-      <segment>
-        <source>support.refusal.upload</source>
-        <target>The attachment was not uploaded</target>
       </segment>
     </unit>
     <unit id="support.setting.area">
@@ -425,12 +407,6 @@
       <segment>
         <source>support.ticket.department</source>
         <target>Department</target>
-      </segment>
-    </unit>
-    <unit id="support.ticket.limit">
-      <segment>
-        <source>support.ticket.limit</source>
-        <target>up to {megabytes} MB</target>
       </segment>
     </unit>
     <unit id="support.ticket.message">

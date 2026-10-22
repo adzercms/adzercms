@@ -49,6 +49,30 @@
         <target>← Back to list</target>
       </segment>
     </unit>
+    <unit id="core.attachment.limit">
+      <segment>
+        <source>core.attachment.limit</source>
+        <target>up to {megabytes} MB</target>
+      </segment>
+    </unit>
+    <unit id="core.attachment.oversize">
+      <segment>
+        <source>core.attachment.oversize</source>
+        <target>The attachment is larger than {megabytes} MB</target>
+      </segment>
+    </unit>
+    <unit id="core.attachment.type">
+      <segment>
+        <source>core.attachment.type</source>
+        <target>The attachment type is not accepted: {extension}</target>
+      </segment>
+    </unit>
+    <unit id="core.attachment.upload">
+      <segment>
+        <source>core.attachment.upload</source>
+        <target>The attachment was not uploaded</target>
+      </segment>
+    </unit>
     <unit id="core.bot.linked">
       <segment>
         <source>core.bot.linked</source>

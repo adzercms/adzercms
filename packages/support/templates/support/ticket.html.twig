@@ -41,10 +41,10 @@
                             <div class="chat-files">
                                 {% for attachment in message.attachments %}
                                     {% set href = path('support_attachment', {id: attachment.id}) %}
-                                    {% if attachment.picture %}
-                                        <a class="chat-picture" href="{{ href }}" target="_blank"><img src="{{ href }}" alt="{{ attachment.name }}"></a>
+                                    {% if attachment.file.picture %}
+                                        <a class="chat-picture" href="{{ href }}" target="_blank"><img src="{{ href }}" alt="{{ attachment.file.name }}"></a>
                                     {% else %}
-                                        <a class="chat-file" href="{{ href }}" target="_blank">{{ attachment.name }}</a>
+                                        <a class="chat-file" href="{{ href }}" target="_blank">{{ attachment.file.name }}</a>
                                     {% endif %}
                                 {% endfor %}
                             </div>
@@ -61,13 +61,10 @@
                                 {% for attachment in message.attachments %}
                                     <label class="check">
                                         <input type="checkbox" name="dropped[]" value="{{ attachment.id }}">
-                                        {{ 'support.message.unattach'|trans({name: attachment.name}) }}
+                                        {{ 'support.message.unattach'|trans({name: attachment.file.name}) }}
                                     </label>
                                 {% endfor %}
-                                <label>{{ 'support.message.attach'|trans }}
-                                    <input type="file" name="files[]" accept="{{ accept }}" multiple>
-                                    <p class="hint">{{ 'support.ticket.limit'|trans({megabytes: megabytes}) }}</p>
-                                </label>
+                                {% include '@Theme/_attachments.html.twig' with {label: 'support.message.attach'|trans, allowance: allowance} only %}
                                 <button type="submit">{{ 'core.action.save'|trans }}</button>
                             </form>
                         </dialog>
@@ -83,10 +80,7 @@
                 <form class="chat-reply" method="post" enctype="multipart/form-data" action="{{ path('support_ticket_reply', {id: ticket.id}) }}">
                     {{ csrf_field() }}
                     <label>{{ 'support.ticket.message'|trans }}<textarea name="body" rows="4" required></textarea></label>
-                    <label>{{ 'support.ticket.attachments'|trans }}
-                        <input type="file" name="files[]" accept="{{ accept }}" multiple>
-                        <p class="hint">{{ 'support.ticket.limit'|trans({megabytes: megabytes}) }}</p>
-                    </label>
+                    {% include '@Theme/_attachments.html.twig' with {label: 'support.ticket.attachments'|trans, allowance: allowance} only %}
                     <div class="button-row">
                         <button type="submit">{{ 'support.ticket.send'|trans }}</button>
                         <button type="submit" class="secondary" form="close-ticket">{{ 'support.ticket.close'|trans }}</button>

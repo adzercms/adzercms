@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Support\Tests;
 
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Attachment\Attachments;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Repository\NoticeRepository;
 use AdzerCMS\Core\Security\CsrfGuard;
@@ -334,8 +335,8 @@ final class SupportTest extends SchemaTestCase
         [$attachment, $fake] = $this->attachmentsOf($this->messagesOf($ticket)[0]) + [null, null];
         self::assertInstanceOf(TicketAttachment::class, $attachment, 'the attachment is not kept');
         self::assertInstanceOf(TicketAttachment::class, $fake, 'the attachment is not kept');
-        self::assertSame(['shot.png', 'image/png'], [$attachment->getName(), $attachment->getMime()]);
-        self::assertSame(['fake.png', 'text/plain'], [$fake->getName(), $fake->getMime()], 'the type follows the content, not the name');
+        self::assertSame(['shot.png', 'image/png'], [$attachment->getFile()->getName(), $attachment->getFile()->getMime()]);
+        self::assertSame(['fake.png', 'text/plain'], [$fake->getFile()->getName(), $fake->getFile()->getMime()], 'the type follows the content, not the name');
         $address = \sprintf('/support/attachment/%d', $attachment->getId());
 
         foreach ([[$attachment, 'inline'], [$fake, 'attachment']] as [$file, $disposition]) {
@@ -384,7 +385,7 @@ final class SupportTest extends SchemaTestCase
             $message = $this->messagesOf($this->ticketOf($user) ?? self::fail('no ticket was opened'))[0];
             $attachment = $this->attachmentsOf($message)[0] ?? self::fail('the attachment is not kept');
             $id = (int) $attachment->getId();
-            $path = self::service(Tickets::class)->path($attachment);
+            $path = self::service(Attachments::class)->path($attachment);
             self::assertFileExists($path);
 
             $this->client->loginUser($this->staff);

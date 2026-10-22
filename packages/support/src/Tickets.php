@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace AdzerCMS\Support;
 
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Core\Attachment\Attachments;
+use AdzerCMS\Core\Entity\StoredFile;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Notice\Notifier;
 use AdzerCMS\Support\Entity\Ticket;
@@ -12,22 +14,20 @@ use AdzerCMS\Support\Entity\TicketAttachment;
 use AdzerCMS\Support\Entity\TicketMessage;
 use AdzerCMS\Support\Repository\TicketRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 use function Symfony\Component\Clock\now;
 use function Symfony\Component\Translation\t;
 
-final class Tickets
+final readonly class Tickets
 {
     private const SUBJECT_MAX = 190;
 
     public function __construct(
-        private readonly TicketRepository $tickets,
-        private readonly SupportSettings $support,
-        private readonly Notifier $notifier,
-        private readonly EntityManagerInterface $em,
-        #[Autowire('%adzercms.files_dir%/tickets')]
-        private readonly string $directory,
+        private TicketRepository $tickets,
+        private SupportSettings $support,
+        private Attachments $attachments,
+        private Notifier $notifier,
+        private EntityManagerInterface $em,
     ) {
     }
 
@@ -47,16 +47,16 @@ final class Tickets
             return new Refusal(t('support.refusal.department'));
         }
 
-        $fault = $this->verify($files);
-        if (null !== $fault) {
-            return $fault;
+        $kept = $this->receive($files);
+        if ($kept instanceof Refusal) {
+            return $kept;
         }
 
         $moment = now();
         $ticket = new Ticket($user, mb_substr($subject, 0, self::SUBJECT_MAX), $department, $moment);
         $this->em->persist($ticket);
 
-        $this->store($this->say($ticket, $user, false, $body, $moment), $files);
+        $this->attach($this->say($ticket, $user, false, $body, $moment), $kept);
         $this->em->flush();
 
         return $ticket;
@@ -74,13 +74,13 @@ final class Tickets
             return new Refusal(t('support.refusal.body'));
         }
 
-        $fault = $this->verify($files);
-        if (null !== $fault) {
-            return $fault;
+        $kept = $this->receive($files);
+        if ($kept instanceof Refusal) {
+            return $kept;
         }
 
         $moment = now();
-        $this->store($this->say($ticket, $author, $fromStaff, $body, $moment), $files);
+        $this->attach($this->say($ticket, $author, $fromStaff, $body, $moment), $kept);
         $ticket->setStatus($fromStaff ? TicketStatus::WaitingUser : TicketStatus::WaitingStaff);
         $this->em->flush();
 
@@ -109,22 +109,21 @@ final class Tickets
             return new Refusal(t('support.refusal.body'));
         }
 
-        $fault = $this->verify($files);
-        if (null !== $fault) {
-            return $fault;
+        $kept = $this->receive($files);
+        if ($kept instanceof Refusal) {
+            return $kept;
         }
 
-        $stale = [];
         foreach ($message->getAttachments() as $attachment) {
             if (\in_array($attachment->getId(), $dropped, true)) {
-                $stale[] = $this->forget($attachment);
+                $message->getAttachments()->removeElement($attachment);
+                $this->em->remove($attachment);
             }
         }
 
-        $this->store($message, $files);
+        $this->attach($message, $kept);
         $message->edit($body, now());
         $this->em->flush();
-        Attachments::erase($stale);
 
         return null;
     }
@@ -135,15 +134,9 @@ final class Tickets
             return new Refusal(t('support.refusal.closed'));
         }
 
-        $stale = [];
-        foreach ($message->getAttachments() as $attachment) {
-            $stale[] = $this->forget($attachment);
-        }
-
         $message->getTicket()->getMessages()->removeElement($message);
         $this->em->remove($message);
         $this->em->flush();
-        Attachments::erase($stale);
 
         return null;
     }
@@ -184,11 +177,6 @@ final class Tickets
         return array_sum(array_map(\count(...), $closed));
     }
 
-    public function path(TicketAttachment $attachment): string
-    {
-        return $this->directory.'/'.$attachment->getStoredName();
-    }
-
     public function waiting(?User $user): int
     {
         return $this->tickets->countByStatus(
@@ -206,29 +194,21 @@ final class Tickets
         return $message;
     }
 
-    /** @param array<mixed> $files */
-    private function verify(array $files): ?Refusal
+    /**
+     * @param array<mixed> $files
+     *
+     * @return list<StoredFile>|Refusal
+     */
+    private function receive(array $files): array|Refusal
     {
-        return Attachments::fault($files, $this->support->attachmentLimit(), $this->support->attachmentTypes());
+        return $this->attachments->receive($files, $this->support->attachments(), TicketAttachment::class);
     }
 
-    /** @param array<mixed> $files */
-    private function store(TicketMessage $message, array $files): void
+    /** @param list<StoredFile> $files */
+    private function attach(TicketMessage $message, array $files): void
     {
-        foreach (Attachments::uploads($files) as $file) {
-            $kept = Attachments::keep($file, $this->directory);
-            $this->em->persist(
-                new TicketAttachment($message, $kept['name'], $kept['stored'], $kept['mime'], $kept['size']),
-            );
+        foreach ($files as $file) {
+            $this->em->persist(new TicketAttachment($message, $file));
         }
-    }
-
-    private function forget(TicketAttachment $attachment): string
-    {
-        $path = $this->path($attachment);
-        $attachment->getMessage()->getAttachments()->removeElement($attachment);
-        $this->em->remove($attachment);
-
-        return $path;
     }
 }

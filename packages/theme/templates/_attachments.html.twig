@@ -1,0 +1,4 @@
+<label{% if class is defined %} class="{{ class }}"{% endif %}>{{ label }}
+    <input type="file" name="files[]" accept="{{ allowance.accept }}" multiple>
+    <p class="hint">{{ 'core.attachment.limit'|trans({megabytes: allowance.megabytes}) }}</p>
+</label>

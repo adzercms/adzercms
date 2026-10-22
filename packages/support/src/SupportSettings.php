@@ -6,6 +6,7 @@ namespace AdzerCMS\Support;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
+use AdzerCMS\Core\Attachment\Allowance;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Ui\Split;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -23,7 +24,7 @@ final readonly class SupportSettings implements Owner
 
     private const DEFAULT_AUTO_CLOSE_DAYS = 7;
     private const DEFAULT_ATTACHMENT_MAX_MB = 10;
-    private const DEFAULT_ATTACHMENT_TYPES = 'jpg, jpeg, png, gif, pdf, txt, log, zip';
+    private const DEFAULT_ATTACHMENT_TYPES = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'txt', 'log', 'zip'];
     private const DEFAULT_OVERDUE_HOURS = 24;
 
     public function __construct(
@@ -72,26 +73,13 @@ final readonly class SupportSettings implements Owner
         return max(1, $this->settings->int(self::OVERDUE_HOURS, self::DEFAULT_OVERDUE_HOURS));
     }
 
-    public function attachmentMegabytes(): int
+    public function attachments(): Allowance
     {
-        return max(1, $this->settings->int(self::ATTACHMENT_MAX_MB, self::DEFAULT_ATTACHMENT_MAX_MB));
-    }
-
-    public function attachmentLimit(): int
-    {
-        return $this->attachmentMegabytes() * 1024 * 1024;
-    }
-
-    /** @return list<string> */
-    public function attachmentTypes(): array
-    {
-        $types = $this->settings->get(self::ATTACHMENT_TYPES);
-
-        return array_map(strtolower(...), Split::items('' === $types ? self::DEFAULT_ATTACHMENT_TYPES : $types));
-    }
-
-    public function attachmentAccept(): string
-    {
-        return implode(',', array_map(static fn (string $type): string => '.'.$type, $this->attachmentTypes()));
+        return Allowance::configured(
+            $this->settings,
+            self::ATTACHMENT_MAX_MB,
+            self::ATTACHMENT_TYPES,
+            new Allowance(self::DEFAULT_ATTACHMENT_MAX_MB, self::DEFAULT_ATTACHMENT_TYPES),
+        );
     }
 }

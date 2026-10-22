@@ -28,10 +28,7 @@
         <textarea name="body" rows="8" required>{{ body }}</textarea>
     </label>
 
-    <label>{{ 'support.ticket.attachments'|trans }}
-        <input type="file" name="files[]" accept="{{ accept }}" multiple>
-        <p class="hint">{{ 'support.ticket.limit'|trans({megabytes: megabytes}) }}</p>
-    </label>
+    {% include '@Theme/_attachments.html.twig' with {label: 'support.ticket.attachments'|trans, allowance: allowance} only %}
 
     <button type="submit">{{ 'support.ticket.send'|trans }}</button>
 </form>
