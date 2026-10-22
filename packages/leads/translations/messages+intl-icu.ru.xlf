@@ -1,10 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
+    <unit id="leads.add">
+      <segment>
+        <source>leads.add</source>
+        <target>+ Заявка</target>
+      </segment>
+    </unit>
+    <unit id="leads.column.contacts">
+      <segment>
+        <source>leads.column.contacts</source>
+        <target>Контакты</target>
+      </segment>
+    </unit>
+    <unit id="leads.column.number">
+      <segment>
+        <source>leads.column.number</source>
+        <target>Заявка</target>
+      </segment>
+    </unit>
     <unit id="leads.description">
       <segment>
         <source>leads.description</source>
         <target>Заявки с сайта: окно заявки на любой странице, стадии воронки, менеджеры и сроки</target>
+      </segment>
+    </unit>
+    <unit id="leads.empty">
+      <segment>
+        <source>leads.empty</source>
+        <target>Заявок нет</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.amount">
+      <segment>
+        <source>leads.field.amount</source>
+        <target>Сумма</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.arrived">
+      <segment>
+        <source>leads.field.arrived</source>
+        <target>Поступила</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.due">
+      <segment>
+        <source>leads.field.due</source>
+        <target>Срок</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.email">
+      <segment>
+        <source>leads.field.email</source>
+        <target>Почта</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.manager">
+      <segment>
+        <source>leads.field.manager</source>
+        <target>Менеджер</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.message">
+      <segment>
+        <source>leads.field.message</source>
+        <target>Сообщение</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.name">
+      <segment>
+        <source>leads.field.name</source>
+        <target>Имя</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.phone">
+      <segment>
+        <source>leads.field.phone</source>
+        <target>Телефон</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.topic">
+      <segment>
+        <source>leads.field.topic</source>
+        <target>Тема</target>
+      </segment>
+    </unit>
+    <unit id="leads.filter.manager">
+      <segment>
+        <source>leads.filter.manager</source>
+        <target>Любой менеджер</target>
+      </segment>
+    </unit>
+    <unit id="leads.filter.stage">
+      <segment>
+        <source>leads.filter.stage</source>
+        <target>Любая стадия</target>
+      </segment>
+    </unit>
+    <unit id="leads.filter.topic">
+      <segment>
+        <source>leads.filter.topic</source>
+        <target>Любая тема</target>
+      </segment>
+    </unit>
+    <unit id="leads.flash.added">
+      <segment>
+        <source>leads.flash.added</source>
+        <target>Заявка {number} заведена</target>
       </segment>
     </unit>
     <unit id="leads.flash.stage_added">
@@ -53,6 +155,12 @@
       <segment>
         <source>leads.menu</source>
         <target>Заявки</target>
+      </segment>
+    </unit>
+    <unit id="leads.new">
+      <segment>
+        <source>leads.new</source>
+        <target>Новая заявка</target>
       </segment>
     </unit>
     <unit id="leads.refusal.contact">
@@ -115,6 +223,24 @@
         <target>Последняя стадия группы остаётся</target>
       </segment>
     </unit>
+    <unit id="leads.slice.closed">
+      <segment>
+        <source>leads.slice.closed</source>
+        <target>Закрытые ({count})</target>
+      </segment>
+    </unit>
+    <unit id="leads.slice.new">
+      <segment>
+        <source>leads.slice.new</source>
+        <target>Новые ({count})</target>
+      </segment>
+    </unit>
+    <unit id="leads.slice.work">
+      <segment>
+        <source>leads.slice.work</source>
+        <target>В работе ({count})</target>
+      </segment>
+    </unit>
     <unit id="leads.stage.add">
       <segment>
         <source>leads.stage.add</source>
@@ -157,28 +283,10 @@
         <target>Стадия</target>
       </segment>
     </unit>
-    <unit id="leads.window.email">
+    <unit id="leads.tab.stages">
       <segment>
-        <source>leads.window.email</source>
-        <target>Почта</target>
-      </segment>
-    </unit>
-    <unit id="leads.window.message">
-      <segment>
-        <source>leads.window.message</source>
-        <target>Сообщение</target>
-      </segment>
-    </unit>
-    <unit id="leads.window.name">
-      <segment>
-        <source>leads.window.name</source>
-        <target>Имя</target>
-      </segment>
-    </unit>
-    <unit id="leads.window.phone">
-      <segment>
-        <source>leads.window.phone</source>
-        <target>Телефон</target>
+        <source>leads.tab.stages</source>
+        <target>Стадии</target>
       </segment>
     </unit>
     <unit id="leads.window.policy">

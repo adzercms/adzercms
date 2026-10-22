@@ -1,0 +1,15 @@
+{% include '@Theme/_modal_header.html.twig' with {title: 'leads.new'|trans} only %}
+
+<div class="modal-body">
+    {% if refusals.form is defined %}<p class="flash flash-error">{{ refusals.form.reason|trans }}</p>{% endif %}
+    <form hx-post="{{ path('admin_lead_new') }}" hx-target="#record">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label>{{ 'leads.field.topic'|trans }}
+                <input type="text" name="topic" maxlength="{{ constant('AdzerCMS\\Leads\\Entity\\Lead::TOPIC') }}" value="{{ input.topic ?? '' }}">
+            </label>
+            {% include '@Leads/_fields.html.twig' with {input: input, refusals: refusals, subjects: []} only %}
+        </div>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
+    </form>
+</div>

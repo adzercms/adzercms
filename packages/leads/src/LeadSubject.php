@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 #[AutoconfigureTag]
 interface LeadSubject
 {
+    public const LISTING = 'admin.leads';
+
     /** @return array{template: string, context: array<string, mixed>}|null */
     public function fields(ParameterBag $input): ?array;
 

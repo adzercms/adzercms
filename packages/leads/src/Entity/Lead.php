@@ -6,6 +6,7 @@ namespace AdzerCMS\Leads\Entity;
 
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Leads\Repository\LeadRepository;
+use AdzerCMS\Leads\Slice;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -17,6 +18,7 @@ use function Symfony\Component\Clock\now;
 #[ORM\Index(name: 'idx_leads_phone', columns: ['phone'])]
 #[ORM\Index(name: 'idx_leads_email', columns: ['email'])]
 #[ORM\Index(name: 'idx_leads_due', columns: ['due'])]
+#[ORM\Index(name: 'idx_leads_topic', columns: ['topic'])]
 class Lead
 {
     public const TOPIC = 190;
@@ -123,6 +125,11 @@ class Lead
     public function getDue(): ?\DateTimeImmutable
     {
         return $this->due;
+    }
+
+    public function isOverdue(): bool
+    {
+        return null !== $this->due && $this->due < now() && Slice::Closed !== $this->stage->getGroup()->slice();
     }
 
     public function getAmount(): ?string

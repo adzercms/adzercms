@@ -492,7 +492,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/leads",
-                "reference": "c6e55d3e2b37a60b459e40e992c7ef0d16d3f1ba"
+                "reference": "0c3a21119c0fa204f31e4ea2e3b83e94db5b8c9b"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -509,6 +509,7 @@
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/framework-bundle": "7.4.*",
                 "symfony/http-foundation": "7.4.*",
+                "symfony/polyfill-php86": "^1.43",
                 "symfony/rate-limiter": "7.4.*",
                 "symfony/routing": "7.4.*",
                 "symfony/security-http": "7.4.*",

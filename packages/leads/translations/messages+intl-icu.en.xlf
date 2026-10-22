@@ -1,10 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
+    <unit id="leads.add">
+      <segment>
+        <source>leads.add</source>
+        <target>+ Lead</target>
+      </segment>
+    </unit>
+    <unit id="leads.column.contacts">
+      <segment>
+        <source>leads.column.contacts</source>
+        <target>Contacts</target>
+      </segment>
+    </unit>
+    <unit id="leads.column.number">
+      <segment>
+        <source>leads.column.number</source>
+        <target>Lead</target>
+      </segment>
+    </unit>
     <unit id="leads.description">
       <segment>
         <source>leads.description</source>
         <target>Website leads: a lead window on any page, funnel stages, managers and deadlines</target>
+      </segment>
+    </unit>
+    <unit id="leads.empty">
+      <segment>
+        <source>leads.empty</source>
+        <target>No leads</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.amount">
+      <segment>
+        <source>leads.field.amount</source>
+        <target>Amount</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.arrived">
+      <segment>
+        <source>leads.field.arrived</source>
+        <target>Arrived</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.due">
+      <segment>
+        <source>leads.field.due</source>
+        <target>Due</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.email">
+      <segment>
+        <source>leads.field.email</source>
+        <target>Email</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.manager">
+      <segment>
+        <source>leads.field.manager</source>
+        <target>Manager</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.message">
+      <segment>
+        <source>leads.field.message</source>
+        <target>Message</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.name">
+      <segment>
+        <source>leads.field.name</source>
+        <target>Name</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.phone">
+      <segment>
+        <source>leads.field.phone</source>
+        <target>Phone</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.topic">
+      <segment>
+        <source>leads.field.topic</source>
+        <target>Topic</target>
+      </segment>
+    </unit>
+    <unit id="leads.filter.manager">
+      <segment>
+        <source>leads.filter.manager</source>
+        <target>Any manager</target>
+      </segment>
+    </unit>
+    <unit id="leads.filter.stage">
+      <segment>
+        <source>leads.filter.stage</source>
+        <target>Any stage</target>
+      </segment>
+    </unit>
+    <unit id="leads.filter.topic">
+      <segment>
+        <source>leads.filter.topic</source>
+        <target>Any topic</target>
+      </segment>
+    </unit>
+    <unit id="leads.flash.added">
+      <segment>
+        <source>leads.flash.added</source>
+        <target>Lead {number} added</target>
       </segment>
     </unit>
     <unit id="leads.flash.stage_added">
@@ -53,6 +155,12 @@
       <segment>
         <source>leads.menu</source>
         <target>Leads</target>
+      </segment>
+    </unit>
+    <unit id="leads.new">
+      <segment>
+        <source>leads.new</source>
+        <target>New lead</target>
       </segment>
     </unit>
     <unit id="leads.refusal.contact">
@@ -115,6 +223,24 @@
         <target>The last stage of a group stays</target>
       </segment>
     </unit>
+    <unit id="leads.slice.closed">
+      <segment>
+        <source>leads.slice.closed</source>
+        <target>Closed ({count})</target>
+      </segment>
+    </unit>
+    <unit id="leads.slice.new">
+      <segment>
+        <source>leads.slice.new</source>
+        <target>New ({count})</target>
+      </segment>
+    </unit>
+    <unit id="leads.slice.work">
+      <segment>
+        <source>leads.slice.work</source>
+        <target>In progress ({count})</target>
+      </segment>
+    </unit>
     <unit id="leads.stage.add">
       <segment>
         <source>leads.stage.add</source>
@@ -157,28 +283,10 @@
         <target>Stage</target>
       </segment>
     </unit>
-    <unit id="leads.window.email">
+    <unit id="leads.tab.stages">
       <segment>
-        <source>leads.window.email</source>
-        <target>Email</target>
-      </segment>
-    </unit>
-    <unit id="leads.window.message">
-      <segment>
-        <source>leads.window.message</source>
-        <target>Message</target>
-      </segment>
-    </unit>
-    <unit id="leads.window.name">
-      <segment>
-        <source>leads.window.name</source>
-        <target>Name</target>
-      </segment>
-    </unit>
-    <unit id="leads.window.phone">
-      <segment>
-        <source>leads.window.phone</source>
-        <target>Phone</target>
+        <source>leads.tab.stages</source>
+        <target>Stages</target>
       </segment>
     </unit>
     <unit id="leads.window.policy">

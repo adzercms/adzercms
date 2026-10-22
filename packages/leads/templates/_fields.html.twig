@@ -1,0 +1,18 @@
+{% macro refusal(refusals, name) %}{% if refusals[name] is defined %}<span class="field-refusal">{{ refusals[name].reason|trans }}</span>{% endif %}{% endmacro %}
+<label>{{ 'leads.field.name'|trans }}
+    <input type="text" name="name" maxlength="{{ constant('AdzerCMS\\Leads\\Entity\\Lead::NAME') }}" value="{{ input.name ?? '' }}" autocomplete="name">
+    {{ _self.refusal(refusals, 'name') }}
+</label>
+<label>{{ 'leads.field.phone'|trans }}
+    <input type="tel" name="phone" value="{{ input.phone ?? '' }}" autocomplete="tel" inputmode="tel">
+    {{ _self.refusal(refusals, 'phone') }}
+</label>
+<label>{{ 'leads.field.email'|trans }}
+    <input type="email" name="email" maxlength="{{ constant('AdzerCMS\\Leads\\Entity\\Lead::EMAIL') }}" value="{{ input.email ?? '' }}" autocomplete="email">
+    {{ _self.refusal(refusals, 'email') }}
+</label>
+{% for part in subjects %}{% include part.template with part.context only %}{% endfor %}
+<label class="field-wide">{{ 'leads.field.message'|trans }}
+    <textarea name="message" rows="4" maxlength="{{ constant('AdzerCMS\\Leads\\Entity\\Lead::MESSAGE') }}">{{ input.message ?? '' }}</textarea>
+    {{ _self.refusal(refusals, 'message') }}
+</label>

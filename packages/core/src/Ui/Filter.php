@@ -103,6 +103,17 @@ final class Filter
         return ['('.implode(' OR ', array_map(self::like(...), $fields)).')', ['term' => self::pattern($term)]];
     }
 
+    public static function phone(QueryBuilder $builder, string $term, string $field): ?string
+    {
+        $digits = (string) preg_replace('/\D/', '', $term);
+        if ('' === $digits) {
+            return null;
+        }
+        $builder->setParameter('digits', '%'.$digits.'%');
+
+        return \sprintf('%s LIKE :digits', $field);
+    }
+
     private static function pattern(string $term): string
     {
         return '%'.addcslashes(mb_strtolower(trim($term)), '%_\\').'%';

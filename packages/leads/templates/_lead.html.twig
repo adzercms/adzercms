@@ -1,4 +1,3 @@
-{% macro refusal(refusals, name) %}{% if refusals[name] is defined %}<span class="field-refusal">{{ refusals[name].reason|trans }}</span>{% endif %}{% endmacro %}
 {% include '@Theme/_modal_header.html.twig' with {title: topic ?? 'leads.window.title'|trans} only %}
 
 <div class="modal-body">
@@ -7,23 +6,7 @@
         {{ csrf_field() }}{{ back_field() }}
         {% if topic %}<input type="hidden" name="topic" value="{{ topic }}">{% endif %}
         <div class="fields">
-            <label>{{ 'leads.window.name'|trans }}
-                <input type="text" name="name" maxlength="{{ constant('AdzerCMS\\Leads\\Entity\\Lead::NAME') }}" value="{{ input.name ?? '' }}" autocomplete="name">
-                {{ _self.refusal(refusals, 'name') }}
-            </label>
-            <label>{{ 'leads.window.phone'|trans }}
-                <input type="tel" name="phone" value="{{ input.phone ?? '' }}" autocomplete="tel" inputmode="tel">
-                {{ _self.refusal(refusals, 'phone') }}
-            </label>
-            <label>{{ 'leads.window.email'|trans }}
-                <input type="email" name="email" maxlength="{{ constant('AdzerCMS\\Leads\\Entity\\Lead::EMAIL') }}" value="{{ input.email ?? '' }}" autocomplete="email">
-                {{ _self.refusal(refusals, 'email') }}
-            </label>
-            {% for part in subjects %}{% include part.template with part.context only %}{% endfor %}
-            <label class="field-wide">{{ 'leads.window.message'|trans }}
-                <textarea name="message" rows="4" maxlength="{{ constant('AdzerCMS\\Leads\\Entity\\Lead::MESSAGE') }}">{{ input.message ?? '' }}</textarea>
-                {{ _self.refusal(refusals, 'message') }}
-            </label>
+            {% include '@Leads/_fields.html.twig' with {input: input, refusals: refusals, subjects: subjects} only %}
         </div>
         <input class="trap" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
         <button type="submit">{{ 'leads.window.send'|trans }}</button>

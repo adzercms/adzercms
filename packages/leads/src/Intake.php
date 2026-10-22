@@ -6,6 +6,7 @@ namespace AdzerCMS\Leads;
 
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Account\ContactKind;
+use AdzerCMS\Core\Ui\Once;
 use AdzerCMS\Leads\Entity\Lead;
 use AdzerCMS\Leads\Repository\StageRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,6 +33,7 @@ final readonly class Intake
         private Subjects $subjects,
         private EntityManagerInterface $em,
         private RateLimiterFactoryInterface $leadsLimiter,
+        private Once $once,
     ) {
     }
 
@@ -49,18 +51,7 @@ final readonly class Intake
             return [];
         }
 
-        $name = trim($input->getString(self::NAME));
-        $message = trim($input->getString(self::MESSAGE));
-        $phone = trim($input->getString(self::PHONE));
-        $email = trim($input->getString(self::EMAIL));
-        $refusals = array_filter([
-            self::NAME => mb_strlen($name) > Lead::NAME ? new Refusal(t('leads.refusal.name', ['limit' => Lead::NAME])) : null,
-            self::PHONE => '' === $phone && '' === $email
-                ? new Refusal(t('leads.refusal.contact'))
-                : ('' === $phone || null !== ContactKind::Phone->normalize($phone) ? null : new Refusal(t('leads.refusal.phone'))),
-            self::EMAIL => '' === $email || null !== ContactKind::Email->normalize($email) ? null : new Refusal(t('leads.refusal.email')),
-            self::MESSAGE => mb_strlen($message) > Lead::MESSAGE ? new Refusal(t('leads.refusal.message', ['limit' => Lead::MESSAGE])) : null,
-        ]);
+        $refusals = self::refusals($input);
         if ([] !== $refusals) {
             return $refusals;
         }
@@ -71,19 +62,63 @@ final readonly class Intake
             return [self::FORM => $refusal];
         }
 
-        $lead = new Lead(
-            $this->stages->first(StageGroup::Fresh),
-            self::topic($input),
-            '' === $name ? null : $name,
-            ContactKind::Phone->normalize($phone),
-            ContactKind::Email->normalize($email),
-            '' === $message ? null : $message,
-            mb_substr($page, 0, Lead::PAGE),
-        );
-        $this->em->persist($lead);
+        $lead = $this->lead($input, mb_substr($page, 0, Lead::PAGE));
         $lead->price($this->subjects->attach($lead, $input));
         $this->em->flush();
 
         return [];
+    }
+
+    /** @return Lead|array<string, Refusal> */
+    public function add(ParameterBag $input): Lead|array
+    {
+        $refusals = self::refusals($input);
+        if ([] !== $refusals) {
+            return $refusals;
+        }
+
+        $fields = array_map(static fn (string $field): string => trim($input->getString($field)), [self::TOPIC, self::NAME, self::PHONE, self::EMAIL, self::MESSAGE]);
+        if (!$this->once->fresh('leads.add', $fields)) {
+            return [self::FORM => new Refusal(Once::repeat())];
+        }
+
+        $lead = $this->lead($input, null);
+        $this->em->flush();
+
+        return $lead;
+    }
+
+    /** @return array<string, Refusal> */
+    private static function refusals(ParameterBag $input): array
+    {
+        $phone = trim($input->getString(self::PHONE));
+        $email = trim($input->getString(self::EMAIL));
+
+        return array_filter([
+            self::NAME => mb_strlen(trim($input->getString(self::NAME))) > Lead::NAME ? new Refusal(t('leads.refusal.name', ['limit' => Lead::NAME])) : null,
+            self::PHONE => '' === $phone && '' === $email
+                ? new Refusal(t('leads.refusal.contact'))
+                : ('' === $phone || null !== ContactKind::Phone->normalize($phone) ? null : new Refusal(t('leads.refusal.phone'))),
+            self::EMAIL => '' === $email || null !== ContactKind::Email->normalize($email) ? null : new Refusal(t('leads.refusal.email')),
+            self::MESSAGE => mb_strlen(trim($input->getString(self::MESSAGE))) > Lead::MESSAGE ? new Refusal(t('leads.refusal.message', ['limit' => Lead::MESSAGE])) : null,
+        ]);
+    }
+
+    private function lead(ParameterBag $input, ?string $page): Lead
+    {
+        $name = trim($input->getString(self::NAME));
+        $message = trim($input->getString(self::MESSAGE));
+        $lead = new Lead(
+            $this->stages->first(StageGroup::Fresh),
+            self::topic($input),
+            '' === $name ? null : $name,
+            ContactKind::Phone->normalize(trim($input->getString(self::PHONE))),
+            ContactKind::Email->normalize(trim($input->getString(self::EMAIL))),
+            '' === $message ? null : $message,
+            $page,
+        );
+        $this->em->persist($lead);
+
+        return $lead;
     }
 }

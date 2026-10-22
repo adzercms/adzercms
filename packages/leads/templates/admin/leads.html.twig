@@ -1,0 +1,12 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'leads.menu'|trans }}{% endblock %}
+
+{% block actions %}
+    <button type="button" hx-get="{{ path('admin_lead_new') }}" hx-target="#record">{{ 'leads.add'|trans }}</button>
+{% endblock %}
+
+{% block page %}
+{% include '@Leads/admin/_tabs.html.twig' with {tab: 'leads'} only %}
+{% include '@Leads/admin/_leads.html.twig' %}
+{% endblock %}

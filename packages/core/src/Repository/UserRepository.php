@@ -79,10 +79,9 @@ final class UserRepository extends ServiceEntityRepository
         }
         $match = Filter::matching($builder, $term, $fields);
 
-        $digits = (string) preg_replace('/\D/', '', $term);
-        if ('' !== $digits) {
-            $match->add(\sprintf('%s.phone LIKE :digits', $alias));
-            $builder->setParameter('digits', '%'.$digits.'%');
+        $phone = Filter::phone($builder, $term, $alias.'.phone');
+        if (null !== $phone) {
+            $match->add($phone);
         }
 
         $ids = [Filter::number($term), ...$found];

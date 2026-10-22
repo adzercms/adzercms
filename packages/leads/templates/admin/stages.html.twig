@@ -7,5 +7,6 @@
 {% endblock %}
 
 {% block page %}
+{% include '@Leads/admin/_tabs.html.twig' with {tab: 'stages'} only %}
 {% include '@Leads/admin/_stages.html.twig' %}
 {% endblock %}

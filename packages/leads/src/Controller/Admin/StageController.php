@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AdzerCMS\Leads\Controller;
+namespace AdzerCMS\Leads\Controller\Admin;
 
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Ui\Column;

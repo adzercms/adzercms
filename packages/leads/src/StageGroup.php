@@ -31,6 +31,15 @@ enum StageGroup: string implements Badged
         };
     }
 
+    public function slice(): Slice
+    {
+        return match ($this) {
+            self::Fresh => Slice::Fresh,
+            self::Work => Slice::Work,
+            self::Done, self::Refused => Slice::Closed,
+        };
+    }
+
     public function rank(): int
     {
         return (int) array_search($this, self::cases(), true);

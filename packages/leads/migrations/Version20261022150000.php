@@ -15,7 +15,7 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 
-final class Version20261022124800 extends AbstractMigration
+final class Version20261022150000 extends AbstractMigration
 {
     public function isTransactional(): bool
     {
@@ -50,7 +50,7 @@ final class Version20261022124800 extends AbstractMigration
                 Column::editor()->setUnquotedName('topic')->setTypeName(Types::STRING)->setLength(190)->setNotNull(false)->create(),
                 Column::editor()->setUnquotedName('name')->setTypeName(Types::STRING)->setLength(190)->setNotNull(false)->create(),
                 Column::editor()->setUnquotedName('phone')->setTypeName(Types::STRING)->setLength(32)->setNotNull(false)->create(),
-                Column::editor()->setUnquotedName('email')->setTypeName(Types::STRING)->setLength(190)->setNotNull(false)->create(),
+                Column::editor()->setUnquotedName('email')->setTypeName(Types::STRING)->setLength(254)->setNotNull(false)->create(),
                 Column::editor()->setUnquotedName('message')->setTypeName(Types::TEXT)->setNotNull(false)->create(),
                 Column::editor()->setUnquotedName('page')->setTypeName(Types::STRING)->setLength(255)->setNotNull(false)->create(),
                 Column::editor()->setUnquotedName('stage_id')->setTypeName(Types::INTEGER)->create(),
@@ -62,6 +62,7 @@ final class Version20261022124800 extends AbstractMigration
                 Index::editor()->setUnquotedName('idx_leads_phone')->setUnquotedColumnNames('phone')->create(),
                 Index::editor()->setUnquotedName('idx_leads_email')->setUnquotedColumnNames('email')->create(),
                 Index::editor()->setUnquotedName('idx_leads_due')->setUnquotedColumnNames('due')->create(),
+                Index::editor()->setUnquotedName('idx_leads_topic')->setUnquotedColumnNames('topic')->create(),
                 Index::editor()->setUnquotedName('idx_179045522298d193')->setUnquotedColumnNames('stage_id')->create(),
                 Index::editor()->setUnquotedName('idx_17904552783e3463')->setUnquotedColumnNames('manager_id')->create(),
             )

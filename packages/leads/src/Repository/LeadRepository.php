@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Leads\Repository;
 
+use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Leads\Entity\Lead;
 use AdzerCMS\Leads\Entity\Stage;
+use AdzerCMS\Leads\Slice;
+use AdzerCMS\Leads\StageGroup;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /** @extends ServiceEntityRepository<Lead> */
@@ -26,5 +30,76 @@ class LeadRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /** @return array<string, int> */
+    public function counts(StageGroup ...$groups): array
+    {
+        $rows = $this->createQueryBuilder('l')
+            ->select('s.group AS stage_group', 'COUNT(l.id) AS leads')
+            ->join('l.stage', 's')
+            ->where('s.group IN (:groups)')
+            ->setParameter('groups', array_map(static fn (StageGroup $group): string => $group->value, $groups))
+            ->groupBy('s.group')
+            ->getQuery()
+            ->getArrayResult();
+
+        $counts = [];
+        foreach ($rows as $row) {
+            if ($row['stage_group'] instanceof StageGroup) {
+                $counts[$row['stage_group']->value] = (int) $row['leads'];
+            }
+        }
+
+        return $counts;
+    }
+
+    /** @return list<string> */
+    public function topics(): array
+    {
+        return array_values(array_map(strval(...), $this->createQueryBuilder('l')
+            ->select('DISTINCT l.topic')
+            ->where('l.topic IS NOT NULL')
+            ->orderBy('l.topic')
+            ->getQuery()
+            ->getSingleColumnResult()));
+    }
+
+    /** @param list<int> $found */
+    public function listing(Slice $slice, string $term, array $found, string $topic, ?int $manager, ?int $stage): QueryBuilder
+    {
+        $builder = $this->createQueryBuilder('l')
+            ->join('l.stage', 's')
+            ->leftJoin('l.manager', 'm')
+            ->where('s.group IN (:groups)')
+            ->setParameter('groups', array_map(static fn (StageGroup $group): string => $group->value, $slice->groups()));
+
+        if ('' !== $topic) {
+            $builder->andWhere('l.topic = :topic')->setParameter('topic', $topic);
+        }
+        if (null !== $manager) {
+            $builder->andWhere('l.manager = :manager')->setParameter('manager', $manager);
+        }
+        if (null !== $stage) {
+            $builder->andWhere('l.stage = :stage')->setParameter('stage', $stage);
+        }
+
+        $term = trim($term);
+        if ('' === $term) {
+            return $builder;
+        }
+
+        $match = Filter::matching($builder, $term, ['l.name', 'l.email', 'l.message']);
+        $phone = Filter::phone($builder, $term, 'l.phone');
+        if (null !== $phone) {
+            $match->add($phone);
+        }
+        $ids = array_values(array_filter([Filter::number($term), ...$found], static fn (?int $id): bool => null !== $id));
+        if ([] !== $ids) {
+            $match->add('l.id IN (:ids)');
+            $builder->setParameter('ids', $ids);
+        }
+
+        return $builder->andWhere($match);
     }
 }

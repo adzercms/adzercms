@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace AdzerCMS\Leads\Tests\Fixture;
 
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Contracts\Ui\Cell;
+use AdzerCMS\Contracts\Ui\Column;
+use AdzerCMS\Contracts\Ui\Columns;
 use AdzerCMS\Leads\Entity\Lead;
 use AdzerCMS\Leads\LeadSubject;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Translation\TranslatableMessage;
 
-final class ItemSubject implements LeadSubject
+final class ItemSubject implements LeadSubject, Columns
 {
     public const FIELD = 'item';
     public const LABEL = 'Item';
@@ -42,5 +45,32 @@ final class ItemSubject implements LeadSubject
         $this->attached[] = $lead;
 
         return self::PRICE;
+    }
+
+    public function listing(): string
+    {
+        return self::LISTING;
+    }
+
+    public function columns(): array
+    {
+        return [new Column(self::FIELD, new TranslatableMessage(self::LABEL))];
+    }
+
+    public function cells(array $subjects): array
+    {
+        $cells = [];
+        foreach ($this->attached as $lead) {
+            if (\in_array($lead->getId(), $subjects, true)) {
+                $cells[(int) $lead->getId()] = [self::FIELD => new Cell(self::PRICE)];
+            }
+        }
+
+        return $cells;
+    }
+
+    public function search(string $term): array
+    {
+        return false === mb_stripos(self::LABEL, $term) ? [] : array_map(static fn (Lead $lead): int => (int) $lead->getId(), $this->attached);
     }
 }
