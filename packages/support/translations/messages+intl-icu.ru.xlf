@@ -4,7 +4,7 @@
     <unit id="support.column.at">
       <segment>
         <source>support.column.at</source>
-        <target>Обновлена</target>
+        <target>Обновлено</target>
       </segment>
     </unit>
     <unit id="support.column.department">
@@ -64,25 +64,25 @@
     <unit id="support.digest.tickets">
       <segment>
         <source>support.digest.tickets</source>
-        <target>Заявок ждут ответа: {count}</target>
+        <target>Обращений ждут ответа: {count}</target>
       </segment>
     </unit>
     <unit id="support.digest.waiting">
       <segment>
         <source>support.digest.waiting</source>
-        <target>#{number} {user}, ждёт {hours} ч, {subject}{overdue, select, yes { — просрочена} other {}}</target>
+        <target>#{number} {user}, ждёт {hours} ч, {subject}{overdue, select, yes { — просрочено} other {}}</target>
       </segment>
     </unit>
     <unit id="support.empty">
       <segment>
         <source>support.empty</source>
-        <target>Нет заявок</target>
+        <target>Нет обращений</target>
       </segment>
     </unit>
     <unit id="support.event.ticket_closed">
       <segment>
         <source>support.event.ticket_closed</source>
-        <target>Автозакрытие заявки</target>
+        <target>Автозакрытие обращения</target>
       </segment>
     </unit>
     <unit id="support.event.ticket_reply">
@@ -100,7 +100,7 @@
     <unit id="support.flash.closed">
       <segment>
         <source>support.flash.closed</source>
-        <target>Заявка закрыта</target>
+        <target>Обращение закрыто</target>
       </segment>
     </unit>
     <unit id="support.flash.dropped">
@@ -118,7 +118,7 @@
     <unit id="support.flash.opened">
       <segment>
         <source>support.flash.opened</source>
-        <target>Заявка №{number} создана</target>
+        <target>Обращение №{number} создано</target>
       </segment>
     </unit>
     <unit id="support.flash.sent">
@@ -196,7 +196,7 @@
     <unit id="support.menu.tickets">
       <segment>
         <source>support.menu.tickets</source>
-        <target>Заявки</target>
+        <target>Обращения</target>
       </segment>
     </unit>
     <unit id="support.message.attach">
@@ -232,55 +232,55 @@
     <unit id="support.notice.closed.again">
       <segment>
         <source>support.notice.closed.again</source>
-        <target>Если вопрос ещё актуален — заведите новую заявку.</target>
+        <target>Если вопрос ещё актуален — заведите новое обращение.</target>
       </segment>
     </unit>
     <unit id="support.notice.closed.short">
       <segment>
         <source>support.notice.closed.short</source>
-        <target>{count, plural, one {Заявка №{ids} закрыта} other {Заявки №{ids} закрыты}} без вашего ответа. Актуальный вопрос — новой заявкой:</target>
+        <target>{count, plural, one {Обращение №{ids} закрыто} other {Обращения №{ids} закрыты}} без вашего ответа. Актуальный вопрос — новым обращением:</target>
       </segment>
     </unit>
     <unit id="support.notice.closed.subject">
       <segment>
         <source>support.notice.closed.subject</source>
-        <target>{brand}: {count, plural, one {заявка №{id} закрыта} other {заявки закрыты}}</target>
+        <target>{brand}: {count, plural, one {обращение №{id} закрыто} other {обращения закрыты}}</target>
       </segment>
     </unit>
     <unit id="support.notice.closed.ticket">
       <segment>
         <source>support.notice.closed.ticket</source>
-        <target>Заявка №{id} «{subject}» закрыта: ответа не было больше {days, plural, one {# дня} other {# дней}}</target>
+        <target>Обращение №{id} «{subject}» закрыто: ответа не было больше {days, plural, one {# дня} other {# дней}}</target>
       </segment>
     </unit>
     <unit id="support.notice.closed.title">
       <segment>
         <source>support.notice.closed.title</source>
-        <target>{count, plural, one {Заявка закрыта} other {Заявки закрыты}}</target>
+        <target>{count, plural, one {Обращение закрыто} other {Обращения закрыты}}</target>
       </segment>
     </unit>
     <unit id="support.notice.reply.action">
       <segment>
         <source>support.notice.reply.action</source>
-        <target>Открыть заявку</target>
+        <target>Открыть обращение</target>
       </segment>
     </unit>
     <unit id="support.notice.reply.body">
       <segment>
         <source>support.notice.reply.body</source>
-        <target>Поддержка ответила по заявке №{id} «{subject}».</target>
+        <target>Поддержка ответила по обращению №{id} «{subject}».</target>
       </segment>
     </unit>
     <unit id="support.notice.reply.short">
       <segment>
         <source>support.notice.reply.short</source>
-        <target>Поддержка ответила по заявке №{id}. Ответ в кабинете.</target>
+        <target>Поддержка ответила по обращению №{id}. Ответ в кабинете.</target>
       </segment>
     </unit>
     <unit id="support.notice.reply.subject">
       <segment>
         <source>support.notice.reply.subject</source>
-        <target>{brand}: ответ по заявке №{id}</target>
+        <target>{brand}: ответ по обращению №{id}</target>
       </segment>
     </unit>
     <unit id="support.notice.reply.title">
@@ -304,7 +304,7 @@
     <unit id="support.refusal.closed">
       <segment>
         <source>support.refusal.closed</source>
-        <target>Заявка закрыта — изменения не принимаются</target>
+        <target>Обращение закрыто — изменения не принимаются</target>
       </segment>
     </unit>
     <unit id="support.refusal.department">
@@ -322,7 +322,7 @@
     <unit id="support.refusal.subject">
       <segment>
         <source>support.refusal.subject</source>
-        <target>Тема заявки пуста</target>
+        <target>Тема обращения пуста</target>
       </segment>
     </unit>
     <unit id="support.refusal.type">
@@ -358,7 +358,7 @@
     <unit id="support.setting.auto_close_days">
       <segment>
         <source>support.setting.auto_close_days</source>
-        <target>Автозакрытие заявки, дней</target>
+        <target>Автозакрытие обращения, дней</target>
       </segment>
     </unit>
     <unit id="support.setting.departments">
@@ -376,7 +376,7 @@
     <unit id="support.setting.overdue_hours">
       <segment>
         <source>support.setting.overdue_hours</source>
-        <target>Заявка просрочена через, часов</target>
+        <target>Обращение просрочено через, часов</target>
       </segment>
     </unit>
     <unit id="support.tab.active">
@@ -406,19 +406,19 @@
     <unit id="support.ticket.close">
       <segment>
         <source>support.ticket.close</source>
-        <target>Закрыть заявку</target>
+        <target>Закрыть обращение</target>
       </segment>
     </unit>
     <unit id="support.ticket.closed">
       <segment>
         <source>support.ticket.closed</source>
-        <target>Заявка закрыта. Если вопрос остался, заведите новую.</target>
+        <target>Обращение закрыто. Если вопрос остался, заведите новое.</target>
       </segment>
     </unit>
     <unit id="support.ticket.created">
       <segment>
         <source>support.ticket.created</source>
-        <target>Заведена</target>
+        <target>Заведено</target>
       </segment>
     </unit>
     <unit id="support.ticket.department">
@@ -442,7 +442,7 @@
     <unit id="support.ticket.new">
       <segment>
         <source>support.ticket.new</source>
-        <target>Новая заявка</target>
+        <target>Новое обращение</target>
       </segment>
     </unit>
     <unit id="support.ticket.send">
@@ -466,13 +466,13 @@
     <unit id="support.ticket.title">
       <segment>
         <source>support.ticket.title</source>
-        <target>Заявка №{id}</target>
+        <target>Обращение №{id}</target>
       </segment>
     </unit>
     <unit id="support.ticket.updated">
       <segment>
         <source>support.ticket.updated</source>
-        <target>Обновлена</target>
+        <target>Обновлено</target>
       </segment>
     </unit>
     <unit id="support.ticket.user">
@@ -484,13 +484,13 @@
     <unit id="support.ticket_status.closed">
       <segment>
         <source>support.ticket_status.closed</source>
-        <target>Закрыта</target>
+        <target>Закрыто</target>
       </segment>
     </unit>
     <unit id="support.ticket_status.open">
       <segment>
         <source>support.ticket_status.open</source>
-        <target>Новая</target>
+        <target>Новое</target>
       </segment>
     </unit>
     <unit id="support.ticket_status.waiting_staff">
