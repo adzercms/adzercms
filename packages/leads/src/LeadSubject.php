@@ -20,4 +20,7 @@ interface LeadSubject
     public function check(ParameterBag $input): ?Refusal;
 
     public function attach(Lead $lead, ParameterBag $input): ?string;
+
+    /** @return list<Detail> */
+    public function details(Lead $lead): array;
 }

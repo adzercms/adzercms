@@ -73,6 +73,12 @@
         <target>Name</target>
       </segment>
     </unit>
+    <unit id="leads.field.page">
+      <segment>
+        <source>leads.field.page</source>
+        <target>Form page</target>
+      </segment>
+    </unit>
     <unit id="leads.field.phone">
       <segment>
         <source>leads.field.phone</source>
@@ -107,6 +113,12 @@
       <segment>
         <source>leads.flash.added</source>
         <target>Lead {number} added</target>
+      </segment>
+    </unit>
+    <unit id="leads.flash.dropped">
+      <segment>
+        <source>leads.flash.dropped</source>
+        <target>Lead {number} deleted</target>
       </segment>
     </unit>
     <unit id="leads.flash.stage_added">
@@ -149,6 +161,42 @@
       <segment>
         <source>leads.group.work</source>
         <target>In progress</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.client">
+      <segment>
+        <source>leads.lead.client</source>
+        <target>Client</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.details">
+      <segment>
+        <source>leads.lead.details</source>
+        <target>Details</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.drop">
+      <segment>
+        <source>leads.lead.drop</source>
+        <target>Delete lead</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.drop_confirm">
+      <segment>
+        <source>leads.lead.drop_confirm</source>
+        <target>Delete lead {number} with its feed?</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.feed">
+      <segment>
+        <source>leads.lead.feed</source>
+        <target>Feed</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.title">
+      <segment>
+        <source>leads.lead.title</source>
+        <target>Lead {number}</target>
       </segment>
     </unit>
     <unit id="leads.menu">

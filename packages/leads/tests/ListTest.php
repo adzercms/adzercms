@@ -6,10 +6,7 @@ namespace AdzerCMS\Leads\Tests;
 
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Entity\User;
-use AdzerCMS\Core\Tests\Accounts;
-use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\Queries;
-use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Leads\Entity\Lead;
 use AdzerCMS\Leads\Entity\Stage;
 use AdzerCMS\Leads\Intake;
@@ -27,20 +24,9 @@ use Symfony\Component\DomCrawler\Crawler;
 
 use function Symfony\Component\Clock\now;
 
-final class ListTest extends SchemaTestCase
+final class ListTest extends LeadsTestCase
 {
-    use Accounts;
-    use Browser;
     use Queries;
-
-    private const LIST = '/admin/leads';
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
-        $this->em->flush();
-    }
 
     #[Group('ACMS-LEAD-0005')]
     #[Group('ACMS-US-0041')]
@@ -166,15 +152,6 @@ final class ListTest extends SchemaTestCase
         });
 
         self::assertSame(ItemSubject::PRICE, trim(self::cell($this->fragment(self::LIST), 'Клиент 1', ItemSubject::LABEL)->text()));
-    }
-
-    private function lead(StageGroup $group, string $name, ?string $phone = null, ?string $email = null, ?string $message = null, ?string $topic = null, ?Stage $stage = null): Lead
-    {
-        $lead = new Lead($stage ?? self::service(StageRepository::class)->first($group), $topic, $name, $phone, $email, $message);
-        $this->em->persist($lead);
-        $this->em->flush();
-
-        return $lead;
     }
 
     private function assign(Lead $lead, ?User $manager, ?\DateTimeImmutable $due = null): void

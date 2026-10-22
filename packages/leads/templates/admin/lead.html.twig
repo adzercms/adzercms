@@ -1,0 +1,83 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'leads.lead.title'|trans({number: lead.id}) }}{% endblock %}
+
+{% block heading %}<span class="record-title">{{ 'leads.lead.title'|trans({number: lead.id}) }} {{ badge(lead.stage) }}</span>{% endblock %}
+
+{% block actions %}
+    <form method="post" action="{{ path('admin_lead_drop', {id: lead.id}) }}"
+          data-confirm="{{ 'leads.lead.drop_confirm'|trans({number: lead.id}) }}">
+        {{ csrf_field() }}<button type="submit" class="danger">{{ 'leads.lead.drop'|trans }}</button>
+    </form>
+    <a class="button secondary" href="{{ path('admin_leads') }}">{{ 'core.action.to_list'|trans }}</a>
+{% endblock %}
+
+{% block page %}
+<div class="section">
+    <div class="section-head">
+        <h3>{{ 'leads.lead.client'|trans }}</h3>
+    </div>
+    <div class="info-grid">
+        <div class="info-item">
+            <span class="info-label">{{ 'leads.field.name'|trans }}</span>
+            <span class="info-value">{{ cell(lead.name) }}</span>
+        </div>
+        {% for contact in contacts %}
+            {% set kind = contact[0] %}
+            <div class="info-item">
+                <span class="info-label">{{ kind.label|trans }}</span>
+                <a class="info-value" href="{{ kind.href(contact[1]) }}">{{ contact[1] }}</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-head">
+        <h3>{{ 'leads.lead.details'|trans }}</h3>
+    </div>
+    <div class="info-grid">
+        <div class="info-item">
+            <span class="info-label">{{ 'leads.field.topic'|trans }}</span>
+            <span class="info-value">{{ cell(lead.topic) }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'leads.field.page'|trans }}</span>
+            {% if lead.page %}
+                <a class="info-value" href="{{ lead.page }}" target="_blank" rel="noopener noreferrer">{{ lead.page }}</a>
+            {% else %}
+                <span class="info-value">{{ cell(null) }}</span>
+            {% endif %}
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'leads.field.arrived'|trans }}</span>
+            <span class="info-value">{{ 'core.moment.day_time'|trans({at: lead.arrived}) }}</span>
+        </div>
+        {% for detail in details %}
+            <div class="info-item">
+                <span class="info-label">{{ detail.label|trans }}</span>
+                <span class="info-value">{{ detail.value }}</span>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-head">
+        <h3>{{ 'leads.lead.feed'|trans }}</h3>
+    </div>
+    <div class="chat">
+        {% if lead.message %}
+            <div class="chat-message other">
+                <div class="chat-bubble">
+                    <div class="chat-head">
+                        <span class="chat-author">{{ lead.name ?? 'leads.lead.client'|trans }}</span>
+                        <span class="chat-time">{{ 'core.moment.day_time'|trans({at: lead.arrived}) }}</span>
+                    </div>
+                    <div class="chat-text">{{ lead.message|nl2br }}</div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

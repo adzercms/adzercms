@@ -73,6 +73,12 @@
         <target>Имя</target>
       </segment>
     </unit>
+    <unit id="leads.field.page">
+      <segment>
+        <source>leads.field.page</source>
+        <target>Страница формы</target>
+      </segment>
+    </unit>
     <unit id="leads.field.phone">
       <segment>
         <source>leads.field.phone</source>
@@ -107,6 +113,12 @@
       <segment>
         <source>leads.flash.added</source>
         <target>Заявка {number} заведена</target>
+      </segment>
+    </unit>
+    <unit id="leads.flash.dropped">
+      <segment>
+        <source>leads.flash.dropped</source>
+        <target>Заявка {number} удалена</target>
       </segment>
     </unit>
     <unit id="leads.flash.stage_added">
@@ -149,6 +161,42 @@
       <segment>
         <source>leads.group.work</source>
         <target>В работе</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.client">
+      <segment>
+        <source>leads.lead.client</source>
+        <target>Клиент</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.details">
+      <segment>
+        <source>leads.lead.details</source>
+        <target>Сведения</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.drop">
+      <segment>
+        <source>leads.lead.drop</source>
+        <target>Удалить заявку</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.drop_confirm">
+      <segment>
+        <source>leads.lead.drop_confirm</source>
+        <target>Удалить заявку {number} вместе с лентой?</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.feed">
+      <segment>
+        <source>leads.lead.feed</source>
+        <target>Лента</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.title">
+      <segment>
+        <source>leads.lead.title</source>
+        <target>Заявка {number}</target>
       </segment>
     </unit>
     <unit id="leads.menu">

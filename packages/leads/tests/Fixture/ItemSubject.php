@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Ui\Cell;
 use AdzerCMS\Contracts\Ui\Column;
 use AdzerCMS\Contracts\Ui\Columns;
+use AdzerCMS\Leads\Detail;
 use AdzerCMS\Leads\Entity\Lead;
 use AdzerCMS\Leads\LeadSubject;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -45,6 +46,13 @@ final class ItemSubject implements LeadSubject, Columns
         $this->attached[] = $lead;
 
         return self::PRICE;
+    }
+
+    public function details(Lead $lead): array
+    {
+        return array_any($this->attached, static fn (Lead $attached): bool => $attached->getId() === $lead->getId())
+            ? [new Detail(new TranslatableMessage(self::LABEL), self::PRICE)]
+            : [];
     }
 
     public function listing(): string

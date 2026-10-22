@@ -40,6 +40,14 @@ enum ContactKind: string implements Titled
         };
     }
 
+    public function href(string $contact): string
+    {
+        return match ($this) {
+            self::Phone => 'tel:+'.$contact,
+            self::Email => 'mailto:'.$contact,
+        };
+    }
+
     private static function phone(string $contact): ?string
     {
         $digits = (string) preg_replace('/\D+/', '', $contact);

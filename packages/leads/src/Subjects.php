@@ -55,4 +55,15 @@ final readonly class Subjects
 
         return $amount;
     }
+
+    /** @return list<Detail> */
+    public function details(Lead $lead): array
+    {
+        $details = [];
+        foreach ($this->subjects as $subject) {
+            $details = [...$details, ...$subject->details($lead)];
+        }
+
+        return $details;
+    }
 }
