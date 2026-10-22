@@ -13,7 +13,7 @@ interface LiveEntities
     /** @return array<class-string, list<string>> */
     public function fields(): array;
 
-    public function owner(object $entity): User;
+    public function owner(object $entity): ?User;
 
     public function staff(): bool;
 }

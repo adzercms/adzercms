@@ -135,6 +135,29 @@ final class CatalogTest extends SchemaTestCase
         self::assertNotSame('', $theme->package->description);
     }
 
+    #[Group('ACMS-CORE-0936')]
+    #[DataProvider('updates')]
+    public function testInstalledBranchIsUpdatedByAnotherCommitOfItsBranchOnly(bool $branch, bool $same, bool $updatable): void
+    {
+        $this->listed(['adzercms/admin']);
+        $branch
+            ? $this->branch('adzercms/admin', '1.0.x-dev', $same ? InstalledVersions::getReference('adzercms/admin') : null)
+            : $this->offer('adzercms/admin', '9.0.0', provide: ['adzercms/admin-implementation' => '9.0.0']);
+        self::command('adzercms:modules')->execute([]);
+
+        $admin = array_values(array_filter(self::service(Catalog::class)->rows()['rows'], static fn (CatalogRow $row): bool => 'adzercms/admin' === $row->name))[0] ?? self::fail('the installed module is not in the catalog');
+
+        self::assertSame($updatable, $admin->updatable);
+    }
+
+    /** @return iterable<string, array{bool, bool, bool}> */
+    public static function updates(): iterable
+    {
+        yield 'another commit of the branch' => [true, false, true];
+        yield 'the installed commit of the branch' => [true, true, false];
+        yield 'a stable version against the branch' => [false, false, false];
+    }
+
     #[Group('ACMS-CORE-0960')]
     #[Group('ACMS-CORE-0934')]
     public function testMarkGoesToVersionWhoseCommitPassedAndOutlivesUnavailableRegistry(): void

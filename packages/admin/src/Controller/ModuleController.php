@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace AdzerCMS\Admin\Controller;
 
 use AdzerCMS\Admin\AssembledModules;
+use AdzerCMS\Admin\ModuleScope;
+use AdzerCMS\Admin\ModuleState;
 use AdzerCMS\Admin\SettingForm;
 use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Contracts\Refusal;
@@ -39,11 +41,11 @@ final class ModuleController extends AbstractController
 {
     private const ORDER = 'name';
     private const MODULES = 'modules';
-    private const CATALOG = 'catalog';
+    private const SCOPE = 'scope';
     private const CATEGORY = 'category';
     private const OPERATIONS = 'operations';
     private const SOURCES = 'sources';
-    private const TABS = [self::MODULES, self::CATALOG, self::SOURCES, self::OPERATIONS];
+    private const TABS = [self::MODULES, self::SOURCES, self::OPERATIONS];
 
     public function __construct(
         private readonly AssembledModules $assembled,
@@ -64,54 +66,37 @@ final class ModuleController extends AbstractController
         $tab = \in_array($asked, self::TABS, true) ? $asked : self::MODULES;
 
         return $this->render('@Admin/admin/modules.html.twig', ['tabs' => self::TABS, 'tab' => $tab, ...match ($tab) {
-            self::MODULES => $this->assembledTab($request, $translator),
-            self::CATALOG => $this->catalogTab($request, $translator),
+            self::MODULES => $this->modulesTab($request, $translator),
             self::SOURCES => $this->sourcesTab($request),
             self::OPERATIONS => $this->operationsTab($request),
         }]);
     }
 
     /** @return array<string, mixed> */
-    private function assembledTab(Request $request, TranslatorInterface $translator): array
+    private function modulesTab(Request $request, TranslatorInterface $translator): array
     {
-        $rows = [];
-        foreach ($this->assembled->modules() as $key => $module) {
-            $rows[] = [
-                'key' => $key,
-                'name' => $module['name'],
-                'description' => $module['description']->trans($translator),
-                'settings' => [] !== $module['fields'],
-            ];
+        $scopes = [];
+        foreach (ModuleScope::cases() as $scope) {
+            $scopes[$scope->value] = $scope->label();
         }
-
         $table = Table::of($request, 'admin_modules', [
-            Column::live('name', t('admin.modules.name'), static fn (array $row): string => $row['name']),
-            Column::live('description', t('admin.modules.description'), static fn (array $row): string => $row['description'])->aside(),
-            Column::plain('actions'),
-        ], self::ORDER, t('admin.modules.empty'), filters: [Filter::search()], live: true);
-
-        return ['table' => $table, 'rows' => $table->rows($rows)];
-    }
-
-    /** @return array<string, mixed> */
-    private function catalogTab(Request $request, TranslatorInterface $translator): array
-    {
-        $table = Table::of($request, 'admin_modules', [
-            Column::live('name', t('admin.catalog.package'), static fn (array $row): string => $row['name']),
+            Column::live('name', t('admin.modules.name'), static fn (array $row): string => $row['name'].' '.$row['description']),
             Column::live('kind', t('admin.modules.kind'), static fn (array $row): string => $row['kind']),
-            Column::live('version', t('admin.catalog.version'), static fn (array $row): string => $row['version']),
-            Column::live('installed', t('admin.catalog.installed'), static fn (array $row): string => $row['installed']),
-            Column::live('repository', t('admin.catalog.repository'), static fn (array $row): string => $row['repository'])->aside(),
+            Column::live('version', t('admin.modules.version'), static fn (array $row): string => $row['version']),
+            Column::live('repository', t('admin.modules.repository'), static fn (array $row): string => $row['repository'])->aside(),
+            Column::live('state', t('admin.modules.status'), static fn (array $row): TranslatableInterface => $row['state']->label()),
             Column::plain('actions'),
-        ], self::ORDER, t('admin.catalog.empty'), filters: [
+        ], self::ORDER, t('admin.modules.empty'), filters: [
+            Filter::tabs(self::SCOPE, t('admin.modules.scope.all'), $scopes),
             Filter::search(),
-            Filter::cases(self::CATEGORY, t('admin.catalog.category'), Category::cases()),
-        ], sticky: ['tab' => self::CATALOG], live: true, id: self::CATALOG);
+            Filter::cases(self::CATEGORY, t('admin.modules.category'), Category::cases()),
+        ], live: true);
         $offered = $this->catalog->rows();
+        $chosen = array_filter($offered['rows'], static fn (CatalogRow $row): bool => ModuleScope::tryFrom($table->value(self::SCOPE))?->admits($row) ?? true);
 
         return [
             'table' => $table,
-            'rows' => $table->rows($this->offers($offered['rows'], Category::tryFrom($table->value(self::CATEGORY)), $translator)),
+            'rows' => $table->rows($this->offers($chosen, Category::tryFrom($table->value(self::CATEGORY)), $translator)),
             'taken' => $offered['at'],
             'versioned' => $this->tree->versioned(),
         ];
@@ -133,7 +118,7 @@ final class ModuleController extends AbstractController
     private function operationsTab(Request $request): array
     {
         $table = Table::of($request, 'admin_modules', [
-            Column::plain('package', t('admin.catalog.package')),
+            Column::plain('package', t('admin.operations.package')),
             Column::plain('action', t('admin.operations.action')),
             Column::plain('state', t('admin.operations.state')),
             Column::of('filed', t('admin.operations.filed'), 'o.id'),
@@ -149,42 +134,53 @@ final class ModuleController extends AbstractController
         $refusal = $this->operations->file($request->query->getString('package'), $action);
         $this->addFlash(null === $refusal ? 'success' : 'error', $refusal->reason ?? t('admin.operations.done'));
 
-        return $this->redirectToRoute('admin_modules', ['tab' => self::OPERATIONS]);
+        return $this->redirectToRoute('admin_modules');
     }
 
     /**
-     * @param list<CatalogRow> $rows
+     * @param array<CatalogRow> $rows
      *
-     * @return list<array{name: string, description: string, link: ?string, kind: string, version: string, verified: ?Badge, installed: string, installed_verified: ?Badge, repository: string, actions: list<array{label: TranslatableInterface, route: string, params: array<string, string>, post: true, confirm: ?TranslatableInterface}>}>
+     * @return list<array<string, mixed>>
      */
     private function offers(array $rows, ?Category $category, TranslatorInterface $translator): array
     {
+        $assembled = $this->assembled->modules();
+        $opened = $this->filings->opened();
         $offers = [];
         foreach ($rows as $row) {
             if (null !== $category && !\in_array($category, $row->package->categories, true)) {
                 continue;
             }
+            $key = $row->selected && null !== $row->key ? strtolower($row->key) : null;
+            $module = null === $key ? null : $assembled[$key] ?? null;
+            $operation = $opened[$row->name] ?? null;
             $offers[] = [
                 'name' => $row->name,
-                'description' => $row->package->description,
+                'description' => null === $module ? $row->package->description : $module['description']->trans($translator),
                 'link' => $row->package->homepage ?? $row->package->source,
+                'card' => null === $module ? null : $this->generateUrl('admin_module', ['key' => $key]),
                 'kind' => \is_string($row->kind) ? $row->kind : $row->kind->label()->trans($translator),
-                'version' => (string) $row->version,
-                'verified' => $row->verified ? Badge::good(t('admin.catalog.verified')) : null,
-                'installed' => (string) $row->installed,
-                'installed_verified' => $row->installedVerified ? Badge::good(t('admin.catalog.verified')) : null,
+                'version' => (string) ($row->installed ?? $row->version),
+                'verified' => (null === $row->installed ? $row->verified : $row->installedVerified) ? Badge::good(t('admin.modules.verified')) : null,
+                'update' => $row->updatable ? $row->version : null,
+                'update_verified' => $row->verified ? Badge::good(t('admin.modules.verified')) : null,
                 'repository' => match ($row->repository) {
                     null => '',
                     Artifacts::REPOSITORY => $translator->trans('admin.sources.zip'),
                     default => (string) parse_url($row->repository, \PHP_URL_HOST),
                 },
-                'actions' => array_map(static fn (ModuleAction $action): array => [
-                    'label' => $action->label(),
-                    'route' => 'admin_module_operation',
-                    'params' => ['action' => $action->value, 'package' => $row->name],
-                    'post' => true,
-                    'confirm' => $action->takesVersion() && !$row->verified ? t('admin.catalog.unverified', ['package' => $row->name]) : null,
-                ], $this->operations->actions($row)),
+                'state' => $operation?->getState() ?? ModuleState::of($row),
+                'operation' => $operation?->getAction()->label(),
+                'actions' => [
+                    ...null !== $module && [] !== $module['fields'] ? [['label' => t('admin.modules.settings'), 'href' => $this->generateUrl('admin_module', ['key' => $key]).'#settings']] : [],
+                    ...array_map(static fn (ModuleAction $action): array => [
+                        'label' => $action->label(),
+                        'route' => 'admin_module_operation',
+                        'params' => ['action' => $action->value, 'package' => $row->name],
+                        'post' => true,
+                        'confirm' => $action->takesVersion() && !$row->verified ? t('admin.modules.unverified', ['package' => $row->name]) : null,
+                    ], null === $operation ? $this->operations->actions($row) : []),
+                ],
             ];
         }
 

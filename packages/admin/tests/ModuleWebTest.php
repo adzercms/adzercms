@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace AdzerCMS\Admin\Tests;
 
 use AdzerCMS\Admin\AssembledModules;
+use AdzerCMS\Admin\ModuleScope;
+use AdzerCMS\Admin\ModuleState;
 use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Module\Catalog as ModuleCatalog;
@@ -37,7 +39,7 @@ final class ModuleWebTest extends SchemaTestCase
 
     private const SENDER = RelayGateway::SETTINGS.RelayGateway::SENDER;
     private const REPOSITORY = 'https://repo.acme.test';
-    private const CATALOG = '/admin/modules?tab=catalog';
+    private const MODULES = '/admin/modules';
     private const SOURCES = '/admin/modules?tab=sources';
     private const OPERATIONS = '/admin/modules?tab=operations';
 
@@ -59,42 +61,51 @@ final class ModuleWebTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0023')]
+    #[Group('ACMS-CORE-0981')]
     #[Group('ACMS-US-0004')]
-    public function testSectionBuildsOnlyItsActiveTabOpeningOnAssembledModules(): void
+    public function testSectionBuildsOnlyItsActiveTabOpeningOnOneModuleList(): void
     {
         $modules = self::service(AssembledModules::class)->modules();
-        $listing = $this->client->request('GET', '/admin/modules');
+        $listing = $this->client->request('GET', self::MODULES);
 
         self::assertSame(
-            array_map(self::phrase(...), ['admin.menu.modules', 'admin.catalog.title', 'admin.sources.title', 'admin.operations.title']),
+            array_map(self::phrase(...), ['admin.menu.modules', 'admin.sources.title', 'admin.operations.title']),
             $listing->filter('nav.tabs a.tab')->each(static fn (Crawler $tab): string => trim($tab->text())),
         );
-        foreach (['' => 'rows', '?tab=catalog' => 'catalog', '?tab=sources' => 'sources', '?tab=operations' => 'operations', '?tab=absent' => 'rows'] as $query => $table) {
+        foreach (['' => 'rows', '?tab=sources' => 'sources', '?tab=operations' => 'operations', '?tab=absent' => 'rows'] as $query => $table) {
             self::assertSame(
                 [$table],
-                $this->client->request('GET', '/admin/modules'.$query)->filter('#rows, #catalog, #sources, #operations')->each(static fn (Crawler $built): string => (string) $built->attr('id')),
+                $this->client->request('GET', self::MODULES.$query)->filter('#rows, #sources, #operations')->each(static fn (Crawler $built): string => (string) $built->attr('id')),
                 'only the active tab is built',
             );
         }
         self::assertSame(
-            [self::phrase('admin.modules.name'), self::phrase('admin.modules.description'), ''],
+            [...array_map(self::phrase(...), ['admin.modules.name', 'admin.modules.kind', 'admin.modules.version', 'admin.modules.repository', 'admin.modules.status']), ''],
             $listing->filter('#rows thead th')->each(static fn (Crawler $head): string => trim($head->text())),
         );
+        $assembled = [];
+        foreach (self::service(ModuleCatalog::class)->rows()['rows'] as $row) {
+            $key = strtolower((string) $row->key);
+            if ($row->selected && isset($modules[$key])) {
+                $assembled[$row->name] = $key;
+            }
+        }
+        self::assertArrayHasKey('adzercms/admin', $assembled);
         self::assertEqualsCanonicalizing(
-            array_map(static fn (string $key): string => '/admin/modules/'.$key, array_keys($modules)),
+            array_map(static fn (string $key): string => '/admin/modules/'.$key, array_values($assembled)),
             self::cards($listing),
-            'the section lists every assembled module',
+            'a row of an assembled module opens its card',
         );
-        $configured = array_keys(array_filter($modules, static fn (array $module): bool => [] !== $module['fields']));
-        self::assertContains('relay', $configured);
-        self::assertNotSame(array_keys($modules), $configured, 'the suite assembles a module without settings');
         self::assertEqualsCanonicalizing(
-            array_map(static fn (string $key): string => '/admin/modules/'.$key.'#settings', $configured),
+            array_map(static fn (string $key): string => '/admin/modules/'.$key.'#settings', array_values(array_filter($assembled, static fn (string $key): bool => [] !== $modules[$key]['fields']))),
             $listing->filter('#rows td.row-actions a')->each(static fn (Crawler $link): string => (string) $link->attr('href')),
             'a module with settings leads to them',
         );
-        self::assertSame(self::phrase($modules['relay']['description']), trim(self::cell($listing, 'Relay', self::phrase('admin.modules.description'))->text()));
-        self::assertSame(['/admin/modules/relay'], self::cards($this->fragment('/admin/modules?q=Relay')));
+        self::assertStringContainsString(self::phrase($modules['admin']['description']), self::cell($listing, 'adzercms/admin', self::phrase('admin.modules.name'))->text(),
+            'an assembled module tells what it does in the language of the reader');
+        self::assertSame(self::phrase(ModuleState::Enabled->label()), trim(self::cell($listing, 'adzercms/admin', self::phrase('admin.modules.status'))->text()));
+        self::assertSame(['/admin/modules/admin'], self::cards($this->fragment(self::MODULES.'?q='.urlencode(self::phrase($modules['admin']['description'])))),
+            'the search goes by what the module does too');
 
         $card = $this->client->request('GET', '/admin/modules/relay');
         self::assertSame(
@@ -131,30 +142,46 @@ final class ModuleWebTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-0934')]
     #[Group('ACMS-CORE-0147')]
+    #[Group('ACMS-CORE-0981')]
     #[Group('ACMS-US-0004')]
-    public function testCatalogListsOfferedAndInstalledModulesAsOfItsSnapshotByCategory(): void
+    public function testModulesListOfferedAndInstalledPackagesAsOfCatalogSnapshotByScopeAndCategory(): void
     {
-        self::assertSame(self::phrase('admin.catalog.untaken'), trim($this->client->request('GET', self::CATALOG)->filter('#catalog p.muted')->text()));
+        self::assertSame(self::phrase('admin.modules.untaken'), trim($this->client->request('GET', self::MODULES)->filter('#rows p.muted')->text()));
 
         $this->answerCatalog();
-        $this->listed(['acme/till', 'acme/shop']);
+        $this->listed(['acme/till', 'acme/shop', 'adzercms/admin']);
         $this->offer('acme/till', '1.2.0', provide: ['adzercms/sms-implementation' => '1.0.0'], categories: ['messaging']);
         $this->offer('acme/shop', '1.0.0', categories: ['commerce']);
+        $this->branch('adzercms/admin', '1.0.x-dev');
         self::mockTime('2026-10-20 12:30');
         self::command('adzercms:modules')->execute([]);
-        $catalog = $this->client->request('GET', self::CATALOG)->filter('#catalog');
+        $idle = array_values(array_filter(self::service(ModuleCatalog::class)->rows()['rows'], static fn (CatalogRow $row): bool => null !== $row->installed && !$row->selected))[0] ?? self::fail('the tree has no installed module outside the suite');
+        $listing = $this->client->request('GET', self::MODULES)->filter('#rows');
+        $cells = static fn (string $name, string ...$columns): array => array_map(static fn (string $column): string => trim(self::cell($listing, $name, self::phrase($column))->text()), $columns);
 
-        self::assertSame(self::phrase('admin.catalog.taken', ['at' => new \DateTimeImmutable('2026-10-20 12:30')]), trim($catalog->filter('p.muted')->text()));
+        self::assertSame(self::phrase('admin.modules.taken', ['at' => new \DateTimeImmutable('2026-10-20 12:30')]), trim($listing->filter('p.muted')->text()));
         self::assertSame(
-            [self::phrase(CoreKind::Sms->label()), '1.2.0', 'repo.packagist.org'],
-            array_map(static fn (string $column): string => trim(self::cell($catalog, 'acme/till', self::phrase($column))->text()), ['admin.modules.kind', 'admin.catalog.version', 'admin.catalog.repository']),
+            [self::phrase(CoreKind::Sms->label()), '1.2.0', 'repo.packagist.org', self::phrase(ModuleState::Available->label())],
+            $cells('acme/till', 'admin.modules.kind', 'admin.modules.version', 'admin.modules.repository', 'admin.modules.status'),
         );
-        self::assertSame(InstalledVersions::getPrettyVersion('adzercms/admin'), trim(self::cell($catalog, 'adzercms/admin', self::phrase('admin.catalog.installed'))->text()));
+        self::assertSame(
+            [InstalledVersions::getPrettyVersion('adzercms/admin').' '.self::phrase('admin.modules.update', ['version' => '1.0.x-dev']), self::phrase(ModuleState::Enabled->label())],
+            $cells('adzercms/admin', 'admin.modules.version', 'admin.modules.status'),
+            'an installed module names its version and the newer one of the catalog',
+        );
+        self::assertSame([self::phrase(ModuleState::Disabled->label())], $cells($idle->name, 'admin.modules.status'));
 
-        $chosen = $this->fragment(self::CATALOG.'&catalog_category=messaging')->filter('#catalog tbody tr td:first-child strong')->each(static fn (Crawler $name): string => trim($name->text()));
-        self::assertContains('acme/till', $chosen);
-        self::assertNotContains('acme/shop', $chosen);
-        self::assertNotContains('adzercms/admin', $chosen);
+        $names = fn (string $query): array => $this->fragment(self::MODULES.'?'.$query)->filter('#rows tbody tr td:first-child strong')->each(static fn (Crawler $name): string => trim($name->text()));
+        $category = $names('category=messaging');
+        self::assertContains('acme/till', $category);
+        self::assertNotContains('acme/shop', $category);
+        self::assertNotContains('adzercms/admin', $category);
+        self::assertEqualsCanonicalizing(['acme/till', 'acme/shop'], $names('scope='.ModuleScope::Available->value));
+        self::assertSame(['adzercms/admin'], $names('scope='.ModuleScope::Updatable->value));
+        $installed = $names('scope='.ModuleScope::Installed->value);
+        self::assertContains('adzercms/admin', $installed);
+        self::assertContains($idle->name, $installed);
+        self::assertNotContains('acme/till', $installed);
     }
 
     #[Group('ACMS-CORE-0960')]
@@ -169,12 +196,12 @@ final class ModuleWebTest extends SchemaTestCase
         $this->offer('acme/shop', '1.0.0');
         $this->mark('acme/till', self::commit('acme/till', '1.2.0'));
         self::command('adzercms:modules')->execute([]);
-        $page = $this->client->request('GET', self::CATALOG);
-        $version = static fn (string $name): string => trim(self::cell($page->filter('#catalog'), $name, self::phrase('admin.catalog.version'))->text());
+        $page = $this->client->request('GET', self::MODULES);
+        $version = static fn (string $name): string => trim(self::cell($page->filter('#rows'), $name, self::phrase('admin.modules.version'))->text());
 
-        self::assertSame(['1.2.0 '.self::phrase('admin.catalog.verified'), '1.0.0'], [$version('acme/till'), $version('acme/shop')]);
+        self::assertSame(['1.2.0 '.self::phrase('admin.modules.verified'), '1.0.0'], [$version('acme/till'), $version('acme/shop')]);
         self::assertSame([null], self::confirmations($page, 'acme/till'));
-        self::assertSame([self::phrase('admin.catalog.unverified', ['package' => 'acme/shop'])], self::confirmations($page, 'acme/shop'));
+        self::assertSame([self::phrase('admin.modules.unverified', ['package' => 'acme/shop'])], self::confirmations($page, 'acme/shop'));
     }
 
     #[Group('ACMS-CORE-0145')]
@@ -186,9 +213,9 @@ final class ModuleWebTest extends SchemaTestCase
         $this->offer('acme/shop', '1.0.0');
         self::command('adzercms:modules')->execute([]);
 
-        self::assertSame([], self::actions($this->client->request('GET', self::CATALOG), 'acme/shop'));
+        self::assertSame([], self::actions($this->client->request('GET', self::MODULES), 'acme/shop'));
         $this->post('/admin/modules/operation/install?package=acme/shop');
-        self::assertSame(self::phrase('core.module.refusal.versioned'), self::toast($this->arrive(self::OPERATIONS), 'error'));
+        self::assertSame(self::phrase('core.module.refusal.versioned'), self::toast($this->arrive(self::MODULES), 'error'));
     }
 
     #[Group('ACMS-CORE-0935')]
@@ -199,28 +226,35 @@ final class ModuleWebTest extends SchemaTestCase
     {
         $this->tree();
         $this->answerCatalog();
-        $this->listed(['acme/shop']);
+        $this->listed(['acme/shop', 'adzercms/admin']);
         $this->offer('acme/shop', '1.0.0');
+        $this->branch('adzercms/admin', '1.0.x-dev');
         self::command('adzercms:modules')->execute([]);
 
         $rows = self::service(ModuleCatalog::class)->rows()['rows'];
         $idle = array_values(array_filter($rows, static fn (CatalogRow $row): bool => null !== $row->installed && !$row->selected))[0] ?? self::fail('the tree has no installed module outside the suite');
         $chosen = array_values(array_filter($rows, static fn (CatalogRow $row): bool => $row->selected && CoreKind::Admin !== $row->kind))[0] ?? self::fail('the suite selects no module beside the admin panel');
-        $page = $this->client->request('GET', self::CATALOG);
-        self::assertSame([self::phrase(ModuleAction::Install->label())], self::actions($page, 'acme/shop'));
-        self::assertSame([self::phrase(ModuleAction::Update->label())], self::actions($page, 'adzercms/admin'));
-        self::assertSame(array_map(static fn (ModuleAction $action): string => self::phrase($action->label()), [ModuleAction::Update, ModuleAction::Disable]), self::actions($page, $chosen->name));
-        self::assertSame(array_map(static fn (ModuleAction $action): string => self::phrase($action->label()), [ModuleAction::Update, ModuleAction::Enable, ModuleAction::Remove]), self::actions($page, $idle->name));
+        $labels = static fn (ModuleAction ...$actions): array => array_map(static fn (ModuleAction $action): string => self::phrase($action->label()), $actions);
+        $page = $this->client->request('GET', self::MODULES);
+        self::assertSame($labels(ModuleAction::Install), self::actions($page, 'acme/shop'));
+        self::assertSame($labels(ModuleAction::Update), self::actions($page, 'adzercms/admin'), 'the update goes with a newer version of the catalog only');
+        self::assertSame($labels(ModuleAction::Disable), self::actions($page, $chosen->name));
+        self::assertSame($labels(ModuleAction::Enable, ModuleAction::Remove), self::actions($page, $idle->name));
 
         $this->post('/admin/modules/operation/install?package=acme/shop');
-        self::assertResponseRedirects(self::OPERATIONS, message: 'an operation goes to its tab');
+        self::assertResponseRedirects(self::MODULES, message: 'the operation shows its progress in its row');
         $this->post('/admin/modules/operation/remove?package=acme/shop');
-        $page = $this->arrive(self::OPERATIONS);
+        $page = $this->arrive(self::MODULES);
         self::assertSame(self::phrase('core.module.refusal.action'), self::toast($page, 'error'));
+        self::assertSame([], self::actions($page, 'acme/shop'), 'a row with an open operation takes no other one');
+        self::assertSame(
+            self::phrase(OperationState::Pending->label()).' '.self::phrase(ModuleAction::Install->label()),
+            trim(self::cell($page->filter('#rows'), 'acme/shop', self::phrase('admin.modules.status'))->text()),
+        );
         $this->post('/admin/modules/operation/enable?package='.$idle->name);
-        $this->post('/admin/modules/operation/update?package='.$idle->name);
-        $page = $this->arrive(self::OPERATIONS);
-        self::assertSame(self::phrase('core.module.refusal.open', ['package' => $idle->name]), self::toast($page, 'error'));
+        $this->post('/admin/modules/operation/enable?package='.$idle->name);
+        self::assertSame(self::phrase('core.module.refusal.open', ['package' => $idle->name]), self::toast($this->arrive(self::MODULES), 'error'));
+        $page = $this->client->request('GET', self::OPERATIONS);
         self::assertSame(
             [[$idle->name, self::phrase(ModuleAction::Enable->label()), self::phrase(OperationState::Pending->label())], ['acme/shop', self::phrase(ModuleAction::Install->label()), self::phrase(OperationState::Pending->label())]],
             $page->filter('#operations tbody tr')->each(static fn (Crawler $row): array => \array_slice($row->filter('td')->each(static fn (Crawler $cell): string => trim($cell->text())), 0, 3)),
@@ -283,7 +317,7 @@ final class ModuleWebTest extends SchemaTestCase
         $tree = $this->tree(__DIR__.'/Fixture/site');
         $this->answerCatalog();
         $this->listed([$package]);
-        $this->offer($package, '1.0.0');
+        ModuleAction::Update === $action ? $this->branch($package, '1.0.x-dev') : $this->offer($package, '1.0.0');
         if ($zipped) {
             $this->post('/admin/modules/sources/zip', [], ['archive' => $this->archive(['composer.json' => json_encode(self::manifest($package, '1.0.0'), \JSON_THROW_ON_ERROR)])]);
         }
@@ -379,12 +413,12 @@ final class ModuleWebTest extends SchemaTestCase
 
     private static function buttons(Crawler $page, string $name): Crawler
     {
-        return $page->filter('#catalog tbody tr')->reduce(static fn (Crawler $row): bool => $name === trim($row->filter('td strong')->text()))->filter('td.row-actions button');
+        return $page->filter('#rows tbody tr')->reduce(static fn (Crawler $row): bool => $name === trim($row->filter('td strong')->text()))->filter('td.row-actions button');
     }
 
     /** @return list<string> */
     private static function cards(Crawler $listing): array
     {
-        return $listing->filter('#rows tbody tr')->each(static fn (Crawler $row): string => (string) $row->attr('data-href'));
+        return $listing->filter('#rows tbody tr[data-href]')->each(static fn (Crawler $row): string => (string) $row->attr('data-href'));
     }
 }

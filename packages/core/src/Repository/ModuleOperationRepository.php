@@ -13,6 +13,8 @@ use Doctrine\Persistence\ManagerRegistry;
 /** @extends ServiceEntityRepository<ModuleOperation> */
 class ModuleOperationRepository extends ServiceEntityRepository
 {
+    private const OPEN = [OperationState::Pending->value, OperationState::Running->value];
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ModuleOperation::class);
@@ -24,10 +26,21 @@ class ModuleOperationRepository extends ServiceEntityRepository
             ->where('o.package = :package')
             ->andWhere('o.state IN (:open)')
             ->setParameter('package', $package)
-            ->setParameter('open', [OperationState::Pending->value, OperationState::Running->value])
+            ->setParameter('open', self::OPEN)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /** @return array<string, ModuleOperation> */
+    public function opened(): array
+    {
+        $opened = [];
+        foreach ($this->findBy(['state' => self::OPEN]) as $operation) {
+            $opened[$operation->getPackage()] = $operation;
+        }
+
+        return $opened;
     }
 
     public function next(): ?ModuleOperation

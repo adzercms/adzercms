@@ -85,7 +85,7 @@ final class LiveChanges implements ResetInterface
                 }
 
                 $owner = $source->owner($entity);
-                if (null !== $owner->getId()) {
+                if (null !== $owner?->getId()) {
                     $this->channels[$hub->personal($this->names->subject($owner))] = true;
                 }
                 if ($source->staff()) {

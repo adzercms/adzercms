@@ -12,42 +12,34 @@
 {% endblock %}
 
 {% block page %}
-{% set labels = {modules: 'admin.menu.modules'|trans, catalog: 'admin.catalog.title'|trans, sources: 'admin.sources.title'|trans, operations: 'admin.operations.title'|trans} %}
+{% set labels = {modules: 'admin.menu.modules'|trans, sources: 'admin.sources.title'|trans, operations: 'admin.operations.title'|trans} %}
 <nav class="tabs">
     {% for key in tabs %}
         <a class="tab {{ tab == key ? 'active' }}" href="{{ path('admin_modules', {tab: key}) }}">{{ labels[key] }}</a>
     {% endfor %}
 </nav>
 {% if tab == 'modules' %}
-    {% embed '@Theme/_table.html.twig' %}
-        {% block row %}
-            <tr class="clickable-row" data-href="{{ path('admin_module', {key: row.key}) }}">
-                <td class="{{ table.aside('name') }}"><strong>{{ row.name }}</strong></td>
-                <td class="{{ table.aside('description') }}">{{ row.description }}</td>
-                <td class="row-actions">
-                    {% if row.settings %}
-                        {% include '@Theme/_actions.html.twig' with {actions: [{label: 'admin.modules.settings', href: path('admin_module', {key: row.key}) ~ '#settings'}]} %}
-                    {% endif %}
-                </td>
-            </tr>
-        {% endblock %}
-    {% endembed %}
-{% elseif tab == 'catalog' %}
-    {% embed '@Theme/_table.html.twig' %}
+    {% embed '@Theme/_table.html.twig' with {live: true} %}
         {% block above %}
-            <p class="muted">{{ taken ? 'admin.catalog.taken'|trans({at: taken}) : 'admin.catalog.untaken'|trans }}</p>
-            {% if versioned %}<p class="hint">{{ 'admin.catalog.versioned'|trans }}</p>{% endif %}
+            <p class="muted">{{ taken ? 'admin.modules.taken'|trans({at: taken}) : 'admin.modules.untaken'|trans }}</p>
+            {% if versioned %}<p class="hint">{{ 'admin.modules.versioned'|trans }}</p>{% endif %}
         {% endblock %}
         {% block row %}
-            <tr>
+            <tr{% if row.card %} class="clickable-row" data-href="{{ row.card }}"{% endif %}>
                 <td class="{{ table.aside('name') }}">
                     {% if row.link %}<a href="{{ row.link }}" target="_blank" rel="noopener"><strong>{{ row.name }}</strong></a>{% else %}<strong>{{ row.name }}</strong>{% endif %}
                     {% if row.description %}<br><span class="muted">{{ row.description }}</span>{% endif %}
                 </td>
                 <td class="{{ table.aside('kind') }}">{{ row.kind }}</td>
-                <td class="{{ table.aside('version') }}">{{ row.version ?: blank() }}{% if row.verified %} {{ badge(row.verified) }}{% endif %}</td>
-                <td class="{{ table.aside('installed') }}">{{ row.installed ?: blank() }}{% if row.installed_verified %} {{ badge(row.installed_verified) }}{% endif %}</td>
+                <td class="{{ table.aside('version') }}">
+                    {{ row.version ?: blank() }}{% if row.verified %} {{ badge(row.verified) }}{% endif %}
+                    {% if row.update %}<br><span class="muted">{{ 'admin.modules.update'|trans({version: row.update}) }}</span>{% if row.update_verified %} {{ badge(row.update_verified) }}{% endif %}{% endif %}
+                </td>
                 <td class="{{ table.aside('repository') }}">{{ row.repository ?: blank() }}</td>
+                <td class="{{ table.aside('state') }}">
+                    {{ badge(row.state) }}
+                    {% if row.operation %}<br><span class="muted">{{ row.operation|trans }}</span>{% endif %}
+                </td>
                 <td class="row-actions">{% include '@Theme/_actions.html.twig' with {actions: row.actions} %}</td>
             </tr>
         {% endblock %}

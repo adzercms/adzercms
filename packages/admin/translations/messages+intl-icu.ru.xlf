@@ -1,78 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
-    <unit id="admin.catalog.category">
-      <segment>
-        <source>admin.catalog.category</source>
-        <target>Любая категория</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.empty">
-      <segment>
-        <source>admin.catalog.empty</source>
-        <target>Нет модулей</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.installed">
-      <segment>
-        <source>admin.catalog.installed</source>
-        <target>Установлена</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.package">
-      <segment>
-        <source>admin.catalog.package</source>
-        <target>Пакет</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.repository">
-      <segment>
-        <source>admin.catalog.repository</source>
-        <target>Репозиторий</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.taken">
-      <segment>
-        <source>admin.catalog.taken</source>
-        <target>Каталог на {at, date, ::yMMddjmm}</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.title">
-      <segment>
-        <source>admin.catalog.title</source>
-        <target>Пакеты</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.untaken">
-      <segment>
-        <source>admin.catalog.untaken</source>
-        <target>Каталог ещё не снят: его снимает задание adzercms:modules раз в сутки и при смене источников</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.unverified">
-      <segment>
-        <source>admin.catalog.unverified</source>
-        <target>Версия {package} не проверена. Продолжить?</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.verified">
-      <segment>
-        <source>admin.catalog.verified</source>
-        <target>проверен</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.version">
-      <segment>
-        <source>admin.catalog.version</source>
-        <target>Версия</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.versioned">
-      <segment>
-        <source>admin.catalog.versioned</source>
-        <target>Сайт под git: модули меняет коммит, каталог операций не принимает</target>
-      </segment>
-    </unit>
     <unit id="admin.credentials.cleared">
       <segment>
         <source>admin.credentials.cleared</source>
@@ -157,6 +85,12 @@
         <target>Модуль {name}</target>
       </segment>
     </unit>
+    <unit id="admin.modules.category">
+      <segment>
+        <source>admin.modules.category</source>
+        <target>Любая категория</target>
+      </segment>
+    </unit>
     <unit id="admin.modules.description">
       <segment>
         <source>admin.modules.description</source>
@@ -181,16 +115,112 @@
         <target>Модуль</target>
       </segment>
     </unit>
+    <unit id="admin.modules.repository">
+      <segment>
+        <source>admin.modules.repository</source>
+        <target>Источник</target>
+      </segment>
+    </unit>
     <unit id="admin.modules.schema">
       <segment>
         <source>admin.modules.schema</source>
         <target>Схема</target>
       </segment>
     </unit>
+    <unit id="admin.modules.scope.all">
+      <segment>
+        <source>admin.modules.scope.all</source>
+        <target>Все</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.scope.available">
+      <segment>
+        <source>admin.modules.scope.available</source>
+        <target>Доступные</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.scope.installed">
+      <segment>
+        <source>admin.modules.scope.installed</source>
+        <target>Установленные</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.scope.updatable">
+      <segment>
+        <source>admin.modules.scope.updatable</source>
+        <target>С обновлением</target>
+      </segment>
+    </unit>
     <unit id="admin.modules.settings">
       <segment>
         <source>admin.modules.settings</source>
         <target>Настройки</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.state.available">
+      <segment>
+        <source>admin.modules.state.available</source>
+        <target>Доступен</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.state.disabled">
+      <segment>
+        <source>admin.modules.state.disabled</source>
+        <target>Выключен</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.state.enabled">
+      <segment>
+        <source>admin.modules.state.enabled</source>
+        <target>Включён</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.status">
+      <segment>
+        <source>admin.modules.status</source>
+        <target>Статус</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.taken">
+      <segment>
+        <source>admin.modules.taken</source>
+        <target>Каталог на {at, date, ::yMMddjmm}</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.untaken">
+      <segment>
+        <source>admin.modules.untaken</source>
+        <target>Каталог ещё не снят: его снимает задание adzercms:modules раз в сутки и при смене источников</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.unverified">
+      <segment>
+        <source>admin.modules.unverified</source>
+        <target>Версия {package} не проверена. Продолжить?</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.update">
+      <segment>
+        <source>admin.modules.update</source>
+        <target>обновление {version}</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.verified">
+      <segment>
+        <source>admin.modules.verified</source>
+        <target>проверен</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.version">
+      <segment>
+        <source>admin.modules.version</source>
+        <target>Версия</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.versioned">
+      <segment>
+        <source>admin.modules.versioned</source>
+        <target>Сайт под git: модули меняет коммит, перечень операций не принимает</target>
       </segment>
     </unit>
     <unit id="admin.operations.action">
@@ -221,6 +251,12 @@
       <segment>
         <source>admin.operations.finished</source>
         <target>Исполнена</target>
+      </segment>
+    </unit>
+    <unit id="admin.operations.package">
+      <segment>
+        <source>admin.operations.package</source>
+        <target>Пакет</target>
       </segment>
     </unit>
     <unit id="admin.operations.state">

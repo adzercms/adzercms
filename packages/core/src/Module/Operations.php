@@ -25,12 +25,14 @@ final readonly class Operations
     /** @return list<ModuleAction> */
     public function actions(CatalogRow $row): array
     {
+        $update = $row->updatable ? [ModuleAction::Update] : [];
+
         return match (true) {
             $this->tree->versioned() => [],
             null === $row->installed => [ModuleAction::Install],
-            $row->selected && CoreKind::Admin === $row->kind => [ModuleAction::Update],
-            $row->selected => [ModuleAction::Update, ModuleAction::Disable],
-            default => [ModuleAction::Update, ModuleAction::Enable, ModuleAction::Remove],
+            $row->selected && CoreKind::Admin === $row->kind => $update,
+            $row->selected => [...$update, ModuleAction::Disable],
+            default => [...$update, ModuleAction::Enable, ModuleAction::Remove],
         };
     }
 

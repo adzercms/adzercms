@@ -85,9 +85,12 @@ trait CatalogAnswers
         $this->packages[$name] = [self::manifest($name, $version, $type, $provide, $categories)];
     }
 
-    private function branch(string $name, string $alias): void
+    private function branch(string $name, string $alias, ?string $reference = null): void
     {
-        $this->packages[$name.'~dev'] = [['default-branch' => true] + array_replace_recursive(self::manifest($name, 'dev-main'), ['extra' => ['branch-alias' => ['dev-main' => $alias]]])];
+        $this->packages[$name.'~dev'] = [['default-branch' => true] + array_replace_recursive(self::manifest($name, 'dev-main'), [
+            'extra' => ['branch-alias' => ['dev-main' => $alias]],
+            'source' => ['reference' => $reference ?? self::commit($name, 'dev-main')],
+        ])];
     }
 
     private function host(string $repository, string $name, string $version): void

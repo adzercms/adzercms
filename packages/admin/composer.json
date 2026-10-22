@@ -32,6 +32,9 @@
     "provide": {
         "adzercms/admin-implementation": "self.version"
     },
+    "suggest": {
+        "adzercms/realtime": "module operations as live entities"
+    },
     "autoload": {
         "psr-4": {
             "AdzerCMS\\Admin\\": "src/"

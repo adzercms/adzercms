@@ -7,6 +7,7 @@ namespace AdzerCMS\Admin;
 use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Module\Kind;
 use AdzerCMS\Contracts\Module\Module;
+use AdzerCMS\Realtime\LiveEntities;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -22,6 +23,10 @@ final class AdminBundle extends Module
     {
         $container->services()->defaults()->autowire()->autoconfigure()
             ->load('AdzerCMS\\Admin\\', '../src/')
-            ->exclude(['../src/Entity/', '../src/AdminBundle.php']);
+            ->exclude(['../src/Entity/', '../src/AdminBundle.php', '../src/LiveModules.php']);
+
+        if (interface_exists(LiveEntities::class)) {
+            $container->services()->set(LiveModules::class)->autowire()->autoconfigure();
+        }
     }
 }

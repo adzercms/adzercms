@@ -10,6 +10,8 @@ use AdzerCMS\Core\Composer\Artifacts;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Composer\Repositories;
 use Composer\InstalledVersions;
+use Composer\Semver\Comparator;
+use Composer\Semver\VersionParser;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 use function Symfony\Component\Clock\now;
@@ -20,6 +22,7 @@ final readonly class Catalog
     private const LIFETIME = 604800;
     private const AGE = '-1 day';
     private const DOWN_AGE = '-15 minutes';
+    private const DEV = 'dev';
 
     /** @param array<string, class-string> $bundles */
     public function __construct(
@@ -104,13 +107,14 @@ final readonly class Catalog
         $marks = $held['marks'];
         $rows = [];
         foreach ($held['packages'] as $name => $row) {
-            $rows[$name] = new CatalogRow($name, $row['package'], self::kind($row['package']->kind, $kinds), $row['package']->version, null, $row['repository'], false, self::marked($marks, $name, $row['package']->reference), false);
+            $rows[$name] = new CatalogRow($name, $row['package'], self::kind($row['package']->kind, $kinds), $row['package']->version, null, $row['repository'], false, self::marked($marks, $name, $row['package']->reference), false, false, null);
         }
         foreach (array_unique(InstalledVersions::getInstalledPackagesByType(Registry::TYPE)) as $name) {
             $installed = (string) InstalledVersions::getPrettyVersion($name);
             $offered = $held['packages'][$name] ?? null;
             $manifest = null === $offered ? Registry::manifest($name) : [];
             $module = $registry->package($name);
+            $reference = InstalledVersions::getReference($name);
             $rows[$name] = new CatalogRow(
                 $name,
                 $offered['package'] ?? Package::manifest(\is_array($manifest) ? $manifest : [], $installed),
@@ -120,11 +124,29 @@ final readonly class Catalog
                 $offered['repository'] ?? null,
                 null !== $module && \in_array($module->bundle, $this->bundles, true),
                 self::marked($marks, $name, $offered['package']->reference ?? null),
-                self::marked($marks, $name, InstalledVersions::getReference($name)),
+                self::marked($marks, $name, $reference),
+                null !== $offered && self::newer($offered['package'], $installed, $reference),
+                $module?->key,
             );
         }
 
         return ['at' => $held['at'], 'rows' => array_values($rows), 'down' => $held['down']];
+    }
+
+    private static function newer(Package $offered, string $installed, ?string $reference): bool
+    {
+        $branch = self::DEV === VersionParser::parseStability($offered->version);
+
+        if ($branch !== (self::DEV === VersionParser::parseStability($installed))) {
+            return false;
+        }
+
+        if ($branch) {
+            return null !== $offered->reference && $offered->reference !== $reference;
+        }
+        $parser = new VersionParser();
+
+        return Comparator::greaterThan($parser->normalize($offered->version), $parser->normalize($installed));
     }
 
     /** @param array<string, list<string>> $marks */

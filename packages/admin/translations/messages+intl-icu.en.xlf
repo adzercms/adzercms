@@ -1,78 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
-    <unit id="admin.catalog.category">
-      <segment>
-        <source>admin.catalog.category</source>
-        <target>Any category</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.empty">
-      <segment>
-        <source>admin.catalog.empty</source>
-        <target>No modules</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.installed">
-      <segment>
-        <source>admin.catalog.installed</source>
-        <target>Installed</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.package">
-      <segment>
-        <source>admin.catalog.package</source>
-        <target>Package</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.repository">
-      <segment>
-        <source>admin.catalog.repository</source>
-        <target>Repository</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.taken">
-      <segment>
-        <source>admin.catalog.taken</source>
-        <target>Catalog as of {at, date, ::yMMddjmm}</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.title">
-      <segment>
-        <source>admin.catalog.title</source>
-        <target>Packages</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.untaken">
-      <segment>
-        <source>admin.catalog.untaken</source>
-        <target>The catalog is not taken yet: the adzercms:modules job takes it once a day and on a change of sources</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.unverified">
-      <segment>
-        <source>admin.catalog.unverified</source>
-        <target>The {package} version is not verified. Continue?</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.verified">
-      <segment>
-        <source>admin.catalog.verified</source>
-        <target>verified</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.version">
-      <segment>
-        <source>admin.catalog.version</source>
-        <target>Version</target>
-      </segment>
-    </unit>
-    <unit id="admin.catalog.versioned">
-      <segment>
-        <source>admin.catalog.versioned</source>
-        <target>The site is under git: modules change by a commit, the catalog takes no operations</target>
-      </segment>
-    </unit>
     <unit id="admin.credentials.cleared">
       <segment>
         <source>admin.credentials.cleared</source>
@@ -157,6 +85,12 @@
         <target>Module {name}</target>
       </segment>
     </unit>
+    <unit id="admin.modules.category">
+      <segment>
+        <source>admin.modules.category</source>
+        <target>Any category</target>
+      </segment>
+    </unit>
     <unit id="admin.modules.description">
       <segment>
         <source>admin.modules.description</source>
@@ -181,16 +115,112 @@
         <target>Module</target>
       </segment>
     </unit>
+    <unit id="admin.modules.repository">
+      <segment>
+        <source>admin.modules.repository</source>
+        <target>Source</target>
+      </segment>
+    </unit>
     <unit id="admin.modules.schema">
       <segment>
         <source>admin.modules.schema</source>
         <target>Schema</target>
       </segment>
     </unit>
+    <unit id="admin.modules.scope.all">
+      <segment>
+        <source>admin.modules.scope.all</source>
+        <target>All</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.scope.available">
+      <segment>
+        <source>admin.modules.scope.available</source>
+        <target>Available</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.scope.installed">
+      <segment>
+        <source>admin.modules.scope.installed</source>
+        <target>Installed</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.scope.updatable">
+      <segment>
+        <source>admin.modules.scope.updatable</source>
+        <target>With an update</target>
+      </segment>
+    </unit>
     <unit id="admin.modules.settings">
       <segment>
         <source>admin.modules.settings</source>
         <target>Settings</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.state.available">
+      <segment>
+        <source>admin.modules.state.available</source>
+        <target>Available</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.state.disabled">
+      <segment>
+        <source>admin.modules.state.disabled</source>
+        <target>Disabled</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.state.enabled">
+      <segment>
+        <source>admin.modules.state.enabled</source>
+        <target>Enabled</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.status">
+      <segment>
+        <source>admin.modules.status</source>
+        <target>Status</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.taken">
+      <segment>
+        <source>admin.modules.taken</source>
+        <target>Catalog as of {at, date, ::yMMddjmm}</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.untaken">
+      <segment>
+        <source>admin.modules.untaken</source>
+        <target>The catalog is not taken yet: the adzercms:modules job takes it once a day and on a change of sources</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.unverified">
+      <segment>
+        <source>admin.modules.unverified</source>
+        <target>The {package} version is not verified. Continue?</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.update">
+      <segment>
+        <source>admin.modules.update</source>
+        <target>update {version}</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.verified">
+      <segment>
+        <source>admin.modules.verified</source>
+        <target>verified</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.version">
+      <segment>
+        <source>admin.modules.version</source>
+        <target>Version</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.versioned">
+      <segment>
+        <source>admin.modules.versioned</source>
+        <target>The site is under git: modules change by a commit, the list takes no operations</target>
       </segment>
     </unit>
     <unit id="admin.operations.action">
@@ -221,6 +251,12 @@
       <segment>
         <source>admin.operations.finished</source>
         <target>Finished</target>
+      </segment>
+    </unit>
+    <unit id="admin.operations.package">
+      <segment>
+        <source>admin.operations.package</source>
+        <target>Package</target>
       </segment>
     </unit>
     <unit id="admin.operations.state">

@@ -19,6 +19,8 @@ final readonly class CatalogRow
         public bool $selected,
         public bool $verified,
         public bool $installedVerified,
+        public bool $updatable,
+        public ?string $key,
     ) {
     }
 }
