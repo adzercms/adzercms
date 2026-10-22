@@ -65,6 +65,33 @@ class LeadRepository extends ServiceEntityRepository
             ->getSingleColumnResult()));
     }
 
+    /** @return list<Lead> */
+    public function sameClient(Lead $lead): array
+    {
+        $builder = $this->createQueryBuilder('l')
+            ->addSelect('s')
+            ->join('l.stage', 's')
+            ->where('l.id <> :lead')
+            ->setParameter('lead', $lead->getId())
+            ->orderBy('l.id', \SortDirection::Descending);
+
+        $match = $builder->expr()->orX();
+        foreach (['phone' => $lead->getPhone(), 'email' => $lead->getEmail()] as $field => $contact) {
+            if (null !== $contact) {
+                $match->add('l.'.$field.' = :'.$field);
+                $builder->setParameter($field, $contact);
+            }
+        }
+        if (0 === $match->count()) {
+            return [];
+        }
+
+        /** @var list<Lead> $leads */
+        $leads = $builder->andWhere($match)->getQuery()->getResult();
+
+        return $leads;
+    }
+
     /** @param list<int> $found */
     public function listing(Slice $slice, string $term, array $found, string $topic, ?int $manager, ?int $stage): QueryBuilder
     {

@@ -7,7 +7,7 @@ namespace AdzerCMS\Core\Ui;
 final class Split
 {
     private const WORDS = '/[\s,]+/';
-    private const LINES = '/[\r\n;]+/';
+    private const LINES = '/\s*[\r\n;]+\s*/';
     private const ITEMS = '/\s*,\s*/';
 
     /** @return list<string> */

@@ -85,6 +85,18 @@
         <target>Телефон</target>
       </segment>
     </unit>
+    <unit id="leads.field.reason">
+      <segment>
+        <source>leads.field.reason</source>
+        <target>Причина отказа</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.stage">
+      <segment>
+        <source>leads.field.stage</source>
+        <target>Стадия</target>
+      </segment>
+    </unit>
     <unit id="leads.field.topic">
       <segment>
         <source>leads.field.topic</source>
@@ -119,6 +131,18 @@
       <segment>
         <source>leads.flash.dropped</source>
         <target>Заявка {number} удалена</target>
+      </segment>
+    </unit>
+    <unit id="leads.flash.noted">
+      <segment>
+        <source>leads.flash.noted</source>
+        <target>Заметка добавлена</target>
+      </segment>
+    </unit>
+    <unit id="leads.flash.saved">
+      <segment>
+        <source>leads.flash.saved</source>
+        <target>Заявка {number} сохранена</target>
       </segment>
     </unit>
     <unit id="leads.flash.stage_added">
@@ -193,6 +217,30 @@
         <target>Лента</target>
       </segment>
     </unit>
+    <unit id="leads.lead.handling">
+      <segment>
+        <source>leads.lead.handling</source>
+        <target>Ведение</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.note">
+      <segment>
+        <source>leads.lead.note</source>
+        <target>Заметка</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.note_add">
+      <segment>
+        <source>leads.lead.note_add</source>
+        <target>Добавить заметку</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.others">
+      <segment>
+        <source>leads.lead.others</source>
+        <target>Заявки клиента</target>
+      </segment>
+    </unit>
     <unit id="leads.lead.title">
       <segment>
         <source>leads.lead.title</source>
@@ -211,16 +259,34 @@
         <target>Новая заявка</target>
       </segment>
     </unit>
+    <unit id="leads.refusal.amount">
+      <segment>
+        <source>leads.refusal.amount</source>
+        <target>Сумма не распознана</target>
+      </segment>
+    </unit>
     <unit id="leads.refusal.contact">
       <segment>
         <source>leads.refusal.contact</source>
         <target>Укажите телефон или почту</target>
       </segment>
     </unit>
+    <unit id="leads.refusal.due">
+      <segment>
+        <source>leads.refusal.due</source>
+        <target>Дата и время не распознаны</target>
+      </segment>
+    </unit>
     <unit id="leads.refusal.email">
       <segment>
         <source>leads.refusal.email</source>
         <target>Адрес почты не распознан</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.manager">
+      <segment>
+        <source>leads.refusal.manager</source>
+        <target>Менеджер — один из администраторов</target>
       </segment>
     </unit>
     <unit id="leads.refusal.message">
@@ -235,6 +301,12 @@
         <target>Имя — до {limit} символов</target>
       </segment>
     </unit>
+    <unit id="leads.refusal.note">
+      <segment>
+        <source>leads.refusal.note</source>
+        <target>Заметка — от 1 до {limit} символов</target>
+      </segment>
+    </unit>
     <unit id="leads.refusal.often">
       <segment>
         <source>leads.refusal.often</source>
@@ -245,6 +317,18 @@
       <segment>
         <source>leads.refusal.phone</source>
         <target>Номер телефона не распознан</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.reason">
+      <segment>
+        <source>leads.refusal.reason</source>
+        <target>Причина отказа — от 1 до {limit} символов</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.stage">
+      <segment>
+        <source>leads.refusal.stage</source>
+        <target>Выберите стадию</target>
       </segment>
     </unit>
     <unit id="leads.refusal.stage_group">
@@ -269,6 +353,12 @@
       <segment>
         <source>leads.refusal.stage_last</source>
         <target>Последняя стадия группы остаётся</target>
+      </segment>
+    </unit>
+    <unit id="leads.setting.reasons">
+      <segment>
+        <source>leads.setting.reasons</source>
+        <target>Причины отказа через точку с запятой</target>
       </segment>
     </unit>
     <unit id="leads.slice.closed">

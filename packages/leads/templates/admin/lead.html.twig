@@ -1,5 +1,7 @@
 {% extends '@Theme/panel.html.twig' %}
 
+{% import '@Leads/_fields.html.twig' as fields %}
+
 {% block title %}{{ 'leads.lead.title'|trans({number: lead.id}) }}{% endblock %}
 
 {% block heading %}<span class="record-title">{{ 'leads.lead.title'|trans({number: lead.id}) }} {{ badge(lead.stage) }}</span>{% endblock %}
@@ -62,6 +64,68 @@
     </div>
 </div>
 
+{% if others %}
+    <div class="section">
+        <div class="section-head">
+            <h3>{{ 'leads.lead.others'|trans }}</h3>
+        </div>
+        <div class="info-grid">
+            {% for other in others %}
+                <div class="info-item">
+                    <span class="info-label">{{ 'core.moment.day_time'|trans({at: other.arrived}) }}</span>
+                    <span class="info-value"><a href="{{ path('admin_lead', {id: other.id}) }}">{{ 'leads.lead.title'|trans({number: other.id}) }}</a> {{ badge(other.stage) }}</span>
+                    {{ caption(other.topic) }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+<div class="section">
+    <div class="section-head">
+        <h3>{{ 'leads.lead.handling'|trans }}</h3>
+    </div>
+    {% set refused = stages|filter(stage => stage.group == enum('AdzerCMS\\Leads\\StageGroup').Refused)|map(stage => stage.id) %}
+    <form method="post" action="{{ path('admin_lead_save', {id: lead.id}) }}">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label>{{ 'leads.field.stage'|trans }}
+                <select name="stage">
+                    {% for stage in stages %}
+                        <option value="{{ stage.id }}" {{ (input.stage ?? lead.stage.id) == stage.id ? 'selected' }}>{{ stage.label|trans }}</option>
+                    {% endfor %}
+                </select>
+                {{ fields.refusal(refusals, 'stage') }}
+            </label>
+            <label>{{ 'leads.field.manager'|trans }}
+                <select name="manager">
+                    <option value="">{{ cell(null) }}</option>
+                    {% for id, login in managers %}
+                        <option value="{{ id }}" {{ (input.manager ?? lead.manager.id ?? '') == id ? 'selected' }}>{{ login }}</option>
+                    {% endfor %}
+                </select>
+                {{ fields.refusal(refusals, 'manager') }}
+            </label>
+            <label>{{ 'leads.field.due'|trans }}
+                <input type="datetime-local" name="due" value="{{ input.due ?? (lead.due ? lead.due|date(constant('AdzerCMS\\Leads\\Handling::DUE_FORMAT')) : '') }}">
+                {{ fields.refusal(refusals, 'due') }}
+            </label>
+            <label>{{ 'leads.field.amount'|trans }}
+                <input type="text" name="amount" inputmode="decimal" value="{{ input.amount ?? (lead.amount is null ? '' : lead.amount|plain) }}">
+                {{ fields.refusal(refusals, 'amount') }}
+            </label>
+            <label class="field-wide" data-when="stage={{ refused|join('|') }}">{{ 'leads.field.reason'|trans }}
+                <input type="text" name="reason" list="lead-reasons" maxlength="{{ constant('AdzerCMS\\Leads\\Entity\\Lead::REASON') }}" value="{{ input.reason ?? lead.reason }}">
+                <datalist id="lead-reasons">
+                    {% for reason in reasons %}<option value="{{ reason }}"></option>{% endfor %}
+                </datalist>
+                {{ fields.refusal(refusals, 'reason') }}
+            </label>
+        </div>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
+    </form>
+</div>
+
 <div class="section">
     <div class="section-head">
         <h3>{{ 'leads.lead.feed'|trans }}</h3>
@@ -78,6 +142,29 @@
                 </div>
             </div>
         {% endif %}
+        {% for entry in entries %}
+            <div class="chat-message own">
+                <div class="chat-bubble">
+                    <div class="chat-head">
+                        <span class="chat-author">{{ entry.author ? authors[entry.author.id] : cell(null) }}</span>
+                        <span class="chat-time">{{ 'core.moment.day_time'|trans({at: entry.written}) }}</span>
+                    </div>
+                    <div class="chat-text">
+                        {% if entry.note %}{{ entry.note|nl2br }}{% endif %}
+                        {% for change in entry.changes %}
+                            <div>{{ ('leads.field.' ~ change.field)|trans }}: {{ cell(change.was) }} → {{ cell(change.now) }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </div>
+    <form class="chat-reply" method="post" action="{{ path('admin_lead_note', {id: lead.id}) }}">
+        {{ csrf_field() }}
+        <label>{{ 'leads.lead.note'|trans }}
+            <textarea name="note" rows="3" maxlength="{{ constant('AdzerCMS\\Leads\\Entity\\LeadEntry::NOTE') }}" required></textarea>
+        </label>
+        <button type="submit">{{ 'leads.lead.note_add'|trans }}</button>
+    </form>
 </div>
 {% endblock %}

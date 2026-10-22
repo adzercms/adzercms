@@ -17,7 +17,6 @@ use AdzerCMS\Leads\Slice;
 use AdzerCMS\Leads\StageGroup;
 use AdzerCMS\Leads\Stages;
 use AdzerCMS\Leads\Tests\Fixture\ItemSubject;
-use Doctrine\DBAL\Types\Types;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
@@ -156,17 +155,8 @@ final class ListTest extends LeadsTestCase
 
     private function assign(Lead $lead, ?User $manager, ?\DateTimeImmutable $due = null): void
     {
-        $this->em->createQueryBuilder()
-            ->update(Lead::class, 'l')
-            ->set('l.manager', ':manager')
-            ->set('l.due', ':due')
-            ->where('l.id = :id')
-            ->setParameter('manager', $manager?->getId())
-            ->setParameter('due', $due, Types::DATETIME_IMMUTABLE)
-            ->setParameter('id', $lead->getId())
-            ->getQuery()
-            ->execute();
-        $this->em->refresh($lead);
+        $lead->handle($lead->getStage(), null === $manager ? null : $this->reread($manager), $due, $lead->getAmount(), $lead->getReason());
+        $this->em->flush();
     }
 
     /** @return list<string> */

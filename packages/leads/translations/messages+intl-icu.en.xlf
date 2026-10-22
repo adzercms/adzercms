@@ -85,6 +85,18 @@
         <target>Phone</target>
       </segment>
     </unit>
+    <unit id="leads.field.reason">
+      <segment>
+        <source>leads.field.reason</source>
+        <target>Refusal reason</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.stage">
+      <segment>
+        <source>leads.field.stage</source>
+        <target>Stage</target>
+      </segment>
+    </unit>
     <unit id="leads.field.topic">
       <segment>
         <source>leads.field.topic</source>
@@ -119,6 +131,18 @@
       <segment>
         <source>leads.flash.dropped</source>
         <target>Lead {number} deleted</target>
+      </segment>
+    </unit>
+    <unit id="leads.flash.noted">
+      <segment>
+        <source>leads.flash.noted</source>
+        <target>Note added</target>
+      </segment>
+    </unit>
+    <unit id="leads.flash.saved">
+      <segment>
+        <source>leads.flash.saved</source>
+        <target>Lead {number} saved</target>
       </segment>
     </unit>
     <unit id="leads.flash.stage_added">
@@ -193,6 +217,30 @@
         <target>Feed</target>
       </segment>
     </unit>
+    <unit id="leads.lead.handling">
+      <segment>
+        <source>leads.lead.handling</source>
+        <target>Handling</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.note">
+      <segment>
+        <source>leads.lead.note</source>
+        <target>Note</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.note_add">
+      <segment>
+        <source>leads.lead.note_add</source>
+        <target>Add note</target>
+      </segment>
+    </unit>
+    <unit id="leads.lead.others">
+      <segment>
+        <source>leads.lead.others</source>
+        <target>Leads of this client</target>
+      </segment>
+    </unit>
     <unit id="leads.lead.title">
       <segment>
         <source>leads.lead.title</source>
@@ -211,16 +259,34 @@
         <target>New lead</target>
       </segment>
     </unit>
+    <unit id="leads.refusal.amount">
+      <segment>
+        <source>leads.refusal.amount</source>
+        <target>Amount not recognized</target>
+      </segment>
+    </unit>
     <unit id="leads.refusal.contact">
       <segment>
         <source>leads.refusal.contact</source>
         <target>Enter a phone number or an email</target>
       </segment>
     </unit>
+    <unit id="leads.refusal.due">
+      <segment>
+        <source>leads.refusal.due</source>
+        <target>Date and time not recognized</target>
+      </segment>
+    </unit>
     <unit id="leads.refusal.email">
       <segment>
         <source>leads.refusal.email</source>
         <target>The email address is not recognized</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.manager">
+      <segment>
+        <source>leads.refusal.manager</source>
+        <target>The manager is one of the administrators</target>
       </segment>
     </unit>
     <unit id="leads.refusal.message">
@@ -235,6 +301,12 @@
         <target>The name is up to {limit} characters</target>
       </segment>
     </unit>
+    <unit id="leads.refusal.note">
+      <segment>
+        <source>leads.refusal.note</source>
+        <target>Note — from 1 to {limit} characters</target>
+      </segment>
+    </unit>
     <unit id="leads.refusal.often">
       <segment>
         <source>leads.refusal.often</source>
@@ -245,6 +317,18 @@
       <segment>
         <source>leads.refusal.phone</source>
         <target>The phone number is not recognized</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.reason">
+      <segment>
+        <source>leads.refusal.reason</source>
+        <target>Refusal reason — from 1 to {limit} characters</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.stage">
+      <segment>
+        <source>leads.refusal.stage</source>
+        <target>Choose a stage</target>
       </segment>
     </unit>
     <unit id="leads.refusal.stage_group">
@@ -269,6 +353,12 @@
       <segment>
         <source>leads.refusal.stage_last</source>
         <target>The last stage of a group stays</target>
+      </segment>
+    </unit>
+    <unit id="leads.setting.reasons">
+      <segment>
+        <source>leads.setting.reasons</source>
+        <target>Refusal reasons separated by semicolons</target>
       </segment>
     </unit>
     <unit id="leads.slice.closed">

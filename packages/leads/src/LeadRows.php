@@ -7,7 +7,6 @@ namespace AdzerCMS\Leads;
 use AdzerCMS\Contracts\Ui\Columns;
 use AdzerCMS\Core\Account\LoginNames;
 use AdzerCMS\Core\Entity\User;
-use AdzerCMS\Core\Repository\UserRepository;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
@@ -31,7 +30,7 @@ final readonly class LeadRows
     public function __construct(
         private LeadRepository $leads,
         private StageRepository $stages,
-        private UserRepository $users,
+        private Handling $handling,
         private LoginNames $logins,
         #[AutowireIterator(Columns::class)]
         private iterable $columns,
@@ -55,11 +54,7 @@ final readonly class LeadRows
         foreach (array_filter($this->stages->funnel(), static fn (Stage $stage): bool => $stage->getGroup()->slice() === $slice) as $stage) {
             $stages[(string) $stage->getId()] = $stage->label();
         }
-        $admins = $this->users->admins();
-        $managers = [];
-        foreach ($this->logins->ofMany($admins) as $id => $login) {
-            $managers[(string) $id] = $login;
-        }
+        $managers = $this->handling->managers();
         $topics = $this->leads->topics();
 
         $modules = array_values(array_filter([...$this->columns], static fn (Columns $columns): bool => LeadSubject::LISTING === $columns->listing()));
@@ -79,7 +74,7 @@ final readonly class LeadRows
             Column::plain('manager', t('leads.field.manager'))->aside(),
             Column::of('due', t('leads.field.due'), 'l.due'),
             Column::of('arrived', t('leads.field.arrived'), 'l.arrived')->aside(),
-            Column::plain('stage', t('leads.stage.title')),
+            Column::plain('stage', t('leads.field.stage')),
         ], 'arrived', t('leads.empty'), false, filters: array_values(array_filter([
             $tabs,
             Filter::search(),

@@ -4,18 +4,21 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Leads\Controller\Admin;
 
-use AdzerCMS\Core\Account\ContactKind;
+use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Ui\Fragment;
 use AdzerCMS\Leads\Entity\Lead;
+use AdzerCMS\Leads\Handling;
 use AdzerCMS\Leads\Intake;
+use AdzerCMS\Leads\LeadPage;
 use AdzerCMS\Leads\LeadRows;
-use AdzerCMS\Leads\Subjects;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 use function Symfony\Component\Translation\t;
@@ -25,11 +28,13 @@ use function Symfony\Component\Translation\t;
 final class LeadController extends AbstractController
 {
     private const LIST = 'admin_leads';
+    private const LEAD = 'admin_lead';
 
     public function __construct(
         private readonly LeadRows $rows,
         private readonly Intake $intake,
-        private readonly Subjects $subjects,
+        private readonly LeadPage $page,
+        private readonly Handling $handling,
         private readonly EntityManagerInterface $em,
     ) {
     }
@@ -65,14 +70,31 @@ final class LeadController extends AbstractController
         return $this->render('@Leads/admin/_new.html.twig', ['input' => $request->request->all(), 'refusals' => $refusals]);
     }
 
-    #[Route('/{id}', name: 'admin_lead', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[Route('/{id}', name: self::LEAD, requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Lead $lead): Response
     {
-        return $this->render('@Leads/admin/lead.html.twig', [
-            'lead' => $lead,
-            'contacts' => array_filter([[ContactKind::Phone, $lead->getPhone()], [ContactKind::Email, $lead->getEmail()]], static fn (array $contact): bool => null !== $contact[1]),
-            'details' => $this->subjects->details($lead),
-        ]);
+        return $this->card($lead, [], null);
+    }
+
+    #[Route('/{id}', name: 'admin_lead_save', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function save(Lead $lead, #[CurrentUser] User $user, Request $request): Response
+    {
+        $refusals = $this->handling->save($lead, $user, $request->request);
+        if ([] !== $refusals) {
+            return $this->card($lead, $refusals, $request->request->all());
+        }
+        $this->addFlash('success', t('leads.flash.saved', ['number' => $lead->getId()]));
+
+        return $this->redirectToRoute(self::LEAD, ['id' => $lead->getId()]);
+    }
+
+    #[Route('/{id}/note', name: 'admin_lead_note', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function note(Lead $lead, #[CurrentUser] User $user, Request $request): Response
+    {
+        $refusal = $this->handling->note($lead, $user, $request->request->getString(Handling::NOTE));
+        $this->addFlash(...null === $refusal ? ['success', t('leads.flash.noted')] : ['error', $refusal->reason]);
+
+        return $this->redirectToRoute(self::LEAD, ['id' => $lead->getId()]);
     }
 
     #[Route('/{id}/drop', name: 'admin_lead_drop', requirements: ['id' => '\d+'], methods: ['POST'])]
@@ -84,5 +106,14 @@ final class LeadController extends AbstractController
         $this->addFlash('success', t('leads.flash.dropped', ['number' => $number]));
 
         return $this->redirectToRoute(self::LIST);
+    }
+
+    /**
+     * @param array<string, Refusal>    $refusals
+     * @param array<string, mixed>|null $input
+     */
+    private function card(Lead $lead, array $refusals, ?array $input): Response
+    {
+        return $this->render('@Leads/admin/lead.html.twig', $this->page->context($lead, $refusals, $input), new Response(status: [] === $refusals ? Response::HTTP_OK : Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

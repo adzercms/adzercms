@@ -7,6 +7,7 @@ namespace AdzerCMS\Leads\Entity;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Leads\Repository\LeadRepository;
 use AdzerCMS\Leads\Slice;
+use AdzerCMS\Leads\StageGroup;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -140,6 +141,18 @@ class Lead
     public function price(?string $amount): void
     {
         $this->amount = $amount;
+    }
+
+    public function handle(Stage $stage, ?User $manager, ?\DateTimeImmutable $due, ?string $amount, ?string $reason): void
+    {
+        if ($stage !== $this->stage) {
+            $this->stage = $stage;
+            $this->staged = now();
+        }
+        $this->manager = $manager;
+        $this->due = $due;
+        $this->amount = $amount;
+        $this->reason = StageGroup::Refused === $stage->getGroup() ? $reason : null;
     }
 
     public function getReason(): ?string

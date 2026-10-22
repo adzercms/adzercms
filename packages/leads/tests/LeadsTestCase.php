@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Leads\Tests;
 
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -20,10 +21,13 @@ abstract class LeadsTestCase extends SchemaTestCase
 
     protected const LIST = '/admin/leads';
 
+    protected User $operator;
+
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
+        $this->operator = $this->record('79990000001')->setRole(Role::Admin);
+        $this->client->loginUser($this->operator);
         $this->em->flush();
     }
 
