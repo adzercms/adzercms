@@ -37,6 +37,7 @@
         "adzercms/support": "^1.0"
     },
     "suggest": {
+        "adzercms/realtime": "leads and their feed as live entities",
         "adzercms/support": "overdue leads in the staff digest"
     },
     "autoload": {

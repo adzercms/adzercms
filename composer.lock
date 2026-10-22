@@ -492,7 +492,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/leads",
-                "reference": "7a80db4802253ff9498046b73f34cf66fad5ef31"
+                "reference": "d5d68cef9fe8a5e07748002fc8509e3065f2d33f"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -521,6 +521,7 @@
                 "adzercms/support": "^1.0"
             },
             "suggest": {
+                "adzercms/realtime": "leads and their feed as live entities",
                 "adzercms/support": "overdue leads in the staff digest"
             },
             "type": "adzercms-module",

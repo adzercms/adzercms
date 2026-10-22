@@ -1,4 +1,4 @@
-{% embed '@Theme/_table.html.twig' %}
+{% embed '@Theme/_table.html.twig' with {live: true} %}
     {% block row %}
         <tr class="clickable-row" data-href="{{ path('admin_lead', {id: row.id}) }}">
             <td class="{{ table.aside('number') }}"><strong>{{ row.id }}</strong>{{ caption(row.name) }}</td>

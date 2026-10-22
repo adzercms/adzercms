@@ -4,7 +4,7 @@
 
 {% block title %}{{ 'leads.lead.title'|trans({number: lead.id}) }}{% endblock %}
 
-{% block heading %}<span class="record-title">{{ 'leads.lead.title'|trans({number: lead.id}) }} {{ badge(lead.stage) }}</span>{% endblock %}
+{% block heading %}<span class="record-title" id="live-lead-title" data-live>{{ 'leads.lead.title'|trans({number: lead.id}) }} {{ badge(lead.stage) }}</span>{% endblock %}
 
 {% block actions %}
     <form method="post" action="{{ path('admin_lead_drop', {id: lead.id}) }}"
@@ -64,24 +64,22 @@
     </div>
 </div>
 
-{% if others %}
-    <div class="section">
-        <div class="section-head">
-            <h3>{{ 'leads.lead.others'|trans }}</h3>
-        </div>
-        <div class="info-grid">
-            {% for other in others %}
-                <div class="info-item">
-                    <span class="info-label">{{ 'core.moment.day_time'|trans({at: other.arrived}) }}</span>
-                    <span class="info-value"><a href="{{ path('admin_lead', {id: other.id}) }}">{{ 'leads.lead.title'|trans({number: other.id}) }}</a> {{ badge(other.stage) }}</span>
-                    {{ caption(other.topic) }}
-                </div>
-            {% endfor %}
-        </div>
+<div class="section" id="live-lead-others" data-live {{ others ? '' : 'hidden' }}>
+    <div class="section-head">
+        <h3>{{ 'leads.lead.others'|trans }}</h3>
     </div>
-{% endif %}
+    <div class="info-grid">
+        {% for other in others %}
+            <div class="info-item">
+                <span class="info-label">{{ 'core.moment.day_time'|trans({at: other.arrived}) }}</span>
+                <span class="info-value"><a href="{{ path('admin_lead', {id: other.id}) }}">{{ 'leads.lead.title'|trans({number: other.id}) }}</a> {{ badge(other.stage) }}</span>
+                {{ caption(other.topic) }}
+            </div>
+        {% endfor %}
+    </div>
+</div>
 
-<div class="section">
+<div class="section" id="live-lead-handling" data-live>
     <div class="section-head">
         <h3>{{ 'leads.lead.handling'|trans }}</h3>
     </div>
@@ -130,7 +128,7 @@
     <div class="section-head">
         <h3>{{ 'leads.lead.feed'|trans }}</h3>
     </div>
-    <div class="chat">
+    <div class="chat" id="live-lead-feed" data-live>
         {% if lead.message %}
             <div class="chat-message other">
                 <div class="chat-bubble">
