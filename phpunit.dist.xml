@@ -76,6 +76,10 @@
         <testsuite name="Realtime">
             <directory>packages/realtime/tests</directory>
         </testsuite>
+        <testsuite name="Shop">
+            <directory>packages/shop/tests</directory>
+            <file>packages/core/tests/Schema/MigrationsTest.php</file>
+        </testsuite>
         <testsuite name="SberId">
             <directory>packages/sber-id/tests</directory>
         </testsuite>

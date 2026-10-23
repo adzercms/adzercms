@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" srcLang="en" trgLang="en" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="messages.en">
+    <unit id="shop.category.add">
+      <segment>
+        <source>shop.category.add</source>
+        <target>+ Category</target>
+      </segment>
+    </unit>
+    <unit id="shop.category.confirm_drop">
+      <segment>
+        <source>shop.category.confirm_drop</source>
+        <target>Remove the category {name}?</target>
+      </segment>
+    </unit>
+    <unit id="shop.category.empty">
+      <segment>
+        <source>shop.category.empty</source>
+        <target>No categories</target>
+      </segment>
+    </unit>
+    <unit id="shop.category.new">
+      <segment>
+        <source>shop.category.new</source>
+        <target>New category</target>
+      </segment>
+    </unit>
+    <unit id="shop.column.active">
+      <segment>
+        <source>shop.column.active</source>
+        <target>Active</target>
+      </segment>
+    </unit>
+    <unit id="shop.column.category">
+      <segment>
+        <source>shop.column.category</source>
+        <target>Category</target>
+      </segment>
+    </unit>
+    <unit id="shop.column.name">
+      <segment>
+        <source>shop.column.name</source>
+        <target>Name</target>
+      </segment>
+    </unit>
+    <unit id="shop.column.photo">
+      <segment>
+        <source>shop.column.photo</source>
+        <target>Photo</target>
+      </segment>
+    </unit>
+    <unit id="shop.column.price">
+      <segment>
+        <source>shop.column.price</source>
+        <target>Price</target>
+      </segment>
+    </unit>
+    <unit id="shop.column.products">
+      <segment>
+        <source>shop.column.products</source>
+        <target>Products</target>
+      </segment>
+    </unit>
+    <unit id="shop.description">
+      <segment>
+        <source>shop.description</source>
+        <target>Online shop: products with variants and photos, a cart and orders with pickup or delivery, paid online or on receipt</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.add_photos">
+      <segment>
+        <source>shop.field.add_photos</source>
+        <target>Add photos</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.description">
+      <segment>
+        <source>shop.field.description</source>
+        <target>Description</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.hide_photo">
+      <segment>
+        <source>shop.field.hide_photo</source>
+        <target>Remove</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.photos">
+      <segment>
+        <source>shop.field.photos</source>
+        <target>Photos</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.variant">
+      <segment>
+        <source>shop.field.variant</source>
+        <target>Variant</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.variant_price">
+      <segment>
+        <source>shop.field.variant_price</source>
+        <target>Variant price</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.variants">
+      <segment>
+        <source>shop.field.variants</source>
+        <target>Variants</target>
+      </segment>
+    </unit>
+    <unit id="shop.filter.category">
+      <segment>
+        <source>shop.filter.category</source>
+        <target>All categories</target>
+      </segment>
+    </unit>
+    <unit id="shop.flash.category_dropped">
+      <segment>
+        <source>shop.flash.category_dropped</source>
+        <target>Category {name} is removed</target>
+      </segment>
+    </unit>
+    <unit id="shop.flash.category_saved">
+      <segment>
+        <source>shop.flash.category_saved</source>
+        <target>Category {name} is saved</target>
+      </segment>
+    </unit>
+    <unit id="shop.flash.product_dropped">
+      <segment>
+        <source>shop.flash.product_dropped</source>
+        <target>Product {name} is removed</target>
+      </segment>
+    </unit>
+    <unit id="shop.flash.product_saved">
+      <segment>
+        <source>shop.flash.product_saved</source>
+        <target>Product {name} is saved</target>
+      </segment>
+    </unit>
+    <unit id="shop.menu.products">
+      <segment>
+        <source>shop.menu.products</source>
+        <target>Products</target>
+      </segment>
+    </unit>
+    <unit id="shop.price.from">
+      <segment>
+        <source>shop.price.from</source>
+        <target>from</target>
+      </segment>
+    </unit>
+    <unit id="shop.product.add">
+      <segment>
+        <source>shop.product.add</source>
+        <target>+ Product</target>
+      </segment>
+    </unit>
+    <unit id="shop.product.confirm_drop">
+      <segment>
+        <source>shop.product.confirm_drop</source>
+        <target>Remove the product {name}? Past orders keep its name and price.</target>
+      </segment>
+    </unit>
+    <unit id="shop.product.empty">
+      <segment>
+        <source>shop.product.empty</source>
+        <target>No products</target>
+      </segment>
+    </unit>
+    <unit id="shop.product.new">
+      <segment>
+        <source>shop.product.new</source>
+        <target>New product</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.category">
+      <segment>
+        <source>shop.refusal.category</source>
+        <target>Choose a category</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.category_filled">
+      <segment>
+        <source>shop.refusal.category_filled</source>
+        <target>Category {name} has products: move or remove them first</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.category_name">
+      <segment>
+        <source>shop.refusal.category_name</source>
+        <target>Name the category in up to {limit} characters</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.name">
+      <segment>
+        <source>shop.refusal.name</source>
+        <target>Name the product in up to {limit} characters</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.photo">
+      <segment>
+        <source>shop.refusal.photo</source>
+        <target>{name} is not a JPEG, PNG or WebP picture</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.price">
+      <segment>
+        <source>shop.refusal.price</source>
+        <target>The price is a positive amount</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.unpriced">
+      <segment>
+        <source>shop.refusal.unpriced</source>
+        <target>Give the product a price or variants</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.variant">
+      <segment>
+        <source>shop.refusal.variant</source>
+        <target>A variant needs a name of up to {limit} characters and a positive price</target>
+      </segment>
+    </unit>
+    <unit id="shop.tab.categories">
+      <segment>
+        <source>shop.tab.categories</source>
+        <target>Categories ({count})</target>
+      </segment>
+    </unit>
+    <unit id="shop.tab.products">
+      <segment>
+        <source>shop.tab.products</source>
+        <target>Products ({count})</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

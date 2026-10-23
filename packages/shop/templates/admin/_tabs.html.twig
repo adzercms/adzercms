@@ -1,0 +1,4 @@
+<nav class="tabs">
+    <a class="tab {{ app.current_route == 'admin_shop_products' ? 'active' }}" href="{{ path('admin_shop_products') }}">{{ 'shop.tab.products'|trans({count: counts.products}) }}</a>
+    <a class="tab {{ app.current_route == 'admin_shop_categories' ? 'active' }}" href="{{ path('admin_shop_categories') }}">{{ 'shop.tab.categories'|trans({count: counts.categories}) }}</a>
+</nav>

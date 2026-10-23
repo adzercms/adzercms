@@ -1,0 +1,55 @@
+{% include '@Theme/_modal_header.html.twig' with {title: product ? product.name : 'shop.product.new'|trans} only %}
+
+<div class="modal-body">
+    {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+    <form hx-post="{{ product ? path('admin_shop_product', {id: product.id}) : path('admin_shop_product_new') }}" hx-target="#record" hx-encoding="multipart/form-data">
+        {{ csrf_field() }}{{ back_field() }}
+        <div class="fields">
+            <label>{{ 'shop.column.category'|trans }}
+                <select name="category" required>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {{ form.category == category.id ? 'selected' }}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>{{ 'shop.column.name'|trans }}
+                <input type="text" name="name" value="{{ form.name }}" maxlength="{{ constant('AdzerCMS\\Shop\\Entity\\Product::NAME') }}" required>
+            </label>
+            <label class="field-wide">{{ 'shop.field.description'|trans }}
+                <textarea name="description" rows="3">{{ form.description }}</textarea>
+            </label>
+            <label>{{ 'shop.column.price'|trans }}
+                <input type="text" name="price" value="{{ form.price ? form.price|plain }}" inputmode="decimal">
+            </label>
+            <div>{% include '@Theme/_check.html.twig' with {name: 'active', on: form.active, label: 'shop.column.active'|trans} only %}</div>
+        </div>
+
+        <h3>{{ 'shop.field.variants'|trans }}</h3>
+        <div class="fields">
+            {% for row in form.variants|merge(range(1, blank)|map(i => {})) %}
+                {% if row.id ?? false %}<input type="hidden" name="variants[{{ loop.index0 }}][id]" value="{{ row.id }}">{% endif %}
+                <label>{{ 'shop.field.variant'|trans }}
+                    <input type="text" name="variants[{{ loop.index0 }}][name]" value="{{ row.name ?? '' }}" maxlength="{{ constant('AdzerCMS\\Shop\\Entity\\Variant::NAME') }}">
+                </label>
+                <label>{{ 'shop.field.variant_price'|trans }}
+                    <input type="text" name="variants[{{ loop.index0 }}][price]" value="{{ (row.price ?? '') ? row.price|plain }}" inputmode="decimal">
+                </label>
+            {% endfor %}
+        </div>
+
+        <h3>{{ 'shop.field.photos'|trans }}</h3>
+        <div class="fields">
+            {% for photo in product ? product.photos : [] %}
+                <label class="check">
+                    <img src="{{ path('shop_photo', {name: photo.file}) }}" alt="" width="96">
+                    <input type="checkbox" name="hidden[]" value="{{ photo.id }}" {{ photo.id in form.hidden ? 'checked' }}>
+                    {{ 'shop.field.hide_photo'|trans }}
+                </label>
+            {% endfor %}
+            <label class="field-wide">{{ 'shop.field.add_photos'|trans }}
+                <input type="file" name="photos[]" accept="image/jpeg,image/png,image/webp" multiple>
+            </label>
+        </div>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
+    </form>
+</div>

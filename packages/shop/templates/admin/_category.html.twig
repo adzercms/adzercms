@@ -1,0 +1,14 @@
+{% include '@Theme/_modal_header.html.twig' with {title: category ? category.name : 'shop.category.new'|trans} only %}
+
+<div class="modal-body">
+    {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+    <form hx-post="{{ category ? path('admin_shop_category', {id: category.id}) : path('admin_shop_category_new') }}" hx-target="#record">
+        {{ csrf_field() }}{{ back_field() }}
+        <div class="fields">
+            <label class="field-wide">{{ 'shop.column.name'|trans }}
+                <input type="text" name="name" value="{{ name }}" maxlength="{{ constant('AdzerCMS\\Shop\\Entity\\Category::NAME') }}" required>
+            </label>
+        </div>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
+    </form>
+</div>

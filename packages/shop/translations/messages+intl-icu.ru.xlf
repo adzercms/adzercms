@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" srcLang="en" trgLang="ru" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="messages.ru">
+    <unit id="shop.category.add">
+      <segment>
+        <source>shop.category.add</source>
+        <target>+ Категория</target>
+      </segment>
+    </unit>
+    <unit id="shop.category.confirm_drop">
+      <segment>
+        <source>shop.category.confirm_drop</source>
+        <target>Удалить категорию {name}?</target>
+      </segment>
+    </unit>
+    <unit id="shop.category.empty">
+      <segment>
+        <source>shop.category.empty</source>
+        <target>Категорий нет</target>
+      </segment>
+    </unit>
+    <unit id="shop.category.new">
+      <segment>
+        <source>shop.category.new</source>
+        <target>Новая категория</target>
+      </segment>
+    </unit>
+    <unit id="shop.column.active">
+      <segment>
+        <source>shop.column.active</source>
+        <target>Активен</target>
+      </segment>
+    </unit>
+    <unit id="shop.column.category">
+      <segment>
+        <source>shop.column.category</source>
+        <target>Категория</target>
+      </segment>
+    </unit>
+    <unit id="shop.column.name">
+      <segment>
+        <source>shop.column.name</source>
+        <target>Название</target>
+      </segment>
+    </unit>
+    <unit id="shop.column.photo">
+      <segment>
+        <source>shop.column.photo</source>
+        <target>Фото</target>
+      </segment>
+    </unit>
+    <unit id="shop.column.price">
+      <segment>
+        <source>shop.column.price</source>
+        <target>Цена</target>
+      </segment>
+    </unit>
+    <unit id="shop.column.products">
+      <segment>
+        <source>shop.column.products</source>
+        <target>Товары</target>
+      </segment>
+    </unit>
+    <unit id="shop.description">
+      <segment>
+        <source>shop.description</source>
+        <target>Интернет-магазин: товары с вариантами и фото, корзина и заказы с самовывозом либо доставкой, оплатой онлайн либо при получении</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.add_photos">
+      <segment>
+        <source>shop.field.add_photos</source>
+        <target>Добавить фото</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.description">
+      <segment>
+        <source>shop.field.description</source>
+        <target>Описание</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.hide_photo">
+      <segment>
+        <source>shop.field.hide_photo</source>
+        <target>Удалить</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.photos">
+      <segment>
+        <source>shop.field.photos</source>
+        <target>Фото</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.variant">
+      <segment>
+        <source>shop.field.variant</source>
+        <target>Вариант</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.variant_price">
+      <segment>
+        <source>shop.field.variant_price</source>
+        <target>Цена варианта</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.variants">
+      <segment>
+        <source>shop.field.variants</source>
+        <target>Варианты</target>
+      </segment>
+    </unit>
+    <unit id="shop.filter.category">
+      <segment>
+        <source>shop.filter.category</source>
+        <target>Все категории</target>
+      </segment>
+    </unit>
+    <unit id="shop.flash.category_dropped">
+      <segment>
+        <source>shop.flash.category_dropped</source>
+        <target>Категория {name} удалена</target>
+      </segment>
+    </unit>
+    <unit id="shop.flash.category_saved">
+      <segment>
+        <source>shop.flash.category_saved</source>
+        <target>Категория {name} сохранена</target>
+      </segment>
+    </unit>
+    <unit id="shop.flash.product_dropped">
+      <segment>
+        <source>shop.flash.product_dropped</source>
+        <target>Товар {name} удалён</target>
+      </segment>
+    </unit>
+    <unit id="shop.flash.product_saved">
+      <segment>
+        <source>shop.flash.product_saved</source>
+        <target>Товар {name} сохранён</target>
+      </segment>
+    </unit>
+    <unit id="shop.menu.products">
+      <segment>
+        <source>shop.menu.products</source>
+        <target>Товары</target>
+      </segment>
+    </unit>
+    <unit id="shop.price.from">
+      <segment>
+        <source>shop.price.from</source>
+        <target>от</target>
+      </segment>
+    </unit>
+    <unit id="shop.product.add">
+      <segment>
+        <source>shop.product.add</source>
+        <target>+ Товар</target>
+      </segment>
+    </unit>
+    <unit id="shop.product.confirm_drop">
+      <segment>
+        <source>shop.product.confirm_drop</source>
+        <target>Удалить товар {name}? В прежних заказах останутся его название и цена.</target>
+      </segment>
+    </unit>
+    <unit id="shop.product.empty">
+      <segment>
+        <source>shop.product.empty</source>
+        <target>Товаров нет</target>
+      </segment>
+    </unit>
+    <unit id="shop.product.new">
+      <segment>
+        <source>shop.product.new</source>
+        <target>Новый товар</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.category">
+      <segment>
+        <source>shop.refusal.category</source>
+        <target>Выберите категорию</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.category_filled">
+      <segment>
+        <source>shop.refusal.category_filled</source>
+        <target>В категории {name} есть товары: перенесите либо удалите их</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.category_name">
+      <segment>
+        <source>shop.refusal.category_name</source>
+        <target>Название категории — до {limit} знаков</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.name">
+      <segment>
+        <source>shop.refusal.name</source>
+        <target>Название товара — до {limit} знаков</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.photo">
+      <segment>
+        <source>shop.refusal.photo</source>
+        <target>{name} — не картинка JPEG, PNG либо WebP</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.price">
+      <segment>
+        <source>shop.refusal.price</source>
+        <target>Цена — положительная сумма</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.unpriced">
+      <segment>
+        <source>shop.refusal.unpriced</source>
+        <target>Укажите цену либо варианты товара</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.variant">
+      <segment>
+        <source>shop.refusal.variant</source>
+        <target>У варианта — название до {limit} знаков и положительная цена</target>
+      </segment>
+    </unit>
+    <unit id="shop.tab.categories">
+      <segment>
+        <source>shop.tab.categories</source>
+        <target>Категории ({count})</target>
+      </segment>
+    </unit>
+    <unit id="shop.tab.products">
+      <segment>
+        <source>shop.tab.products</source>
+        <target>Товары ({count})</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>
