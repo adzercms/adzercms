@@ -1,0 +1,77 @@
+{% macro refusal(refusals, name) %}{% if refusals[name] is defined %}<span class="field-refusal">{{ refusals[name].reason|trans }}</span>{% endif %}{% endmacro %}
+{% import _self as form %}
+<section class="section">
+    <div class="section-head"><h2>{{ 'shop.order.heading'|trans }}</h2></div>
+    {% if closed %}
+        <p class="flash flash-warning">{{ closed.reason|trans }}</p>
+    {% else %}
+        {% if refusals.form is defined %}<p class="flash flash-error">{{ refusals.form.reason|trans }}</p>{% endif %}
+        <form method="post" action="{{ path('shop_order_take') }}">
+            {{ csrf_field() }}
+            <div class="fields">
+                <label>{{ 'shop.field.name'|trans }}
+                    <input type="text" name="name" maxlength="{{ constant('AdzerCMS\\Shop\\Entity\\Order::NAME') }}" value="{{ input.name ?? '' }}" autocomplete="name" required>
+                    {{ form.refusal(refusals, 'name') }}
+                </label>
+                <label>{{ 'shop.field.phone'|trans }}
+                    <input type="tel" name="phone" value="{{ input.phone ?? '' }}" autocomplete="tel" inputmode="tel" required>
+                    {{ form.refusal(refusals, 'phone') }}
+                </label>
+                <label>{{ 'shop.field.email'|trans }}
+                    <input type="email" name="email" maxlength="{{ constant('AdzerCMS\\Shop\\Entity\\Order::EMAIL') }}" value="{{ input.email ?? '' }}" autocomplete="email">
+                    {{ form.refusal(refusals, 'email') }}
+                </label>
+            </div>
+            {% if receipts|length > 1 %}
+                <fieldset class="choices">
+                    <legend>{{ 'shop.field.receipt'|trans }}</legend>
+                    {% for receipt in receipts %}
+                        <label><input type="radio" name="receipt" value="{{ receipt.value }}" {{ (input.receipt ?? receipts|first.value) == receipt.value ? 'checked' }}> <span>{{ receipt.label|trans }}</span></label>
+                    {% endfor %}
+                    {{ form.refusal(refusals, 'receipt') }}
+                </fieldset>
+            {% endif %}
+            {% if constant('AdzerCMS\\Shop\\Receipt::Pickup') in receipts %}
+                <fieldset class="choices" {% if receipts|length > 1 %}data-when="receipt=pickup"{% endif %}>
+                    <legend>{{ 'shop.field.point'|trans }}</legend>
+                    {% for point in points %}
+                        <label>
+                            {% if points|length > 1 %}<input type="radio" name="point" value="{{ point.key }}" {{ (input.point ?? points|first.key) == point.key ? 'checked' }}>{% endif %}
+                            <span>{{ point.address }}</span>
+                            {% if point.hours %}<span class="muted">{{ point.hours }}</span>{% endif %}
+                        </label>
+                    {% endfor %}
+                    {{ form.refusal(refusals, 'point') }}
+                </fieldset>
+            {% endif %}
+            {% if constant('AdzerCMS\\Shop\\Receipt::Delivery') in receipts %}
+                <div class="fields" {% if receipts|length > 1 %}data-when="receipt=delivery"{% endif %}>
+                    <label class="field-wide">{{ 'shop.field.address'|trans }}
+                        <input type="text" name="address" maxlength="{{ constant('AdzerCMS\\Shop\\Entity\\Order::ADDRESS') }}" value="{{ input.address ?? '' }}" autocomplete="street-address">
+                        {{ form.refusal(refusals, 'address') }}
+                    </label>
+                </div>
+            {% endif %}
+            {% if payments|length > 1 %}
+                <fieldset class="choices">
+                    <legend>{{ 'shop.field.payment'|trans }}</legend>
+                    {% for payment in payments %}
+                        <label><input type="radio" name="payment" value="{{ payment.value }}" {{ (input.payment ?? payments|first.value) == payment.value ? 'checked' }}> <span>{{ payment.label|trans }}</span></label>
+                    {% endfor %}
+                    {{ form.refusal(refusals, 'payment') }}
+                </fieldset>
+            {% else %}
+                <p class="muted">{{ 'shop.order.payment_only'|trans({method: (payments|first).label|trans}) }}</p>
+            {% endif %}
+            <div class="fields">
+                <label class="field-wide">{{ 'shop.field.comment'|trans }}
+                    <textarea name="comment" rows="3" maxlength="{{ constant('AdzerCMS\\Shop\\Entity\\Order::COMMENT') }}">{{ input.comment ?? '' }}</textarea>
+                    {{ form.refusal(refusals, 'comment') }}
+                </label>
+            </div>
+            <input class="trap" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button type="submit">{{ 'shop.order.send'|trans }}</button>
+            <p class="hint">{{ 'shop.order.privacy'|trans({policy: legal('privacy', 'shop.order.policy'|trans)})|raw }}</p>
+        </form>
+    {% endif %}
+</section>

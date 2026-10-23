@@ -43,7 +43,20 @@
                     <th>{{ total|precise }}</th>
                     <th></th>
                 </tr>
+                {% if delivery and constant('AdzerCMS\\Shop\\Receipt::Delivery') in receipts %}
+                    <tr>
+                        <th colspan="3">{{ 'shop.cart.delivery'|trans }}</th>
+                        <th>{{ delivery|precise }}</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th colspan="3">{{ 'shop.cart.with_delivery'|trans }}</th>
+                        <th>{{ charged|precise }}</th>
+                        <th></th>
+                    </tr>
+                {% endif %}
             </tfoot>
         </table>
     </div>
+    {% include '@Shop/_checkout.html.twig' %}
 {% endif %}

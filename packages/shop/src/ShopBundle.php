@@ -20,6 +20,13 @@ final class ShopBundle extends Module
         return CoreKind::Feature;
     }
 
+    public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
+    {
+        $builder->prependExtensionConfig('framework', ['rate_limiter' => [
+            Checkout::LIMITER => ['policy' => 'fixed_window', 'limit' => Checkout::LIMIT, 'interval' => Checkout::INTERVAL],
+        ]]);
+    }
+
     /** @param array<string, mixed> $config */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {

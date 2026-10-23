@@ -1,0 +1,9 @@
+{% extends '@Theme/page.html.twig' %}
+
+{% block title %}{{ 'shop.order.title'|trans({number: order.id}) }}{% endblock %}
+
+{% block actions %}{{ badge(order.status) }}{% endblock %}
+
+{% block page %}
+{% include '@Shop/_order.html.twig' %}
+{% endblock %}

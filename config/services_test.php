@@ -30,6 +30,8 @@ use AdzerCMS\Opotopo\Tests\Fixture\ShelfCatalog;
 use AdzerCMS\Realtime\HubKind;
 use AdzerCMS\Realtime\RealtimeBundle;
 use AdzerCMS\Realtime\Tests\Fixture\HeraldHub;
+use AdzerCMS\Shop\ShopBundle;
+use AdzerCMS\Shop\Tests\Fixture\Counters;
 use AdzerCMS\Support\SupportBundle;
 use AdzerCMS\Support\Tests\Fixture\SubjectFixture;
 use Psr\Log\NullLogger;
@@ -70,6 +72,9 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
     }
     if (\is_array($bundles) && \in_array(OpotopoBundle::class, $bundles, true)) {
         $services->set(ShelfCatalog::class)->autowire()->autoconfigure()->public();
+    }
+    if (\is_array($bundles) && \in_array(ShopBundle::class, $bundles, true)) {
+        $services->set(Counters::class)->autoconfigure()->public();
     }
     if (\is_array($bundles) && \in_array(RealtimeBundle::class, $bundles, true)
         && [] === array_filter($bundles, static fn (string $bundle): bool => is_subclass_of($bundle, Module::class) && HubKind::Hub === $bundle::kind())) {

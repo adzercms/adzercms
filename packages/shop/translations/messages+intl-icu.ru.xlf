@@ -19,6 +19,12 @@
         <target>Выбрать</target>
       </segment>
     </unit>
+    <unit id="shop.cart.delivery">
+      <segment>
+        <source>shop.cart.delivery</source>
+        <target>Доставка</target>
+      </segment>
+    </unit>
     <unit id="shop.cart.empty">
       <segment>
         <source>shop.cart.empty</source>
@@ -47,6 +53,12 @@
       <segment>
         <source>shop.cart.total</source>
         <target>Итого</target>
+      </segment>
+    </unit>
+    <unit id="shop.cart.with_delivery">
+      <segment>
+        <source>shop.cart.with_delivery</source>
+        <target>Итого с доставкой</target>
       </segment>
     </unit>
     <unit id="shop.category.add">
@@ -133,10 +145,28 @@
         <target>Добавить фото</target>
       </segment>
     </unit>
+    <unit id="shop.field.address">
+      <segment>
+        <source>shop.field.address</source>
+        <target>Адрес доставки</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.comment">
+      <segment>
+        <source>shop.field.comment</source>
+        <target>Комментарий</target>
+      </segment>
+    </unit>
     <unit id="shop.field.description">
       <segment>
         <source>shop.field.description</source>
         <target>Описание</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.email">
+      <segment>
+        <source>shop.field.email</source>
+        <target>Почта</target>
       </segment>
     </unit>
     <unit id="shop.field.hide_photo">
@@ -145,16 +175,46 @@
         <target>Удалить</target>
       </segment>
     </unit>
+    <unit id="shop.field.name">
+      <segment>
+        <source>shop.field.name</source>
+        <target>Имя</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.payment">
+      <segment>
+        <source>shop.field.payment</source>
+        <target>Оплата</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.phone">
+      <segment>
+        <source>shop.field.phone</source>
+        <target>Телефон</target>
+      </segment>
+    </unit>
     <unit id="shop.field.photos">
       <segment>
         <source>shop.field.photos</source>
         <target>Фото</target>
       </segment>
     </unit>
+    <unit id="shop.field.point">
+      <segment>
+        <source>shop.field.point</source>
+        <target>Точка самовывоза</target>
+      </segment>
+    </unit>
     <unit id="shop.field.quantity">
       <segment>
         <source>shop.field.quantity</source>
         <target>Количество</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.receipt">
+      <segment>
+        <source>shop.field.receipt</source>
+        <target>Получение</target>
       </segment>
     </unit>
     <unit id="shop.field.variant">
@@ -205,6 +265,12 @@
         <target>{name}: количество {quantity}</target>
       </segment>
     </unit>
+    <unit id="shop.flash.ordered">
+      <segment>
+        <source>shop.flash.ordered</source>
+        <target>Заказ принят</target>
+      </segment>
+    </unit>
     <unit id="shop.flash.product_dropped">
       <segment>
         <source>shop.flash.product_dropped</source>
@@ -227,6 +293,42 @@
       <segment>
         <source>shop.menu.products</source>
         <target>Товары</target>
+      </segment>
+    </unit>
+    <unit id="shop.order.heading">
+      <segment>
+        <source>shop.order.heading</source>
+        <target>Оформление заказа</target>
+      </segment>
+    </unit>
+    <unit id="shop.order.payment_only">
+      <segment>
+        <source>shop.order.payment_only</source>
+        <target>Оплата: {method}</target>
+      </segment>
+    </unit>
+    <unit id="shop.order.policy">
+      <segment>
+        <source>shop.order.policy</source>
+        <target>политике обработки персональных данных</target>
+      </segment>
+    </unit>
+    <unit id="shop.order.privacy">
+      <segment>
+        <source>shop.order.privacy</source>
+        <target>Данные обрабатываются согласно {policy}</target>
+      </segment>
+    </unit>
+    <unit id="shop.order.send">
+      <segment>
+        <source>shop.order.send</source>
+        <target>Оформить заказ</target>
+      </segment>
+    </unit>
+    <unit id="shop.order.title">
+      <segment>
+        <source>shop.order.title</source>
+        <target>Заказ №{number}</target>
       </segment>
     </unit>
     <unit id="shop.page.product">
@@ -295,6 +397,18 @@
         <target>Самовывоз</target>
       </segment>
     </unit>
+    <unit id="shop.refusal.address">
+      <segment>
+        <source>shop.refusal.address</source>
+        <target>Укажите адрес доставки — до {limit} знаков</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.buyer">
+      <segment>
+        <source>shop.refusal.buyer</source>
+        <target>Укажите имя — до {limit} знаков</target>
+      </segment>
+    </unit>
     <unit id="shop.refusal.category">
       <segment>
         <source>shop.refusal.category</source>
@@ -319,6 +433,24 @@
         <target>Выберите вариант товара</target>
       </segment>
     </unit>
+    <unit id="shop.refusal.comment">
+      <segment>
+        <source>shop.refusal.comment</source>
+        <target>Комментарий — до {limit} знаков</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.email">
+      <segment>
+        <source>shop.refusal.email</source>
+        <target>Адрес почты не распознан</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.empty">
+      <segment>
+        <source>shop.refusal.empty</source>
+        <target>Корзина пуста</target>
+      </segment>
+    </unit>
     <unit id="shop.refusal.gone">
       <segment>
         <source>shop.refusal.gone</source>
@@ -331,10 +463,46 @@
         <target>Название товара — до {limit} знаков</target>
       </segment>
     </unit>
+    <unit id="shop.refusal.no_payment">
+      <segment>
+        <source>shop.refusal.no_payment</source>
+        <target>Магазин сейчас не принимает заказы: не включён способ оплаты</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.no_receipt">
+      <segment>
+        <source>shop.refusal.no_receipt</source>
+        <target>Магазин сейчас не принимает заказы: не включён способ получения</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.often">
+      <segment>
+        <source>shop.refusal.often</source>
+        <target>Слишком много заказов с вашего адреса, повторите позже</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.payment">
+      <segment>
+        <source>shop.refusal.payment</source>
+        <target>Выберите способ оплаты</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.phone">
+      <segment>
+        <source>shop.refusal.phone</source>
+        <target>Номер телефона не распознан</target>
+      </segment>
+    </unit>
     <unit id="shop.refusal.photo">
       <segment>
         <source>shop.refusal.photo</source>
         <target>{name} — не картинка JPEG, PNG либо WebP</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.point">
+      <segment>
+        <source>shop.refusal.point</source>
+        <target>Выберите точку самовывоза</target>
       </segment>
     </unit>
     <unit id="shop.refusal.price">
@@ -349,6 +517,12 @@
         <target>Количество — целое число от 1 до {limit}</target>
       </segment>
     </unit>
+    <unit id="shop.refusal.receipt">
+      <segment>
+        <source>shop.refusal.receipt</source>
+        <target>Выберите способ получения</target>
+      </segment>
+    </unit>
     <unit id="shop.refusal.unpriced">
       <segment>
         <source>shop.refusal.unpriced</source>
@@ -359,6 +533,30 @@
       <segment>
         <source>shop.refusal.variant</source>
         <target>У варианта — название до {limit} знаков и положительная цена</target>
+      </segment>
+    </unit>
+    <unit id="shop.setting.delivery">
+      <segment>
+        <source>shop.setting.delivery</source>
+        <target>Доставка</target>
+      </segment>
+    </unit>
+    <unit id="shop.setting.delivery_price">
+      <segment>
+        <source>shop.setting.delivery_price</source>
+        <target>Стоимость доставки</target>
+      </segment>
+    </unit>
+    <unit id="shop.setting.on_receipt">
+      <segment>
+        <source>shop.setting.on_receipt</source>
+        <target>Оплата при получении</target>
+      </segment>
+    </unit>
+    <unit id="shop.setting.pickup">
+      <segment>
+        <source>shop.setting.pickup</source>
+        <target>Самовывоз</target>
       </segment>
     </unit>
     <unit id="shop.status.awaiting">

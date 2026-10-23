@@ -20,7 +20,6 @@ final class StorefrontController extends AbstractController
 {
     public const PAGE = 'shop';
     public const PRODUCT = 'shop_product';
-    private const CART = 'shop_cart';
     private const CARD = 'card';
 
     public function __construct(
@@ -49,14 +48,6 @@ final class StorefrontController extends AbstractController
         return $this->render('@Shop/product.html.twig', ['product' => $this->products->active([$id])[0] ?? throw $this->createNotFoundException()]);
     }
 
-    #[Route('/cart', name: self::CART, methods: ['GET'])]
-    public function cart(): Response
-    {
-        $lines = $this->cart->lines();
-
-        return $this->render('@Shop/cart.html.twig', ['lines' => $lines, 'total' => Cart::total($lines)]);
-    }
-
     #[Route('/cart', name: 'shop_cart_add', methods: ['POST'])]
     public function add(Request $request): Response
     {
@@ -81,6 +72,6 @@ final class StorefrontController extends AbstractController
             });
         }
 
-        return $this->redirect(Back::of($request, $this->generateUrl(self::CART)), Response::HTTP_SEE_OTHER);
+        return $this->redirect(Back::of($request, $this->generateUrl(CheckoutController::CART)), Response::HTTP_SEE_OTHER);
     }
 }

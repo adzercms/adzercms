@@ -111,6 +111,11 @@ final readonly class Cart
         return new CartLine($key, $line->product, $line->variant, $amount);
     }
 
+    public function clear(): void
+    {
+        $this->keep([]);
+    }
+
     private static function quantity(string $input, int $least): ?int
     {
         $input = trim($input);

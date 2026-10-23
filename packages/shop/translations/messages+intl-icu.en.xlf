@@ -19,6 +19,12 @@
         <target>Choose</target>
       </segment>
     </unit>
+    <unit id="shop.cart.delivery">
+      <segment>
+        <source>shop.cart.delivery</source>
+        <target>Delivery</target>
+      </segment>
+    </unit>
     <unit id="shop.cart.empty">
       <segment>
         <source>shop.cart.empty</source>
@@ -47,6 +53,12 @@
       <segment>
         <source>shop.cart.total</source>
         <target>Total</target>
+      </segment>
+    </unit>
+    <unit id="shop.cart.with_delivery">
+      <segment>
+        <source>shop.cart.with_delivery</source>
+        <target>Total with delivery</target>
       </segment>
     </unit>
     <unit id="shop.category.add">
@@ -133,10 +145,28 @@
         <target>Add photos</target>
       </segment>
     </unit>
+    <unit id="shop.field.address">
+      <segment>
+        <source>shop.field.address</source>
+        <target>Delivery address</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.comment">
+      <segment>
+        <source>shop.field.comment</source>
+        <target>Comment</target>
+      </segment>
+    </unit>
     <unit id="shop.field.description">
       <segment>
         <source>shop.field.description</source>
         <target>Description</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.email">
+      <segment>
+        <source>shop.field.email</source>
+        <target>Email</target>
       </segment>
     </unit>
     <unit id="shop.field.hide_photo">
@@ -145,16 +175,46 @@
         <target>Remove</target>
       </segment>
     </unit>
+    <unit id="shop.field.name">
+      <segment>
+        <source>shop.field.name</source>
+        <target>Name</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.payment">
+      <segment>
+        <source>shop.field.payment</source>
+        <target>Payment</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.phone">
+      <segment>
+        <source>shop.field.phone</source>
+        <target>Phone</target>
+      </segment>
+    </unit>
     <unit id="shop.field.photos">
       <segment>
         <source>shop.field.photos</source>
         <target>Photos</target>
       </segment>
     </unit>
+    <unit id="shop.field.point">
+      <segment>
+        <source>shop.field.point</source>
+        <target>Pickup point</target>
+      </segment>
+    </unit>
     <unit id="shop.field.quantity">
       <segment>
         <source>shop.field.quantity</source>
         <target>Quantity</target>
+      </segment>
+    </unit>
+    <unit id="shop.field.receipt">
+      <segment>
+        <source>shop.field.receipt</source>
+        <target>Receipt</target>
       </segment>
     </unit>
     <unit id="shop.field.variant">
@@ -205,6 +265,12 @@
         <target>{name}: quantity {quantity}</target>
       </segment>
     </unit>
+    <unit id="shop.flash.ordered">
+      <segment>
+        <source>shop.flash.ordered</source>
+        <target>The order is placed</target>
+      </segment>
+    </unit>
     <unit id="shop.flash.product_dropped">
       <segment>
         <source>shop.flash.product_dropped</source>
@@ -227,6 +293,42 @@
       <segment>
         <source>shop.menu.products</source>
         <target>Products</target>
+      </segment>
+    </unit>
+    <unit id="shop.order.heading">
+      <segment>
+        <source>shop.order.heading</source>
+        <target>Checkout</target>
+      </segment>
+    </unit>
+    <unit id="shop.order.payment_only">
+      <segment>
+        <source>shop.order.payment_only</source>
+        <target>Payment: {method}</target>
+      </segment>
+    </unit>
+    <unit id="shop.order.policy">
+      <segment>
+        <source>shop.order.policy</source>
+        <target>privacy policy</target>
+      </segment>
+    </unit>
+    <unit id="shop.order.privacy">
+      <segment>
+        <source>shop.order.privacy</source>
+        <target>Your data is processed under the {policy}</target>
+      </segment>
+    </unit>
+    <unit id="shop.order.send">
+      <segment>
+        <source>shop.order.send</source>
+        <target>Place the order</target>
+      </segment>
+    </unit>
+    <unit id="shop.order.title">
+      <segment>
+        <source>shop.order.title</source>
+        <target>Order #{number}</target>
       </segment>
     </unit>
     <unit id="shop.page.product">
@@ -295,6 +397,18 @@
         <target>Pickup</target>
       </segment>
     </unit>
+    <unit id="shop.refusal.address">
+      <segment>
+        <source>shop.refusal.address</source>
+        <target>Enter the delivery address, up to {limit} characters</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.buyer">
+      <segment>
+        <source>shop.refusal.buyer</source>
+        <target>Enter the name, up to {limit} characters</target>
+      </segment>
+    </unit>
     <unit id="shop.refusal.category">
       <segment>
         <source>shop.refusal.category</source>
@@ -319,6 +433,24 @@
         <target>Choose an option of the product</target>
       </segment>
     </unit>
+    <unit id="shop.refusal.comment">
+      <segment>
+        <source>shop.refusal.comment</source>
+        <target>The comment is up to {limit} characters</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.email">
+      <segment>
+        <source>shop.refusal.email</source>
+        <target>The email address is not recognized</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.empty">
+      <segment>
+        <source>shop.refusal.empty</source>
+        <target>The cart is empty</target>
+      </segment>
+    </unit>
     <unit id="shop.refusal.gone">
       <segment>
         <source>shop.refusal.gone</source>
@@ -331,10 +463,46 @@
         <target>Name the product in up to {limit} characters</target>
       </segment>
     </unit>
+    <unit id="shop.refusal.no_payment">
+      <segment>
+        <source>shop.refusal.no_payment</source>
+        <target>The shop takes no orders now: no way of payment is on</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.no_receipt">
+      <segment>
+        <source>shop.refusal.no_receipt</source>
+        <target>The shop takes no orders now: no way of receipt is on</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.often">
+      <segment>
+        <source>shop.refusal.often</source>
+        <target>Too many orders from your address, try again later</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.payment">
+      <segment>
+        <source>shop.refusal.payment</source>
+        <target>Choose the way of payment</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.phone">
+      <segment>
+        <source>shop.refusal.phone</source>
+        <target>The phone number is not recognized</target>
+      </segment>
+    </unit>
     <unit id="shop.refusal.photo">
       <segment>
         <source>shop.refusal.photo</source>
         <target>{name} is not a JPEG, PNG or WebP picture</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.point">
+      <segment>
+        <source>shop.refusal.point</source>
+        <target>Choose a pickup point</target>
       </segment>
     </unit>
     <unit id="shop.refusal.price">
@@ -349,6 +517,12 @@
         <target>Quantity is a whole number from 1 to {limit}</target>
       </segment>
     </unit>
+    <unit id="shop.refusal.receipt">
+      <segment>
+        <source>shop.refusal.receipt</source>
+        <target>Choose the way of receipt</target>
+      </segment>
+    </unit>
     <unit id="shop.refusal.unpriced">
       <segment>
         <source>shop.refusal.unpriced</source>
@@ -359,6 +533,30 @@
       <segment>
         <source>shop.refusal.variant</source>
         <target>A variant needs a name of up to {limit} characters and a positive price</target>
+      </segment>
+    </unit>
+    <unit id="shop.setting.delivery">
+      <segment>
+        <source>shop.setting.delivery</source>
+        <target>Delivery</target>
+      </segment>
+    </unit>
+    <unit id="shop.setting.delivery_price">
+      <segment>
+        <source>shop.setting.delivery_price</source>
+        <target>Delivery price</target>
+      </segment>
+    </unit>
+    <unit id="shop.setting.on_receipt">
+      <segment>
+        <source>shop.setting.on_receipt</source>
+        <target>Payment on receipt</target>
+      </segment>
+    </unit>
+    <unit id="shop.setting.pickup">
+      <segment>
+        <source>shop.setting.pickup</source>
+        <target>Pickup</target>
       </segment>
     </unit>
     <unit id="shop.status.awaiting">

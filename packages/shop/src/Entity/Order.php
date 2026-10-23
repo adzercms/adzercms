@@ -30,6 +30,7 @@ class Order
     public const EMAIL = 254;
     public const POINT = 64;
     public const ADDRESS = 255;
+    public const COMMENT = 2000;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
