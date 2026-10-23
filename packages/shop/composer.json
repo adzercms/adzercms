@@ -23,6 +23,7 @@
         "doctrine/migrations": "^3.9",
         "doctrine/orm": "^3.7",
         "intervention/image": "^4.4",
+        "symfony/clock": "7.4.*",
         "symfony/dependency-injection": "7.4.*",
         "symfony/filesystem": "7.4.*",
         "symfony/framework-bundle": "7.4.*",
@@ -30,6 +31,7 @@
         "symfony/routing": "7.4.*",
         "symfony/security-http": "7.4.*",
         "symfony/translation": "7.4.*",
+        "symfony/translation-contracts": "^3.7",
         "twig/twig": "^3.30"
     },
     "require-dev": {

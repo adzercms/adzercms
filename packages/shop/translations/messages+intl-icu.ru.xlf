@@ -235,6 +235,18 @@
         <target>Товар «{name}»</target>
       </segment>
     </unit>
+    <unit id="shop.payment.online">
+      <segment>
+        <source>shop.payment.online</source>
+        <target>Онлайн</target>
+      </segment>
+    </unit>
+    <unit id="shop.payment.receipt">
+      <segment>
+        <source>shop.payment.receipt</source>
+        <target>При получении</target>
+      </segment>
+    </unit>
     <unit id="shop.price.from">
       <segment>
         <source>shop.price.from</source>
@@ -269,6 +281,18 @@
       <segment>
         <source>shop.product.new</source>
         <target>Новый товар</target>
+      </segment>
+    </unit>
+    <unit id="shop.receipt.delivery">
+      <segment>
+        <source>shop.receipt.delivery</source>
+        <target>Доставка</target>
+      </segment>
+    </unit>
+    <unit id="shop.receipt.pickup">
+      <segment>
+        <source>shop.receipt.pickup</source>
+        <target>Самовывоз</target>
       </segment>
     </unit>
     <unit id="shop.refusal.category">
@@ -335,6 +359,36 @@
       <segment>
         <source>shop.refusal.variant</source>
         <target>У варианта — название до {limit} знаков и положительная цена</target>
+      </segment>
+    </unit>
+    <unit id="shop.status.awaiting">
+      <segment>
+        <source>shop.status.awaiting</source>
+        <target>Ждёт оплаты</target>
+      </segment>
+    </unit>
+    <unit id="shop.status.cancelled">
+      <segment>
+        <source>shop.status.cancelled</source>
+        <target>Отменён</target>
+      </segment>
+    </unit>
+    <unit id="shop.status.done">
+      <segment>
+        <source>shop.status.done</source>
+        <target>Выполнен</target>
+      </segment>
+    </unit>
+    <unit id="shop.status.new">
+      <segment>
+        <source>shop.status.new</source>
+        <target>Новый</target>
+      </segment>
+    </unit>
+    <unit id="shop.status.progress">
+      <segment>
+        <source>shop.status.progress</source>
+        <target>В работе</target>
       </segment>
     </unit>
     <unit id="shop.storefront.description">

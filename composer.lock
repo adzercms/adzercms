@@ -964,7 +964,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/shop",
-                "reference": "cee5d7175ee7684386659eb6f8be7e8cf3b30e25"
+                "reference": "83d061dcb756c2e55e6825e083479a6bf649f3c0"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -979,6 +979,7 @@
                 "ext-mbstring": "*",
                 "intervention/image": "^4.4",
                 "php": ">=8.4",
+                "symfony/clock": "7.4.*",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/filesystem": "7.4.*",
                 "symfony/framework-bundle": "7.4.*",
@@ -986,6 +987,7 @@
                 "symfony/routing": "7.4.*",
                 "symfony/security-http": "7.4.*",
                 "symfony/translation": "7.4.*",
+                "symfony/translation-contracts": "^3.7",
                 "twig/twig": "^3.30"
             },
             "require-dev": {
