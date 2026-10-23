@@ -6,4 +6,10 @@
 
 {% block page %}
 {% include '@Shop/_order.html.twig' %}
+{% if payable %}
+    <form method="post" action="{{ path('shop_order_pay', {key: order.key}) }}">
+        {{ csrf_field() }}
+        <button type="submit">{{ 'shop.order.pay'|trans }}</button>
+    </form>
+{% endif %}
 {% endblock %}

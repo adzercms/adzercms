@@ -6,6 +6,8 @@ namespace AdzerCMS\Shop\Tests;
 
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Ui\Money;
+use AdzerCMS\Payments\Entity\Payment;
+use AdzerCMS\Payments\PaymentStatus;
 use AdzerCMS\Shop\Entity\Order;
 use AdzerCMS\Shop\Entity\Product;
 use AdzerCMS\Shop\OrderStatus;
@@ -13,9 +15,12 @@ use AdzerCMS\Shop\PickupPoint;
 use AdzerCMS\Shop\Receipt;
 use AdzerCMS\Shop\ShopSettings;
 use AdzerCMS\Shop\Tests\Fixture\Counters;
+use AdzerCMS\Shop\Tests\Fixture\Till;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
+
+use function Symfony\Component\Translation\t;
 
 final class CheckoutTest extends ShopTestCase
 {
@@ -152,6 +157,111 @@ final class CheckoutTest extends ShopTestCase
         self::assertResponseStatusCodeSame(404);
     }
 
+    #[Group('ACMS-SHOP-0017')]
+    #[Group('ACMS-SHOP-0018')]
+    #[Group('ACMS-US-0042')]
+    public function testVisitorPaysOnlineRightAfterOrder(): void
+    {
+        $till = self::till();
+        $till->ready = true;
+        $this->configure([ShopSettings::DELIVERY => '1', ShopSettings::DELIVERY_PRICE => '300', ShopSettings::ONLINE => '1', ShopSettings::ON_RECEIPT => '1']);
+        $this->fill(2);
+
+        $this->post(self::ORDER, ['name' => 'Анна', 'phone' => '89991234567', 'email' => 'anna@example.test', 'address' => 'Мира, 5', 'payment' => 'online.sbp']);
+
+        $order = $this->em->getRepository(Order::class)->findOneBy([]) ?? self::fail('the order is taken');
+        $payment = $this->em->find(Payment::class, $order->getPaymentId()) ?? self::fail('the order is billed');
+        $page = 'http://localhost'.self::ORDER.'/'.$order->getKey();
+        self::assertResponseRedirects('/payment/'.$payment->getNumber(), 303);
+        $this->client->followRedirect();
+        self::assertResponseRedirects(Till::PAGE.$payment->getNumber());
+        self::assertSame(
+            ['sbp', [['name' => 'Кружка, 250 мл', 'quantity' => 2, 'price' => '450.50'], ['name' => self::phrase('shop.cart.delivery'), 'quantity' => 1, 'price' => '300.00']], '1201.00', self::phrase('shop.order.title', ['number' => $order->getId()]), '79991234567', 'anna@example.test', $page],
+            [$payment->getMethod(), $payment->getItems(), $payment->getAmount(), $payment->getDescription(), $payment->getPhone(), $payment->getEmail(), $payment->getBack()],
+        );
+        self::assertSame([OrderStatus::AwaitingPayment, false], [$order->getStatus(), $order->isPaid()]);
+
+        $till->outcome = PaymentStatus::Confirmed;
+        $this->client->request('GET', '/payment/'.$payment->getNumber().'/return');
+        self::assertResponseRedirects($page);
+        $shown = $this->client->followRedirect();
+
+        self::assertSame(['Мира, 5', self::phrase('shop.payment.online').', '.self::phrase('shop.order.paid')], $shown->filter('.info-value')->each(static fn (Crawler $value): string => $value->text()));
+        self::assertCount(0, $shown->filter('form[action$="/pay"]'));
+        $order = $this->reread($order);
+        self::assertSame([OrderStatus::New, true], [$order->getStatus(), $order->isPaid()]);
+    }
+
+    #[Group('ACMS-SHOP-0019')]
+    #[Group('ACMS-US-0042')]
+    #[DataProvider('unsettled')]
+    public function testUnpaidOrderPaysFromItsPage(PaymentStatus $outcome, bool $same): void
+    {
+        $till = self::till();
+        $till->ready = true;
+        $this->configure([ShopSettings::PICKUP => '1', ShopSettings::ONLINE => '1']);
+        $this->fill(1);
+        $this->post(self::ORDER, ['name' => 'Анна', 'phone' => '89991234567', 'payment' => 'online.card']);
+        $order = $this->em->getRepository(Order::class)->findOneBy([]) ?? self::fail('the order is taken');
+        $first = $this->em->find(Payment::class, $order->getPaymentId()) ?? self::fail('the order is billed');
+
+        $till->outcome = $outcome;
+        $this->client->request('GET', '/payment/'.$first->getNumber().'/return');
+        $this->client->submit($this->client->followRedirect()->filter('form[action$="/pay"]')->form());
+
+        $order = $this->reread($order);
+        $payment = $this->em->find(Payment::class, $order->getPaymentId()) ?? self::fail('the order is billed');
+        self::assertResponseRedirects('/payment/'.$payment->getNumber(), 303);
+        self::assertSame([$same, 'card'], [$payment->getNumber() === $first->getNumber(), $payment->getMethod()]);
+    }
+
+    /** @return iterable<string, array{PaymentStatus, bool}> */
+    public static function unsettled(): iterable
+    {
+        yield 'pending payment offers itself again' => [PaymentStatus::Pending, true];
+        yield 'rejected payment gives way to a new one' => [PaymentStatus::Rejected, false];
+    }
+
+    /** @param list<string> $ways */
+    #[Group('ACMS-SHOP-0014')]
+    #[Group('ACMS-US-0042')]
+    #[DataProvider('onlineWays')]
+    public function testOnlineWaysNeedReadyAcquiringAndToggle(bool $ready, string $online, array $ways): void
+    {
+        self::till()->ready = $ready;
+        $this->configure([ShopSettings::PICKUP => '1', ShopSettings::ONLINE => $online, ShopSettings::ON_RECEIPT => '1']);
+        $this->fill(1);
+
+        $page = $this->arrive(self::CART);
+
+        self::assertSame($ways, $page->filter('input[name="payment"]')->each(static fn (Crawler $way): string => (string) $way->attr('value')));
+    }
+
+    /** @return iterable<string, array{bool, string, list<string>}> */
+    public static function onlineWays(): iterable
+    {
+        yield 'ready and on' => [true, '1', ['online.card', 'online.sbp', 'receipt']];
+        yield 'not ready' => [false, '1', []];
+        yield 'off' => [true, '0', []];
+    }
+
+    #[Group('ACMS-SHOP-0014')]
+    #[Group('ACMS-US-0042')]
+    public function testOnlineBelowFloorIsRefused(): void
+    {
+        $till = self::till();
+        $till->ready = true;
+        $till->floor = '1000';
+        $this->configure([ShopSettings::PICKUP => '1', ShopSettings::ONLINE => '1']);
+        $this->fill(1);
+
+        $page = $this->post(self::ORDER, ['name' => 'Анна', 'phone' => '89991234567', 'payment' => 'online.card']);
+
+        self::assertResponseStatusCodeSame(422);
+        self::assertSame(self::phrase(t('shop.refusal.floor', ['floor' => Money::precise('1000')])), $page->filter('.field-refusal')->text());
+        self::assertSame(0, $this->em->getRepository(Order::class)->count());
+    }
+
     private function fill(int $quantity): void
     {
         $this->post('/shop/cart', ['product' => (string) $this->mug->getId(), 'variant' => (string) $this->mug->getVariants()[0]->getId(), 'quantity' => (string) $quantity]);
@@ -161,6 +271,11 @@ final class CheckoutTest extends ShopTestCase
     private static function counters(): Counters
     {
         return self::service(Counters::class);
+    }
+
+    private static function till(): Till
+    {
+        return self::service(Till::class);
     }
 
     private static function sum(string $amount): string

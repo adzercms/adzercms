@@ -191,4 +191,18 @@ class Order
     {
         $this->items->add(new OrderItem($this, $product, $name, $variant, $price, $quantity));
     }
+
+    public function bill(int $payment): void
+    {
+        $this->paymentId = $payment;
+    }
+
+    public function settle(): void
+    {
+        $this->paid = true;
+        if (OrderStatus::AwaitingPayment === $this->status) {
+            $this->status = OrderStatus::New;
+            $this->staged = now();
+        }
+    }
 }

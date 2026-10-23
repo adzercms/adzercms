@@ -301,6 +301,18 @@
         <target>Checkout</target>
       </segment>
     </unit>
+    <unit id="shop.order.paid">
+      <segment>
+        <source>shop.order.paid</source>
+        <target>paid</target>
+      </segment>
+    </unit>
+    <unit id="shop.order.pay">
+      <segment>
+        <source>shop.order.pay</source>
+        <target>Pay</target>
+      </segment>
+    </unit>
     <unit id="shop.order.payment_only">
       <segment>
         <source>shop.order.payment_only</source>
@@ -451,6 +463,12 @@
         <target>The cart is empty</target>
       </segment>
     </unit>
+    <unit id="shop.refusal.floor">
+      <segment>
+        <source>shop.refusal.floor</source>
+        <target>Online payment starts from {floor}</target>
+      </segment>
+    </unit>
     <unit id="shop.refusal.gone">
       <segment>
         <source>shop.refusal.gone</source>
@@ -479,6 +497,12 @@
       <segment>
         <source>shop.refusal.often</source>
         <target>Too many orders from your address, try again later</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.online">
+      <segment>
+        <source>shop.refusal.online</source>
+        <target>Online payment is unavailable now</target>
       </segment>
     </unit>
     <unit id="shop.refusal.payment">
@@ -551,6 +575,12 @@
       <segment>
         <source>shop.setting.on_receipt</source>
         <target>Payment on receipt</target>
+      </segment>
+    </unit>
+    <unit id="shop.setting.online">
+      <segment>
+        <source>shop.setting.online</source>
+        <target>Online payment</target>
       </segment>
     </unit>
     <unit id="shop.setting.pickup">

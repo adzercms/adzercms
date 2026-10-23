@@ -33,6 +33,6 @@
     </div>
     <div class="info-item">
         <span class="info-label">{{ 'shop.field.payment'|trans }}</span>
-        <span class="info-value">{{ order.payment.label|trans }}</span>
+        <span class="info-value">{{ order.payment.label|trans }}{% if order.paid %}, {{ 'shop.order.paid'|trans }}{% endif %}</span>
     </div>
 </div>

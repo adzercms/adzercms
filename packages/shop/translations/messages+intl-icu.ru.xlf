@@ -301,6 +301,18 @@
         <target>Оформление заказа</target>
       </segment>
     </unit>
+    <unit id="shop.order.paid">
+      <segment>
+        <source>shop.order.paid</source>
+        <target>оплачен</target>
+      </segment>
+    </unit>
+    <unit id="shop.order.pay">
+      <segment>
+        <source>shop.order.pay</source>
+        <target>Оплатить</target>
+      </segment>
+    </unit>
     <unit id="shop.order.payment_only">
       <segment>
         <source>shop.order.payment_only</source>
@@ -451,6 +463,12 @@
         <target>Корзина пуста</target>
       </segment>
     </unit>
+    <unit id="shop.refusal.floor">
+      <segment>
+        <source>shop.refusal.floor</source>
+        <target>Онлайн-оплата — от {floor}</target>
+      </segment>
+    </unit>
     <unit id="shop.refusal.gone">
       <segment>
         <source>shop.refusal.gone</source>
@@ -479,6 +497,12 @@
       <segment>
         <source>shop.refusal.often</source>
         <target>Слишком много заказов с вашего адреса, повторите позже</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.online">
+      <segment>
+        <source>shop.refusal.online</source>
+        <target>Онлайн-оплата сейчас недоступна</target>
       </segment>
     </unit>
     <unit id="shop.refusal.payment">
@@ -551,6 +575,12 @@
       <segment>
         <source>shop.setting.on_receipt</source>
         <target>Оплата при получении</target>
+      </segment>
+    </unit>
+    <unit id="shop.setting.online">
+      <segment>
+        <source>shop.setting.online</source>
+        <target>Онлайн-оплата</target>
       </segment>
     </unit>
     <unit id="shop.setting.pickup">

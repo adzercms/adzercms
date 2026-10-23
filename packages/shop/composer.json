@@ -25,6 +25,7 @@
         "intervention/image": "^4.4",
         "symfony/clock": "7.4.*",
         "symfony/dependency-injection": "7.4.*",
+        "symfony/event-dispatcher": "7.4.*",
         "symfony/filesystem": "7.4.*",
         "symfony/framework-bundle": "7.4.*",
         "symfony/http-foundation": "7.4.*",
@@ -36,7 +37,11 @@
         "twig/twig": "^3.30"
     },
     "require-dev": {
-        "adzercms/admin": "^1.0"
+        "adzercms/admin": "^1.0",
+        "adzercms/payments": "^1.0"
+    },
+    "suggest": {
+        "adzercms/payments": "online payment of orders"
     },
     "autoload": {
         "psr-4": {

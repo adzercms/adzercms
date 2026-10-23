@@ -964,7 +964,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/shop",
-                "reference": "4fc68cb14d3c6e175b1a4e40a46590bcc3b94de6"
+                "reference": "7895c750ec35ddb23ed5adbe8466d427871477b1"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -981,6 +981,7 @@
                 "php": ">=8.4",
                 "symfony/clock": "7.4.*",
                 "symfony/dependency-injection": "7.4.*",
+                "symfony/event-dispatcher": "7.4.*",
                 "symfony/filesystem": "7.4.*",
                 "symfony/framework-bundle": "7.4.*",
                 "symfony/http-foundation": "7.4.*",
@@ -992,7 +993,11 @@
                 "twig/twig": "^3.30"
             },
             "require-dev": {
-                "adzercms/admin": "^1.0"
+                "adzercms/admin": "^1.0",
+                "adzercms/payments": "^1.0"
+            },
+            "suggest": {
+                "adzercms/payments": "online payment of orders"
             },
             "type": "adzercms-module",
             "extra": {

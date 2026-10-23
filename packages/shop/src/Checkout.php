@@ -35,6 +35,7 @@ final readonly class Checkout
         private ShopSettings $settings,
         private EntityManagerInterface $em,
         private RateLimiterFactoryInterface $shopLimiter,
+        private OrderPayments $paying,
     ) {
     }
 
@@ -60,10 +61,11 @@ final readonly class Checkout
             return [self::FORM => $closed];
         }
 
-        $receipt = self::chosen($this->settings->receipts(), Receipt::tryFrom($input->getString(self::RECEIPT)));
-        $payment = self::chosen($this->settings->payments(), PaymentMethod::tryFrom($input->getString(self::PAYMENT)));
-        $points = $this->settings->points();
-        $point = 1 === \count($points) ? $points[0] : array_find($points, static fn (PickupPoint $point): bool => $input->getString(self::POINT) === $point->key);
+        $receipt = self::chosen($this->settings->receipts(), $input->getString(self::RECEIPT), static fn (Receipt $receipt): string => $receipt->value);
+        $payment = self::chosen($this->settings->payments(), $input->getString(self::PAYMENT), static fn (PaymentChoice $choice): string => $choice->value());
+        $point = self::chosen($this->settings->points(), $input->getString(self::POINT), static fn (PickupPoint $point): string => $point->key);
+        $price = Receipt::Delivery === $receipt ? $this->settings->deliveryPrice() : null;
+        $total = Money::add(Cart::total($lines), $price ?? '0');
         $name = trim($input->getString(self::NAME));
         $phone = ContactKind::Phone->normalize(trim($input->getString(self::PHONE)));
         $email = trim($input->getString(self::EMAIL));
@@ -77,7 +79,7 @@ final readonly class Checkout
             self::RECEIPT => null === $receipt ? new Refusal(t('shop.refusal.receipt')) : null,
             self::POINT => Receipt::Pickup === $receipt && null === $point ? new Refusal(t('shop.refusal.point')) : null,
             self::ADDRESS => Receipt::Delivery === $receipt && ('' === $delivery || mb_strlen($delivery) > Order::ADDRESS) ? new Refusal(t('shop.refusal.address', ['limit' => Order::ADDRESS])) : null,
-            self::PAYMENT => null === $payment ? new Refusal(t('shop.refusal.payment')) : null,
+            self::PAYMENT => null === $payment ? new Refusal(t('shop.refusal.payment')) : (null === $payment->online ? null : $this->paying->below($total)),
             self::COMMENT => mb_strlen($comment) > Order::COMMENT ? new Refusal(t('shop.refusal.comment', ['limit' => Order::COMMENT])) : null,
         ]);
         if ([] !== $refusals || null === $receipt || null === $payment || null === $phone) {
@@ -88,7 +90,6 @@ final readonly class Checkout
         }
 
         $pickup = Receipt::Pickup === $receipt ? $point : null;
-        $price = Receipt::Delivery === $receipt ? $this->settings->deliveryPrice() : null;
         $order = new Order(
             $name,
             $phone,
@@ -98,9 +99,9 @@ final readonly class Checkout
             $pickup?->address,
             Receipt::Delivery === $receipt ? $delivery : null,
             '' === $comment ? null : $comment,
-            $payment,
+            $payment->method,
             $price,
-            Money::add(Cart::total($lines), $price ?? '0'),
+            $total,
         );
         foreach ($lines as $line) {
             $order->hold($line->product, $line->product->getName(), $line->variant?->getName(), $line->price(), $line->quantity);
@@ -108,20 +109,23 @@ final readonly class Checkout
         $this->em->persist($order);
         $this->em->flush();
         $this->cart->clear();
+        if (null !== $payment->online) {
+            $this->paying->open($order, $payment->online);
+        }
 
         return $order;
     }
 
     /**
-     * @template T of \UnitEnum
+     * @template T
      *
-     * @param list<T> $offered
-     * @param T|null  $asked
+     * @param list<T>             $offered
+     * @param \Closure(T): string $key
      *
      * @return T|null
      */
-    private static function chosen(array $offered, ?\UnitEnum $asked): ?\UnitEnum
+    private static function chosen(array $offered, string $asked, \Closure $key): mixed
     {
-        return 1 === \count($offered) ? $offered[0] : (\in_array($asked, $offered, true) ? $asked : null);
+        return 1 === \count($offered) ? $offered[0] : array_find($offered, static fn (mixed $choice): bool => $asked === $key($choice));
     }
 }

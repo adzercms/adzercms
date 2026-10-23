@@ -9,6 +9,9 @@ use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Shop\Cart;
 use AdzerCMS\Shop\Checkout;
 use AdzerCMS\Shop\Entity\Order;
+use AdzerCMS\Shop\OrderPayments;
+use AdzerCMS\Shop\OrderStatus;
+use AdzerCMS\Shop\PaymentMethod;
 use AdzerCMS\Shop\ShopSettings;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,6 +31,7 @@ final class CheckoutController extends AbstractController
         private readonly Cart $cart,
         private readonly Checkout $checkout,
         private readonly ShopSettings $settings,
+        private readonly OrderPayments $paying,
         private readonly EntityManagerInterface $em,
     ) {
     }
@@ -45,6 +49,9 @@ final class CheckoutController extends AbstractController
         if (\is_array($order)) {
             return $this->page($request->request->all(), $order, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+        if (PaymentMethod::Online === $order?->getPayment()) {
+            return $this->offer($order);
+        }
 
         $this->addFlash('success', t('shop.flash.ordered'));
 
@@ -54,9 +61,39 @@ final class CheckoutController extends AbstractController
     #[Route('/order/{key}', name: self::ORDER, requirements: ['key' => '[0-9a-f]{32}'], methods: ['GET'])]
     public function order(string $key): Response
     {
+        $order = $this->found($key);
+
         return $this->render('@Shop/order.html.twig', [
-            'order' => $this->em->getRepository(Order::class)->findOneBy(['key' => $key]) ?? throw $this->createNotFoundException(),
+            'order' => $order,
+            'payable' => OrderStatus::AwaitingPayment === $order->getStatus() && $this->paying->ready(),
         ]);
+    }
+
+    #[Route('/order/{key}/pay', name: 'shop_order_pay', requirements: ['key' => '[0-9a-f]{32}'], methods: ['POST'])]
+    public function pay(string $key): Response
+    {
+        $order = $this->found($key);
+
+        return OrderStatus::AwaitingPayment === $order->getStatus()
+            ? $this->offer($order)
+            : $this->redirectToRoute(self::ORDER, ['key' => $key], Response::HTTP_SEE_OTHER);
+    }
+
+    private function offer(Order $order): Response
+    {
+        $offer = $this->paying->offer($order);
+        if ($offer instanceof Refusal) {
+            $this->addFlash('error', $offer->reason);
+
+            return $this->redirectToRoute(self::ORDER, ['key' => $order->getKey()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->redirect($offer, Response::HTTP_SEE_OTHER);
+    }
+
+    private function found(string $key): Order
+    {
+        return $this->em->getRepository(Order::class)->findOneBy(['key' => $key]) ?? throw $this->createNotFoundException();
     }
 
     /**
