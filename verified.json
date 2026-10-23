@@ -1,0 +1,152 @@
+{
+    "adzercms/admin": {
+        "7751eb1133ca231c1d303ca6662d48267cb7788f": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/cabinet": {
+        "28dd702a258a47effff25f2c058a38fc2f0bb55c": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/centrifugo": {
+        "3d9b8e9b85dc874005d3cdfc149a907d0b5048e9": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/extensions": {
+        "d37864e64333370830380d2dab3a9ad56b2e7d53": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/google-analytics": {
+        "befaa6720d5028746dba61bd1ccb94b127e3581d": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/hcaptcha": {
+        "b30d9f3596f83a7ca0d7346f7bce1ff8ee87d673": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/mailing": {
+        "c529fc7e5e83e97f35042176157e5ccd74cad3b3": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/max-bot": {
+        "62d9dbb566075a61b2918d10d71e3cbe411b487e": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/mts-marketolog": {
+        "85cd6e0f9b2b54bedb03a52d29aad4cc27276dae": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/opotopo": {
+        "2c61be124d686c59890d251b00fa5ab13723fdae": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/payments": {
+        "d056b11f8f73227b56761b757a74da39c2311ca1": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/realtime": {
+        "c8710248c07dcf960ebccb1cd9fb9120e15ab0dc": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/sber-id": {
+        "5a3a930fe5bb3a74d9d26b5dbbac0400880ff583": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/smart-captcha": {
+        "b65d2fd33da20877eeb765a22c424bfc6ea05bf6": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/sms-pilot": {
+        "41577e1fe97d9666ebabe93baa965171419f79fb": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/support": {
+        "b6c7656c9210029352b7fb5003b0c9bdcc2b0a74": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/tbank": {
+        "61ffcc56ab6caad7608a495d2080630f9112ec4e": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/telegram": {
+        "9a1c503f1fca114e931ae8cfa1cd8837eaa50185": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/telegram-bot": {
+        "973d3a98e8d117177eb628181cc27b9071be3d12": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/theme": {
+        "65da7cf7c5e3dbc5baedc22e38146fada58884b1": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/turnstile": {
+        "2ae81c02a61fc8164b1ead18fbf2dead2b2d0d8a": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/vk-id": {
+        "7771cada458356bceb5a1c6ec857168c703bc86c": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/yandex-id": {
+        "222d466194e278f65b53a255a3e4d02d32ceba28": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/yandex-metrika": {
+        "ab00616ddaa04442bafb3575ac4854ef1f203a02": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/yookassa": {
+        "e395eb311fb6e2769a17b41407e52934e2014b48": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    }
+}
