@@ -223,7 +223,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "f03eb54ed6b0bb9b4efa74ff0bbaf159dd152806"
+                "reference": "39b8f481548c98e4648bc07c8b8a1a7c75d05c66"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -250,6 +250,7 @@
                 "facile-it/doctrine-mysql-come-back": "^3.0",
                 "firebase/php-jwt": "^7.2",
                 "geoip2/geoip2": "^3.4",
+                "intervention/image": "^4.4",
                 "matomo/device-detector": "^6.5",
                 "maxmind-db/reader": "^1.14",
                 "php": ">=8.4",
@@ -285,6 +286,9 @@
                 "symfony/twig-bundle": "7.4.*",
                 "twig/cssinliner-extra": "^3.26",
                 "twig/twig": "^3.30"
+            },
+            "suggest": {
+                "ext-imagick": "photos of module records"
             },
             "bin": [
                 "bin/adzercms-check",
@@ -964,7 +968,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/shop",
-                "reference": "7895c750ec35ddb23ed5adbe8466d427871477b1"
+                "reference": "abb988f7fca24c753b8960b4e2b9f7042202501b"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -977,12 +981,10 @@
                 "ext-ctype": "*",
                 "ext-imagick": "*",
                 "ext-mbstring": "*",
-                "intervention/image": "^4.4",
                 "php": ">=8.4",
                 "symfony/clock": "7.4.*",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/event-dispatcher": "7.4.*",
-                "symfony/filesystem": "7.4.*",
                 "symfony/framework-bundle": "7.4.*",
                 "symfony/http-foundation": "7.4.*",
                 "symfony/rate-limiter": "7.4.*",

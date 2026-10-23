@@ -38,6 +38,7 @@ The rules the engine's own code and tests follow. To build a module of your own,
 - A request that changes something sends the CSRF token in the `_token` field. Form field names contain no dots.
 - The Content Security Policy allows only the site's own origin; a module adds its sources through `ContentSource`. Event handlers live in script files and find elements by data attributes. Scripts are ES modules in the package's `public/`, third-party libraries come through the package's `importmap.php`.
 - Files the application creates go to the directory in the `adzercms.files_dir` parameter; the application only reads its code tree.
+- A module keeps the photos of its records through the core `Photos`, a file whose name changes with its content goes out as `ImmutableFileResponse`.
 - A console command takes a text or a secret only through stdin behind its own flag, never as an argument.
 - A scheduled job exits with a non-zero code only when it fails itself. It reports the state of external objects in its output.
 - A service that collects answers or entities for the duration of a request implements `ResetInterface`.

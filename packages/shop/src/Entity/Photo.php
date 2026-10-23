@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Photo
 {
     public const int FILE = 64;
+    public const string PLACE = 'shop';
+    public const int SIDE = 1600;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

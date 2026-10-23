@@ -517,12 +517,6 @@
         <target>Номер телефона не распознан</target>
       </segment>
     </unit>
-    <unit id="shop.refusal.photo">
-      <segment>
-        <source>shop.refusal.photo</source>
-        <target>{name} — не картинка JPEG, PNG либо WebP</target>
-      </segment>
-    </unit>
     <unit id="shop.refusal.point">
       <segment>
         <source>shop.refusal.point</source>

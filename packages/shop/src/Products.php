@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Shop;
 
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Core\Photo\Photos;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Core\Ui\Order;
@@ -164,10 +165,10 @@ final readonly class Products
             }
         }
         foreach ($uploads as $upload) {
-            $product->show($this->photos->store($upload));
+            $product->show($this->photos->store($upload, Photo::PLACE, Photo::SIDE));
         }
         $this->em->flush();
-        $this->photos->drop($gone);
+        $this->photos->drop(Photo::PLACE, $gone);
 
         return $product;
     }
@@ -189,7 +190,7 @@ final readonly class Products
         $gone = array_map(static fn (Photo $photo): string => $photo->getFile(), $product->getPhotos());
         $this->em->remove($product);
         $this->em->flush();
-        $this->photos->drop($gone);
+        $this->photos->drop(Photo::PLACE, $gone);
     }
 
     /**

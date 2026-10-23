@@ -517,12 +517,6 @@
         <target>The phone number is not recognized</target>
       </segment>
     </unit>
-    <unit id="shop.refusal.photo">
-      <segment>
-        <source>shop.refusal.photo</source>
-        <target>{name} is not a JPEG, PNG or WebP picture</target>
-      </segment>
-    </unit>
     <unit id="shop.refusal.point">
       <segment>
         <source>shop.refusal.point</source>

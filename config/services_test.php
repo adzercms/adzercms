@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use AdzerCMS\Cabinet\Tests\Fixture\Pager;
 use AdzerCMS\Contracts\Module\Module;
+use AdzerCMS\Core\Photo\Photos;
 use AdzerCMS\Core\Tests\Account\Fixture\OpenPolicy;
 use AdzerCMS\Core\Tests\HttpAnswers;
 use AdzerCMS\Core\Tests\Login\Fixture\CatchListener;
@@ -62,6 +63,7 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
     $services->set(GuidePages::class)->autoconfigure();
     $services->set(GuideController::class)->autoconfigure()->autowire();
     $services->set('logger', NullLogger::class);
+    $services->alias('test.'.Photos::class, Photos::class)->public();
 
     $bundles = $builder->getParameter('kernel.bundles');
     if (\is_array($bundles) && \in_array(SupportBundle::class, $bundles, true)) {

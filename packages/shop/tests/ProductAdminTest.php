@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Shop\Tests;
 
+use AdzerCMS\Core\Photo\Photos;
 use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Shop\Entity\Category;
+use AdzerCMS\Shop\Entity\Photo;
 use AdzerCMS\Shop\Entity\Product;
-use AdzerCMS\Shop\Photos;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -89,7 +90,7 @@ final class ProductAdminTest extends ShopTestCase
         $photos = $product->getPhotos();
         self::assertCount(2, $photos);
         self::assertSame($photos[0]->getFile(), $product->photo());
-        $paths = array_map(fn ($photo): string => (string) self::service(Photos::class)->path($photo->getFile()), $photos);
+        $paths = array_map(fn ($photo): string => (string) self::service(Photos::class)->path(Photo::PLACE, $photo->getFile()), $photos);
         self::assertSame(['image/webp', 'image/webp'], array_map(mime_content_type(...), $paths));
 
         $this->client->request('GET', '/shop/photo/'.$photos[0]->getFile());

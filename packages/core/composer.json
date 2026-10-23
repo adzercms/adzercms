@@ -37,6 +37,7 @@
         "facile-it/doctrine-mysql-come-back": "^3.0",
         "firebase/php-jwt": "^7.2",
         "geoip2/geoip2": "^3.4",
+        "intervention/image": "^4.4",
         "matomo/device-detector": "^6.5",
         "maxmind-db/reader": "^1.14",
         "php-tuf/composer-stager": "^2.1.1",
@@ -71,6 +72,9 @@
         "symfony/twig-bundle": "7.4.*",
         "twig/cssinliner-extra": "^3.26",
         "twig/twig": "^3.30"
+    },
+    "suggest": {
+        "ext-imagick": "photos of module records"
     },
     "autoload": {
         "psr-4": {

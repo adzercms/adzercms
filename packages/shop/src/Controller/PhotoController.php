@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace AdzerCMS\Shop\Controller;
 
 use AdzerCMS\Core\Http\ImmutableFileResponse;
-use AdzerCMS\Shop\Photos;
+use AdzerCMS\Core\Photo\Photos;
+use AdzerCMS\Shop\Entity\Photo;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,6 +23,6 @@ final class PhotoController extends AbstractController
     #[Route('/shop/photo/{name}', name: self::ROUTE, requirements: ['name' => '[^/]+'], methods: ['GET'])]
     public function photo(string $name, Request $request): Response
     {
-        return new ImmutableFileResponse($this->photos->path($name) ?? throw $this->createNotFoundException(), $request);
+        return new ImmutableFileResponse($this->photos->path(Photo::PLACE, $name) ?? throw $this->createNotFoundException(), $request);
     }
 }
