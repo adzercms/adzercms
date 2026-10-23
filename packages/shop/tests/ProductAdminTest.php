@@ -80,6 +80,7 @@ final class ProductAdminTest extends ShopTestCase
     }
 
     #[Group('ACMS-SHOP-0005')]
+    #[Group('ACMS-CORE-0983')]
     #[Group('ACMS-US-0043')]
     public function testPhotosAreWebpInUploadOrderAndLeaveWithProduct(): void
     {
@@ -91,11 +92,11 @@ final class ProductAdminTest extends ShopTestCase
         $paths = array_map(fn ($photo): string => (string) self::service(Photos::class)->path($photo->getFile()), $photos);
         self::assertSame(['image/webp', 'image/webp'], array_map(mime_content_type(...), $paths));
 
-        $this->client->getCookieJar()->clear();
         $this->client->request('GET', '/shop/photo/'.$photos[0]->getFile());
         self::assertResponseIsSuccessful();
         self::assertResponseHeaderSame('Cache-Control', 'immutable, max-age=31536000, public');
-        $this->signInOwner();
+        $this->client->request('GET', '/shop/photo/'.$photos[0]->getFile(), server: ['HTTP_IF_NONE_MATCH' => (string) $this->client->getResponse()->headers->get('ETag')]);
+        self::assertResponseStatusCodeSame(304);
 
         $this->post(self::LIST.'/'.$product->getId(), $this->fields(['hidden' => [(string) $photos[0]->getId()]]));
         self::assertFileDoesNotExist($paths[0]);
