@@ -14,13 +14,14 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class PhotoController extends AbstractController
 {
+    public const ROUTE = 'shop_photo';
     private const AGE = 31536000;
 
     public function __construct(private readonly Photos $photos)
     {
     }
 
-    #[Route('/shop/photo/{name}', name: 'shop_photo', requirements: ['name' => '[^/]+'], methods: ['GET'])]
+    #[Route('/shop/photo/{name}', name: self::ROUTE, requirements: ['name' => '[^/]+'], methods: ['GET'])]
     public function photo(string $name, Request $request): Response
     {
         $response = new BinaryFileResponse($this->photos->path($name) ?? throw $this->createNotFoundException(), autoEtag: true);

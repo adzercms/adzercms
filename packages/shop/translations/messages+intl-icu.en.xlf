@@ -1,6 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="2.0" srcLang="en" trgLang="en" xmlns="urn:oasis:names:tc:xliff:document:2.0">
   <file id="messages.en">
+    <unit id="shop.cart.add">
+      <segment>
+        <source>shop.cart.add</source>
+        <target>Add to cart</target>
+      </segment>
+    </unit>
+    <unit id="shop.cart.change">
+      <segment>
+        <source>shop.cart.change</source>
+        <target>Update</target>
+      </segment>
+    </unit>
+    <unit id="shop.cart.choose">
+      <segment>
+        <source>shop.cart.choose</source>
+        <target>Choose</target>
+      </segment>
+    </unit>
+    <unit id="shop.cart.empty">
+      <segment>
+        <source>shop.cart.empty</source>
+        <target>The cart is empty</target>
+      </segment>
+    </unit>
+    <unit id="shop.cart.link">
+      <segment>
+        <source>shop.cart.link</source>
+        <target>{count, plural, =0 {Cart} other {Cart (#)}}</target>
+      </segment>
+    </unit>
+    <unit id="shop.cart.remove">
+      <segment>
+        <source>shop.cart.remove</source>
+        <target>Remove</target>
+      </segment>
+    </unit>
+    <unit id="shop.cart.title">
+      <segment>
+        <source>shop.cart.title</source>
+        <target>Cart</target>
+      </segment>
+    </unit>
+    <unit id="shop.cart.total">
+      <segment>
+        <source>shop.cart.total</source>
+        <target>Total</target>
+      </segment>
+    </unit>
     <unit id="shop.category.add">
       <segment>
         <source>shop.category.add</source>
@@ -55,10 +103,22 @@
         <target>Price</target>
       </segment>
     </unit>
+    <unit id="shop.column.product">
+      <segment>
+        <source>shop.column.product</source>
+        <target>Product</target>
+      </segment>
+    </unit>
     <unit id="shop.column.products">
       <segment>
         <source>shop.column.products</source>
         <target>Products</target>
+      </segment>
+    </unit>
+    <unit id="shop.column.sum">
+      <segment>
+        <source>shop.column.sum</source>
+        <target>Sum</target>
       </segment>
     </unit>
     <unit id="shop.description">
@@ -91,6 +151,12 @@
         <target>Photos</target>
       </segment>
     </unit>
+    <unit id="shop.field.quantity">
+      <segment>
+        <source>shop.field.quantity</source>
+        <target>Quantity</target>
+      </segment>
+    </unit>
     <unit id="shop.field.variant">
       <segment>
         <source>shop.field.variant</source>
@@ -115,6 +181,12 @@
         <target>All categories</target>
       </segment>
     </unit>
+    <unit id="shop.flash.added">
+      <segment>
+        <source>shop.flash.added</source>
+        <target>Added to the cart: {name}</target>
+      </segment>
+    </unit>
     <unit id="shop.flash.category_dropped">
       <segment>
         <source>shop.flash.category_dropped</source>
@@ -125,6 +197,12 @@
       <segment>
         <source>shop.flash.category_saved</source>
         <target>Category {name} is saved</target>
+      </segment>
+    </unit>
+    <unit id="shop.flash.changed">
+      <segment>
+        <source>shop.flash.changed</source>
+        <target>{name}: quantity {quantity}</target>
       </segment>
     </unit>
     <unit id="shop.flash.product_dropped">
@@ -139,10 +217,22 @@
         <target>Product {name} is saved</target>
       </segment>
     </unit>
+    <unit id="shop.flash.removed">
+      <segment>
+        <source>shop.flash.removed</source>
+        <target>Removed from the cart: {name}</target>
+      </segment>
+    </unit>
     <unit id="shop.menu.products">
       <segment>
         <source>shop.menu.products</source>
         <target>Products</target>
+      </segment>
+    </unit>
+    <unit id="shop.page.product">
+      <segment>
+        <source>shop.page.product</source>
+        <target>Product “{name}”</target>
       </segment>
     </unit>
     <unit id="shop.price.from">
@@ -161,6 +251,12 @@
       <segment>
         <source>shop.product.confirm_drop</source>
         <target>Remove the product {name}? Past orders keep its name and price.</target>
+      </segment>
+    </unit>
+    <unit id="shop.product.description">
+      <segment>
+        <source>shop.product.description</source>
+        <target>{name}: buy at {site}</target>
       </segment>
     </unit>
     <unit id="shop.product.empty">
@@ -193,6 +289,18 @@
         <target>Name the category in up to {limit} characters</target>
       </segment>
     </unit>
+    <unit id="shop.refusal.choose">
+      <segment>
+        <source>shop.refusal.choose</source>
+        <target>Choose an option of the product</target>
+      </segment>
+    </unit>
+    <unit id="shop.refusal.gone">
+      <segment>
+        <source>shop.refusal.gone</source>
+        <target>The product is no longer on sale</target>
+      </segment>
+    </unit>
     <unit id="shop.refusal.name">
       <segment>
         <source>shop.refusal.name</source>
@@ -211,6 +319,12 @@
         <target>The price is a positive amount</target>
       </segment>
     </unit>
+    <unit id="shop.refusal.quantity">
+      <segment>
+        <source>shop.refusal.quantity</source>
+        <target>Quantity is a whole number from 1 to {limit}</target>
+      </segment>
+    </unit>
     <unit id="shop.refusal.unpriced">
       <segment>
         <source>shop.refusal.unpriced</source>
@@ -221,6 +335,24 @@
       <segment>
         <source>shop.refusal.variant</source>
         <target>A variant needs a name of up to {limit} characters and a positive price</target>
+      </segment>
+    </unit>
+    <unit id="shop.storefront.description">
+      <segment>
+        <source>shop.storefront.description</source>
+        <target>Products of {site}: photos, prices and ordering on the site</target>
+      </segment>
+    </unit>
+    <unit id="shop.storefront.empty">
+      <segment>
+        <source>shop.storefront.empty</source>
+        <target>No products yet</target>
+      </segment>
+    </unit>
+    <unit id="shop.storefront.title">
+      <segment>
+        <source>shop.storefront.title</source>
+        <target>Shop</target>
       </segment>
     </unit>
     <unit id="shop.tab.categories">

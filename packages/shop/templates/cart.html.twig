@@ -1,0 +1,9 @@
+{% extends '@Theme/page.html.twig' %}
+
+{% block title %}{{ 'shop.cart.title'|trans }}{% endblock %}
+
+{% block actions %}<a class="button secondary" href="{{ path('shop') }}">{{ 'shop.storefront.title'|trans }}</a>{% endblock %}
+
+{% block page %}
+{% include '@Shop/_cart.html.twig' %}
+{% endblock %}

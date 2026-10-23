@@ -51,6 +51,50 @@ final readonly class Products
         return $table->paginate($builder->getQuery());
     }
 
+    /**
+     * @param list<int>|null $ids
+     *
+     * @return list<Product>
+     */
+    public function active(?array $ids = null): array
+    {
+        $builder = $this->em->createQueryBuilder()
+            ->select('p', 'c', 'v', 'f')
+            ->from(Product::class, 'p')
+            ->join('p.category', 'c')
+            ->leftJoin('p.variants', 'v')
+            ->leftJoin('p.photos', 'f')
+            ->where('p.active = true');
+        if (null !== $ids) {
+            $builder->andWhere('p.id IN (:ids)')->setParameter('ids', $ids);
+        }
+
+        return $builder
+            ->orderBy('c.position')->addOrderBy('c.id')
+            ->addOrderBy('p.position')->addOrderBy('p.id')
+            ->addOrderBy('v.position')->addOrderBy('v.id')
+            ->addOrderBy('f.position')->addOrderBy('f.id')
+            ->getQuery()->getResult();
+    }
+
+    /** @return array<int, string> */
+    public function names(): array
+    {
+        $rows = $this->em->createQueryBuilder()
+            ->select('p.id', 'p.name')
+            ->from(Product::class, 'p')
+            ->where('p.active = true')
+            ->orderBy('p.id')
+            ->getQuery()->getArrayResult();
+
+        $names = [];
+        foreach ($rows as $row) {
+            $names[(int) $row['id']] = (string) $row['name'];
+        }
+
+        return $names;
+    }
+
     /** @return array{products: int, categories: int} */
     public function counts(): array
     {

@@ -964,7 +964,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/shop",
-                "reference": "4bd7293996b2f4fd587358cc319af3cc2077dd61"
+                "reference": "1e33fe08ef9a851700899836f972317eb28f4f6c"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -986,7 +986,8 @@
                 "symfony/http-kernel": "7.4.*",
                 "symfony/routing": "7.4.*",
                 "symfony/security-http": "7.4.*",
-                "symfony/translation": "7.4.*"
+                "symfony/translation": "7.4.*",
+                "twig/twig": "^3.30"
             },
             "require-dev": {
                 "adzercms/admin": "^1.0"

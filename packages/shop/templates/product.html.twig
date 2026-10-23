@@ -1,0 +1,16 @@
+{% extends '@Theme/page.html.twig' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block description %}{{ product.description ? product.description|slice(0, 160) : 'shop.product.description'|trans({name: product.name, site: brand.title}) }}{% endblock %}
+
+{% block meta %}
+    {% include '@Theme/_seo.html.twig' with {title: block('title'), description: block('description')} only %}
+    {% include '@Shop/_product_schema.html.twig' %}
+{% endblock %}
+
+{% block actions %}{% include '@Shop/_cart_link.html.twig' %}{% endblock %}
+
+{% block page %}
+{% include '@Shop/_product.html.twig' %}
+{% endblock %}

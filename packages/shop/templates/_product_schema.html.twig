@@ -1,0 +1,15 @@
+{% set page = url('shop_product', {id: product.id}) %}
+{% set currency = constant('AdzerCMS\\Core\\Ui\\Money::CURRENCY') %}
+{% set schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: product.description,
+    url: page,
+    category: product.category.name,
+    image: product.photos|map(photo => url('shop_photo', {name: photo.file})),
+    offers: product.variants is empty
+        ? {'@type': 'Offer', price: product.price, priceCurrency: currency, url: page}
+        : product.variants|map(variant => {'@type': 'Offer', name: variant.name, price: variant.price, priceCurrency: currency, url: page}),
+}|filter(value => value is not empty) %}
+<script type="application/ld+json">{{ schema|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}</script>

@@ -1,0 +1,30 @@
+{% if product.photos is not empty %}
+    <div class="photos">
+        {% for photo in product.photos %}<img src="{{ path('shop_photo', {name: photo.file}) }}" alt="{{ product.name }}" {% if not loop.first %}loading="lazy"{% endif %}>{% endfor %}
+    </div>
+{% endif %}
+{% if product.description %}<p class="page-lead">{{ product.description|nl2br }}</p>{% endif %}
+<form method="post" action="{{ path('shop_cart_add') }}">
+    {{ csrf_field() }}{{ back_field() }}
+    <input type="hidden" name="product" value="{{ product.id }}">
+    {% if product.variants is empty %}
+        <div class="offer-price">{{ product.price|precise }}</div>
+    {% else %}
+        <fieldset class="choices">
+            <legend>{{ 'shop.field.variant'|trans }}</legend>
+            {% for variant in product.variants %}
+                <label>
+                    <input type="radio" name="variant" value="{{ variant.id }}" {{ loop.first ? 'checked' }} required>
+                    <span>{{ variant.name }}</span>
+                    <span class="muted">{{ variant.price|precise }}</span>
+                </label>
+            {% endfor %}
+        </fieldset>
+    {% endif %}
+    <div class="inline-change-form">
+        <label>{{ 'shop.field.quantity'|trans }}
+            <input type="number" name="quantity" value="1" min="1" max="{{ constant('AdzerCMS\\Shop\\Cart::LIMIT') }}" required>
+        </label>
+        <button type="submit">{{ 'shop.cart.add'|trans }}</button>
+    </div>
+</form>

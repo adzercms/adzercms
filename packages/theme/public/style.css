@@ -774,6 +774,11 @@ tbody tr:hover { background: var(--row-hover); }
 .offer-actions form { margin: 0; }
 .offer-actions .button, .offer-actions button { width: 100%; }
 .offer-actions .muted { text-align: center; }
+.offer-photo { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); }
+
+.photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
+.photos img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); }
+.photos img:first-child { grid-column: 1 / -1; aspect-ratio: auto; max-height: 32rem; object-fit: contain; }
 
 
 label.switch {

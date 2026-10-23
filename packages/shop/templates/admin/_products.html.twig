@@ -1,13 +1,12 @@
 {% embed '@Theme/_table.html.twig' %}
     {% block row %}
         {% set record = path('admin_shop_product', {id: row.id}) %}
-        {% set lowest = row.lowest %}
         <tr class="clickable-row" data-record="{{ record }}">
             {% include '@Theme/_row_handle.html.twig' with {id: row.id, group: row.category.id} %}
             <td class="{{ table.aside('photo') }}">{% if row.photo %}<img src="{{ path('shop_photo', {name: row.photo}) }}" alt="" width="48" loading="lazy">{% else %}{{ blank() }}{% endif %}</td>
             <td class="{{ table.aside('name') }}"><strong>{{ row.name }}</strong>{{ caption(row.variants|map(variant => variant.name)|join(', ')) }}</td>
             <td class="{{ table.aside('category') }}">{{ row.category.name }}</td>
-            <td class="{{ table.aside('price') }}">{% if row.priceFrom %}{{ 'shop.price.from'|trans }}&nbsp;{% endif %}{{ amount(lowest, false) }}</td>
+            <td class="{{ table.aside('price') }}">{% include '@Shop/_price.html.twig' with {product: row} only %}</td>
             <td class="{{ table.aside('active') }}">{{ flag(row.active) }}</td>
             {% include '@Theme/_row_actions.html.twig' with {
                 edit: record,

@@ -30,7 +30,8 @@
         "symfony/http-kernel": "7.4.*",
         "symfony/routing": "7.4.*",
         "symfony/security-http": "7.4.*",
-        "symfony/translation": "7.4.*"
+        "symfony/translation": "7.4.*",
+        "twig/twig": "^3.30"
     },
     "require-dev": {
         "adzercms/admin": "^1.0"

@@ -1,0 +1,17 @@
+{% set schema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'shop.storefront.title'|trans,
+    description: 'shop.storefront.description'|trans({site: brand.title}),
+    url: url('shop'),
+    mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: products|map((product, index) => {
+            '@type': 'ListItem',
+            position: index + 1,
+            name: product.name,
+            url: url('shop_product', {id: product.id}),
+        }),
+    },
+} %}
+<script type="application/ld+json">{{ schema|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}</script>
