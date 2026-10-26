@@ -601,16 +601,22 @@
         <target>The operation was interrupted before it finished</target>
       </segment>
     </unit>
+    <unit id="core.module.refusal.local">
+      <segment>
+        <source>core.module.refusal.local</source>
+        <target>{names} is set in .env.local outside git: move it into .env</target>
+      </segment>
+    </unit>
     <unit id="core.module.refusal.open">
       <segment>
         <source>core.module.refusal.open</source>
         <target>The package {package} already has an operation in progress</target>
       </segment>
     </unit>
-    <unit id="core.module.refusal.versioned">
+    <unit id="core.module.refusal.uncommitted">
       <segment>
-        <source>core.module.refusal.versioned</source>
-        <target>The site is under git: modules change by a commit</target>
+        <source>core.module.refusal.uncommitted</source>
+        <target>The site has uncommitted changes: {paths}</target>
       </segment>
     </unit>
     <unit id="core.module.source.taken">

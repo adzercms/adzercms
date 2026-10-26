@@ -19,7 +19,6 @@ use AdzerCMS\Core\Module\CatalogRow;
 use AdzerCMS\Core\Module\ModuleAction;
 use AdzerCMS\Core\Module\Operations;
 use AdzerCMS\Core\Module\Sources;
-use AdzerCMS\Core\Module\Tree;
 use AdzerCMS\Core\Repository\ModuleOperationRepository;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
@@ -54,7 +53,6 @@ final class ModuleController extends AbstractController
         private readonly Sources $sources,
         private readonly Artifacts $artifacts,
         private readonly ModuleOperationRepository $filings,
-        private readonly Tree $tree,
         private readonly SettingForm $form,
     ) {
     }
@@ -97,7 +95,6 @@ final class ModuleController extends AbstractController
             'table' => $table,
             'rows' => $table->rows($this->offers($chosen, $offered['rows'], Category::tryFrom($table->value(self::CATEGORY)), $translator)),
             'taken' => $offered['at'],
-            'versioned' => $this->tree->versioned(),
         ];
     }
 

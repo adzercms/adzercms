@@ -8,6 +8,7 @@ use AdzerCMS\Admin\AssembledModules;
 use AdzerCMS\Admin\ModuleScope;
 use AdzerCMS\Admin\ModuleState;
 use AdzerCMS\Contracts\Module\CoreKind;
+use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Module\Catalog as ModuleCatalog;
 use AdzerCMS\Core\Module\CatalogRow;
@@ -31,6 +32,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Process\Process;
 
 final class ModuleWebTest extends SchemaTestCase
 {
@@ -211,18 +213,65 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertSame([self::phrase('admin.modules.unverified', ['package' => 'acme/shop'])], self::confirmations($page, 'acme/shop'));
     }
 
+    /** @param list<string> $committed */
     #[Group('ACMS-CORE-0145')]
+    #[Group('ACMS-CORE-0991')]
     #[Group('ACMS-US-0004')]
-    public function testSiteUnderGitTakesNoOperations(): void
+    #[DataProvider('commits')]
+    public function testOperationOnSiteUnderGitCommitsItsPathsAfterRefresh(ModuleAction $action, string $package, ?string $site, array $committed): void
     {
-        $this->answerCatalog();
-        $this->listed(['acme/shop']);
-        $this->offer('acme/shop', '1.0.0');
-        self::command('adzercms:modules')->execute([]);
+        $tree = $this->repository($this->tree($site));
+        if (ModuleAction::Install === $action) {
+            $this->answerCatalog();
+            $this->listed([$package]);
+            $this->offer($package, '1.0.0');
+            self::command('adzercms:modules')->execute([]);
+        }
 
-        self::assertSame([], self::actions($this->client->request('GET', self::MODULES), 'acme/shop'));
-        $this->post('/admin/modules/operation/install?package=acme/shop');
-        self::assertSame(self::phrase('core.module.refusal.versioned'), self::toast($this->arrive(self::MODULES), 'error'));
+        $this->post(\sprintf('/admin/modules/operation/%s?package=%s', $action->value, $package));
+        self::command('adzercms:modules')->execute([]);
+        $this->em->clear();
+        $operation = self::service(ModuleOperationRepository::class)->findOneBy(['package' => $package]) ?? self::fail('the operation is not filed');
+        $git = static fn (string ...$arguments): string => trim((new Process(['git', ...$arguments], $tree))->mustRun()->getOutput());
+
+        self::assertSame(OperationState::Done, $operation->getState(), (string) $operation->getOutput());
+        self::assertSame([\sprintf('%s module %s', ucfirst($action->value), $package), ...$committed], array_values(array_filter(explode("\n", $git('show', '--name-only', '--format=%s', 'HEAD')))));
+        self::assertSame('', $git('status', '--porcelain'), 'the commit takes every change of the operation');
+        self::assertContains('ADZERCMS_REFRESHED='.realpath($tree), file($tree.'/committed.env', \FILE_IGNORE_NEW_LINES) ?: []);
+        self::assertSame(0, (new Process([\dirname(__DIR__, 2).'/core/bin/adzercms-refresh'], $tree, ['ADZERCMS_REFRESHED' => realpath($tree)]))->run(), 'the refresh of the commit hook leaves the site refreshed by the operation');
+    }
+
+    /** @return iterable<string, array{ModuleAction, string, ?string, list<string>}> */
+    public static function commits(): iterable
+    {
+        yield 'enable' => [ModuleAction::Enable, 'adzercms/sms-pilot', null, ['.env']];
+        yield 'install' => [ModuleAction::Install, 'acme/shop', __DIR__.'/Fixture/site', ['composer.json', 'composer.lock']];
+    }
+
+    /** @param array<string, string> $parameters */
+    #[Group('ACMS-CORE-0938')]
+    #[Group('ACMS-CORE-0990')]
+    #[Group('ACMS-US-0004')]
+    #[DataProvider('dirt')]
+    public function testSiteUnderGitRefusesOperationOverChangesOutsideHistory(string $file, string $content, string $refusal, array $parameters): void
+    {
+        $tree = $this->repository($this->tree());
+        file_put_contents($tree.'/'.$file, $content);
+
+        $this->post('/admin/modules/operation/enable?package=adzercms/sms-pilot');
+        $refused = self::service(Tree::class)->refresh('Enable module adzercms/sms-pilot', [], ['SMS_MODULES' => 'SmsPilot'], static fn () => self::fail('a refused operation transfers nothing'));
+
+        self::assertSame(self::phrase($refusal, $parameters), self::toast($this->arrive(self::MODULES), 'error'));
+        self::assertNull(self::service(ModuleOperationRepository::class)->findOneBy(['package' => 'adzercms/sms-pilot']));
+        self::assertSame(self::phrase($refusal, $parameters), $refused instanceof Refusal ? self::phrase($refused->reason) : self::fail('the hold does not refuse'));
+        self::assertFileDoesNotExist($tree.'/refreshed.env');
+    }
+
+    /** @return iterable<string, array{string, string, string, array<string, string>}> */
+    public static function dirt(): iterable
+    {
+        yield 'uncommitted change' => ['notes.txt', 'draft', 'core.module.refusal.uncommitted', ['paths' => 'notes.txt']];
+        yield 'selection in .env.local' => ['.env.local', "SMS_MODULES=Stale\n", 'core.module.refusal.local', ['names' => 'SMS_MODULES']];
     }
 
     #[Group('ACMS-CORE-0935')]
@@ -404,6 +453,17 @@ final class ModuleWebTest extends SchemaTestCase
         self::getContainer()->set(Tree::class, new Tree($this->tree, __DIR__.'/Fixture/refresh'));
 
         return $this->tree;
+    }
+
+    private function repository(string $tree): string
+    {
+        file_put_contents($tree.'/.gitignore', "/.env.local\n/var/\n/vendor/\n/refreshed.env\n/committed.env\n");
+        file_put_contents($tree.'/.env.local', "APP_SECRET=kept\n");
+        foreach ([['init', '--quiet'], ['config', 'user.name', 'Site'], ['config', 'user.email', 'site@acme.test'], ['config', 'core.hooksPath', __DIR__.'/Fixture/hooks'], ['add', '--all'], ['commit', '--quiet', '--message', 'Site']] as $arguments) {
+            (new Process(['git', ...$arguments], $tree))->mustRun();
+        }
+
+        return $tree;
     }
 
     /** @return list<string> */

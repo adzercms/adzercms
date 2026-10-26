@@ -22,7 +22,6 @@
     {% embed '@Theme/_table.html.twig' with {live: true} %}
         {% block above %}
             <p class="muted">{{ taken ? 'admin.modules.taken'|trans({at: taken}) : 'admin.modules.untaken'|trans }}</p>
-            {% if versioned %}<p class="hint">{{ 'admin.modules.versioned'|trans }}</p>{% endif %}
         {% endblock %}
         {% block row %}
             <tr{% if row.card %} class="clickable-row" data-href="{{ row.card }}"{% endif %}>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Module;
 
+use AdzerCMS\Contracts\Refusal;
 use PhpTuf\ComposerStager\API\Core\BeginnerInterface;
 use PhpTuf\ComposerStager\API\Core\CleanerInterface;
 use PhpTuf\ComposerStager\API\Core\CommitterInterface;
@@ -19,7 +20,7 @@ use Symfony\Component\Filesystem\Path;
 final readonly class Staging
 {
     private const STAGE = 'var/stage';
-    private const EXCLUDED = ['var', '.env.local', 'public/assets', 'assets/vendor'];
+    private const EXCLUDED = ['.git', 'var', '.env.local', 'public/assets', 'assets/vendor'];
     private const OPTIONS = ['--no-scripts', '--no-interaction', '--no-progress'];
     private const ENTRY_OPTIONS = ['--no-plugins', '--no-interaction'];
     private const MANIFEST = 'composer.json';
@@ -43,7 +44,7 @@ final readonly class Staging
      * @param list<string>          $command
      * @param array<string, string> $environment
      */
-    public function run(array $command, array $environment): ?string
+    public function run(string $subject, array $command, array $environment): Refusal|string|null
     {
         $active = $this->paths->create($this->tree->root);
         $stage = $this->paths->create(self::STAGE, $active);
@@ -54,7 +55,7 @@ final readonly class Staging
             $this->beginner->begin($active, $stage, $excluded, timeout: Tree::TIMEOUT);
             $this->enter($stage);
             $this->stager->stage([...$command, ...self::OPTIONS], $active, $stage, timeout: Tree::TIMEOUT);
-            $refused = $this->tree->refresh($environment, function () use ($stage, $active, $excluded): void {
+            $refused = $this->tree->refresh($subject, $environment, change: function () use ($stage, $active, $excluded): void {
                 $this->committer->commit($stage, $active, $excluded, timeout: Tree::TIMEOUT);
             });
             $this->clean($active, $stage);

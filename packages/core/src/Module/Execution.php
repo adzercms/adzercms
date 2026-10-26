@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Module;
 
+use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Entity\ModuleOperation;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -23,21 +24,21 @@ final readonly class Execution
     public function apply(ModuleOperation $operation): ?string
     {
         $package = $operation->getPackage();
-        $refusal = $this->operations->refusal($package, $operation->getAction());
-        if (null !== $refusal) {
-            return $refusal->reason->trans($this->translator);
-        }
+        $action = $operation->getAction();
+        $subject = \sprintf('%s module %s', ucfirst($action->value), $package);
 
-        return match ($operation->getAction()) {
-            ModuleAction::Enable => $this->toggle($package, true),
-            ModuleAction::Disable => $this->toggle($package, false),
-            ModuleAction::Install => $this->compose(['require', $package]),
-            ModuleAction::Update => $this->compose(['update', str_starts_with($package, self::ENGINE) ? self::ENGINE.'*' : $package, '--with-dependencies']),
-            ModuleAction::Remove => $this->compose(['remove', $package]),
+        $outcome = $this->operations->refusal($package, $action) ?? match ($action) {
+            ModuleAction::Enable => $this->toggle($subject, $package, true),
+            ModuleAction::Disable => $this->toggle($subject, $package, false),
+            ModuleAction::Install => $this->compose($subject, ['require', $package]),
+            ModuleAction::Update => $this->compose($subject, ['update', str_starts_with($package, self::ENGINE) ? self::ENGINE.'*' : $package, '--with-dependencies']),
+            ModuleAction::Remove => $this->compose($subject, ['remove', $package]),
         };
+
+        return $outcome instanceof Refusal ? $outcome->reason->trans($this->translator) : $outcome;
     }
 
-    private function toggle(string $package, bool $on): ?string
+    private function toggle(string $subject, string $package, bool $on): Refusal|string|null
     {
         $registry = Registry::installed();
         $module = $registry->package($package) ?? throw new \LogicException(\sprintf('module package %s is not installed', $package));
@@ -48,17 +49,12 @@ final readonly class Execution
             return $refusal->getMessage();
         }
 
-        $failure = $this->tree->refresh([...$this->sources->environment(), $name => $value]);
-        if (null === $failure) {
-            $this->tree->choose($name, $value);
-        }
-
-        return $failure;
+        return $this->tree->refresh($subject, $this->sources->environment(), [$name => $value]);
     }
 
     /** @param list<string> $command */
-    private function compose(array $command): ?string
+    private function compose(string $subject, array $command): Refusal|string|null
     {
-        return $this->staging->run($command, $this->sources->environment());
+        return $this->staging->run($subject, $command, $this->sources->environment());
     }
 }

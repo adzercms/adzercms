@@ -29,7 +29,6 @@ final readonly class Operations
         $update = $row->updatable ? [ModuleAction::Update] : [];
 
         return match (true) {
-            $this->tree->versioned() => [],
             null === $row->installed => [ModuleAction::Install],
             $row->selected && CoreKind::Admin === $row->kind => $update,
             $row->selected => [...$update, ModuleAction::Disable],
@@ -54,12 +53,12 @@ final readonly class Operations
 
     public function refusal(string $package, ModuleAction $action): ?Refusal
     {
-        if ($this->tree->versioned()) {
-            return new Refusal(t('core.module.refusal.versioned'));
-        }
         $row = $this->catalog->row($package);
+        if (null === $row || !\in_array($action, $this->actions($row), true)) {
+            return new Refusal(t('core.module.refusal.action'));
+        }
 
-        return null === $row || !\in_array($action, $this->actions($row), true) ? new Refusal(t('core.module.refusal.action')) : null;
+        return $this->tree->refusal(...($action->toggles() && $row->kind instanceof Kind ? [$row->kind->environment()] : []));
     }
 
     public function file(string $package, ModuleAction $action): ?Refusal

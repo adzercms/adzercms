@@ -211,12 +211,6 @@
         <target>Version</target>
       </segment>
     </unit>
-    <unit id="admin.modules.versioned">
-      <segment>
-        <source>admin.modules.versioned</source>
-        <target>The site is under git: modules change by a commit, the list takes no operations</target>
-      </segment>
-    </unit>
     <unit id="admin.operations.action">
       <segment>
         <source>admin.operations.action</source>

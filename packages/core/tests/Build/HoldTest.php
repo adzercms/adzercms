@@ -96,7 +96,7 @@ final class HoldTest extends TestCase
         $entered->waitUntil(static fn (string $type, string $output): bool => str_contains($output, 'entered'));
 
         if ($job) {
-            self::assertNull((new Tree($this->root, self::STEP))->refresh([]));
+            self::assertNull((new Tree($this->root, self::STEP))->refresh('Refresh', []));
         } else {
             (new Process([\dirname(__DIR__, 2).'/bin/adzercms-refresh'], $this->root))->mustRun();
         }

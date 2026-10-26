@@ -211,12 +211,6 @@
         <target>Версия</target>
       </segment>
     </unit>
-    <unit id="admin.modules.versioned">
-      <segment>
-        <source>admin.modules.versioned</source>
-        <target>Сайт под git: модули меняет коммит, перечень операций не принимает</target>
-      </segment>
-    </unit>
     <unit id="admin.operations.action">
       <segment>
         <source>admin.operations.action</source>

@@ -4,22 +4,28 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Module;
 
+use AdzerCMS\Contracts\Refusal;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\Process;
+
+use function Symfony\Component\Translation\t;
 
 final readonly class Tree
 {
     public const TIMEOUT = 1800;
 
     private const REFRESH = __DIR__.'/../../bin/adzercms-refresh';
-    private const ENVIRONMENT = '.env.local';
+    private const SHARED = '.env';
+    private const LOCAL = '.env.local';
     private const LOADED = 'SYMFONY_DOTENV_VARS';
     private const LOCKS = '/var/lock/';
     private const LOCKED = ['refresh', 'entry', 'serve', 'served'];
     private const ENTERED = 'adzercms.entry';
     private const COVERED = 'ADZERCMS_ENTRY';
+    private const REFRESHED = 'ADZERCMS_REFRESHED';
+    private const LITERAL = ':(literal)';
 
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
@@ -28,23 +34,23 @@ final readonly class Tree
     ) {
     }
 
-    public function versioned(): bool
+    public function refusal(string ...$selected): ?Refusal
     {
-        for ($directory = $this->root;; $directory = \dirname($directory)) {
-            if (file_exists($directory.'/.git')) {
-                return true;
-            }
-            if (\dirname($directory) === $directory) {
-                return false;
-            }
+        $changed = $this->changed();
+        if ([] !== $changed) {
+            return new Refusal(t('core.module.refusal.uncommitted', ['paths' => implode(', ', $changed)]));
         }
+        $local = null === $this->top() ? [] : array_filter($selected, fn (string $name): bool => [] !== self::defining($this->lines(self::LOCAL), $name));
+
+        return [] === $local ? null : new Refusal(t('core.module.refusal.local', ['names' => implode(', ', $local)]));
     }
 
     /**
      * @param array<string, string>   $environment
+     * @param array<string, string>   $selection
      * @param (\Closure(): void)|null $change
      */
-    public function refresh(array $environment, ?\Closure $change = null): ?string
+    public function refresh(string $subject, array $environment, array $selection = [], ?\Closure $change = null): Refusal|string|null
     {
         $entered = $GLOBALS[self::ENTERED] ?? null;
         if (\is_resource($entered)) {
@@ -53,11 +59,23 @@ final readonly class Tree
         $locks = array_map($this->lock(...), self::LOCKED);
 
         try {
+            $refusal = $this->refusal(...array_keys($selection));
+            if (null !== $refusal) {
+                return $refusal;
+            }
             if (null !== $change) {
                 $change();
             }
+            $changed = $this->changed();
+            $failure = $this->run([...$environment, ...$selection]);
+            if (null !== $failure) {
+                return $failure;
+            }
+            foreach ($selection as $name => $value) {
+                $this->choose($name, $value);
+            }
 
-            return $this->run($environment);
+            return null === $this->top() ? null : $this->commit($subject, [...$changed, ...([] === $selection ? [] : [self::SHARED])]);
         } finally {
             array_map(fclose(...), array_reverse($locks));
         }
@@ -96,17 +114,94 @@ final readonly class Tree
         return false !== $lock && flock($lock, \LOCK_EX) ? $lock : throw new \RuntimeException(\sprintf('lock %s of the instance is not taken', $name));
     }
 
-    public function choose(string $name, string $value): void
+    private function choose(string $name, string $value): void
     {
-        $file = $this->root.'/'.self::ENVIRONMENT;
-        $lines = is_file($file) ? file($file, \FILE_IGNORE_NEW_LINES) ?: [] : [];
-        $defining = array_keys(preg_grep('/^\s*(?:export\s+)?'.preg_quote($name, '/').'=/', $lines) ?: []);
+        $file = null === $this->top() ? self::LOCAL : self::SHARED;
+        $lines = $this->lines($file);
+        $defining = self::defining($lines, $name);
 
         foreach (\array_slice($defining, 1) as $repeated) {
             unset($lines[$repeated]);
         }
         $lines[$defining[0] ?? \count($lines)] = $name.'='.$value;
 
-        (new Filesystem())->dumpFile($file, implode("\n", $lines)."\n");
+        (new Filesystem())->dumpFile($this->root.'/'.$file, implode("\n", $lines)."\n");
+    }
+
+    /** @return array<int, string> */
+    private function lines(string $file): array
+    {
+        $path = $this->root.'/'.$file;
+
+        return is_file($path) ? file($path, \FILE_IGNORE_NEW_LINES) ?: [] : [];
+    }
+
+    /**
+     * @param array<int, string> $lines
+     *
+     * @return list<int>
+     */
+    private static function defining(array $lines, string $name): array
+    {
+        return array_keys(preg_grep('/^\s*(?:export\s+)?'.preg_quote($name, '/').'=/', $lines) ?: []);
+    }
+
+    /** @return list<string> */
+    private function changed(): array
+    {
+        $top = $this->top();
+        if (null === $top) {
+            return [];
+        }
+        $real = $this->real();
+        $prefix = $real === $top ? 0 : \strlen($real) - \strlen(rtrim($top, '/'));
+        $status = $this->git('status', '--porcelain', '-z', '--no-renames', '--untracked-files=all', '--', '.');
+        $status->mustRun();
+
+        return array_map(
+            static fn (string $entry): string => substr($entry, 3 + $prefix),
+            array_values(array_filter(explode("\0", $status->getOutput()), static fn (string $entry): bool => '' !== $entry)),
+        );
+    }
+
+    /** @param list<string> $paths */
+    private function commit(string $subject, array $paths): ?string
+    {
+        $specs = array_map(static fn (string $path): string => self::LITERAL.$path, array_values(array_unique($paths)));
+        if ([] === $specs) {
+            return null;
+        }
+        $added = $this->git('add', '--all', '--', ...$specs);
+        if (0 !== $added->run()) {
+            return trim($added->getErrorOutput());
+        }
+        if (0 === $this->git('diff', '--cached', '--quiet', '--', ...$specs)->run()) {
+            return null;
+        }
+        $commit = $this->git('commit', '--quiet', '--message', $subject, '--', ...$specs)->setEnv([self::REFRESHED => $this->real()]);
+
+        return 0 === $commit->run() ? null : trim($commit->getOutput()."\n".$commit->getErrorOutput());
+    }
+
+    private function git(string ...$arguments): Process
+    {
+        return new Process(['git', ...$arguments], $this->root, null, null, self::TIMEOUT);
+    }
+
+    private function top(): ?string
+    {
+        for ($directory = $this->real();; $directory = \dirname($directory)) {
+            if (file_exists($directory.'/.git')) {
+                return $directory;
+            }
+            if (\dirname($directory) === $directory) {
+                return null;
+            }
+        }
+    }
+
+    private function real(): string
+    {
+        return realpath($this->root) ?: $this->root;
     }
 }

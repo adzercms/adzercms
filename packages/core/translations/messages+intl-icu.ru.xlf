@@ -601,16 +601,22 @@
         <target>Операция прервана до завершения</target>
       </segment>
     </unit>
+    <unit id="core.module.refusal.local">
+      <segment>
+        <source>core.module.refusal.local</source>
+        <target>{names} задан в .env.local вне git: перенесите в .env</target>
+      </segment>
+    </unit>
     <unit id="core.module.refusal.open">
       <segment>
         <source>core.module.refusal.open</source>
         <target>У пакета {package} уже есть операция в работе</target>
       </segment>
     </unit>
-    <unit id="core.module.refusal.versioned">
+    <unit id="core.module.refusal.uncommitted">
       <segment>
-        <source>core.module.refusal.versioned</source>
-        <target>Сайт под git: модули меняет коммит</target>
+        <source>core.module.refusal.uncommitted</source>
+        <target>У сайта незакоммиченные правки: {paths}</target>
       </segment>
     </unit>
     <unit id="core.module.source.taken">
