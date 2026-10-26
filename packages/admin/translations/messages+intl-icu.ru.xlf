@@ -97,16 +97,16 @@
         <target>Нет модулей</target>
       </segment>
     </unit>
-    <unit id="admin.modules.kind">
-      <segment>
-        <source>admin.modules.kind</source>
-        <target>Род</target>
-      </segment>
-    </unit>
     <unit id="admin.modules.name">
       <segment>
         <source>admin.modules.name</source>
         <target>Модуль</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.replace">
+      <segment>
+        <source>admin.modules.replace</source>
+        <target>Включить {package} вместо {replaced}?</target>
       </segment>
     </unit>
     <unit id="admin.modules.repository">

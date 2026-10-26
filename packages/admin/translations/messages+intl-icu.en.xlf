@@ -97,16 +97,16 @@
         <target>No modules</target>
       </segment>
     </unit>
-    <unit id="admin.modules.kind">
-      <segment>
-        <source>admin.modules.kind</source>
-        <target>Kind</target>
-      </segment>
-    </unit>
     <unit id="admin.modules.name">
       <segment>
         <source>admin.modules.name</source>
         <target>Module</target>
+      </segment>
+    </unit>
+    <unit id="admin.modules.replace">
+      <segment>
+        <source>admin.modules.replace</source>
+        <target>Enable {package} instead of {replaced}?</target>
       </segment>
     </unit>
     <unit id="admin.modules.repository">

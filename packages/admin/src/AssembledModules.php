@@ -25,7 +25,7 @@ final readonly class AssembledModules
     ) {
     }
 
-    /** @return array<string, array{name: string, description: TranslatableInterface, kind: TranslatableInterface, namespace: string, fields: list<Field>}> */
+    /** @return array<string, array{name: string, description: TranslatableInterface, namespace: string, fields: list<Field>}> */
     public function modules(): array
     {
         $fields = $this->settings->fields();
@@ -42,7 +42,6 @@ final readonly class AssembledModules
             $modules[strtolower($name)] = [
                 'name' => $name,
                 'description' => $registry->find($name)->description ?? new Description('', []),
-                'kind' => $bundle::kind()->label(),
                 'namespace' => substr($bundle, 0, (int) strrpos($bundle, '\\')),
                 'fields' => array_values(array_filter($fields, static fn (Field $field): bool => str_starts_with($field->name, $prefix))),
             ];

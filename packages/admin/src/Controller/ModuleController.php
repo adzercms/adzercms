@@ -81,7 +81,6 @@ final class ModuleController extends AbstractController
         }
         $table = Table::of($request, 'admin_modules', [
             Column::live('name', t('admin.modules.name'), static fn (array $row): string => $row['name'].' '.$row['description']),
-            Column::live('kind', t('admin.modules.kind'), static fn (array $row): string => $row['kind']),
             Column::live('version', t('admin.modules.version'), static fn (array $row): string => $row['version']),
             Column::live('repository', t('admin.modules.repository'), static fn (array $row): string => $row['repository'])->aside(),
             Column::live('state', t('admin.modules.status'), static fn (array $row): TranslatableInterface => $row['state']->label()),
@@ -96,7 +95,7 @@ final class ModuleController extends AbstractController
 
         return [
             'table' => $table,
-            'rows' => $table->rows($this->offers($chosen, Category::tryFrom($table->value(self::CATEGORY)), $translator)),
+            'rows' => $table->rows($this->offers($chosen, $offered['rows'], Category::tryFrom($table->value(self::CATEGORY)), $translator)),
             'taken' => $offered['at'],
             'versioned' => $this->tree->versioned(),
         ];
@@ -139,10 +138,11 @@ final class ModuleController extends AbstractController
 
     /**
      * @param array<CatalogRow> $rows
+     * @param list<CatalogRow>  $all
      *
      * @return list<array<string, mixed>>
      */
-    private function offers(array $rows, ?Category $category, TranslatorInterface $translator): array
+    private function offers(array $rows, array $all, ?Category $category, TranslatorInterface $translator): array
     {
         $assembled = $this->assembled->modules();
         $opened = $this->filings->opened();
@@ -154,12 +154,12 @@ final class ModuleController extends AbstractController
             $key = $row->selected && null !== $row->key ? strtolower($row->key) : null;
             $module = null === $key ? null : $assembled[$key] ?? null;
             $operation = $opened[$row->name] ?? null;
+            $replaced = Operations::replaced($row, $all);
             $offers[] = [
                 'name' => $row->name,
                 'description' => $row->package->description->trans($translator),
                 'link' => $row->package->homepage ?? $row->package->source,
                 'card' => null === $module ? null : $this->generateUrl('admin_module', ['key' => $key]),
-                'kind' => \is_string($row->kind) ? $row->kind : $row->kind->label()->trans($translator),
                 'version' => (string) ($row->installed ?? $row->version),
                 'verified' => (null === $row->installed ? $row->verified : $row->installedVerified) ? Badge::good(t('admin.modules.verified')) : null,
                 'update' => $row->updatable ? $row->version : null,
@@ -178,7 +178,11 @@ final class ModuleController extends AbstractController
                         'route' => 'admin_module_operation',
                         'params' => ['action' => $action->value, 'package' => $row->name],
                         'post' => true,
-                        'confirm' => $action->takesVersion() && !$row->verified ? t('admin.modules.unverified', ['package' => $row->name]) : null,
+                        'confirm' => match (true) {
+                            $action->takesVersion() && !$row->verified => t('admin.modules.unverified', ['package' => $row->name]),
+                            ModuleAction::Enable === $action && null !== $replaced => t('admin.modules.replace', ['package' => $row->name, 'replaced' => $replaced]),
+                            default => null,
+                        },
                     ], null === $operation ? $this->operations->actions($row) : []),
                 ],
             ];

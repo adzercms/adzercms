@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Module;
 
 use AdzerCMS\Contracts\Module\CoreKind;
+use AdzerCMS\Contracts\Module\Kind;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Entity\ModuleOperation;
 use AdzerCMS\Core\Repository\ModuleOperationRepository;
@@ -34,6 +35,21 @@ final readonly class Operations
             $row->selected => [...$update, ModuleAction::Disable],
             default => [...$update, ModuleAction::Enable, ModuleAction::Remove],
         };
+    }
+
+    /** @param list<CatalogRow> $rows */
+    public static function replaced(CatalogRow $row, array $rows): ?string
+    {
+        if (!$row->kind instanceof Kind || !$row->kind->single()) {
+            return null;
+        }
+        foreach ($rows as $other) {
+            if ($other->selected && $other->name !== $row->name && $other->kind === $row->kind) {
+                return $other->name;
+            }
+        }
+
+        return null;
     }
 
     public function refusal(string $package, ModuleAction $action): ?Refusal

@@ -81,7 +81,7 @@ final class ModuleWebTest extends SchemaTestCase
             );
         }
         self::assertSame(
-            [...array_map(self::phrase(...), ['admin.modules.name', 'admin.modules.kind', 'admin.modules.version', 'admin.modules.repository', 'admin.modules.status']), ''],
+            [...array_map(self::phrase(...), ['admin.modules.name', 'admin.modules.version', 'admin.modules.repository', 'admin.modules.status']), ''],
             $listing->filter('#rows thead th')->each(static fn (Crawler $head): string => trim($head->text())),
         );
         $assembled = [];
@@ -108,12 +108,8 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertSame(['/admin/modules/admin'], self::cards($this->fragment(self::MODULES.'?q='.urlencode(self::phrase($modules['admin']['description'])))),
             'the search goes by what the module does too');
 
-        $card = $this->client->request('GET', '/admin/modules/relay');
-        self::assertSame(
-            [self::phrase($modules['relay']['description']), self::phrase($modules['relay']['kind'])],
-            [self::tile($card, self::phrase('admin.modules.description')), self::tile($card, self::phrase('admin.modules.kind'))],
-        );
-        self::assertCount(1, $card->filter('form#settings'));
+        self::assertSame(self::phrase($modules['admin']['description']), self::tile($this->client->request('GET', '/admin/modules/admin'), self::phrase('admin.modules.description')));
+        self::assertCount(1, $this->client->request('GET', '/admin/modules/relay')->filter('form#settings'));
 
         $this->client->request('GET', '/admin/modules/absent');
         self::assertResponseStatusCodeSame(404);
@@ -162,8 +158,8 @@ final class ModuleWebTest extends SchemaTestCase
 
         self::assertSame(self::phrase('admin.modules.taken', ['at' => new \DateTimeImmutable('2026-10-20 12:30')]), trim($listing->filter('p.muted')->text()));
         self::assertSame(
-            [self::phrase(CoreKind::Sms->label()), '1.2.0', 'repo.packagist.org', self::phrase(ModuleState::Available->label())],
-            $cells('acme/till', 'admin.modules.kind', 'admin.modules.version', 'admin.modules.repository', 'admin.modules.status'),
+            ['1.2.0', 'repo.packagist.org', self::phrase(ModuleState::Available->label())],
+            $cells('acme/till', 'admin.modules.version', 'admin.modules.repository', 'admin.modules.status'),
         );
         self::assertSame(
             [InstalledVersions::getPrettyVersion('adzercms/admin').' '.self::phrase('admin.modules.update', ['version' => '1.0.x-dev']), self::phrase(ModuleState::Enabled->label())],
