@@ -11,6 +11,8 @@ on:
     secrets:
       SPLIT_TOKEN:
         required: true
+      PACKAGIST_API_TOKEN:
+        required: false
 
 permissions:
   contents: read
@@ -20,12 +22,22 @@ jobs:
     runs-on: &runner ${{ inputs.runner || 'ubuntu-24.04' }}
     outputs:
       names: ${{ steps.list.outputs.names }}
+      site: ${{ steps.site.outputs.site }}
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - id: list
         run: echo "names=$(ls packages | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_OUTPUT"
+      - id: site
+        env:
+          GH_TOKEN: ${{ secrets.SPLIT_TOKEN }}
+        run: |
+          site=$(gh api "orgs/$GITHUB_REPOSITORY_OWNER" -q .blog)
+          if [ "$(gh api "repos/$GITHUB_REPOSITORY" -q .homepage)" != "$site" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY" -f homepage="$site" >/dev/null
+          fi
+          echo "site=$site" >> "$GITHUB_OUTPUT"
 
   split:
     needs: packages
@@ -41,6 +53,48 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - working-directory: packages/${{ matrix.package }}
+        env:
+          GH_TOKEN: ${{ secrets.SPLIT_TOKEN }}
+          PACKAGIST_USERNAME: ${{ vars.PACKAGIST_USERNAME }}
+          PACKAGIST_API_TOKEN: ${{ secrets.PACKAGIST_API_TOKEN }}
+          REPO: ${{ github.repository_owner }}/${{ matrix.package }}
+          SITE: ${{ needs.packages.outputs.site }}
+          VISIBILITY: ${{ github.event.repository.visibility }}
+        run: |
+          if ! state=$(gh api "repos/$REPO" 2>/dev/null); then
+            state=$(gh api -X POST "orgs/$GITHUB_REPOSITORY_OWNER/repos" -f name="${REPO#*/}" -f visibility="$VISIBILITY")
+            gh api -X PUT "repos/$REPO/contents/composer.json" -f branch=main \
+              -f message="$(jq -r .description composer.json)" -f content="$(base64 -w0 composer.json)" >/dev/null
+          fi
+          settings=$(jq -c --arg site "$SITE" \
+            '{description, homepage: $site, has_issues: false, has_wiki: false, has_projects: false, has_pull_requests: false}' composer.json)
+          if ! jq -e --argjson want "$settings" '. as $have | $want | to_entries | all(.value == $have[.key])' <<<"$state" >/dev/null; then
+            gh api -X PATCH "repos/$REPO" --input - <<<"$settings" >/dev/null
+          fi
+          topics=$(jq -c '{names: [.keywords[]? | ascii_downcase | gsub("[^a-z0-9-]"; "-")] | unique}' composer.json)
+          if ! jq -e --argjson want "$topics" '.topics | sort == $want.names' <<<"$state" >/dev/null; then
+            gh api -X PUT "repos/$REPO/topics" --input - <<<"$topics" >/dev/null
+          fi
+          if [ "$(gh api "repos/$REPO/actions/permissions" -q .enabled)" != false ]; then
+            gh api -X PUT "repos/$REPO/actions/permissions" -F enabled=false >/dev/null
+          fi
+          [ "$VISIBILITY" = public ] || exit 0
+          packagist=https://packagist.org
+          code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 "$packagist/packages/$(jq -r .name composer.json).json")
+          if [ "$code" = 404 ]; then
+            jq -n --arg repository "$GITHUB_SERVER_URL/$REPO" '{$repository}' \
+              | curl -fsS --max-time 30 -X POST "$packagist/api/create-package" -H 'Content-Type: application/json' \
+                -H "Authorization: Bearer ${PACKAGIST_USERNAME:?}:${PACKAGIST_API_TOKEN:?}" -d @- >/dev/null
+          elif [ "$code" != 200 ]; then
+            echo "::error::Packagist package lookup: HTTP $code"
+            exit 1
+          fi
+          if [ "$(gh api "repos/$REPO/hooks" -q "any(.[]; .config.url | startswith(\"$packagist/api/github\"))")" != true ]; then
+            jq -n --arg url "$packagist/api/github?username=${PACKAGIST_USERNAME:?}" --arg secret "${PACKAGIST_API_TOKEN:?}" \
+              '{name: "web", events: ["push"], config: {url: $url, content_type: "json", secret: $secret}}' \
+              | gh api -X POST "repos/$REPO/hooks" --input - >/dev/null
+          fi
       - working-directory: packages/${{ matrix.package }}
         run: |
           if [ "$(jq -r .type composer.json)" = project ]; then exit 0; fi
