@@ -1,7 +1,7 @@
 {
     "name": "adzercms/mailing",
     "type": "adzercms-module",
-    "description": "Mailings for AdzerCMS: send messages to the users you choose by email, SMS and messenger bots",
+    "description": "Mailings to chosen users by email, SMS and messenger bots",
     "keywords": [
         "adzercms",
         "symfony",
@@ -35,6 +35,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\Mailing\\MailingBundle",
+            "description": {
+                "ru": "Рассылки выбранным пользователям по почте, SMS и ботам мессенджеров"
+            },
             "categories": ["messaging", "marketing"]
         },
         "branch-alias": {

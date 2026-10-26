@@ -1,7 +1,7 @@
 {
     "name": "adzercms/google-analytics",
     "type": "adzercms-module",
-    "description": "Google Analytics counter on AdzerCMS pages after the visitor's cookie consent",
+    "description": "Google Analytics counter on pages after cookie consent",
     "keywords": [
         "adzercms",
         "symfony",
@@ -28,6 +28,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\GoogleAnalytics\\GoogleAnalyticsBundle",
+            "description": {
+                "ru": "Счётчик Google Analytics на страницах после согласия на cookie"
+            },
             "categories": ["marketing"]
         },
         "branch-alias": {

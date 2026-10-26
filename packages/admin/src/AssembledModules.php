@@ -6,13 +6,12 @@ namespace AdzerCMS\Admin;
 
 use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Core\Composer\Description;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Setting\Catalog;
 use Doctrine\Migrations\DependencyFactory;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Translation\TranslatableInterface;
-
-use function Symfony\Component\Translation\t;
 
 final readonly class AssembledModules
 {
@@ -30,6 +29,7 @@ final readonly class AssembledModules
     public function modules(): array
     {
         $fields = $this->settings->fields();
+        $registry = Registry::installed();
         $modules = [];
 
         foreach ($this->bundles as $bundle) {
@@ -41,7 +41,7 @@ final readonly class AssembledModules
             $prefix = Registry::settings($bundle);
             $modules[strtolower($name)] = [
                 'name' => $name,
-                'description' => t(Registry::description($name)),
+                'description' => $registry->find($name)->description ?? new Description('', []),
                 'kind' => $bundle::kind()->label(),
                 'namespace' => substr($bundle, 0, (int) strrpos($bundle, '\\')),
                 'fields' => array_values(array_filter($fields, static fn (Field $field): bool => str_starts_with($field->name, $prefix))),

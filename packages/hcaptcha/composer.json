@@ -1,7 +1,7 @@
 {
     "name": "adzercms/hcaptcha",
     "type": "adzercms-module",
-    "description": "hCaptcha spam protection for AdzerCMS forms",
+    "description": "hCaptcha spam protection of forms",
     "keywords": [
         "adzercms",
         "symfony",
@@ -25,6 +25,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\HCaptcha\\HCaptchaBundle",
+            "description": {
+                "ru": "Защита форм от спама hCaptcha"
+            },
             "categories": ["security"]
         },
         "branch-alias": {

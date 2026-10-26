@@ -1,16 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xliff version="2.0" srcLang="en" trgLang="en" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
     <unit id="sberid.container">
       <segment>
         <source>sberid.container</source>
         <target>PKCS#12 certificate container</target>
-      </segment>
-    </unit>
-    <unit id="sberid.description">
-      <segment>
-        <source>sberid.description</source>
-        <target>Sign-in with Sber ID linked to the account</target>
       </segment>
     </unit>
     <unit id="sberid.foreign">

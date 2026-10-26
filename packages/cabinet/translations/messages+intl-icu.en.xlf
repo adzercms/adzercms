@@ -193,12 +193,6 @@
         <target>Record deletion</target>
       </segment>
     </unit>
-    <unit id="cabinet.description">
-      <segment>
-        <source>cabinet.description</source>
-        <target>Customer account: sign-up and sign-in, profile, sessions and pages of modules</target>
-      </segment>
-    </unit>
     <unit id="cabinet.email.delay">
       <segment>
         <source>cabinet.email.delay</source>
@@ -607,30 +601,6 @@
         <target>Email change</target>
       </segment>
     </unit>
-    <unit id="cabinet.revert.agree">
-      <segment>
-        <source>cabinet.revert.agree</source>
-        <target>Cancel the change</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.revert.done">
-      <segment>
-        <source>cabinet.revert.done</source>
-        <target>The email change is cancelled</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.revert.hint">
-      <segment>
-        <source>cabinet.revert.hint</source>
-        <target>The record returns to the email {contact}, sign-ins with the new email end.</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.revert.title">
-      <segment>
-        <source>cabinet.revert.title</source>
-        <target>Email change cancellation</target>
-      </segment>
-    </unit>
     <unit id="cabinet.reset.changed">
       <segment>
         <source>cabinet.reset.changed</source>
@@ -701,6 +671,30 @@
       <segment>
         <source>cabinet.reset.title</source>
         <target>Access recovery</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.revert.agree">
+      <segment>
+        <source>cabinet.revert.agree</source>
+        <target>Cancel the change</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.revert.done">
+      <segment>
+        <source>cabinet.revert.done</source>
+        <target>The email change is cancelled</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.revert.hint">
+      <segment>
+        <source>cabinet.revert.hint</source>
+        <target>The record returns to the email {contact}, sign-ins with the new email end.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.revert.title">
+      <segment>
+        <source>cabinet.revert.title</source>
+        <target>Email change cancellation</target>
       </segment>
     </unit>
     <unit id="cabinet.services.link">

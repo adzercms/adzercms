@@ -1,7 +1,7 @@
 {
     "name": "adzercms/admin",
     "type": "adzercms-module",
-    "description": "Admin panel for AdzerCMS: manage your site's content, users and settings in one place",
+    "description": "Admin panel: content, users and settings of the site",
     "keywords": [
         "adzercms",
         "symfony",
@@ -42,7 +42,10 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\Admin\\AdminBundle"
+            "bundle": "AdzerCMS\\Admin\\AdminBundle",
+            "description": {
+                "ru": "Админка: содержимое, пользователи и настройки сайта"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

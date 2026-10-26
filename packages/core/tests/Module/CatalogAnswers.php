@@ -79,10 +79,11 @@ trait CatalogAnswers
     /**
      * @param array<string, string> $provide
      * @param list<string>          $categories
+     * @param array<string, string> $translations
      */
-    private function offer(string $name, string $version, string $type = Registry::TYPE, array $provide = [], array $categories = []): void
+    private function offer(string $name, string $version, string $type = Registry::TYPE, array $provide = [], array $categories = [], array $translations = []): void
     {
-        $this->packages[$name] = [self::manifest($name, $version, $type, $provide, $categories)];
+        $this->packages[$name] = [self::manifest($name, $version, $type, $provide, $categories, $translations)];
     }
 
     private function branch(string $name, string $alias, ?string $reference = null): void
@@ -127,10 +128,11 @@ trait CatalogAnswers
     /**
      * @param array<string, string> $provide
      * @param list<string>          $categories
+     * @param array<string, string> $translations
      *
      * @return array<string, mixed>
      */
-    private static function manifest(string $name, string $version, string $type = Registry::TYPE, array $provide = [], array $categories = []): array
+    private static function manifest(string $name, string $version, string $type = Registry::TYPE, array $provide = [], array $categories = [], array $translations = []): array
     {
         return [
             'name' => $name,
@@ -140,7 +142,7 @@ trait CatalogAnswers
             'provide' => $provide,
             'homepage' => 'https://'.strtr($name, '/', '-').'.example.test',
             'source' => ['type' => 'git', 'url' => 'https://git.example.test/'.$name, 'reference' => self::commit($name, $version)],
-            'extra' => ['adzercms' => ['categories' => $categories]],
+            'extra' => ['adzercms' => ['categories' => $categories, 'description' => $translations]],
         ];
     }
 

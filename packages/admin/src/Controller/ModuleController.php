@@ -156,7 +156,7 @@ final class ModuleController extends AbstractController
             $operation = $opened[$row->name] ?? null;
             $offers[] = [
                 'name' => $row->name,
-                'description' => null === $module ? $row->package->description : $module['description']->trans($translator),
+                'description' => $row->package->description->trans($translator),
                 'link' => $row->package->homepage ?? $row->package->source,
                 'card' => null === $module ? null : $this->generateUrl('admin_module', ['key' => $key]),
                 'kind' => \is_string($row->kind) ? $row->kind : $row->kind->label()->trans($translator),

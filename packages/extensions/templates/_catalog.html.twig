@@ -12,7 +12,8 @@
                     <span class="muted">{{ 'extensions.edition'|trans({type: row.type.label|trans, version: row.version}) }}</span>
                     <span class="muted">{{ row.categories|map(category => category.label|trans)|join(', ') }}</span>
                     <div class="offer-price">{{ row.price ? amount(row.price, false) : 'extensions.free'|trans }}</div>
-                    {% if row.description %}<p>{{ row.description }}</p>{% endif %}
+                    {% set description = row.description|trans %}
+                    {% if description %}<p>{{ description }}</p>{% endif %}
                     <div class="offer-actions">
                         {{ card.link(row.demo, 'extensions.link.demo', '') }}
                         {{ card.link(row.homepage, 'extensions.link.homepage', 'secondary') }}

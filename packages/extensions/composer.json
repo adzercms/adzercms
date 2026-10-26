@@ -1,7 +1,7 @@
 {
     "name": "adzercms/extensions",
     "type": "adzercms-module",
-    "description": "Extension catalog for AdzerCMS: modules, themes and site templates with prices and demos",
+    "description": "Extension catalog: modules, themes and site templates with prices and demos",
     "keywords": [
         "adzercms",
         "symfony",
@@ -42,6 +42,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\Extensions\\ExtensionsBundle",
+            "description": {
+                "ru": "Каталог расширений: модули, темы и шаблоны сайтов с ценами и демо"
+            },
             "categories": ["content"]
         },
         "branch-alias": {

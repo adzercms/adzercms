@@ -1,7 +1,7 @@
 {
     "name": "adzercms/realtime",
     "type": "adzercms-module",
-    "description": "Live page updates for AdzerCMS: parts of a page refresh without reloading",
+    "description": "Live pages: parts of a page refresh without reloading",
     "keywords": [
         "adzercms",
         "symfony",
@@ -36,7 +36,10 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\Realtime\\RealtimeBundle"
+            "bundle": "AdzerCMS\\Realtime\\RealtimeBundle",
+            "description": {
+                "ru": "Живые страницы: части страницы обновляются без перезагрузки"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

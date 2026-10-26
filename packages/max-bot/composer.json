@@ -1,7 +1,7 @@
 {
     "name": "adzercms/max-bot",
     "type": "adzercms-module",
-    "description": "MAX messenger bot for AdzerCMS notifications",
+    "description": "MAX messenger bot for notifications",
     "keywords": [
         "adzercms",
         "symfony",
@@ -29,6 +29,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\MaxBot\\MaxBotBundle",
+            "description": {
+                "ru": "Бот мессенджера MAX для оповещений"
+            },
             "categories": ["messaging"]
         },
         "branch-alias": {

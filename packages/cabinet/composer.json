@@ -1,7 +1,7 @@
 {
     "name": "adzercms/cabinet",
     "type": "adzercms-module",
-    "description": "Customer account for AdzerCMS: sign-up and sign-in, profile, active sessions and pages from modules",
+    "description": "Customer account: sign-up and sign-in, profile, sessions and pages of modules",
     "keywords": [
         "adzercms",
         "symfony",
@@ -34,7 +34,10 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\Cabinet\\CabinetBundle"
+            "bundle": "AdzerCMS\\Cabinet\\CabinetBundle",
+            "description": {
+                "ru": "Кабинет клиента: регистрация и вход, профиль, сеансы и страницы модулей"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

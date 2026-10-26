@@ -1,7 +1,7 @@
 {
     "name": "adzercms/theme",
     "type": "adzercms-module",
-    "description": "Default AdzerCMS theme: page layout, interface components and styles",
+    "description": "Default theme: page layout, interface components and styles",
     "keywords": [
         "adzercms",
         "symfony",
@@ -31,7 +31,10 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\Theme\\ThemeBundle"
+            "bundle": "AdzerCMS\\Theme\\ThemeBundle",
+            "description": {
+                "ru": "Тема по умолчанию: раскладка страниц, компоненты интерфейса и стили"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

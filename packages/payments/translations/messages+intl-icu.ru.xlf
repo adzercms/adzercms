@@ -37,12 +37,6 @@
         <target>Ждём подтверждения банка</target>
       </segment>
     </unit>
-    <unit id="payments.description">
-      <segment>
-        <source>payments.description</source>
-        <target>Онлайн-оплата: история платежей, подтверждения и модули платёжных систем</target>
-      </segment>
-    </unit>
     <unit id="payments.flash.bound">
       <segment>
         <source>payments.flash.bound</source>

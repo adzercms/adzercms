@@ -1,7 +1,7 @@
 {
     "name": "adzercms/yookassa",
     "type": "adzercms-module",
-    "description": "YooKassa online payments for AdzerCMS",
+    "description": "YooKassa online payments",
     "keywords": [
         "adzercms",
         "symfony",
@@ -32,6 +32,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\YooKassa\\YooKassaBundle",
+            "description": {
+                "ru": "Онлайн-оплата ЮKassa"
+            },
             "categories": ["payments"]
         },
         "branch-alias": {

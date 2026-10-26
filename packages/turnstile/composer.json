@@ -1,7 +1,7 @@
 {
     "name": "adzercms/turnstile",
     "type": "adzercms-module",
-    "description": "Cloudflare Turnstile spam protection for AdzerCMS forms",
+    "description": "Cloudflare Turnstile spam protection of forms",
     "keywords": [
         "adzercms",
         "symfony",
@@ -26,6 +26,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\Turnstile\\TurnstileBundle",
+            "description": {
+                "ru": "Защита форм от спама Cloudflare Turnstile"
+            },
             "categories": ["security"]
         },
         "branch-alias": {

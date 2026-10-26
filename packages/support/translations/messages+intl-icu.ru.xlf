@@ -43,12 +43,6 @@
         <target>Техническая поддержка, Финансы</target>
       </segment>
     </unit>
-    <unit id="support.description">
-      <segment>
-        <source>support.description</source>
-        <target>Поддержка клиентов: обращения с вложениями, сводка сотрудникам и подсказки статей помощи</target>
-      </segment>
-    </unit>
     <unit id="support.digest.fresh">
       <segment>
         <source>support.digest.fresh</source>

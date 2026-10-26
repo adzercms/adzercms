@@ -24,31 +24,26 @@ $package = $ask('Package name', null, '~^[a-z0-9]([_.-]?[a-z0-9]+)*/[a-z0-9](([_
 $namespace = $ask('Namespace', $studly($vendor).'\\'.$studly($name), '~^[A-Z][A-Za-z0-9]*(\\\\[A-Z][A-Za-z0-9]*)*$~');
 $bundle = $ask('Bundle class', $studly($name).'Bundle', '~^[A-Z][A-Za-z0-9]*Bundle$~');
 $key = substr($bundle, 0, -\strlen('Bundle'));
+$description = $ask('What the module does, in English', null, '~\S~');
+$russian = $ask('What the module does, in Russian', null, '~\S~');
 
 $manifest = json_decode((string) file_get_contents(__DIR__.'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
-$manifest = ['name' => $package, 'type' => 'adzercms-module'] + array_diff_key(\is_array($manifest) ? $manifest : [], array_flip(['description', 'keywords', 'scripts']));
+$manifest = ['name' => $package, 'type' => 'adzercms-module', 'description' => $description] + array_diff_key(\is_array($manifest) ? $manifest : [], array_flip(['description', 'keywords', 'scripts']));
 $manifest['autoload'] = ['psr-4' => [$namespace.'\\' => 'src/']];
-$manifest['extra'] = ['adzercms' => ['bundle' => $namespace.'\\'.$bundle]];
-file_put_contents(__DIR__.'/composer.json', json_encode($manifest, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_THROW_ON_ERROR)."\n");
+$manifest['extra'] = ['adzercms' => ['bundle' => $namespace.'\\'.$bundle, 'description' => ['ru' => $russian]]];
+file_put_contents(__DIR__.'/composer.json', json_encode($manifest, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE | \JSON_THROW_ON_ERROR)."\n");
 
 $names = [
     'Vendor\\Module' => $namespace,
     'ModuleBundle' => $bundle,
     'ModuleTest' => $key.'Test',
-    'module.description' => strtolower($key).'.description',
-    "'Module'" => "'".$key."'",
-    '>Module<' => '>'.$key.'<',
 ];
 foreach ([
     'src/ModuleBundle.php' => 'src/'.$bundle.'.php',
     'tests/ModuleTest.php' => 'tests/'.$key.'Test.php',
-    'translations/messages+intl-icu.en.xlf' => 'translations/messages+intl-icu.en.xlf',
-    'translations/messages+intl-icu.ru.xlf' => 'translations/messages+intl-icu.ru.xlf',
 ] as $file => $target) {
     file_put_contents(__DIR__.'/'.$target, strtr((string) file_get_contents(__DIR__.'/'.$file), $names));
-    if ($target !== $file) {
-        unlink(__DIR__.'/'.$file);
-    }
+    unlink(__DIR__.'/'.$file);
 }
 unlink(__FILE__);
 

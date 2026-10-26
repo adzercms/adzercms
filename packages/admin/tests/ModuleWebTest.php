@@ -13,6 +13,7 @@ use AdzerCMS\Core\Module\Catalog as ModuleCatalog;
 use AdzerCMS\Core\Module\CatalogRow;
 use AdzerCMS\Core\Module\ModuleAction;
 use AdzerCMS\Core\Module\OperationState;
+use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Module\Tree;
 use AdzerCMS\Core\Repository\ModuleOperationRepository;
@@ -150,7 +151,7 @@ final class ModuleWebTest extends SchemaTestCase
 
         $this->answerCatalog();
         $this->listed(['acme/till', 'acme/shop', 'adzercms/admin']);
-        $this->offer('acme/till', '1.2.0', provide: ['adzercms/sms-implementation' => '1.0.0'], categories: ['messaging']);
+        $this->offer('acme/till', '1.2.0', provide: ['adzercms/sms-implementation' => '1.0.0'], categories: ['messaging'], translations: ['ru' => 'Касса acme']);
         $this->offer('acme/shop', '1.0.0', categories: ['commerce']);
         $this->branch('adzercms/admin', '1.0.x-dev');
         self::mockTime('2026-10-20 12:30');
@@ -182,6 +183,16 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertContains('adzercms/admin', $installed);
         self::assertContains($idle->name, $installed);
         self::assertNotContains('acme/till', $installed);
+
+        $this->client->loginUser($this->record('79990000002')->setRole(Role::Admin)->setLanguage('ru'));
+        $this->em->flush();
+        $russian = $this->client->request('GET', self::MODULES)->filter('#rows');
+        $described = static fn (string $name): string => trim(self::cell($russian, $name, self::phrase('admin.modules.name', locale: 'ru'))->filter('.muted')->text());
+        self::assertSame(
+            ['Касса acme', 'Package acme/shop', Registry::installed()->package($idle->name)->description->translations['ru'] ?? self::fail('the installed module is not described in Russian')],
+            [$described('acme/till'), $described('acme/shop'), $described($idle->name)],
+            'a module tells what it does in the language of the reader, installed or not, without a translation — in the source',
+        );
     }
 
     #[Group('ACMS-CORE-0960')]

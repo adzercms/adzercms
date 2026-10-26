@@ -7,6 +7,7 @@ namespace AdzerCMS\Core\Module;
 use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Module\Kind;
 use AdzerCMS\Contracts\Module\Module;
+use AdzerCMS\Core\Composer\Description;
 use Composer\InstalledVersions;
 
 final class Registry
@@ -116,7 +117,7 @@ final class Registry
     {
         $bundle = \is_array($manifest) ? ($manifest['extra']['adzercms']['bundle'] ?? null) : null;
 
-        if (!\is_string($bundle) || !is_subclass_of($bundle, Module::class)) {
+        if (!\is_array($manifest) || !\is_string($bundle) || !is_subclass_of($bundle, Module::class)) {
             throw new \LogicException(sprintf('module package %s does not name a bundle class extending %s in extra.adzercms.bundle', $package, Module::class));
         }
 
@@ -141,6 +142,7 @@ final class Registry
             array_values(array_intersect($packages, $required)),
             array_values(array_filter($required, static fn (string $name): bool => 1 === preg_match(self::IMPLEMENTATION, $name))),
             array_values(array_intersect($packages, $developed)),
+            Description::of($manifest),
         );
     }
 
@@ -148,11 +150,6 @@ final class Registry
     public static function key(string $bundle): string
     {
         return substr((new \ReflectionClass($bundle))->getShortName(), 0, -\strlen('Bundle'));
-    }
-
-    public static function description(string $key): string
-    {
-        return strtolower($key).'.description';
     }
 
     /** @param class-string<Module> $bundle */

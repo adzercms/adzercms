@@ -31,12 +31,6 @@
         <target>Users</target>
       </segment>
     </unit>
-    <unit id="admin.description">
-      <segment>
-        <source>admin.description</source>
-        <target>Admin panel: content, users and settings of the site</target>
-      </segment>
-    </unit>
     <unit id="admin.menu.dashboard">
       <segment>
         <source>admin.menu.dashboard</source>

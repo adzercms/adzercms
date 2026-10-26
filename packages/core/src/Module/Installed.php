@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Module;
 
 use AdzerCMS\Contracts\Module\Kind;
 use AdzerCMS\Contracts\Module\Module;
+use AdzerCMS\Core\Composer\Description;
 
 final readonly class Installed
 {
@@ -27,6 +28,7 @@ final readonly class Installed
         public array $requires,
         public array $implementations,
         public array $develops,
+        public Description $description,
     ) {
         $this->kind = $bundle::kind();
         $this->kinds = $bundle::kinds();

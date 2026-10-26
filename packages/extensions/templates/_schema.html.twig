@@ -12,7 +12,7 @@
             item: {
                 '@type': 'SoftwareApplication',
                 name: row.name,
-                description: row.description,
+                description: row.description|trans,
                 softwareVersion: row.version,
                 url: row.homepage ?? row.source,
                 offers: {'@type': 'Offer', price: row.price ?? '0', priceCurrency: constant('AdzerCMS\\Core\\Ui\\Money::CURRENCY')},

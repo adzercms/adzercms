@@ -1,7 +1,7 @@
 {
     "name": "adzercms/opotopo",
     "type": "adzercms-module",
-    "description": "OPOTOPO export for AdzerCMS: catalogs of the site go to the marketplace as seller listings through the Seller API",
+    "description": "Catalogs of the site go to OPOTOPO as seller listings through the Seller API",
     "keywords": [
         "adzercms",
         "symfony",
@@ -46,6 +46,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\Opotopo\\OpotopoBundle",
+            "description": {
+                "ru": "Каталоги сайта уходят на OPOTOPO позициями продавца через Seller API"
+            },
             "categories": ["commerce"]
         },
         "branch-alias": {

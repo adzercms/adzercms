@@ -19,7 +19,7 @@ final readonly class Package
 
     /** @param list<Category> $categories */
     public function __construct(
-        public string $description,
+        public Description $description,
         public string $version,
         public array $categories,
         public ?string $source,
@@ -98,7 +98,7 @@ final readonly class Package
         $kinds = preg_filter(Registry::IMPLEMENTATION, '$1', array_map(strval(...), array_keys(\is_array($version['provide'] ?? null) ? $version['provide'] : [])));
 
         return new self(
-            self::text($version['description'] ?? null) ?? '',
+            Description::of($version),
             $label,
             Category::of(\is_array($extra['categories'] ?? null) ? $extra['categories'] : []),
             self::link($version['source']['url'] ?? null),
@@ -115,7 +115,7 @@ final readonly class Package
         return self::text($version['source']['reference'] ?? null) ?? self::text($version['dist']['reference'] ?? null);
     }
 
-    private static function text(mixed $value): ?string
+    public static function text(mixed $value): ?string
     {
         return \is_string($value) && '' !== trim($value) ? trim($value) : null;
     }

@@ -13,12 +13,13 @@ composer create-project adzercms/module-skeleton modules/pigeon --stability=dev 
 composer require acme/pigeon:@dev
 ```
 
-`create-project` asks for the package name, the namespace and the bundle class. The new package is a feature module with its bundle, a test, the `en` and `ru` catalogs and CI that runs the [module check](#module-check). Its `composer.json` looks like this:
+`create-project` asks for the package name, the namespace, the bundle class and what the module does, in English and in Russian. The new package is a feature module with its bundle, a test and CI that runs the [module check](#module-check). Its `composer.json` looks like this:
 
 ```json
 {
     "name": "acme/pigeon",
     "type": "adzercms-module",
+    "description": "SMS through a pigeon post",
     "license": "MIT",
     "require": {
         "adzercms/contracts": "^1.0",
@@ -32,12 +33,17 @@ composer require acme/pigeon:@dev
         "psr-4": {"Acme\\Pigeon\\": "src/"}
     },
     "extra": {
-        "adzercms": {"bundle": "Acme\\Pigeon\\PigeonBundle"}
+        "adzercms": {
+            "bundle": "Acme\\Pigeon\\PigeonBundle",
+            "description": {"ru": "SMS голубиной почтой"}
+        }
     }
 }
 ```
 
 `extra.adzercms.bundle` points to the bundle class. The class name without `Bundle` is the module key, and it must be unique among installed modules. If your module requires another module's package, that module has to be enabled too.
+
+`description` says in English what the module does, and `extra.adzercms.description` translates it into the other engine languages. The modules section of the admin panel shows it in the reader's language, for packages that aren't installed yet too. `vendor/bin/adzercms-check` rejects a module without the description or without one of its translations.
 
 You don't require a module of some kind by its package name but through the kind's virtual package `adzercms/<kind key>-implementation`. Every module of a kind lists it in `provide` with the engine version whose contracts it implements; a kind module without that entry stops the build. This way Composer installs the requiring module only together with some module of the kind, and the instance builds only when such a module is enabled. A module with pages needs a theme: `"adzercms/theme-implementation": "^1.0"`. Modules needed only by the tests, such as the admin, go to `require-dev`: the module's test suite enables them itself.
 
@@ -150,7 +156,7 @@ In the application settings on the service side, register the redirect URI `http
 - `migrations/` — migrations in the `<bundle namespace>\Migrations` namespace
 - `src/Controller/` — controllers with route attributes
 - `templates/` — Twig templates under `@<Module>`
-- `translations/` — XLIFF catalogs `messages+intl-icu.<lang>.xlf`; keys start with the module name, the English catalog is required, every language has the same set of keys, and every key of the code and templates is in the English catalog of the module or of a module it requires. `<module>.description`, with the module key in lower case, says what the module does; the modules section of the admin panel shows it
+- `translations/` — XLIFF catalogs `messages+intl-icu.<lang>.xlf`; keys start with the module name, the English catalog is required, every language has the same set of keys, and every key of the code and templates is in the English catalog of the module or of a module it requires
 - `tests/` — PHPUnit tests
 
 The core wires up the entities, migrations and routes of an enabled module by itself.

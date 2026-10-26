@@ -1,7 +1,7 @@
 {
     "name": "adzercms/telegram",
     "type": "adzercms-module",
-    "description": "Sign in to an AdzerCMS site with Telegram and link it to your account",
+    "description": "Sign-in with Telegram linked to the account",
     "keywords": [
         "adzercms",
         "symfony",
@@ -28,6 +28,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\Telegram\\TelegramBundle",
+            "description": {
+                "ru": "Вход через Telegram с привязкой к учётной записи"
+            },
             "categories": ["security"]
         },
         "branch-alias": {

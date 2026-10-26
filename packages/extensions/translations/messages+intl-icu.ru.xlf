@@ -61,12 +61,6 @@
         <target>Убрать {name} из каталога?</target>
       </segment>
     </unit>
-    <unit id="extensions.description">
-      <segment>
-        <source>extensions.description</source>
-        <target>Каталог расширений: модули, темы и шаблоны сайтов с ценами и демо</target>
-      </segment>
-    </unit>
     <unit id="extensions.edition">
       <segment>
         <source>extensions.edition</source>

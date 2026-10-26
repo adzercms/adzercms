@@ -1,7 +1,7 @@
 {
     "name": "adzercms/yandex-metrika",
     "type": "adzercms-module",
-    "description": "Yandex Metrica counter on AdzerCMS pages after the visitor's cookie consent",
+    "description": "Yandex Metrica counter on pages after cookie consent",
     "keywords": [
         "adzercms",
         "symfony",
@@ -28,6 +28,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\YandexMetrika\\YandexMetrikaBundle",
+            "description": {
+                "ru": "Счётчик Яндекс Метрики на страницах после согласия на cookie"
+            },
             "categories": ["marketing"]
         },
         "branch-alias": {

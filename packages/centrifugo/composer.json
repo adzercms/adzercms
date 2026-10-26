@@ -1,7 +1,7 @@
 {
     "name": "adzercms/centrifugo",
     "type": "adzercms-module",
-    "description": "Live page updates for AdzerCMS through a Centrifugo server",
+    "description": "Live page updates through a Centrifugo server",
     "keywords": [
         "adzercms",
         "symfony",
@@ -30,7 +30,10 @@
     },
     "extra": {
         "adzercms": {
-            "bundle": "AdzerCMS\\Centrifugo\\CentrifugoBundle"
+            "bundle": "AdzerCMS\\Centrifugo\\CentrifugoBundle",
+            "description": {
+                "ru": "Обновление страниц без перезагрузки через сервер Centrifugo"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

@@ -193,12 +193,6 @@
         <target>Удаление записи</target>
       </segment>
     </unit>
-    <unit id="cabinet.description">
-      <segment>
-        <source>cabinet.description</source>
-        <target>Кабинет клиента: регистрация и вход, профиль, сеансы и страницы модулей</target>
-      </segment>
-    </unit>
     <unit id="cabinet.email.delay">
       <segment>
         <source>cabinet.email.delay</source>
@@ -607,30 +601,6 @@
         <target>Смена почты</target>
       </segment>
     </unit>
-    <unit id="cabinet.revert.agree">
-      <segment>
-        <source>cabinet.revert.agree</source>
-        <target>Отменить смену</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.revert.done">
-      <segment>
-        <source>cabinet.revert.done</source>
-        <target>Смена почты отменена</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.revert.hint">
-      <segment>
-        <source>cabinet.revert.hint</source>
-        <target>Запись вернётся к почте {contact}, входы с новой почтой погаснут.</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.revert.title">
-      <segment>
-        <source>cabinet.revert.title</source>
-        <target>Отмена смены почты</target>
-      </segment>
-    </unit>
     <unit id="cabinet.reset.changed">
       <segment>
         <source>cabinet.reset.changed</source>
@@ -701,6 +671,30 @@
       <segment>
         <source>cabinet.reset.title</source>
         <target>Восстановление доступа</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.revert.agree">
+      <segment>
+        <source>cabinet.revert.agree</source>
+        <target>Отменить смену</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.revert.done">
+      <segment>
+        <source>cabinet.revert.done</source>
+        <target>Смена почты отменена</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.revert.hint">
+      <segment>
+        <source>cabinet.revert.hint</source>
+        <target>Запись вернётся к почте {contact}, входы с новой почтой погаснут.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.revert.title">
+      <segment>
+        <source>cabinet.revert.title</source>
+        <target>Отмена смены почты</target>
       </segment>
     </unit>
     <unit id="cabinet.services.link">

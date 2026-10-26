@@ -1,7 +1,7 @@
 {
     "name": "adzercms/leads",
     "type": "adzercms-module",
-    "description": "Website leads for AdzerCMS: a lead window on any page, funnel stages and lead handling in the admin panel",
+    "description": "Website leads: a lead window on any page, funnel stages, managers and deadlines",
     "keywords": [
         "adzercms",
         "symfony",
@@ -48,6 +48,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\Leads\\LeadsBundle",
+            "description": {
+                "ru": "Заявки с сайта: окно заявки на любой странице, стадии воронки, менеджеры и сроки"
+            },
             "categories": ["marketing"]
         },
         "branch-alias": {

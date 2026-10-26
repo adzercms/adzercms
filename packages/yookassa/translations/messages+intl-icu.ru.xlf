@@ -13,12 +13,6 @@
         <target>Предмет расчёта закрывающего чека</target>
       </segment>
     </unit>
-    <unit id="yookassa.description">
-      <segment>
-        <source>yookassa.description</source>
-        <target>Онлайн-оплата ЮKassa</target>
-      </segment>
-    </unit>
     <unit id="yookassa.fee_page">
       <segment>
         <source>yookassa.fee_page</source>

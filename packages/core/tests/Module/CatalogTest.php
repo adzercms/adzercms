@@ -152,7 +152,8 @@ final class CatalogTest extends SchemaTestCase
         self::assertNotNull($admin->installed);
         self::assertSame([CoreKind::Theme, null, null], [$theme->kind, $theme->version, $theme->repository]);
         self::assertNotNull($theme->installed);
-        self::assertNotSame('', $theme->package->description);
+        self::assertNotSame('', $theme->package->description->source);
+        self::assertArrayHasKey('ru', $theme->package->description->translations);
     }
 
     #[Group('ACMS-CORE-0936')]

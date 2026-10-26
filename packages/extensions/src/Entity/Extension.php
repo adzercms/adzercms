@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Extensions\Entity;
 
 use AdzerCMS\Contracts\Module\Category;
+use AdzerCMS\Core\Composer\Description;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Ui\Placed;
 use AdzerCMS\Extensions\ExtensionState;
@@ -46,6 +47,10 @@ class Extension implements Placed
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
+
+    /** @var array<string, string>|null */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $descriptionTranslations = null;
 
     #[ORM\Column(length: 64, nullable: true)]
     private ?string $version = null;
@@ -95,9 +100,9 @@ class Extension implements Placed
         return $this->position;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): ?Description
     {
-        return $this->description;
+        return null === $this->description ? null : new Description($this->description, $this->descriptionTranslations ?? []);
     }
 
     public function getVersion(): ?string
@@ -142,7 +147,8 @@ class Extension implements Placed
 
     public function know(?Package $package): self
     {
-        $this->description = $package?->description;
+        $this->description = $package?->description->source;
+        $this->descriptionTranslations = $package?->description->translations;
         $this->version = self::fit($package?->version, self::VERSION);
         $this->source = self::fit($package?->source, self::LINK);
         $this->homepage = self::fit($package?->homepage, self::LINK);

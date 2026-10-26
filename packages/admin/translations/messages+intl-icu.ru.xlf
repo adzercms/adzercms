@@ -31,12 +31,6 @@
         <target>Пользователей</target>
       </segment>
     </unit>
-    <unit id="admin.description">
-      <segment>
-        <source>admin.description</source>
-        <target>Админка: содержимое, пользователи и настройки сайта</target>
-      </segment>
-    </unit>
     <unit id="admin.menu.dashboard">
       <segment>
         <source>admin.menu.dashboard</source>

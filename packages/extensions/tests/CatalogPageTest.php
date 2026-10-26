@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Extensions\Tests;
 
 use AdzerCMS\Contracts\Module\Category;
+use AdzerCMS\Core\Composer\Description;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Seo\Indexing;
@@ -25,12 +26,13 @@ final class CatalogPageTest extends CatalogTestCase
     private const PAGE = '/extensions';
     private const SOURCE = 'https://github.com/acme/code';
 
+    #[Group('ACMS-EXT-0003')]
     #[Group('ACMS-EXT-0004')]
     #[Group('ACMS-EXT-0005')]
     #[Group('ACMS-US-0034')]
     public function testVisitorSeesPublishedEntriesInOperatorOrder(): void
     {
-        $this->entry('acme/shop', ExtensionType::Theme, '1500.00', self::package('Shop theme', 'https://shop.example.test', [Category::Commerce, Category::Content]), 'https://demo.example.test');
+        $this->entry('acme/shop', ExtensionType::Theme, '1500.00', self::package('Shop theme', 'https://shop.example.test', [Category::Commerce, Category::Content], ['ru' => 'Тема магазина']), 'https://demo.example.test');
         $this->entry('acme/draft');
         $this->entry('acme/seo', package: self::package('SEO module'))->place(0);
         $this->em->flush();
@@ -52,6 +54,10 @@ final class CatalogPageTest extends CatalogTestCase
         $seo = $page->filter('.offer-card')->first();
         self::assertSame(self::phrase('extensions.free'), $seo->filter('.offer-price')->text());
         self::assertSame([self::SOURCE], self::links($seo));
+
+        $russian = $this->client->request('GET', self::PAGE, server: ['HTTP_ACCEPT_LANGUAGE' => 'ru'])->filter('.offer-card');
+        self::assertSame(['SEO module', 'Тема магазина'], [$russian->first()->filter('p')->text(), $russian->last()->filter('p')->text()],
+            'the description goes in the language of the visitor, without a translation — in the source');
     }
 
     /**
@@ -155,10 +161,13 @@ final class CatalogPageTest extends CatalogTestCase
         });
     }
 
-    /** @param list<Category> $categories */
-    private static function package(string $description, ?string $homepage = null, array $categories = [Category::Other]): Package
+    /**
+     * @param list<Category>        $categories
+     * @param array<string, string> $translations
+     */
+    private static function package(string $description, ?string $homepage = null, array $categories = [Category::Other], array $translations = []): Package
     {
-        return new Package($description, '1.0.0', $categories, self::SOURCE, $homepage, Registry::TYPE, null, null);
+        return new Package(new Description($description, $translations), '1.0.0', $categories, self::SOURCE, $homepage, Registry::TYPE, null, null);
     }
 
     /** @return list<string> */

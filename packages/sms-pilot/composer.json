@@ -1,7 +1,7 @@
 {
     "name": "adzercms/sms-pilot",
     "type": "adzercms-module",
-    "description": "SMS through SMSPilot for AdzerCMS notifications and confirmation codes",
+    "description": "SMS through SMSPilot: notifications and confirmation codes",
     "keywords": [
         "adzercms",
         "symfony",
@@ -28,6 +28,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\SmsPilot\\SmsPilotBundle",
+            "description": {
+                "ru": "SMS через SMSPilot: оповещения и коды подтверждения"
+            },
             "categories": ["messaging"]
         },
         "branch-alias": {

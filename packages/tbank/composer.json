@@ -1,7 +1,7 @@
 {
     "name": "adzercms/tbank",
     "type": "adzercms-module",
-    "description": "T-Bank online payments for AdzerCMS",
+    "description": "T-Bank online payments",
     "keywords": [
         "adzercms",
         "symfony",
@@ -32,6 +32,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\TBank\\TBankBundle",
+            "description": {
+                "ru": "Онлайн-оплата Т-Банка"
+            },
             "categories": ["payments"]
         },
         "branch-alias": {

@@ -1,7 +1,7 @@
 {
     "name": "adzercms/support",
     "type": "adzercms-module",
-    "description": "Customer support for AdzerCMS: tickets with attachments, a digest for staff and help article suggestions",
+    "description": "Customer support: tickets with attachments, a digest for staff and help article suggestions",
     "keywords": [
         "adzercms",
         "symfony",
@@ -50,6 +50,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\Support\\SupportBundle",
+            "description": {
+                "ru": "Поддержка клиентов: обращения с вложениями, сводка сотрудникам и подсказки статей помощи"
+            },
             "categories": ["support"]
         },
         "branch-alias": {

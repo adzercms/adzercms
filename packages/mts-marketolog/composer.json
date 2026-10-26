@@ -1,7 +1,7 @@
 {
     "name": "adzercms/mts-marketolog",
     "type": "adzercms-module",
-    "description": "SMS through MTS Marketolog for AdzerCMS notifications and confirmation codes",
+    "description": "SMS through MTS Marketolog: notifications and confirmation codes",
     "keywords": [
         "adzercms",
         "symfony",
@@ -29,6 +29,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\MtsMarketolog\\MtsMarketologBundle",
+            "description": {
+                "ru": "SMS через МТС Маркетолог: оповещения и коды подтверждения"
+            },
             "categories": ["messaging"]
         },
         "branch-alias": {

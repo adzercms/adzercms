@@ -1,7 +1,7 @@
 {
     "name": "adzercms/vk-id",
     "type": "adzercms-module",
-    "description": "Sign in to an AdzerCMS site with VK ID and link it to your account",
+    "description": "Sign-in with VK ID linked to the account",
     "keywords": [
         "adzercms",
         "symfony",
@@ -28,6 +28,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\VkId\\VkIdBundle",
+            "description": {
+                "ru": "Вход через VK ID с привязкой к учётной записи"
+            },
             "categories": ["security"]
         },
         "branch-alias": {

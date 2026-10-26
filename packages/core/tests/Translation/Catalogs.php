@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests\Translation;
 
+use AdzerCMS\Core\Composer\Description;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Text\Texts;
 use Psr\Container\ContainerInterface;
@@ -15,7 +16,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Translation\Extractor\ExtractorInterface;
 use Symfony\Component\Translation\MessageCatalogue;
 
-#[AsCommand(name: 'adzercms:catalogs', description: 'Translation catalogs of a package: the same keys in every language, keys of its code and templates in the source catalogs of the package and of the selected modules, the description of a module package')]
+#[AsCommand(name: 'adzercms:catalogs', description: 'Translation catalogs of a package: the same keys in every language, keys of its code and templates in the source catalogs of the package and of the selected modules, the description of a module package in every engine language')]
 final readonly class Catalogs
 {
     private const SOURCE = 'en';
@@ -34,10 +35,18 @@ final readonly class Catalogs
         $refusals = [];
         $catalogue = Texts::load(self::SOURCE, $own[self::SOURCE] ?? []);
         $source = self::keys($catalogue);
+        $container = $this->kernel->getContainer();
         $manifest = json_decode((string) file_get_contents($package.'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
-        $module = Registry::installed()->package(\is_array($manifest) && \is_string($manifest['name'] ?? null) ? $manifest['name'] : '');
-        if (null !== $module && !$catalogue->defines(Registry::description($module->key))) {
-            $refusals[] = \sprintf('%s catalog lacks the module description %s', self::SOURCE, Registry::description($module->key));
+        if (\is_array($manifest) && null !== Registry::installed()->package(\is_string($manifest['name'] ?? null) ? $manifest['name'] : '')) {
+            $description = Description::of($manifest);
+            if ('' === $description->source) {
+                $refusals[] = 'composer.json lacks the module description';
+            }
+            /** @var list<string> $locales */
+            $locales = $container->getParameter('kernel.enabled_locales');
+            foreach (array_diff($locales, [self::SOURCE], array_keys($description->translations)) as $locale) {
+                $refusals[] = \sprintf('composer.json lacks the module description extra.adzercms.description.%s', $locale);
+            }
         }
         foreach ($own as $locale => $files) {
             $keys = self::keys(Texts::load($locale, $files));
@@ -49,7 +58,6 @@ final readonly class Catalogs
             }
         }
 
-        $container = $this->kernel->getContainer();
         $services = $container->get('test.service_container');
         $extractor = $services instanceof ContainerInterface ? $services->get('translation.extractor') : null;
         if (!$extractor instanceof ExtractorInterface) {

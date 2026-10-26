@@ -1,7 +1,7 @@
 {
     "name": "adzercms/payments",
     "type": "adzercms-module",
-    "description": "Online payments for AdzerCMS: payment history, confirmations and payment provider modules",
+    "description": "Online payments: payment history, confirmations and payment provider modules",
     "keywords": [
         "adzercms",
         "symfony",
@@ -38,6 +38,9 @@
     "extra": {
         "adzercms": {
             "bundle": "AdzerCMS\\Payments\\PaymentsBundle",
+            "description": {
+                "ru": "Онлайн-оплата: история платежей, подтверждения и модули платёжных систем"
+            },
             "categories": ["payments"]
         },
         "branch-alias": {

@@ -15,6 +15,9 @@ use Symfony\Component\Process\Process;
 
 final class ModuleSkeletonTest extends TestCase
 {
+    private const DESCRIPTION = 'SMS through a pigeon post';
+    private const RUSSIAN = 'SMS голубиной почтой';
+
     private string $directory;
 
     protected function setUp(): void
@@ -38,30 +41,29 @@ final class ModuleSkeletonTest extends TestCase
         (new Process([\PHP_BINARY, $composer, 'create-project', 'adzercms/module-skeleton', $this->directory, '--repository='.$repository, '--stability=dev', '--no-install', '--no-scripts', '--no-interaction']))->mustRun();
         (new Process([\PHP_BINARY, 'setup.php'], $this->directory, input: implode("\n", $answers)."\n"))->mustRun();
 
-        $prefix = strtolower($key);
         $files = array_map(static fn (SplFileInfo $file): string => strtr($file->getRelativePathname(), '\\', '/'), iterator_to_array((new Finder())->files()->ignoreDotFiles(false)->in($this->directory)->sortByName(), false));
-        self::assertSame(['.github/workflows/ci.yml', '.gitignore', 'composer.json', "src/{$bundle}.php", "tests/{$key}Test.php", 'translations/messages+intl-icu.en.xlf', 'translations/messages+intl-icu.ru.xlf'], $files);
+        self::assertSame(['.github/workflows/ci.yml', '.gitignore', 'composer.json', "src/{$bundle}.php", "tests/{$key}Test.php"], $files);
 
         $manifest = json_decode((string) file_get_contents($this->directory.'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
         self::assertIsArray($manifest);
-        self::assertSame(['name', 'type', 'license', 'require', 'autoload', 'extra'], array_keys($manifest));
-        self::assertSame(['adzercms-module', ['psr-4' => [$namespace.'\\' => 'src/']], ['adzercms' => ['bundle' => $namespace.'\\'.$bundle]]], [$manifest['type'], $manifest['autoload'], $manifest['extra']]);
+        self::assertSame(['name', 'type', 'description', 'license', 'require', 'autoload', 'extra'], array_keys($manifest));
+        self::assertSame(
+            ['adzercms-module', self::DESCRIPTION, ['psr-4' => [$namespace.'\\' => 'src/']], ['adzercms' => ['bundle' => $namespace.'\\'.$bundle, 'description' => ['ru' => self::RUSSIAN]]]],
+            [$manifest['type'], $manifest['description'], $manifest['autoload'], $manifest['extra']],
+        );
 
-        foreach (["src/{$bundle}.php" => ["namespace {$namespace};", "final class {$bundle} extends Module"], "tests/{$key}Test.php" => ["namespace {$namespace}\\Tests;", "final class {$key}Test", "'{$key}'", "'{$prefix}.description'"]] as $file => $fragments) {
+        foreach (["src/{$bundle}.php" => ["namespace {$namespace};", "final class {$bundle} extends Module"], "tests/{$key}Test.php" => ["namespace {$namespace}\\Tests;", "final class {$key}Test", "'{$bundle}'"]] as $file => $fragments) {
             (new Process([\PHP_BINARY, '-l', $file], $this->directory))->mustRun();
             foreach ($fragments as $fragment) {
                 self::assertStringContainsString($fragment, (string) file_get_contents($this->directory.'/'.$file));
             }
-        }
-        foreach (['en', 'ru'] as $language) {
-            self::assertStringContainsString("<unit id=\"{$prefix}.description\">", (string) file_get_contents($this->directory."/translations/messages+intl-icu.{$language}.xlf"));
         }
     }
 
     /** @return iterable<string, array{list<string>, string, string, string}> */
     public static function answers(): iterable
     {
-        yield 'defaults from the package name' => [['acme/sms-pilot', '', ''], 'Acme\SmsPilot', 'SmsPilotBundle', 'SmsPilot'];
-        yield 'own namespace and bundle after a wrong name' => [['Acme/Pigeon', 'acme/pigeon', 'Acme\Post\Pigeon', 'CarrierBundle'], 'Acme\Post\Pigeon', 'CarrierBundle', 'Carrier'];
+        yield 'defaults from the package name' => [['acme/sms-pilot', '', '', self::DESCRIPTION, self::RUSSIAN], 'Acme\SmsPilot', 'SmsPilotBundle', 'SmsPilot'];
+        yield 'own namespace and bundle after a wrong name and an empty description' => [['Acme/Pigeon', 'acme/pigeon', 'Acme\Post\Pigeon', 'CarrierBundle', ' ', self::DESCRIPTION, self::RUSSIAN], 'Acme\Post\Pigeon', 'CarrierBundle', 'Carrier'];
     }
 }

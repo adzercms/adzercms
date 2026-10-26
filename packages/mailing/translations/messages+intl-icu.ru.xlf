@@ -61,12 +61,6 @@
         <target>Пользователь</target>
       </segment>
     </unit>
-    <unit id="mailing.description">
-      <segment>
-        <source>mailing.description</source>
-        <target>Рассылки выбранным пользователям по почте, SMS и ботам мессенджеров</target>
-      </segment>
-    </unit>
     <unit id="mailing.empty">
       <segment>
         <source>mailing.empty</source>
