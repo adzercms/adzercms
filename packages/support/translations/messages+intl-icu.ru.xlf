@@ -127,6 +127,12 @@
         <target>Сообщение отправлено</target>
       </segment>
     </unit>
+    <unit id="support.flash.ticket_dropped">
+      <segment>
+        <source>support.flash.ticket_dropped</source>
+        <target>Обращение №{number} удалено</target>
+      </segment>
+    </unit>
     <unit id="support.help.article">
       <segment>
         <source>support.help.article</source>
@@ -407,6 +413,18 @@
       <segment>
         <source>support.ticket.department</source>
         <target>Отдел</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.drop">
+      <segment>
+        <source>support.ticket.drop</source>
+        <target>Удалить обращение</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.drop_confirm">
+      <segment>
+        <source>support.ticket.drop_confirm</source>
+        <target>Удалить обращение №{number} вместе с перепиской и вложениями?</target>
       </segment>
     </unit>
     <unit id="support.ticket.message">

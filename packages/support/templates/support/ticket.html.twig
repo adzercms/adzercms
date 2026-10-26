@@ -3,6 +3,12 @@
 {% block title %}{{ 'support.ticket.title'|trans({id: ticket.id}) }}{% endblock %}
 
 {% block actions %}
+    {% if staff %}
+        <form method="post" action="{{ path('support_ticket_drop', {id: ticket.id}) }}"
+              data-confirm="{{ 'support.ticket.drop_confirm'|trans({number: ticket.id}) }}">
+            {{ csrf_field() }}<button type="submit" class="danger">{{ 'support.ticket.drop'|trans }}</button>
+        </form>
+    {% endif %}
     <a class="button secondary" href="{{ path('support_tickets') }}">{{ 'support.ticket.back'|trans }}</a>
 {% endblock %}
 

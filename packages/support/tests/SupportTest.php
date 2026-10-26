@@ -401,6 +401,33 @@ final class SupportTest extends SchemaTestCase
         }
     }
 
+    #[Group('ACMS-SUP-0019')]
+    #[Group('ACMS-US-0008')]
+    public function testStaffDeletesTicketInAnyStateWithItsConversation(): void
+    {
+        $user = $this->member();
+        $this->client->loginUser($user);
+        $this->open(['subject' => 'Screenshot', 'body' => 'Here is the error'], [$this->picture('shot.png')]);
+
+        $ticket = $this->ticketOf($user) ?? self::fail('no ticket was opened');
+        $id = (int) $ticket->getId();
+        $path = self::service(Attachments::class)->path($this->attachmentsOf($this->messagesOf($ticket)[0])[0] ?? self::fail('the attachment is not kept'));
+        $action = \sprintf('/support/%d/drop', $id);
+
+        self::assertCount(0, $this->client->request('GET', \sprintf('/support/%d', $id))->filter(\sprintf('form[action="%s"]', $action)));
+        $this->client->request('POST', $action, [CsrfGuard::FIELD => $this->formToken(CsrfGuard::TOKEN_ID)]);
+        self::assertNotNull(self::service(TicketRepository::class)->find($id), 'the user does not delete the ticket');
+
+        self::service(Tickets::class)->close($ticket);
+        $this->client->loginUser($this->staff);
+        $crawler = $this->client->request('GET', \sprintf('/support/%d', $id));
+        $this->client->submit($crawler->filter(\sprintf('form[action="%s"][data-confirm]', $action))->form());
+        $this->client->followRedirect();
+
+        self::assertNull(self::service(TicketRepository::class)->find($id), 'a closed ticket is deleted too');
+        self::assertFileDoesNotExist($path, 'the attachments leave with the ticket');
+    }
+
     #[Group('ACMS-SUP-0008')]
     #[Group('ACMS-US-0008')]
     public function testSilentUserClosesTheTicketAndZeroTermStopsIt(): void

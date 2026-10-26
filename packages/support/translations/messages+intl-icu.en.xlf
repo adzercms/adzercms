@@ -127,6 +127,12 @@
         <target>Message sent</target>
       </segment>
     </unit>
+    <unit id="support.flash.ticket_dropped">
+      <segment>
+        <source>support.flash.ticket_dropped</source>
+        <target>Ticket #{number} deleted</target>
+      </segment>
+    </unit>
     <unit id="support.help.article">
       <segment>
         <source>support.help.article</source>
@@ -407,6 +413,18 @@
       <segment>
         <source>support.ticket.department</source>
         <target>Department</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.drop">
+      <segment>
+        <source>support.ticket.drop</source>
+        <target>Delete ticket</target>
+      </segment>
+    </unit>
+    <unit id="support.ticket.drop_confirm">
+      <segment>
+        <source>support.ticket.drop_confirm</source>
+        <target>Delete ticket #{number} with its conversation and attachments?</target>
       </segment>
     </unit>
     <unit id="support.ticket.message">

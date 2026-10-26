@@ -162,6 +162,19 @@ final class SupportController extends AbstractController
         return $this->redirectToRoute('support_tickets');
     }
 
+    #[Route('/{id}/drop', name: 'support_ticket_drop', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function drop(#[CurrentUser] User $user, int $id): Response
+    {
+        if (!$this->staff($user)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $this->service->drop($this->found($this->tickets->conversation($id, null)));
+        $this->addFlash('success', t('support.flash.ticket_dropped', ['number' => $id]));
+
+        return $this->redirectToRoute('support_tickets');
+    }
+
     #[Route('/message/{id}/{action}', name: 'support_message', requirements: ['id' => '\d+', 'action' => 'edit|drop'], methods: ['POST'])]
     public function message(#[CurrentUser] User $user, Request $request, int $id, string $action): Response
     {

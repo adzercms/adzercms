@@ -141,6 +141,12 @@ final readonly class Tickets
         return null;
     }
 
+    public function drop(Ticket $ticket): void
+    {
+        $this->em->remove($ticket);
+        $this->em->flush();
+    }
+
     public function close(Ticket $ticket): void
     {
         if ($ticket->getStatus()->isClosed()) {
