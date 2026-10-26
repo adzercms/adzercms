@@ -50,6 +50,18 @@
                     </form>
                 </div>
             {% endfor %}
+            {% if delay %}
+                <div class="field">
+                    <label for="email-password-value">{{ 'cabinet.email.password'|trans }}</label>
+                    <div class="settings-value">
+                        <input id="email-password-value" type="password" name="password" form="email-password" autocomplete="current-password" required>
+                    </div>
+                    <form id="email-password" method="post" action="{{ path('cabinet_profile_email_ask', {way: 'password'}) }}" class="contact-change">
+                        {{ csrf_field() }}<input type="hidden" name="contact" value="{{ contact }}">
+                        <button class="small" type="submit">{{ 'cabinet.email.delay'|trans({days: delay}) }}</button>
+                    </form>
+                </div>
+            {% endif %}
         </div>
     {% endif %}
 </div>

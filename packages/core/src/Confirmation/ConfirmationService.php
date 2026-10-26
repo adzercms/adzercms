@@ -11,22 +11,27 @@ use AdzerCMS\Core\Account\ContactOutcome;
 use AdzerCMS\Core\Account\Registration;
 use AdzerCMS\Core\Account\Status;
 use AdzerCMS\Core\Entity\Confirmation;
+use AdzerCMS\Core\Entity\MailChange;
 use AdzerCMS\Core\Entity\Notice;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Notice\CoreEvent;
 use AdzerCMS\Core\Notice\Notifier;
 use AdzerCMS\Core\Repository\ConfirmationRepository;
+use AdzerCMS\Core\Repository\MailChangeRepository;
 use AdzerCMS\Core\Repository\UserRepository;
 use AdzerCMS\Core\Ui\Entries;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+use function Symfony\Component\Clock\now;
+
 final readonly class ConfirmationService
 {
     public function __construct(
         private UserRepository $users,
         private ConfirmationRepository $confirmations,
+        private MailChangeRepository $changes,
         private Confirmations $secrets,
         private Notifier $notifier,
         private Registration $registration,
@@ -107,30 +112,34 @@ final readonly class ConfirmationService
 
     public function askFormer(User $user, string $wanted): ContactOutcome
     {
-        $mail = $this->wanted(ContactKind::Email, $wanted);
-
-        return $mail instanceof ContactOutcome ? $mail : $this->askRelease($user, $mail);
+        return $this->toMail($wanted, fn (string $mail): ContactOutcome => $this->askRelease($user, $mail));
     }
 
     public function askPhone(User $user, string $wanted): ContactOutcome
     {
         $phone = $this->releasePhone($user);
-        if (null === $phone) {
-            return ContactOutcome::Unavailable;
-        }
 
-        $mail = $this->wanted(ContactKind::Email, $wanted);
-        if ($mail instanceof ContactOutcome) {
-            return $mail;
-        }
+        return null === $phone ? ContactOutcome::Unavailable : $this->toMail($wanted, function (string $mail) use ($user, $phone): ContactOutcome {
+            $code = $this->secrets->code(Purpose::Release, $user, $mail);
 
-        $code = $this->secrets->code(Purpose::Release, $user, $mail);
+            return null === $code ? ContactOutcome::TooOften : self::outcome($this->notifier->contact($phone, CoreEvent::ContactRelease, [
+                'contact' => $mail,
+                'code' => $code,
+                'minutes' => Kind::Code->minutes(),
+            ], $user));
+        });
+    }
 
-        return null === $code ? ContactOutcome::TooOften : self::outcome($this->notifier->contact($phone, CoreEvent::ContactRelease, [
-            'contact' => $mail,
-            'code' => $code,
-            'minutes' => Kind::Code->minutes(),
-        ], $user));
+    public function askDelayed(User $user, string $wanted, string $password): ContactOutcome
+    {
+        return $this->hasher->isPasswordValid($user, $password)
+            ? $this->toMail($wanted, fn (string $mail): ContactOutcome => $this->askByLink($user, $mail, Purpose::Delayed))
+            : ContactOutcome::Denied;
+    }
+
+    public function delayed(User $user): ?MailChange
+    {
+        return $this->changes->of($user);
     }
 
     public function releasePhone(User $user): ?string
@@ -158,9 +167,7 @@ final readonly class ConfirmationService
 
     public function releaseTo(User $user, string $wanted): ContactOutcome
     {
-        $mail = $this->wanted(ContactKind::Email, $wanted);
-
-        return $mail instanceof ContactOutcome ? $mail : $this->askByLink($user, $mail);
+        return $this->toMail($wanted, fn (string $mail): ContactOutcome => $this->askByLink($user, $mail));
     }
 
     public function completeContactCode(User $user, string $code): bool
@@ -168,6 +175,11 @@ final readonly class ConfirmationService
         $confirmation = $this->secrets->matching(Purpose::Contact, $user, $code);
 
         return null !== $confirmation && $this->applyContact($confirmation);
+    }
+
+    public function contactLink(string $token): ?Confirmation
+    {
+        return $this->secrets->pending(Purpose::Contact, $token) ?? $this->secrets->pending(Purpose::Delayed, $token);
     }
 
     public function applyContact(Confirmation $confirmation): bool
@@ -180,16 +192,56 @@ final readonly class ConfirmationService
 
         $user = $confirmation->requireUser();
         $prior = ContactKind::Email === $kind ? $user->getEmail() : null;
-        $user->setContact($kind, $contact);
         $confirmation->use();
+
+        if (null !== $prior && Purpose::Delayed === $confirmation->getPurpose()) {
+            $due = now()->modify(\sprintf('+%d minutes', $this->secrets->emailDelayMinutes()));
+            $pending = $this->changes->of($user);
+            if (null === $pending) {
+                $this->em->persist(new MailChange($user, $contact, $due));
+            } else {
+                $pending->await($contact, $due);
+            }
+            $this->em->flush();
+            $this->warnFormer($user, $prior, $contact, true);
+
+            return true;
+        }
+
+        $user->setContact($kind, $contact);
+        if (ContactKind::Email === $kind) {
+            $this->dropDelayed($user);
+        }
         $this->em->flush();
         $this->events->dispatch(new ContactConfirmed($user, $kind, $contact));
 
         if (null !== $prior) {
-            $this->warnFormer($user, $prior, $contact);
+            $this->warnFormer($user, $prior, $contact, false);
         }
 
         return true;
+    }
+
+    public function applyDelayed(): int
+    {
+        $applied = 0;
+        foreach ($this->changes->due(now()) as $change) {
+            $user = $change->getUser();
+            $mail = $change->getAddress();
+            $free = null === $this->byContact(ContactKind::Email, $mail);
+            $this->em->remove($change);
+            if ($free) {
+                $user->setContact(ContactKind::Email, $mail);
+            }
+            $this->em->flush();
+
+            if ($free) {
+                $this->events->dispatch(new ContactConfirmed($user, ContactKind::Email, $mail));
+                ++$applied;
+            }
+        }
+
+        return $applied;
     }
 
     public function revertMail(Confirmation $confirmation): bool
@@ -202,6 +254,7 @@ final readonly class ConfirmationService
         }
 
         $confirmation->use();
+        $this->dropDelayed($user);
         $returned = $user->getEmail() !== $prior;
         if ($returned) {
             $user->setContact(ContactKind::Email, $prior);
@@ -317,9 +370,9 @@ final readonly class ConfirmationService
         ], $user));
     }
 
-    private function askByLink(User $user, string $contact): ContactOutcome
+    private function askByLink(User $user, string $contact, Purpose $purpose = Purpose::Contact): ContactOutcome
     {
-        $token = $this->secrets->link(Purpose::Contact, $user, $contact);
+        $token = $this->secrets->link($purpose, $user, $contact);
 
         return null === $token ? ContactOutcome::TooOften : self::outcome($this->notifier->contact($contact, CoreEvent::ContactConfirm, [
             'url' => $this->url(CabinetEntry::ContactConfirm, ['token' => $token]),
@@ -327,11 +380,28 @@ final readonly class ConfirmationService
         ], $user));
     }
 
-    private function warnFormer(User $user, string $prior, string $contact): void
+    /** @param \Closure(string): ContactOutcome $ask */
+    private function toMail(string $wanted, \Closure $ask): ContactOutcome
+    {
+        $mail = $this->wanted(ContactKind::Email, $wanted);
+
+        return $mail instanceof ContactOutcome ? $mail : $ask($mail);
+    }
+
+    private function dropDelayed(User $user): void
+    {
+        $pending = $this->changes->of($user);
+        if (null !== $pending) {
+            $this->em->remove($pending);
+        }
+    }
+
+    private function warnFormer(User $user, string $prior, string $contact, bool $delayed): void
     {
         [$token, $until] = $this->secrets->revertLink($user, $prior);
 
         $this->notifier->contact($prior, CoreEvent::MailChanged, [
+            'state' => $delayed ? 'delayed' : 'applied',
             'prior' => $prior,
             'contact' => $contact,
             'until' => $until,

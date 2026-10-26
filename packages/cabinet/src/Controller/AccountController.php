@@ -14,6 +14,7 @@ use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Account\ContactOutcome;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Account\Theme;
+use AdzerCMS\Core\Confirmation\Confirmations;
 use AdzerCMS\Core\Confirmation\ConfirmationService;
 use AdzerCMS\Core\Confirmation\Purpose;
 use AdzerCMS\Core\Entity\User;
@@ -90,6 +91,7 @@ final class AccountController extends AbstractController
         $kinds = $notifier->reachableContacts();
         $connected = $linked->of($user);
         $offered = $channels->offered();
+        $delayed = $confirmations->delayed($user);
 
         return $this->render('@Cabinet/cabinet/profile.html.twig', [
             'user' => $user,
@@ -105,7 +107,11 @@ final class AccountController extends AbstractController
             'contacts' => array_map(static fn (ContactKind $kind): array => [
                 'kind' => $kind,
                 'value' => $user->getContact($kind),
-                'state' => null === $user->getContact($kind) ? Badge::idle(t('cabinet.contact.empty')) : Badge::good(t('cabinet.contact.confirmed')),
+                'state' => match (true) {
+                    ContactKind::Email === $kind && null !== $delayed => Badge::warn(t('cabinet.contact.delayed', ['contact' => $delayed->getAddress(), 'until' => $delayed->getDueAt()])),
+                    null === $user->getContact($kind) => Badge::idle(t('cabinet.contact.empty')),
+                    default => Badge::good(t('cabinet.contact.confirmed')),
+                },
                 'open' => \in_array($kind, $kinds, true),
             ], ContactKind::cases()),
             'awaited' => $confirmations->awaited($user, Purpose::Contact),
@@ -178,6 +184,7 @@ final class AccountController extends AbstractController
         #[CurrentUser] User $user,
         Request $request,
         ConfirmationService $confirmations,
+        Confirmations $secrets,
         Authorizations $logins,
         ConnectedServiceRepository $linked,
     ): Response {
@@ -197,6 +204,7 @@ final class AccountController extends AbstractController
             'phone' => $confirmations->releasePhone($user),
             'services' => array_intersect_key($logins->enabled(), $connected),
             'linked' => $connected,
+            'delay' => null === $user->getPassword() ? null : $secrets->emailDelayDays(),
         ]);
     }
 
@@ -216,17 +224,21 @@ final class AccountController extends AbstractController
         return $this->redirect($authorization);
     }
 
-    #[Route('/profile/email/{way}', name: 'cabinet_profile_email_ask', requirements: ['way' => 'former|phone'], methods: ['POST'])]
+    #[Route('/profile/email/{way}', name: 'cabinet_profile_email_ask', requirements: ['way' => 'former|phone|password'], methods: ['POST'])]
     #[IsGranted(Role::USER)]
     public function askEmail(#[CurrentUser] User $user, Request $request, string $way, ConfirmationService $confirmations): Response
     {
         $wanted = trim($request->request->getString('contact'));
         $byPhone = 'phone' === $way;
-        $outcome = $byPhone ? $confirmations->askPhone($user, $wanted) : $confirmations->askFormer($user, $wanted);
+        $outcome = match ($way) {
+            'phone' => $confirmations->askPhone($user, $wanted),
+            'password' => $confirmations->askDelayed($user, $wanted, $request->request->getString('password')),
+            default => $confirmations->askFormer($user, $wanted),
+        };
 
         $this->addFlash(...ContactFlash::of($outcome, $byPhone ? (string) $user->getPhone() : $wanted, $user));
 
-        return ContactOutcome::Former === $outcome
+        return ContactOutcome::Former === $outcome || (!$byPhone && ContactOutcome::Sent === $outcome)
             ? $this->redirectToRoute('cabinet_profile')
             : $this->redirectToRoute('cabinet_profile_email', ['contact' => $wanted]);
     }
@@ -282,10 +294,15 @@ final class AccountController extends AbstractController
     #[Route('/contact/{token}', name: 'cabinet_contact_confirm', requirements: ['token' => '[0-9a-f]{64}'], methods: ['GET'])]
     public function contactConfirm(string $token, ConfirmationService $confirmations, Intent $intent): Response
     {
-        $pending = $confirmations->pending(Purpose::Contact, $token);
+        $pending = $confirmations->contactLink($token);
         $applied = null !== $pending && $confirmations->applyContact($pending);
+        $delayed = $applied ? $confirmations->delayed($pending->requireUser()) : null;
 
-        $this->addFlash($applied ? 'success' : 'error', t($applied ? 'cabinet.contact.email_confirmed' : 'cabinet.contact.link'));
+        $this->addFlash($applied ? 'success' : 'error', match (true) {
+            null !== $delayed => t('cabinet.contact.email_delayed', ['until' => $delayed->getDueAt()]),
+            $applied => t('cabinet.contact.email_confirmed'),
+            default => t('cabinet.contact.link'),
+        });
 
         return $this->redirect($applied
             ? $intent->take() ?? $this->generateUrl('cabinet_profile')

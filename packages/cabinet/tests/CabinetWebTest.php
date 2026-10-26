@@ -6,6 +6,7 @@ namespace AdzerCMS\Cabinet\Tests;
 
 use AdzerCMS\Cabinet\Tests\Fixture\Pager;
 use AdzerCMS\Core\Account\ContactKind;
+use AdzerCMS\Core\Confirmation\Confirmations;
 use AdzerCMS\Core\Entity\ConnectedService;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Repository\ConnectedServiceRepository;
@@ -33,6 +34,8 @@ final class CabinetWebTest extends SchemaTestCase
     use Configuration;
     use Delivery;
     use ServiceLogin;
+
+    private const MOMENT = '2026-10-26 10:00:00';
 
     #[Group('ACMS-UI-0068')]
     public function testRootWithoutPublicHomeLeadsToCabinetHome(): void
@@ -309,6 +312,56 @@ final class CabinetWebTest extends SchemaTestCase
         self::assertSame('fresh@example.org', $this->reread($user)->getEmail());
     }
 
+    #[Group('ACMS-CORE-0986')]
+    #[Group('ACMS-US-0002')]
+    public function testMailChangeByPasswordTakesEffectAfterTheDelay(): void
+    {
+        $clock = self::mockTime(self::MOMENT);
+        $this->configure(self::MAIL);
+        $user = $this->record('79990000010', 'abonent@example.org');
+        $this->client->loginUser($user);
+
+        $this->delayMail('wrong-password');
+        self::assertSame('cabinet.email.denied', $this->flashed('error', '/profile/email?contact=fresh@example.org')->getMessage());
+        self::assertEmailCount(0);
+
+        $this->delayMail(self::PASSWORD);
+        $this->client->request('GET', self::link('#/contact/[0-9a-f]{64}#', $this->letterText()));
+        self::assertSame('abonent@example.org', $this->letter()->getTo()[0]->getAddress(), 'the former address hears of the coming change');
+        self::assertSame('abonent@example.org', $this->reread($user)->getEmail());
+        self::assertStringContainsString('fresh@example.org', $this->client->followRedirect()->filter('.fields .badge-warning')->text(), 'the mail cell names the coming change');
+
+        $sweep = self::command('adzercms:sweep');
+        $sweep->execute([]);
+        self::assertStringContainsString('mail changes applied: 0', $sweep->getDisplay());
+
+        $clock->sleep(self::service(Confirmations::class)->emailDelayMinutes() * 60);
+        $sweep->execute([]);
+        self::assertStringContainsString('mail changes applied: 1', $sweep->getDisplay());
+        self::assertSame('fresh@example.org', $this->reread($user)->getEmail());
+    }
+
+    #[Group('ACMS-CORE-0987')]
+    #[Group('ACMS-US-0002')]
+    public function testFormerAddressCancelsTheDelayedMailChange(): void
+    {
+        $clock = self::mockTime(self::MOMENT);
+        $this->configure(self::MAIL);
+        $user = $this->record('79990000010', 'abonent@example.org');
+        $this->client->loginUser($user);
+
+        $this->delayMail(self::PASSWORD);
+        $this->client->request('GET', self::link('#/contact/[0-9a-f]{64}#', $this->letterText()));
+        $revert = self::link('#/contact/revert/[0-9a-f]{64}#', $this->letterText());
+        $this->client->submit($this->client->request('GET', $revert)->selectButton(self::phrase('cabinet.revert.agree'))->form());
+
+        $clock->sleep(self::service(Confirmations::class)->emailDelayMinutes() * 60);
+        $sweep = self::command('adzercms:sweep');
+        $sweep->execute([]);
+        self::assertStringContainsString('mail changes applied: 0', $sweep->getDisplay());
+        self::assertSame('abonent@example.org', $this->reread($user)->getEmail());
+    }
+
     #[Group('ACMS-CORE-0987')]
     #[Group('ACMS-US-0002')]
     public function testFormerAddressCancelsTheAppliedMailChange(): void
@@ -510,6 +563,12 @@ final class CabinetWebTest extends SchemaTestCase
             ->reduce(static fn (Crawler $form): bool => 1 === $form->filter(\sprintf('input[type="%s"]', $type))->count());
 
         return 0 === $form->count() ? self::fail(\sprintf('the profile offers no change of %s', $kind->value)) : $form->form(['contact' => $contact]);
+    }
+
+    private function delayMail(string $password): void
+    {
+        $this->client->submit($this->contactForm(ContactKind::Email, 'fresh@example.org'));
+        $this->client->submit($this->client->followRedirect()->filter('form#email-password')->form(['password' => $password]));
     }
 
     private function signInBy(Form $form): void

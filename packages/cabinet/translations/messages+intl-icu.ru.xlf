@@ -49,10 +49,22 @@
         <target>подтверждён</target>
       </segment>
     </unit>
+    <unit id="cabinet.contact.delayed">
+      <segment>
+        <source>cabinet.contact.delayed</source>
+        <target>Сменится на {contact} {until, date, ::yMMddjmm}</target>
+      </segment>
+    </unit>
     <unit id="cabinet.contact.email_confirmed">
       <segment>
         <source>cabinet.contact.email_confirmed</source>
         <target>Почта подтверждена</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.email_delayed">
+      <segment>
+        <source>cabinet.contact.email_delayed</source>
+        <target>Новая почта подтверждена и сменит прежнюю {until, date, ::yMMddjmm}</target>
       </segment>
     </unit>
     <unit id="cabinet.contact.empty">
@@ -187,6 +199,18 @@
         <target>Кабинет клиента: регистрация и вход, профиль, сеансы и страницы модулей</target>
       </segment>
     </unit>
+    <unit id="cabinet.email.delay">
+      <segment>
+        <source>cabinet.email.delay</source>
+        <target>Сменить через {days, plural, one {# день} few {# дня} many {# дней} other {# дня}}</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.email.denied">
+      <segment>
+        <source>cabinet.email.denied</source>
+        <target>Неверный пароль</target>
+      </segment>
+    </unit>
     <unit id="cabinet.email.enter">
       <segment>
         <source>cabinet.email.enter</source>
@@ -203,6 +227,12 @@
       <segment>
         <source>cabinet.email.hint</source>
         <target>Новая почта — {contact}. Подтвердите, что запись ваша, любым способом ниже: затем ссылка подтверждения уйдёт на новую почту.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.email.password">
+      <segment>
+        <source>cabinet.email.password</source>
+        <target>Пароль записи</target>
       </segment>
     </unit>
     <unit id="cabinet.email.phone">

@@ -9,6 +9,7 @@ enum Purpose: string
     case Password = 'password';
     case Registration = 'registration';
     case Contact = 'contact';
+    case Delayed = 'delayed';
     case Release = 'release';
     case Revert = 'revert';
     case Deletion = 'deletion';

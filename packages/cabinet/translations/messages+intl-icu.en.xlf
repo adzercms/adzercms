@@ -49,10 +49,22 @@
         <target>confirmed</target>
       </segment>
     </unit>
+    <unit id="cabinet.contact.delayed">
+      <segment>
+        <source>cabinet.contact.delayed</source>
+        <target>Changes to {contact} at {until, date, ::yMMddjmm}</target>
+      </segment>
+    </unit>
     <unit id="cabinet.contact.email_confirmed">
       <segment>
         <source>cabinet.contact.email_confirmed</source>
         <target>Email confirmed</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.email_delayed">
+      <segment>
+        <source>cabinet.contact.email_delayed</source>
+        <target>The new email is confirmed and takes effect at {until, date, ::yMMddjmm}</target>
       </segment>
     </unit>
     <unit id="cabinet.contact.empty">
@@ -187,6 +199,18 @@
         <target>Customer account: sign-up and sign-in, profile, sessions and pages of modules</target>
       </segment>
     </unit>
+    <unit id="cabinet.email.delay">
+      <segment>
+        <source>cabinet.email.delay</source>
+        <target>Change in {days, plural, one {# day} other {# days}}</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.email.denied">
+      <segment>
+        <source>cabinet.email.denied</source>
+        <target>Wrong password</target>
+      </segment>
+    </unit>
     <unit id="cabinet.email.enter">
       <segment>
         <source>cabinet.email.enter</source>
@@ -203,6 +227,12 @@
       <segment>
         <source>cabinet.email.hint</source>
         <target>The new email is {contact}. Prove the account is yours in any way below: then the confirmation link goes to the new email.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.email.password">
+      <segment>
+        <source>cabinet.email.password</source>
+        <target>Password of the record</target>
       </segment>
     </unit>
     <unit id="cabinet.email.phone">

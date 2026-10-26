@@ -19,6 +19,7 @@ final class ContactFlash
             ContactOutcome::Sent => ['success', t('cabinet.contact.sent', ['contact' => $contact])],
             ContactOutcome::Former => ['success', t('cabinet.contact.former', ['contact' => $user->getEmail()])],
             ContactOutcome::Known => ['error', t('cabinet.contact.taken')],
+            ContactOutcome::Denied => ['error', t('cabinet.email.denied')],
             ContactOutcome::Malformed => ['error', t('cabinet.contact.malformed')],
             ContactOutcome::Unreachable => ['error', t('cabinet.contact.unreachable')],
             ContactOutcome::TooOften => ['error', t('core.confirmation.too_often')],

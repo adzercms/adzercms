@@ -1,16 +1,16 @@
 {% extends '@Core/notice/_layout.html.twig' %}
 {% import '@Core/notice/_macros.html.twig' as mail %}
 
-{% block subject %}{{ 'core.notice.mail_changed.subject'|trans({brand: brand.title}) }}{% endblock %}
+{% block subject %}{{ 'core.notice.mail_changed.subject'|trans({state: state, brand: brand.title}) }}{% endblock %}
 
 {% block text %}
-{{ 'core.notice.mail_changed.body'|trans({prior: prior, contact: contact}) }}
-{{ 'core.notice.mail_changed.cancel'|trans({until: until}) }} {{ url }}
+{{ 'core.notice.mail_changed.body'|trans({state: state, prior: prior, contact: contact, until: until}) }}
+{{ 'core.notice.mail_changed.cancel'|trans({state: state, until: until}) }} {{ url }}
 {% endblock %}
 
 {% block content %}
-<h2>{{ 'core.notice.mail_changed.title'|trans }}</h2>
-<p>{{ 'core.notice.mail_changed.body'|trans({prior: prior, contact: contact}) }}</p>
-<p>{{ 'core.notice.mail_changed.cancel'|trans({until: until}) }}</p>
+<h2>{{ 'core.notice.mail_changed.title'|trans({state: state}) }}</h2>
+<p>{{ 'core.notice.mail_changed.body'|trans({state: state, prior: prior, contact: contact, until: until}) }}</p>
+<p>{{ 'core.notice.mail_changed.cancel'|trans({state: state, until: until}) }}</p>
 {{ mail.link(url, 'core.notice.mail_changed.action'|trans, null) }}
 {% endblock %}

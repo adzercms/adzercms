@@ -74,6 +74,11 @@ class Confirmation
         return $this->user ?? throw new \LogicException('confirmation has no user');
     }
 
+    public function getPurpose(): Purpose
+    {
+        return $this->purpose;
+    }
+
     public function getContact(): ?string
     {
         return $this->contact;

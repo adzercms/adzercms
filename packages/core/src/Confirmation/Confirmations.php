@@ -48,6 +48,11 @@ final class Confirmations implements Owner
         return $this->settings->int(self::EMAIL_DELAY_DAYS, self::DEFAULT_EMAIL_DELAY_DAYS);
     }
 
+    public function emailDelayMinutes(): int
+    {
+        return $this->emailDelayDays() * 24 * 60;
+    }
+
     /**
      * @phpstan-impure
      *
@@ -56,7 +61,7 @@ final class Confirmations implements Owner
     public function revertLink(User $user, string $prior): array
     {
         $token = bin2hex(random_bytes(self::TOKEN_BYTES));
-        $confirmation = new Confirmation($user, $prior, Purpose::Revert, Kind::Link, self::digest($token), $this->emailDelayDays() * 24 * 60);
+        $confirmation = new Confirmation($user, $prior, Purpose::Revert, Kind::Link, self::digest($token), $this->emailDelayMinutes());
         $this->em->persist($confirmation);
         $this->em->flush();
 
