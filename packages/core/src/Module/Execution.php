@@ -30,9 +30,9 @@ final readonly class Execution
         $outcome = $this->operations->refusal($package, $action) ?? match ($action) {
             ModuleAction::Enable => $this->toggle($subject, $package, true),
             ModuleAction::Disable => $this->toggle($subject, $package, false),
-            ModuleAction::Install => $this->compose($subject, ['require', $package]),
-            ModuleAction::Update => $this->compose($subject, ['update', str_starts_with($package, self::ENGINE) ? self::ENGINE.'*' : $package, '--with-dependencies']),
-            ModuleAction::Remove => $this->compose($subject, ['remove', $package], $this->selection($package, false)),
+            ModuleAction::Install => $this->compose($subject, ['require', $package], fn (string $stage): array|string => $this->tree->enabling($stage, $package)),
+            ModuleAction::Update => $this->compose($subject, ['update', str_starts_with($package, self::ENGINE) ? self::ENGINE.'*' : $package, '--with-dependencies'], static fn (): array => []),
+            ModuleAction::Remove => $this->remove($subject, $package),
         };
 
         return $outcome instanceof Refusal ? $outcome->reason->trans($this->translator) : $outcome;
@@ -40,35 +40,24 @@ final readonly class Execution
 
     private function toggle(string $subject, string $package, bool $on): Refusal|string|null
     {
-        $selection = $this->selection($package, $on);
+        $selection = Selection::switched($package, $on);
 
         return \is_string($selection) ? $selection : $this->tree->refresh($subject, $this->sources->environment(), $selection);
     }
 
-    /**
-     * @param list<string>                 $command
-     * @param array<string, string>|string $selection
-     */
-    private function compose(string $subject, array $command, array|string $selection = []): Refusal|string|null
+    private function remove(string $subject, string $package): Refusal|string|null
     {
-        return \is_string($selection) ? $selection : $this->staging->run($subject, $command, $this->sources->environment(), $selection);
+        $selection = Selection::switched($package, false);
+
+        return \is_string($selection) ? $selection : $this->compose($subject, ['remove', $package], static fn (): array => $selection);
     }
 
-    /** @return array<string, string>|string */
-    private function selection(string $package, bool $on): array|string
+    /**
+     * @param list<string>                                     $command
+     * @param \Closure(string): (array<string, string>|string) $selection
+     */
+    private function compose(string $subject, array $command, \Closure $selection): Refusal|string|null
     {
-        $registry = Registry::installed();
-        $module = $registry->package($package) ?? throw new \LogicException(\sprintf('module package %s is not installed', $package));
-        if ($on === Selection::selects($module, Selection::environment(...))) {
-            return [];
-        }
-
-        try {
-            [$name, $value] = Selection::toggled($registry, Selection::environment(...), $module, $on);
-        } catch (\LogicException $refusal) {
-            return $refusal->getMessage();
-        }
-
-        return [$name => $value];
+        return $this->staging->run($subject, $command, $this->sources->environment(), $selection);
     }
 }

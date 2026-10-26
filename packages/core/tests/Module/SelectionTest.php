@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests\Module;
 
+use AdzerCMS\Contracts\Module\Kind;
 use AdzerCMS\Core\Module\Installed;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Module\Selection;
+use AdzerCMS\Core\Tests\ModuleSuite;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Process\Process;
 
 final class SelectionTest extends TestCase
 {
@@ -137,6 +140,24 @@ final class SelectionTest extends TestCase
         $this->expectExceptionObject(new \LogicException('module "Pigeon" requires module "Card" selected in TEST_GATEWAY'));
 
         self::toggle(['MODULES' => 'Shop', 'TEST_GATEWAY' => 'Card', 'SMS_MODULES' => 'Pigeon'], 'Card', false);
+    }
+
+    #[Group('ACMS-CORE-0993')]
+    #[DataProvider('enablings')]
+    public function testSelectionScriptEnablesModuleOnPackagesOfItsDirectory(string $package, int $code, string $output): void
+    {
+        $empty = array_fill_keys(array_map(static fn (Kind $kind): string => $kind->environment(), Registry::installed()->kinds()), '');
+        $script = new Process([\PHP_BINARY, \dirname(__DIR__, 2).'/bin/adzercms-selection', $package], ModuleSuite::root(), $empty);
+        $script->run();
+
+        self::assertSame([$code, $output], [$script->getExitCode(), $script->getOutput().$script->getErrorOutput()]);
+    }
+
+    /** @return iterable<string, array{string, int, string}> */
+    public static function enablings(): iterable
+    {
+        yield 'enabled' => ['adzercms/sms-pilot', 0, "SMS_MODULES=SmsPilot\n"];
+        yield 'selection refused' => ['adzercms/tbank', 1, "module \"TBank\" requires module \"Payments\" selected in MODULES\n"];
     }
 
     /** @param array<string, string> $environment */

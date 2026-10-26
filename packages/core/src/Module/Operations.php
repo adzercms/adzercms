@@ -58,7 +58,9 @@ final readonly class Operations
             return new Refusal(t('core.module.refusal.action'));
         }
 
-        return $this->tree->refusal(...($action->toggles() && $row->kind instanceof Kind ? [$row->kind->environment()] : []));
+        $selects = $row->selected ? $action->disables() : $action->enables();
+
+        return $this->tree->refusal(...($selects && $row->kind instanceof Kind ? [$row->kind->environment()] : []));
     }
 
     public function file(string $package, ModuleAction $action): ?Refusal

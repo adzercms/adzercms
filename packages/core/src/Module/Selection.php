@@ -58,10 +58,21 @@ final readonly class Selection
         return [$name, $value];
     }
 
-    /** @param \Closure(string): string $environment */
-    public static function selects(Installed $module, \Closure $environment): bool
+    /** @return array<string, string>|string */
+    public static function switched(string $package, bool $on): array|string
     {
-        return \in_array($module->key, self::keys($environment($module->kind->environment())), true);
+        try {
+            $registry = Registry::installed();
+            $module = $registry->package($package) ?? throw new \LogicException(sprintf('module package %s is not installed', $package));
+            if ($on === \in_array($module->key, self::keys(self::environment($module->kind->environment())), true)) {
+                return [];
+            }
+            [$name, $value] = self::toggled($registry, self::environment(...), $module, $on);
+        } catch (\LogicException $refusal) {
+            return $refusal->getMessage();
+        }
+
+        return [$name => $value];
     }
 
     public static function environment(string $name): string

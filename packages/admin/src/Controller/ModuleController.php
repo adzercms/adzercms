@@ -171,8 +171,13 @@ final class ModuleController extends AbstractController
                         'params' => ['action' => $action->value, 'package' => $row->name],
                         'post' => true,
                         'confirm' => match (true) {
+                            $action->enables() && null !== $replaced => t('admin.modules.replace', [
+                                'action' => $action->value,
+                                'package' => $row->name,
+                                'replaced' => $replaced,
+                                'unverified' => $action->takesVersion() && !$row->verified ? 'yes' : 'no',
+                            ]),
                             $action->takesVersion() && !$row->verified => t('admin.modules.unverified', ['package' => $row->name]),
-                            ModuleAction::Enable === $action && null !== $replaced => t('admin.modules.replace', ['package' => $row->name, 'replaced' => $replaced]),
                             default => null,
                         },
                     ], null === $operation ? $this->operations->actions($row) : []),

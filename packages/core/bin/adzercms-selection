@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use AdzerCMS\Core\Module\Selection;
+
+require './vendor/autoload.php';
+
+$selection = Selection::switched($argv[1] ?? '', true);
+if (is_string($selection)) {
+    fwrite(\STDERR, $selection."\n");
+    exit(1);
+}
+foreach ($selection as $name => $value) {
+    echo $name.'='.$value."\n";
+}

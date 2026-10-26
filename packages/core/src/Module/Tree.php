@@ -17,6 +17,7 @@ final readonly class Tree
     public const TIMEOUT = 1800;
 
     private const REFRESH = __DIR__.'/../../bin/adzercms-refresh';
+    private const SELECTOR = __DIR__.'/../../bin/adzercms-selection';
     private const SHARED = '.env';
     private const LOCAL = '.env.local';
     private const LOADED = 'SYMFONY_DOTENV_VARS';
@@ -31,7 +32,25 @@ final readonly class Tree
         #[Autowire('%kernel.project_dir%')]
         public string $root,
         private string $refresh = self::REFRESH,
+        private string $selector = self::SELECTOR,
     ) {
+    }
+
+    /** @return array<string, string>|string */
+    public function enabling(string $directory, string $package): array|string
+    {
+        $process = new Process([\PHP_BINARY, $this->selector, $package], $directory, null, null, self::TIMEOUT);
+        if (0 !== $process->run()) {
+            return trim($process->getErrorOutput()."\n".$process->getOutput());
+        }
+
+        $selection = [];
+        foreach (array_filter(explode("\n", $process->getOutput())) as $line) {
+            [$name, $value] = explode('=', $line, 2) + [1 => ''];
+            $selection[$name] = $value;
+        }
+
+        return $selection;
     }
 
     public function refusal(string ...$selected): ?Refusal

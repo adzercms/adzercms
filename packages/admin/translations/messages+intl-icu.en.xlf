@@ -106,7 +106,7 @@
     <unit id="admin.modules.replace">
       <segment>
         <source>admin.modules.replace</source>
-        <target>Enable {package} instead of {replaced}?</target>
+        <target>{unverified, select, yes {The {package} version is not verified. } other {}}{action, select, install {Install} other {Enable}} {package} instead of {replaced}?</target>
       </segment>
     </unit>
     <unit id="admin.modules.repository">

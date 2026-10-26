@@ -106,7 +106,7 @@
     <unit id="admin.modules.replace">
       <segment>
         <source>admin.modules.replace</source>
-        <target>Включить {package} вместо {replaced}?</target>
+        <target>{unverified, select, yes {Версия {package} не проверена. } other {}}{action, select, install {Установить} other {Включить}} {package} вместо {replaced}?</target>
       </segment>
     </unit>
     <unit id="admin.modules.repository">

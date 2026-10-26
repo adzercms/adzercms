@@ -1,0 +1,9 @@
+<?php
+
+declare(strict_types=1);
+
+if (is_file('selection-refusal')) {
+    fwrite(\STDERR, (string) file_get_contents('selection-refusal'));
+    exit(1);
+}
+echo 'MODULES=', is_dir('vendor/'.$argv[1]) ? ucfirst(basename($argv[1])) : '', "\n";

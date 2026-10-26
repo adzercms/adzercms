@@ -27,8 +27,13 @@ enum ModuleAction: string implements Titled
         return self::Install === $this || self::Update === $this;
     }
 
-    public function toggles(): bool
+    public function enables(): bool
     {
-        return self::Enable === $this || self::Disable === $this;
+        return self::Install === $this || self::Enable === $this;
+    }
+
+    public function disables(): bool
+    {
+        return self::Disable === $this || self::Remove === $this;
     }
 }

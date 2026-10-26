@@ -41,11 +41,11 @@ final readonly class Staging
     }
 
     /**
-     * @param list<string>          $command
-     * @param array<string, string> $environment
-     * @param array<string, string> $selection
+     * @param list<string>                                     $command
+     * @param array<string, string>                            $environment
+     * @param \Closure(string): (array<string, string>|string) $selection
      */
-    public function run(string $subject, array $command, array $environment, array $selection = []): Refusal|string|null
+    public function run(string $subject, array $command, array $environment, \Closure $selection): Refusal|string|null
     {
         $active = $this->paths->create($this->tree->root);
         $stage = $this->paths->create(self::STAGE, $active);
@@ -56,7 +56,8 @@ final readonly class Staging
             $this->beginner->begin($active, $stage, $excluded, timeout: Tree::TIMEOUT);
             $this->enter($stage);
             $this->stager->stage([...$command, ...self::OPTIONS], $active, $stage, timeout: Tree::TIMEOUT);
-            $refused = $this->tree->refresh($subject, $environment, $selection, function () use ($stage, $active, $excluded): void {
+            $chosen = $selection($stage->absolute());
+            $refused = \is_string($chosen) ? $chosen : $this->tree->refresh($subject, $environment, $chosen, function () use ($stage, $active, $excluded): void {
                 $this->committer->commit($stage, $active, $excluded, timeout: Tree::TIMEOUT);
             });
             $this->clean($active, $stage);

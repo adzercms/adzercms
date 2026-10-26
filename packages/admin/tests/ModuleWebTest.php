@@ -209,6 +209,33 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertSame([self::phrase('admin.modules.unverified', ['package' => 'acme/shop'])], self::confirmations($page, 'acme/shop'));
     }
 
+    #[Group('ACMS-CORE-0936')]
+    #[Group('ACMS-US-0004')]
+    #[DataProvider('replacements')]
+    public function testInstallingModuleOfSingleKindConfirmsReplacingTheSelectedOneInOneWindow(bool $verified, string $unverified): void
+    {
+        $this->answerCatalog();
+        $this->listed(['acme/look']);
+        $this->offer('acme/look', '1.0.0', provide: ['adzercms/theme-implementation' => '1.0.0']);
+        if ($verified) {
+            $this->mark('acme/look', self::commit('acme/look', '1.0.0'));
+        }
+        self::command('adzercms:modules')->execute([]);
+        $replaced = array_values(array_filter(self::service(ModuleCatalog::class)->rows()['rows'], static fn (CatalogRow $row): bool => $row->selected && CoreKind::Theme === $row->kind))[0] ?? self::fail('the suite selects no theme');
+
+        self::assertSame(
+            [self::phrase('admin.modules.replace', ['action' => ModuleAction::Install->value, 'package' => 'acme/look', 'replaced' => $replaced->name, 'unverified' => $unverified])],
+            self::confirmations($this->client->request('GET', self::MODULES), 'acme/look'),
+        );
+    }
+
+    /** @return iterable<string, array{bool, string}> */
+    public static function replacements(): iterable
+    {
+        yield 'verified version' => [true, 'no'];
+        yield 'version without the mark' => [false, 'yes'];
+    }
+
     /** @param list<string> $committed */
     #[Group('ACMS-CORE-0145')]
     #[Group('ACMS-CORE-0991')]
@@ -241,7 +268,7 @@ final class ModuleWebTest extends SchemaTestCase
     public static function commits(): iterable
     {
         yield 'enable' => [ModuleAction::Enable, 'adzercms/sms-pilot', null, ['.env']];
-        yield 'install' => [ModuleAction::Install, 'acme/shop', __DIR__.'/Fixture/site', ['composer.json', 'composer.lock']];
+        yield 'install' => [ModuleAction::Install, 'acme/shop', __DIR__.'/Fixture/site', ['.env', 'composer.json', 'composer.lock']];
     }
 
     /** @param array<string, string> $parameters */
@@ -401,6 +428,40 @@ final class ModuleWebTest extends SchemaTestCase
     }
 
     /** @param list<string> $locked */
+    #[Group('ACMS-CORE-0993')]
+    #[Group('ACMS-US-0004')]
+    #[DataProvider('installations')]
+    public function testInstallingEnablesModuleBySelectionOfStagedCopy(?string $refusal, OperationState $state, array $locked, ?string $selection): void
+    {
+        $tree = $this->tree(__DIR__.'/Fixture/site');
+        if (null !== $refusal) {
+            file_put_contents($tree.'/selection-refusal', $refusal);
+        }
+        $this->answerCatalog();
+        $this->listed(['acme/shop']);
+        $this->offer('acme/shop', '1.0.0');
+        self::command('adzercms:modules')->execute([]);
+
+        $this->post('/admin/modules/operation/install?package=acme/shop');
+        self::command('adzercms:modules')->execute([]);
+        $this->em->clear();
+        $operation = self::service(ModuleOperationRepository::class)->findOneBy(['package' => 'acme/shop']) ?? self::fail('the operation is not filed');
+        $lock = json_decode((string) file_get_contents($tree.'/composer.lock'), true, flags: \JSON_THROW_ON_ERROR);
+
+        self::assertSame([$state, $refusal], [$operation->getState(), $operation->getOutput()]);
+        self::assertEqualsCanonicalizing($locked, array_column($lock['packages'], 'name'));
+        self::assertSame(null === $selection ? [] : [$selection], array_values(preg_grep('/^MODULES=/', is_file($tree.'/refreshed.env') ? file($tree.'/refreshed.env', \FILE_IGNORE_NEW_LINES) ?: [] : []) ?: []), 'the refresh builds the selection with the installed module');
+        self::assertSame(null === $selection ? '' : $selection."\n", is_file($tree.'/.env.local') ? file_get_contents($tree.'/.env.local') : '');
+    }
+
+    /** @return iterable<string, array{?string, OperationState, list<string>, ?string}> */
+    public static function installations(): iterable
+    {
+        yield 'enabled' => [null, OperationState::Done, ['acme/shop', 'adzercms/sms-pilot', 'adzercms/theme'], 'MODULES=Shop'];
+        yield 'selection refused' => ['module "Shop" requires module "Till" selected in MODULES', OperationState::Failed, ['adzercms/sms-pilot', 'adzercms/theme'], null];
+    }
+
+    /** @param list<string> $locked */
     #[Group('ACMS-CORE-0992')]
     #[Group('ACMS-US-0004')]
     #[DataProvider('removals')]
@@ -482,7 +543,7 @@ final class ModuleWebTest extends SchemaTestCase
     {
         $this->tree = sys_get_temp_dir().'/adzercms-tree-'.bin2hex(random_bytes(4));
         null === $site ? (new Filesystem())->mkdir($this->tree) : (new Filesystem())->mirror($site, $this->tree);
-        self::getContainer()->set(Tree::class, new Tree($this->tree, __DIR__.'/Fixture/refresh'));
+        self::getContainer()->set(Tree::class, new Tree($this->tree, __DIR__.'/Fixture/refresh', __DIR__.'/Fixture/selection'));
 
         return $this->tree;
     }

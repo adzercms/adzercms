@@ -49,6 +49,7 @@ The module catalog of the admin panel has action buttons on each row: install, u
 - Enabling or disabling checks the new module list the way the build does, refreshes the site with it, and only then writes the variable: into `.env` on a site under git, into `.env.local` otherwise. On a site under git a variable set in `.env.local` refuses the operation: move it into `.env`
 - On a site under git the job commits the change of a successful operation, and the hooks of the repository push it as for any commit. A site with uncommitted changes refuses operations and names the files
 - A version marked verified passed the automated module check of the engine; installing or updating to a version without the mark asks for confirmation
+- Installing a module enables it in the same operation: after Composer the new module list is checked on the copy, and a refused list leaves the site untouched. Installing or enabling a module of a kind with one module replaces the enabled one after a confirmation naming it
 - Removing an enabled module disables it in the same operation; if an enabled module depends on it, the operation refuses before Composer runs
 - The enabled admin panel module has no disable button: enabling another admin panel module replaces it
 
