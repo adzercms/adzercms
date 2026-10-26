@@ -121,12 +121,6 @@
         <target>Schema</target>
       </segment>
     </unit>
-    <unit id="admin.modules.scope.all">
-      <segment>
-        <source>admin.modules.scope.all</source>
-        <target>All</target>
-      </segment>
-    </unit>
     <unit id="admin.modules.scope.available">
       <segment>
         <source>admin.modules.scope.available</source>
@@ -173,18 +167,6 @@
       <segment>
         <source>admin.modules.status</source>
         <target>Status</target>
-      </segment>
-    </unit>
-    <unit id="admin.modules.taken">
-      <segment>
-        <source>admin.modules.taken</source>
-        <target>Catalog as of {at, date, ::yMMddjmm}</target>
-      </segment>
-    </unit>
-    <unit id="admin.modules.untaken">
-      <segment>
-        <source>admin.modules.untaken</source>
-        <target>The catalog is not taken yet: the adzercms:modules job takes it once a day and on a change of sources</target>
       </segment>
     </unit>
     <unit id="admin.modules.unverified">

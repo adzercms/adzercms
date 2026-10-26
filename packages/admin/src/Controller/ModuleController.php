@@ -40,7 +40,7 @@ final class ModuleController extends AbstractController
 {
     private const ORDER = 'name';
     private const MODULES = 'modules';
-    private const SCOPE = 'scope';
+    private const STATUS = 'status';
     private const CATEGORY = 'category';
     private const OPERATIONS = 'operations';
     private const SOURCES = 'sources';
@@ -73,10 +73,6 @@ final class ModuleController extends AbstractController
     /** @return array<string, mixed> */
     private function modulesTab(Request $request, TranslatorInterface $translator): array
     {
-        $scopes = [];
-        foreach (ModuleScope::cases() as $scope) {
-            $scopes[$scope->value] = $scope->label();
-        }
         $table = Table::of($request, 'admin_modules', [
             Column::live('name', t('admin.modules.name'), static fn (array $row): string => $row['name'].' '.$row['description']),
             Column::live('version', t('admin.modules.version'), static fn (array $row): string => $row['version']),
@@ -84,17 +80,16 @@ final class ModuleController extends AbstractController
             Column::live('state', t('admin.modules.status'), static fn (array $row): TranslatableInterface => $row['state']->label()),
             Column::plain('actions'),
         ], self::ORDER, t('admin.modules.empty'), filters: [
-            Filter::tabs(self::SCOPE, t('admin.modules.scope.all'), $scopes),
             Filter::search(),
+            Filter::cases(self::STATUS, t('admin.modules.status'), ModuleScope::cases()),
             Filter::cases(self::CATEGORY, t('admin.modules.category'), Category::cases()),
         ], live: true);
-        $offered = $this->catalog->rows();
-        $chosen = array_filter($offered['rows'], static fn (CatalogRow $row): bool => ModuleScope::tryFrom($table->value(self::SCOPE))?->admits($row) ?? true);
+        $offered = $this->catalog->rows()['rows'];
+        $chosen = array_filter($offered, static fn (CatalogRow $row): bool => ModuleScope::tryFrom($table->value(self::STATUS))?->admits($row) ?? true);
 
         return [
             'table' => $table,
-            'rows' => $table->rows($this->offers($chosen, $offered['rows'], Category::tryFrom($table->value(self::CATEGORY)), $translator)),
-            'taken' => $offered['at'],
+            'rows' => $table->rows($this->offers($chosen, $offered, Category::tryFrom($table->value(self::CATEGORY)), $translator)),
         ];
     }
 

@@ -121,12 +121,6 @@
         <target>Схема</target>
       </segment>
     </unit>
-    <unit id="admin.modules.scope.all">
-      <segment>
-        <source>admin.modules.scope.all</source>
-        <target>Все</target>
-      </segment>
-    </unit>
     <unit id="admin.modules.scope.available">
       <segment>
         <source>admin.modules.scope.available</source>
@@ -173,18 +167,6 @@
       <segment>
         <source>admin.modules.status</source>
         <target>Статус</target>
-      </segment>
-    </unit>
-    <unit id="admin.modules.taken">
-      <segment>
-        <source>admin.modules.taken</source>
-        <target>Каталог на {at, date, ::yMMddjmm}</target>
-      </segment>
-    </unit>
-    <unit id="admin.modules.untaken">
-      <segment>
-        <source>admin.modules.untaken</source>
-        <target>Каталог ещё не снят: его снимает задание adzercms:modules раз в сутки и при смене источников</target>
       </segment>
     </unit>
     <unit id="admin.modules.unverified">

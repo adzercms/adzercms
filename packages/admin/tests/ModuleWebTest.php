@@ -143,22 +143,18 @@ final class ModuleWebTest extends SchemaTestCase
     #[Group('ACMS-CORE-0147')]
     #[Group('ACMS-CORE-0981')]
     #[Group('ACMS-US-0004')]
-    public function testModulesListOfferedAndInstalledPackagesAsOfCatalogSnapshotByScopeAndCategory(): void
+    public function testModulesListOfferedAndInstalledPackagesOfCatalogSnapshotByStatusAndCategory(): void
     {
-        self::assertSame(self::phrase('admin.modules.untaken'), trim($this->client->request('GET', self::MODULES)->filter('#rows p.muted')->text()));
-
         $this->answerCatalog();
         $this->listed(['acme/till', 'acme/shop', 'adzercms/admin']);
         $this->offer('acme/till', '1.2.0', provide: ['adzercms/sms-implementation' => '1.0.0'], categories: ['messaging'], translations: ['ru' => 'Касса acme']);
         $this->offer('acme/shop', '1.0.0', categories: ['commerce']);
         $this->branch('adzercms/admin', '1.0.x-dev');
-        self::mockTime('2026-10-20 12:30');
         self::command('adzercms:modules')->execute([]);
         $idle = array_values(array_filter(self::service(ModuleCatalog::class)->rows()['rows'], static fn (CatalogRow $row): bool => null !== $row->installed && !$row->selected))[0] ?? self::fail('the tree has no installed module outside the suite');
         $listing = $this->client->request('GET', self::MODULES)->filter('#rows');
         $cells = static fn (string $name, string ...$columns): array => array_map(static fn (string $column): string => trim(self::cell($listing, $name, self::phrase($column))->text()), $columns);
 
-        self::assertSame(self::phrase('admin.modules.taken', ['at' => new \DateTimeImmutable('2026-10-20 12:30')]), trim($listing->filter('p.muted')->text()));
         self::assertSame(
             ['1.2.0', 'repo.packagist.org', self::phrase(ModuleState::Available->label())],
             $cells('acme/till', 'admin.modules.version', 'admin.modules.repository', 'admin.modules.status'),
@@ -175,9 +171,9 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertContains('acme/till', $category);
         self::assertNotContains('acme/shop', $category);
         self::assertNotContains('adzercms/admin', $category);
-        self::assertEqualsCanonicalizing(['acme/till', 'acme/shop'], $names('scope='.ModuleScope::Available->value));
-        self::assertSame(['adzercms/admin'], $names('scope='.ModuleScope::Updatable->value));
-        $installed = $names('scope='.ModuleScope::Installed->value);
+        self::assertEqualsCanonicalizing(['acme/till', 'acme/shop'], $names('status='.ModuleScope::Available->value));
+        self::assertSame(['adzercms/admin'], $names('status='.ModuleScope::Updatable->value));
+        $installed = $names('status='.ModuleScope::Installed->value);
         self::assertContains('adzercms/admin', $installed);
         self::assertContains($idle->name, $installed);
         self::assertNotContains('acme/till', $installed);

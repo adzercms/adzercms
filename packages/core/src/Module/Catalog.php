@@ -94,7 +94,7 @@ final readonly class Catalog
         return null === $marks ? [...$down, Marks::REGISTRY] : $down;
     }
 
-    /** @return array{at: ?\DateTimeImmutable, rows: list<CatalogRow>, down: list<string>} */
+    /** @return array{rows: list<CatalogRow>, down: list<string>} */
     public function rows(): array
     {
         $held = $this->held();
@@ -130,7 +130,7 @@ final readonly class Catalog
             );
         }
 
-        return ['at' => $held['at'], 'rows' => array_values($rows), 'down' => $held['down']];
+        return ['rows' => array_values($rows), 'down' => $held['down']];
     }
 
     private static function newer(Package $offered, string $installed, ?string $reference): bool
