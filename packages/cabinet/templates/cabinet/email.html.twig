@@ -40,6 +40,16 @@
                     </form>
                 </div>
             {% endif %}
+            {% for service, module in services %}
+                <div class="field">
+                    <label>{{ 'cabinet.email.service'|trans({service: module.name|trans}) }}</label>
+                    <div class="settings-value">{{ linked[service].account ?? blank() }}</div>
+                    <form method="post" action="{{ path('cabinet_profile_email_service', {service: service}) }}" class="contact-change">
+                        {{ csrf_field() }}<input type="hidden" name="contact" value="{{ contact }}">
+                        <button class="small" type="submit">{{ 'cabinet.email.enter'|trans }}</button>
+                    </form>
+                </div>
+            {% endfor %}
         </div>
     {% endif %}
 </div>

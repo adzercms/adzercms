@@ -147,18 +147,20 @@ final readonly class ConfirmationService
 
     public function release(Confirmation $confirmation): ContactOutcome
     {
-        $contact = (string) $confirmation->getContact();
-        if (null !== $this->byContact(ContactKind::of($contact), $contact)) {
-            return ContactOutcome::Known;
-        }
-
-        $outcome = $this->askByLink($confirmation->requireUser(), $contact);
-        if (ContactOutcome::TooOften !== $outcome) {
+        $outcome = $this->releaseTo($confirmation->requireUser(), (string) $confirmation->getContact());
+        if (ContactOutcome::Sent === $outcome) {
             $confirmation->use();
             $this->em->flush();
         }
 
         return $outcome;
+    }
+
+    public function releaseTo(User $user, string $wanted): ContactOutcome
+    {
+        $mail = $this->wanted(ContactKind::Email, $wanted);
+
+        return $mail instanceof ContactOutcome ? $mail : $this->askByLink($user, $mail);
     }
 
     public function completeContactCode(User $user, string $code): bool

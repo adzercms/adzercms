@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Cabinet\Controller;
 
+use AdzerCMS\Cabinet\ContactFlash;
+use AdzerCMS\Cabinet\Login\ServiceProof;
+use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Ui\Badge;
 use AdzerCMS\Contracts\Ui\Tabs;
 use AdzerCMS\Core\Account\AccountDeletion;
@@ -34,7 +37,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Translation\TranslatableMessage;
 
 use function Symfony\Component\Translation\t;
 
@@ -165,15 +167,20 @@ final class AccountController extends AbstractController
             return $this->redirectToRoute('cabinet_profile_email', ['contact' => $wanted]);
         }
 
-        $this->addFlash(...$this->told($outcome, $wanted, $user));
+        $this->addFlash(...ContactFlash::of($outcome, $wanted, $user));
 
         return $this->redirectToRoute('cabinet_profile');
     }
 
     #[Route('/profile/email', name: 'cabinet_profile_email', methods: ['GET'])]
     #[IsGranted(Role::USER)]
-    public function email(#[CurrentUser] User $user, Request $request, ConfirmationService $confirmations): Response
-    {
+    public function email(
+        #[CurrentUser] User $user,
+        Request $request,
+        ConfirmationService $confirmations,
+        Authorizations $logins,
+        ConnectedServiceRepository $linked,
+    ): Response {
         $awaited = $confirmations->awaited($user, Purpose::Release);
         $contact = $awaited ?? trim($request->query->getString('contact'));
 
@@ -181,12 +188,32 @@ final class AccountController extends AbstractController
             return $this->redirectToRoute('cabinet_profile');
         }
 
+        $connected = $linked->of($user);
+
         return $this->render('@Cabinet/cabinet/email.html.twig', [
             'user' => $user,
             'contact' => $contact,
             'awaited' => null !== $awaited,
             'phone' => $confirmations->releasePhone($user),
+            'services' => array_intersect_key($logins->enabled(), $connected),
+            'linked' => $connected,
         ]);
+    }
+
+    #[Route('/profile/email/service/{service}', name: 'cabinet_profile_email_service', requirements: ['service' => '[a-z0-9_]+'], methods: ['POST'])]
+    #[IsGranted(Role::USER)]
+    public function emailService(Request $request, string $service, ServiceProof $proof): Response
+    {
+        $wanted = trim($request->request->getString('contact'));
+        $authorization = $proof->start($service, $wanted, $request);
+
+        if ($authorization instanceof Refusal) {
+            $this->addFlash('error', $authorization->reason);
+
+            return $this->redirectToRoute('cabinet_profile_email', ['contact' => $wanted]);
+        }
+
+        return $this->redirect($authorization);
     }
 
     #[Route('/profile/email/{way}', name: 'cabinet_profile_email_ask', requirements: ['way' => 'former|phone'], methods: ['POST'])]
@@ -197,7 +224,7 @@ final class AccountController extends AbstractController
         $byPhone = 'phone' === $way;
         $outcome = $byPhone ? $confirmations->askPhone($user, $wanted) : $confirmations->askFormer($user, $wanted);
 
-        $this->addFlash(...$this->told($outcome, $byPhone ? (string) $user->getPhone() : $wanted, $user));
+        $this->addFlash(...ContactFlash::of($outcome, $byPhone ? (string) $user->getPhone() : $wanted, $user));
 
         return ContactOutcome::Former === $outcome
             ? $this->redirectToRoute('cabinet_profile')
@@ -217,7 +244,7 @@ final class AccountController extends AbstractController
             return $this->redirectToRoute('cabinet_profile_email');
         }
 
-        $this->addFlash(...$this->told($outcome, $contact, $user));
+        $this->addFlash(...ContactFlash::of($outcome, $contact, $user));
 
         return $this->redirectToRoute('cabinet_profile');
     }
@@ -282,7 +309,7 @@ final class AccountController extends AbstractController
             return $this->render('@Cabinet/cabinet/contact_release.html.twig', ['user' => $pending->requireUser(), 'contact' => $contact]);
         }
 
-        $this->addFlash(...$this->told($confirmations->release($pending), $contact, $pending->requireUser()));
+        $this->addFlash(...ContactFlash::of($confirmations->release($pending), $contact, $pending->requireUser()));
 
         return $this->redirectToRoute('cabinet_login');
     }
@@ -454,21 +481,6 @@ final class AccountController extends AbstractController
         $this->addFlash(null === $refusal ? 'success' : 'error', $refusal->reason ?? t('cabinet.deletion.done'));
 
         return $this->redirectToRoute('cabinet_login');
-    }
-
-    /** @return array{string, TranslatableMessage} */
-    private function told(ContactOutcome $outcome, string $contact, User $user): array
-    {
-        return match ($outcome) {
-            ContactOutcome::Sent => ['success', t('cabinet.contact.sent', ['contact' => $contact])],
-            ContactOutcome::Former => ['success', t('cabinet.contact.former', ['contact' => $user->getEmail()])],
-            ContactOutcome::Known => ['error', t('cabinet.contact.taken')],
-            ContactOutcome::Malformed => ['error', t('cabinet.contact.malformed')],
-            ContactOutcome::Unreachable => ['error', t('cabinet.contact.unreachable')],
-            ContactOutcome::TooOften => ['error', t('core.confirmation.too_often')],
-            ContactOutcome::Unavailable => ['error', t('cabinet.contact.unsent')],
-            ContactOutcome::Owner => throw new \LogicException('the owner of the record is proven by the mail change page'),
-        };
     }
 
     private function deletable(AccountDeletion $deletion): void

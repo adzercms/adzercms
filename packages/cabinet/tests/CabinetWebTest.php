@@ -281,6 +281,34 @@ final class CabinetWebTest extends SchemaTestCase
         self::assertSame('fresh@example.org', $this->reread($user)->getEmail());
     }
 
+    #[Group('ACMS-CORE-0985')]
+    #[Group('ACMS-US-0002')]
+    public function testMailChangeIsAgreedBySigningInWithTheConnectedService(): void
+    {
+        $this->answerService();
+        $this->configure(self::MAIL + [LatchService::SETTINGS.Switches::ENABLED => '1', LatchService::SETTINGS.LatchService::CLIENT => 'latch-client']);
+        $user = $this->record('79990000010', 'abonent@example.org');
+        $this->em->persist(new ConnectedService($user, 'latch', 'p1', 'ivan'));
+        $this->em->flush();
+        $this->client->loginUser($user);
+
+        $this->client->submit($this->contactForm(ContactKind::Email, 'fresh@example.org'));
+        $ways = $this->client->followRedirect()->filter('form[action="/profile/email/service/latch"]')->form();
+
+        $this->answers = [new JsonMockResponse(['access_token' => 'token']), new JsonMockResponse(['id' => 'p2'])];
+        $this->signInBy($ways);
+        self::assertSame('cabinet.email.stranger', $this->flashed('error', '/profile/email?contact=fresh@example.org')->getMessage());
+        self::assertEmailCount(0);
+
+        $this->answers = [new JsonMockResponse(['access_token' => 'token']), new JsonMockResponse(['id' => 'p1'])];
+        $this->signInBy($ways);
+        self::assertResponseRedirects('/profile');
+
+        self::assertSame('fresh@example.org', $this->letter()->getTo()[0]->getAddress(), 'the connected profile stands for the consent of the former address');
+        $this->client->request('GET', self::link('#/contact/[0-9a-f]{64}#', $this->letterText()));
+        self::assertSame('fresh@example.org', $this->reread($user)->getEmail());
+    }
+
     #[Group('ACMS-CORE-0987')]
     #[Group('ACMS-US-0002')]
     public function testFormerAddressCancelsTheAppliedMailChange(): void
@@ -482,6 +510,13 @@ final class CabinetWebTest extends SchemaTestCase
             ->reduce(static fn (Crawler $form): bool => 1 === $form->filter(\sprintf('input[type="%s"]', $type))->count());
 
         return 0 === $form->count() ? self::fail(\sprintf('the profile offers no change of %s', $kind->value)) : $form->form(['contact' => $contact]);
+    }
+
+    private function signInBy(Form $form): void
+    {
+        $this->client->submit($form);
+
+        $this->client->request('GET', '/login/latch/callback', ['code' => 'c1', 'state' => $this->authorized(LatchService::AUTHORIZE)['state'] ?? '']);
     }
 
     private static function link(string $pattern, string $text): string

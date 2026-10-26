@@ -187,6 +187,12 @@
         <target>Customer account: sign-up and sign-in, profile, sessions and pages of modules</target>
       </segment>
     </unit>
+    <unit id="cabinet.email.enter">
+      <segment>
+        <source>cabinet.email.enter</source>
+        <target>Sign in</target>
+      </segment>
+    </unit>
     <unit id="cabinet.email.former">
       <segment>
         <source>cabinet.email.former</source>
@@ -209,6 +215,18 @@
       <segment>
         <source>cabinet.email.send</source>
         <target>Send</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.email.service">
+      <segment>
+        <source>cabinet.email.service</source>
+        <target>Sign-in with {service}</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.email.stranger">
+      <segment>
+        <source>cabinet.email.stranger</source>
+        <target>This {service} profile is not connected to the record: sign in with the connected one</target>
       </segment>
     </unit>
     <unit id="cabinet.language.title">

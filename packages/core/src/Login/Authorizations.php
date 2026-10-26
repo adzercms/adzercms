@@ -64,10 +64,14 @@ final class Authorizations
         return $authorization->url.'?'.http_build_query($query + $authorization->parameters);
     }
 
+    public function state(Request $request): string
+    {
+        return self::flight($request->getSession()->get(self::FLIGHT))[1];
+    }
+
     public function profile(string $service, Request $request): Profile|Refusal
     {
-        $flight = $request->getSession()->remove(self::FLIGHT);
-        [$kept, $state, $secret] = \is_array($flight) && 3 === \count($flight) ? array_map(strval(...), array_values($flight)) : ['', '', ''];
+        [$kept, $state, $secret] = self::flight($request->getSession()->remove(self::FLIGHT));
         if ($kept !== $service || '' === $state || !hash_equals($state, $request->query->getString('state'))) {
             return new Refusal(t('core.login.expired'));
         }
@@ -120,6 +124,17 @@ final class Authorizations
     private function redirect(string $service): string
     {
         return $this->urls->generate(self::CALLBACK, ['service' => $service], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /** @return array{string, string, string} */
+    private static function flight(mixed $flight): array
+    {
+        if (!\is_array($flight) || 3 !== \count($flight)) {
+            return ['', '', ''];
+        }
+        [$service, $state, $secret] = array_map(strval(...), array_values($flight));
+
+        return [$service, $state, $secret];
     }
 
     private static function token(): string

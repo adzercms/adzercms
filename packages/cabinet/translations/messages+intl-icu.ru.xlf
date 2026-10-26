@@ -187,6 +187,12 @@
         <target>Кабинет клиента: регистрация и вход, профиль, сеансы и страницы модулей</target>
       </segment>
     </unit>
+    <unit id="cabinet.email.enter">
+      <segment>
+        <source>cabinet.email.enter</source>
+        <target>Войти</target>
+      </segment>
+    </unit>
     <unit id="cabinet.email.former">
       <segment>
         <source>cabinet.email.former</source>
@@ -209,6 +215,18 @@
       <segment>
         <source>cabinet.email.send</source>
         <target>Отправить</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.email.service">
+      <segment>
+        <source>cabinet.email.service</source>
+        <target>Вход через {service}</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.email.stranger">
+      <segment>
+        <source>cabinet.email.stranger</source>
+        <target>Этот профиль {service} не подключён к записи: войдите подключённым</target>
       </segment>
     </unit>
     <unit id="cabinet.language.title">

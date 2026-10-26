@@ -29,6 +29,13 @@ trait ServiceLogin
     protected function authorize(string $service, string $endpoint): array
     {
         $this->client->request('GET', '/login/'.$service);
+
+        return $this->authorized($endpoint);
+    }
+
+    /** @return array<string, string> */
+    protected function authorized(string $endpoint): array
+    {
         $location = (string) $this->client->getResponse()->headers->get('Location');
         self::assertStringStartsWith($endpoint.'?', $location);
 
