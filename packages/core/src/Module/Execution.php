@@ -32,7 +32,7 @@ final readonly class Execution
             ModuleAction::Disable => $this->toggle($subject, $package, false),
             ModuleAction::Install => $this->compose($subject, ['require', $package]),
             ModuleAction::Update => $this->compose($subject, ['update', str_starts_with($package, self::ENGINE) ? self::ENGINE.'*' : $package, '--with-dependencies']),
-            ModuleAction::Remove => $this->compose($subject, ['remove', $package]),
+            ModuleAction::Remove => $this->compose($subject, ['remove', $package], $this->selection($package, false)),
         };
 
         return $outcome instanceof Refusal ? $outcome->reason->trans($this->translator) : $outcome;
@@ -40,8 +40,28 @@ final readonly class Execution
 
     private function toggle(string $subject, string $package, bool $on): Refusal|string|null
     {
+        $selection = $this->selection($package, $on);
+
+        return \is_string($selection) ? $selection : $this->tree->refresh($subject, $this->sources->environment(), $selection);
+    }
+
+    /**
+     * @param list<string>                 $command
+     * @param array<string, string>|string $selection
+     */
+    private function compose(string $subject, array $command, array|string $selection = []): Refusal|string|null
+    {
+        return \is_string($selection) ? $selection : $this->staging->run($subject, $command, $this->sources->environment(), $selection);
+    }
+
+    /** @return array<string, string>|string */
+    private function selection(string $package, bool $on): array|string
+    {
         $registry = Registry::installed();
         $module = $registry->package($package) ?? throw new \LogicException(\sprintf('module package %s is not installed', $package));
+        if ($on === Selection::selects($module, Selection::environment(...))) {
+            return [];
+        }
 
         try {
             [$name, $value] = Selection::toggled($registry, Selection::environment(...), $module, $on);
@@ -49,12 +69,6 @@ final readonly class Execution
             return $refusal->getMessage();
         }
 
-        return $this->tree->refresh($subject, $this->sources->environment(), [$name => $value]);
-    }
-
-    /** @param list<string> $command */
-    private function compose(string $subject, array $command): Refusal|string|null
-    {
-        return $this->staging->run($subject, $command, $this->sources->environment());
+        return [$name => $value];
     }
 }

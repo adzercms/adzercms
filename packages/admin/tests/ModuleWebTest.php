@@ -290,7 +290,7 @@ final class ModuleWebTest extends SchemaTestCase
         $page = $this->client->request('GET', self::MODULES);
         self::assertSame($labels(ModuleAction::Install), self::actions($page, 'acme/shop'));
         self::assertSame($labels(ModuleAction::Update), self::actions($page, 'adzercms/admin'), 'the update goes with a newer version of the catalog only');
-        self::assertSame($labels(ModuleAction::Disable), self::actions($page, $chosen->name));
+        self::assertSame($labels(ModuleAction::Disable, ModuleAction::Remove), self::actions($page, $chosen->name));
         self::assertSame($labels(ModuleAction::Enable, ModuleAction::Remove), self::actions($page, $idle->name));
 
         $this->post('/admin/modules/operation/install?package=acme/shop');
@@ -398,6 +398,42 @@ final class ModuleWebTest extends SchemaTestCase
         yield 'update of an engine package' => [ModuleAction::Update, 'adzercms/sms-pilot', OperationState::Done, ['adzercms/sms-pilot', 'adzercms/theme']];
         yield 'remove' => [ModuleAction::Remove, 'adzercms/sms-pilot', OperationState::Done, ['adzercms/theme']];
         yield 'install of an uploaded ZIP' => [ModuleAction::Install, 'acme/zipped', OperationState::Done, ['acme/zipped', 'adzercms/sms-pilot', 'adzercms/theme'], true];
+    }
+
+    /** @param list<string> $locked */
+    #[Group('ACMS-CORE-0992')]
+    #[Group('ACMS-US-0004')]
+    #[DataProvider('removals')]
+    public function testRemovingEnabledModuleDisablesItInTheSameOperation(string $package, OperationState $state, ?string $selection, array $locked): void
+    {
+        $tree = $this->tree(__DIR__.'/Fixture/site');
+        $this->answerCatalog();
+        $this->listed([]);
+        self::command('adzercms:modules')->execute([]);
+        $kept = [$_SERVER['SMS_MODULES'] ?? null, $_ENV['SMS_MODULES'] ?? null];
+        $_SERVER['SMS_MODULES'] = $_ENV['SMS_MODULES'] = 'SmsPilot';
+
+        try {
+            $this->post(\sprintf('/admin/modules/operation/remove?package=%s', $package));
+            self::command('adzercms:modules')->execute([]);
+        } finally {
+            [$_SERVER['SMS_MODULES'], $_ENV['SMS_MODULES']] = $kept;
+        }
+        $this->em->clear();
+        $operation = self::service(ModuleOperationRepository::class)->findOneBy(['package' => $package]) ?? self::fail('the operation is not filed');
+        $lock = json_decode((string) file_get_contents($tree.'/composer.lock'), true, flags: \JSON_THROW_ON_ERROR);
+
+        self::assertSame($state, $operation->getState(), (string) $operation->getOutput());
+        self::assertEqualsCanonicalizing($locked, array_column($lock['packages'], 'name'));
+        self::assertSame(null === $selection ? [] : [$selection], array_values(preg_grep('/^SMS_MODULES=/', is_file($tree.'/refreshed.env') ? file($tree.'/refreshed.env', \FILE_IGNORE_NEW_LINES) ?: [] : []) ?: []), 'the refresh builds the selection without the removed module');
+        self::assertSame(null === $selection ? '' : $selection."\n", is_file($tree.'/.env.local') ? file_get_contents($tree.'/.env.local') : '');
+    }
+
+    /** @return iterable<string, array{string, OperationState, ?string, list<string>}> */
+    public static function removals(): iterable
+    {
+        yield 'enabled module' => ['adzercms/sms-pilot', OperationState::Done, 'SMS_MODULES=', ['adzercms/theme']];
+        yield 'module an enabled one depends on' => ['adzercms/theme', OperationState::Failed, null, ['adzercms/sms-pilot', 'adzercms/theme']];
     }
 
     #[Group('ACMS-CORE-0143')]

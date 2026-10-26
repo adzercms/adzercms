@@ -31,7 +31,7 @@ final readonly class Operations
         return match (true) {
             null === $row->installed => [ModuleAction::Install],
             $row->selected && CoreKind::Admin === $row->kind => $update,
-            $row->selected => [...$update, ModuleAction::Disable],
+            $row->selected => [...$update, ModuleAction::Disable, ModuleAction::Remove],
             default => [...$update, ModuleAction::Enable, ModuleAction::Remove],
         };
     }

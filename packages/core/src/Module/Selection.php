@@ -58,6 +58,12 @@ final readonly class Selection
         return [$name, $value];
     }
 
+    /** @param \Closure(string): string $environment */
+    public static function selects(Installed $module, \Closure $environment): bool
+    {
+        return \in_array($module->key, self::keys($environment($module->kind->environment())), true);
+    }
+
     public static function environment(string $name): string
     {
         return (string) ($_SERVER[$name] ?? $_ENV[$name] ?? '');
