@@ -12,7 +12,7 @@ The rules the engine's own code and tests follow. To build a module of your own,
 - All `symfony/*` packages stay on one LTS version, set by `extra.symfony.require`.
 - `composer install` and `composer update` put the JavaScript libraries from each package's `importmap.php` into `assets/vendor/`.
 - A release is a SemVer tag `v<version>` on `main`, shared by all packages. In `extra.branch-alias`, the `main` branch of each package is aliased to `<major>.<minor>.x-dev` of the next release.
-- A new package needs its own read-only repository, and it has to exist before the first push that includes the package. Name the package in your pull request and the maintainers will create the repository.
+- Each package is published to its own read-only repository `adzercms/<name>` and to Packagist. For a new package, both are set up on the first push to `main` that includes it.
 
 ## Core and modules
 
