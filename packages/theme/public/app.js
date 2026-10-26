@@ -131,9 +131,13 @@ const conditionals = scope => {
     });
 };
 
+let switched = null;
+
 document.addEventListener('change', event => {
     if (event.target.matches('[data-submit]')) {
+        switched = event.target;
         event.target.form.requestSubmit();
+        switched = null;
         return;
     }
 
@@ -177,7 +181,7 @@ const polling = element => (element?.getAttribute('hx-trigger') ?? '').includes(
 
 let approved = null;
 
-const ask = (question, agreed) => {
+const ask = (question, agreed, declined = () => {}) => {
     const dialog = document.getElementById('confirm');
 
     dialog.querySelector('[data-confirm-text]').textContent = question;
@@ -185,6 +189,8 @@ const ask = (question, agreed) => {
     dialog.addEventListener('close', () => {
         if (dialog.returnValue === 'yes') {
             agreed();
+        } else {
+            declined();
         }
     }, {once: true});
     dialog.showModal();
@@ -196,10 +202,15 @@ document.addEventListener('submit', event => {
     const question = submitter?.dataset.confirm ?? form.dataset.confirm;
 
     if (question && approved !== form) {
+        const toggled = switched;
         event.preventDefault();
         ask(question, () => {
             approved = form;
             form.requestSubmit(submitter);
+        }, () => {
+            if (toggled) {
+                toggled.checked = !toggled.checked;
+            }
         });
 
         return;
