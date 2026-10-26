@@ -93,16 +93,56 @@ final readonly class ConfirmationService
     public function requestContact(User $user, string $wanted): ContactOutcome
     {
         $kind = ContactKind::of($wanted);
-        $wanted = $kind->normalize($wanted);
+        $contact = $this->wanted($kind, $wanted);
+        if ($contact instanceof ContactOutcome) {
+            return $contact;
+        }
 
         return match (true) {
-            null === $wanted => ContactOutcome::Malformed,
-            !$this->notifier->reachable($kind) => ContactOutcome::Unreachable,
-            null !== $this->byContact($kind, $wanted) => ContactOutcome::Known,
-            ContactKind::Phone === $kind => $this->askByCode($user, $wanted),
-            null !== $user->getEmail() && $this->notifier->reachable(ContactKind::Email) => $this->askRelease($user, $wanted),
-            default => $this->askByLink($user, $wanted),
+            ContactKind::Phone === $kind => $this->askByCode($user, $contact),
+            null !== $user->getEmail() => ContactOutcome::Owner,
+            default => $this->askByLink($user, $contact),
         };
+    }
+
+    public function askFormer(User $user, string $wanted): ContactOutcome
+    {
+        $mail = $this->wanted(ContactKind::Email, $wanted);
+
+        return $mail instanceof ContactOutcome ? $mail : $this->askRelease($user, $mail);
+    }
+
+    public function askPhone(User $user, string $wanted): ContactOutcome
+    {
+        $phone = $this->releasePhone($user);
+        if (null === $phone) {
+            return ContactOutcome::Unavailable;
+        }
+
+        $mail = $this->wanted(ContactKind::Email, $wanted);
+        if ($mail instanceof ContactOutcome) {
+            return $mail;
+        }
+
+        $code = $this->secrets->code(Purpose::Release, $user, $mail);
+
+        return null === $code ? ContactOutcome::TooOften : self::outcome($this->notifier->contact($phone, CoreEvent::ContactRelease, [
+            'contact' => $mail,
+            'code' => $code,
+            'minutes' => Kind::Code->minutes(),
+        ], $user));
+    }
+
+    public function releasePhone(User $user): ?string
+    {
+        return $this->notifier->reachable(ContactKind::Phone) ? $user->getPhone() : null;
+    }
+
+    public function releaseByCode(User $user, string $code): ?ContactOutcome
+    {
+        $confirmation = $this->secrets->matching(Purpose::Release, $user, $code);
+
+        return null === $confirmation ? null : $this->release($confirmation);
     }
 
     public function release(Confirmation $confirmation): ContactOutcome
@@ -144,16 +184,16 @@ final readonly class ConfirmationService
         return true;
     }
 
-    public function awaitedContact(User $user): ?string
+    public function awaited(User $user, Purpose $purpose): ?string
     {
-        $confirmation = $this->confirmations->last(Purpose::Contact, Kind::Code, $user);
+        $confirmation = $this->confirmations->last($purpose, Kind::Code, $user);
 
         return null !== $confirmation && $confirmation->usable() ? $confirmation->getContact() : null;
     }
 
-    public function cancelContact(User $user): void
+    public function cancel(User $user, Purpose $purpose): void
     {
-        $confirmation = $this->confirmations->last(Purpose::Contact, Kind::Code, $user);
+        $confirmation = $this->confirmations->last($purpose, Kind::Code, $user);
         if (null !== $confirmation && $confirmation->usable()) {
             $confirmation->use();
             $this->em->flush();
@@ -254,6 +294,18 @@ final readonly class ConfirmationService
             'url' => $this->url(CabinetEntry::ContactConfirm, ['token' => $token]),
             'minutes' => Kind::Link->minutes(),
         ], $user));
+    }
+
+    private function wanted(ContactKind $kind, string $wanted): string|ContactOutcome
+    {
+        $contact = $kind->normalize($wanted);
+
+        return match (true) {
+            null === $contact => ContactOutcome::Malformed,
+            !$this->notifier->reachable($kind) => ContactOutcome::Unreachable,
+            null !== $this->byContact($kind, $contact) => ContactOutcome::Known,
+            default => $contact,
+        };
     }
 
     private function byContact(ContactKind $kind, string $contact): ?User

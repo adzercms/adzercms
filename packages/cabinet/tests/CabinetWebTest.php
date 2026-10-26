@@ -237,6 +237,11 @@ final class CabinetWebTest extends SchemaTestCase
         $this->client->loginUser($user);
 
         $this->client->submit($this->contactForm(ContactKind::Email, 'fresh@example.org'));
+        self::assertEmailCount(0, null, 'the change asks the way of proof first');
+
+        $ways = $this->client->followRedirect();
+        self::assertCount(0, $ways->filter('form[action="/profile/email/phone"]'), 'without a reachable phone there is no code way');
+        $this->client->submit($ways->filter('form[action="/profile/email/former"]')->form());
 
         self::assertSame('abonent@example.org', $this->letter()->getTo()[0]->getAddress(), 'the former address agrees first');
         $release = self::link('#/contact/release/[0-9a-f]{64}#', $this->letterText());
@@ -253,6 +258,27 @@ final class CabinetWebTest extends SchemaTestCase
 
         $this->client->request('GET', $release);
         self::assertResponseRedirects('/login', null, 'the consent link works once');
+    }
+
+    #[Group('ACMS-CORE-0097')]
+    #[Group('ACMS-US-0002')]
+    public function testMailChangeIsAgreedByCodeOnThePhoneOfTheRecord(): void
+    {
+        $this->configure(self::MAIL + self::RELAY);
+        $user = $this->record('79990000010', 'abonent@example.org');
+        $this->client->loginUser($user);
+
+        $this->client->submit($this->contactForm(ContactKind::Email, 'fresh@example.org'));
+        $this->client->submit($this->client->followRedirect()->filter('form[action="/profile/email/phone"]')->form());
+        $code = self::code($this->texted());
+
+        $this->client->submit($this->client->followRedirect()->selectButton(self::phrase('cabinet.contact.confirm'))->form(['code' => $code]));
+
+        self::assertSame('fresh@example.org', $this->letter()->getTo()[0]->getAddress(), 'the code stands for the consent of the former address');
+        self::assertSame('abonent@example.org', $this->reread($user)->getEmail());
+
+        $this->client->request('GET', self::link('#/contact/[0-9a-f]{64}#', $this->letterText()));
+        self::assertSame('fresh@example.org', $this->reread($user)->getEmail());
     }
 
     #[Group('ACMS-CORE-0091')]

@@ -187,6 +187,30 @@
         <target>Кабинет клиента: регистрация и вход, профиль, сеансы и страницы модулей</target>
       </segment>
     </unit>
+    <unit id="cabinet.email.former">
+      <segment>
+        <source>cabinet.email.former</source>
+        <target>Письмо на прежнюю почту</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.email.hint">
+      <segment>
+        <source>cabinet.email.hint</source>
+        <target>Новая почта — {contact}. Подтвердите, что запись ваша, любым способом ниже: затем ссылка подтверждения уйдёт на новую почту.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.email.phone">
+      <segment>
+        <source>cabinet.email.phone</source>
+        <target>Код на телефон</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.email.send">
+      <segment>
+        <source>cabinet.email.send</source>
+        <target>Отправить</target>
+      </segment>
+    </unit>
     <unit id="cabinet.language.title">
       <segment>
         <source>cabinet.language.title</source>

@@ -34,6 +34,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Translation\TranslatableMessage;
 
 use function Symfony\Component\Translation\t;
 
@@ -105,7 +106,7 @@ final class AccountController extends AbstractController
                 'state' => null === $user->getContact($kind) ? Badge::idle(t('cabinet.contact.empty')) : Badge::good(t('cabinet.contact.confirmed')),
                 'open' => \in_array($kind, $kinds, true),
             ], ContactKind::cases()),
-            'awaited' => $confirmations->awaitedContact($user),
+            'awaited' => $confirmations->awaited($user, Purpose::Contact),
             'logins' => $logins->enabled(),
             'bots' => array_values(array_filter($offered, static fn (Channel $channel): bool => $channel instanceof BotChannel)),
             'botCode' => $request->getSession()->remove('bot_code'),
@@ -158,17 +159,75 @@ final class AccountController extends AbstractController
     public function contact(#[CurrentUser] User $user, Request $request, ConfirmationService $confirmations): Response
     {
         $wanted = trim($request->request->getString('contact'));
+        $outcome = $confirmations->requestContact($user, $wanted);
 
-        [$level, $message] = match ($confirmations->requestContact($user, $wanted)) {
-            ContactOutcome::Sent => ['success', t('cabinet.contact.sent', ['contact' => $wanted])],
-            ContactOutcome::Former => ['success', t('cabinet.contact.former', ['contact' => $user->getEmail()])],
-            ContactOutcome::Known => ['error', t('cabinet.contact.taken')],
-            ContactOutcome::Malformed => ['error', t('cabinet.contact.malformed')],
-            ContactOutcome::Unreachable => ['error', t('cabinet.contact.unreachable')],
-            ContactOutcome::TooOften => ['error', t('core.confirmation.too_often')],
-            ContactOutcome::Unavailable => ['error', t('cabinet.contact.unsent')],
-        };
-        $this->addFlash($level, $message);
+        if (ContactOutcome::Owner === $outcome) {
+            return $this->redirectToRoute('cabinet_profile_email', ['contact' => $wanted]);
+        }
+
+        $this->addFlash(...$this->told($outcome, $wanted, $user));
+
+        return $this->redirectToRoute('cabinet_profile');
+    }
+
+    #[Route('/profile/email', name: 'cabinet_profile_email', methods: ['GET'])]
+    #[IsGranted(Role::USER)]
+    public function email(#[CurrentUser] User $user, Request $request, ConfirmationService $confirmations): Response
+    {
+        $awaited = $confirmations->awaited($user, Purpose::Release);
+        $contact = $awaited ?? trim($request->query->getString('contact'));
+
+        if ('' === $contact || null === $user->getEmail()) {
+            return $this->redirectToRoute('cabinet_profile');
+        }
+
+        return $this->render('@Cabinet/cabinet/email.html.twig', [
+            'user' => $user,
+            'contact' => $contact,
+            'awaited' => null !== $awaited,
+            'phone' => $confirmations->releasePhone($user),
+        ]);
+    }
+
+    #[Route('/profile/email/{way}', name: 'cabinet_profile_email_ask', requirements: ['way' => 'former|phone'], methods: ['POST'])]
+    #[IsGranted(Role::USER)]
+    public function askEmail(#[CurrentUser] User $user, Request $request, string $way, ConfirmationService $confirmations): Response
+    {
+        $wanted = trim($request->request->getString('contact'));
+        $byPhone = 'phone' === $way;
+        $outcome = $byPhone ? $confirmations->askPhone($user, $wanted) : $confirmations->askFormer($user, $wanted);
+
+        $this->addFlash(...$this->told($outcome, $byPhone ? (string) $user->getPhone() : $wanted, $user));
+
+        return ContactOutcome::Former === $outcome
+            ? $this->redirectToRoute('cabinet_profile')
+            : $this->redirectToRoute('cabinet_profile_email', ['contact' => $wanted]);
+    }
+
+    #[Route('/profile/email/code', name: 'cabinet_profile_email_code', methods: ['POST'])]
+    #[IsGranted(Role::USER)]
+    public function emailCode(#[CurrentUser] User $user, Request $request, ConfirmationService $confirmations): Response
+    {
+        $contact = (string) $confirmations->awaited($user, Purpose::Release);
+        $outcome = $confirmations->releaseByCode($user, $request->request->getString('code'));
+
+        if (null === $outcome) {
+            $this->addFlash('error', t('cabinet.contact.code'));
+
+            return $this->redirectToRoute('cabinet_profile_email');
+        }
+
+        $this->addFlash(...$this->told($outcome, $contact, $user));
+
+        return $this->redirectToRoute('cabinet_profile');
+    }
+
+    #[Route('/profile/email/cancel', name: 'cabinet_profile_email_cancel', methods: ['POST'])]
+    #[IsGranted(Role::USER)]
+    public function emailCancel(#[CurrentUser] User $user, ConfirmationService $confirmations): Response
+    {
+        $confirmations->cancel($user, Purpose::Release);
+        $this->addFlash('success', t('cabinet.contact.cancelled'));
 
         return $this->redirectToRoute('cabinet_profile');
     }
@@ -187,7 +246,7 @@ final class AccountController extends AbstractController
     #[IsGranted(Role::USER)]
     public function contactCancel(#[CurrentUser] User $user, ConfirmationService $confirmations): Response
     {
-        $confirmations->cancelContact($user);
+        $confirmations->cancel($user, Purpose::Contact);
         $this->addFlash('success', t('cabinet.contact.cancelled'));
 
         return $this->redirectToRoute('cabinet_profile');
@@ -223,13 +282,7 @@ final class AccountController extends AbstractController
             return $this->render('@Cabinet/cabinet/contact_release.html.twig', ['user' => $pending->requireUser(), 'contact' => $contact]);
         }
 
-        [$level, $message] = match ($confirmations->release($pending)) {
-            ContactOutcome::Sent => ['success', t('cabinet.contact.sent', ['contact' => $contact])],
-            ContactOutcome::Known => ['error', t('cabinet.contact.taken')],
-            ContactOutcome::TooOften => ['error', t('core.confirmation.too_often')],
-            default => ['error', t('cabinet.contact.unsent')],
-        };
-        $this->addFlash($level, $message);
+        $this->addFlash(...$this->told($confirmations->release($pending), $contact, $pending->requireUser()));
 
         return $this->redirectToRoute('cabinet_login');
     }
@@ -380,6 +433,21 @@ final class AccountController extends AbstractController
         $this->addFlash(null === $refusal ? 'success' : 'error', $refusal->reason ?? t('cabinet.deletion.done'));
 
         return $this->redirectToRoute('cabinet_login');
+    }
+
+    /** @return array{string, TranslatableMessage} */
+    private function told(ContactOutcome $outcome, string $contact, User $user): array
+    {
+        return match ($outcome) {
+            ContactOutcome::Sent => ['success', t('cabinet.contact.sent', ['contact' => $contact])],
+            ContactOutcome::Former => ['success', t('cabinet.contact.former', ['contact' => $user->getEmail()])],
+            ContactOutcome::Known => ['error', t('cabinet.contact.taken')],
+            ContactOutcome::Malformed => ['error', t('cabinet.contact.malformed')],
+            ContactOutcome::Unreachable => ['error', t('cabinet.contact.unreachable')],
+            ContactOutcome::TooOften => ['error', t('core.confirmation.too_often')],
+            ContactOutcome::Unavailable => ['error', t('cabinet.contact.unsent')],
+            ContactOutcome::Owner => throw new \LogicException('the owner of the record is proven by the mail change page'),
+        };
     }
 
     private function deletable(AccountDeletion $deletion): void

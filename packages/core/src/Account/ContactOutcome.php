@@ -8,6 +8,7 @@ enum ContactOutcome: string
 {
     case Sent = 'sent';
     case Former = 'former';
+    case Owner = 'owner';
     case Known = 'known';
     case TooOften = 'too_often';
     case Unavailable = 'unavailable';

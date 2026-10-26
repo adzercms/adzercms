@@ -187,6 +187,30 @@
         <target>Customer account: sign-up and sign-in, profile, sessions and pages of modules</target>
       </segment>
     </unit>
+    <unit id="cabinet.email.former">
+      <segment>
+        <source>cabinet.email.former</source>
+        <target>Letter to the former email</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.email.hint">
+      <segment>
+        <source>cabinet.email.hint</source>
+        <target>The new email is {contact}. Prove the account is yours in any way below: then the confirmation link goes to the new email.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.email.phone">
+      <segment>
+        <source>cabinet.email.phone</source>
+        <target>Code to the phone</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.email.send">
+      <segment>
+        <source>cabinet.email.send</source>
+        <target>Send</target>
+      </segment>
+    </unit>
     <unit id="cabinet.language.title">
       <segment>
         <source>cabinet.language.title</source>

@@ -775,6 +775,12 @@
         <target>Смена почты записи {login} на {contact}: согласитесь на неё по ссылке.</target>
       </segment>
     </unit>
+    <unit id="core.notice.contact_release.code">
+      <segment>
+        <source>core.notice.contact_release.code</source>
+        <target>Код смены почты на {contact}: {code}, действует {minutes, plural, one {# минуту} few {# минуты} other {# минут}}</target>
+      </segment>
+    </unit>
     <unit id="core.notice.contact_release.note">
       <segment>
         <source>core.notice.contact_release.note</source>

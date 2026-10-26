@@ -775,6 +775,12 @@
         <target>Email change of record {login} to {contact}: agree to it by the link.</target>
       </segment>
     </unit>
+    <unit id="core.notice.contact_release.code">
+      <segment>
+        <source>core.notice.contact_release.code</source>
+        <target>Code of the email change to {contact}: {code}, valid for {minutes, plural, one {# minute} other {# minutes}}</target>
+      </segment>
+    </unit>
     <unit id="core.notice.contact_release.note">
       <segment>
         <source>core.notice.contact_release.note</source>
