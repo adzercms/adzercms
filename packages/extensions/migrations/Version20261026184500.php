@@ -11,7 +11,7 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 
-final class Version20261026180000 extends AbstractMigration
+final class Version20261026184500 extends AbstractMigration
 {
     public function isTransactional(): bool
     {
