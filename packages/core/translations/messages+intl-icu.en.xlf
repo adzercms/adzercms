@@ -328,7 +328,13 @@
     <unit id="core.event.contact_release">
       <segment>
         <source>core.event.contact_release</source>
-        <target>Former email consent</target>
+        <target>Email change consent</target>
+      </segment>
+    </unit>
+    <unit id="core.event.mail_changed">
+      <segment>
+        <source>core.event.mail_changed</source>
+        <target>Email change</target>
       </segment>
     </unit>
     <unit id="core.event.message">
@@ -817,6 +823,36 @@
         <target>Enter it in the cabinet — the code is valid for {minutes, plural, one {# minute} other {# minutes}}.</target>
       </segment>
     </unit>
+    <unit id="core.notice.mail_changed.action">
+      <segment>
+        <source>core.notice.mail_changed.action</source>
+        <target>Cancel the change</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_changed.body">
+      <segment>
+        <source>core.notice.mail_changed.body</source>
+        <target>The email of record {prior} is changed to {contact}.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_changed.cancel">
+      <segment>
+        <source>core.notice.mail_changed.cancel</source>
+        <target>If it was not you, cancel the change before {until, date, ::yMMddjmm}: the record returns to this email.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_changed.subject">
+      <segment>
+        <source>core.notice.mail_changed.subject</source>
+        <target>{brand}: the email of the record is changed</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_changed.title">
+      <segment>
+        <source>core.notice.mail_changed.title</source>
+        <target>Email changed</target>
+      </segment>
+    </unit>
     <unit id="core.notice.password_issued.action">
       <segment>
         <source>core.notice.password_issued.action</source>
@@ -1049,6 +1085,12 @@
       <segment>
         <source>core.setting.color</source>
         <target>{field} takes a color as #RRGGBB</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.confirmation_email_delay_days">
+      <segment>
+        <source>core.setting.confirmation_email_delay_days</source>
+        <target>Delay of the email change by password, days</target>
       </segment>
     </unit>
     <unit id="core.setting.confirmation_pause_minutes">

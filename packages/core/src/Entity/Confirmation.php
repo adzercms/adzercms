@@ -53,9 +53,15 @@ class Confirmation
         private Kind $kind,
         #[ORM\Column(length: 255)]
         private string $secretHash,
+        ?int $minutes = null,
     ) {
         $this->createdAt = now();
-        $this->expiresAt = $this->createdAt->modify(\sprintf('+%d minutes', $kind->minutes()));
+        $this->expiresAt = $this->createdAt->modify(\sprintf('+%d minutes', $minutes ?? $kind->minutes()));
+    }
+
+    public function getExpiresAt(): \DateTimeImmutable
+    {
+        return $this->expiresAt;
     }
 
     public function getUser(): ?User

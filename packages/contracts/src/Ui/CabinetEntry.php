@@ -16,6 +16,7 @@ enum CabinetEntry: string
     case Deletion = 'deletion';
     case ContactConfirm = 'contact_confirm';
     case ContactRelease = 'contact_release';
+    case ContactRevert = 'contact_revert';
 
     public function route(): string
     {
@@ -29,6 +30,7 @@ enum CabinetEntry: string
             self::Deletion => 'cabinet_delete',
             self::ContactConfirm => 'cabinet_contact_confirm',
             self::ContactRelease => 'cabinet_contact_release',
+            self::ContactRevert => 'cabinet_contact_revert',
         };
     }
 

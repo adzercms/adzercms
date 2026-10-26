@@ -281,6 +281,31 @@ final class CabinetWebTest extends SchemaTestCase
         self::assertSame('fresh@example.org', $this->reread($user)->getEmail());
     }
 
+    #[Group('ACMS-CORE-0987')]
+    #[Group('ACMS-US-0002')]
+    public function testFormerAddressCancelsTheAppliedMailChange(): void
+    {
+        $this->configure(self::MAIL + self::RELAY);
+        $user = $this->record('79990000010', 'abonent@example.org');
+        $this->client->loginUser($user);
+
+        $this->client->submit($this->contactForm(ContactKind::Email, 'fresh@example.org'));
+        $this->client->submit($this->client->followRedirect()->filter('form[action="/profile/email/phone"]')->form());
+        $this->client->submit($this->client->followRedirect()->selectButton(self::phrase('cabinet.contact.confirm'))->form(['code' => self::code($this->texted())]));
+        $this->client->request('GET', self::link('#/contact/[0-9a-f]{64}#', $this->letterText()));
+
+        self::assertSame('abonent@example.org', $this->letter()->getTo()[0]->getAddress(), 'the former address hears of the change');
+        $revert = self::link('#/contact/revert/[0-9a-f]{64}#', $this->letterText());
+
+        $page = $this->client->request('GET', $revert);
+        self::assertSame('fresh@example.org', $this->reread($user)->getEmail(), 'opening the link changes nothing');
+        $this->client->submit($page->selectButton(self::phrase('cabinet.revert.agree'))->form());
+
+        self::assertSame('abonent@example.org', $this->reread($user)->getEmail());
+        $this->client->request('GET', $revert);
+        self::assertResponseRedirects('/login', null, 'the cancel link works once');
+    }
+
     #[Group('ACMS-CORE-0091')]
     #[Group('ACMS-CORE-0096')]
     #[Group('ACMS-US-0002')]

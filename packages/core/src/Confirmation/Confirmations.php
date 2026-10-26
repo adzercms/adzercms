@@ -20,8 +20,10 @@ use function Symfony\Component\Translation\t;
 final class Confirmations implements Owner
 {
     public const PAUSE_MINUTES = 'confirmation.pause_minutes';
+    public const EMAIL_DELAY_DAYS = 'confirmation.email_delay_days';
     public const HASHER = 'confirmation';
     private const DEFAULT_PAUSE_MINUTES = 3;
+    private const DEFAULT_EMAIL_DELAY_DAYS = 7;
     private const CODE_DIGITS = 6;
     private const TOKEN_BYTES = 32;
 
@@ -35,7 +37,30 @@ final class Confirmations implements Owner
 
     public function settingFields(): array
     {
-        return [new Field(self::PAUSE_MINUTES, t('core.setting.confirmation_pause_minutes'))];
+        return [
+            new Field(self::PAUSE_MINUTES, t('core.setting.confirmation_pause_minutes')),
+            new Field(self::EMAIL_DELAY_DAYS, t('core.setting.confirmation_email_delay_days')),
+        ];
+    }
+
+    public function emailDelayDays(): int
+    {
+        return $this->settings->int(self::EMAIL_DELAY_DAYS, self::DEFAULT_EMAIL_DELAY_DAYS);
+    }
+
+    /**
+     * @phpstan-impure
+     *
+     * @return array{string, \DateTimeImmutable}
+     */
+    public function revertLink(User $user, string $prior): array
+    {
+        $token = bin2hex(random_bytes(self::TOKEN_BYTES));
+        $confirmation = new Confirmation($user, $prior, Purpose::Revert, Kind::Link, self::digest($token), $this->emailDelayDays() * 24 * 60);
+        $this->em->persist($confirmation);
+        $this->em->flush();
+
+        return [$token, $confirmation->getExpiresAt()];
     }
 
     /** @phpstan-impure */

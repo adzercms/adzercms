@@ -287,6 +287,27 @@ final class AccountController extends AbstractController
         return $this->redirectToRoute('cabinet_login');
     }
 
+    #[Route('/contact/revert/{token}', name: 'cabinet_contact_revert', requirements: ['token' => '[0-9a-f]{64}'], methods: ['GET', 'POST'])]
+    public function contactRevert(Request $request, string $token, ConfirmationService $confirmations): Response
+    {
+        $pending = $confirmations->pending(Purpose::Revert, $token);
+
+        if (null === $pending) {
+            $this->addFlash('error', t('cabinet.contact.link'));
+
+            return $this->redirectToRoute('cabinet_login');
+        }
+
+        if (!$request->isMethod('POST')) {
+            return $this->render('@Cabinet/cabinet/contact_revert.html.twig', ['user' => $pending->requireUser(), 'contact' => (string) $pending->getContact()]);
+        }
+
+        $returned = $confirmations->revertMail($pending);
+        $this->addFlash($returned ? 'success' : 'error', t($returned ? 'cabinet.revert.done' : 'cabinet.contact.taken'));
+
+        return $this->redirectToRoute('cabinet_login');
+    }
+
     #[Route('/profile/service/{service}', name: 'cabinet_service_unlink', requirements: ['service' => '[a-z0-9_]+'], methods: ['POST'])]
     #[IsGranted(Role::USER)]
     public function unlink(#[CurrentUser] User $user, string $service, ConnectedServices $services, Intent $intent): Response

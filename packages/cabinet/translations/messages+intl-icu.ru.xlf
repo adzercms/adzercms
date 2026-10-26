@@ -559,6 +559,30 @@
         <target>Смена почты</target>
       </segment>
     </unit>
+    <unit id="cabinet.revert.agree">
+      <segment>
+        <source>cabinet.revert.agree</source>
+        <target>Отменить смену</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.revert.done">
+      <segment>
+        <source>cabinet.revert.done</source>
+        <target>Смена почты отменена</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.revert.hint">
+      <segment>
+        <source>cabinet.revert.hint</source>
+        <target>Запись вернётся к почте {contact}, входы с новой почтой погаснут.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.revert.title">
+      <segment>
+        <source>cabinet.revert.title</source>
+        <target>Отмена смены почты</target>
+      </segment>
+    </unit>
     <unit id="cabinet.reset.changed">
       <segment>
         <source>cabinet.reset.changed</source>

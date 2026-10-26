@@ -176,10 +176,39 @@ final readonly class ConfirmationService
             return false;
         }
 
-        $user = $confirmation->requireUser()->setContact($kind, $contact);
+        $user = $confirmation->requireUser();
+        $prior = ContactKind::Email === $kind ? $user->getEmail() : null;
+        $user->setContact($kind, $contact);
         $confirmation->use();
         $this->em->flush();
         $this->events->dispatch(new ContactConfirmed($user, $kind, $contact));
+
+        if (null !== $prior) {
+            $this->warnFormer($user, $prior, $contact);
+        }
+
+        return true;
+    }
+
+    public function revertMail(Confirmation $confirmation): bool
+    {
+        $user = $confirmation->requireUser();
+        $prior = (string) $confirmation->getContact();
+        $holder = $this->byContact(ContactKind::Email, $prior);
+        if (null !== $holder && $holder !== $user) {
+            return false;
+        }
+
+        $confirmation->use();
+        $returned = $user->getEmail() !== $prior;
+        if ($returned) {
+            $user->setContact(ContactKind::Email, $prior);
+        }
+        $this->em->flush();
+
+        if ($returned) {
+            $this->events->dispatch(new ContactConfirmed($user, ContactKind::Email, $prior));
+        }
 
         return true;
     }
@@ -294,6 +323,18 @@ final readonly class ConfirmationService
             'url' => $this->url(CabinetEntry::ContactConfirm, ['token' => $token]),
             'minutes' => Kind::Link->minutes(),
         ], $user));
+    }
+
+    private function warnFormer(User $user, string $prior, string $contact): void
+    {
+        [$token, $until] = $this->secrets->revertLink($user, $prior);
+
+        $this->notifier->contact($prior, CoreEvent::MailChanged, [
+            'prior' => $prior,
+            'contact' => $contact,
+            'until' => $until,
+            'url' => $this->url(CabinetEntry::ContactRevert, ['token' => $token]),
+        ], $user);
     }
 
     private function wanted(ContactKind $kind, string $wanted): string|ContactOutcome

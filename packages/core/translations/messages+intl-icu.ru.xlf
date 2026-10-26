@@ -328,7 +328,13 @@
     <unit id="core.event.contact_release">
       <segment>
         <source>core.event.contact_release</source>
-        <target>Согласие прежней почты</target>
+        <target>Согласие на смену почты</target>
+      </segment>
+    </unit>
+    <unit id="core.event.mail_changed">
+      <segment>
+        <source>core.event.mail_changed</source>
+        <target>Смена почты</target>
       </segment>
     </unit>
     <unit id="core.event.message">
@@ -817,6 +823,36 @@
         <target>Введите его в кабинете — код действует {minutes, plural, one {# минуту} few {# минуты} other {# минут}}.</target>
       </segment>
     </unit>
+    <unit id="core.notice.mail_changed.action">
+      <segment>
+        <source>core.notice.mail_changed.action</source>
+        <target>Отменить смену</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_changed.body">
+      <segment>
+        <source>core.notice.mail_changed.body</source>
+        <target>Почта записи {prior} сменена на {contact}.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_changed.cancel">
+      <segment>
+        <source>core.notice.mail_changed.cancel</source>
+        <target>Если меняли не вы, отмените смену до {until, date, ::yMMddjmm}: запись вернётся к этой почте.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_changed.subject">
+      <segment>
+        <source>core.notice.mail_changed.subject</source>
+        <target>{brand}: почта записи сменена</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_changed.title">
+      <segment>
+        <source>core.notice.mail_changed.title</source>
+        <target>Почта сменена</target>
+      </segment>
+    </unit>
     <unit id="core.notice.password_issued.action">
       <segment>
         <source>core.notice.password_issued.action</source>
@@ -1049,6 +1085,12 @@
       <segment>
         <source>core.setting.color</source>
         <target>{field} — цвет в виде #RRGGBB</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.confirmation_email_delay_days">
+      <segment>
+        <source>core.setting.confirmation_email_delay_days</source>
+        <target>Отсрочка смены почты паролем, суток</target>
       </segment>
     </unit>
     <unit id="core.setting.confirmation_pause_minutes">

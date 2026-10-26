@@ -14,6 +14,7 @@ enum CoreEvent: string implements Event
     case RegistrationKnown = 'core.event.registration_known';
     case ContactConfirm = 'core.event.contact_confirm';
     case ContactRelease = 'core.event.contact_release';
+    case MailChanged = 'core.event.mail_changed';
     case AccountDeletion = 'core.event.account_deletion';
     case Message = 'core.event.message';
 

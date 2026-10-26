@@ -10,6 +10,7 @@ enum Purpose: string
     case Registration = 'registration';
     case Contact = 'contact';
     case Release = 'release';
+    case Revert = 'revert';
     case Deletion = 'deletion';
     case Messenger = 'messenger';
 }
