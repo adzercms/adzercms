@@ -13,9 +13,37 @@ final readonly class Builds
     private const POINTER = 'build';
     private const LOCK = '.lock';
     private const NAME = '/^[\w-]+$/';
+    private const SET = '[0-9a-f]{16}';
 
     public function __construct(private string $root)
     {
+    }
+
+    public static function root(string $cache, string $set): string
+    {
+        return '' === $set ? $cache : $cache.'_'.$set;
+    }
+
+    /** @return list<string> */
+    public static function roots(string $cache): array
+    {
+        return array_values(array_filter(
+            [$cache, ...preg_grep('~_'.self::SET.'$~', glob($cache.'_*', \GLOB_ONLYDIR) ?: []) ?: []],
+            is_dir(...),
+        ));
+    }
+
+    /** @return list<string> */
+    public static function strays(string $cache, string $assets): array
+    {
+        $strays = [];
+        foreach (array_diff(is_dir($assets) ? scandir($assets) ?: [] : [], ['.', '..']) as $entry) {
+            if (!is_dir(self::root($cache, 1 === preg_match('~^'.self::SET.'$~', $entry) ? $entry : ''))) {
+                $strays[] = $assets.'/'.$entry;
+            }
+        }
+
+        return $strays;
     }
 
     public static function fixed(): ?string
@@ -67,12 +95,12 @@ final readonly class Builds
     }
 
     /** @return list<string> */
-    public function retire(self $live): array
+    public function retire(self ...$current): array
     {
         $pointed = $this->pointed();
-        $behind = $live->pointed();
+        $behind = max([0, ...array_map(static fn (self $builds): int => $builds->pointed() ?? 0, $current)]);
 
-        if (null === $pointed || null === $behind || $pointed >= $behind) {
+        if (null === $pointed || $pointed >= $behind) {
             return [];
         }
 

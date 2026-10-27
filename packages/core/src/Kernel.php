@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core;
 
+use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Core\Build\Builds;
 use AdzerCMS\Core\Build\HeldBuild;
+use AdzerCMS\Core\Build\Preview;
+use AdzerCMS\Core\Module\Installed;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Module\Selection;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+
+use function Symfony\Component\Clock\now;
 
 abstract class Kernel extends BaseKernel
 {
@@ -24,11 +29,15 @@ abstract class Kernel extends BaseKernel
     public const ASSETS = 'adzercms.assets';
 
     private const ASSETS_ROOT = '/assets/';
+    private const PUBLIC = '/public';
     private const SELECTION = '.selection';
+    private const PREVIEW = '.preview';
+    private const SECRET = 'APP_SECRET';
 
     private ?Selection $modules = null;
     private ?HeldBuild $held = null;
     private ?string $cacheDir = null;
+    private ?string $previewed = null;
 
     public function registerBundles(): iterable
     {
@@ -62,14 +71,36 @@ abstract class Kernel extends BaseKernel
     }
 
     /** @return list<Builds> */
+    public function currentBuilds(): array
+    {
+        return array_map(static fn (string $root): Builds => new Builds($root), $this->currentRoots());
+    }
+
+    /** @return list<Builds> */
     public function otherBuilds(): array
     {
-        $roots = array_filter(
-            [$this->configuredCacheDir(), ...preg_grep('~_[0-9a-f]{16}$~', glob($this->configuredCacheDir().'_*', \GLOB_ONLYDIR) ?: []) ?: []],
-            fn (string $root): bool => $root !== $this->buildsRoot() && is_dir($root),
+        return array_map(
+            static fn (string $root): Builds => new Builds($root),
+            array_values(array_diff(Builds::roots($this->configuredCacheDir()), $this->currentRoots())),
         );
+    }
 
-        return array_values(array_map(static fn (string $root): Builds => new Builds($root), $roots));
+    /** @return list<string> */
+    public function strayAssets(): array
+    {
+        return Builds::strays($this->configuredCacheDir(), $this->getProjectDir().self::PUBLIC.rtrim(self::ASSETS_ROOT, '/'));
+    }
+
+    public function preview(): Preview
+    {
+        return new Preview($this->configuredCacheDir().self::PREVIEW);
+    }
+
+    public function previewed(): ?string
+    {
+        $this->modules();
+
+        return $this->previewed;
     }
 
     public function shutdown(): void
@@ -87,12 +118,26 @@ abstract class Kernel extends BaseKernel
 
     public function keepSelection(): void
     {
+        (new Filesystem())->dumpFile($this->selectionFile(), json_encode($this->selected(), \JSON_THROW_ON_ERROR));
+    }
+
+    public function keepPreview(): void
+    {
+        $theme = array_find($this->modules()->modules, static fn (Installed $module): bool => CoreKind::Theme === $module->kind)
+            ?? throw new \LogicException('a preview takes a selected theme');
+
+        $this->preview()->keep($theme->key, $this->selected());
+    }
+
+    /** @return array<string, string> */
+    private function selected(): array
+    {
         $values = [];
         foreach (Registry::installed()->kinds() as $kind) {
             $values[$kind->environment()] = Selection::environment($kind->environment());
         }
 
-        (new Filesystem())->dumpFile($this->selectionFile(), json_encode($values, \JSON_THROW_ON_ERROR));
+        return $values;
     }
 
     /** @return \Closure(string): string */
@@ -100,13 +145,42 @@ abstract class Kernel extends BaseKernel
     {
         $file = $this->selectionFile();
 
-        if ($this->debug || null !== Builds::fixed() || !is_file($file)) {
+        if ($this->debug || null !== Builds::fixed()) {
             return Selection::environment(...);
         }
 
-        $values = json_decode((string) file_get_contents($file), true, flags: \JSON_THROW_ON_ERROR);
+        $values = $this->previewing() ?? (is_file($file) ? json_decode((string) file_get_contents($file), true, flags: \JSON_THROW_ON_ERROR) : null);
 
-        return static fn (string $name): string => \is_array($values) && \is_string($values[$name] ?? null) ? $values[$name] : '';
+        return null === $values
+            ? Selection::environment(...)
+            : static fn (string $name): string => \is_array($values) && \is_string($values[$name] ?? null) ? $values[$name] : '';
+    }
+
+    /** @return array<string, string>|null */
+    private function previewing(): ?array
+    {
+        $mark = $_COOKIE[Preview::COOKIE] ?? null;
+        $theme = \is_string($mark) ? Preview::marked($mark, now()->getTimestamp(), Selection::environment(self::SECRET)) : null;
+        $kept = null === $theme ? null : $this->preview()->read();
+        if (null === $kept || $theme !== $kept['theme']) {
+            return null;
+        }
+        $this->previewed = $theme;
+
+        return $kept['values'];
+    }
+
+    /** @return list<string> */
+    private function currentRoots(): array
+    {
+        $kept = $this->preview()->read();
+        try {
+            $preview = null === $kept ? null : Selection::of(Registry::installed(), static fn (string $name): string => $kept['values'][$name] ?? '')->id();
+        } catch (\LogicException) {
+            $preview = null;
+        }
+
+        return [$this->buildsRoot(), ...null === $preview ? [] : [Builds::root($this->configuredCacheDir(), $preview)]];
     }
 
     private function selectionFile(): string
@@ -139,7 +213,7 @@ abstract class Kernel extends BaseKernel
 
     private function buildsRoot(): string
     {
-        return $this->configuredCacheDir().$this->mark('_');
+        return Builds::root($this->configuredCacheDir(), $this->modules()->id());
     }
 
     private function mark(string $before, string $after = ''): string

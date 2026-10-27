@@ -39,7 +39,12 @@ final class Secrets
 
     public function sign(string $subject): string
     {
-        return hash_hmac('sha256', $subject, $this->secret());
+        return self::signature($subject, $this->secret());
+    }
+
+    public static function signature(string $subject, string $secret): string
+    {
+        return hash_hmac('sha256', $subject, $secret);
     }
 
     private function key(): string
