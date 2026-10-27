@@ -18,10 +18,16 @@ final readonly class Metadata
     ) {
     }
 
+    /** @param list<string> $names */
+    public function lookup(array $names): Lookup
+    {
+        return $this->repositories->lookup($this->settings->repositories(), $names);
+    }
+
     /** @param list<Extension> $extensions */
     public function refresh(array $extensions): Lookup
     {
-        $lookup = $this->repositories->lookup($this->settings->repositories(), array_map(static fn (Extension $extension): string => $extension->getName(), $extensions));
+        $lookup = $this->lookup(array_map(static fn (Extension $extension): string => $extension->getName(), $extensions));
 
         foreach ($extensions as $extension) {
             if ($lookup->decided($extension->getName())) {

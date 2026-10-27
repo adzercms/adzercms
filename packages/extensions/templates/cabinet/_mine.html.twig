@@ -1,6 +1,6 @@
-{% embed '@Theme/_table.html.twig' with {heading: 'extensions.mine.entries'} %}
+{% embed '@Theme/_table.html.twig' with {heading: 'extensions.mine.entries', actions: [{route: 'extensions_mine_new', params: {}, label: 'extensions.add'}]} %}
     {% block row %}
-        <tr>
+        <tr class="clickable-row" data-record="{{ path('extensions_mine_entry', {id: row.id}) }}">
             <td class="{{ table.aside('name') }}"><strong>{{ row.name }}</strong></td>
             <td class="{{ table.aside('type') }}">{{ row.type.label|trans }}</td>
             <td class="{{ table.aside('price') }}">{{ row.price ? amount(row.price, false) : 'extensions.free'|trans }}</td>

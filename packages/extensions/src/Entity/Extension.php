@@ -174,6 +174,13 @@ class Extension implements Placed
         $this->reason = $reason;
     }
 
+    public function revise(): void
+    {
+        if (ExtensionDecision::Rejected === $this->decision || ExtensionDecision::Withdrawn === $this->decision) {
+            $this->decide(ExtensionDecision::Pending);
+        }
+    }
+
     public function describe(string $name, ExtensionType $type, ?string $price, ?string $demo): self
     {
         if ($name !== $this->name) {

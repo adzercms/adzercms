@@ -1,9 +1,9 @@
-{% set action = extension.id ? path('admin_extension', {id: extension.id}) : path('admin_extension_new') %}
 {% set type = input.type ?? extension.type.value %}
 {% include '@Theme/_modal_header.html.twig' with {title: extension.id ? extension.name : 'extensions.new'|trans} only %}
 
 <div class="modal-body">
     {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+    {% if extension.author and extension.id %}<p>{{ badge(extension.state) }} {{ extension.reason }}</p>{% endif %}
     <form hx-post="{{ action }}" hx-target="#record">
         {{ csrf_field() }}
         <div class="fields">
@@ -17,9 +17,11 @@
                     {% endfor %}
                 </select>
             </label>
-            <label>{{ 'extensions.column.price'|trans }}
-                <input type="text" name="price" inputmode="decimal" value="{{ input.price ?? (extension.price ? extension.price|plain) }}" placeholder="{{ 'extensions.free'|trans }}">
-            </label>
+            {% if not extension.author %}
+                <label>{{ 'extensions.column.price'|trans }}
+                    <input type="text" name="price" inputmode="decimal" value="{{ input.price ?? (extension.price ? extension.price|plain) }}" placeholder="{{ 'extensions.free'|trans }}">
+                </label>
+            {% endif %}
             <label>{{ 'extensions.column.demo'|trans }}
                 <input type="url" name="demo" maxlength="255" value="{{ input.demo ?? extension.demo }}">
             </label>

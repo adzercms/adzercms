@@ -109,6 +109,12 @@
         <target>{name} was saved</target>
       </segment>
     </unit>
+    <unit id="extensions.flash.submitted">
+      <segment>
+        <source>extensions.flash.submitted</source>
+        <target>{name} awaits the decision of the catalog operator</target>
+      </segment>
+    </unit>
     <unit id="extensions.free">
       <segment>
         <source>extensions.free</source>
@@ -181,6 +187,12 @@
         <target>The demo link must start with http:// or https://</target>
       </segment>
     </unit>
+    <unit id="extensions.refusal.key">
+      <segment>
+        <source>extensions.refusal.key</source>
+        <target>The metadata of {name} lacks your author key: add the field extra.adzercms.author with the value {key} to composer.json of the package and release a version</target>
+      </segment>
+    </unit>
     <unit id="extensions.refusal.name">
       <segment>
         <source>extensions.refusal.name</source>
@@ -209,6 +221,12 @@
       <segment>
         <source>extensions.refusal.type</source>
         <target>Choose the type</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.unavailable">
+      <segment>
+        <source>extensions.refusal.unavailable</source>
+        <target>The repository of {name} is unavailable, try again later</target>
       </segment>
     </unit>
     <unit id="extensions.setting.area">

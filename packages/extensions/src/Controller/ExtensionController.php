@@ -96,8 +96,9 @@ final class ExtensionController extends AbstractController
             }
         }
 
-        return $this->render('@Extensions/admin/_extension.html.twig', [
+        return $this->render('@Extensions/_extension.html.twig', [
             'extension' => $extension,
+            'action' => null === $extension->getId() ? $this->generateUrl('admin_extension_new') : $this->generateUrl('admin_extension', ['id' => $extension->getId()]),
             'types' => ExtensionType::cases(),
             'input' => $request->request->all(),
             'error' => $refusal?->reason,

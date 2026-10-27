@@ -109,6 +109,12 @@
         <target>{name} сохранено</target>
       </segment>
     </unit>
+    <unit id="extensions.flash.submitted">
+      <segment>
+        <source>extensions.flash.submitted</source>
+        <target>{name} ждёт решения оператора каталога</target>
+      </segment>
+    </unit>
     <unit id="extensions.free">
       <segment>
         <source>extensions.free</source>
@@ -181,6 +187,12 @@
         <target>Ссылка на демо должна начинаться с http:// или https://</target>
       </segment>
     </unit>
+    <unit id="extensions.refusal.key">
+      <segment>
+        <source>extensions.refusal.key</source>
+        <target>В метаданных {name} нет вашего ключа автора: добавьте в composer.json пакета поле extra.adzercms.author со значением {key} и выпустите версию</target>
+      </segment>
+    </unit>
     <unit id="extensions.refusal.name">
       <segment>
         <source>extensions.refusal.name</source>
@@ -209,6 +221,12 @@
       <segment>
         <source>extensions.refusal.type</source>
         <target>Выберите тип</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.unavailable">
+      <segment>
+        <source>extensions.refusal.unavailable</source>
+        <target>Репозиторий {name} недоступен, повторите позже</target>
       </segment>
     </unit>
     <unit id="extensions.setting.area">

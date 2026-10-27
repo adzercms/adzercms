@@ -31,6 +31,69 @@ final readonly class Catalog
     /** @param InputBag<string> $input */
     public function save(Extension $extension, InputBag $input): ?Refusal
     {
+        $entry = $this->read($extension, $input);
+        if ($entry instanceof Refusal) {
+            return $entry;
+        }
+
+        $price = trim($input->getString('price'));
+        $amount = '' === $price ? null : Money::parse($price);
+        if ('' !== $price && (null === $amount || !Money::isPositive($amount))) {
+            return new Refusal(t('extensions.refusal.price'));
+        }
+
+        $extension->describe($entry['name'], $entry['type'], $amount, $entry['demo']);
+        $this->keep($extension);
+        $this->metadata->refresh([$extension]);
+
+        return null;
+    }
+
+    /** @param InputBag<string> $input */
+    public function submit(Extension $extension, InputBag $input): ?Refusal
+    {
+        $author = $extension->getAuthor() ?? throw new \LogicException('an operator entry goes by save');
+        $entry = $this->read($extension, $input);
+        if ($entry instanceof Refusal) {
+            return $entry;
+        }
+
+        $lookup = $this->metadata->lookup([$entry['name']]);
+        if (!$lookup->decided($entry['name'])) {
+            return new Refusal(t('extensions.refusal.unavailable', ['name' => $entry['name']]));
+        }
+
+        $package = $lookup->packages[$entry['name']];
+        if ($author->getKey() !== $package?->author) {
+            return new Refusal(t('extensions.refusal.key', ['name' => $entry['name'], 'key' => $author->getKey()]));
+        }
+
+        $extension->describe($entry['name'], $entry['type'], null, $entry['demo'])->know($package)->revise();
+        $this->keep($extension);
+        $this->em->flush();
+
+        return null;
+    }
+
+    public function author(User $user): ExtensionAuthor
+    {
+        $author = $this->em->find(ExtensionAuthor::class, $user->getId());
+        if (null === $author) {
+            $author = new ExtensionAuthor($user);
+            $this->em->persist($author);
+            $this->em->flush();
+        }
+
+        return $author;
+    }
+
+    /**
+     * @param InputBag<string> $input
+     *
+     * @return array{name: string, type: ExtensionType, demo: ?string}|Refusal
+     */
+    private function read(Extension $extension, InputBag $input): array|Refusal
+    {
         $name = strtolower(trim($input->getString('name')));
         if (1 !== preg_match(self::PACKAGE, $name)) {
             return new Refusal(t('extensions.refusal.name'));
@@ -46,38 +109,19 @@ final readonly class Catalog
             return new Refusal(t('extensions.refusal.type'));
         }
 
-        $price = trim($input->getString('price'));
-        $amount = '' === $price ? null : Money::parse($price);
-        if ('' !== $price && (null === $amount || !Money::isPositive($amount))) {
-            return new Refusal(t('extensions.refusal.price'));
-        }
-
         $demo = trim($input->getString('demo'));
         if ('' !== $demo && !WebLink::valid($demo)) {
             return new Refusal(t('extensions.refusal.demo'));
         }
 
-        $extension->describe($name, $type, $amount, '' === $demo ? null : $demo);
+        return ['name' => $name, 'type' => $type, 'demo' => '' === $demo ? null : $demo];
+    }
 
+    private function keep(Extension $extension): void
+    {
         if (null === $extension->getId()) {
             $extension->place($this->extensions->last() + 1);
             $this->em->persist($extension);
         }
-
-        $this->metadata->refresh([$extension]);
-
-        return null;
-    }
-
-    public function author(User $user): ExtensionAuthor
-    {
-        $author = $this->em->find(ExtensionAuthor::class, $user->getId());
-        if (null === $author) {
-            $author = new ExtensionAuthor($user);
-            $this->em->persist($author);
-            $this->em->flush();
-        }
-
-        return $author;
     }
 }
