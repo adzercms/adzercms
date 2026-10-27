@@ -4,35 +4,23 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Support\Tests;
 
-use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Entity\User;
-use AdzerCMS\Core\Tests\Accounts;
-use AdzerCMS\Core\Tests\Browser;
-use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\HttpAnswers;
-use AdzerCMS\Core\Tests\SchemaTestCase;
-use AdzerCMS\Support\Entity\Ticket;
 use AdzerCMS\Support\HelpView;
 use AdzerCMS\Support\SupportSettings;
-use AdzerCMS\Support\Tickets;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\Response\JsonMockResponse;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
-final class HelpTest extends SchemaTestCase
+final class HelpTest extends SupportTestCase
 {
-    use Accounts;
-    use Browser;
-    use Configuration;
-
     private const INDEX = 'https://help.example.test/api/help.php';
     private const SITE = 'https://help.example.test';
 
     private int $fetched = 0;
     private bool $down = false;
     private User $user;
-    private User $staff;
 
     protected function setUp(): void
     {
@@ -44,8 +32,7 @@ final class HelpTest extends SchemaTestCase
             return $this->down ? new MockResponse('', ['http_code' => 502]) : new JsonMockResponse(self::index());
         });
 
-        $this->user = $this->record('79990000001');
-        $this->staff = $this->record('79990000002')->setRole(Role::Admin);
+        $this->user = $this->member();
         $this->configure([SupportSettings::HELP_INDEX => self::INDEX]);
     }
 
@@ -119,7 +106,7 @@ final class HelpTest extends SchemaTestCase
     #[Group('ACMS-US-0008')]
     public function testStaffPicksArticleForReplyByTicketSubject(): void
     {
-        $id = $this->ticket('Cannot add a domain')->getId();
+        $id = $this->ticket($this->user, 'Cannot add a domain')->getId();
 
         $this->client->loginUser($this->staff);
         $page = $this->client->request('GET', \sprintf('/support/%d', $id));
@@ -141,7 +128,7 @@ final class HelpTest extends SchemaTestCase
     #[Group('ACMS-US-0008')]
     public function testMessageAddressIsLinkAndTextStaysEscaped(): void
     {
-        $id = $this->ticket('Question', 'Article https://help.example.test/help/a?b=1&c=2. Otherwise <script>x</script>')->getId();
+        $id = $this->ticket($this->user, 'Question', body: 'Article https://help.example.test/help/a?b=1&c=2. Otherwise <script>x</script>')->getId();
 
         $this->client->loginUser($this->user);
         $page = $this->client->request('GET', \sprintf('/support/%d', $id));
@@ -172,13 +159,6 @@ final class HelpTest extends SchemaTestCase
                 ['category' => 'billing', 'title' => 'Foreign scheme', 'summary' => 'Not a link', 'pages' => ['/profile'], 'body' => 'domain', 'url' => 'javascript:alert(1)'],
             ],
         ];
-    }
-
-    private function ticket(string $subject, string $body = 'First message'): Ticket
-    {
-        $opened = self::service(Tickets::class)->open($this->user, $subject, self::service(SupportSettings::class)->departments()[0], $body);
-
-        return $opened instanceof Ticket ? $opened : self::fail('no ticket was opened');
     }
 
     /** @return list<string> */

@@ -4,27 +4,19 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Support\Tests;
 
-use AdzerCMS\Core\Account\Role;
-use AdzerCMS\Core\Tests\Accounts;
-use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Realtime\Channels;
 use AdzerCMS\Realtime\Hub;
 use AdzerCMS\Realtime\LiveChanges;
 use AdzerCMS\Realtime\Tests\Fixture\HeraldHub;
-use AdzerCMS\Support\Entity\Ticket;
 use AdzerCMS\Support\LiveTickets;
-use AdzerCMS\Support\Repository\TicketMessageRepository;
-use AdzerCMS\Support\SupportSettings;
 use AdzerCMS\Support\Tickets;
 use Doctrine\ORM\Events;
 use PHPUnit\Framework\Attributes\Group;
 
 use function Symfony\Component\Clock\now;
 
-final class LiveTicketsTest extends SchemaTestCase
+final class LiveTicketsTest extends SupportTestCase
 {
-    use Accounts;
-
     private const STAFF = 'staff:localhost';
 
     private HeraldHub $hub;
@@ -50,24 +42,22 @@ final class LiveTicketsTest extends SchemaTestCase
     #[Group('ACMS-SUP-0010')]
     public function testTicketEventsReachOwnerAndStaffChannels(): void
     {
-        $user = $this->record('79990000020');
-        $operator = $this->record('79990000021')->setRole(Role::Admin);
-        $this->em->flush();
+        $user = $this->member();
         $this->released();
         $tickets = self::service(Tickets::class);
         $both = [['herald:'.$user->getId().'@localhost', self::STAFF]];
 
-        $ticket = $tickets->open($user, 'No connection', self::service(SupportSettings::class)->departments()[0], 'Help');
-        self::assertInstanceOf(Ticket::class, $ticket);
+        $ticket = $this->ticket($user, 'No connection');
         self::assertSame($both, $this->released(), 'a new ticket goes to the owner and the operators');
 
-        self::assertNull($tickets->reply($ticket, $operator, true, 'Looking'));
+        self::assertNull($tickets->reply($ticket, $this->staff, true, 'Looking'));
         self::assertSame($both, $this->released(), 'the answer goes to the conversation of the owner and the list of the operators');
 
-        self::assertNull($tickets->edit($this->lastMessageOf($ticket), 'Looking closely'));
+        $answer = $this->messagesOf($ticket)[1] ?? self::fail('the answer is not kept');
+        self::assertNull($tickets->edit($answer, 'Looking closely'));
         self::assertSame($both, $this->released(), 'the edited message goes to both sides');
 
-        self::assertNull($tickets->remove($this->lastMessageOf($ticket)));
+        self::assertNull($tickets->remove($answer));
         self::assertSame($both, $this->released(), 'the removed message leaves the conversation of both sides');
 
         $ticket->staffNotified(now());
@@ -76,11 +66,6 @@ final class LiveTicketsTest extends SchemaTestCase
 
         $tickets->close($ticket);
         self::assertSame($both, $this->released(), 'the closing goes to both sides');
-    }
-
-    private function lastMessageOf(Ticket $ticket): \AdzerCMS\Support\Entity\TicketMessage
-    {
-        return self::service(TicketMessageRepository::class)->findBy(['ticket' => $ticket], ['id' => 'DESC'])[0] ?? self::fail('the ticket has no messages');
     }
 
     /**
