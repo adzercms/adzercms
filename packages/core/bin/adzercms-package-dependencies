@@ -14,7 +14,7 @@ if (false === $directory || !is_file($directory.'/composer.json')) {
 }
 
 $manifest = json_decode((string) file_get_contents($directory.'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
-if ('project' === ($manifest['type'] ?? null)) {
+if (in_array($manifest['type'] ?? null, ['project', 'metapackage'], true)) {
     exit(0);
 }
 
