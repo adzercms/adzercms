@@ -15,6 +15,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'ticket_message')]
 class TicketMessage
 {
+    public const REDACTED = "\u{FFFC}";
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -39,6 +41,12 @@ class TicketMessage
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $editedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $readAt = null;
+
+    #[ORM\Column(options: ['default' => 0])]
+    private int $redactedFiles = 0;
 
     /** @var Collection<int, TicketAttachment> */
     #[ORM\OneToMany(targetEntity: TicketAttachment::class, mappedBy: 'message', cascade: ['remove'])]
@@ -97,6 +105,27 @@ class TicketMessage
     public function getEditedAt(): ?\DateTimeImmutable
     {
         return $this->editedAt;
+    }
+
+    public function read(\DateTimeImmutable $moment): void
+    {
+        $this->readAt ??= $moment;
+    }
+
+    public function getReadAt(): ?\DateTimeImmutable
+    {
+        return $this->readAt;
+    }
+
+    public function redact(string $body, int $files): void
+    {
+        $this->body = $body;
+        $this->redactedFiles += $files;
+    }
+
+    public function getRedactedFiles(): int
+    {
+        return $this->redactedFiles;
     }
 
     /** @return Collection<int, TicketAttachment> */
