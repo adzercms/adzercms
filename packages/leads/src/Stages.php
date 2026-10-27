@@ -58,12 +58,7 @@ final readonly class Stages
     /** @param list<int> $moved */
     public function arrange(array $moved): void
     {
-        $first = [] === $moved ? null : $this->stages->find($moved[0]);
-        if (null === $first) {
-            return;
-        }
-
-        Order::place($this->stages->ofGroup($first->getGroup()), $moved);
+        Order::place($this->stages->funnel(), $moved, static fn (Stage $stage): StageGroup => $stage->getGroup());
         $this->em->flush();
     }
 }

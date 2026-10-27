@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions\Tests;
 
+use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Composer\Description;
 use AdzerCMS\Core\Composer\Package;
+use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -18,6 +21,8 @@ abstract class CatalogTestCase extends SchemaTestCase
 {
     use Accounts;
     use Browser;
+
+    protected const SOURCE = 'https://github.com/acme/code';
 
     protected function operate(): void
     {
@@ -42,6 +47,15 @@ abstract class CatalogTestCase extends SchemaTestCase
         $this->em->flush();
 
         return $entry;
+    }
+
+    /**
+     * @param list<Category>        $categories
+     * @param array<string, string> $translations
+     */
+    protected static function package(string $description, ?string $homepage = null, array $categories = [Category::Other], array $translations = [], ?string $author = null): Package
+    {
+        return new Package(new Description($description, $translations), '1.0.0', $categories, self::SOURCE, $homepage, Registry::TYPE, null, null, $author);
     }
 
     protected static function extensions(): ExtensionRepository

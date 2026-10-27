@@ -6,9 +6,6 @@ namespace AdzerCMS\Extensions\Tests;
 
 use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Contracts\Module\ExtensionType;
-use AdzerCMS\Core\Composer\Description;
-use AdzerCMS\Core\Composer\Package;
-use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Seo\Indexing;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Queries;
@@ -26,7 +23,6 @@ final class CatalogPageTest extends CatalogTestCase
 
     private const PAGE = '/extensions';
     private const STORE = '/extensions/store.json';
-    private const SOURCE = 'https://github.com/acme/code';
 
     #[Group('ACMS-EXT-0003')]
     #[Group('ACMS-EXT-0004')]
@@ -202,15 +198,6 @@ final class CatalogPageTest extends CatalogTestCase
                 $this->entry('acme/entry-'.$number, package: self::package('Entry '.$number));
             }
         });
-    }
-
-    /**
-     * @param list<Category>        $categories
-     * @param array<string, string> $translations
-     */
-    private static function package(string $description, ?string $homepage = null, array $categories = [Category::Other], array $translations = [], ?string $author = null): Package
-    {
-        return new Package(new Description($description, $translations), '1.0.0', $categories, self::SOURCE, $homepage, Registry::TYPE, null, null, $author);
     }
 
     /** @return list<string> */

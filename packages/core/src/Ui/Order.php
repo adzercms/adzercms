@@ -34,14 +34,24 @@ final readonly class Order
     }
 
     /**
-     * @param list<Placed> $group
-     * @param list<int>    $moved
+     * @template T of Placed
+     *
+     * @param list<T>                   $ordered
+     * @param list<int>                 $moved
+     * @param (\Closure(T): mixed)|null $group
      */
-    public static function place(array $group, array $moved): void
+    public static function place(array $ordered, array $moved, ?\Closure $group = null): void
     {
         $records = [];
-        foreach ($group as $record) {
+        foreach ($ordered as $record) {
             $records[(int) $record->getId()] = $record;
+        }
+        if (null !== $group) {
+            $first = $records[array_values(array_intersect($moved, array_keys($records)))[0] ?? 0] ?? null;
+            if (null === $first) {
+                return;
+            }
+            $records = array_filter($records, static fn (Placed $record): bool => $group($record) === $group($first));
         }
         foreach (self::arrange(array_keys($records), $moved) as $index => $id) {
             $records[$id]->place($index + 1);

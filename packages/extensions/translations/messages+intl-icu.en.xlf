@@ -19,6 +19,12 @@
         <target>AdzerCMS extensions</target>
       </segment>
     </unit>
+    <unit id="extensions.column.author">
+      <segment>
+        <source>extensions.column.author</source>
+        <target>Author</target>
+      </segment>
+    </unit>
     <unit id="extensions.column.demo">
       <segment>
         <source>extensions.column.demo</source>

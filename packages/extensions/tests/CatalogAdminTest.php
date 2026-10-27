@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace AdzerCMS\Extensions\Tests;
 
 use AdzerCMS\Contracts\Module\ExtensionType;
+use AdzerCMS\Contracts\Ui\AdminEntry;
+use AdzerCMS\Core\Account\LoginNames;
 use AdzerCMS\Core\Tests\Queries;
+use AdzerCMS\Core\Ui\Entries;
 use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Extensions\Entity\Extension;
+use AdzerCMS\Extensions\ExtensionDecision;
+use AdzerCMS\Extensions\ExtensionState;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
@@ -91,8 +96,57 @@ final class CatalogAdminTest extends CatalogTestCase
 
         $listing = $this->post(self::LIST.'/order', [Order::FIELD => [(string) $third->getId(), (string) $first->getId()]]);
 
-        self::assertSame(['acme/third', 'acme/second', 'acme/first'], $listing->filter('tbody tr strong')->each(static fn (Crawler $name): string => $name->text()));
+        self::assertSame(['acme/third', 'acme/second', 'acme/first'], self::names($listing));
         self::assertSame(['acme/third', 'acme/second', 'acme/first'], array_map(static fn (Extension $entry): string => $entry->getName(), self::extensions()->ordered()));
+    }
+
+    #[Group('ACMS-EXT-0001')]
+    #[Group('ACMS-UI-0089')]
+    #[Group('ACMS-US-0035')]
+    public function testPendingEntriesLeadTheListAndNameTheirAuthor(): void
+    {
+        $this->entry('acme/first', package: self::package('First'));
+        $author = $this->author('79990000002');
+        $this->entry('vendor/waiting', author: $author);
+
+        $listing = $this->fragment(self::LIST);
+
+        self::assertSame(['vendor/waiting', 'acme/first'], self::names($listing));
+        $cell = self::cell($listing, 'vendor/waiting', self::phrase('extensions.column.author'));
+        self::assertSame(self::service(LoginNames::class)->of($author->getUser()), $cell->filter('a strong')->text());
+        self::assertSame(self::service(Entries::class)->url(AdminEntry::User, ['id' => $author->getUser()->getId()]), $cell->filter('a')->attr('href'));
+    }
+
+    /** @param list<string> $expected */
+    #[Group('ACMS-EXT-0004')]
+    #[Group('ACMS-EXT-0009')]
+    #[Group('ACMS-US-0035')]
+    #[DataProvider('states')]
+    public function testStateFilterTakesEntriesOfTheState(ExtensionState $state, array $expected): void
+    {
+        $author = $this->author('79990000002');
+        $this->entry('acme/published', package: self::package('Published'));
+        $this->entry('acme/missing');
+        $this->entry('vendor/pending', package: self::package('Pending', author: $author->getKey()), author: $author);
+        $this->entry('vendor/keyed', package: self::package('Keyed', author: $author->getKey()), author: $author)->decide(ExtensionDecision::Published);
+        $this->entry('vendor/keyless', package: self::package('Keyless'), author: $author)->decide(ExtensionDecision::Published);
+        $this->entry('vendor/foreign', package: self::package('Foreign', author: $this->author('79990000003')->getKey()), author: $author)->decide(ExtensionDecision::Published);
+        $this->entry('vendor/rejected', author: $author)->decide(ExtensionDecision::Rejected, 'Not a module');
+        $this->entry('vendor/withdrawn', package: self::package('Withdrawn', author: $author->getKey()), author: $author)->decide(ExtensionDecision::Withdrawn, 'Broken demo');
+        $this->em->flush();
+
+        self::assertSame($expected, self::names($this->fragment(self::LIST.'?state='.$state->value)));
+    }
+
+    /** @return iterable<string, array{ExtensionState, list<string>}> */
+    public static function states(): iterable
+    {
+        yield 'pending' => [ExtensionState::Pending, ['vendor/pending']];
+        yield 'published' => [ExtensionState::Published, ['acme/published', 'vendor/keyed']];
+        yield 'missing' => [ExtensionState::Missing, ['acme/missing']];
+        yield 'unclaimed' => [ExtensionState::Unclaimed, ['vendor/keyless', 'vendor/foreign']];
+        yield 'rejected' => [ExtensionState::Rejected, ['vendor/rejected']];
+        yield 'withdrawn' => [ExtensionState::Withdrawn, ['vendor/withdrawn']];
     }
 
     #[Group('ACMS-US-0035')]
@@ -100,8 +154,14 @@ final class CatalogAdminTest extends CatalogTestCase
     {
         $this->assertListingKeepsItsQueries(self::LIST, function (int $from, int $to): void {
             foreach (range($from, $to) as $number) {
-                $this->entry('acme/entry-'.$number);
+                $this->entry('acme/entry-'.$number, author: $this->author(\sprintf('7998%07d', $number)));
             }
         });
+    }
+
+    /** @return list<string> */
+    private static function names(Crawler $listing): array
+    {
+        return $listing->filter('tbody tr')->each(static fn (Crawler $row): string => $row->filter('strong')->first()->text());
     }
 }

@@ -23,6 +23,16 @@ enum ExtensionState: string implements Badged
         return t('extensions.state.'.$this->value);
     }
 
+    public function decision(): ExtensionDecision
+    {
+        return match ($this) {
+            self::Pending => ExtensionDecision::Pending,
+            self::Rejected => ExtensionDecision::Rejected,
+            self::Withdrawn => ExtensionDecision::Withdrawn,
+            self::Published, self::Missing, self::Unclaimed => ExtensionDecision::Published,
+        };
+    }
+
     public function badge(): string
     {
         return match ($this) {

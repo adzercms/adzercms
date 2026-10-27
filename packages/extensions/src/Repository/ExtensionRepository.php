@@ -10,8 +10,8 @@ use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\Entity\Extension;
 use AdzerCMS\Extensions\Entity\ExtensionAuthor;
-use AdzerCMS\Extensions\ExtensionDecision;
 use AdzerCMS\Extensions\ExtensionPrice;
+use AdzerCMS\Extensions\ExtensionState;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -77,13 +77,15 @@ class ExtensionRepository extends ServiceEntityRepository
 
     private function listing(Table $table): QueryBuilder
     {
-        $builder = $this->createQueryBuilder('e');
+        $builder = $this->createQueryBuilder('e')->leftJoin('e.author', 'a')->leftJoin('a.user', 'u')->addSelect('a', 'u');
 
         if ('' !== $table->term()) {
             $builder->andWhere(Filter::matching($builder, $table->term(), ['e.name']));
         }
 
-        return self::typed($builder, $table);
+        $state = ExtensionState::tryFrom($table->value('state'));
+
+        return self::typed(null === $state ? $builder : self::stated($builder, $state), $table);
     }
 
     private function catalog(Table $table): QueryBuilder
@@ -104,12 +106,19 @@ class ExtensionRepository extends ServiceEntityRepository
 
     private function shown(): QueryBuilder
     {
-        return $this->createQueryBuilder('e')
-            ->leftJoin('e.author', 'a')
-            ->andWhere('e.decision = :published')
-            ->andWhere('e.version IS NOT NULL')
-            ->andWhere('e.author IS NULL OR e.authorKey = a.key')
-            ->setParameter('published', ExtensionDecision::Published);
+        return self::stated($this->createQueryBuilder('e')->leftJoin('e.author', 'a'), ExtensionState::Published);
+    }
+
+    private static function stated(QueryBuilder $builder, ExtensionState $state): QueryBuilder
+    {
+        $builder->andWhere('e.decision = :decision')->setParameter('decision', $state->decision());
+
+        return match ($state) {
+            ExtensionState::Pending, ExtensionState::Rejected, ExtensionState::Withdrawn => $builder,
+            ExtensionState::Missing => $builder->andWhere('e.version IS NULL'),
+            ExtensionState::Unclaimed => $builder->andWhere('e.version IS NOT NULL', 'e.author IS NOT NULL', 'e.authorKey IS NULL OR e.authorKey <> a.key'),
+            ExtensionState::Published => $builder->andWhere('e.version IS NOT NULL', 'e.author IS NULL OR e.authorKey = a.key'),
+        };
     }
 
     private static function typed(QueryBuilder $builder, Table $table): QueryBuilder

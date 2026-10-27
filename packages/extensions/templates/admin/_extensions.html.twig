@@ -1,12 +1,14 @@
+{% set names = logins(rows|map(row => row.author ? row.author.user : null)) %}
 {% embed '@Theme/_table.html.twig' %}
     {% block row %}
         <tr class="clickable-row" data-record="{{ path('admin_extension', {id: row.id}) }}">
-            {% include '@Theme/_row_handle.html.twig' with {id: row.id} %}
+            {% include '@Theme/_row_handle.html.twig' with {id: row.id, group: row.decision.value} %}
             <td class="{{ table.aside('name') }}"><strong>{{ row.name }}</strong></td>
             <td class="{{ table.aside('type') }}">{{ row.type.label|trans }}</td>
             <td class="{{ table.aside('price') }}">{{ row.price ? amount(row.price, false) : 'extensions.free'|trans }}</td>
             <td class="{{ table.aside('demo') }}">{% if row.demo %}<a href="{{ row.demo }}" target="_blank" rel="noreferrer noopener">{{ clip(row.demo, 32) }}</a>{% else %}{{ blank() }}{% endif %}</td>
             <td class="{{ table.aside('version') }}">{{ row.version ?? blank() }}</td>
+            <td class="{{ table.aside('author') }}">{% if row.author %}{% include '@Theme/_user.html.twig' with {user: row.author.user, name: names[row.author.user.id]} only %}{% else %}{{ blank() }}{% endif %}</td>
             <td class="{{ table.aside('state') }}">{{ badge(row.state) }}</td>
             {% include '@Theme/_row_actions.html.twig' with {drop: path('admin_extension_drop', {id: row.id}), confirm: 'extensions.confirm_drop'|trans({name: row.name})} %}
         </tr>
