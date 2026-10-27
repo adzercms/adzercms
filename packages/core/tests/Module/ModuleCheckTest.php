@@ -31,7 +31,7 @@ final class ModuleCheckTest extends TestCase
 
         self::assertSame(0, $check->getExitCode(), $check->getOutput().$check->getErrorOutput());
         preg_match_all('/^== (\S+)$/m', $check->getOutput(), $checks);
-        self::assertSame([ModuleCheck::BUILD, ModuleCheck::CATALOGS, ModuleCheck::AUDIT, ModuleCheck::PHPSTAN, ModuleCheck::PSALM, ModuleCheck::BOUNDARY], $checks[1]);
+        self::assertSame([ModuleCheck::BUILD, ModuleCheck::CATALOGS, ModuleCheck::ROUTES, ModuleCheck::AUDIT, ModuleCheck::PHPSTAN, ModuleCheck::PSALM, ModuleCheck::BOUNDARY], $checks[1]);
         self::assertStringEndsWith("module check passed\n", $check->getOutput());
     }
 }

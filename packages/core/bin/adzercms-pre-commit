@@ -20,8 +20,12 @@ within() {
     done
 }
 
+run() {
+    out=$(bin/php "$@" 2>&1) || { printf '%s\n' "$out"; exit 1; }
+}
+
 console() {
-    out=$(bin/php vendor/bin/adzercms-package-console "$@" 2>&1) || { printf '%s\n' "$out"; exit 1; }
+    run vendor/bin/adzercms-package-console "$@"
 }
 
 tables() {
@@ -48,10 +52,12 @@ for package in $(staged -- '*.php' '*.twig' '*.xlf' | while read -r file; do hom
     [ "$package" = . ] || console "$package" adzercms:catalogs "$package"
 done
 
+for package in $(staged -- '*.php' '*.twig' | while read -r file; do home "$file"; done | sort -u); do
+    [ "$package" = . ] || run vendor/bin/adzercms-package-routes "$package"
+done
+
 for package in $(staged -- '*.php' '*/composer.json' | while read -r file; do home "$file"; done | sort -u); do
-    [ "$package" = . ] || {
-        out=$(bin/php vendor/bin/adzercms-package-dependencies "$package" 2>&1) || { printf '%s\n' "$out"; exit 1; }
-    }
+    [ "$package" = . ] || run vendor/bin/adzercms-package-dependencies "$package"
 done
 
 php=$(staged --diff-filter=ACM -- '*.php' bin/console public/index.php)

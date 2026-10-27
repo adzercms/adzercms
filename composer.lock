@@ -232,7 +232,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "f03eb54ed6b0bb9b4efa74ff0bbaf159dd152806"
+                "reference": "5523e67678a970534140febda748a78b5fa8ec6a"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -300,6 +300,7 @@
                 "bin/adzercms-module-check",
                 "bin/adzercms-package-console",
                 "bin/adzercms-package-dependencies",
+                "bin/adzercms-package-routes",
                 "bin/adzercms-pre-commit",
                 "bin/adzercms-refresh"
             ],

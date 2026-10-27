@@ -20,4 +20,5 @@ for package in . $(ls -d packages/*/ modules/*/ 2>/dev/null || true); do
     [ ! -d "$package/templates" ] || bin/php vendor/bin/adzercms-package-console "$package" lint:twig "$package/templates"
     [ "$package" = . ] || bin/php vendor/bin/adzercms-package-console "$package" adzercms:catalogs "$package"
     [ "$package" = . ] || bin/php vendor/bin/adzercms-package-dependencies "$package"
+    [ "$package" = . ] || bin/php vendor/bin/adzercms-package-routes "$package"
 done

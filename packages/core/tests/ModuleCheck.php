@@ -17,6 +17,7 @@ final readonly class ModuleCheck
 {
     public const BUILD = 'build';
     public const CATALOGS = 'catalogs';
+    public const ROUTES = 'routes';
     public const AUDIT = 'audit';
     public const PHPSTAN = 'phpstan';
     public const PSALM = 'psalm';
@@ -36,11 +37,12 @@ final readonly class ModuleCheck
         foreach ([
             self::BUILD => fn (): bool => $this->passes([\PHP_BINARY, 'bin/console', 'lint:container']),
             self::CATALOGS => fn (): bool => $this->passes([\PHP_BINARY, 'vendor/bin/adzercms-package-console', $this->path(), 'adzercms:catalogs', $this->path()]),
+            self::ROUTES => fn (): bool => self::clean((new KindRoutes(Registry::installed()))->crossed($this->path())),
             self::AUDIT => $this->audited(...),
             self::PHPSTAN => fn (): bool => $this->passes([\PHP_BINARY, '-d', 'memory_limit=-1', 'vendor/bin/phpstan', 'analyse', '--no-progress', '--configuration='.__DIR__.'/module.neon', $this->path().'/src']),
             self::PSALM => fn (): bool => $this->passes([\PHP_BINARY, '-d', 'memory_limit=-1', 'vendor/bin/psalm', '--taint-analysis', '--no-cache', '--no-progress', '--config='.$this->psalm(), '--root='.$this->root]),
             self::BOUNDARY => $this->bounded(...),
-        ] + (CoreKind::Theme === $this->module()->kind ? [self::THEME => $this->complete(...)] : []) as $check => $passes) {
+        ] + (CoreKind::Theme === $this->module()->kind ? [self::THEME => fn (): bool => self::clean((new ThemeCompleteness(Registry::installed(), $this->module()))->missing())] : []) as $check => $passes) {
             fwrite(\STDOUT, \sprintf("== %s\n", $check));
             if (!$passes()) {
                 return $check;
@@ -96,27 +98,22 @@ final readonly class ModuleCheck
 
     private function bounded(): bool
     {
-        $registry = Registry::installed();
         $listed = $_SERVER[self::DATABASES] ?? $_ENV[self::DATABASES] ?? null;
         $databases = null === $listed
             ? [(string) ($_SERVER['DATABASE_URL'] ?? $_ENV['DATABASE_URL'] ?? '')]
             : (preg_split('~\s+~', (string) $listed, flags: \PREG_SPLIT_NO_EMPTY) ?: []);
-        $crossed = (new ModuleBoundary($registry, $this->module()))->crossed($databases);
-        foreach ($crossed as $crossing) {
-            fwrite(\STDOUT, $crossing."\n");
-        }
 
-        return [] === $crossed;
+        return self::clean((new ModuleBoundary(Registry::installed(), $this->module()))->crossed($databases));
     }
 
-    private function complete(): bool
+    /** @param list<string> $findings */
+    private static function clean(array $findings): bool
     {
-        $missing = (new ThemeCompleteness(Registry::installed(), $this->module()))->missing();
-        foreach ($missing as $absent) {
-            fwrite(\STDOUT, $absent."\n");
+        foreach ($findings as $finding) {
+            fwrite(\STDOUT, $finding."\n");
         }
 
-        return [] === $missing;
+        return [] === $findings;
     }
 
     private function module(): Installed

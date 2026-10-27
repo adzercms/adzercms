@@ -82,6 +82,7 @@
         "bin/adzercms-module-check",
         "bin/adzercms-package-console",
         "bin/adzercms-package-dependencies",
+        "bin/adzercms-package-routes",
         "bin/adzercms-pre-commit",
         "bin/adzercms-refresh"
     ],

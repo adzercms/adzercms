@@ -1,0 +1,21 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use AdzerCMS\Core\Module\Registry;
+use AdzerCMS\Core\Tests\KindRoutes;
+
+require $_composer_autoload_path ?? __DIR__.'/../vendor/autoload.php';
+
+$directory = realpath($argv[1] ?? '');
+if (false === $directory || !is_file($directory.'/composer.json')) {
+    fwrite(\STDERR, "usage: adzercms-package-routes <package directory>\n");
+    exit(2);
+}
+
+$crossed = (new KindRoutes(Registry::installed()))->crossed($directory);
+foreach ($crossed as $crossing) {
+    fwrite(\STDOUT, $crossing."\n");
+}
+exit([] === $crossed ? 0 : 1);
