@@ -8,6 +8,7 @@ use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Security\CsrfGuard;
 use AdzerCMS\Core\Security\Entry;
+use AdzerCMS\Core\Ui\Intent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -39,6 +40,15 @@ final class AccountController
     public function entry(int $id, EntityManagerInterface $em, Entry $entry): Response
     {
         return $entry->open($em->find(User::class, $id) ?? throw new \LogicException('no record '.$id));
+    }
+
+    #[Route('/fixture/interrupted', name: 'fixture_interrupted')]
+    #[IsGranted(Role::USER)]
+    public function interrupted(Intent $intent): Response
+    {
+        $intent->keep('/fixture/account');
+
+        return new Response('');
     }
 
     #[Route('/fixture/admin', name: 'fixture_admin')]

@@ -199,6 +199,19 @@ final class LoginServiceTest extends SchemaTestCase
         self::assertSame('core.login.taken', $this->flashed('error', '/')->getMessage());
     }
 
+    #[Group('ACMS-CORE-0174')]
+    #[Group('ACMS-UI-0025')]
+    public function testConnectedServiceLeadsBackToTheInterruptedAction(): void
+    {
+        $this->client->loginUser($this->record('+7 900 111-22-33'));
+        $this->client->request('GET', '/fixture/interrupted');
+        $this->answers = [new JsonMockResponse(['access_token' => 'token']), new JsonMockResponse(['id' => 'p1', 'login' => 'ivan'])];
+
+        $this->returned(['code' => 'c1']);
+
+        self::assertResponseRedirects('/fixture/account', null, 'the connected service leads back to the interrupted action');
+    }
+
     public function testModuleListenerTakesTheProfileInsteadOfTheEntry(): void
     {
         $this->answers = [new JsonMockResponse(['access_token' => 'token']), new JsonMockResponse(['id' => CatchListener::PROFILE, 'login' => 'ivan'])];
