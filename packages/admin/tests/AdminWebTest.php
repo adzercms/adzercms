@@ -22,6 +22,7 @@ use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Notice\MailChannel;
 use AdzerCMS\Core\Notice\QuietHours;
 use AdzerCMS\Core\Repository\UserRepository;
+use AdzerCMS\Core\Seo\Indexing;
 use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Setting\Catalog;
 use AdzerCMS\Core\Setting\Language;
@@ -442,14 +443,17 @@ final class AdminWebTest extends SchemaTestCase
         $top = $general->filter('form .section')->first();
         self::assertCount(0, $top->filter('.section-head'), 'the fields without a section go first without a heading');
         self::assertCount(1, $top->filter(\sprintf('select[name="value[%s]"]', Language::NAME)));
+        self::assertSame(Toggle::Off->value, $general->filter(\sprintf('select[name="value[%s]"] option[selected]', Indexing::NAME))->attr('value'),
+            'an unset switch shows its off state');
 
         $page = $this->client->request('GET', '/admin/settings?tab='.$brand);
         $names = $page->filter('form [name]')->each(static fn (Crawler $node): string => (string) $node->attr('name'));
         self::assertNotContains(Brand::TITLE, $names, 'PHP replaces the dot of a field name');
         self::assertContains(\sprintf('value[%s]', Brand::TITLE), $names);
         self::assertSame(
-            array_map(static fn (Theme $theme): string => self::phrase($theme->label()), Theme::cases()),
+            [self::phrase('admin.setting.unset'), ...array_map(static fn (Theme $theme): string => self::phrase($theme->label()), Theme::cases())],
             $page->filter(\sprintf('select[name="value[%s]"] option', Brand::THEME))->each(static fn (Crawler $option): string => trim($option->text())),
+            'an unset choice goes with an empty variant first',
         );
 
         $this->client->submit($page->selectButton(self::phrase('core.action.save'))->form([

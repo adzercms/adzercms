@@ -21,6 +21,7 @@
                     {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: '.p12,.pfx'} only %}
                 {% elseif field.type == constant(type ~ 'Choice') %}
                     <select id="{{ id }}" name="value[{{ field.name }}]">
+                        {% if values[field.name] == '' %}<option value="" selected>{{ 'admin.setting.unset'|trans }}</option>{% endif %}
                         {% for choice, caption in field.choices %}
                             <option value="{{ choice }}" {{ values[field.name] == choice ? 'selected' }}>{{ caption|trans }}</option>
                         {% endfor %}

@@ -12,6 +12,7 @@ use AdzerCMS\Contracts\Ui\Scheme;
 use AdzerCMS\Core\Setting\Images;
 use AdzerCMS\Core\Setting\Keychain;
 use AdzerCMS\Core\Setting\Settings;
+use AdzerCMS\Core\Setting\Toggle;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -163,6 +164,7 @@ final class SettingForm
             $picked = Type::Palette === $field->type ? $this->settings->palette($field) : null;
             $values[$field->name] = match (true) {
                 Type::Secret === $field->type => '',
+                Type::Toggle === $field->type => ($this->settings->on($field->name) ? Toggle::On : Toggle::Off)->value,
                 $picked instanceof Scheme => $picked->key,
                 \is_string($picked) => $picked,
                 default => $this->settings->get($field->name),
