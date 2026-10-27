@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use AdzerCMS\Core\Build\PreviewMark;
 use AdzerCMS\Core\Composer\Artifacts;
 use AdzerCMS\Core\Composer\Repositories;
 use AdzerCMS\Core\Module\Catalog;
@@ -60,6 +61,7 @@ return static function (ContainerConfigurator $container): void {
     $services->set(Staging::class);
     $services->set(Execution::class);
     $services->set(Switches::class);
+    $services->set(PreviewMark::class);
     $services->set(MigrationOrder::class);
     $services->set(CssInlinerExtension::class);
 

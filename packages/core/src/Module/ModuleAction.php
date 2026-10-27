@@ -16,6 +16,7 @@ enum ModuleAction: string implements Titled
     case Enable = 'enable';
     case Disable = 'disable';
     case Remove = 'remove';
+    case Preview = 'preview';
 
     public function label(): TranslatableInterface
     {

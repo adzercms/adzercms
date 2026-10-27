@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Tests;
 
 use AdzerCMS\Core\Build\Builds;
+use AdzerCMS\Core\Build\Preview;
+use AdzerCMS\Core\Build\PreviewMark;
 use AdzerCMS\Core\Kernel;
 use AdzerCMS\Core\Module\Installed;
 use AdzerCMS\Core\Module\Registry;
+use AdzerCMS\Core\Module\Selection;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -102,6 +105,59 @@ final class KernelTest extends KernelTestCase
             unset($_SERVER['APP_CACHE_DIR'], $_SERVER[Builds::ENV], $_SERVER['MODULES'], $_ENV['MODULES']);
             (new Filesystem())->remove($cache);
         }
+    }
+
+    #[Group('ACMS-CORE-0970')]
+    #[Group('ACMS-CORE-1000')]
+    #[Group('ACMS-CORE-1001')]
+    #[Group('ACMS-CORE-1002')]
+    #[DataProvider('previewMarks')]
+    public function testPreviewBuildServesRequestOfValidMarkUntilOrdinarySwitch(?int $term, string $theme, bool $previewed): void
+    {
+        $cache = sys_get_temp_dir().'/adzercms-kernel-'.bin2hex(random_bytes(4));
+        $_SERVER['APP_CACHE_DIR'] = $cache;
+        $cached = static fn (): string => self::bootKernel(['debug' => false])->getCacheDir();
+        $switch = static function (string $build, bool $preview): void {
+            $_SERVER[Builds::ENV] = $build;
+            self::assertSame(Command::SUCCESS, (new CommandTester((new Application(self::createKernel(['debug' => false])))->find('adzercms:cache')))->execute($preview ? ['--preview' => true] : []));
+            unset($_SERVER[Builds::ENV]);
+        };
+
+        try {
+            $switch('b1', false);
+            $_SERVER['THEME_MODULE'] = $_ENV['THEME_MODULE'] = 'Threadbare';
+            $switch('b2', true);
+            unset($_SERVER['THEME_MODULE'], $_ENV['THEME_MODULE']);
+            $set = Selection::of(Registry::installed(), static fn (string $name): string => 'THEME_MODULE' === $name ? 'Threadbare' : '')->id();
+            if (null !== $term) {
+                $_COOKIE[Preview::COOKIE] = Preview::mark($theme, time() + $term, Selection::environment('APP_SECRET'));
+            }
+
+            self::assertSame($previewed ? $cache.'/test_'.$set.'/b2' : $cache.'/test/b1', $cached());
+            self::assertSame(
+                $previewed ? ['template' => '@Core/preview/bar.html.twig', 'context' => ['theme' => 'Threadbare']] : null,
+                self::service(PreviewMark::class)->fragment(null),
+                'the page of the preview carries the bar of its theme',
+            );
+            self::ensureKernelShutdown();
+
+            $switch('b3', false);
+
+            self::assertSame($cache.'/test/b3', $cached(), 'an ordinary switch drops the preview');
+        } finally {
+            self::ensureKernelShutdown();
+            unset($_SERVER['APP_CACHE_DIR'], $_SERVER[Builds::ENV], $_SERVER['THEME_MODULE'], $_ENV['THEME_MODULE'], $_COOKIE[Preview::COOKIE]);
+            (new Filesystem())->remove($cache);
+        }
+    }
+
+    /** @return iterable<string, array{?int, string, bool}> */
+    public static function previewMarks(): iterable
+    {
+        yield 'valid mark' => [Preview::TERM, 'Threadbare', true];
+        yield 'without mark' => [null, 'Threadbare', false];
+        yield 'expired mark' => [-1, 'Threadbare', false];
+        yield 'mark of another theme' => [Preview::TERM, 'Theme', false];
     }
 
     #[Group('ACMS-CORE-0011')]

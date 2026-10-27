@@ -601,6 +601,12 @@
         <target>Установить</target>
       </segment>
     </unit>
+    <unit id="core.module.action.preview">
+      <segment>
+        <source>core.module.action.preview</source>
+        <target>Подготовить предпросмотр</target>
+      </segment>
+    </unit>
     <unit id="core.module.action.remove">
       <segment>
         <source>core.module.action.remove</source>
@@ -629,6 +635,12 @@
       <segment>
         <source>core.module.refusal.local</source>
         <target>{names} задан в .env.local вне git: перенесите в .env</target>
+      </segment>
+    </unit>
+    <unit id="core.module.refusal.migrations">
+      <segment>
+        <source>core.module.refusal.migrations</source>
+        <target>У темы со своими миграциями нет предпросмотра: включите её</target>
       </segment>
     </unit>
     <unit id="core.module.refusal.open">
@@ -1055,6 +1067,18 @@
       <segment>
         <source>core.period_scale.year</source>
         <target>За год</target>
+      </segment>
+    </unit>
+    <unit id="core.preview.exit">
+      <segment>
+        <source>core.preview.exit</source>
+        <target>Выйти из предпросмотра</target>
+      </segment>
+    </unit>
+    <unit id="core.preview.theme">
+      <segment>
+        <source>core.preview.theme</source>
+        <target>Предпросмотр темы {theme}</target>
       </segment>
     </unit>
     <unit id="core.role.admin">

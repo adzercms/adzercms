@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+
+APP_BUILD=${APP_BUILD:-$(date +%Y%m%d%H%M%S)-$$}
+export APP_BUILD
+
+bin/php bin/console cache:warmup
+bin/php bin/console importmap:install --no-interaction
+bin/php bin/console asset-map:compile --no-interaction
+bin/php bin/console adzercms:cache "$@"

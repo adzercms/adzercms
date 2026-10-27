@@ -72,13 +72,15 @@ final class BuildsTest extends TestCase
     }
 
     #[Group('ACMS-CORE-0939')]
-    public function testFormerModuleSetGoesBehindLiveOneOnceItsBuildsAreFree(): void
+    public function testFormerModuleSetGoesBehindNewestCurrentOneOnceItsBuildsAreFree(): void
     {
         $live = $this->set('prod_live', 'b2', 0);
         $former = $this->set('prod_former', 'b1', -60);
         $later = $this->set('prod_later', 'b3', 60);
+        $preview = $this->set('prod_preview', 'b4', 120);
 
         self::assertSame([], $later->retire($live), 'a set switched after the live one stays');
+        self::assertSame(['b3'], $later->retire($live, $preview), 'a set behind the preview pointer goes');
 
         $job = $this->holding('prod_former/b1');
 
@@ -90,6 +92,21 @@ final class BuildsTest extends TestCase
         self::assertSame(['b1'], $former->retire($live));
         self::assertDirectoryDoesNotExist($this->root.'/prod_former');
         self::assertDirectoryExists($this->root.'/prod_live/b2');
+    }
+
+    #[Group('ACMS-CORE-0939')]
+    public function testStaticOfSetWithoutCacheRootIsStray(): void
+    {
+        $cache = $this->root.'/prod';
+        $assets = $this->root.'/assets';
+        [$kept, $gone] = [str_repeat('a', 16), str_repeat('b', 16)];
+        (new Filesystem())->mkdir([$cache.'_'.$kept, $assets.'/'.$kept, $assets.'/'.$gone, $assets.'/bundles']);
+
+        self::assertSame([$assets.'/'.$gone, $assets.'/bundles'], Builds::strays($cache, $assets));
+
+        (new Filesystem())->mkdir($cache);
+
+        self::assertSame([$assets.'/'.$gone], Builds::strays($cache, $assets), 'static without a set belongs to the flat cache');
     }
 
     #[Group('ACMS-CORE-0045')]

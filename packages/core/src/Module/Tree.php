@@ -18,6 +18,8 @@ final readonly class Tree
 
     private const REFRESH = __DIR__.'/../../bin/adzercms-refresh';
     private const SELECTOR = __DIR__.'/../../bin/adzercms-selection';
+    private const BUILD = __DIR__.'/../../bin/adzercms-build';
+    private const PREVIEW = '--preview';
     private const SHARED = '.env';
     private const LOCAL = '.env.local';
     private const LOADED = 'SYMFONY_DOTENV_VARS';
@@ -33,6 +35,7 @@ final readonly class Tree
         public string $root,
         private string $refresh = self::REFRESH,
         private string $selector = self::SELECTOR,
+        private string $build = self::BUILD,
     ) {
     }
 
@@ -86,7 +89,7 @@ final readonly class Tree
                 $change();
             }
             $changed = $this->changed();
-            $failure = $this->run([...$environment, ...$selection]);
+            $failure = $this->run([$this->refresh], [...$environment, ...$selection]);
             if (null !== $failure) {
                 return $failure;
             }
@@ -100,12 +103,21 @@ final readonly class Tree
         }
     }
 
-    /** @param array<string, string> $environment */
-    private function run(array $environment): ?string
+    /** @param array<string, string> $selection */
+    public function preview(array $selection): ?string
+    {
+        return $this->run([$this->build, self::PREVIEW], $selection);
+    }
+
+    /**
+     * @param list<string>          $command
+     * @param array<string, string> $environment
+     */
+    private function run(array $command, array $environment): ?string
     {
         $loaded = array_filter(explode(',', Selection::environment(self::LOADED)));
         $process = new Process(
-            [$this->refresh],
+            $command,
             $this->root,
             [...array_fill_keys([...$loaded, self::LOADED], false), 'PHP_BINARY' => \PHP_BINARY, self::COVERED => $this->root, ...$environment],
             null,

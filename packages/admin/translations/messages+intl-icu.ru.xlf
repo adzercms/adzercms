@@ -103,6 +103,12 @@
         <target>Модуль</target>
       </segment>
     </unit>
+    <unit id="admin.modules.preview">
+      <segment>
+        <source>admin.modules.preview</source>
+        <target>Предпросмотр</target>
+      </segment>
+    </unit>
     <unit id="admin.modules.replace">
       <segment>
         <source>admin.modules.replace</source>

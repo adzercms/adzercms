@@ -22,6 +22,7 @@ use AdzerCMS\Core\Account\Password;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Asset\ModuleImportMap;
 use AdzerCMS\Core\Confirmation\Confirmations;
+use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Notice\Channel;
 use AdzerCMS\Core\Notice\MailTransport;
 use AdzerCMS\Core\Schema\MigrationMarks;
@@ -76,8 +77,8 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
             if ($builder->fileExists($path.'/importmap.php')) {
                 $importmaps[$name] = $path.'/importmap.php';
             }
-            if (is_dir($path.'/migrations')) {
-                $migrations[$namespace.'\\Migrations'] = $path.'/migrations';
+            if (is_dir($path.Registry::MIGRATIONS)) {
+                $migrations[$namespace.'\\Migrations'] = $path.Registry::MIGRATIONS;
             }
             $kind = is_subclass_of($class, Module::class) ? $class::kind() : null;
             if (null !== $kind && $kind->single() && ucfirst($kind->key()) !== $name && is_dir($path.'/templates')) {

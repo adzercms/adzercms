@@ -14,6 +14,7 @@ use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Tab;
 use AdzerCMS\Contracts\Ui\Badge;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Build\PreviewMark;
 use AdzerCMS\Core\Composer\Artifacts;
 use AdzerCMS\Core\Entity\ModuleSource;
 use AdzerCMS\Core\Module\Catalog;
@@ -24,6 +25,7 @@ use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Module\Store;
 use AdzerCMS\Core\Repository\ModuleOperationRepository;
 use AdzerCMS\Core\Ui\Column;
+use AdzerCMS\Core\Ui\Entries;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -56,6 +58,7 @@ final class ModuleController extends AbstractController
         private readonly Store $store,
         private readonly ModuleOperationRepository $filings,
         private readonly SettingForm $form,
+        private readonly PreviewMark $mark,
     ) {
     }
 
@@ -147,6 +150,22 @@ final class ModuleController extends AbstractController
         return $this->redirectToRoute('admin_modules', ['tab' => ExtensionType::tryFrom($request->query->getString('tab'))?->value]);
     }
 
+    #[Route('/theme/preview', name: 'admin_module_preview', methods: ['POST'])]
+    public function preview(Request $request, Entries $entries): Response
+    {
+        $row = $this->catalog->row($request->query->getString('package'));
+        if (null === $row || !$this->operations->previewed($row)) {
+            $this->addFlash('error', t('core.module.refusal.action'));
+
+            return $this->redirectToRoute('admin_modules', ['tab' => ExtensionType::Theme->value]);
+        }
+
+        $response = $this->redirect($entries->home());
+        $this->mark->open($response, (string) $row->key);
+
+        return $response;
+    }
+
     /**
      * @param array<CatalogRow> $rows
      * @param list<CatalogRow>  $all
@@ -185,6 +204,7 @@ final class ModuleController extends AbstractController
                 'operation' => $operation?->getAction()->label(),
                 'actions' => [
                     ...null !== $module && [] !== $module['fields'] ? [['label' => t('admin.modules.settings'), 'href' => $this->generateUrl('admin_module', ['key' => $key]).'#settings']] : [],
+                    ...null === $operation && $this->operations->previewed($row) ? [['label' => t('admin.modules.preview'), 'route' => 'admin_module_preview', 'params' => ['package' => $row->name], 'post' => true]] : [],
                     ...array_map(static fn (ModuleAction $action): array => [
                         'label' => $action->label(),
                         'route' => 'admin_module_operation',

@@ -45,7 +45,4 @@ export APP_BUILD
 
 bin/php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 bin/php bin/console doctrine:schema:validate || true
-bin/php bin/console cache:warmup
-bin/php bin/console importmap:install --no-interaction
-bin/php bin/console asset-map:compile --no-interaction
-bin/php bin/console adzercms:cache
+exec "$(dirname "$0")/adzercms-build"

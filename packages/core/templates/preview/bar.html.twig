@@ -1,0 +1,5 @@
+<form class="preview-bar" method="post" action="{{ path('preview_exit') }}">
+    {{ csrf_field() }}{{ back_field() }}
+    <span class="preview-theme">{{ 'core.preview.theme'|trans({theme: theme}) }}</span>
+    <button type="submit" class="secondary">{{ 'core.preview.exit'|trans }}</button>
+</form>

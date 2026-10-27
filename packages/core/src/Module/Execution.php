@@ -33,6 +33,7 @@ final readonly class Execution
             ModuleAction::Install => $this->compose($subject, ['require', $package], fn (string $stage): array|string => $this->tree->enabling($stage, $package)),
             ModuleAction::Update => $this->compose($subject, ['update', str_starts_with($package, self::ENGINE) ? self::ENGINE.'*' : $package, '--with-dependencies'], static fn (): array => []),
             ModuleAction::Remove => $this->remove($subject, $package),
+            ModuleAction::Preview => $this->preview($package),
         };
 
         return $outcome instanceof Refusal ? $outcome->reason->trans($this->translator) : $outcome;
@@ -43,6 +44,13 @@ final readonly class Execution
         $selection = Selection::switched($package, $on);
 
         return \is_string($selection) ? $selection : $this->tree->refresh($subject, $this->sources->environment(), $selection);
+    }
+
+    private function preview(string $package): ?string
+    {
+        $selection = Selection::switched($package, true);
+
+        return \is_string($selection) ? $selection : $this->tree->preview($selection);
     }
 
     private function remove(string $subject, string $package): Refusal|string|null

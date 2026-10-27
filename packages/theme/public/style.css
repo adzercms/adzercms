@@ -122,6 +122,27 @@ a:hover { text-decoration: underline; }
 .impersonate-exit { flex: none; color: var(--on-fill); text-decoration: underline; font-weight: 500; }
 .impersonate-exit:hover { text-decoration: none; }
 
+.preview-bar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    max-width: calc(100vw - 40px);
+    border-radius: var(--radius);
+    background: var(--warning);
+    color: var(--on-fill);
+    box-shadow: var(--shadow-toast);
+    font-size: 13px;
+}
+
+.preview-theme { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.preview-bar button { flex: none; }
+
 .panel-header {
     position: fixed;
     top: var(--impersonate-height);
@@ -369,6 +390,7 @@ button.nav-item {
     .header-inner { gap: 0.6rem; padding: 0 12px; }
     .header-right > .menu, .balance-display { display: none; }
     .impersonate-bar { gap: 0.5rem; font-size: 12px; }
+    .preview-bar { bottom: calc(var(--bottom-nav-height) + 20px); }
 
     .bottom-nav {
         position: fixed;

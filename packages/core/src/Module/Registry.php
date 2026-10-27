@@ -14,6 +14,7 @@ final class Registry
 {
     public const TYPE = 'adzercms-module';
     public const IMPLEMENTATION = '~^adzercms/([a-z0-9-]+)-implementation$~';
+    public const MIGRATIONS = '/migrations';
 
     /** @var array<string, Installed> */
     private array $byPackage = [];
@@ -38,10 +39,13 @@ final class Registry
 
     public static function manifest(string $package): mixed
     {
-        $path = InstalledVersions::getInstallPath($package)
-            ?? throw new \LogicException(sprintf('module package %s has no install path', $package));
+        return json_decode((string) file_get_contents(self::path($package).'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
+    }
 
-        return json_decode((string) file_get_contents($path.'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
+    public static function path(string $package): string
+    {
+        return InstalledVersions::getInstallPath($package)
+            ?? throw new \LogicException(sprintf('module package %s has no install path', $package));
     }
 
     /** @param array<string, mixed> $manifests */

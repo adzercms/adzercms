@@ -54,6 +54,7 @@ Each package has action buttons: install, update, remove, enable, disable. A but
 - Installing a module enables it in the same operation: after Composer the new module list is checked on the copy, and a refused list leaves the site untouched. Installing or enabling a module of a kind with one module replaces the enabled one after a confirmation naming it
 - Removing an enabled module disables it in the same operation; if an enabled module depends on it, the operation refuses before Composer runs
 - The enabled admin panel module has no disable button: enabling another admin panel module replaces it
+- An installed theme that isn't enabled can be previewed. The operation builds the site with this theme next to the live one, without migrations and without touching `.env`; then the preview button opens the site in this theme to you alone, and the bar at the bottom of the page leads back. A site keeps one preview: a new one, a refresh or enabling the theme drops it. A theme with its own migrations has no preview
 
 ## Add your own module sources
 

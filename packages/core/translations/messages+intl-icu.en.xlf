@@ -601,6 +601,12 @@
         <target>Install</target>
       </segment>
     </unit>
+    <unit id="core.module.action.preview">
+      <segment>
+        <source>core.module.action.preview</source>
+        <target>Prepare preview</target>
+      </segment>
+    </unit>
     <unit id="core.module.action.remove">
       <segment>
         <source>core.module.action.remove</source>
@@ -629,6 +635,12 @@
       <segment>
         <source>core.module.refusal.local</source>
         <target>{names} is set in .env.local outside git: move it into .env</target>
+      </segment>
+    </unit>
+    <unit id="core.module.refusal.migrations">
+      <segment>
+        <source>core.module.refusal.migrations</source>
+        <target>A theme with its own migrations has no preview: enable it</target>
       </segment>
     </unit>
     <unit id="core.module.refusal.open">
@@ -1055,6 +1067,18 @@
       <segment>
         <source>core.period_scale.year</source>
         <target>Year</target>
+      </segment>
+    </unit>
+    <unit id="core.preview.exit">
+      <segment>
+        <source>core.preview.exit</source>
+        <target>Exit preview</target>
+      </segment>
+    </unit>
+    <unit id="core.preview.theme">
+      <segment>
+        <source>core.preview.theme</source>
+        <target>Preview of theme {theme}</target>
       </segment>
     </unit>
     <unit id="core.role.admin">

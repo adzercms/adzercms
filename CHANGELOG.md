@@ -28,5 +28,6 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `adzercms-check` checks the translation catalogs of each package with its module enabled: the same keys in every language, every key of its code and templates in the English catalogs of the package or of the modules it enables
 - `TextResponse`: a plain text response that the Psalm taint analysis of the module check doesn't take for HTML
 - The cabinet home lives at `/cabinet`: the root of the instance is the public home of a feature module, without one it leads to the cabinet home; a login without an interrupted page leads to the cabinet home
+- Theme preview: an installed theme opens on the pages of the site to the admin only before it is enabled; the module operation builds the preview with `adzercms-build --preview` of the core, the bar of the preview leads out of it; `adzercms:sweep` removes the static of module sets without cache
 
 [Unreleased]: https://github.com/adzercms/adzercms/commits/main

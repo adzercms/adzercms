@@ -12,6 +12,8 @@ use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Tab;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Build\Preview;
+use AdzerCMS\Core\Kernel;
 use AdzerCMS\Core\Module\Catalog as ModuleCatalog;
 use AdzerCMS\Core\Module\CatalogRow;
 use AdzerCMS\Core\Module\ModuleAction;
@@ -30,11 +32,14 @@ use AdzerCMS\Core\Tests\Module\CatalogAnswers;
 use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelayGateway;
 use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelaySettings;
 use AdzerCMS\Core\Tests\SchemaTestCase;
+use AdzerCMS\Core\Ui\Back;
+use AdzerCMS\Core\Ui\Entries;
 use Composer\InstalledVersions;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\Process\Process;
 
 final class ModuleWebTest extends SchemaTestCase
@@ -357,7 +362,7 @@ final class ModuleWebTest extends SchemaTestCase
         self::command('adzercms:modules')->execute([]);
 
         $rows = self::service(ModuleCatalog::class)->rows()['rows'];
-        $idle = array_values(array_filter($rows, static fn (CatalogRow $row): bool => null !== $row->installed && !$row->selected))[0] ?? self::fail('the tree has no installed module outside the suite');
+        $idle = array_values(array_filter($rows, static fn (CatalogRow $row): bool => null !== $row->installed && !$row->selected && CoreKind::Theme !== $row->kind))[0] ?? self::fail('the tree has no installed module outside the suite');
         $chosen = array_values(array_filter($rows, static fn (CatalogRow $row): bool => $row->selected && CoreKind::Admin !== $row->kind))[0] ?? self::fail('the suite selects no module beside the admin panel');
         $labels = static fn (ModuleAction ...$actions): array => array_map(static fn (ModuleAction $action): string => self::phrase($action->label()), $actions);
         $page = $this->client->request('GET', self::MODULES);
@@ -392,6 +397,59 @@ final class ModuleWebTest extends SchemaTestCase
         $this->em->clear();
         $interrupted = self::service(ModuleOperationRepository::class)->find($running->getId()) ?? self::fail('the operation is gone');
         self::assertSame([OperationState::Failed, self::phrase('core.module.refusal.interrupted')], [$interrupted->getState(), $interrupted->getOutput()]);
+    }
+
+    #[Group('ACMS-CORE-0936')]
+    #[Group('ACMS-CORE-1000')]
+    #[Group('ACMS-CORE-1002')]
+    #[Group('ACMS-US-0004')]
+    public function testThemePreviewBuildsAsideAndMarksOperatorUntilExit(): void
+    {
+        $tree = $this->repository($this->tree());
+        file_put_contents($tree.'/notes.txt', 'draft');
+        $this->answerCatalog();
+        $this->listed([]);
+        self::command('adzercms:modules')->execute([]);
+        $labels = static fn (string|ModuleAction ...$actions): array => array_map(static fn (string|ModuleAction $action): string => self::phrase(\is_string($action) ? $action : $action->label()), $actions);
+        $preview = self::service(Kernel::class, 'kernel')->preview();
+
+        self::assertSame($labels(ModuleAction::Enable, ModuleAction::Preview, ModuleAction::Remove), self::actions($this->client->request('GET', self::MODULES), 'adzercms/threadbare'));
+        $this->post('/admin/modules/operation/preview?package=adzercms/underlay');
+        self::assertSame(self::phrase('core.module.refusal.migrations'), self::toast($this->arrive(self::MODULES), 'error'));
+
+        $this->post('/admin/modules/operation/preview?package=adzercms/threadbare');
+        self::command('adzercms:modules')->execute([]);
+        $this->em->clear();
+        $operation = self::service(ModuleOperationRepository::class)->findOneBy(['package' => 'adzercms/threadbare']) ?? self::fail('the operation is not filed');
+        $built = file($tree.'/built.env', \FILE_IGNORE_NEW_LINES) ?: [];
+
+        self::assertSame([OperationState::Done, null], [$operation->getState(), $operation->getOutput()], 'a change of the tree does not refuse the preview');
+        self::assertContains('THEME_MODULE=Threadbare', $built, 'the preview builds the selection with the theme');
+        self::assertContains('ARGUMENTS=--preview', $built);
+        self::assertContains('ADZERCMS_ENTRY='.$tree, $built, 'the preview build runs under the hold of the job');
+        self::assertFileDoesNotExist($tree.'/refreshed.env', 'the preview neither migrates nor switches the instance');
+        self::assertSame("?? notes.txt\n", (new Process(['git', 'status', '--porcelain'], $tree))->mustRun()->getOutput(), 'the preview leaves the tree and the selection as they are');
+
+        $preview->keep('Threadbare', ['THEME_MODULE' => 'Threadbare']);
+        try {
+            self::assertSame($labels('admin.modules.preview', ModuleAction::Enable, ModuleAction::Remove), self::actions($this->client->request('GET', self::MODULES), 'adzercms/threadbare'));
+            $this->post('/admin/modules/theme/preview?package=adzercms/underlay');
+            self::assertSame(self::phrase('core.module.refusal.action'), self::toast($this->arrive(self::MODULES), 'error'), 'a theme without a ready preview takes no mark');
+
+            $this->post('/admin/modules/theme/preview?package=adzercms/threadbare');
+            self::assertResponseRedirects(self::service(Entries::class)->home());
+            $mark = self::cookie(Preview::COOKIE) ?? self::fail('the preview sets no mark');
+            $secret = self::getContainer()->getParameter('kernel.secret');
+            self::assertIsString($secret);
+            self::assertSame('Threadbare', Preview::marked((string) $mark->getValue(), time(), $secret));
+            self::assertSame([true, Cookie::SAMESITE_LAX], [$mark->isHttpOnly(), $mark->getSameSite()]);
+
+            $this->post('/preview/exit', [Back::FIELD => self::MODULES.'?tab=theme']);
+            self::assertResponseRedirects(self::MODULES.'?tab=theme', message: 'the exit goes back to the page');
+            self::assertTrue(self::cookie(Preview::COOKIE)?->isCleared(), 'the exit drops the mark');
+        } finally {
+            $preview->drop();
+        }
     }
 
     #[Group('ACMS-CORE-0938')]
@@ -592,14 +650,14 @@ final class ModuleWebTest extends SchemaTestCase
     {
         $this->tree = sys_get_temp_dir().'/adzercms-tree-'.bin2hex(random_bytes(4));
         null === $site ? (new Filesystem())->mkdir($this->tree) : (new Filesystem())->mirror($site, $this->tree);
-        self::getContainer()->set(Tree::class, new Tree($this->tree, __DIR__.'/Fixture/refresh', __DIR__.'/Fixture/selection'));
+        self::getContainer()->set(Tree::class, new Tree($this->tree, __DIR__.'/Fixture/refresh', __DIR__.'/Fixture/selection', __DIR__.'/Fixture/build'));
 
         return $this->tree;
     }
 
     private function repository(string $tree): string
     {
-        file_put_contents($tree.'/.gitignore', "/.env.local\n/var/\n/vendor/\n/refreshed.env\n/committed.env\n");
+        file_put_contents($tree.'/.gitignore', "/.env.local\n/var/\n/vendor/\n/refreshed.env\n/committed.env\n/built.env\n");
         file_put_contents($tree.'/.env.local', "APP_SECRET=kept\n");
         foreach ([['init', '--quiet'], ['config', 'user.name', 'Site'], ['config', 'user.email', 'site@acme.test'], ['config', 'core.hooksPath', __DIR__.'/Fixture/hooks'], ['add', '--all'], ['commit', '--quiet', '--message', 'Site']] as $arguments) {
             (new Process(['git', ...$arguments], $tree))->mustRun();
@@ -618,6 +676,11 @@ final class ModuleWebTest extends SchemaTestCase
     private static function confirmations(Crawler $page, string $name): array
     {
         return self::buttons($page, $name)->each(static fn (Crawler $button): ?string => $button->attr('data-confirm'));
+    }
+
+    private function cookie(string $name): ?Cookie
+    {
+        return array_find($this->client->getResponse()->headers->getCookies(), static fn (Cookie $cookie): bool => $name === $cookie->getName());
     }
 
     private static function buttons(Crawler $page, string $name): Crawler

@@ -7,6 +7,7 @@ namespace AdzerCMS\Core\Module;
 use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Module\Kind;
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Core\Build\PreviewMark;
 use AdzerCMS\Core\Entity\ModuleOperation;
 use AdzerCMS\Core\Repository\ModuleOperationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,6 +21,7 @@ final readonly class Operations
         private EntityManagerInterface $em,
         private Catalog $catalog,
         private Tree $tree,
+        private PreviewMark $mark,
     ) {
     }
 
@@ -27,13 +29,19 @@ final readonly class Operations
     public function actions(CatalogRow $row): array
     {
         $update = $row->updatable ? [ModuleAction::Update] : [];
+        $preview = CoreKind::Theme === $row->kind && !$this->previewed($row) ? [ModuleAction::Preview] : [];
 
         return match (true) {
             null === $row->installed => [ModuleAction::Install],
             $row->selected && CoreKind::Admin === $row->kind => $update,
             $row->selected => [...$update, ModuleAction::Disable, ModuleAction::Remove],
-            default => [...$update, ModuleAction::Enable, ModuleAction::Remove],
+            default => [...$update, ModuleAction::Enable, ...$preview, ModuleAction::Remove],
         };
+    }
+
+    public function previewed(CatalogRow $row): bool
+    {
+        return CoreKind::Theme === $row->kind && null !== $row->installed && !$row->selected && null !== $row->key && $this->mark->ready() === $row->key;
     }
 
     /** @param list<CatalogRow> $rows */
@@ -56,6 +64,9 @@ final readonly class Operations
         $row = $this->catalog->row($package);
         if (null === $row || !\in_array($action, $this->actions($row), true)) {
             return new Refusal(t('core.module.refusal.action'));
+        }
+        if (ModuleAction::Preview === $action) {
+            return is_dir(Registry::path($package).Registry::MIGRATIONS) ? new Refusal(t('core.module.refusal.migrations')) : null;
         }
 
         $selects = $row->selected ? $action->disables() : $action->enables();
