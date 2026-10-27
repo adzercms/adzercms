@@ -469,10 +469,13 @@ h3 { font-size: 17px; margin: 1rem 0 0.5rem; }
 
 label { display: block; margin-bottom: 0.9rem; font-size: 13px; font-weight: 500; }
 
-.fields { display: grid; gap: 0 1rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+.fields { display: grid; gap: 0 1rem; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); }
 .fields label { max-width: 28rem; margin-bottom: 0.9rem; }
 .fields .field-wide, .fields .field-wide label { grid-column: 1 / -1; max-width: none; }
 .field label { margin-bottom: 0.5rem; }
+.fields.aligned > .field { display: grid; grid-row: span 3; grid-template-rows: subgrid; margin-bottom: 0.9rem; }
+.fields.aligned > .field > label { align-self: end; margin: 0; }
+.field-extra { margin-top: 0.5rem; }
 .reveal { margin-top: 0.5rem; }
 .reveal[open] > summary { margin-bottom: 0.6rem; }
 .brand-preview { display: block; max-width: 100%; max-height: 3rem; margin-bottom: 0.5rem; }
@@ -1019,6 +1022,7 @@ html:has(dialog[open]:modal) { overflow: hidden; }
 
 .modal-header h2 { margin: 0; }
 .modal-body { flex: 1 1 auto; padding: 1.25rem; overflow-y: auto; overscroll-behavior: contain; }
+.modal-body .fields { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
 .modal-body .fields label { max-width: none; }
 
 .countdown {

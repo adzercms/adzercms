@@ -412,7 +412,7 @@
     <unit id="leads.setting.reasons">
       <segment>
         <source>leads.setting.reasons</source>
-        <target>Причины отказа через точку с запятой</target>
+        <target>Причины отказа, через ;</target>
       </segment>
     </unit>
     <unit id="leads.slice.closed">

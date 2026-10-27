@@ -34,7 +34,7 @@
     <unit id="opotopo.setting.organization">
       <segment>
         <source>opotopo.setting.organization</source>
-        <target>Идентификатор организации продавца</target>
+        <target>ID организации продавца</target>
       </segment>
     </unit>
     <unit id="opotopo.setting.publish">

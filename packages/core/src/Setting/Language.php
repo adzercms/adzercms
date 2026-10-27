@@ -6,12 +6,14 @@ namespace AdzerCMS\Core\Setting;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
+use AdzerCMS\Contracts\Setting\Tab;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Account\LanguageName;
 use AdzerCMS\Core\Entity\User;
 use Doctrine\DBAL\Exception as DatabaseFailure;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -20,6 +22,7 @@ use Symfony\Component\Translation\LocaleSwitcher;
 
 use function Symfony\Component\Translation\t;
 
+#[AsTaggedItem(priority: 1)]
 final class Language implements Owner
 {
     public const NAME = 'brand.language';
@@ -36,7 +39,7 @@ final class Language implements Owner
 
     public function settingFields(): array
     {
-        return [new Field(self::NAME, t('core.setting.language'), Type::Choice, choices: $this->choices())];
+        return [new Field(self::NAME, t('core.setting.language'), Type::Choice, choices: $this->choices(), tab: Tab::General)];
     }
 
     /** @return array<string, LanguageName> */

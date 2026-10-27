@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Confirmation;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
+use AdzerCMS\Contracts\Setting\Tab;
 use AdzerCMS\Core\Entity\Confirmation;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Repository\ConfirmationRepository;
@@ -37,9 +38,11 @@ final class Confirmations implements Owner
 
     public function settingFields(): array
     {
+        $section = t('core.setting.section.confirmation');
+
         return [
-            new Field(self::PAUSE_MINUTES, t('core.setting.confirmation_pause_minutes')),
-            new Field(self::EMAIL_DELAY_DAYS, t('core.setting.confirmation_email_delay_days')),
+            new Field(self::PAUSE_MINUTES, t('core.setting.confirmation_pause_minutes'), section: $section, tab: Tab::General),
+            new Field(self::EMAIL_DELAY_DAYS, t('core.setting.confirmation_email_delay_days'), section: $section, tab: Tab::General),
         ];
     }
 

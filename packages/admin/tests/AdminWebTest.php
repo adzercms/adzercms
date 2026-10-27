@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Admin\Tests;
 
+use AdzerCMS\Contracts\Setting\Tab;
 use AdzerCMS\Core\Account\ConsentKind;
 use AdzerCMS\Core\Account\Password;
 use AdzerCMS\Core\Account\Role;
@@ -21,6 +22,7 @@ use AdzerCMS\Core\Notice\MailChannel;
 use AdzerCMS\Core\Notice\QuietHours;
 use AdzerCMS\Core\Repository\UserRepository;
 use AdzerCMS\Core\Setting\Brand;
+use AdzerCMS\Core\Setting\Language;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Setting\Toggle;
 use AdzerCMS\Core\Tests\Accounts;
@@ -426,13 +428,23 @@ final class AdminWebTest extends SchemaTestCase
     public function testSettingsTabSavesWholeAndRefusesValueOutsideItsForm(): void
     {
         $this->client->loginUser($this->admin);
-        $brand = strstr(Brand::TITLE, '.', true);
+        $brand = Tab::Brand->value;
+
+        $general = $this->client->request('GET', '/admin/settings');
+        self::assertSame(Tab::General->value, $general->filter('form input[name="tab"]')->attr('value'), 'the settings open on the general tab');
+        $tabs = $general->filter('.tabs .tab')->each(static fn (Crawler $tab): string => trim($tab->text()));
+        self::assertSame(array_map(static fn (Tab $tab): string => self::phrase($tab->label()), Tab::cases()), \array_slice($tabs, 0, \count(Tab::cases())), 'the core tabs go first in their order');
+        $modules = $sorted = \array_slice($tabs, \count(Tab::cases()));
+        (new \Collator(self::service(Language::class)->instance()))->sort($sorted);
+        self::assertSame($sorted, $modules, 'the module tabs follow by their title');
+        $top = $general->filter('form .section')->first();
+        self::assertCount(0, $top->filter('.section-head'), 'the fields without a section go first without a heading');
+        self::assertCount(1, $top->filter(\sprintf('select[name="value[%s]"]', Language::NAME)));
 
         $page = $this->client->request('GET', '/admin/settings?tab='.$brand);
         $names = $page->filter('form [name]')->each(static fn (Crawler $node): string => (string) $node->attr('name'));
         self::assertNotContains(Brand::TITLE, $names, 'PHP replaces the dot of a field name');
         self::assertContains(\sprintf('value[%s]', Brand::TITLE), $names);
-        self::assertContains(self::phrase('core.setting.area.mail'), $page->filter('.tabs .tab')->each(static fn (Crawler $tab): string => trim($tab->text())));
         self::assertSame(
             array_map(static fn (Theme $theme): string => self::phrase($theme->label()), Theme::cases()),
             $page->filter(\sprintf('select[name="value[%s]"] option', Brand::THEME))->each(static fn (Crawler $option): string => trim($option->text())),
@@ -455,7 +467,7 @@ final class AdminWebTest extends SchemaTestCase
         self::assertSame(Theme::Dark->value, $settings->get(Brand::THEME), 'the value outside the form is refused');
         self::assertSame('Village', $settings->get(Brand::TITLE), 'other fields of the tab are saved');
 
-        $this->post('/admin/settings', ['tab' => strstr(QuietHours::FROM, '.', true), 'value' => [QuietHours::FROM => '25:99', QuietHours::TO => '08:00']]);
+        $this->post('/admin/settings', ['tab' => Tab::Mail->value, 'value' => [QuietHours::FROM => '25:99', QuietHours::TO => '08:00']]);
         self::assertNotSame('', self::toast($this->client->followRedirect(), 'error'));
         self::assertSame('', $settings->get(QuietHours::FROM));
         self::assertSame('08:00', $settings->get(QuietHours::TO));
@@ -473,7 +485,7 @@ final class AdminWebTest extends SchemaTestCase
         $login = \sprintf('value[%s]', MailChannel::LOGIN);
         $password = \sprintf('value[%s]', MailChannel::PASSWORD);
 
-        $page = $this->client->request('GET', '/admin/settings?tab='.strstr(MailChannel::HOST, '.', true));
+        $page = $this->client->request('GET', '/admin/settings?tab='.Tab::Mail->value);
         $names = $page->filter('form [name]')->each(static fn (Crawler $node): string => (string) $node->attr('name'));
         self::assertContains(\sprintf('value[%s]', MailChannel::HOST), $names);
         self::assertNotContains($login, $names, 'the access data is not in the form of the tab');
@@ -508,7 +520,7 @@ final class AdminWebTest extends SchemaTestCase
     {
         $this->configure([Brand::TITLE => 'Village network']);
         $this->client->loginUser($this->admin);
-        $tab = strstr(Brand::TITLE, '.', true);
+        $tab = Tab::Brand->value;
 
         $this->post('/admin/settings', ['tab' => $tab], ['file' => [Brand::ICON => $this->picture('icon.png')]]);
         self::assertResponseRedirects();

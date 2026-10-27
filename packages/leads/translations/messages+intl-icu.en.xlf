@@ -412,7 +412,7 @@
     <unit id="leads.setting.reasons">
       <segment>
         <source>leads.setting.reasons</source>
-        <target>Refusal reasons separated by semicolons</target>
+        <target>Refusal reasons, separated by ;</target>
       </segment>
     </unit>
     <unit id="leads.slice.closed">

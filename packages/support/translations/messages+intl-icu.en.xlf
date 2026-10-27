@@ -328,7 +328,7 @@
     <unit id="support.setting.attachment_max_mb">
       <segment>
         <source>support.setting.attachment_max_mb</source>
-        <target>Attachment size, MB</target>
+        <target>Attachment up to, MB</target>
       </segment>
     </unit>
     <unit id="support.setting.attachment_types">
@@ -340,25 +340,25 @@
     <unit id="support.setting.auto_close_days">
       <segment>
         <source>support.setting.auto_close_days</source>
-        <target>Ticket auto-closing, days</target>
+        <target>Auto-close after, days</target>
       </segment>
     </unit>
     <unit id="support.setting.departments">
       <segment>
         <source>support.setting.departments</source>
-        <target>Support departments, comma-separated</target>
+        <target>Departments, comma-separated</target>
       </segment>
     </unit>
     <unit id="support.setting.help_index">
       <segment>
         <source>support.setting.help_index</source>
-        <target>Address of the knowledge base JSON index</target>
+        <target>Knowledge base index link</target>
       </segment>
     </unit>
     <unit id="support.setting.overdue_hours">
       <segment>
         <source>support.setting.overdue_hours</source>
-        <target>Ticket overdue after, hours</target>
+        <target>Reply deadline, hours</target>
       </segment>
     </unit>
     <unit id="support.tab.active">

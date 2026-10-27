@@ -328,37 +328,37 @@
     <unit id="support.setting.attachment_max_mb">
       <segment>
         <source>support.setting.attachment_max_mb</source>
-        <target>Размер вложения, МБ</target>
+        <target>Размер вложения до, МБ</target>
       </segment>
     </unit>
     <unit id="support.setting.attachment_types">
       <segment>
         <source>support.setting.attachment_types</source>
-        <target>Типы вложений через запятую</target>
+        <target>Типы вложений, через запятую</target>
       </segment>
     </unit>
     <unit id="support.setting.auto_close_days">
       <segment>
         <source>support.setting.auto_close_days</source>
-        <target>Автозакрытие обращения, дней</target>
+        <target>Автозакрытие через, дней</target>
       </segment>
     </unit>
     <unit id="support.setting.departments">
       <segment>
         <source>support.setting.departments</source>
-        <target>Отделы поддержки через запятую</target>
+        <target>Отделы, через запятую</target>
       </segment>
     </unit>
     <unit id="support.setting.help_index">
       <segment>
         <source>support.setting.help_index</source>
-        <target>Адрес JSON-индекса базы знаний</target>
+        <target>Ссылка на индекс базы знаний</target>
       </segment>
     </unit>
     <unit id="support.setting.overdue_hours">
       <segment>
         <source>support.setting.overdue_hours</source>
-        <target>Обращение просрочено через, часов</target>
+        <target>Срок ответа, часов</target>
       </segment>
     </unit>
     <unit id="support.tab.active">

@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Notice;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
+use AdzerCMS\Contracts\Setting\Tab;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Setting\Settings;
 
@@ -24,8 +25,8 @@ final class QuietHours implements Owner
     public function settingFields(): array
     {
         return [
-            new Field(self::FROM, t('core.setting.notice_quiet_from'), Type::Time),
-            new Field(self::TO, t('core.setting.notice_quiet_to'), Type::Time),
+            new Field(self::FROM, t('core.setting.notice_quiet_from'), Type::Time, tab: Tab::Mail),
+            new Field(self::TO, t('core.setting.notice_quiet_to'), Type::Time, tab: Tab::Mail),
         ];
     }
 

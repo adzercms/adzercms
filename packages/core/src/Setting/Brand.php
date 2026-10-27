@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Setting;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
+use AdzerCMS\Contracts\Setting\Tab;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Account\Theme;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -31,11 +32,11 @@ final class Brand implements Owner
     public function settingFields(): array
     {
         return [
-            new Field(self::TITLE, t('core.setting.title')),
+            new Field(self::TITLE, t('core.setting.title'), tab: Tab::Brand),
             self::logoField(),
             self::iconField(),
-            new Field(self::THEME, t('core.setting.theme'), Type::Choice, choices: self::themes()),
-            new Field(self::LAYOUT, t('core.setting.layout'), Type::Choice, choices: self::choices(Layout::cases())),
+            new Field(self::THEME, t('core.setting.theme'), Type::Choice, choices: self::themes(), tab: Tab::Brand),
+            new Field(self::LAYOUT, t('core.setting.layout'), Type::Choice, choices: self::choices(Layout::cases()), tab: Tab::Brand),
         ];
     }
 
@@ -92,11 +93,11 @@ final class Brand implements Owner
 
     private static function logoField(): Field
     {
-        return new Field(self::LOGO, t('core.setting.logo'), Type::Image);
+        return new Field(self::LOGO, t('core.setting.logo'), Type::Image, tab: Tab::Brand);
     }
 
     private static function iconField(): Field
     {
-        return new Field(self::ICON, t('core.setting.icon'), Type::Image);
+        return new Field(self::ICON, t('core.setting.icon'), Type::Image, tab: Tab::Brand);
     }
 }

@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Notice;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
+use AdzerCMS\Contracts\Setting\Tab;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Setting\Brand;
@@ -36,12 +37,14 @@ final class MailChannel extends ContactChannel implements Owner
 
     public function settingFields(): array
     {
+        $section = t('core.setting.section.mail');
+
         return [
-            new Field(self::HOST, t('core.setting.mail_host')),
-            new Field(self::PORT, t('core.setting.mail_port')),
-            new Field(self::LOGIN, t('core.setting.mail_login'), group: self::ACCOUNT),
-            new Field(self::PASSWORD, t('core.setting.mail_password'), Type::Secret, group: self::ACCOUNT),
-            new Field(self::SENDER, t('core.setting.mail_sender')),
+            new Field(self::HOST, t('core.setting.mail_host'), section: $section, tab: Tab::Mail),
+            new Field(self::PORT, t('core.setting.mail_port'), section: $section, tab: Tab::Mail),
+            new Field(self::LOGIN, t('core.setting.mail_login'), group: self::ACCOUNT, section: $section, tab: Tab::Mail),
+            new Field(self::PASSWORD, t('core.setting.mail_password'), Type::Secret, group: self::ACCOUNT, section: $section, tab: Tab::Mail),
+            new Field(self::SENDER, t('core.setting.mail_sender'), section: $section, tab: Tab::Mail),
         ];
     }
 

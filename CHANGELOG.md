@@ -15,6 +15,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - Notice channels of modules: a feature module brings its own channel after the bots
 - Sums carry the ruble sign in the reader's language through ICU: the `money` and `precise` filters, `Money::rubles()` and `Money::precise()` give a translatable `Sum` for phrase arguments
 - Setting field `Type::Color`: the admin picks the color in the browser's color picker, the setting keeps `#rrggbb`
+- Setting tabs `AdzerCMS\Contracts\Setting\Tab`: the core settings sit on the tabs General, Branding, Mail and notices, a field joins a core tab by `tab:`; module tabs follow in title order, fields without a section open a tab, labels and fields of a row line up
 - Fragment place `Fragment::CABINET_PROFILE`: the profile under the contacts
 - Manual order of a list `Order`: rows are dragged by a handle within their group with SortableJS, the list posts the new order to its route; `Order::place()` puts the moved ids into the places they held
 - Going back closes a modal dialog by the gesture and the browser button: the core script `adzercms/dialogs` keeps a history entry per open dialog, the theme imports it

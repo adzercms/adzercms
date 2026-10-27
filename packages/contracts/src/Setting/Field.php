@@ -17,6 +17,7 @@ final readonly class Field
         public array $choices = [],
         public ?string $group = null,
         public ?TranslatableInterface $section = null,
+        public ?Tab $tab = null,
     ) {
     }
 

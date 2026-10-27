@@ -16,6 +16,7 @@ use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Tests\Setting\Fixture\Shop;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function Symfony\Component\Translation\t;
 
@@ -84,7 +85,7 @@ final class SettingCommandTest extends SchemaTestCase
     {
         $wrong = self::command('adzercms:setting');
         self::assertSame(Command::INVALID, $wrong->execute(['name' => QuietHours::FROM, 'value' => '24:00']));
-        self::assertStringContainsString('Quiet hours from takes a time of day as HH:MM', $wrong->getDisplay());
+        self::assertStringContainsString(self::phrase('core.setting.time', ['field' => self::phrase('core.setting.notice_quiet_from')]), $wrong->getDisplay());
         self::assertSame('', self::service(Settings::class)->get(QuietHours::FROM), 'a refused time is not saved');
 
         self::assertSame(Command::SUCCESS, self::command('adzercms:setting')->execute(['name' => QuietHours::FROM, 'value' => '7:05']));
@@ -137,6 +138,6 @@ final class SettingCommandTest extends SchemaTestCase
 
         $this->expectExceptionObject(new \LogicException('setting key shop.title is declared by two owners'));
 
-        (new Catalog([new Shop(), $twin], []))->fields();
+        (new Catalog([new Shop(), $twin], [], self::service(TranslatorInterface::class, 'translator')))->fields();
     }
 }

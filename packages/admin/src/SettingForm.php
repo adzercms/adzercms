@@ -111,9 +111,9 @@ final class SettingForm
      */
     public function sections(array $fields): array
     {
-        $labels = [];
-        $grouped = [];
-        $credentials = [];
+        $labels = [null];
+        $grouped = [[]];
+        $credentials = [[]];
         $carded = self::carded($fields);
 
         foreach ($fields as $field) {
@@ -134,12 +134,12 @@ final class SettingForm
             }
         }
 
-        return array_map(
+        return array_values(array_filter(array_map(
             static fn (?TranslatableInterface $section, array $fields, array $badges): array => ['section' => $section, 'fields' => $fields, 'credentials' => $badges],
             $labels,
             $grouped,
             $credentials,
-        );
+        ), static fn (array $section): bool => [] !== $section['fields'] || [] !== $section['credentials']));
     }
 
     /**

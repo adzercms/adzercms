@@ -43,7 +43,7 @@ final class ImagesTest extends SchemaTestCase
         $set = self::command('adzercms:setting');
 
         self::assertSame(Command::INVALID, $set->execute(['name' => Brand::ICON, 'value' => $this->upload('not an image')]));
-        self::assertStringContainsString('Icon accepts a png, jpeg, svg, webp or ico image', $set->getDisplay());
+        self::assertStringContainsString(self::phrase('core.image.type', ['field' => self::phrase('core.setting.icon')]), $set->getDisplay());
         self::assertSame('', self::service(Settings::class)->get(Brand::ICON));
     }
 

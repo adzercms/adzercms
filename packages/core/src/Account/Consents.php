@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Account;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
+use AdzerCMS\Contracts\Setting\Tab;
 use AdzerCMS\Core\Entity\Consent;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Setting\Settings;
@@ -33,10 +34,12 @@ final class Consents implements Owner
 
     public function settingFields(): array
     {
+        $section = t('core.setting.section.legal');
+
         return [
-            new Field(self::REVISION, t('core.setting.legal_revision')),
-            new Field(self::OFFER_URL, t('core.setting.offer_url')),
-            new Field(self::PRIVACY_URL, t('core.setting.privacy_url')),
+            new Field(self::REVISION, t('core.setting.legal_revision'), section: $section, tab: Tab::General),
+            new Field(self::OFFER_URL, t('core.setting.offer_url'), section: $section, tab: Tab::General),
+            new Field(self::PRIVACY_URL, t('core.setting.privacy_url'), section: $section, tab: Tab::General),
         ];
     }
 

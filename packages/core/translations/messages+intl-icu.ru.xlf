@@ -400,13 +400,13 @@
     <unit id="core.layout.side">
       <segment>
         <source>core.layout.side</source>
-        <target>Разделы сбоку</target>
+        <target>Сбоку</target>
       </segment>
     </unit>
     <unit id="core.layout.top">
       <segment>
         <source>core.layout.top</source>
-        <target>Разделы сверху</target>
+        <target>Сверху</target>
       </segment>
     </unit>
     <unit id="core.login.absent">
@@ -997,42 +997,6 @@
         <target>Пользователь</target>
       </segment>
     </unit>
-    <unit id="core.setting.area.brand">
-      <segment>
-        <source>core.setting.area.brand</source>
-        <target>Марка</target>
-      </segment>
-    </unit>
-    <unit id="core.setting.area.confirmation">
-      <segment>
-        <source>core.setting.area.confirmation</source>
-        <target>Подтверждения</target>
-      </segment>
-    </unit>
-    <unit id="core.setting.area.legal">
-      <segment>
-        <source>core.setting.area.legal</source>
-        <target>Документы</target>
-      </segment>
-    </unit>
-    <unit id="core.setting.area.mail">
-      <segment>
-        <source>core.setting.area.mail</source>
-        <target>Почта</target>
-      </segment>
-    </unit>
-    <unit id="core.setting.area.notice">
-      <segment>
-        <source>core.setting.area.notice</source>
-        <target>Оповещения</target>
-      </segment>
-    </unit>
-    <unit id="core.setting.area.seo">
-      <segment>
-        <source>core.setting.area.seo</source>
-        <target>SEO</target>
-      </segment>
-    </unit>
     <unit id="core.setting.choice">
       <segment>
         <source>core.setting.choice</source>
@@ -1048,13 +1012,13 @@
     <unit id="core.setting.confirmation_email_delay_days">
       <segment>
         <source>core.setting.confirmation_email_delay_days</source>
-        <target>Отсрочка смены почты паролем, суток</target>
+        <target>Задержка смены почты, дней</target>
       </segment>
     </unit>
     <unit id="core.setting.confirmation_pause_minutes">
       <segment>
         <source>core.setting.confirmation_pause_minutes</source>
-        <target>Пауза между подтверждениями, минут</target>
+        <target>Повтор кода не чаще, минут</target>
       </segment>
     </unit>
     <unit id="core.setting.decimal">
@@ -1072,7 +1036,7 @@
     <unit id="core.setting.icon">
       <segment>
         <source>core.setting.icon</source>
-        <target>Значок</target>
+        <target>Значок вкладки браузера</target>
       </segment>
     </unit>
     <unit id="core.setting.indexing">
@@ -1084,13 +1048,13 @@
     <unit id="core.setting.language">
       <segment>
         <source>core.setting.language</source>
-        <target>Язык интерфейса</target>
+        <target>Язык сайта</target>
       </segment>
     </unit>
     <unit id="core.setting.layout">
       <segment>
         <source>core.setting.layout</source>
-        <target>Раскладка панели</target>
+        <target>Расположение меню</target>
       </segment>
     </unit>
     <unit id="core.setting.legal_revision">
@@ -1126,7 +1090,7 @@
     <unit id="core.setting.mail_port">
       <segment>
         <source>core.setting.mail_port</source>
-        <target>Порт</target>
+        <target>Порт сервера</target>
       </segment>
     </unit>
     <unit id="core.setting.mail_sender">
@@ -1144,31 +1108,67 @@
     <unit id="core.setting.notice_keep_days">
       <segment>
         <source>core.setting.notice_keep_days</source>
-        <target>Хранить журнал оповещений, дней</target>
+        <target>Хранить оповещения, дней</target>
       </segment>
     </unit>
     <unit id="core.setting.notice_quiet_from">
       <segment>
         <source>core.setting.notice_quiet_from</source>
-        <target>Тишина с</target>
+        <target>Не беспокоить с</target>
       </segment>
     </unit>
     <unit id="core.setting.notice_quiet_to">
       <segment>
         <source>core.setting.notice_quiet_to</source>
-        <target>Тишина до</target>
+        <target>Не беспокоить до</target>
       </segment>
     </unit>
     <unit id="core.setting.offer_url">
       <segment>
         <source>core.setting.offer_url</source>
-        <target>Адрес оферты</target>
+        <target>Ссылка на оферту</target>
       </segment>
     </unit>
     <unit id="core.setting.privacy_url">
       <segment>
         <source>core.setting.privacy_url</source>
-        <target>Адрес политики обработки персональных данных</target>
+        <target>Ссылка на политику данных</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.section.confirmation">
+      <segment>
+        <source>core.setting.section.confirmation</source>
+        <target>Коды подтверждения</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.section.legal">
+      <segment>
+        <source>core.setting.section.legal</source>
+        <target>Документы</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.section.mail">
+      <segment>
+        <source>core.setting.section.mail</source>
+        <target>Почтовый сервер</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.tab.brand">
+      <segment>
+        <source>core.setting.tab.brand</source>
+        <target>Фирменный стиль</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.tab.general">
+      <segment>
+        <source>core.setting.tab.general</source>
+        <target>Общие</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.tab.mail">
+      <segment>
+        <source>core.setting.tab.mail</source>
+        <target>Почта и оповещения</target>
       </segment>
     </unit>
     <unit id="core.setting.theme">
@@ -1186,7 +1186,7 @@
     <unit id="core.setting.title">
       <segment>
         <source>core.setting.title</source>
-        <target>Название</target>
+        <target>Название сайта</target>
       </segment>
     </unit>
     <unit id="core.setting.toggle">
