@@ -133,6 +133,36 @@
         <target>Каталог расширений</target>
       </segment>
     </unit>
+    <unit id="extensions.mine.empty">
+      <segment>
+        <source>extensions.mine.empty</source>
+        <target>Записей пока нет</target>
+      </segment>
+    </unit>
+    <unit id="extensions.mine.entries">
+      <segment>
+        <source>extensions.mine.entries</source>
+        <target>Записи</target>
+      </segment>
+    </unit>
+    <unit id="extensions.mine.key">
+      <segment>
+        <source>extensions.mine.key</source>
+        <target>Ключ автора</target>
+      </segment>
+    </unit>
+    <unit id="extensions.mine.key_hint">
+      <segment>
+        <source>extensions.mine.key_hint</source>
+        <target>Добавьте это поле в composer.json пакета и выпустите версию: по ключу каталог узнаёт ваши пакеты</target>
+      </segment>
+    </unit>
+    <unit id="extensions.mine.menu">
+      <segment>
+        <source>extensions.mine.menu</source>
+        <target>Мои расширения</target>
+      </segment>
+    </unit>
     <unit id="extensions.new">
       <segment>
         <source>extensions.new</source>

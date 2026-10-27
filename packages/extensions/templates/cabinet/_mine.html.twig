@@ -1,0 +1,11 @@
+{% embed '@Theme/_table.html.twig' with {heading: 'extensions.mine.entries'} %}
+    {% block row %}
+        <tr>
+            <td class="{{ table.aside('name') }}"><strong>{{ row.name }}</strong></td>
+            <td class="{{ table.aside('type') }}">{{ row.type.label|trans }}</td>
+            <td class="{{ table.aside('price') }}">{{ row.price ? amount(row.price, false) : 'extensions.free'|trans }}</td>
+            <td class="{{ table.aside('version') }}">{{ row.version ?? blank() }}</td>
+            <td class="{{ table.aside('state') }}">{{ badge(row.state) }}{{ caption(row.reason) }}</td>
+        </tr>
+    {% endblock %}
+{% endembed %}

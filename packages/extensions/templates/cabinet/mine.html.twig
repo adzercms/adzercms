@@ -1,0 +1,20 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'extensions.mine.menu'|trans }}{% endblock %}
+
+{% block page %}
+<div class="section">
+    <div class="section-head">
+        <h3>{{ 'extensions.mine.key'|trans }}</h3>
+    </div>
+    <p class="muted">{{ 'extensions.mine.key_hint'|trans }}</p>
+    <div class="credential">
+        <span class="credential-row">
+            <input type="text" id="author-key" value="{{ '"extra": {"adzercms": {"author": "' ~ author.key ~ '"}}' }}" readonly>
+            {% include '@Theme/_copy.html.twig' with {target: '#author-key'} only %}
+        </span>
+    </div>
+</div>
+
+{% include '@Extensions/cabinet/_mine.html.twig' %}
+{% endblock %}

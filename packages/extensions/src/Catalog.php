@@ -6,9 +6,11 @@ namespace AdzerCMS\Extensions;
 
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Core\Ui\WebLink;
 use AdzerCMS\Extensions\Entity\Extension;
+use AdzerCMS\Extensions\Entity\ExtensionAuthor;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\InputBag;
@@ -65,5 +67,17 @@ final readonly class Catalog
         $this->metadata->refresh([$extension]);
 
         return null;
+    }
+
+    public function author(User $user): ExtensionAuthor
+    {
+        $author = $this->em->find(ExtensionAuthor::class, $user->getId());
+        if (null === $author) {
+            $author = new ExtensionAuthor($user);
+            $this->em->persist($author);
+            $this->em->flush();
+        }
+
+        return $author;
     }
 }

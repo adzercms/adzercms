@@ -9,6 +9,7 @@ use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\Entity\Extension;
+use AdzerCMS\Extensions\Entity\ExtensionAuthor;
 use AdzerCMS\Extensions\ExtensionDecision;
 use AdzerCMS\Extensions\ExtensionPrice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -41,6 +42,15 @@ class ExtensionRepository extends ServiceEntityRepository
     public function published(Table $table): array
     {
         return $table->paginate(self::placed($this->catalog($table))->leftJoin('e.categories', 'c')->addSelect('c')->getQuery());
+    }
+
+    /** @return list<Extension> */
+    public function authored(ExtensionAuthor $author, Table $table): array
+    {
+        $builder = $this->createQueryBuilder('e')->andWhere('e.author = :author')->setParameter('author', $author);
+        $table->apply($builder);
+
+        return $table->paginate($builder->addOrderBy('e.id')->getQuery());
     }
 
     /** @return list<Extension> */

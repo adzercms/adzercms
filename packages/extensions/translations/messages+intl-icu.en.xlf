@@ -133,6 +133,36 @@
         <target>Extension catalog</target>
       </segment>
     </unit>
+    <unit id="extensions.mine.empty">
+      <segment>
+        <source>extensions.mine.empty</source>
+        <target>No entries yet</target>
+      </segment>
+    </unit>
+    <unit id="extensions.mine.entries">
+      <segment>
+        <source>extensions.mine.entries</source>
+        <target>Entries</target>
+      </segment>
+    </unit>
+    <unit id="extensions.mine.key">
+      <segment>
+        <source>extensions.mine.key</source>
+        <target>Author key</target>
+      </segment>
+    </unit>
+    <unit id="extensions.mine.key_hint">
+      <segment>
+        <source>extensions.mine.key_hint</source>
+        <target>Add this field to composer.json of your package and release a version: the catalog recognizes your packages by the key</target>
+      </segment>
+    </unit>
+    <unit id="extensions.mine.menu">
+      <segment>
+        <source>extensions.mine.menu</source>
+        <target>My extensions</target>
+      </segment>
+    </unit>
     <unit id="extensions.new">
       <segment>
         <source>extensions.new</source>
