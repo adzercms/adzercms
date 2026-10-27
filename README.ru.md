@@ -85,6 +85,7 @@ vendor/bin/adzercms-check
 - [Установка](docs/installation.ru.md)
 - [Модули: подключение и настройки](docs/modules.ru.md)
 - [Как написать свой модуль](docs/module-development.ru.md)
+- [Как разместить расширение в каталоге](packages/extensions/docs/publishing.ru.md)
 - [Разработка движка](docs/engine-development.ru.md)
 
 ## Участие

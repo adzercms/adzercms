@@ -85,6 +85,7 @@ Suite names are the `<testsuite>` entries in `phpunit.dist.xml`. `vendor/bin/adz
 - [Installation](docs/installation.md)
 - [Modules: enabling and settings](docs/modules.md)
 - [Writing your own module](docs/module-development.md)
+- [Publishing an extension in the catalog](packages/extensions/docs/publishing.md)
 - [Engine development](docs/engine-development.md)
 
 ## Contributing

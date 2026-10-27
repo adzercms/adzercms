@@ -10,6 +10,7 @@ use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\Entity\Extension;
 use AdzerCMS\Extensions\ExtensionPrice;
+use AdzerCMS\Extensions\Guide;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,6 +23,7 @@ use function Symfony\Component\Translation\t;
 final class CatalogController extends AbstractController
 {
     public const PAGE = 'extensions';
+    public const GUIDE = 'extensions_publishing';
 
     public function __construct(private readonly ExtensionRepository $extensions)
     {
@@ -42,6 +44,12 @@ final class CatalogController extends AbstractController
         }
 
         return $this->render('@Extensions/catalog.html.twig', $context);
+    }
+
+    #[Route('/extensions/publishing', name: self::GUIDE, methods: ['GET'])]
+    public function guide(Request $request): Response
+    {
+        return $this->render('@Extensions/guide.html.twig', ['guide' => Guide::read($request->getLocale())]);
     }
 
     #[Route('/extensions/store.json', name: 'extensions_store', methods: ['GET'])]

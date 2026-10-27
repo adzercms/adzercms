@@ -1,0 +1,13 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ guide.title }}{% endblock %}
+
+{% block description %}{{ 'extensions.guide.description'|trans }}{% endblock %}
+
+{% block meta %}
+    {% include '@Theme/_seo.html.twig' with {title: block('title'), description: block('description')} only %}
+{% endblock %}
+
+{% block page %}
+{% include '@Extensions/_guide.html.twig' %}
+{% endblock %}

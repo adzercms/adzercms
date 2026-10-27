@@ -157,6 +157,18 @@
         <target>Free</target>
       </segment>
     </unit>
+    <unit id="extensions.guide.description">
+      <segment>
+        <source>extensions.guide.description</source>
+        <target>How to publish a module, theme or site template in the AdzerCMS extension catalog: package, check, Packagist, author key and catalog entry</target>
+      </segment>
+    </unit>
+    <unit id="extensions.guide.link">
+      <segment>
+        <source>extensions.guide.link</source>
+        <target>How to publish</target>
+      </segment>
+    </unit>
     <unit id="extensions.link.homepage">
       <segment>
         <source>extensions.link.homepage</source>

@@ -16,6 +16,9 @@ final readonly class ExtensionsPages implements Pages
 {
     public function pages(): array
     {
-        return [new Page(CatalogController::PAGE, t('extensions.catalog.title'), sources: [Extension::class, ExtensionCategory::class])];
+        return [
+            new Page(CatalogController::PAGE, t('extensions.catalog.title'), sources: [Extension::class, ExtensionCategory::class]),
+            new Page(CatalogController::GUIDE, t('extensions.guide.link')),
+        ];
     }
 }

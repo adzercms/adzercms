@@ -157,6 +157,18 @@
         <target>Бесплатно</target>
       </segment>
     </unit>
+    <unit id="extensions.guide.description">
+      <segment>
+        <source>extensions.guide.description</source>
+        <target>Как разместить модуль, тему или шаблон сайта в каталоге расширений AdzerCMS: пакет, проверка, Packagist, ключ автора и запись каталога</target>
+      </segment>
+    </unit>
+    <unit id="extensions.guide.link">
+      <segment>
+        <source>extensions.guide.link</source>
+        <target>Как разместить</target>
+      </segment>
+    </unit>
     <unit id="extensions.link.homepage">
       <segment>
         <source>extensions.link.homepage</source>

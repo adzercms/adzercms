@@ -23,6 +23,7 @@ final class CatalogPageTest extends CatalogTestCase
 
     private const PAGE = '/extensions';
     private const STORE = '/extensions/store.json';
+    private const GUIDE = __DIR__.'/../docs/';
 
     #[Group('ACMS-EXT-0003')]
     #[Group('ACMS-EXT-0004')]
@@ -188,6 +189,31 @@ final class CatalogPageTest extends CatalogTestCase
             [$meta('meta[property="og:url"]'), $meta('meta[property="og:title"]'), $meta('meta[property="og:description"]')],
         );
         self::assertNotSame('', $meta('meta[name="description"]'));
+    }
+
+    #[Group('ACMS-EXT-0011')]
+    #[Group('ACMS-US-0044')]
+    #[DataProvider('guided')]
+    public function testGuideOpensFromCatalogAndMyExtensionsInReaderLanguage(string $entry, bool $signed, string $language, string $file): void
+    {
+        if ($signed) {
+            $this->client->loginUser($this->record('79990000002'));
+        }
+        $this->client->setServerParameter('HTTP_ACCEPT_LANGUAGE', $language);
+
+        $page = $this->client->request('GET', $entry);
+        $guide = $this->client->click($page->selectLink(self::phrase('extensions.guide.link', locale: $language))->link());
+
+        self::assertResponseIsSuccessful();
+        self::assertSame([substr((string) strtok((string) file_get_contents(self::GUIDE.$file), "\n"), 2)], $guide->filter('h1')->each(static fn (Crawler $title): string => $title->text()));
+    }
+
+    /** @return iterable<string, array{string, bool, string, string}> */
+    public static function guided(): iterable
+    {
+        yield 'catalog in English' => [self::PAGE, false, 'en', 'publishing.md'];
+        yield 'catalog in Russian' => [self::PAGE, false, 'ru', 'publishing.ru.md'];
+        yield 'my extensions' => ['/extensions/mine', true, 'en', 'publishing.md'];
     }
 
     #[Group('ACMS-US-0034')]
