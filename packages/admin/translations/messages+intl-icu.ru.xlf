@@ -61,6 +61,12 @@
         <target>Пользователи</target>
       </segment>
     </unit>
+    <unit id="admin.module.guide">
+      <segment>
+        <source>admin.module.guide</source>
+        <target>Получение доступа</target>
+      </segment>
+    </unit>
     <unit id="admin.module.module">
       <segment>
         <source>admin.module.module</source>

@@ -25,6 +25,21 @@
     </div>
 </div>
 
+{% if module.guide %}
+    <div class="section">
+        <div class="section-head">
+            <h3>{{ 'admin.module.guide'|trans }}</h3>
+        </div>
+        <div class="prose">
+            <ol>
+                {% for step in module.guide %}
+                    <li>{{ step|trans|links }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+{% endif %}
+
 {% if sections %}
     <form id="settings" method="post" enctype="multipart/form-data">
         {{ csrf_field() }}

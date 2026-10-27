@@ -190,6 +190,17 @@ final class ModuleWebTest extends SchemaTestCase
         }
     }
 
+    #[Group('ACMS-CORE-1003')]
+    #[Group('ACMS-US-0004')]
+    public function testCardOfExternalServiceGuidesToItsCredentials(): void
+    {
+        $steps = $this->client->request('GET', '/admin/modules/relay')->filter('ol li');
+
+        self::assertSame(['Open '.RelayGateway::KEYS, 'Issue a token and copy it into Relay token'], $steps->each(static fn (Crawler $step): string => trim($step->text())));
+        self::assertSame(RelayGateway::KEYS, $steps->filter('a')->attr('href'), 'the address of a step leads to the service');
+        self::assertCount(0, $this->client->request('GET', '/admin/modules/admin')->filter('ol li'), 'a module without a service has no steps');
+    }
+
     #[Group('ACMS-CORE-0934')]
     #[Group('ACMS-CORE-0147')]
     #[Group('ACMS-CORE-0981')]
