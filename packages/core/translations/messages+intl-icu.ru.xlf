@@ -232,7 +232,7 @@
     <unit id="core.consent.description">
       <segment>
         <source>core.consent.description</source>
-        <target>Сайт использует cookie и {services} для статистики посещений. {policy}</target>
+        <target>Сайт использует cookie для статистики посещений: {services}. {policy}</target>
       </segment>
     </unit>
     <unit id="core.consent.necessary">

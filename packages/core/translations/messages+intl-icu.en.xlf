@@ -232,7 +232,7 @@
     <unit id="core.consent.description">
       <segment>
         <source>core.consent.description</source>
-        <target>The site uses cookies and {services} for visit statistics. {policy}</target>
+        <target>The site uses cookies for visit statistics: {services}. {policy}</target>
       </segment>
     </unit>
     <unit id="core.consent.necessary">
