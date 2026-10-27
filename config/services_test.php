@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use AdzerCMS\Cabinet\Tests\Fixture\Pager;
-use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Core\Tests\Account\Fixture\OpenPolicy;
 use AdzerCMS\Core\Tests\HttpAnswers;
 use AdzerCMS\Core\Tests\Login\Fixture\CatchListener;
@@ -21,22 +20,10 @@ use AdzerCMS\Core\Tests\Ui\Fixture\FrameController;
 use AdzerCMS\Core\Tests\Ui\Fixture\Ledger;
 use AdzerCMS\Core\Tests\Ui\Fixture\ListController;
 use AdzerCMS\Core\Tests\Ui\Fixture\Masthead;
-use AdzerCMS\Leads\LeadsBundle;
-use AdzerCMS\Leads\Tests\Fixture\ItemSubject;
-use AdzerCMS\Mailing\MailingBundle;
-use AdzerCMS\Mailing\Tests\Fixture\CommentAudience;
-use AdzerCMS\Opotopo\OpotopoBundle;
-use AdzerCMS\Opotopo\Tests\Fixture\ShelfCatalog;
-use AdzerCMS\Realtime\HubKind;
-use AdzerCMS\Realtime\RealtimeBundle;
-use AdzerCMS\Realtime\Tests\Fixture\HeraldHub;
-use AdzerCMS\Support\SupportBundle;
-use AdzerCMS\Support\Tests\Fixture\SubjectFixture;
 use Psr\Log\NullLogger;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $container, ContainerBuilder $builder): void {
+return static function (ContainerConfigurator $container): void {
     $services = $container->services();
     $services->set(HttpAnswers::class)->public();
     $services->set(OpenPolicy::class)->autoconfigure()->public();
@@ -57,22 +44,4 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
     $services->set(GuidePages::class)->autoconfigure();
     $services->set(GuideController::class)->autoconfigure()->autowire();
     $services->set('logger', NullLogger::class);
-
-    $bundles = $builder->getParameter('kernel.bundles');
-    if (\is_array($bundles) && \in_array(SupportBundle::class, $bundles, true)) {
-        $services->set(SubjectFixture::class)->autoconfigure()->public();
-    }
-    if (\is_array($bundles) && \in_array(LeadsBundle::class, $bundles, true)) {
-        $services->set(ItemSubject::class)->autoconfigure()->public();
-    }
-    if (\is_array($bundles) && \in_array(MailingBundle::class, $bundles, true)) {
-        $services->set(CommentAudience::class)->autoconfigure();
-    }
-    if (\is_array($bundles) && \in_array(OpotopoBundle::class, $bundles, true)) {
-        $services->set(ShelfCatalog::class)->autowire()->autoconfigure()->public();
-    }
-    if (\is_array($bundles) && \in_array(RealtimeBundle::class, $bundles, true)
-        && [] === array_filter($bundles, static fn (string $bundle): bool => is_subclass_of($bundle, Module::class) && HubKind::Hub === $bundle::kind())) {
-        $services->set(HeraldHub::class)->autoconfigure()->public();
-    }
 };

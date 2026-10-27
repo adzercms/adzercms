@@ -11,7 +11,9 @@ use AdzerCMS\Core\Build\Preview;
 use AdzerCMS\Core\Module\Installed;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Module\Selection;
+use Composer\Autoload\ClassLoader;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
@@ -23,11 +25,14 @@ abstract class Kernel extends BaseKernel
     use MicroKernelTrait {
         getCacheDir as private configuredCacheDir;
         registerBundles as private configuredBundles;
+        configureContainer as private configuredContainer;
         configureRoutes as private configuredRoutes;
     }
 
     public const ASSETS = 'adzercms.assets';
 
+    private const TEST = 'test';
+    private const TEST_SERVICES = '/tests/services.php';
     private const ASSETS_ROOT = '/assets/';
     private const PUBLIC = '/public';
     private const SELECTION = '.selection';
@@ -192,6 +197,22 @@ abstract class Kernel extends BaseKernel
     private function selectionFile(): string
     {
         return $this->configuredCacheDir().self::SELECTION;
+    }
+
+    private function configureContainer(ContainerConfigurator $container): void
+    {
+        $this->configuredContainer($container);
+
+        if (self::TEST !== $this->environment) {
+            return;
+        }
+
+        $prefixes = array_merge(...array_map(static fn (ClassLoader $loader): array => $loader->getPrefixesPsr4(), array_values(ClassLoader::getRegisteredLoaders())));
+        foreach ($this->getBundles() as $bundle) {
+            if (CoreBundle::engine($bundle::class) && isset($prefixes[$bundle->getNamespace().'\\Tests\\']) && is_file($bundle->getPath().self::TEST_SERVICES)) {
+                $container->import($bundle->getPath().self::TEST_SERVICES);
+            }
+        }
     }
 
     private function configureRoutes(RoutingConfigurator $routes): void
