@@ -6,6 +6,7 @@ namespace AdzerCMS\Extensions\Tests;
 
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Tests\Queries;
+use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Extensions\Entity\Extension;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -65,7 +66,7 @@ final class CatalogAdminTest extends CatalogTestCase
 
         $dialog = $this->post(self::LIST.'/new', $fields + ['name' => 'acme/fresh', 'type' => 'module', 'price' => '', 'demo' => '']);
 
-        self::assertSame(self::phrase($reason, ['name' => 'acme/taken']), trim($dialog->filter('.flash-error')->text()));
+        self::assertSame(self::phrase($reason, ['name' => 'acme/taken', 'max' => Money::rubles(Extension::PRICE)]), trim($dialog->filter('.flash-error')->text()));
         self::assertCount(1, self::extensions()->findAll());
     }
 
@@ -76,6 +77,7 @@ final class CatalogAdminTest extends CatalogTestCase
         yield 'name in the catalog' => [['name' => 'acme/taken'], 'extensions.refusal.taken'];
         yield 'unknown type' => [['type' => 'plugin'], 'extensions.refusal.type'];
         yield 'zero price' => [['price' => '0'], 'extensions.refusal.price'];
+        yield 'price beyond its column' => [['price' => '100000000'], 'extensions.refusal.price'];
         yield 'demo outside the web' => [['demo' => 'ftp://shop.example.test'], 'extensions.refusal.demo'];
     }
 

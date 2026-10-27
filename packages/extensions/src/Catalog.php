@@ -38,8 +38,8 @@ final readonly class Catalog
 
         $price = trim($input->getString('price'));
         $amount = '' === $price ? null : Money::parse($price);
-        if ('' !== $price && (null === $amount || !Money::isPositive($amount))) {
-            return new Refusal(t('extensions.refusal.price'));
+        if ('' !== $price && (null === $amount || !Money::isPositive($amount) || Money::compare($amount, Extension::PRICE) > 0)) {
+            return new Refusal(t('extensions.refusal.price', ['max' => Money::rubles(Extension::PRICE)]));
         }
 
         $extension->describe($entry['name'], $entry['type'], $amount, $entry['demo']);

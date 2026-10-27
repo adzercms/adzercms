@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Composer\Description;
 use AdzerCMS\Core\Composer\Package;
+use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Core\Ui\Placed;
 use AdzerCMS\Extensions\ExtensionDecision;
 use AdzerCMS\Extensions\ExtensionState;
@@ -24,6 +25,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_extension_decision', columns: ['decision', 'position'])]
 class Extension implements Placed
 {
+    public const PRICE = '99999999.99';
     private const VERSION = 64;
     private const LINK = 255;
 
@@ -203,6 +205,9 @@ class Extension implements Placed
         $this->source = self::fit($package?->source, self::LINK);
         $this->homepage = self::fit($package?->homepage, self::LINK);
         $this->authorKey = self::fit($package?->author, ExtensionAuthor::KEY);
+        if (null !== $this->author) {
+            $this->price = null !== $package?->price && Money::compare($package->price, self::PRICE) <= 0 ? $package->price : null;
+        }
 
         $categories = $package->categories ?? [];
         foreach ($this->categories as $held) {

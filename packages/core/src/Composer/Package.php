@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Composer;
 
 use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Core\Module\Registry;
+use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Core\Ui\WebLink;
 use Composer\MetadataMinifier\MetadataMinifier;
 use Composer\Semver\Semver;
@@ -28,6 +29,7 @@ final readonly class Package
         public ?string $kind,
         public ?string $reference,
         public ?string $author = null,
+        public ?string $price = null,
     ) {
     }
 
@@ -108,7 +110,15 @@ final readonly class Package
             [] === $kinds ? null : reset($kinds),
             $reference,
             self::text($extra['author'] ?? null),
+            self::price($version['extra']['opotopo']['price'] ?? null),
         );
+    }
+
+    private static function price(mixed $value): ?string
+    {
+        $price = Money::parse(self::text($value));
+
+        return null !== $price && Money::isPositive($price) ? $price : null;
     }
 
     /** @param array<mixed> $version */

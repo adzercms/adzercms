@@ -54,7 +54,7 @@ trait Packages
      *
      * @return array<string, mixed>
      */
-    private static function version(string $name, string $version, string $description, mixed $categories = [], array $translations = [], ?string $author = null): array
+    private static function version(string $name, string $version, string $description, mixed $categories = [], array $translations = [], ?string $author = null, ?string $price = null): array
     {
         return [
             'name' => $name,
@@ -63,7 +63,10 @@ trait Packages
             'type' => 'adzercms-module',
             'homepage' => 'https://shop.example.test',
             'source' => ['url' => 'https://github.com/acme/shop.git', 'type' => 'git', 'reference' => 'a6b26c2'],
-            'extra' => ['adzercms' => ['bundle' => 'Acme\\Shop\\ShopBundle', 'categories' => $categories, 'description' => $translations, 'author' => $author]],
+            'extra' => [
+                'adzercms' => ['bundle' => 'Acme\\Shop\\ShopBundle', 'categories' => $categories, 'description' => $translations, 'author' => $author],
+                'opotopo' => ['url' => 'https://opotopo.example.test/ad/1', 'price' => $price],
+            ],
         ];
     }
 }

@@ -89,6 +89,28 @@ final class AuthorTest extends CatalogTestCase
         yield 'repository down' => [true, 'extensions.refusal.unavailable'];
     }
 
+    #[Group('ACMS-CORE-0931')]
+    #[Group('ACMS-EXT-0003')]
+    #[Group('ACMS-US-0044')]
+    #[DataProvider('priced')]
+    public function testAuthorEntryTakesPriceOfItsOpotopoCard(string $card, ?string $price): void
+    {
+        $this->arrive(self::SECTION);
+        $this->paid[self::NAME] = [self::version(self::NAME, '1.0.0', 'Shop', author: $this->key(), price: $card)];
+
+        $this->post(self::SECTION.'/new', ['name' => self::NAME, 'type' => 'module', 'demo' => '', 'price' => '900']);
+
+        self::assertSame($price, (self::extensions()->named(self::NAME) ?? self::fail('the entry is not in the catalog'))->getPrice());
+    }
+
+    /** @return iterable<string, array{string, ?string}> */
+    public static function priced(): iterable
+    {
+        yield 'paid' => ['1500', '1500.00'];
+        yield 'free variant' => ['0', null];
+        yield 'beyond the price column' => ['100000000.00', null];
+    }
+
     #[Group('ACMS-EXT-0009')]
     #[Group('ACMS-US-0044')]
     public function testEditOfRejectedEntryReturnsItToDecisionWhilePublishedStays(): void

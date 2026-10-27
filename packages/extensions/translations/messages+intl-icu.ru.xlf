@@ -202,7 +202,7 @@
     <unit id="extensions.refusal.price">
       <segment>
         <source>extensions.refusal.price</source>
-        <target>Укажите цену больше нуля; у бесплатного расширения цены нет</target>
+        <target>Укажите цену больше нуля и не выше {max}; у бесплатного расширения цены нет</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.repository">

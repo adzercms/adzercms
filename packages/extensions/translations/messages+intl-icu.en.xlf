@@ -202,7 +202,7 @@
     <unit id="extensions.refusal.price">
       <segment>
         <source>extensions.refusal.price</source>
-        <target>Enter a price above zero; free extensions have no price</target>
+        <target>Enter a price above zero and up to {max}; a free extension has no price</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.repository">
