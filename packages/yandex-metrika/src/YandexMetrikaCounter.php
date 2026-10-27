@@ -7,6 +7,7 @@ namespace AdzerCMS\YandexMetrika;
 use AdzerCMS\Contracts\Analytics\Counter;
 use AdzerCMS\Contracts\Module\Credentials;
 use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Contracts\Ui\ContentSource;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -15,10 +16,12 @@ use function Symfony\Component\Translation\t;
 final readonly class YandexMetrikaCounter implements Counter
 {
     public const COUNTER = 'counter';
+    public const TOKEN = 'token';
     public const TAG = 'https://mc.yandex.ru/metrika/tag.js?id=%d';
     public const OPTIONS = ['ssr' => true, 'webvisor' => true, 'clickmap' => true, 'ecommerce' => 'dataLayer', 'accurateTrackBounce' => true, 'trackLinks' => true];
 
     private const ENTRY = 'adzercms/yandex-metrika';
+    private const ACCESS = 'access';
     private const BLOB = 'blob:';
     private const HOSTS = [
         'mc.yandex.ru', 'mc.yandex.az', 'mc.yandex.by', 'mc.yandex.co.il', 'mc.yandex.com', 'mc.yandex.com.am', 'mc.yandex.com.ge',
@@ -41,7 +44,10 @@ final readonly class YandexMetrikaCounter implements Counter
 
     public function credentials(): array
     {
-        return [new Field(self::COUNTER, t('yandexmetrika.counter'), required: true)];
+        return [
+            new Field(self::COUNTER, t('yandexmetrika.counter'), required: true),
+            new Field(self::TOKEN, t('yandexmetrika.token'), Type::Secret, group: self::ACCESS),
+        ];
     }
 
     public function entry(): string

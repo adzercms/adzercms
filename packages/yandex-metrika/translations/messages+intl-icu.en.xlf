@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
+    <unit id="yandexmetrika.conversions_closed">
+      <segment>
+        <source>yandexmetrika.conversions_closed</source>
+        <target>Yandex Metrica takes no offline conversions without the counter and its token</target>
+      </segment>
+    </unit>
+    <unit id="yandexmetrika.conversions_refused">
+      <segment>
+        <source>yandexmetrika.conversions_refused</source>
+        <target>Yandex Metrica refused the conversions: {reason}</target>
+      </segment>
+    </unit>
     <unit id="yandexmetrika.counter">
       <segment>
         <source>yandexmetrika.counter</source>
@@ -11,6 +23,18 @@
       <segment>
         <source>yandexmetrika.name</source>
         <target>Yandex Metrica</target>
+      </segment>
+    </unit>
+    <unit id="yandexmetrika.token">
+      <segment>
+        <source>yandexmetrika.token</source>
+        <target>Token</target>
+      </segment>
+    </unit>
+    <unit id="yandexmetrika.unavailable">
+      <segment>
+        <source>yandexmetrika.unavailable</source>
+        <target>Yandex Metrica is unavailable: {reason}</target>
       </segment>
     </unit>
   </file>

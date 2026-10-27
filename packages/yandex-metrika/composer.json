@@ -1,7 +1,7 @@
 {
     "name": "adzercms/yandex-metrika",
     "type": "adzercms-module",
-    "description": "Yandex Metrica counter on pages after cookie consent",
+    "description": "Yandex Metrica counter on pages after cookie consent and offline conversions upload to it",
     "keywords": [
         "adzercms",
         "symfony",
@@ -13,7 +13,10 @@
     "require": {
         "php": ">=8.4",
         "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
         "symfony/dependency-injection": "7.4.*",
+        "symfony/http-client-contracts": "^3.7",
+        "symfony/mime": "7.4.*",
         "symfony/translation": "7.4.*",
         "symfony/translation-contracts": "^3.7"
     },
@@ -29,7 +32,7 @@
         "adzercms": {
             "bundle": "AdzerCMS\\YandexMetrika\\YandexMetrikaBundle",
             "description": {
-                "ru": "Счётчик Яндекс Метрики на страницах после согласия на cookie"
+                "ru": "Счётчик Яндекс Метрики на страницах после согласия на cookie и выгрузка ему офлайн-конверсий"
             },
             "categories": ["marketing"]
         },

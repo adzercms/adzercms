@@ -22,6 +22,6 @@ final class YandexMetrikaBundle extends Module
     {
         $container->services()->defaults()->autowire()->autoconfigure()
             ->load('AdzerCMS\\YandexMetrika\\', '../src/')
-            ->exclude(['../src/YandexMetrikaBundle.php']);
+            ->exclude(['../src/YandexMetrikaBundle.php', '../src/OfflineConversion.php']);
     }
 }

@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
+    <unit id="yandexmetrika.conversions_closed">
+      <segment>
+        <source>yandexmetrika.conversions_closed</source>
+        <target>Яндекс Метрика не принимает офлайн-конверсии без счётчика и его токена</target>
+      </segment>
+    </unit>
+    <unit id="yandexmetrika.conversions_refused">
+      <segment>
+        <source>yandexmetrika.conversions_refused</source>
+        <target>Метрика отклонила конверсии: {reason}</target>
+      </segment>
+    </unit>
     <unit id="yandexmetrika.counter">
       <segment>
         <source>yandexmetrika.counter</source>
@@ -11,6 +23,18 @@
       <segment>
         <source>yandexmetrika.name</source>
         <target>Яндекс Метрика</target>
+      </segment>
+    </unit>
+    <unit id="yandexmetrika.token">
+      <segment>
+        <source>yandexmetrika.token</source>
+        <target>Токен</target>
+      </segment>
+    </unit>
+    <unit id="yandexmetrika.unavailable">
+      <segment>
+        <source>yandexmetrika.unavailable</source>
+        <target>Яндекс Метрика недоступна: {reason}</target>
       </segment>
     </unit>
   </file>
