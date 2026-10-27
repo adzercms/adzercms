@@ -8,15 +8,16 @@ use AdzerCMS\Contracts\Module\Credentials;
 use AdzerCMS\Contracts\Notice\SmsFailed;
 use AdzerCMS\Contracts\Notice\SmsGateway;
 use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Guided;
 use AdzerCMS\Contracts\Setting\Type;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 use function Symfony\Component\Translation\t;
 
-final readonly class SmsPilotGateway implements SmsGateway
+final readonly class SmsPilotGateway implements SmsGateway, Guided
 {
-    public const URL = 'api_url';
+    public const API = 'https://smspilot.ru/api2.php';
     public const KEY = 'apikey';
     public const SENDER = 'sender';
 
@@ -29,10 +30,14 @@ final readonly class SmsPilotGateway implements SmsGateway
     public function credentials(): array
     {
         return [
-            new Field(self::URL, t('smspilot.api_url'), required: true),
             new Field(self::KEY, t('smspilot.apikey'), Type::Secret, required: true),
             new Field(self::SENDER, t('smspilot.sender')),
         ];
+    }
+
+    public function guide(): array
+    {
+        return [t('smspilot.guide.key'), t('smspilot.guide.sender')];
     }
 
     public function send(Credentials $credentials, string $phone, string $text): void
@@ -71,7 +76,7 @@ final readonly class SmsPilotGateway implements SmsGateway
     private function request(Credentials $credentials, array $payload): array
     {
         try {
-            $response = $this->http->request('POST', $credentials->get(self::URL), [
+            $response = $this->http->request('POST', self::API, [
                 'json' => ['apikey' => $credentials->get(self::KEY)] + $payload,
                 'timeout' => self::TIMEOUT,
             ]);

@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Module\Credentials;
 use AdzerCMS\Contracts\Notice\SmsFailed;
 use AdzerCMS\Contracts\Notice\SmsGateway;
 use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Guided;
 use AdzerCMS\Contracts\Setting\Type;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
@@ -15,9 +16,9 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 use function Symfony\Component\Translation\t;
 
-final readonly class MtsMarketologGateway implements SmsGateway
+final readonly class MtsMarketologGateway implements SmsGateway, Guided
 {
-    public const URL = 'api_url';
+    public const API = 'https://omnichannel.mts.ru/http-api/v1/messages';
     public const LOGIN = 'login';
     public const PASSWORD = 'password';
     public const SENDER = 'sender';
@@ -31,17 +32,21 @@ final readonly class MtsMarketologGateway implements SmsGateway
     public function credentials(): array
     {
         return [
-            new Field(self::URL, t('mtsmarketolog.api_url'), required: true),
             new Field(self::LOGIN, t('mtsmarketolog.login'), required: true),
             new Field(self::PASSWORD, t('mtsmarketolog.password'), Type::Secret, required: true),
             new Field(self::SENDER, t('mtsmarketolog.sender'), required: true),
         ];
     }
 
+    public function guide(): array
+    {
+        return [t('mtsmarketolog.guide.sender'), t('mtsmarketolog.guide.api'), t('mtsmarketolog.guide.name')];
+    }
+
     public function send(Credentials $credentials, string $phone, string $text): void
     {
         try {
-            $response = $this->http->request('POST', rtrim($credentials->get(self::URL), '/').'/messages', [
+            $response = $this->http->request('POST', self::API, [
                 'auth_basic' => [$credentials->get(self::LOGIN), $credentials->get(self::PASSWORD)],
                 'json' => ['messages' => [[
                     'content' => ['short_text' => $text],

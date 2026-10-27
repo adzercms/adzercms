@@ -9,6 +9,7 @@ use AdzerCMS\Contracts\Notice\BotEvents;
 use AdzerCMS\Contracts\Notice\BotFailed;
 use AdzerCMS\Contracts\Notice\Incoming;
 use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Guided;
 use AdzerCMS\Contracts\Setting\Type;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
@@ -16,7 +17,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 use function Symfony\Component\Translation\t;
 
-final readonly class MaxBotGateway implements BotEvents
+final readonly class MaxBotGateway implements BotEvents, Guided
 {
     public const API = 'https://platform-api2.max.ru';
     public const SECRET_HEADER = 'X-Max-Bot-Api-Secret';
@@ -36,6 +37,11 @@ final readonly class MaxBotGateway implements BotEvents
     public function credentials(): array
     {
         return [new Field(self::TOKEN, t('core.bot.token'), Type::Secret, required: true)];
+    }
+
+    public function guide(): array
+    {
+        return [t('maxbot.guide.bot'), t('maxbot.guide.moderation'), t('maxbot.guide.token')];
     }
 
     public function service(): string

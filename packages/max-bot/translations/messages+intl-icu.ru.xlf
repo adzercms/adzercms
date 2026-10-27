@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
+    <unit id="maxbot.guide.bot">
+      <segment>
+        <source>maxbot.guide.bot</source>
+        <target>На платформе MAX для партнёров https://business.max.ru/self с подтверждённым профилем организации, ИП либо самозанятого откройте «Чат-боты», нажмите «Создать», заполните «Логотип», «Название чат-бота» и «Описание» и нажмите «Создать»</target>
+      </segment>
+    </unit>
+    <unit id="maxbot.guide.moderation">
+      <segment>
+        <source>maxbot.guide.moderation</source>
+        <target>Дождитесь статуса бота «Опубликован» после модерации</target>
+      </segment>
+    </unit>
+    <unit id="maxbot.guide.token">
+      <segment>
+        <source>maxbot.guide.token</source>
+        <target>В «Чат-боты» у бота нажмите ⋮ → «Настройки» и скопируйте токен в поле «Токен бота»</target>
+      </segment>
+    </unit>
     <unit id="maxbot.name">
       <segment>
         <source>maxbot.name</source>

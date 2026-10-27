@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
+    <unit id="maxbot.guide.bot">
+      <segment>
+        <source>maxbot.guide.bot</source>
+        <target>On the MAX partner platform https://business.max.ru/self with a verified profile of an organization, sole trader or self-employed open the chat bots, create a bot with a logo, a name and a description</target>
+      </segment>
+    </unit>
+    <unit id="maxbot.guide.moderation">
+      <segment>
+        <source>maxbot.guide.moderation</source>
+        <target>Wait for the bot to get published after the moderation</target>
+      </segment>
+    </unit>
+    <unit id="maxbot.guide.token">
+      <segment>
+        <source>maxbot.guide.token</source>
+        <target>In the chat bots open the settings of the bot through its menu and copy the token into "Bot token"</target>
+      </segment>
+    </unit>
     <unit id="maxbot.name">
       <segment>
         <source>maxbot.name</source>

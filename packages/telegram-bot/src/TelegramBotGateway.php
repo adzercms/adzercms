@@ -8,13 +8,14 @@ use AdzerCMS\Contracts\Module\Credentials;
 use AdzerCMS\Contracts\Notice\BotFailed;
 use AdzerCMS\Contracts\Notice\BotGateway;
 use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Guided;
 use AdzerCMS\Contracts\Setting\Type;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 use function Symfony\Component\Translation\t;
 
-final readonly class TelegramBotGateway implements BotGateway
+final readonly class TelegramBotGateway implements BotGateway, Guided
 {
     public const API = 'https://api.telegram.org/bot%s/sendMessage';
     public const SERVICE = 'telegram';
@@ -28,6 +29,11 @@ final readonly class TelegramBotGateway implements BotGateway
     public function credentials(): array
     {
         return [new Field(self::TOKEN, t('core.bot.token'), Type::Secret, required: true)];
+    }
+
+    public function guide(): array
+    {
+        return [t('telegrambot.guide.bot'), t('telegrambot.guide.token')];
     }
 
     public function service(): string

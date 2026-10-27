@@ -13,6 +13,8 @@
     "require": {
         "php": ">=8.4",
         "adzercms/contracts": "^1.0",
+        "doctrine/dbal": "^4.5",
+        "doctrine/migrations": "^3.9",
         "symfony/dependency-injection": "7.4.*",
         "symfony/http-client-contracts": "^3.7",
         "symfony/translation": "7.4.*"

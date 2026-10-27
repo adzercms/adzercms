@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
+    <unit id="telegrambot.guide.bot">
+      <segment>
+        <source>telegrambot.guide.bot</source>
+        <target>Отправьте https://t.me/BotFather команду /mybots и выберите бота входа через Telegram: бот пишет только вошедшим через него</target>
+      </segment>
+    </unit>
+    <unit id="telegrambot.guide.token">
+      <segment>
+        <source>telegrambot.guide.token</source>
+        <target>Нажмите «API Token» и скопируйте токен из ответа в поле «Токен бота»</target>
+      </segment>
+    </unit>
     <unit id="telegrambot.name">
       <segment>
         <source>telegrambot.name</source>

@@ -14,6 +14,7 @@ use Symfony\Component\HttpClient\Response\JsonMockResponse;
 
 final class MtsMarketologGatewayTest extends TestCase
 {
+    #[Group('ACMS-CORE-1004')]
     #[Group('ACMS-CORE-0910')]
     public function testMessageGoesWithBasicAuthorization(): void
     {
@@ -21,7 +22,7 @@ final class MtsMarketologGatewayTest extends TestCase
 
         (new MtsMarketologGateway(new MockHttpClient($answer)))->send(self::credentials(), '79991234567', 'Code 1234');
 
-        self::assertSame('https://mts.example.test/v1/messages', $answer->getRequestUrl());
+        self::assertSame(MtsMarketologGateway::API, $answer->getRequestUrl());
         self::assertContains('Authorization: Basic '.base64_encode('operator:пароль'), $answer->getRequestOptions()['headers'] ?? []);
         $body = json_decode((string) ($answer->getRequestOptions()['body'] ?? ''), true);
         self::assertIsArray($body);
@@ -44,7 +45,6 @@ final class MtsMarketologGatewayTest extends TestCase
     private static function credentials(): Credentials
     {
         return new Credentials([
-            MtsMarketologGateway::URL => 'https://mts.example.test/v1/',
             MtsMarketologGateway::LOGIN => 'operator',
             MtsMarketologGateway::PASSWORD => 'пароль',
             MtsMarketologGateway::SENDER => 'VILLAGE',

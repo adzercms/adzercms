@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
+    <unit id="telegrambot.guide.bot">
+      <segment>
+        <source>telegrambot.guide.bot</source>
+        <target>Send /mybots to https://t.me/BotFather and pick the bot of the Telegram sign-in: the bot writes only to those who signed in through it</target>
+      </segment>
+    </unit>
+    <unit id="telegrambot.guide.token">
+      <segment>
+        <source>telegrambot.guide.token</source>
+        <target>Press "API Token" and copy the token from the reply into "Bot token"</target>
+      </segment>
+    </unit>
     <unit id="telegrambot.name">
       <segment>
         <source>telegrambot.name</source>

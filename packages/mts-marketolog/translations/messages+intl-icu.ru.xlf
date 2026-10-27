@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
-    <unit id="mtsmarketolog.api_url">
+    <unit id="mtsmarketolog.guide.api">
       <segment>
-        <source>mtsmarketolog.api_url</source>
-        <target>Адрес API</target>
+        <source>mtsmarketolog.guide.api</source>
+        <target>Откройте https://marketolog.mts.ru/cabinet/integrations/rest-api, нажмите «Создать подключение» и скопируйте логин в поле «Логин», пароль — в поле «Пароль»</target>
+      </segment>
+    </unit>
+    <unit id="mtsmarketolog.guide.name">
+      <segment>
+        <source>mtsmarketolog.guide.name</source>
+        <target>Впишите подключённое имя из раздела «Имена отправителя» кабинета в поле «Имя отправителя»</target>
+      </segment>
+    </unit>
+    <unit id="mtsmarketolog.guide.sender">
+      <segment>
+        <source>mtsmarketolog.guide.sender</source>
+        <target>Подключите имя отправителя https://l.mts.ru/0m_imyao и тариф https://l.mts.ru/0m_ppaket</target>
       </segment>
     </unit>
     <unit id="mtsmarketolog.login">

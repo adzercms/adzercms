@@ -14,9 +14,9 @@ use Symfony\Component\HttpClient\Response\JsonMockResponse;
 
 final class SmsPilotGatewayTest extends TestCase
 {
-    private const URL = 'https://smspilot.example.test/api2.php';
     private const CONTRACT = ['id' => '45375', 'email' => 'operator@example.test', 'balance' => '2.54', 'senders' => 'INFORM,SENDER'];
 
+    #[Group('ACMS-CORE-1004')]
     #[Group('ACMS-CORE-0909')]
     public function testMessageGoesAsOwnRequestSignedByKey(): void
     {
@@ -25,7 +25,7 @@ final class SmsPilotGatewayTest extends TestCase
         self::gateway($answer)->send(self::credentials(), '79991234567', 'Code 1234');
 
         self::assertSame('POST', $answer->getRequestMethod());
-        self::assertSame(self::URL, $answer->getRequestUrl());
+        self::assertSame(SmsPilotGateway::API, $answer->getRequestUrl());
         self::assertSame(
             ['apikey' => 'pilot-key', 'send' => [['to' => '79991234567', 'text' => 'Code 1234', 'from' => 'VILLAGE']]],
             json_decode(self::body($answer), true),
@@ -76,7 +76,7 @@ final class SmsPilotGatewayTest extends TestCase
 
     private static function credentials(): Credentials
     {
-        return new Credentials([SmsPilotGateway::URL => self::URL, SmsPilotGateway::KEY => 'pilot-key', SmsPilotGateway::SENDER => 'VILLAGE']);
+        return new Credentials([SmsPilotGateway::KEY => 'pilot-key', SmsPilotGateway::SENDER => 'VILLAGE']);
     }
 
     private static function body(JsonMockResponse $answer): string

@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
-    <unit id="smspilot.api_url">
-      <segment>
-        <source>smspilot.api_url</source>
-        <target>API address</target>
-      </segment>
-    </unit>
     <unit id="smspilot.apikey">
       <segment>
         <source>smspilot.apikey</source>
         <target>API key</target>
+      </segment>
+    </unit>
+    <unit id="smspilot.guide.key">
+      <segment>
+        <source>smspilot.guide.key</source>
+        <target>Open https://smspilot.ru/my-settings.php#api and copy the API key into "API key"</target>
+      </segment>
+    </unit>
+    <unit id="smspilot.guide.sender">
+      <segment>
+        <source>smspilot.guide.sender</source>
+        <target>Copy a name from the list https://smspilot.ru/my-sender.php into "Sender name"; with the field empty messages go under the shared name of SMSPilot</target>
       </segment>
     </unit>
     <unit id="smspilot.sender">
