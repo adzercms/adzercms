@@ -258,6 +258,7 @@ summary::-webkit-details-marker { display: none; }
     max-height: calc(100dvh - var(--chrome-height));
     overflow-y: auto;
     overscroll-behavior: contain;
+    scrollbar-width: none;
     background: var(--bg-gray);
     border-right: 1px solid var(--border-light);
     border-bottom: 1px solid var(--border-light);
