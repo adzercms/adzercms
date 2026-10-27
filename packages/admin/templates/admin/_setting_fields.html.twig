@@ -6,7 +6,7 @@
     <div class="fields aligned">
         {% for field in block.fields %}
             {% set id = 'setting-' ~ field.name %}
-            {% set stored = field.type in [constant(type ~ 'Image'), constant(type ~ 'Container')] and values[field.name] %}
+            {% set stored = field.name in block.stored %}
             <div class="field">
                 <label for="{{ id }}">{{ field.label|trans }}</label>
                 {% if field.type == constant(type ~ 'Toggle') %}
@@ -48,7 +48,7 @@
                         {% endif %}
 
                         {% if stored %}
-                            <button type="submit" class="secondary small" name="drop[{{ field.name }}]" value="1" formnovalidate>{{ 'admin.setting.drop'|trans }}</button>
+                            <button type="submit" class="secondary small" name="drop[{{ field.name }}]" value="1" formnovalidate>{{ (field.type == constant(type ~ 'Palette') ? 'admin.setting.reset' : 'admin.setting.drop')|trans }}</button>
                         {% endif %}
                     </div>
                 {% endif %}

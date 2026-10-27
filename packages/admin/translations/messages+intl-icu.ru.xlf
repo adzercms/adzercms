@@ -265,6 +265,12 @@
         <target>Убрать</target>
       </segment>
     </unit>
+    <unit id="admin.setting.reset">
+      <segment>
+        <source>admin.setting.reset</source>
+        <target>Сбросить</target>
+      </segment>
+    </unit>
     <unit id="admin.setting.set">
       <segment>
         <source>admin.setting.set</source>

@@ -21,6 +21,8 @@ use function Symfony\Component\Translation\t;
 
 final class SettingForm
 {
+    private const DROPPED = [Type::Image, Type::Container, Type::Palette];
+
     /** @var list<TranslatableInterface> */
     private array $faults = [];
 
@@ -108,13 +110,14 @@ final class SettingForm
     /**
      * @param list<Field> $fields
      *
-     * @return list<array{section: ?TranslatableInterface, fields: list<Field>, credentials: array<string, Badged>}>
+     * @return list<array{section: ?TranslatableInterface, fields: list<Field>, credentials: array<string, Badged>, stored: list<string>}>
      */
     public function sections(array $fields): array
     {
         $labels = [null];
         $grouped = [[]];
         $credentials = [[]];
+        $stored = [[]];
         $carded = self::carded($fields);
 
         foreach ($fields as $field) {
@@ -124,10 +127,14 @@ final class SettingForm
                 $at = array_key_last($labels);
                 $grouped[$at] = [];
                 $credentials[$at] = [];
+                $stored[$at] = [];
             }
 
             if (!\in_array($field->name, $carded, true)) {
                 $grouped[$at][] = $field;
+                if (\in_array($field->type, self::DROPPED, true) && '' !== $this->settings->get($field->name)) {
+                    $stored[$at][] = $field->name;
+                }
             } elseif (null !== $field->group && !isset($credentials[$at][$field->group])) {
                 $credentials[$at][$field->group] = $this->filled(self::group($fields, $field->group))
                     ? Badge::good(t('admin.setting.set'))
@@ -136,10 +143,11 @@ final class SettingForm
         }
 
         return array_values(array_filter(array_map(
-            static fn (?TranslatableInterface $section, array $fields, array $badges): array => ['section' => $section, 'fields' => $fields, 'credentials' => $badges],
+            static fn (?TranslatableInterface $section, array $fields, array $badges, array $kept): array => ['section' => $section, 'fields' => $fields, 'credentials' => $badges, 'stored' => $kept],
             $labels,
             $grouped,
             $credentials,
+            $stored,
         ), static fn (array $section): bool => [] !== $section['fields'] || [] !== $section['credentials']));
     }
 

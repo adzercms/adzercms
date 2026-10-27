@@ -552,14 +552,16 @@ final class AdminWebTest extends SchemaTestCase
     }
 
     #[Group('ACMS-UI-0086')]
+    #[Group('ACMS-UI-0088')]
     #[Group('ACMS-US-0004')]
-    public function testBrandColorIsSchemeOfThemeOrOwnColor(): void
+    public function testBrandColorIsSchemeOfThemeOrOwnColorResetToTheFirstScheme(): void
     {
         $this->client->loginUser($this->admin);
         $schemes = (self::service(Catalog::class)->fields()[Brand::COLOR] ?? self::fail('the theme declares no palette'))->schemes;
         $tab = Tab::Brand->value;
         $field = \sprintf('value[%s]', Brand::COLOR);
         $picked = \sprintf('input[name="%s"][checked]', $field);
+        $reset = \sprintf('button[name="drop[%s]"]', Brand::COLOR);
 
         $page = $this->client->request('GET', '/admin/settings?tab='.$tab);
         self::assertSame(
@@ -568,6 +570,7 @@ final class AdminWebTest extends SchemaTestCase
         );
         self::assertSame($schemes[0]->key, $page->filter($picked)->attr('value'), 'the first scheme stands for an empty setting');
         self::assertSame('--brand: '.$schemes[0]->color, $page->filter('html')->attr('style'));
+        self::assertCount(0, $page->filter($reset), 'an empty setting has nothing to reset');
 
         $this->post('/admin/settings', ['tab' => $tab, 'value' => [Brand::COLOR => $schemes[1]->key]]);
         self::assertSame('--brand: '.$schemes[1]->color, $this->client->request('GET', '/admin')->filter('html')->attr('style'));
@@ -576,6 +579,10 @@ final class AdminWebTest extends SchemaTestCase
         $own = $this->client->request('GET', '/admin/settings?tab='.$tab);
         self::assertSame('#c8f031', $own->filter($picked)->attr('value'), 'the own color is the picked one');
         self::assertSame('--brand: #c8f031', $own->filter('html')->attr('style'));
+
+        $this->client->submit($own->filter($reset)->form());
+        self::assertSame('', self::service(Settings::class)->get(Brand::COLOR), 'the reset clears the setting');
+        self::assertSame($schemes[0]->key, $this->client->request('GET', '/admin/settings?tab='.$tab)->filter($picked)->attr('value'));
     }
 
     #[Group('ACMS-CORE-0027')]
