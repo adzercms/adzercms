@@ -13,6 +13,7 @@ use AdzerCMS\Payments\Acquiring\Closing;
 use AdzerCMS\Payments\Acquiring\PaymentCallback;
 use AdzerCMS\Payments\Acquiring\PaymentFailed;
 use AdzerCMS\Payments\Acquiring\PaymentOffer;
+use AdzerCMS\Payments\Controller\PaymentController;
 use AdzerCMS\Payments\Entity\Payment;
 use AdzerCMS\Payments\Repository\PaymentRepository;
 use Doctrine\DBAL\LockMode;
@@ -325,7 +326,7 @@ final class PaymentService
     private function addresses(Payment $payment): Addresses
     {
         return new Addresses(
-            $this->urls->generate('payment_callback', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            $this->urls->generate(PaymentController::CALLBACK, [], UrlGeneratorInterface::ABSOLUTE_URL),
             $this->urls->generate('payment_return', ['number' => $payment->getNumber()], UrlGeneratorInterface::ABSOLUTE_URL),
         );
     }

@@ -1640,17 +1640,20 @@
             "dist": {
                 "type": "path",
                 "url": "packages/yookassa",
-                "reference": "44cc891152c27745549bce949ae69d89d3481bb2"
+                "reference": "94a6eb8aaa02c79bb02a4a52fc38c9348047b844"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
                 "adzercms/core": "^1.0",
                 "adzercms/payments": "^1.0",
+                "doctrine/dbal": "^4.5",
+                "doctrine/migrations": "^3.9",
                 "ext-mbstring": "*",
                 "php": ">=8.4",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/http-client-contracts": "^3.7",
                 "symfony/http-foundation": "7.4.*",
+                "symfony/routing": "7.4.*",
                 "symfony/translation": "7.4.*"
             },
             "provide": {

@@ -25,6 +25,24 @@
         <target>SBP payment fee, %</target>
       </segment>
     </unit>
+    <unit id="tbank.guide.api">
+      <segment>
+        <source>tbank.guide.api</source>
+        <target>Enter https://securepay.tinkoff.ru/v2/ into "API address"</target>
+      </segment>
+    </unit>
+    <unit id="tbank.guide.terminal">
+      <segment>
+        <source>tbank.guide.terminal</source>
+        <target>From the working terminal copy the terminal into "Terminal" and the password into "Terminal password" through "Change" of the credentials</target>
+      </segment>
+    </unit>
+    <unit id="tbank.guide.terminals">
+      <segment>
+        <source>tbank.guide.terminals</source>
+        <target>In the T-Business account https://business.tbank.ru open the internet acquiring, the shops, the shop of the site and its terminals</target>
+      </segment>
+    </unit>
     <unit id="tbank.method.page">
       <segment>
         <source>tbank.method.page</source>

@@ -23,6 +23,8 @@ use function Symfony\Component\Translation\t;
 #[Route('/payment')]
 final class PaymentController extends AbstractController
 {
+    public const CALLBACK = 'payment_callback';
+
     public function __construct(
         private readonly PaymentService $payments,
         private readonly PaymentRepository $orders,
@@ -30,7 +32,7 @@ final class PaymentController extends AbstractController
     ) {
     }
 
-    #[Route('/callback', name: 'payment_callback', defaults: [CsrfGuard::OWN => true], methods: ['POST'])]
+    #[Route('/callback', name: self::CALLBACK, defaults: [CsrfGuard::OWN => true], methods: ['POST'])]
     public function callback(Request $request): Response
     {
         try {

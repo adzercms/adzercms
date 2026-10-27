@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
-    <unit id="yookassa.api_url">
-      <segment>
-        <source>yookassa.api_url</source>
-        <target>Адрес API</target>
-      </segment>
-    </unit>
     <unit id="yookassa.closing_subject">
       <segment>
         <source>yookassa.closing_subject</source>
@@ -23,6 +17,24 @@
       <segment>
         <source>yookassa.fee_sbp</source>
         <target>Комиссия оплаты по СБП, %</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.guide.key">
+      <segment>
+        <source>yookassa.guide.key</source>
+        <target>Откройте https://yookassa.ru/my/merchant/integration/api-keys, выпустите секретный ключ, подтвердите паролем из SMS и скопируйте ключ в поле «Секретный ключ» того же окна</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.guide.notifications">
+      <segment>
+        <source>yookassa.guide.notifications</source>
+        <target>Откройте https://yookassa.ru/my/http-notifications-settings, впишите {url} в URL для уведомлений, отметьте события payment.succeeded, payment.canceled и payment_method.active и сохраните</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.guide.shop">
+      <segment>
+        <source>yookassa.guide.shop</source>
+        <target>Скопируйте shopId со страницы https://yookassa.ru/my/shop-settings в поле «Идентификатор магазина» кнопкой «Сменить» учётных данных</target>
       </segment>
     </unit>
     <unit id="yookassa.method.page">

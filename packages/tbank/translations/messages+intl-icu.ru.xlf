@@ -25,6 +25,24 @@
         <target>Комиссия оплаты по СБП, %</target>
       </segment>
     </unit>
+    <unit id="tbank.guide.api">
+      <segment>
+        <source>tbank.guide.api</source>
+        <target>Впишите в поле «Адрес API» https://securepay.tinkoff.ru/v2/</target>
+      </segment>
+    </unit>
+    <unit id="tbank.guide.terminal">
+      <segment>
+        <source>tbank.guide.terminal</source>
+        <target>Из блока рабочего терминала скопируйте «Терминал» в поле «Терминал», «Пароль» — в поле «Пароль терминала» кнопкой «Сменить» учётных данных</target>
+      </segment>
+    </unit>
+    <unit id="tbank.guide.terminals">
+      <segment>
+        <source>tbank.guide.terminals</source>
+        <target>В личном кабинете Т-Бизнеса https://business.tbank.ru откройте «Интернет-эквайринг» → «Магазины» → магазин сайта → «Терминалы»</target>
+      </segment>
+    </unit>
     <unit id="tbank.method.page">
       <segment>
         <source>tbank.method.page</source>

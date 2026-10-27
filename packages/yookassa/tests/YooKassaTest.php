@@ -42,7 +42,6 @@ final class YooKassaTest extends SchemaTestCase
     {
         parent::setUp();
         $this->configure([
-            YooKassaService::API_URL => 'https://api.yookassa.ru/v3',
             YooKassaService::SHOP_ID => 'shop',
             YooKassaService::SECRET_KEY => 'shop-secret',
             YooKassaService::TAXATION => '2',
@@ -71,6 +70,7 @@ final class YooKassaTest extends SchemaTestCase
     #[Group('ACMS-PAY-0019')]
     #[Group('ACMS-PAY-0035')]
     #[Group('ACMS-PAY-0036')]
+    #[Group('ACMS-CORE-1004')]
     public function testPageOrderGoesToProviderWithReceiptAndIdempotence(): void
     {
         $this->answers = [['id' => 'op-1', 'status' => 'pending', 'confirmation' => ['type' => 'redirect', 'confirmation_url' => 'https://yoomoney.ru/checkout/op-1']]];

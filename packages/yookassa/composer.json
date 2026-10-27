@@ -16,9 +16,12 @@
         "adzercms/contracts": "^1.0",
         "adzercms/core": "^1.0",
         "adzercms/payments": "^1.0",
+        "doctrine/dbal": "^4.5",
+        "doctrine/migrations": "^3.9",
         "symfony/dependency-injection": "7.4.*",
         "symfony/http-client-contracts": "^3.7",
         "symfony/http-foundation": "7.4.*",
+        "symfony/routing": "7.4.*",
         "symfony/translation": "7.4.*"
     },
     "provide": {

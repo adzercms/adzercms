@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
-    <unit id="yookassa.api_url">
-      <segment>
-        <source>yookassa.api_url</source>
-        <target>API address</target>
-      </segment>
-    </unit>
     <unit id="yookassa.closing_subject">
       <segment>
         <source>yookassa.closing_subject</source>
@@ -23,6 +17,24 @@
       <segment>
         <source>yookassa.fee_sbp</source>
         <target>SBP payment fee, %</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.guide.key">
+      <segment>
+        <source>yookassa.guide.key</source>
+        <target>Open https://yookassa.ru/my/merchant/integration/api-keys, issue a secret key, confirm it with the password from the SMS and copy the key into "Secret key" of the same window</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.guide.notifications">
+      <segment>
+        <source>yookassa.guide.notifications</source>
+        <target>Open https://yookassa.ru/my/http-notifications-settings, enter {url} as the notification URL, tick the events payment.succeeded, payment.canceled and payment_method.active and save</target>
+      </segment>
+    </unit>
+    <unit id="yookassa.guide.shop">
+      <segment>
+        <source>yookassa.guide.shop</source>
+        <target>Copy shopId from https://yookassa.ru/my/shop-settings into "Shop ID" through "Change" of the credentials</target>
       </segment>
     </unit>
     <unit id="yookassa.method.page">

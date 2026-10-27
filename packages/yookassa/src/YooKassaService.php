@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\YooKassa;
 
 use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Guided;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Ui\Money;
@@ -16,20 +17,22 @@ use AdzerCMS\Payments\Acquiring\Closing;
 use AdzerCMS\Payments\Acquiring\PaymentCallback;
 use AdzerCMS\Payments\Acquiring\PaymentFailed;
 use AdzerCMS\Payments\Acquiring\PaymentOffer;
+use AdzerCMS\Payments\Controller\PaymentController;
 use AdzerCMS\Payments\Entity\Payment;
 use AdzerCMS\Payments\PaymentStatus;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
 
-final readonly class YooKassaService implements AcquiringService
+final readonly class YooKassaService implements AcquiringService, Guided
 {
-    public const API_URL = 'payment.yookassa.api_url';
+    public const API = 'https://api.yookassa.ru/v3/';
     public const SHOP_ID = 'payment.yookassa.shop_id';
     public const SECRET_KEY = 'payment.yookassa.secret_key';
     public const TAXATION = 'payment.yookassa.taxation';
@@ -62,13 +65,13 @@ final readonly class YooKassaService implements AcquiringService
     public function __construct(
         private HttpClientInterface $http,
         private Settings $settings,
+        private UrlGeneratorInterface $urls,
     ) {
     }
 
     public function settingFields(): array
     {
         return [
-            new Field(self::API_URL, t('yookassa.api_url'), required: true),
             new Field(self::SHOP_ID, t('yookassa.shop_id'), required: true, group: self::SHOP),
             new Field(self::SECRET_KEY, t('yookassa.secret_key'), Type::Secret, true, group: self::SHOP),
             new Field(self::TAXATION, t('yookassa.taxation'), Type::Choice, choices: self::choices('yookassa.taxation', self::TAXATIONS)),
@@ -81,9 +84,18 @@ final readonly class YooKassaService implements AcquiringService
         ];
     }
 
+    public function guide(): array
+    {
+        return [
+            t('yookassa.guide.shop'),
+            t('yookassa.guide.key'),
+            t('yookassa.guide.notifications', ['url' => $this->urls->generate(PaymentController::CALLBACK, [], UrlGeneratorInterface::ABSOLUTE_URL)]),
+        ];
+    }
+
     public function ready(): bool
     {
-        foreach ([self::API_URL, self::SHOP_ID, self::SECRET_KEY] as $name) {
+        foreach ([self::SHOP_ID, self::SECRET_KEY] as $name) {
             if ('' === $this->settings->get($name)) {
                 return false;
             }
@@ -376,7 +388,7 @@ final readonly class YooKassaService implements AcquiringService
         }
 
         try {
-            return $this->http->request($method, rtrim($this->settings->get(self::API_URL), '/').'/'.$path, $options)->toArray(false);
+            return $this->http->request($method, self::API.$path, $options)->toArray(false);
         } catch (ExceptionInterface $failure) {
             throw new PaymentFailed($failure->getMessage(), previous: $failure);
         }

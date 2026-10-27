@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\TBank;
 
 use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Guided;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Ui\Money;
@@ -26,7 +27,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
 
-final readonly class TBankService implements AcquiringService
+final readonly class TBankService implements AcquiringService, Guided
 {
     public const API_URL = 'payment.tbank.api_url';
     public const TERMINAL_KEY = 'payment.tbank.terminal_key';
@@ -80,6 +81,11 @@ final readonly class TBankService implements AcquiringService
             new Field(self::FEE_QR, t('tbank.fee_qr'), Type::Decimal),
             new Field(self::FEE_PAGE, t('tbank.fee_page'), Type::Decimal),
         ];
+    }
+
+    public function guide(): array
+    {
+        return [t('tbank.guide.terminals'), t('tbank.guide.terminal'), t('tbank.guide.api')];
     }
 
     public function ready(): bool
