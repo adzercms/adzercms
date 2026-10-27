@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests\Module;
 
+use AdzerCMS\Contracts\Ui\Palette;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Tests\ThemeCompleteness;
 use PHPUnit\Framework\Attributes\Group;
@@ -23,6 +24,7 @@ final class ThemeCompletenessTest extends TestCase
         self::assertNotContains('template base.html.twig', $missing, 'the theme has the template');
         self::assertContains('function amount', $missing);
         self::assertContains('filter links', $missing);
+        self::assertContains('service '.Palette::class, $missing);
         self::assertContains('class fields', $missing);
         self::assertNotContains('class modal-body', $missing, 'the theme styles the class');
     }

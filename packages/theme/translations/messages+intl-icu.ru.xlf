@@ -97,10 +97,64 @@
         <target>Заметки</target>
       </segment>
     </unit>
+    <unit id="theme.palette.own">
+      <segment>
+        <source>theme.palette.own</source>
+        <target>Свой цвет</target>
+      </segment>
+    </unit>
     <unit id="theme.profile">
       <segment>
         <source>theme.profile</source>
         <target>Профиль</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.blue">
+      <segment>
+        <source>theme.scheme.blue</source>
+        <target>Синяя</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.graphite">
+      <segment>
+        <source>theme.scheme.graphite</source>
+        <target>Графитовая</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.green">
+      <segment>
+        <source>theme.scheme.green</source>
+        <target>Зелёная</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.orange">
+      <segment>
+        <source>theme.scheme.orange</source>
+        <target>Оранжевая</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.pink">
+      <segment>
+        <source>theme.scheme.pink</source>
+        <target>Розовая</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.red">
+      <segment>
+        <source>theme.scheme.red</source>
+        <target>Красная</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.teal">
+      <segment>
+        <source>theme.scheme.teal</source>
+        <target>Бирюзовая</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.violet">
+      <segment>
+        <source>theme.scheme.violet</source>
+        <target>Фиолетовая</target>
       </segment>
     </unit>
     <unit id="theme.seo.locale">

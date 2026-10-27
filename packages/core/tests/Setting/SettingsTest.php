@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Tests\Setting;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Type;
+use AdzerCMS\Contracts\Ui\Scheme;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use PHPUnit\Framework\Attributes\Group;
@@ -19,6 +20,7 @@ final class SettingsTest extends SchemaTestCase
     private const TOKEN = 'fixture.token';
     private const PAUSE = 'fixture.pause';
     private const COLOR = 'fixture.color';
+    private const PALETTE = 'fixture.palette';
 
     #[Group('ACMS-CORE-0050')]
     #[Group('ACMS-US-0004')]
@@ -76,6 +78,26 @@ final class SettingsTest extends SchemaTestCase
 
         self::assertNotNull($this->settings()->save($color, 'lime'));
         self::assertSame('#c8f031', $this->settings()->get(self::COLOR));
+    }
+
+    #[Group('ACMS-CORE-0055')]
+    #[Group('ACMS-US-0004')]
+    public function testPaletteKeepsSchemeKeyOrOwnColorAndFallsBackToFirstScheme(): void
+    {
+        [$sea, $sand] = [new Scheme('sea', t('Sea'), '#0066cc'), new Scheme('sand', t('Sand'), '#c2a14d')];
+        $palette = new Field(self::PALETTE, t('Palette'), Type::Palette, schemes: [$sea, $sand]);
+        self::assertSame($sea, $this->settings()->palette($palette), 'an empty setting takes the first scheme');
+
+        $this->save($palette, 'sand');
+        self::assertSame($sand, $this->settings()->palette($palette));
+
+        $this->save($palette, '#C8F031');
+        self::assertNotNull($this->settings()->save($palette, 'lime'));
+        self::assertSame('#c8f031', $this->settings()->palette($palette));
+
+        $this->em->getConnection()->update('setting', ['value' => 'dune'], ['name' => self::PALETTE]);
+        self::service(ResetInterface::class, 'services_resetter')->reset();
+        self::assertSame($sea, $this->settings()->palette($palette), 'a scheme of another theme gives way to the first scheme');
     }
 
     #[Group('ACMS-CORE-0161')]

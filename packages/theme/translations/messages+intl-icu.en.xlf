@@ -97,10 +97,64 @@
         <target>Notes</target>
       </segment>
     </unit>
+    <unit id="theme.palette.own">
+      <segment>
+        <source>theme.palette.own</source>
+        <target>Own color</target>
+      </segment>
+    </unit>
     <unit id="theme.profile">
       <segment>
         <source>theme.profile</source>
         <target>Profile</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.blue">
+      <segment>
+        <source>theme.scheme.blue</source>
+        <target>Blue</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.graphite">
+      <segment>
+        <source>theme.scheme.graphite</source>
+        <target>Graphite</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.green">
+      <segment>
+        <source>theme.scheme.green</source>
+        <target>Green</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.orange">
+      <segment>
+        <source>theme.scheme.orange</source>
+        <target>Orange</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.pink">
+      <segment>
+        <source>theme.scheme.pink</source>
+        <target>Pink</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.red">
+      <segment>
+        <source>theme.scheme.red</source>
+        <target>Red</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.teal">
+      <segment>
+        <source>theme.scheme.teal</source>
+        <target>Teal</target>
+      </segment>
+    </unit>
+    <unit id="theme.scheme.violet">
+      <segment>
+        <source>theme.scheme.violet</source>
+        <target>Violet</target>
       </segment>
     </unit>
     <unit id="theme.seo.locale">

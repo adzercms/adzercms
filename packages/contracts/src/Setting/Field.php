@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Contracts\Setting;
 
+use AdzerCMS\Contracts\Ui\Scheme;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 final readonly class Field
 {
-    /** @param array<string, TranslatableInterface> $choices */
+    /**
+     * @param array<string, TranslatableInterface> $choices
+     * @param list<Scheme>                         $schemes
+     */
     public function __construct(
         public string $name,
         public TranslatableInterface $label,
@@ -18,6 +22,7 @@ final readonly class Field
         public ?string $group = null,
         public ?TranslatableInterface $section = null,
         public ?Tab $tab = null,
+        public array $schemes = [],
     ) {
     }
 

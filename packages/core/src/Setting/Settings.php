@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Rule;
 use AdzerCMS\Contracts\Setting\Type;
+use AdzerCMS\Contracts\Ui\Scheme;
 use AdzerCMS\Core\Entity\Setting;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
@@ -19,6 +20,7 @@ final class Settings implements ResetInterface
 {
     private const SECRET = 'secret:';
     private const TIME = '/^([01]?\d|2[0-3]):([0-5]\d)$/';
+    private const COLOR = '/^#[0-9a-f]{6}$/i';
 
     /** @var array<string, string>|null */
     private ?array $stored = null;
@@ -64,6 +66,13 @@ final class Settings implements ResetInterface
         return false === $moment ? null : $moment;
     }
 
+    public function palette(Field $field): Scheme|string
+    {
+        $value = $this->get($field->name);
+
+        return self::scheme($field, $value) ?? (1 === preg_match(self::COLOR, $value) ? $value : $field->schemes[0] ?? '');
+    }
+
     public function stamp(Field $field, \DateTimeImmutable $moment): void
     {
         $this->save($field, $moment->format(\DATE_ATOM));
@@ -97,9 +106,9 @@ final class Settings implements ResetInterface
             return new Refusal(t('core.setting.choice', ['field' => $field->label]));
         }
 
-        if (Type::Color === $field->type) {
-            if (1 !== preg_match('/^#[0-9a-f]{6}$/i', $value)) {
-                return new Refusal(t('core.setting.color', ['field' => $field->label]));
+        if (Type::Color === $field->type || (Type::Palette === $field->type && null === self::scheme($field, $value))) {
+            if (1 !== preg_match(self::COLOR, $value)) {
+                return new Refusal(t(Type::Color === $field->type ? 'core.setting.color' : 'core.setting.choice', ['field' => $field->label]));
             }
             $value = strtolower($value);
         }
@@ -147,6 +156,11 @@ final class Settings implements ResetInterface
     private static function time(string $value): ?int
     {
         return 1 === preg_match(self::TIME, $value, $time) ? (int) $time[1] * 60 + (int) $time[2] : null;
+    }
+
+    private static function scheme(Field $field, string $key): ?Scheme
+    {
+        return array_find($field->schemes, static fn (Scheme $scheme): bool => $scheme->key === $key);
     }
 
     /** @return array<string, string> */

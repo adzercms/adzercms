@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Contracts\Ui\Badge;
 use AdzerCMS\Contracts\Ui\Badged;
+use AdzerCMS\Contracts\Ui\Scheme;
 use AdzerCMS\Core\Setting\Images;
 use AdzerCMS\Core\Setting\Keychain;
 use AdzerCMS\Core\Setting\Settings;
@@ -151,7 +152,13 @@ final class SettingForm
     {
         $values = [];
         foreach ($fields as $field) {
-            $values[$field->name] = Type::Secret === $field->type ? '' : $this->settings->get($field->name);
+            $picked = Type::Palette === $field->type ? $this->settings->palette($field) : null;
+            $values[$field->name] = match (true) {
+                Type::Secret === $field->type => '',
+                $picked instanceof Scheme => $picked->key,
+                \is_string($picked) => $picked,
+                default => $this->settings->get($field->name),
+            };
         }
 
         return $values;

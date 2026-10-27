@@ -25,6 +25,8 @@
                             <option value="{{ choice }}" {{ values[field.name] == choice ? 'selected' }}>{{ caption|trans }}</option>
                         {% endfor %}
                     </select>
+                {% elseif field.type == constant(type ~ 'Palette') %}
+                    {% include '@Theme/_palette.html.twig' with {id: id, name: 'value[' ~ field.name ~ ']', label: field.label, schemes: field.schemes, value: values[field.name]} only %}
                 {% elseif field.type == constant(type ~ 'Color') %}
                     <input id="{{ id }}" type="color" name="value[{{ field.name }}]" value="{{ values[field.name] ?: '#000000' }}">
                 {% elseif field.type == constant(type ~ 'Secret') %}

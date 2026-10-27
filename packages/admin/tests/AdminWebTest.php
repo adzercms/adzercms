@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Admin\Tests;
 
 use AdzerCMS\Contracts\Setting\Tab;
+use AdzerCMS\Contracts\Ui\Scheme;
 use AdzerCMS\Core\Account\ConsentKind;
 use AdzerCMS\Core\Account\Password;
 use AdzerCMS\Core\Account\Role;
@@ -22,6 +23,7 @@ use AdzerCMS\Core\Notice\MailChannel;
 use AdzerCMS\Core\Notice\QuietHours;
 use AdzerCMS\Core\Repository\UserRepository;
 use AdzerCMS\Core\Setting\Brand;
+use AdzerCMS\Core\Setting\Catalog;
 use AdzerCMS\Core\Setting\Language;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Setting\Toggle;
@@ -547,6 +549,33 @@ final class AdminWebTest extends SchemaTestCase
         self::assertSame('', self::service(Settings::class)->get(Brand::ICON));
         $this->client->request('GET', '/setting/'.Brand::ICON);
         self::assertResponseStatusCodeSame(404);
+    }
+
+    #[Group('ACMS-UI-0086')]
+    #[Group('ACMS-US-0004')]
+    public function testBrandColorIsSchemeOfThemeOrOwnColor(): void
+    {
+        $this->client->loginUser($this->admin);
+        $schemes = (self::service(Catalog::class)->fields()[Brand::COLOR] ?? self::fail('the theme declares no palette'))->schemes;
+        $tab = Tab::Brand->value;
+        $field = \sprintf('value[%s]', Brand::COLOR);
+        $picked = \sprintf('input[name="%s"][checked]', $field);
+
+        $page = $this->client->request('GET', '/admin/settings?tab='.$tab);
+        self::assertSame(
+            array_map(static fn (Scheme $scheme): string => $scheme->key, $schemes),
+            $page->filter(\sprintf('input.swatch[name="%s"]', $field))->each(static fn (Crawler $swatch): string => (string) $swatch->attr('value')),
+        );
+        self::assertSame($schemes[0]->key, $page->filter($picked)->attr('value'), 'the first scheme stands for an empty setting');
+        self::assertSame('--brand: '.$schemes[0]->color, $page->filter('html')->attr('style'));
+
+        $this->post('/admin/settings', ['tab' => $tab, 'value' => [Brand::COLOR => $schemes[1]->key]]);
+        self::assertSame('--brand: '.$schemes[1]->color, $this->client->request('GET', '/admin')->filter('html')->attr('style'));
+
+        $this->post('/admin/settings', ['tab' => $tab, 'value' => [Brand::COLOR => '#C8F031']]);
+        $own = $this->client->request('GET', '/admin/settings?tab='.$tab);
+        self::assertSame('#c8f031', $own->filter($picked)->attr('value'), 'the own color is the picked one');
+        self::assertSame('--brand: #c8f031', $own->filter('html')->attr('style'));
     }
 
     #[Group('ACMS-CORE-0027')]

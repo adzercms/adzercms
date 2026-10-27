@@ -1,0 +1,9 @@
+{% set own = value starts with '#' %}
+{% set color = own ? value : schemes|first.color %}
+<span class="palette" id="{{ id }}" role="radiogroup" aria-label="{{ label|trans }}">
+    {% for scheme in schemes %}
+        <input type="radio" class="swatch" name="{{ name }}" value="{{ scheme.key }}" style="--swatch: {{ scheme.color }}" data-color="{{ scheme.color }}" title="{{ scheme.label|trans }}" aria-label="{{ scheme.label|trans }}"{{ scheme.key == value ? ' checked' }}>
+    {% endfor %}
+    <input type="radio" name="{{ name }}" value="{{ color }}" hidden{{ own ? ' checked' }}>
+    <input type="color" class="swatch swatch-own" value="{{ color }}" title="{{ 'theme.palette.own'|trans }}" aria-label="{{ 'theme.palette.own'|trans }}" data-palette-own>
+</span>

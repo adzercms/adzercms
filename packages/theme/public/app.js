@@ -301,3 +301,19 @@ document.addEventListener('change', event => {
         document.getElementById(toggle.dataset.line)?.classList.toggle('is-off', !toggle.checked);
     }
 });
+
+document.addEventListener('input', event => {
+    const palette = event.target.closest('.palette');
+    if (!palette) {
+        return;
+    }
+
+    if (event.target.matches('[data-palette-own]')) {
+        const own = event.target.previousElementSibling;
+        own.value = event.target.value;
+        own.checked = true;
+    }
+
+    const picked = palette.querySelector('input[type="radio"]:checked');
+    document.documentElement.style.setProperty('--brand', picked.dataset.color ?? picked.value);
+});

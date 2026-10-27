@@ -18,10 +18,16 @@
 
 :root {
     color-scheme: light dark;
-    --primary: light-dark(#0066cc, #4d9dff);
-    --primary-hover: light-dark(#0052a3, #6aaeff);
-    --primary-text: var(--primary);
-    --on-primary: #fff;
+    --primary: light-dark(var(--brand), oklch(from var(--brand) max(l, 0.72) c h));
+    --primary-hover: light-dark(oklch(from var(--brand) calc(l - 0.07) c h), oklch(from var(--brand) calc(max(l, 0.72) + 0.06) c h));
+    --primary-text: light-dark(oklch(from var(--brand) min(l, 0.55) c h), oklch(from var(--brand) max(l, 0.72) c h));
+    --on-primary: light-dark(oklch(from var(--brand) clamp(0, (0.7 - l) * 1000, 1) 0 0), #000);
+    --on-fill: #fff;
+    --info-soft: light-dark(oklch(from var(--brand) 0.95 calc(c * 0.2) h), oklch(from var(--brand) 0.3 calc(c * 0.35) h));
+    --picked: light-dark(oklch(from var(--brand) 0.975 calc(c * 0.12) h), oklch(from var(--brand) max(l, 0.72) c h / 0.12));
+    --focus-ring: light-dark(oklch(from var(--brand) l c h / 0.25), oklch(from var(--brand) max(l, 0.72) c h / 0.35));
+    --chat-own-border: light-dark(oklch(from var(--brand) 0.9 calc(c * 0.35) h), oklch(from var(--brand) 0.42 calc(c * 0.5) h));
+    --spectrum: conic-gradient(in oklch longer hue, oklch(0.7 0.18 0), oklch(0.7 0.18 0));
     --success: #4caf50;
     --error: light-dark(#f44336, #ef5350);
     --warning: light-dark(#d97706, #f0a33c);
@@ -31,7 +37,6 @@
     --success-soft: light-dark(#e8f5e9, #17301c);
     --error-soft: light-dark(#ffebee, #331a1a);
     --warning-soft: light-dark(#fff3e0, #33280f);
-    --info-soft: light-dark(#e8f4ff, #16283d);
     --text: light-dark(#222, #e6eaf0);
     --text-gray: light-dark(#666, #9aa4b2);
     --text-muted: light-dark(#94a3b8, #6b7686);
@@ -47,17 +52,13 @@
     --tint-faint: light-dark(rgba(0, 0, 0, 0.02), rgba(255, 255, 255, 0.03));
     --chip-hover: light-dark(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.07));
     --row-hover: light-dark(#fafafa, rgba(255, 255, 255, 0.03));
-    --row-active: light-dark(#f0f5ff, rgba(77, 157, 255, 0.12));
-    --picked: light-dark(#f0f7ff, rgba(77, 157, 255, 0.12));
-    --focus-ring: light-dark(rgba(0, 102, 204, 0.25), rgba(77, 157, 255, 0.35));
     --backdrop: light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.65));
     --tooltip-bg: light-dark(rgba(0, 0, 0, 0.85), #323a47);
     --toast-bg: light-dark(#222, #2a3140);
     --admin-bar-bg: light-dark(#222, #0d1117);
     --admin-bar-text: rgba(255, 255, 255, 0.75);
     --admin-bar-hover: rgba(255, 255, 255, 0.12);
-    --auth-bg: linear-gradient(135deg, light-dark(#e8f4ff, #16202c) 0%, light-dark(#fff, #12161d) 100%);
-    --chat-own-border: light-dark(#cfe6ff, #2d4a6b);
+    --auth-bg: linear-gradient(135deg, var(--info-soft) 0%, var(--bg) 100%);
     --theme-mark: light-dark(#e08b00, #ffc44d);
     --shadow-sm: 0 1px 3px light-dark(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5));
     --shadow-md: 0 10px 30px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.6));
@@ -113,12 +114,12 @@ a:hover { text-decoration: underline; }
     gap: 1rem;
     padding: 0 12px;
     background: var(--warning);
-    color: var(--on-primary);
+    color: var(--on-fill);
     font-size: 13px;
 }
 
 .impersonate-who { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.impersonate-exit { flex: none; color: var(--on-primary); text-decoration: underline; font-weight: 500; }
+.impersonate-exit { flex: none; color: var(--on-fill); text-decoration: underline; font-weight: 500; }
 .impersonate-exit:hover { text-decoration: none; }
 
 .panel-header {
@@ -349,7 +350,7 @@ button.nav-item {
     white-space: nowrap;
 }
 
-.admin-bar-link:hover { background: var(--admin-bar-hover); color: var(--on-primary); text-decoration: none; }
+.admin-bar-link:hover { background: var(--admin-bar-hover); color: var(--on-fill); text-decoration: none; }
 .admin-bar-link.active { background: var(--surface); color: var(--text); }
 
 .bottom-nav { display: none; }
@@ -411,7 +412,7 @@ button.nav-item {
         padding: 0 4px;
         border-radius: 8px;
         background: var(--warning);
-        color: var(--on-primary);
+        color: var(--on-fill);
         font-size: 10px;
         line-height: 16px;
         text-align: center;
@@ -513,6 +514,30 @@ input[type="color"] {
     padding: 0.25rem;
     cursor: pointer;
 }
+
+.palette { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; min-height: var(--control-height); margin-top: 0.3rem; }
+
+.palette > .swatch {
+    appearance: none;
+    width: 1.75rem;
+    height: 1.75rem;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    flex: none;
+    background: var(--swatch);
+    border: 2px solid var(--surface);
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--border);
+    cursor: pointer;
+}
+
+.palette > .swatch:checked, .palette > :checked + .swatch-own { box-shadow: 0 0 0 2px var(--text); }
+.palette > .swatch-own { --swatch: var(--spectrum); }
+.palette > :checked + .swatch-own { --swatch: radial-gradient(circle, var(--brand) 0 40%, transparent 44%), var(--spectrum); }
+.swatch-own::-webkit-color-swatch-wrapper { padding: 0; }
+.swatch-own::-webkit-color-swatch { opacity: 0; }
+.swatch-own::-moz-color-swatch { opacity: 0; }
 
 .file-field {
     position: relative;
@@ -621,6 +646,7 @@ button, .button {
 button:hover, .button:hover { background: var(--primary-hover); text-decoration: none; }
 .secondary { background: var(--bg-light); color: var(--text); border-color: var(--border); }
 .secondary:hover { background: var(--border-light); }
+.danger, .success, .warning { color: var(--on-fill); }
 .danger { background: var(--error); }
 .danger:hover { background: var(--error); filter: brightness(0.92); }
 .success { background: var(--success); }
@@ -730,7 +756,7 @@ tbody tr:last-child td { border-bottom: 0; }
 
 tbody tr:hover { background: var(--row-hover); }
 .clickable-row { cursor: pointer; }
-.clickable-row:hover { background: var(--row-active); }
+.clickable-row:hover { background: var(--picked); }
 
 .table-responsive { overflow-x: auto; margin-bottom: 1rem; }
 .clip { white-space: nowrap; }
@@ -842,7 +868,7 @@ label.switch {
     height: 16px;
     left: 3px;
     top: 3px;
-    background: var(--on-primary);
+    background: var(--on-fill);
     border-radius: 50%;
     box-shadow: var(--shadow-sm);
     transition: transform 0.15s;
@@ -918,7 +944,7 @@ label.switch {
     margin: 0;
     padding: 0.7rem 1rem;
     border-radius: var(--radius);
-    color: var(--on-primary);
+    color: var(--on-fill);
     background: var(--toast-bg);
     box-shadow: var(--shadow-toast);
     animation: toast-in 0.2s ease;
@@ -1138,8 +1164,8 @@ html:has(dialog[open]:modal) { overflow: hidden; }
 .divider span { position: relative; padding: 0 1rem; background: var(--surface); color: var(--text-gray); font-size: 13px; }
 
 .oauth-buttons { display: flex; gap: 0.5rem; }
-.oauth { color: var(--on-primary); }
-.oauth:hover { color: var(--on-primary); filter: brightness(0.92); }
+.oauth { color: var(--on-fill); }
+.oauth:hover { color: var(--on-fill); filter: brightness(0.92); }
 .oauth img { width: 20px; height: 20px; }
 .oauth-buttons .oauth { flex: 1; min-height: 48px; }
 .oauth-buttons .oauth img { width: 28px; height: 28px; }
@@ -1234,7 +1260,7 @@ html:has(dialog[open]:modal) { overflow: hidden; }
     font-weight: 400;
     line-height: 1.4;
     text-align: left;
-    color: var(--on-primary);
+    color: var(--on-fill);
     background: var(--tooltip-bg);
     border-radius: var(--radius);
 }

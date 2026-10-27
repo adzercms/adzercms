@@ -209,7 +209,7 @@ bin/php vendor/bin/adzercms-module-check acme/pigeon
 - `phpstan` — PHPStan of the module's `src/` at the engine's level
 - `psalm` — Psalm taint analysis of the module's `src/` with the Symfony plugin: request data doesn't reach the sinks Psalm tracks, such as SQL, shell commands and file paths. The Symfony plugin takes the body of any `Response` for HTML, so a plain text response is `AdzerCMS\Core\Http\TextResponse`
 - `boundary` — the module doesn't override or decorate services of other packages and keeps their routes, console commands and translations; its migrations create and change only the tables of its own entities. The schema is checked on each database address listed in `MODULE_CHECK_DATABASES` separated by spaces; without the variable on the test database, and an empty variable skips it
-- `theme` — only for a theme: it has every template, Twig function, filter and test of the engine theme `adzercms/theme` and the style classes that templates of the other installed `adzercms/*` packages use
+- `theme` — only for a theme: it has every template, Twig function, filter and test of the engine theme `adzercms/theme`, a service of `AdzerCMS\Contracts\Ui\Palette` with the color schemes the admin offers for the brand color, which reaches the page as the `--brand` property of its root, and the style classes that templates of the other installed `adzercms/*` packages use
 
 A failed check ends the run with exit code 1 and its name in the last line.
 

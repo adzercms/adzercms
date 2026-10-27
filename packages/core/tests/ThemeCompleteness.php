@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests;
 
+use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Ui\Palette;
 use AdzerCMS\Core\Module\Installed;
 use AdzerCMS\Core\Module\Registry;
+use AdzerCMS\Core\Setting\Brand;
 use App\Kernel;
 use Composer\InstalledVersions;
 use Twig\Environment;
@@ -31,8 +34,8 @@ final readonly class ThemeCompleteness
         $build = new ModuleBuild($this->registry);
         $companions = array_values(array_filter(ModuleSuite::taken($this->registry, [$engine]), static fn (Installed $module): bool => $module !== $engine));
         array_push($missing, ...array_values(array_diff(
-            $build->within(ModuleSuite::taken($this->registry, [$engine]), null, self::callables(...)),
-            $build->within(ModuleSuite::taken($this->registry, [$this->theme, ...$companions]), null, self::callables(...)),
+            $build->within(ModuleSuite::taken($this->registry, [$engine]), null, self::offered(...)),
+            $build->within(ModuleSuite::taken($this->registry, [$this->theme, ...$companions]), null, self::offered(...)),
         )));
 
         $used = [];
@@ -55,22 +58,25 @@ final readonly class ThemeCompleteness
     }
 
     /** @return list<string> */
-    private static function callables(Kernel $kernel): array
+    private static function offered(Kernel $kernel): array
     {
-        $callables = [];
+        $offered = [];
         foreach (ModuleBuild::service($kernel, 'twig', Environment::class)->getExtensions() as $extension) {
             foreach ($extension->getFunctions() as $function) {
-                $callables[] = 'function '.$function->getName();
+                $offered[] = 'function '.$function->getName();
             }
             foreach ($extension->getFilters() as $filter) {
-                $callables[] = 'filter '.$filter->getName();
+                $offered[] = 'filter '.$filter->getName();
             }
             foreach ($extension->getTests() as $test) {
-                $callables[] = 'test '.$test->getName();
+                $offered[] = 'test '.$test->getName();
             }
         }
+        if (array_any(ModuleBuild::service($kernel, Brand::class, Brand::class)->settingFields(), static fn (Field $field): bool => Brand::COLOR === $field->name)) {
+            $offered[] = 'service '.Palette::class;
+        }
 
-        return $callables;
+        return $offered;
     }
 
     /** @return list<string> */

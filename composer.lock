@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/admin",
-                "reference": "4595d3cd31aa748f881102c42396526fb1230c72"
+                "reference": "5d587e84d1171ecfa0eb8c7eb7c6ef661eca5c7c"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -42,7 +42,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\Admin\\AdminBundle"
+                    "bundle": "AdzerCMS\\Admin\\AdminBundle",
+                    "description": {
+                        "ru": "Админка: содержимое, пользователи и настройки сайта"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -56,7 +59,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Admin panel for AdzerCMS: manage your site's content, users and settings in one place",
+            "description": "Admin panel: content, users and settings of the site",
             "keywords": [
                 "admin",
                 "admin-panel",
@@ -75,7 +78,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/cabinet",
-                "reference": "76099c15c935bad51cc245345811cb6475ab69c8"
+                "reference": "ba1b1a2dcb06bc3014a6040f141fe558e4d8e5ad"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -97,7 +100,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\Cabinet\\CabinetBundle"
+                    "bundle": "AdzerCMS\\Cabinet\\CabinetBundle",
+                    "description": {
+                        "ru": "Кабинет клиента: регистрация и вход, профиль, сеансы и страницы модулей"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -111,7 +117,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Customer account for AdzerCMS: sign-up and sign-in, profile, active sessions and pages from modules",
+            "description": "Customer account: sign-up and sign-in, profile, sessions and pages of modules",
             "keywords": [
                 "adzercms",
                 "dashboard",
@@ -130,7 +136,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/centrifugo",
-                "reference": "206e592e11953a6c2202b9af011a5176ee41e597"
+                "reference": "fa265719d11226508327b5eb00b822e74b2238a9"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -148,7 +154,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\Centrifugo\\CentrifugoBundle"
+                    "bundle": "AdzerCMS\\Centrifugo\\CentrifugoBundle",
+                    "description": {
+                        "ru": "Обновление страниц без перезагрузки через сервер Centrifugo"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -162,7 +171,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Live page updates for AdzerCMS through a Centrifugo server",
+            "description": "Live page updates through a Centrifugo server",
             "keywords": [
                 "adzercms",
                 "centrifugo",
@@ -328,7 +337,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/extensions",
-                "reference": "eacd05e471897a25d816d1dc02d383ff67664844"
+                "reference": "5173dad265a28b65aacd0ac9432ef832a6f658f0"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -358,6 +367,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\Extensions\\ExtensionsBundle",
+                    "description": {
+                        "ru": "Каталог расширений: модули, темы и шаблоны сайтов с ценами и демо"
+                    },
                     "categories": [
                         "content"
                     ]
@@ -374,7 +386,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Extension catalog for AdzerCMS: modules, themes and site templates with prices and demos",
+            "description": "Extension catalog: modules, themes and site templates with prices and demos",
             "keywords": [
                 "adzercms",
                 "catalog",
@@ -393,7 +405,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/google-analytics",
-                "reference": "60d8f2a722b6956122a49ba765414bfd9e7a1a50"
+                "reference": "adc115cdbe433885824ec5bd53892466a92038d1"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -409,6 +421,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\GoogleAnalytics\\GoogleAnalyticsBundle",
+                    "description": {
+                        "ru": "Счётчик Google Analytics на страницах после согласия на cookie"
+                    },
                     "categories": [
                         "marketing"
                     ]
@@ -425,7 +440,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Google Analytics counter on AdzerCMS pages after the visitor's cookie consent",
+            "description": "Google Analytics counter on pages after cookie consent",
             "keywords": [
                 "adzercms",
                 "analytics",
@@ -444,7 +459,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/hcaptcha",
-                "reference": "b35fb0c80bac409f6f971daf9a809c4e3fe43bae"
+                "reference": "8a79b1b14cf6defe58147bcac8531272a816c658"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -458,6 +473,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\HCaptcha\\HCaptchaBundle",
+                    "description": {
+                        "ru": "Защита форм от спама hCaptcha"
+                    },
                     "categories": [
                         "security"
                     ]
@@ -474,7 +492,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "hCaptcha spam protection for AdzerCMS forms",
+            "description": "hCaptcha spam protection of forms",
             "keywords": [
                 "adzercms",
                 "captcha",
@@ -492,7 +510,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/leads",
-                "reference": "d5d68cef9fe8a5e07748002fc8509e3065f2d33f"
+                "reference": "0ed8672d01718bb88eb5223bb128ac9333635054"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -528,6 +546,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\Leads\\LeadsBundle",
+                    "description": {
+                        "ru": "Заявки с сайта: окно заявки на любой странице, стадии воронки, менеджеры и сроки"
+                    },
                     "categories": [
                         "marketing"
                     ]
@@ -544,7 +565,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Website leads for AdzerCMS: a lead window on any page, funnel stages and lead handling in the admin panel",
+            "description": "Website leads: a lead window on any page, funnel stages, managers and deadlines",
             "keywords": [
                 "adzercms",
                 "crm",
@@ -563,7 +584,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/mailing",
-                "reference": "80cb8b31d345109bb1ea0d4ec6f91c8b07770f7a"
+                "reference": "746fcc8e080ea4ebb6ea6a95776914e3d008a21b"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -586,6 +607,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\Mailing\\MailingBundle",
+                    "description": {
+                        "ru": "Рассылки выбранным пользователям по почте, SMS и ботам мессенджеров"
+                    },
                     "categories": [
                         "messaging",
                         "marketing"
@@ -603,7 +627,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Mailings for AdzerCMS: send messages to the users you choose by email, SMS and messenger bots",
+            "description": "Mailings to chosen users by email, SMS and messenger bots",
             "keywords": [
                 "adzercms",
                 "broadcast",
@@ -622,7 +646,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/max-bot",
-                "reference": "4a9a24aa9dc3f4aab45a1db34dd4761e5b889da7"
+                "reference": "3a39e6ff4d424e5ac2bd122fa462f1319d73a4c1"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -639,6 +663,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\MaxBot\\MaxBotBundle",
+                    "description": {
+                        "ru": "Бот мессенджера MAX для оповещений"
+                    },
                     "categories": [
                         "messaging"
                     ]
@@ -655,7 +682,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "MAX messenger bot for AdzerCMS notifications",
+            "description": "MAX messenger bot for notifications",
             "keywords": [
                 "adzercms",
                 "bot",
@@ -674,7 +701,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/mts-marketolog",
-                "reference": "ae89ceb2b786528d0b46c7dbcba74fe6f36cc339"
+                "reference": "9a4d1ea48255e1a6fbf78cdfe5cbc2c256100252"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -691,6 +718,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\MtsMarketolog\\MtsMarketologBundle",
+                    "description": {
+                        "ru": "SMS через МТС Маркетолог: оповещения и коды подтверждения"
+                    },
                     "categories": [
                         "messaging"
                     ]
@@ -707,7 +737,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "SMS through MTS Marketolog for AdzerCMS notifications and confirmation codes",
+            "description": "SMS through MTS Marketolog: notifications and confirmation codes",
             "keywords": [
                 "adzercms",
                 "mts",
@@ -726,7 +756,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/opotopo",
-                "reference": "fae2442021c9a618a3b8fe0bbb67a4b9a82db234"
+                "reference": "d69f33105d8247db57efc6e3b5f969db8b0474d7"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -760,6 +790,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\Opotopo\\OpotopoBundle",
+                    "description": {
+                        "ru": "Каталоги сайта уходят на OPOTOPO позициями продавца через Seller API"
+                    },
                     "categories": [
                         "commerce"
                     ]
@@ -776,7 +809,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "OPOTOPO export for AdzerCMS: catalogs of the site go to the marketplace as seller listings through the Seller API",
+            "description": "Catalogs of the site go to OPOTOPO as seller listings through the Seller API",
             "keywords": [
                 "adzercms",
                 "marketplace",
@@ -795,7 +828,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/payments",
-                "reference": "602a78c2877ed54cdb15ba4b70bd1ff360b1ff0d"
+                "reference": "7ce7d12bc9cb4840a33ddb1f7b9f2e78fa9a1915"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -822,6 +855,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\Payments\\PaymentsBundle",
+                    "description": {
+                        "ru": "Онлайн-оплата: история платежей, подтверждения и модули платёжных систем"
+                    },
                     "categories": [
                         "payments"
                     ]
@@ -838,7 +874,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Online payments for AdzerCMS: payment history, confirmations and payment provider modules",
+            "description": "Online payments: payment history, confirmations and payment provider modules",
             "keywords": [
                 "acquiring",
                 "adzercms",
@@ -856,7 +892,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/realtime",
-                "reference": "59f51e045f9fbbb8eccffe05efe55424bbf56ccb"
+                "reference": "a36d20ea1e667a1d3829c3b1f2ae06a3fe58a1f2"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -880,7 +916,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\Realtime\\RealtimeBundle"
+                    "bundle": "AdzerCMS\\Realtime\\RealtimeBundle",
+                    "description": {
+                        "ru": "Живые страницы: части страницы обновляются без перезагрузки"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -894,7 +933,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Live page updates for AdzerCMS: parts of a page refresh without reloading",
+            "description": "Live pages: parts of a page refresh without reloading",
             "keywords": [
                 "adzercms",
                 "live-updates",
@@ -913,7 +952,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/sber-id",
-                "reference": "2bdbb1938c229d0a46975fa7e788a12d0ecce5ca"
+                "reference": "23963b84bc3a13f75e1a1341b261ebd091379ba8"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -929,6 +968,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\SberId\\SberIdBundle",
+                    "description": {
+                        "ru": "Вход через Сбер ID с привязкой к учётной записи"
+                    },
                     "categories": [
                         "security"
                     ]
@@ -945,7 +987,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Sign in to an AdzerCMS site with Sber ID and link it to your account",
+            "description": "Sign-in with Sber ID linked to the account",
             "keywords": [
                 "adzercms",
                 "openid-connect",
@@ -964,7 +1006,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/smart-captcha",
-                "reference": "47ad8971835bd7913d655099887e775a392fd1b1"
+                "reference": "d6f89c6f0f9c70e1c4f3fc5380790f18584d94d0"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -978,6 +1020,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\SmartCaptcha\\SmartCaptchaBundle",
+                    "description": {
+                        "ru": "Защита форм от спама Yandex SmartCaptcha"
+                    },
                     "categories": [
                         "security"
                     ]
@@ -994,7 +1039,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Yandex SmartCaptcha spam protection for AdzerCMS forms",
+            "description": "Yandex SmartCaptcha spam protection of forms",
             "keywords": [
                 "adzercms",
                 "captcha",
@@ -1013,7 +1058,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/sms-pilot",
-                "reference": "57f44ecc87c8a5c020dadac248f020b01497a1b2"
+                "reference": "3a1ebd4dfcc4b7ec2f353cc7273d8fb8e3d112a4"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1029,6 +1074,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\SmsPilot\\SmsPilotBundle",
+                    "description": {
+                        "ru": "SMS через SMSPilot: оповещения и коды подтверждения"
+                    },
                     "categories": [
                         "messaging"
                     ]
@@ -1045,7 +1093,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "SMS through SMSPilot for AdzerCMS notifications and confirmation codes",
+            "description": "SMS through SMSPilot: notifications and confirmation codes",
             "keywords": [
                 "adzercms",
                 "sms",
@@ -1064,7 +1112,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/support",
-                "reference": "87232ecc5bd7db4c50e478f143bed9f60ef0a953"
+                "reference": "a7656bc9a2fb9066a49306047973c5c6f5c1c4f4"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1102,6 +1150,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\Support\\SupportBundle",
+                    "description": {
+                        "ru": "Поддержка клиентов: обращения с вложениями, сводка сотрудникам и подсказки статей помощи"
+                    },
                     "categories": [
                         "support"
                     ]
@@ -1118,7 +1169,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Customer support for AdzerCMS: tickets with attachments, a digest for staff and help article suggestions",
+            "description": "Customer support: tickets with attachments, a digest for staff and help article suggestions",
             "keywords": [
                 "adzercms",
                 "helpdesk",
@@ -1137,7 +1188,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/tbank",
-                "reference": "786dc871275b88a688cd4c9d6ca3c48c4a8a8ca6"
+                "reference": "21d6f48e48654d44946d185ba50e2a2a57bb6733"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1156,6 +1207,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\TBank\\TBankBundle",
+                    "description": {
+                        "ru": "Онлайн-оплата Т-Банка"
+                    },
                     "categories": [
                         "payments"
                     ]
@@ -1172,7 +1226,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "T-Bank online payments for AdzerCMS",
+            "description": "T-Bank online payments",
             "keywords": [
                 "acquiring",
                 "adzercms",
@@ -1192,7 +1246,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/telegram",
-                "reference": "e26058c3ec0aed72859a8e3c133594388dfe21f4"
+                "reference": "1e4e3b2a253f3ecfa96a9d9c2e78b42303953c73"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1208,6 +1262,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\Telegram\\TelegramBundle",
+                    "description": {
+                        "ru": "Вход через Telegram с привязкой к учётной записи"
+                    },
                     "categories": [
                         "security"
                     ]
@@ -1224,7 +1281,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Sign in to an AdzerCMS site with Telegram and link it to your account",
+            "description": "Sign-in with Telegram linked to the account",
             "keywords": [
                 "adzercms",
                 "openid-connect",
@@ -1243,7 +1300,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/telegram-bot",
-                "reference": "5d5bb6fe16662c84be4103e658a2c8c007417e61"
+                "reference": "21c6f1e43416d68f840416e1b18b8c65ba75b0e3"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1262,6 +1319,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\TelegramBot\\TelegramBotBundle",
+                    "description": {
+                        "ru": "Бот Telegram для оповещений"
+                    },
                     "categories": [
                         "messaging"
                     ]
@@ -1278,7 +1338,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Telegram bot for AdzerCMS notifications",
+            "description": "Telegram bot for notifications",
             "keywords": [
                 "adzercms",
                 "bot",
@@ -1297,7 +1357,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/theme",
-                "reference": "bcc31687b7830451116022b832ada358c3560c9f"
+                "reference": "581dfd8a4d60f274236b470015c43f4e4f6fe55b"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1307,6 +1367,7 @@
                 "symfony/asset": "7.4.*",
                 "symfony/asset-mapper": "7.4.*",
                 "symfony/dependency-injection": "7.4.*",
+                "symfony/translation": "7.4.*",
                 "symfony/translation-contracts": "^3.7",
                 "twig/twig": "^3.30"
             },
@@ -1316,7 +1377,10 @@
             "type": "adzercms-module",
             "extra": {
                 "adzercms": {
-                    "bundle": "AdzerCMS\\Theme\\ThemeBundle"
+                    "bundle": "AdzerCMS\\Theme\\ThemeBundle",
+                    "description": {
+                        "ru": "Тема по умолчанию: раскладка страниц, компоненты интерфейса и стили"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1330,7 +1394,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Default AdzerCMS theme: page layout, interface components and styles",
+            "description": "Default theme: page layout, interface components and styles",
             "keywords": [
                 "adzercms",
                 "symfony",
@@ -1349,7 +1413,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/turnstile",
-                "reference": "3e405f761a62ebb26457996b8d4b0db0de5557d9"
+                "reference": "57d5c29fbd3a0e85bd964ac2ea07a816a69e131e"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1363,6 +1427,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\Turnstile\\TurnstileBundle",
+                    "description": {
+                        "ru": "Защита форм от спама Cloudflare Turnstile"
+                    },
                     "categories": [
                         "security"
                     ]
@@ -1379,7 +1446,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Cloudflare Turnstile spam protection for AdzerCMS forms",
+            "description": "Cloudflare Turnstile spam protection of forms",
             "keywords": [
                 "adzercms",
                 "captcha",
@@ -1398,7 +1465,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/vk-id",
-                "reference": "6c15d5a48f53d05f5865fe0d9962685aa39ec729"
+                "reference": "4bf740e0fe2c36f552ca0f5e8be58f8327e58339"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1414,6 +1481,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\VkId\\VkIdBundle",
+                    "description": {
+                        "ru": "Вход через VK ID с привязкой к учётной записи"
+                    },
                     "categories": [
                         "security"
                     ]
@@ -1430,7 +1500,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Sign in to an AdzerCMS site with VK ID and link it to your account",
+            "description": "Sign-in with VK ID linked to the account",
             "keywords": [
                 "adzercms",
                 "oauth2",
@@ -1449,7 +1519,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/yandex-id",
-                "reference": "a0b6d7c7266ef7a1152f77434af9ae238398d5f8"
+                "reference": "ae68a1ef090fc2579848888dced53c3f350669c1"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1465,6 +1535,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\YandexId\\YandexIdBundle",
+                    "description": {
+                        "ru": "Вход через Яндекс ID с привязкой к учётной записи"
+                    },
                     "categories": [
                         "security"
                     ]
@@ -1481,7 +1554,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Sign in to an AdzerCMS site with Yandex ID and link it to your account",
+            "description": "Sign-in with Yandex ID linked to the account",
             "keywords": [
                 "adzercms",
                 "oauth2",
@@ -1500,7 +1573,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/yandex-metrika",
-                "reference": "006a9e91fabd90946508691ed0814d335395ded6"
+                "reference": "3a8be50c84ebfc32de1c7690bc94b327e93d6c98"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1516,6 +1589,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\YandexMetrika\\YandexMetrikaBundle",
+                    "description": {
+                        "ru": "Счётчик Яндекс Метрики на страницах после согласия на cookie"
+                    },
                     "categories": [
                         "marketing"
                     ]
@@ -1532,7 +1608,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Yandex Metrica counter on AdzerCMS pages after the visitor's cookie consent",
+            "description": "Yandex Metrica counter on pages after cookie consent",
             "keywords": [
                 "adzercms",
                 "analytics",
@@ -1551,7 +1627,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/yookassa",
-                "reference": "e0aa7ed876938b65c83bb90bfad3d4f91fc9b045"
+                "reference": "44cc891152c27745549bce949ae69d89d3481bb2"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1571,6 +1647,9 @@
             "extra": {
                 "adzercms": {
                     "bundle": "AdzerCMS\\YooKassa\\YooKassaBundle",
+                    "description": {
+                        "ru": "Онлайн-оплата ЮKassa"
+                    },
                     "categories": [
                         "payments"
                     ]
@@ -1587,7 +1666,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "YooKassa online payments for AdzerCMS",
+            "description": "YooKassa online payments",
             "keywords": [
                 "acquiring",
                 "adzercms",

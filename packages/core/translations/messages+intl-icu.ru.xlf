@@ -997,6 +997,12 @@
         <target>Пользователь</target>
       </segment>
     </unit>
+    <unit id="core.setting.brand_color">
+      <segment>
+        <source>core.setting.brand_color</source>
+        <target>Фирменный цвет</target>
+      </segment>
+    </unit>
     <unit id="core.setting.choice">
       <segment>
         <source>core.setting.choice</source>

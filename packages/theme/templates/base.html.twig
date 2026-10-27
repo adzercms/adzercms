@@ -1,6 +1,7 @@
 <!DOCTYPE html>
+{% set accent = brand.color %}
 <html lang="{{ app.request.locale }}" class="layout-{{ brand.layout.value }} {{ app.user and is_granted('ROLE_ADMIN') ? 'admin' }} {{ is_granted('IS_IMPERSONATOR') ? 'impersonating' }}"
-      data-theme="{{ brand.theme(app.user ? app.user.theme : null).value }}">
+      data-theme="{{ brand.theme(app.user ? app.user.theme : null).value }}"{% if accent %} style="--brand: {{ accent }}"{% endif %}>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">

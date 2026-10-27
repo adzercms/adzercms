@@ -15,4 +15,5 @@ enum Type
     case Choice;
     case Decimal;
     case Color;
+    case Palette;
 }
