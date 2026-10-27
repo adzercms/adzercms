@@ -1,12 +1,12 @@
 {% extends '@Theme/panel.html.twig' %}
 
-{% block title %}{{ 'admin.menu.texts'|trans }}{% endblock %}
+{% block title %}{{ 'admin.menu.translations'|trans }}{% endblock %}
 
 {% block page %}
 <div hx-get="{{ path(table.route, table.params) }}" hx-trigger="{{ changed }} from:body" hx-target="#{{ table.id }}" hx-select="#{{ table.id }}" hx-swap="outerHTML">
 {% embed '@Theme/_table.html.twig' %}
     {% block row %}
-        <tr class="clickable-row" data-record="{{ path('admin_text', {domain: row.domain, message: row.message}) }}">
+        <tr class="clickable-row" data-record="{{ path('admin_translation', {locale: locale, domain: row.domain, message: row.message}) }}">
             <td class="{{ table.aside('text') }}">{% if row.stored %}<strong>{{ row.text }}</strong>{% else %}{{ row.text }}{% endif %}</td>
             <td class="{{ table.aside('message') }}">{{ row.message }}</td>
         </tr>

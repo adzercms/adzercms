@@ -34,11 +34,8 @@ final class GoogleAnalyticsTest extends SchemaTestCase
                 'measurement' => self::MEASUREMENT,
                 'consent' => ['analytics_storage' => 'granted', 'ad_storage' => 'denied', 'ad_user_data' => 'denied', 'ad_personalization' => 'denied'],
             ]]],
-            array_map(static fn (array $counter): array => array_diff_key($counter, ['name' => true, 'cookies' => true]), $counters),
+            array_map(static fn (array $counter): array => array_diff_key($counter, ['name' => true]), $counters),
         );
-        foreach (['_ga' => 1, '_ga_7Q2X9K4M1B' => 1, '_gab' => 0, 'cc_cookie' => 0, '_ym_uid' => 0] as $cookie => $analytics) {
-            self::assertSame($analytics, preg_match('/'.($counters[0]['cookies'] ?? '').'/', $cookie), $cookie);
-        }
 
         $sources = self::service(Counters::class)->sources(new Request());
         foreach ([

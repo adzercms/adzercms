@@ -11,8 +11,6 @@ use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Module\Switches;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Twig\Attribute\AsTwigFunction;
 
 final readonly class Counters implements ContentSource
 {
@@ -21,7 +19,6 @@ final readonly class Counters implements ContentSource
     public function __construct(
         private Switches $switches,
         private Security $security,
-        private TranslatorInterface $translator,
     ) {
     }
 
@@ -45,19 +42,5 @@ final readonly class Counters implements ContentSource
         }
 
         return $sources;
-    }
-
-    #[AsTwigFunction('consent', isSafe: ['html'])]
-    public function consent(string $class = ''): string
-    {
-        if ([] === $this->active()) {
-            return '';
-        }
-
-        return \sprintf(
-            '<button type="button"%s data-consent-open>%s</button>',
-            '' === $class ? '' : \sprintf(' class="%s"', htmlspecialchars($class, \ENT_QUOTES)),
-            htmlspecialchars($this->translator->trans('core.consent.settings'), \ENT_QUOTES),
-        );
     }
 }

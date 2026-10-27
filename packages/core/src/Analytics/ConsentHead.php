@@ -21,7 +21,7 @@ final readonly class ConsentHead implements Fragment
     {
         $counters = [];
         foreach ($this->counters->active() as [$counter, $credentials]) {
-            $counters[] = ['name' => $counter->name(), 'entry' => $counter->entry(), 'settings' => $counter->settings($credentials), 'cookies' => $counter->cookies()];
+            $counters[] = ['name' => $counter->name(), 'entry' => $counter->entry(), 'settings' => $counter->settings($credentials)];
         }
 
         return [] === $counters ? null : ['template' => '@Core/consent/head.html.twig', 'context' => ['counters' => $counters]];

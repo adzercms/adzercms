@@ -18,12 +18,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 use function Symfony\Component\Translation\t;
 
-#[Route('/admin/texts')]
+#[Route('/admin/translations')]
 #[IsGranted(Role::ADMIN)]
-final class TextsController extends AbstractController
+final class TranslationsController extends AbstractController
 {
-    public const string CHANGED = 'admin-texts';
+    public const string CHANGED = 'admin-translations';
     private const ORDER = 'message';
+    private const LANGUAGE = 'language';
 
     public function __construct(
         private readonly Texts $texts,
@@ -31,10 +32,16 @@ final class TextsController extends AbstractController
     ) {
     }
 
-    #[Route('', name: 'admin_texts', methods: ['GET'])]
-    public function texts(Request $request): Response
+    #[Route('', name: 'admin_translations', methods: ['GET'])]
+    public function translations(Request $request): Response
     {
-        $locale = $this->language->instance();
+        $language = Filter::choice(self::LANGUAGE, $this->language->choices(), $this->language->instance());
+        $table = Table::of($request, 'admin_translations', [
+            Column::live('text', t('admin.translations.text'), static fn (array $row): string => $row['text']),
+            Column::live('message', t('admin.translations.message'), static fn (array $row): string => $row['message'])->aside(),
+        ], self::ORDER, t('admin.translations.empty'), filters: [Filter::search(), $language], live: true);
+
+        $locale = $language->pick($table->value(self::LANGUAGE));
         $stored = $this->texts->stored($locale);
         $rows = [];
 
@@ -44,18 +51,12 @@ final class TextsController extends AbstractController
             }
         }
 
-        $table = Table::of($request, 'admin_texts', [
-            Column::live('text', t('admin.texts.text'), static fn (array $row): string => $row['text']),
-            Column::live('message', t('admin.texts.message'), static fn (array $row): string => $row['message'])->aside(),
-        ], self::ORDER, t('admin.texts.empty'), filters: [Filter::search()], live: true);
-
-        return $this->render('@Admin/admin/texts.html.twig', ['table' => $table, 'rows' => $table->rows($rows), 'changed' => self::CHANGED]);
+        return $this->render('@Admin/admin/translations.html.twig', ['table' => $table, 'rows' => $table->rows($rows), 'locale' => $locale, 'changed' => self::CHANGED]);
     }
 
-    #[Route('/{domain}/{message}', name: 'admin_text', requirements: ['message' => '[^/]+'], methods: ['GET', 'POST'])]
-    public function text(string $domain, string $message, Request $request): Response
+    #[Route('/{locale}/{domain}/{message}', name: 'admin_translation', requirements: ['message' => '[^/]+'], methods: ['GET', 'POST'])]
+    public function translation(string $locale, string $domain, string $message, Request $request): Response
     {
-        $locale = $this->language->instance();
         $catalogue = $this->texts->catalogue($locale);
 
         if (!$catalogue->defines($message, $domain)) {
@@ -68,7 +69,8 @@ final class TextsController extends AbstractController
         }
 
         $stored = $this->texts->stored($locale)[$domain][$message] ?? null;
-        $response = $this->render('@Admin/admin/_text.html.twig', [
+        $response = $this->render('@Admin/admin/_translation.html.twig', [
+            'locale' => $locale,
             'domain' => $domain,
             'message' => $message,
             'catalog' => $catalogue->get($message, $domain),

@@ -6,7 +6,6 @@ const PROBE = 'adzercms_probe';
 
 const config = JSON.parse(document.querySelector('script[data-consent]').dataset.consent);
 const texts = config.texts;
-const started = new Set();
 
 const registrable = () => {
     const labels = location.hostname.split('.');
@@ -28,10 +27,7 @@ const launch = () => {
         return;
     }
     for (const counter of config.counters) {
-        if (!started.has(counter.entry)) {
-            started.add(counter.entry);
-            import(counter.entry).then(module => module.default(counter.settings));
-        }
+        import(counter.entry).then(module => module.default(counter.settings));
     }
 };
 
@@ -42,10 +38,8 @@ CookieConsent.run({
     guiOptions: {consentModal: {layout: 'cloud inline', position: 'bottom center'}},
     categories: {
         [NECESSARY]: {enabled: true, readOnly: true},
-        [ANALYTICS]: {enabled: true, autoClear: {cookies: config.counters.map(counter => ({name: new RegExp(counter.cookies)})), reloadPage: true}},
+        [ANALYTICS]: {enabled: true},
     },
-    onConsent: launch,
-    onChange: launch,
     language: {
         default: config.language,
         translations: {
@@ -55,24 +49,7 @@ CookieConsent.run({
                     description: texts.description,
                     acceptAllBtn: texts.accept,
                 },
-                preferencesModal: {
-                    title: texts.settings,
-                    acceptAllBtn: texts.acceptAll,
-                    acceptNecessaryBtn: texts.acceptNecessary,
-                    savePreferencesBtn: texts.save,
-                    closeIconLabel: texts.close,
-                    sections: [
-                        {title: texts.necessary, description: texts.necessaryDescription, linkedCategory: NECESSARY},
-                        {title: texts.analytics, description: texts.analyticsDescription, linkedCategory: ANALYTICS},
-                    ],
-                },
             },
         },
     },
 }).then(launch);
-
-document.addEventListener('click', event => {
-    if (event.target.closest('[data-consent-open]')) {
-        CookieConsent.showPreferences();
-    }
-});

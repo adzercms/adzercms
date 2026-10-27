@@ -9,7 +9,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - First public version: the core, contracts, project template, admin, cabinet, theme and the modules listed in [What's in the repository](README.md#whats-in-the-repository)
 - Panel layout `brand.layout`: sections on the side or in a bar under the header; fragment place `Fragment::TOP` of the top layout: its fragments replace the panel header, the admin bar and the sidebar
 - `adzercms-refresh` reinstalls the installed packages whose patches changed in `patches.lock.json` of cweagans/composer-patches
-- The admin section "Texts": the admin changes any text of the enabled packages in the language of the instance without code, clearing it brings back the catalog text
+- The admin section "Translations": the admin changes any text of the enabled packages in each language of the catalogs without code, the language of the instance first, clearing it brings back the catalog text
 - `BotListener`: a feature module takes what people send to the bots
 - `LoginListener`: a feature module that waits for a login takes the profile of the login service instead of the entry
 - Notice channels of modules: a feature module brings its own channel after the bots

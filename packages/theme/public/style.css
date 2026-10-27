@@ -255,6 +255,9 @@ summary::-webkit-details-marker { display: none; }
     align-self: flex-start;
     width: 180px;
     min-width: 180px;
+    max-height: calc(100dvh - var(--chrome-height));
+    overflow-y: auto;
+    overscroll-behavior: contain;
     background: var(--bg-gray);
     border-right: 1px solid var(--border-light);
     border-bottom: 1px solid var(--border-light);
@@ -352,7 +355,7 @@ button.nav-item {
 
 @media (max-width: 900px) {
     :root.admin { --admin-bar-height: 42px; }
-    .panel-sidebar { display: none; position: static; width: 100%; margin: 0; top: 0; border-radius: 0; }
+    .panel-sidebar { display: none; position: static; width: 100%; max-height: none; margin: 0; top: 0; border-radius: 0; }
     .panel-main { flex-direction: column; padding-top: var(--chrome-height); }
     .admin-bar { display: flex; }
     .admin-bar-inner { padding: 0 12px; }
@@ -980,34 +983,7 @@ td.row-handle:hover { color: var(--text); }
     --cc-btn-primary-hover-bg: var(--primary-hover);
     --cc-btn-primary-hover-color: var(--on-primary);
     --cc-btn-primary-hover-border-color: var(--primary-hover);
-    --cc-btn-secondary-bg: var(--bg-light);
-    --cc-btn-secondary-color: var(--text);
-    --cc-btn-secondary-border-color: var(--border);
-    --cc-btn-secondary-hover-bg: var(--border-light);
-    --cc-btn-secondary-hover-color: var(--text);
-    --cc-btn-secondary-hover-border-color: var(--border);
     --cc-separator-border-color: var(--border-light);
-    --cc-toggle-on-bg: var(--primary);
-    --cc-toggle-off-bg: var(--text-muted);
-    --cc-toggle-on-knob-bg: var(--surface);
-    --cc-toggle-off-knob-bg: var(--surface);
-    --cc-toggle-enabled-icon-color: var(--surface);
-    --cc-toggle-disabled-icon-color: var(--surface);
-    --cc-toggle-readonly-bg: var(--border);
-    --cc-toggle-readonly-knob-bg: var(--surface);
-    --cc-toggle-readonly-knob-icon-color: var(--border);
-    --cc-section-category-border: var(--border-light);
-    --cc-cookie-category-block-bg: var(--bg-gray);
-    --cc-cookie-category-block-border: var(--border-light);
-    --cc-cookie-category-block-hover-bg: var(--bg-hover);
-    --cc-cookie-category-block-hover-border: var(--border);
-    --cc-cookie-category-expanded-block-hover-bg: var(--bg-hover);
-    --cc-overlay-bg: var(--backdrop);
-    --cc-webkit-scrollbar-bg: var(--border-light);
-    --cc-webkit-scrollbar-hover-bg: var(--border);
-    --cc-footer-bg: var(--bg-gray);
-    --cc-footer-color: var(--text-gray);
-    --cc-footer-border-color: var(--border-light);
 }
 
 .modal {
@@ -1417,7 +1393,7 @@ fieldset.choices label .muted { grid-column: 2; margin: 0; font-size: 12px; line
 
 @media (min-width: 901px) {
     :root.layout-top .panel-main { flex-direction: column; padding-left: 0; }
-    :root.layout-top .panel-sidebar { position: static; align-self: stretch; width: auto; min-width: 0; margin: 0; background: none; border-right: 0; border-radius: 0; }
+    :root.layout-top .panel-sidebar { position: static; align-self: stretch; width: auto; min-width: 0; max-height: none; margin: 0; background: none; border-right: 0; border-radius: 0; }
     :root.layout-top .sidebar-nav { display: flex; flex-wrap: wrap; padding: 0 20px; }
     :root.layout-top .nav-section { display: flex; flex-wrap: wrap; margin-bottom: 0; }
     :root.layout-top .nav-section-title { display: none; }

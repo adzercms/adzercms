@@ -19,7 +19,6 @@ final class TallyCounter implements Counter
     public const ENTRY = 'tally/counter';
     public const ORIGIN = 'https://tally.test';
     public const BOARD = 'https://board.tally.test';
-    public const COOKIES = '^_tally';
 
     public function name(): TranslatableInterface
     {
@@ -44,10 +43,5 @@ final class TallyCounter implements Counter
     public function origins(): array
     {
         return [ContentSource::SCRIPT => [self::ORIGIN], ContentSource::CONNECT => [self::ORIGIN], ContentSource::FRAME_ANCESTORS => [self::BOARD]];
-    }
-
-    public function cookies(): string
-    {
-        return self::COOKIES;
     }
 }

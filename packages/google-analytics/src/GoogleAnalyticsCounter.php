@@ -19,7 +19,6 @@ final readonly class GoogleAnalyticsCounter implements Counter
     public const CONSENT = ['analytics_storage' => 'granted', 'ad_storage' => 'denied', 'ad_user_data' => 'denied', 'ad_personalization' => 'denied'];
 
     private const ENTRY = 'adzercms/google-analytics';
-    private const COOKIES = '^(_ga$|_ga_)';
     private const TAG_MANAGER = 'https://www.googletagmanager.com';
     private const COLLECTION = 'https://*.google-analytics.com';
     private const GOOGLE = 'https://*.google.com';
@@ -53,10 +52,5 @@ final readonly class GoogleAnalyticsCounter implements Counter
             ContentSource::IMG => [self::TAG_MANAGER, self::COLLECTION],
             ContentSource::CONNECT => [self::TAG_MANAGER, self::COLLECTION, self::GOOGLE],
         ];
-    }
-
-    public function cookies(): string
-    {
-        return self::COOKIES;
     }
 }

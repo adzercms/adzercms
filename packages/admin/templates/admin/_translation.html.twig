@@ -1,0 +1,16 @@
+{% include '@Theme/_modal_header.html.twig' with {title: message} only %}
+
+<div class="modal-body">
+    {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+    <form hx-post="{{ path('admin_translation', {locale: locale, domain: domain, message: message}) }}" hx-target="#record">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label class="field-wide">{{ 'admin.translation.value'|trans }}
+                <textarea name="value" rows="4" required>{{ value }}</textarea>
+            </label>
+            {% if stored %}<p class="field-wide">{{ 'admin.translation.catalog'|trans }}: {{ catalog }}</p>{% endif %}
+        </div>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
+        {% if stored %}<button type="submit" class="secondary" name="reset" value="1" formnovalidate>{{ 'admin.translation.reset'|trans }}</button>{% endif %}
+    </form>
+</div>

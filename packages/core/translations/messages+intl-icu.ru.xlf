@@ -205,64 +205,16 @@
         <target>Принять</target>
       </segment>
     </unit>
-    <unit id="core.consent.accept_all">
-      <segment>
-        <source>core.consent.accept_all</source>
-        <target>Принять все</target>
-      </segment>
-    </unit>
-    <unit id="core.consent.accept_necessary">
-      <segment>
-        <source>core.consent.accept_necessary</source>
-        <target>Только необходимые</target>
-      </segment>
-    </unit>
-    <unit id="core.consent.analytics">
-      <segment>
-        <source>core.consent.analytics</source>
-        <target>Статистика</target>
-      </segment>
-    </unit>
-    <unit id="core.consent.analytics_description">
-      <segment>
-        <source>core.consent.analytics_description</source>
-        <target>{services}: откуда приходят посетители и как пользуются сайтом.</target>
-      </segment>
-    </unit>
     <unit id="core.consent.description">
       <segment>
         <source>core.consent.description</source>
         <target>Сайт использует cookie для статистики посещений: {services}. {policy}</target>
       </segment>
     </unit>
-    <unit id="core.consent.necessary">
-      <segment>
-        <source>core.consent.necessary</source>
-        <target>Необходимые</target>
-      </segment>
-    </unit>
-    <unit id="core.consent.necessary_description">
-      <segment>
-        <source>core.consent.necessary_description</source>
-        <target>Работа сайта и запоминание этого выбора.</target>
-      </segment>
-    </unit>
     <unit id="core.consent.policy">
       <segment>
         <source>core.consent.policy</source>
         <target>Политика обработки данных</target>
-      </segment>
-    </unit>
-    <unit id="core.consent.save">
-      <segment>
-        <source>core.consent.save</source>
-        <target>Сохранить выбор</target>
-      </segment>
-    </unit>
-    <unit id="core.consent.settings">
-      <segment>
-        <source>core.consent.settings</source>
-        <target>Настройки cookie</target>
       </segment>
     </unit>
     <unit id="core.consent.title">

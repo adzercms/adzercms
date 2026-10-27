@@ -49,10 +49,10 @@
         <target>Настройки</target>
       </segment>
     </unit>
-    <unit id="admin.menu.texts">
+    <unit id="admin.menu.translations">
       <segment>
-        <source>admin.menu.texts</source>
-        <target>Тексты</target>
+        <source>admin.menu.translations</source>
+        <target>Переводы</target>
       </segment>
     </unit>
     <unit id="admin.menu.users">
@@ -373,39 +373,39 @@
         <target>ZIP</target>
       </segment>
     </unit>
-    <unit id="admin.text.catalog">
+    <unit id="admin.translation.catalog">
       <segment>
-        <source>admin.text.catalog</source>
+        <source>admin.translation.catalog</source>
         <target>Исходный</target>
       </segment>
     </unit>
-    <unit id="admin.text.reset">
+    <unit id="admin.translation.reset">
       <segment>
-        <source>admin.text.reset</source>
+        <source>admin.translation.reset</source>
         <target>Вернуть исходный</target>
       </segment>
     </unit>
-    <unit id="admin.text.value">
+    <unit id="admin.translation.value">
       <segment>
-        <source>admin.text.value</source>
+        <source>admin.translation.value</source>
         <target>Текст</target>
       </segment>
     </unit>
-    <unit id="admin.texts.empty">
+    <unit id="admin.translations.empty">
       <segment>
-        <source>admin.texts.empty</source>
+        <source>admin.translations.empty</source>
         <target>Тексты не найдены</target>
       </segment>
     </unit>
-    <unit id="admin.texts.message">
+    <unit id="admin.translations.message">
       <segment>
-        <source>admin.texts.message</source>
+        <source>admin.translations.message</source>
         <target>Ключ</target>
       </segment>
     </unit>
-    <unit id="admin.texts.text">
+    <unit id="admin.translations.text">
       <segment>
-        <source>admin.texts.text</source>
+        <source>admin.translations.text</source>
         <target>Текст</target>
       </segment>
     </unit>

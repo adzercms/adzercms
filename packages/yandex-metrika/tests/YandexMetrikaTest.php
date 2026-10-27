@@ -34,11 +34,8 @@ final class YandexMetrikaTest extends SchemaTestCase
                 'counter' => self::NUMBER,
                 'options' => ['ssr' => true, 'webvisor' => true, 'clickmap' => true, 'ecommerce' => 'dataLayer', 'accurateTrackBounce' => true, 'trackLinks' => true],
             ]]],
-            array_map(static fn (array $counter): array => array_diff_key($counter, ['name' => true, 'cookies' => true]), $counters),
+            array_map(static fn (array $counter): array => array_diff_key($counter, ['name' => true]), $counters),
         );
-        foreach (['_ym_uid' => 1, '_ym_d' => 1, 'mdd' => 1, '_ytm_preview' => 1, 'cc_cookie' => 0, 'mdd_x' => 0] as $cookie => $metrika) {
-            self::assertSame($metrika, preg_match('/'.($counters[0]['cookies'] ?? '').'/', $cookie), $cookie);
-        }
 
         $sources = self::service(Counters::class)->sources(new Request());
         foreach ([

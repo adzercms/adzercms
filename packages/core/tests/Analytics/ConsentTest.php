@@ -60,7 +60,7 @@ final class ConsentTest extends SchemaTestCase
         $window = $page->filter('script[data-consent]');
         $config = 0 === $window->count() ? null : json_decode((string) $window->attr('data-consent'), true, flags: \JSON_THROW_ON_ERROR);
         self::assertSame(
-            $shown ? [['entry' => TallyCounter::ENTRY, 'settings' => ['site' => self::SITE], 'cookies' => TallyCounter::COOKIES]] : null,
+            $shown ? [['entry' => TallyCounter::ENTRY, 'settings' => ['site' => self::SITE]]] : null,
             $config['counters'] ?? null,
         );
         if ($shown) {

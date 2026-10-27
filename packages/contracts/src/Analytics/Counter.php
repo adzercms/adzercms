@@ -20,6 +20,4 @@ interface Counter extends Switchable
 
     /** @return array<ContentSource::SCRIPT|ContentSource::CONNECT|ContentSource::IMG|ContentSource::FRAME|ContentSource::WORKER|ContentSource::FRAME_ANCESTORS, list<string>> */
     public function origins(): array;
-
-    public function cookies(): string;
 }
