@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="turnstile.guide.keys">
+      <segment>
+        <source>turnstile.guide.keys</source>
+        <target>Copy the Site Key into "Site key" and the Secret Key into "Secret key"</target>
+      </segment>
+    </unit>
+    <unit id="turnstile.guide.widget">
+      <segment>
+        <source>turnstile.guide.widget</source>
+        <target>Open https://dash.cloudflare.com/?to=/:account/turnstile, press "Add widget", fill in "Widget name", add the domain of the site in "Hostname management", pick "Managed" in "Widget mode" and press "Create"</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

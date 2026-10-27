@@ -6,12 +6,20 @@ namespace AdzerCMS\HCaptcha;
 
 use AdzerCMS\Contracts\Captcha\CaptchaService;
 use AdzerCMS\Contracts\Captcha\Key;
+use AdzerCMS\Contracts\Setting\Guided;
 
-final readonly class HCaptchaService implements CaptchaService
+use function Symfony\Component\Translation\t;
+
+final readonly class HCaptchaService implements CaptchaService, Guided
 {
     public function credentials(): array
     {
         return [Key::Site->field(), Key::Secret->field()];
+    }
+
+    public function guide(): array
+    {
+        return [t('hcaptcha.guide.site'), t('hcaptcha.guide.secret')];
     }
 
     public function script(): string

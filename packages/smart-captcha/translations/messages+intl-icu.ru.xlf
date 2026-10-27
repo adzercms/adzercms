@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="smartcaptcha.guide.create">
+      <segment>
+        <source>smartcaptcha.guide.create</source>
+        <target>Под учёткой Yandex Cloud с активным платёжным аккаунтом откройте https://console.yandex.cloud/link/smartcaptcha, выберите каталог, нажмите «Создать капчу», впишите имя и домен сайта в список сайтов и нажмите «Создать»</target>
+      </segment>
+    </unit>
+    <unit id="smartcaptcha.guide.keys">
+      <segment>
+        <source>smartcaptcha.guide.keys</source>
+        <target>Откройте капчу в списке и скопируйте «Ключ клиента» в поле «Ключ страницы», «Ключ сервера» — в поле «Ключ проверки»</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

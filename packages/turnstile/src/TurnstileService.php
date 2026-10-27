@@ -6,12 +6,20 @@ namespace AdzerCMS\Turnstile;
 
 use AdzerCMS\Contracts\Captcha\CaptchaService;
 use AdzerCMS\Contracts\Captcha\Key;
+use AdzerCMS\Contracts\Setting\Guided;
 
-final readonly class TurnstileService implements CaptchaService
+use function Symfony\Component\Translation\t;
+
+final readonly class TurnstileService implements CaptchaService, Guided
 {
     public function credentials(): array
     {
         return [Key::Site->field(), Key::Secret->field()];
+    }
+
+    public function guide(): array
+    {
+        return [t('turnstile.guide.widget'), t('turnstile.guide.keys')];
     }
 
     public function script(): string

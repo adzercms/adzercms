@@ -6,12 +6,20 @@ namespace AdzerCMS\SmartCaptcha;
 
 use AdzerCMS\Contracts\Captcha\CaptchaService;
 use AdzerCMS\Contracts\Captcha\Key;
+use AdzerCMS\Contracts\Setting\Guided;
 
-final readonly class SmartCaptchaService implements CaptchaService
+use function Symfony\Component\Translation\t;
+
+final readonly class SmartCaptchaService implements CaptchaService, Guided
 {
     public function credentials(): array
     {
         return [Key::Site->field(), Key::Secret->field()];
+    }
+
+    public function guide(): array
+    {
+        return [t('smartcaptcha.guide.create'), t('smartcaptcha.guide.keys')];
     }
 
     public function script(): string

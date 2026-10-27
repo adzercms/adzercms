@@ -461,12 +461,13 @@
             "dist": {
                 "type": "path",
                 "url": "packages/hcaptcha",
-                "reference": "8a79b1b14cf6defe58147bcac8531272a816c658"
+                "reference": "ad3c410582380278cc357904acbc524b66801921"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
                 "php": ">=8.4",
-                "symfony/dependency-injection": "7.4.*"
+                "symfony/dependency-injection": "7.4.*",
+                "symfony/translation": "7.4.*"
             },
             "provide": {
                 "adzercms/captcha-implementation": "self.version"
@@ -703,10 +704,12 @@
             "dist": {
                 "type": "path",
                 "url": "packages/mts-marketolog",
-                "reference": "9a4d1ea48255e1a6fbf78cdfe5cbc2c256100252"
+                "reference": "deaf069314e66cbdeedc7ce98532cb37d4b827cc"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
+                "doctrine/dbal": "^4.5",
+                "doctrine/migrations": "^3.9",
                 "php": ">=8.4",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/http-client-contracts": "^3.7",
@@ -1008,12 +1011,13 @@
             "dist": {
                 "type": "path",
                 "url": "packages/smart-captcha",
-                "reference": "d6f89c6f0f9c70e1c4f3fc5380790f18584d94d0"
+                "reference": "617764395874743f6be2cb1ec0492d1db3793b3f"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
                 "php": ">=8.4",
-                "symfony/dependency-injection": "7.4.*"
+                "symfony/dependency-injection": "7.4.*",
+                "symfony/translation": "7.4.*"
             },
             "provide": {
                 "adzercms/captcha-implementation": "self.version"
@@ -1060,10 +1064,12 @@
             "dist": {
                 "type": "path",
                 "url": "packages/sms-pilot",
-                "reference": "3a1ebd4dfcc4b7ec2f353cc7273d8fb8e3d112a4"
+                "reference": "649b43ae32a73ae5ee1495cefc218fc6b8a5c77e"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
+                "doctrine/dbal": "^4.5",
+                "doctrine/migrations": "^3.9",
                 "php": ">=8.4",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/http-client-contracts": "^3.7",
@@ -1416,12 +1422,13 @@
             "dist": {
                 "type": "path",
                 "url": "packages/turnstile",
-                "reference": "57d5c29fbd3a0e85bd964ac2ea07a816a69e131e"
+                "reference": "3a19ed1ea9beed1fccc17de6457717d2773f6863"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
                 "php": ">=8.4",
-                "symfony/dependency-injection": "7.4.*"
+                "symfony/dependency-injection": "7.4.*",
+                "symfony/translation": "7.4.*"
             },
             "provide": {
                 "adzercms/captcha-implementation": "self.version"
@@ -1576,12 +1583,15 @@
             "dist": {
                 "type": "path",
                 "url": "packages/yandex-metrika",
-                "reference": "3a8be50c84ebfc32de1c7690bc94b327e93d6c98"
+                "reference": "13a226d000dd2b76e386ae9e26142187f1a8f30a"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
+                "adzercms/core": "^1.0",
                 "php": ">=8.4",
                 "symfony/dependency-injection": "7.4.*",
+                "symfony/http-client-contracts": "^3.7",
+                "symfony/mime": "7.4.*",
                 "symfony/translation": "7.4.*",
                 "symfony/translation-contracts": "^3.7"
             },
@@ -1593,7 +1603,7 @@
                 "adzercms": {
                     "bundle": "AdzerCMS\\YandexMetrika\\YandexMetrikaBundle",
                     "description": {
-                        "ru": "Счётчик Яндекс Метрики на страницах после согласия на cookie"
+                        "ru": "Счётчик Яндекс Метрики на страницах после согласия на cookie и выгрузка ему офлайн-конверсий"
                     },
                     "categories": [
                         "marketing"
@@ -1611,7 +1621,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Yandex Metrica counter on pages after cookie consent",
+            "description": "Yandex Metrica counter on pages after cookie consent and offline conversions upload to it",
             "keywords": [
                 "adzercms",
                 "analytics",

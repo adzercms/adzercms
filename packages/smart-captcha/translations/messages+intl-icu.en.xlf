@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="smartcaptcha.guide.create">
+      <segment>
+        <source>smartcaptcha.guide.create</source>
+        <target>Signed in to Yandex Cloud with an active billing account, open https://console.yandex.cloud/link/smartcaptcha, pick a folder, create a captcha with a name and the domain of the site in the list of sites</target>
+      </segment>
+    </unit>
+    <unit id="smartcaptcha.guide.keys">
+      <segment>
+        <source>smartcaptcha.guide.keys</source>
+        <target>Open the captcha in the list and copy the client key into "Site key" and the server key into "Secret key"</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

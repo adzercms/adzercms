@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="hcaptcha.guide.secret">
+      <segment>
+        <source>hcaptcha.guide.secret</source>
+        <target>Open https://dashboard.hcaptcha.com/settings, press "Generate New Secret" and copy the secret into "Secret key" at once: it shows only once, and the previous secret of the account stops working</target>
+      </segment>
+    </unit>
+    <unit id="hcaptcha.guide.site">
+      <segment>
+        <source>hcaptcha.guide.site</source>
+        <target>Open https://dashboard.hcaptcha.com/sites, add a site with the domain of the site and copy its sitekey into "Site key"</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

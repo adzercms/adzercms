@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="hcaptcha.guide.secret">
+      <segment>
+        <source>hcaptcha.guide.secret</source>
+        <target>Откройте https://dashboard.hcaptcha.com/settings, нажмите «Generate New Secret» и сразу скопируйте секрет в поле «Ключ проверки»: показ однократный, прежний секрет аккаунта перестаёт действовать</target>
+      </segment>
+    </unit>
+    <unit id="hcaptcha.guide.site">
+      <segment>
+        <source>hcaptcha.guide.site</source>
+        <target>Откройте https://dashboard.hcaptcha.com/sites, добавьте сайт с доменом сайта и скопируйте его sitekey в поле «Ключ страницы»</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>
