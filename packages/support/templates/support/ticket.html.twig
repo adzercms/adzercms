@@ -14,6 +14,7 @@
 
 {% block page %}
 {% import '@Theme/_icons.html.twig' as icon %}
+{% set author = login(ticket.user) %}
 <div class="ticket-layout">
     <div class="ticket-main">
         <div class="section-head">
@@ -26,7 +27,7 @@
                 <div class="chat-message {{ own ? 'own' : 'other' }}">
                     <div class="chat-bubble">
                         <div class="chat-head">
-                            <span class="chat-author">{{ message.fromStaff ? support_label : ticket.user.id }}</span>
+                            <span class="chat-author">{{ message.fromStaff ? support_label : author }}</span>
                             <span class="chat-time">{{ 'core.moment.day_time'|trans({at: message.createdAt}) }}</span>
                             {% if staff and not ticket.status.closed %}
                                 <button type="button" class="icon-act" data-modal="edit-{{ message.id }}" aria-label="{{ 'core.action.edit'|trans }}" title="{{ 'core.action.edit'|trans }}">{{ icon.edit() }}</button>
@@ -128,8 +129,7 @@
         {% if staff %}
             <div class="info-item">
                 <span class="info-label">{{ 'support.ticket.user'|trans }}</span>
-                {% set card = admin('user', {id: ticket.user.id}) %}
-                <span class="info-value">{% if card %}<a href="{{ card }}">{{ ticket.user.id }}</a>{% else %}{{ ticket.user.id }}{% endif %}{{ caption(ticket.user.comment) }}</span>
+                <span class="info-value">{% include '@Theme/_user.html.twig' with {user: ticket.user, name: author} only %}</span>
             </div>
             {% if ticket.user.note %}
                 <div class="info-item">

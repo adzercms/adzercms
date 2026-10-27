@@ -25,12 +25,14 @@ final readonly class LoginNames
     }
 
     /**
-     * @param list<User> $users
+     * @param iterable<?User> $users
      *
      * @return array<int, string>
      */
-    public function ofMany(array $users): array
+    #[AsTwigFunction('logins')]
+    public function ofMany(iterable $users): array
     {
+        $users = array_filter([...$users]);
         $ids = array_map(static fn (User $user): int => (int) $user->getId(), $users);
         $found = [];
         foreach ($this->identifiers as $identifier) {

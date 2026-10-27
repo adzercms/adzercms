@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Support\Tests;
 
+use AdzerCMS\Core\Account\LoginNames;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Attachment\Attachments;
 use AdzerCMS\Core\Entity\User;
@@ -164,7 +165,7 @@ final class SupportTest extends SchemaTestCase
         $this->client->loginUser($user);
         $crawler = $this->client->request('GET', $page);
 
-        self::assertSame([(string) $user->getId(), $ticket->getDepartment()], $crawler->filter('.chat-author')->each(static fn (Crawler $author): string => $author->text()));
+        self::assertSame([self::service(LoginNames::class)->of($user), $ticket->getDepartment()], $crawler->filter('.chat-author')->each(static fn (Crawler $author): string => $author->text()));
         self::assertSame(['own', 'other'], self::sides($crawler));
 
         $this->client->loginUser($this->staff);

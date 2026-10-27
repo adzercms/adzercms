@@ -1,0 +1,3 @@
+{% set card = admin('user', {id: user.id}) %}
+{% set name = name ?? login(user) %}
+{%- if card %}<a href="{{ card }}"><strong>{{ name }}</strong></a>{% else %}<strong>{{ name }}</strong>{% endif %}{{ caption(user.comment) -}}
