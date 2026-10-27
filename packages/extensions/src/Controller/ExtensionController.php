@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions\Controller;
 
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
@@ -13,7 +14,6 @@ use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\Catalog;
 use AdzerCMS\Extensions\Entity\Extension;
 use AdzerCMS\Extensions\ExtensionState;
-use AdzerCMS\Extensions\ExtensionType;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace AdzerCMS\Extensions\Controller;
 
 use AdzerCMS\Contracts\Module\Category;
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
+use AdzerCMS\Extensions\Entity\Extension;
 use AdzerCMS\Extensions\ExtensionPrice;
-use AdzerCMS\Extensions\ExtensionType;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -40,5 +42,19 @@ final class CatalogController extends AbstractController
         }
 
         return $this->render('@Extensions/catalog.html.twig', $context);
+    }
+
+    #[Route('/extensions/store.json', name: 'extensions_store', methods: ['GET'])]
+    public function store(Request $request): Response
+    {
+        $response = new JsonResponse(['extensions' => array_map(static fn (Extension $extension): array => [
+            'name' => $extension->getName(),
+            'type' => $extension->getType()->value,
+            'demo' => $extension->getDemo(),
+        ], $this->extensions->listed())]);
+        $response->setEtag(hash('xxh128', (string) $response->getContent()));
+        $response->isNotModified($request);
+
+        return $response;
     }
 }

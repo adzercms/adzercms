@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace AdzerCMS\Extensions;
+namespace AdzerCMS\Contracts\Module;
 
 use AdzerCMS\Contracts\Ui\Titled;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -19,12 +19,12 @@ enum ExtensionType: string implements Titled
 
     public function label(): TranslatableInterface
     {
-        return t('extensions.type.'.$this->value);
+        return t('core.extension_type.'.$this->value);
     }
 
     public function tab(): TranslatableInterface
     {
-        return t('extensions.tab.'.$this->value);
+        return t('core.extension_tab.'.$this->value);
     }
 
     /** @return array<string, TranslatableInterface> */

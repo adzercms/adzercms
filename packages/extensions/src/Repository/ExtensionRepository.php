@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace AdzerCMS\Extensions\Repository;
 
 use AdzerCMS\Contracts\Module\Category;
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\Entity\Extension;
 use AdzerCMS\Extensions\ExtensionPrice;
-use AdzerCMS\Extensions\ExtensionType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -43,6 +43,12 @@ class ExtensionRepository extends ServiceEntityRepository
     }
 
     /** @return list<Extension> */
+    public function listed(): array
+    {
+        return self::placed($this->shown())->getQuery()->getResult();
+    }
+
+    /** @return list<Extension> */
     public function ordered(): array
     {
         return self::placed($this->createQueryBuilder('e'))->getQuery()->getResult();
@@ -71,7 +77,7 @@ class ExtensionRepository extends ServiceEntityRepository
 
     private function catalog(Table $table): QueryBuilder
     {
-        $builder = self::typed($this->createQueryBuilder('e')->andWhere('e.version IS NOT NULL'), $table);
+        $builder = self::typed($this->shown(), $table);
 
         $category = Category::tryFrom($table->value('category'));
         if (null !== $category) {
@@ -83,6 +89,11 @@ class ExtensionRepository extends ServiceEntityRepository
             ExtensionPrice::Paid => $builder->andWhere('e.price IS NOT NULL'),
             null => $builder,
         };
+    }
+
+    private function shown(): QueryBuilder
+    {
+        return $this->createQueryBuilder('e')->andWhere('e.version IS NOT NULL');
     }
 
     private static function typed(QueryBuilder $builder, Table $table): QueryBuilder

@@ -319,6 +319,66 @@
         <target>Sign-up with a known contact</target>
       </segment>
     </unit>
+    <unit id="core.extension_tab.app">
+      <segment>
+        <source>core.extension_tab.app</source>
+        <target>Mini apps</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_tab.integration">
+      <segment>
+        <source>core.extension_tab.integration</source>
+        <target>Integrations</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_tab.module">
+      <segment>
+        <source>core.extension_tab.module</source>
+        <target>Modules</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_tab.template">
+      <segment>
+        <source>core.extension_tab.template</source>
+        <target>Site templates</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_tab.theme">
+      <segment>
+        <source>core.extension_tab.theme</source>
+        <target>Themes</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_type.app">
+      <segment>
+        <source>core.extension_type.app</source>
+        <target>Mini app</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_type.integration">
+      <segment>
+        <source>core.extension_type.integration</source>
+        <target>Integration</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_type.module">
+      <segment>
+        <source>core.extension_type.module</source>
+        <target>Module</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_type.template">
+      <segment>
+        <source>core.extension_type.template</source>
+        <target>Site template</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_type.theme">
+      <segment>
+        <source>core.extension_type.theme</source>
+        <target>Theme</target>
+      </segment>
+    </unit>
     <unit id="core.filter.search">
       <segment>
         <source>core.filter.search</source>

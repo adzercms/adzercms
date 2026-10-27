@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Extensions\Tests;
 
 use AdzerCMS\Contracts\Module\Category;
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Composer\Description;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Module\Registry;
@@ -12,7 +13,6 @@ use AdzerCMS\Core\Seo\Indexing;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Queries;
 use AdzerCMS\Core\Ui\Money;
-use AdzerCMS\Extensions\ExtensionType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
@@ -24,6 +24,7 @@ final class CatalogPageTest extends CatalogTestCase
     use Queries;
 
     private const PAGE = '/extensions';
+    private const STORE = '/extensions/store.json';
     private const SOURCE = 'https://github.com/acme/code';
 
     #[Group('ACMS-EXT-0003')]
@@ -122,6 +123,31 @@ final class CatalogPageTest extends CatalogTestCase
             array_map(static fn (array $element): array => [$element['position'], $element['item']['name'], $element['item']['url'], $element['item']['offers']['price']], $schema['mainEntity']['itemListElement']),
         );
         self::assertSame([Money::CURRENCY], array_values(array_unique(array_map(static fn (array $element): string => $element['item']['offers']['priceCurrency'], $schema['mainEntity']['itemListElement']))));
+    }
+
+    #[Group('ACMS-EXT-0007')]
+    public function testStoreListsPublishedEntriesInOrderUntilChanged(): void
+    {
+        $this->entry('acme/shop', ExtensionType::Theme, '1500.00', self::package('Shop theme'), 'https://demo.example.test');
+        $this->entry('acme/draft');
+        $this->entry('acme/seo', package: self::package('SEO module'))->place(0);
+        $this->em->flush();
+
+        $this->client->request('GET', self::STORE);
+        $response = $this->client->getResponse();
+
+        self::assertResponseIsSuccessful();
+        self::assertSame(['extensions' => [
+            ['name' => 'acme/seo', 'type' => 'module', 'demo' => null],
+            ['name' => 'acme/shop', 'type' => 'theme', 'demo' => 'https://demo.example.test'],
+        ]], json_decode((string) $response->getContent(), true, flags: \JSON_THROW_ON_ERROR));
+
+        $this->client->request('GET', self::STORE, server: ['HTTP_IF_NONE_MATCH' => $response->getEtag()]);
+        self::assertResponseStatusCodeSame(304);
+
+        $this->entry('acme/forms', package: self::package('Forms module'));
+        $this->client->request('GET', self::STORE, server: ['HTTP_IF_NONE_MATCH' => $response->getEtag()]);
+        self::assertResponseIsSuccessful();
     }
 
     #[Group('ACMS-EXT-0005')]

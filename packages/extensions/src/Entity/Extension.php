@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace AdzerCMS\Extensions\Entity;
 
 use AdzerCMS\Contracts\Module\Category;
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Composer\Description;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Ui\Placed;
 use AdzerCMS\Extensions\ExtensionState;
-use AdzerCMS\Extensions\ExtensionType;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

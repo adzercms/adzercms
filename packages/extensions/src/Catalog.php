@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions;
 
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Core\Ui\WebLink;

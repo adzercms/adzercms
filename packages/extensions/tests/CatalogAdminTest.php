@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions\Tests;
 
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Tests\Queries;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Extensions\Entity\Extension;
-use AdzerCMS\Extensions\ExtensionType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;

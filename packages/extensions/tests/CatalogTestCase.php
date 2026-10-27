@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions\Tests;
 
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Extensions\Entity\Extension;
-use AdzerCMS\Extensions\ExtensionType;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 
 abstract class CatalogTestCase extends SchemaTestCase

@@ -319,6 +319,66 @@
         <target>Регистрация на известный контакт</target>
       </segment>
     </unit>
+    <unit id="core.extension_tab.app">
+      <segment>
+        <source>core.extension_tab.app</source>
+        <target>Мини-приложения</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_tab.integration">
+      <segment>
+        <source>core.extension_tab.integration</source>
+        <target>Интеграции</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_tab.module">
+      <segment>
+        <source>core.extension_tab.module</source>
+        <target>Модули</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_tab.template">
+      <segment>
+        <source>core.extension_tab.template</source>
+        <target>Шаблоны сайтов</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_tab.theme">
+      <segment>
+        <source>core.extension_tab.theme</source>
+        <target>Темы</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_type.app">
+      <segment>
+        <source>core.extension_type.app</source>
+        <target>Мини-приложение</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_type.integration">
+      <segment>
+        <source>core.extension_type.integration</source>
+        <target>Интеграция</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_type.module">
+      <segment>
+        <source>core.extension_type.module</source>
+        <target>Модуль</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_type.template">
+      <segment>
+        <source>core.extension_type.template</source>
+        <target>Шаблон сайта</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_type.theme">
+      <segment>
+        <source>core.extension_type.theme</source>
+        <target>Тема</target>
+      </segment>
+    </unit>
     <unit id="core.filter.search">
       <segment>
         <source>core.filter.search</source>
