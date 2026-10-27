@@ -8,7 +8,9 @@ use AdzerCMS\Admin\AssembledModules;
 use AdzerCMS\Admin\ModuleScope;
 use AdzerCMS\Admin\ModuleState;
 use AdzerCMS\Contracts\Module\CoreKind;
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Contracts\Setting\Tab;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Module\Catalog as ModuleCatalog;
 use AdzerCMS\Core\Module\CatalogRow;
@@ -16,6 +18,7 @@ use AdzerCMS\Core\Module\ModuleAction;
 use AdzerCMS\Core\Module\OperationState;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Module\Sources;
+use AdzerCMS\Core\Module\Store;
 use AdzerCMS\Core\Module\Tree;
 use AdzerCMS\Core\Repository\ModuleOperationRepository;
 use AdzerCMS\Core\Repository\ModuleSourceRepository;
@@ -66,16 +69,17 @@ final class ModuleWebTest extends SchemaTestCase
     #[Group('ACMS-CORE-0023')]
     #[Group('ACMS-CORE-0981')]
     #[Group('ACMS-US-0004')]
-    public function testSectionBuildsOnlyItsActiveTabOpeningOnOneModuleList(): void
+    public function testSectionBuildsOnlyItsActiveTabOpeningOnAllExtensions(): void
     {
         $modules = self::service(AssembledModules::class)->modules();
         $listing = $this->client->request('GET', self::MODULES);
+        $tabs = $listing->filter('nav.tabs a.tab[href*="tab="]')->each(static fn (Crawler $tab): string => trim($tab->text()));
 
         self::assertSame(
-            array_map(self::phrase(...), ['admin.menu.modules', 'admin.sources.title', 'admin.operations.title']),
-            $listing->filter('nav.tabs a.tab[href*="tab="]')->each(static fn (Crawler $tab): string => trim($tab->text())),
+            [self::phrase(ExtensionType::all()), self::phrase('admin.sources.title'), self::phrase('admin.operations.title')],
+            [$tabs[0] ?? null, ...\array_slice($tabs, -2)],
         );
-        foreach (['' => 'rows', '?tab=sources' => 'sources', '?tab=operations' => 'operations', '?tab=absent' => 'rows'] as $query => $table) {
+        foreach (['' => 'rows', '?tab=theme' => 'rows', '?tab=sources' => 'sources', '?tab=operations' => 'operations', '?tab=absent' => 'rows'] as $query => $table) {
             self::assertSame(
                 [$table],
                 $this->client->request('GET', self::MODULES.$query)->filter('#rows, #sources, #operations')->each(static fn (Crawler $built): string => (string) $built->attr('id')),
@@ -115,6 +119,48 @@ final class ModuleWebTest extends SchemaTestCase
 
         $this->client->request('GET', '/admin/modules/absent');
         self::assertResponseStatusCodeSame(404);
+    }
+
+    #[Group('ACMS-CORE-0023')]
+    #[Group('ACMS-CORE-0999')]
+    #[Group('ACMS-US-0004')]
+    public function testTypesOfCatalogRowsGoAsTabsInCatalogOrderWithThemesAsCards(): void
+    {
+        $this->tree();
+        $this->answerCatalog();
+        $this->listed(['acme/look', 'acme/site', 'acme/till']);
+        $this->offer('acme/look', '1.0.0', provide: ['adzercms/theme-implementation' => '1.0.0']);
+        $this->offer('acme/site', '1.0.0');
+        $this->offer('acme/till', '1.0.0', provide: ['adzercms/sms-implementation' => '1.0.0']);
+        $this->stores[Store::DEFAULT] = [
+            ['name' => 'acme/site', 'type' => ExtensionType::Template->value, 'demo' => 'https://site.example.test'],
+            ['name' => 'acme/look', 'type' => ExtensionType::Theme->value, 'demo' => 'https://look.example.test'],
+        ];
+        self::command('adzercms:modules')->execute([]);
+        $page = $this->client->request('GET', self::MODULES);
+        $text = static fn (Crawler $node): string => trim($node->text());
+
+        self::assertSame(
+            array_map(self::phrase(...), [ExtensionType::all(), ExtensionType::Module->tab(), ExtensionType::Integration->tab(), ExtensionType::Theme->tab(), ExtensionType::Template->tab(), 'admin.sources.title', 'admin.operations.title']),
+            $page->filter('nav.tabs a.tab')->each($text),
+            'a type goes as a tab while the catalog has its rows',
+        );
+        self::assertSame(['acme/site', 'acme/look'], \array_slice($page->filter('#rows tbody tr td:first-child strong')->each($text), 0, 2), 'the rows go in the order of the extension catalog');
+
+        $templates = $this->client->request('GET', self::MODULES.'?tab='.ExtensionType::Template->value)->filter('#rows tbody tr');
+        self::assertSame(['acme/site'], $templates->filter('td:first-child strong')->each($text));
+        self::assertSame(['https://site.example.test'], $templates->filter('a.demo')->each(static fn (Crawler $link): string => (string) $link->attr('href')));
+
+        $cards = $this->client->request('GET', self::MODULES.'?tab='.ExtensionType::Theme->value)->filter('#rows');
+        self::assertCount(0, $cards->filter('table'), 'themes go as cards');
+        $themes = array_map(static fn (CatalogRow $row): string => $row->name, array_filter(self::service(ModuleCatalog::class)->rows()['rows'], static fn (CatalogRow $row): bool => ExtensionType::Theme === $row->type));
+        self::assertSame(array_values($themes), $cards->filter('article.offer-card')->each(static fn (Crawler $card): string => (string) $card->attr('data-package')));
+        $look = $cards->filter('article.offer-card[data-package="acme/look"]');
+        self::assertSame('https://look.example.test', $look->filter('a.demo')->attr('href'));
+        self::assertSame([self::phrase(ModuleAction::Install->label())], $look->filter('.offer-actions button')->each($text));
+
+        $this->post((string) $look->filter('.offer-actions form')->attr('action'));
+        self::assertResponseRedirects(self::MODULES.'?tab='.ExtensionType::Theme->value, message: 'an action of a card returns to its tab');
     }
 
     #[Group('ACMS-CORE-0053')]
@@ -503,8 +549,9 @@ final class ModuleWebTest extends SchemaTestCase
     public function testOwnSourcesShareCredentialsOfTheirHostAndShowUnavailability(): void
     {
         $base = $this->client->request('GET', self::SOURCES)->filter('#sources tbody tr');
-        self::assertSame(Sources::BASE, $base->filter('td strong')->each(static fn (Crawler $source): string => trim($source->text())));
+        self::assertSame([Store::DEFAULT, ...Sources::BASE], $base->filter('td strong')->each(static fn (Crawler $source): string => trim($source->text())));
         self::assertCount(0, $base->filter('td.row-actions form'), 'a base source is not dropped');
+        self::assertSame(['/admin/settings?tab='.Tab::General->value], $base->filter('td.row-actions a')->each(static fn (Crawler $link): string => (string) $link->attr('href')), 'the extension catalog leads to its setting');
 
         $this->connect(self::REPOSITORY.'/one');
         self::assertResponseRedirects(self::SOURCES, message: 'a source goes to its tab');
@@ -519,16 +566,18 @@ final class ModuleWebTest extends SchemaTestCase
         $this->answerCatalog();
         $this->listed([]);
         $this->unavailable = [self::REPOSITORY];
+        $this->stores[Store::DEFAULT] = null;
         self::command('adzercms:modules')->execute([]);
         $sources = $this->client->request('GET', self::SOURCES)->filter('#sources');
         foreach (['one', 'two', 'three'] as $path) {
             self::assertSame(self::phrase('admin.setting.set'), trim(self::cell($sources, self::REPOSITORY.'/'.$path, self::phrase('admin.sources.access'))->text()), 'a source takes credentials of its host');
             self::assertSame(self::phrase('admin.sources.down'), trim(self::cell($sources, self::REPOSITORY.'/'.$path, self::phrase('admin.sources.source'))->filter('.badge')->text()));
         }
+        self::assertSame(self::phrase('admin.sources.down'), trim(self::cell($sources, Store::DEFAULT, self::phrase('admin.sources.source'))->filter('.badge')->text()));
 
         $this->post('/admin/modules/sources/'.$one->getId().'/drop');
         self::assertSame(
-            [...Sources::BASE, self::REPOSITORY.'/two', self::REPOSITORY.'/three'],
+            [Store::DEFAULT, ...Sources::BASE, self::REPOSITORY.'/two', self::REPOSITORY.'/three'],
             $this->arrive(self::SOURCES)->filter('#sources tbody tr td strong')->each(static fn (Crawler $source): string => trim($source->text())),
         );
     }

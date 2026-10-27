@@ -13,12 +13,6 @@
         <target>Items refused by OPOTOPO: {count}</target>
       </segment>
     </unit>
-    <unit id="opotopo.refusal.url">
-      <segment>
-        <source>opotopo.refusal.url</source>
-        <target>The marketplace address is not an http or https link</target>
-      </segment>
-    </unit>
     <unit id="opotopo.setting.area">
       <segment>
         <source>opotopo.setting.area</source>

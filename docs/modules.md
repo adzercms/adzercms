@@ -43,7 +43,9 @@ An installed module that isn't enabled adds nothing: no services, routes, comman
 
 ## Enable a module from the admin panel
 
-The module catalog of the admin panel has action buttons on each row: install, update, remove, enable, disable. A button files an operation, and the `adzercms:modules` job applies one operation a minute. The operation keeps its outcome and the error output.
+The Extensions section of the admin panel opens on all packages of the catalog, then a tab for each type the catalog has: modules, integrations, themes, site templates, mini-apps; themes go as cards. The type, the order and the demo link come from the extension catalog of adzercms.com; the `modules.store` setting on the General tab points the site to another catalog with the same format. A package the catalog doesn't list goes after the listed ones by name, typed by its kind: a theme as a theme, a module of another kind as an integration, a feature module as a module.
+
+Each package has action buttons: install, update, remove, enable, disable. A button files an operation, and the `adzercms:modules` job applies one operation a minute. The operation keeps its outcome and the error output.
 
 - Install, update and remove run Composer on a copy of the site made by [Composer Stager](https://github.com/php-tuf/composer-stager). The site gets the result only if Composer succeeds: the job moves it into the site and refreshes the site under one hold. Updating an engine package updates all `adzercms/*` packages together
 - Enabling or disabling checks the new module list the way the build does, refreshes the site with it, and only then writes the variable: into `.env` on a site under git, into `.env.local` otherwise. On a site under git a variable set in `.env.local` refuses the operation: move it into `.env`
@@ -55,7 +57,7 @@ The module catalog of the admin panel has action buttons on each row: install, u
 
 ## Add your own module sources
 
-The module sources section of the admin panel takes a private Composer repository by its URL or a module uploaded as a ZIP archive. The catalog picks them up within a minute.
+The Sources tab of the Extensions section takes a private Composer repository by its URL or a module uploaded as a ZIP archive. The catalog picks them up within a minute.
 
 - A repository token goes into the credentials dialog of its row. With a login, Composer sends HTTP Basic, without one a Bearer token. The credentials belong to the host: all repositories of one host share them
 - A ZIP archive needs `composer.json` at its root or in its only top-level folder, with the package name and a stable version. A new version of the package is a new archive

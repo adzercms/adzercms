@@ -8,6 +8,7 @@ use AdzerCMS\Core\Composer\Repositories;
 use AdzerCMS\Core\Composer\Source;
 use AdzerCMS\Core\Module\Marks;
 use AdzerCMS\Core\Module\Registry;
+use AdzerCMS\Core\Module\Store;
 use AdzerCMS\Core\Tests\HttpAnswers;
 use Composer\MetadataMinifier\MetadataMinifier;
 use Symfony\Component\Filesystem\Filesystem;
@@ -40,6 +41,12 @@ trait CatalogAnswers
     /** @var array<string, array<string, array{version: string, outcome: string}>>|null */
     private ?array $registry = [];
 
+    /** @var array<string, list<array<string, mixed>>|null> */
+    private array $stores = [Store::DEFAULT => []];
+
+    /** @var list<string> */
+    private array $unchanged = [];
+
     private function answerCatalog(): void
     {
         self::service(HttpAnswers::class)->respond(function (string $method, string $url, array $options): MockResponse {
@@ -62,12 +69,29 @@ trait CatalogAnswers
 
             return match (true) {
                 Marks::REGISTRY === $url => null === $this->registry ? new MockResponse('', ['http_code' => 503]) : new JsonMockResponse($this->registry),
+                \array_key_exists($url, $this->stores) => $this->store($url, $options['normalized_headers']['if-none-match'][0] ?? null),
                 Repositories::PACKAGIST.'/packages.json' === $url => null === $this->root ? new MockResponse('', ['http_code' => 503]) : new JsonMockResponse($this->root),
                 isset($this->pages[$url]) => new JsonMockResponse($this->pages[$url]),
                 str_starts_with($url, Repositories::PACKAGIST.'/p2/') => self::minified($this->packages, substr($url, \strlen(Repositories::PACKAGIST.'/p2/'), -5)),
                 default => self::fail(\sprintf('unexpected request %s', $url)),
             };
         });
+    }
+
+    private function store(string $url, ?string $condition): MockResponse
+    {
+        $extensions = $this->stores[$url];
+        if (null === $extensions) {
+            return new MockResponse('', ['http_code' => 503]);
+        }
+        $etag = '"'.hash('xxh128', serialize($extensions)).'"';
+        if ('If-None-Match: '.$etag === $condition) {
+            $this->unchanged[] = $url;
+
+            return new MockResponse('', ['http_code' => 304]);
+        }
+
+        return new JsonMockResponse(['extensions' => $extensions], ['response_headers' => ['ETag' => $etag]]);
     }
 
     /** @param list<string> $names */

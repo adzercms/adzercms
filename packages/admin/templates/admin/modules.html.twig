@@ -12,40 +12,21 @@
 {% endblock %}
 
 {% block page %}
-{% set labels = {modules: 'admin.menu.modules'|trans, sources: 'admin.sources.title'|trans, operations: 'admin.operations.title'|trans} %}
 <nav class="tabs">
-    {% for key in tabs %}
-        <a class="tab {{ tab == key ? 'active' }}" href="{{ path('admin_modules', {tab: key}) }}">{{ labels[key] }}</a>
+    {% for key, label in tabs %}
+        <a class="tab {{ tab == key ? 'active' }}" href="{{ path('admin_modules', {tab: key}) }}">{{ label|trans }}</a>
     {% endfor %}
 </nav>
-{% if tab == 'modules' %}
-    {% embed '@Theme/_table.html.twig' with {live: true} %}
-        {% block row %}
-            <tr{% if row.card %} class="clickable-row" data-href="{{ row.card }}"{% endif %}>
-                <td class="{{ table.aside('name') }}">
-                    {% if row.link %}<a href="{{ row.link }}" target="_blank" rel="noopener"><strong>{{ row.name }}</strong></a>{% else %}<strong>{{ row.name }}</strong>{% endif %}
-                    {% if row.description %}<br><span class="muted">{{ row.description }}</span>{% endif %}
-                </td>
-                <td class="{{ table.aside('version') }}">
-                    {{ row.version ?: blank() }}{% if row.verified %} {{ badge(row.verified) }}{% endif %}
-                    {% if row.update %}<br><span class="muted">{{ 'admin.modules.update'|trans({version: row.update}) }}</span>{% if row.update_verified %} {{ badge(row.update_verified) }}{% endif %}{% endif %}
-                </td>
-                <td class="{{ table.aside('repository') }}">{{ row.repository ?: blank() }}</td>
-                <td class="{{ table.aside('state') }}">
-                    {{ badge(row.state) }}
-                    {% if row.operation %}<br><span class="muted">{{ row.operation|trans }}</span>{% endif %}
-                </td>
-                <td class="row-actions">{% include '@Theme/_actions.html.twig' with {actions: row.actions} %}</td>
-            </tr>
-        {% endblock %}
-    {% endembed %}
-{% elseif tab == 'sources' %}
+{% if tab == 'sources' %}
     {% embed '@Theme/_table.html.twig' %}
         {% block row %}
             <tr>
                 <td class="{{ table.aside('source') }}"><strong>{{ row.source }}</strong>{% if row.down %} {{ badge(row.down) }}{% endif %}</td>
                 <td class="{{ table.aside('access') }}">{{ row.access ? 'admin.setting.set'|trans : blank() }}</td>
                 <td class="row-actions">
+                    {% if row.setting %}
+                        {% include '@Theme/_actions.html.twig' with {actions: [{label: 'core.action.edit', href: row.setting}]} %}
+                    {% endif %}
                     {% if row.credentials %}
                         {% include '@Theme/_actions.html.twig' with {actions: [{label: 'admin.setting.credentials', route: 'admin_module_source_credentials', params: {id: row.credentials}}]} %}
                     {% endif %}
@@ -60,7 +41,7 @@
             </tr>
         {% endblock %}
     {% endembed %}
-{% else %}
+{% elseif tab == 'operations' %}
     {% embed '@Theme/_table.html.twig' %}
         {% block row %}
             <tr>
@@ -72,6 +53,42 @@
                 </td>
                 <td class="{{ table.aside('filed') }}">{{ 'core.moment.day_time'|trans({at: row.filed}) }}</td>
                 <td class="{{ table.aside('finished') }}">{{ row.finished ? 'core.moment.day_time'|trans({at: row.finished}) : blank() }}</td>
+            </tr>
+        {% endblock %}
+    {% endembed %}
+{% else %}
+    {% embed '@Theme/_table.html.twig' with {live: true} %}
+        {% block items %}
+            {% if tiles %}
+                {% import '@Admin/admin/_extension.html.twig' as extension %}
+                <div class="offer-grid">
+                    {% for row in rows %}
+                        <article class="offer-card{{ row.card ? ' clickable-row' }}" data-package="{{ row.name }}"{% if row.card %} data-href="{{ row.card }}"{% endif %}>
+                            <h2 class="offer-title">{{ extension.name(row) }}</h2>
+                            {% if row.description %}<p>{{ row.description }}</p>{% endif %}
+                            <span class="muted">{{ extension.version(row) }}</span>
+                            <span>{{ extension.state(row) }}</span>
+                            {{ extension.demo(row) }}
+                            <div class="offer-actions">{% include '@Theme/_actions.html.twig' with {actions: row.actions} %}</div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ parent() }}
+            {% endif %}
+        {% endblock %}
+        {% block row %}
+            {% import '@Admin/admin/_extension.html.twig' as extension %}
+            <tr{% if row.card %} class="clickable-row" data-href="{{ row.card }}"{% endif %}>
+                <td class="{{ table.aside('name') }}">
+                    {{ extension.name(row) }}
+                    {% if row.description %}<br><span class="muted">{{ row.description }}</span>{% endif %}
+                    {% if row.demo %}<br>{{ extension.demo(row) }}{% endif %}
+                </td>
+                <td class="{{ table.aside('version') }}">{{ extension.version(row) }}</td>
+                <td class="{{ table.aside('repository') }}">{{ row.repository ?: blank() }}</td>
+                <td class="{{ table.aside('state') }}">{{ extension.state(row) }}</td>
+                <td class="row-actions">{% include '@Theme/_actions.html.twig' with {actions: row.actions} %}</td>
             </tr>
         {% endblock %}
     {% endembed %}

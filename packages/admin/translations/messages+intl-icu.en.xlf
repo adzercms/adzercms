@@ -40,7 +40,7 @@
     <unit id="admin.menu.modules">
       <segment>
         <source>admin.menu.modules</source>
-        <target>Modules</target>
+        <target>Extensions</target>
       </segment>
     </unit>
     <unit id="admin.menu.settings">

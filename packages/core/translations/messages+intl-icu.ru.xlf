@@ -319,6 +319,18 @@
         <target>Регистрация на известный контакт</target>
       </segment>
     </unit>
+    <unit id="core.extension.demo">
+      <segment>
+        <source>core.extension.demo</source>
+        <target>Демо</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_tab.all">
+      <segment>
+        <source>core.extension_tab.all</source>
+        <target>Все</target>
+      </segment>
+    </unit>
     <unit id="core.extension_tab.app">
       <segment>
         <source>core.extension_tab.app</source>
@@ -1207,6 +1219,12 @@
         <target>Коды подтверждения</target>
       </segment>
     </unit>
+    <unit id="core.setting.section.extensions">
+      <segment>
+        <source>core.setting.section.extensions</source>
+        <target>Расширения</target>
+      </segment>
+    </unit>
     <unit id="core.setting.section.legal">
       <segment>
         <source>core.setting.section.legal</source>
@@ -1217,6 +1235,12 @@
       <segment>
         <source>core.setting.section.mail</source>
         <target>Почтовый сервер</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.store">
+      <segment>
+        <source>core.setting.store</source>
+        <target>Адрес каталога расширений</target>
       </segment>
     </unit>
     <unit id="core.setting.tab.brand">
@@ -1259,6 +1283,12 @@
       <segment>
         <source>core.setting.toggle</source>
         <target>{field}: 1 включает, 0 выключает</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.url">
+      <segment>
+        <source>core.setting.url</source>
+        <target>{field} — ссылка http либо https</target>
       </segment>
     </unit>
     <unit id="core.status.active">

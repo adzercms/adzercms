@@ -85,7 +85,7 @@ final class CatalogPageTest extends CatalogTestCase
     #[Group('ACMS-US-0034')]
     public function testTypeTabsKeepOtherFilters(): void
     {
-        $tabs = [['', self::phrase('extensions.tab.all')]];
+        $tabs = [['', self::phrase(ExtensionType::all())]];
         foreach (ExtensionType::cases() as $type) {
             $tabs[] = [$type->value, self::phrase($type->tab())];
         }

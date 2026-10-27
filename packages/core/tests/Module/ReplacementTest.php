@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Tests\Module;
 
 use AdzerCMS\Contracts\Module\CoreKind;
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Composer\Description;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Module\CatalogRow;
@@ -35,6 +36,6 @@ final class ReplacementTest extends TestCase
 
     private static function row(string $name, CoreKind $kind, bool $selected): CatalogRow
     {
-        return new CatalogRow($name, new Package(new Description('', []), '1.0.0', [], null, null, Registry::TYPE, null, null), $kind, '1.0.0', '1.0.0', null, $selected, false, false, false, null);
+        return new CatalogRow($name, new Package(new Description('', []), '1.0.0', [], null, null, Registry::TYPE, null, null), $kind, '1.0.0', '1.0.0', null, $selected, false, false, false, null, ExtensionType::Module, null);
     }
 }

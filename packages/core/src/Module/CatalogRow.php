@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Module;
 
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Module\Kind;
 use AdzerCMS\Core\Composer\Package;
 
@@ -21,6 +22,8 @@ final readonly class CatalogRow
         public bool $installedVerified,
         public bool $updatable,
         public ?string $key,
+        public ExtensionType $type,
+        public ?string $demo,
     ) {
     }
 }

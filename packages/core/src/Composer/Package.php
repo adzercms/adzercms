@@ -120,7 +120,7 @@ final readonly class Package
         return \is_string($value) && '' !== trim($value) ? trim($value) : null;
     }
 
-    private static function link(mixed $value): ?string
+    public static function link(mixed $value): ?string
     {
         $link = self::text($value);
 

@@ -27,6 +27,11 @@ enum ExtensionType: string implements Titled
         return t('core.extension_tab.'.$this->value);
     }
 
+    public static function all(): TranslatableInterface
+    {
+        return t('core.extension_tab.all');
+    }
+
     /** @return array<string, TranslatableInterface> */
     public static function tabs(): array
     {

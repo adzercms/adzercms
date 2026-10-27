@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Tests\Module;
 
 use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Contracts\Module\CoreKind;
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Composer\Artifacts;
 use AdzerCMS\Core\Composer\Repositories;
 use AdzerCMS\Core\Composer\Source;
@@ -14,7 +15,10 @@ use AdzerCMS\Core\Module\CatalogRow;
 use AdzerCMS\Core\Module\Marks;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Module\Sources;
+use AdzerCMS\Core\Module\Store;
 use AdzerCMS\Core\Repository\ModuleSourceRepository;
+use AdzerCMS\Core\Setting\Catalog as SettingCatalog;
+use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use Composer\InstalledVersions;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -156,6 +160,79 @@ final class CatalogTest extends SchemaTestCase
         self::assertArrayHasKey('ru', $theme->package->description->translations);
     }
 
+    #[Group('ACMS-CORE-0998')]
+    #[Group('ACMS-CORE-0999')]
+    public function testExtensionCatalogGivesRowsTypeDemoAndOrderAndKindTypesTheRest(): void
+    {
+        $this->listed(['acme/till', 'acme/shop', 'acme/look', 'acme/site', 'acme/zeta']);
+        $this->offer('acme/look', '1.0.0', provide: ['adzercms/theme-implementation' => '1.0.0']);
+        $this->offer('acme/site', '1.0.0');
+        $this->offer('acme/zeta', '1.0.0');
+        $this->stores[Store::DEFAULT] = [
+            ['name' => 'acme/site', 'type' => ExtensionType::Template->value, 'demo' => 'https://site.example.test'],
+            ['name' => 'acme/ghost', 'type' => ExtensionType::App->value],
+            ['name' => 'acme/shop', 'type' => 'unknown', 'demo' => 'ftp://shop.example.test'],
+        ];
+
+        self::command('adzercms:modules')->execute([]);
+        $typed = [];
+        foreach (self::service(Catalog::class)->rows()['rows'] as $row) {
+            if (str_starts_with($row->name, 'acme/')) {
+                $typed[$row->name] = [$row->type, $row->demo];
+            }
+        }
+
+        self::assertSame([
+            'acme/site' => [ExtensionType::Template, 'https://site.example.test'],
+            'acme/shop' => [ExtensionType::Module, null],
+            'acme/look' => [ExtensionType::Theme, null],
+            'acme/till' => [ExtensionType::Integration, null],
+            'acme/zeta' => [ExtensionType::Module, null],
+        ], $typed);
+    }
+
+    #[Group('ACMS-CORE-0998')]
+    #[Group('ACMS-CORE-0934')]
+    public function testExtensionCatalogIsAskedConditionallyAndUnavailableOneKeepsEntriesOfItsAddress(): void
+    {
+        $other = 'https://store.acme.test/store.json';
+        self::mockTime('2026-10-20 12:00');
+        $this->listed(['acme/shop']);
+        $this->stores[Store::DEFAULT] = [['name' => 'acme/shop', 'type' => ExtensionType::Template->value]];
+        self::command('adzercms:modules')->execute([]);
+
+        self::mockTime('2026-10-21 12:00');
+        self::assertSame(Command::SUCCESS, self::command('adzercms:modules')->execute([]));
+        self::assertSame([Store::DEFAULT], $this->unchanged, 'the unchanged document answers the conditional request');
+        self::assertSame(ExtensionType::Template, self::type('acme/shop'));
+
+        $this->stores[Store::DEFAULT] = null;
+        self::mockTime('2026-10-22 12:00');
+        $job = self::command('adzercms:modules');
+        self::assertSame(Command::FAILURE, $job->execute([]));
+        self::assertStringContainsString(Store::DEFAULT, $job->getDisplay());
+        self::assertContains(Store::DEFAULT, self::service(Catalog::class)->rows()['down']);
+        self::assertSame(ExtensionType::Template, self::type('acme/shop'), 'an unavailable catalog keeps its entries');
+
+        $field = self::service(SettingCatalog::class)->fields()[Store::NAME];
+        $settings = self::service(Settings::class);
+        self::assertSame(
+            self::phrase('core.setting.url', ['field' => self::phrase('core.setting.store')]),
+            self::phrase($settings->save($field, 'ftp://store.acme.test')->reason ?? self::fail('the address is accepted')),
+        );
+        $this->stores[$other] = null;
+        self::assertNull($settings->save($field, $other));
+        $this->em->flush();
+        self::mockTime('2026-10-22 12:01');
+        self::command('adzercms:modules')->execute([]);
+        self::assertSame(ExtensionType::Module, self::type('acme/shop'), 'a new address takes a new snapshot without entries of another address');
+
+        $this->stores[$other] = [['name' => 'acme/shop', 'type' => ExtensionType::App->value]];
+        self::mockTime('2026-10-22 12:16');
+        self::command('adzercms:modules')->execute([]);
+        self::assertSame(ExtensionType::App, self::type('acme/shop'));
+    }
+
     #[Group('ACMS-CORE-0936')]
     #[DataProvider('updates')]
     public function testInstalledBranchIsUpdatedByAnotherCommitOfItsBranchOnly(bool $branch, bool $same, bool $updatable): void
@@ -225,7 +302,7 @@ final class CatalogTest extends SchemaTestCase
             'acme/shop' => [CoreKind::Feature, '3.0.0', null, self::OWN, [Category::Other]],
             'acme/vault' => [CoreKind::Feature, '1.0.0', null, self::OWN, [Category::Other]],
         ], self::offered());
-        self::assertSame([Source::origin(Marks::REGISTRY) => null, Source::origin(Repositories::PACKAGIST) => null, Source::origin(self::OWN) => $authorization], $this->authorized);
+        self::assertSame([Source::origin(Marks::REGISTRY) => null, Source::origin(Repositories::PACKAGIST) => null, Source::origin(Store::DEFAULT) => null, Source::origin(self::OWN) => $authorization], $this->authorized);
     }
 
     /** @return iterable<string, array{string, string}> */
@@ -290,6 +367,11 @@ final class CatalogTest extends SchemaTestCase
         }
 
         return $offered;
+    }
+
+    private static function type(string $name): ExtensionType
+    {
+        return (self::service(Catalog::class)->row($name) ?? self::fail('the package is not in the catalog'))->type;
     }
 
     /** @return array<string, array{bool, bool}> */

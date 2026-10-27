@@ -319,6 +319,18 @@
         <target>Sign-up with a known contact</target>
       </segment>
     </unit>
+    <unit id="core.extension.demo">
+      <segment>
+        <source>core.extension.demo</source>
+        <target>Demo</target>
+      </segment>
+    </unit>
+    <unit id="core.extension_tab.all">
+      <segment>
+        <source>core.extension_tab.all</source>
+        <target>All</target>
+      </segment>
+    </unit>
     <unit id="core.extension_tab.app">
       <segment>
         <source>core.extension_tab.app</source>
@@ -1207,6 +1219,12 @@
         <target>Confirmation codes</target>
       </segment>
     </unit>
+    <unit id="core.setting.section.extensions">
+      <segment>
+        <source>core.setting.section.extensions</source>
+        <target>Extensions</target>
+      </segment>
+    </unit>
     <unit id="core.setting.section.legal">
       <segment>
         <source>core.setting.section.legal</source>
@@ -1217,6 +1235,12 @@
       <segment>
         <source>core.setting.section.mail</source>
         <target>Mail server</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.store">
+      <segment>
+        <source>core.setting.store</source>
+        <target>Extension catalog address</target>
       </segment>
     </unit>
     <unit id="core.setting.tab.brand">
@@ -1259,6 +1283,12 @@
       <segment>
         <source>core.setting.toggle</source>
         <target>{field} takes 1 to switch on or 0 to switch off</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.url">
+      <segment>
+        <source>core.setting.url</source>
+        <target>{field} takes an http or https URL</target>
       </segment>
     </unit>
     <unit id="core.status.active">

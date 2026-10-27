@@ -9,7 +9,9 @@ use AdzerCMS\Admin\ModuleScope;
 use AdzerCMS\Admin\ModuleState;
 use AdzerCMS\Admin\SettingForm;
 use AdzerCMS\Contracts\Module\Category;
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Contracts\Setting\Tab;
 use AdzerCMS\Contracts\Ui\Badge;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Composer\Artifacts;
@@ -19,6 +21,7 @@ use AdzerCMS\Core\Module\CatalogRow;
 use AdzerCMS\Core\Module\ModuleAction;
 use AdzerCMS\Core\Module\Operations;
 use AdzerCMS\Core\Module\Sources;
+use AdzerCMS\Core\Module\Store;
 use AdzerCMS\Core\Repository\ModuleOperationRepository;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
@@ -38,13 +41,11 @@ use function Symfony\Component\Translation\t;
 #[IsGranted(Role::ADMIN)]
 final class ModuleController extends AbstractController
 {
-    private const ORDER = 'name';
-    private const MODULES = 'modules';
+    private const ALL = 'all';
     private const STATUS = 'status';
     private const CATEGORY = 'category';
     private const OPERATIONS = 'operations';
     private const SOURCES = 'sources';
-    private const TABS = [self::MODULES, self::SOURCES, self::OPERATIONS];
 
     public function __construct(
         private readonly AssembledModules $assembled,
@@ -52,6 +53,7 @@ final class ModuleController extends AbstractController
         private readonly Operations $operations,
         private readonly Sources $sources,
         private readonly Artifacts $artifacts,
+        private readonly Store $store,
         private readonly ModuleOperationRepository $filings,
         private readonly SettingForm $form,
     ) {
@@ -60,18 +62,30 @@ final class ModuleController extends AbstractController
     #[Route('', name: 'admin_modules', methods: ['GET'])]
     public function modules(Request $request, TranslatorInterface $translator): Response
     {
+        $catalog = $this->catalog->rows();
+        $types = array_values(array_filter(ExtensionType::cases(), static fn (ExtensionType $type): bool => array_any($catalog['rows'], static fn (CatalogRow $row): bool => $type === $row->type)));
+        $tabs = [
+            self::ALL => ExtensionType::all(),
+            ...array_combine(array_column($types, 'value'), array_map(static fn (ExtensionType $type): TranslatableInterface => $type->tab(), $types)),
+            self::SOURCES => t('admin.sources.title'),
+            self::OPERATIONS => t('admin.operations.title'),
+        ];
         $asked = $request->query->getString('tab');
-        $tab = \in_array($asked, self::TABS, true) ? $asked : self::MODULES;
+        $tab = isset($tabs[$asked]) ? $asked : self::ALL;
 
-        return $this->render('@Admin/admin/modules.html.twig', ['tabs' => self::TABS, 'tab' => $tab, ...match ($tab) {
-            self::MODULES => $this->modulesTab($request, $translator),
-            self::SOURCES => $this->sourcesTab($request),
+        return $this->render('@Admin/admin/modules.html.twig', ['tabs' => $tabs, 'tab' => $tab, ...match ($tab) {
+            self::SOURCES => $this->sourcesTab($request, $catalog['down']),
             self::OPERATIONS => $this->operationsTab($request),
+            default => $this->catalogTab($request, $translator, $catalog['rows'], ExtensionType::tryFrom($tab)),
         }]);
     }
 
-    /** @return array<string, mixed> */
-    private function modulesTab(Request $request, TranslatorInterface $translator): array
+    /**
+     * @param list<CatalogRow> $offered
+     *
+     * @return array<string, mixed>
+     */
+    private function catalogTab(Request $request, TranslatorInterface $translator, array $offered, ?ExtensionType $type): array
     {
         $table = Table::of($request, 'admin_modules', [
             Column::live('name', t('admin.modules.name'), static fn (array $row): string => $row['name'].' '.$row['description']),
@@ -79,22 +93,27 @@ final class ModuleController extends AbstractController
             Column::live('repository', t('admin.modules.repository'), static fn (array $row): string => $row['repository'])->aside(),
             Column::live('state', t('admin.modules.status'), static fn (array $row): TranslatableInterface => $row['state']->label()),
             Column::plain('actions'),
-        ], self::ORDER, t('admin.modules.empty'), filters: [
+        ], '', t('admin.modules.empty'), filters: [
             Filter::search(),
             Filter::cases(self::STATUS, t('admin.modules.status'), ModuleScope::cases()),
             Filter::cases(self::CATEGORY, t('admin.modules.category'), Category::cases()),
-        ], live: true);
-        $offered = $this->catalog->rows()['rows'];
-        $chosen = array_filter($offered, static fn (CatalogRow $row): bool => ModuleScope::tryFrom($table->value(self::STATUS))?->admits($row) ?? true);
+        ], sticky: ['tab' => $type?->value], live: true);
+        $scope = ModuleScope::tryFrom($table->value(self::STATUS));
+        $chosen = array_filter($offered, static fn (CatalogRow $row): bool => (null === $type || $type === $row->type) && ($scope?->admits($row) ?? true));
 
         return [
             'table' => $table,
-            'rows' => $table->rows($this->offers($chosen, $offered, Category::tryFrom($table->value(self::CATEGORY)), $translator)),
+            'tiles' => ExtensionType::Theme === $type,
+            'rows' => $table->rows($this->offers($chosen, $offered, Category::tryFrom($table->value(self::CATEGORY)), $type, $translator)),
         ];
     }
 
-    /** @return array<string, mixed> */
-    private function sourcesTab(Request $request): array
+    /**
+     * @param list<string> $down
+     *
+     * @return array<string, mixed>
+     */
+    private function sourcesTab(Request $request, array $down): array
     {
         $table = Table::of($request, 'admin_modules', [
             Column::plain('source', t('admin.sources.source')),
@@ -102,7 +121,7 @@ final class ModuleController extends AbstractController
             Column::plain('actions'),
         ], 'source', sticky: ['tab' => self::SOURCES], id: self::SOURCES);
 
-        return ['table' => $table, 'rows' => $table->rows($this->origins($this->catalog->rows()['down']))];
+        return ['table' => $table, 'rows' => $table->rows($this->origins($down))];
     }
 
     /** @return array<string, mixed> */
@@ -125,7 +144,7 @@ final class ModuleController extends AbstractController
         $refusal = $this->operations->file($request->query->getString('package'), $action);
         $this->addFlash(null === $refusal ? 'success' : 'error', $refusal->reason ?? t('admin.operations.done'));
 
-        return $this->redirectToRoute('admin_modules');
+        return $this->redirectToRoute('admin_modules', ['tab' => ExtensionType::tryFrom($request->query->getString('tab'))?->value]);
     }
 
     /**
@@ -134,7 +153,7 @@ final class ModuleController extends AbstractController
      *
      * @return list<array<string, mixed>>
      */
-    private function offers(array $rows, array $all, ?Category $category, TranslatorInterface $translator): array
+    private function offers(array $rows, array $all, ?Category $category, ?ExtensionType $type, TranslatorInterface $translator): array
     {
         $assembled = $this->assembled->modules();
         $opened = $this->filings->opened();
@@ -151,6 +170,7 @@ final class ModuleController extends AbstractController
                 'name' => $row->name,
                 'description' => $row->package->description->trans($translator),
                 'link' => $row->package->homepage ?? $row->package->source,
+                'demo' => $row->demo,
                 'card' => null === $module ? null : $this->generateUrl('admin_module', ['key' => $key]),
                 'version' => (string) ($row->installed ?? $row->version),
                 'verified' => (null === $row->installed ? $row->verified : $row->installedVerified) ? Badge::good(t('admin.modules.verified')) : null,
@@ -168,7 +188,7 @@ final class ModuleController extends AbstractController
                     ...array_map(static fn (ModuleAction $action): array => [
                         'label' => $action->label(),
                         'route' => 'admin_module_operation',
-                        'params' => ['action' => $action->value, 'package' => $row->name],
+                        'params' => ['action' => $action->value, 'package' => $row->name, 'tab' => $type?->value],
                         'post' => true,
                         'confirm' => match (true) {
                             $action->enables() && null !== $replaced => t('admin.modules.replace', [
@@ -191,16 +211,26 @@ final class ModuleController extends AbstractController
     /**
      * @param list<string> $down
      *
-     * @return list<array{source: string, down: ?Badge, access: bool, credentials: ?int, drop: ?string, hidden: array<string, string>}>
+     * @return list<array{source: string, down: ?Badge, access: bool, setting: ?string, credentials: ?int, drop: ?string, hidden: array<string, string>}>
      */
     private function origins(array $down): array
     {
-        $origins = [];
+        $state = static fn (string $url): ?Badge => \in_array($url, $down, true) ? Badge::bad(t('admin.sources.down')) : null;
+        $origins = [[
+            'source' => $this->store->url(),
+            'down' => $state($this->store->url()),
+            'access' => false,
+            'setting' => $this->generateUrl('admin_settings', ['tab' => Tab::General->value]),
+            'credentials' => null,
+            'drop' => null,
+            'hidden' => [],
+        ]];
         foreach (Sources::BASE as $url) {
             $origins[] = [
                 'source' => $url,
-                'down' => \in_array($url, $down, true) ? Badge::bad(t('admin.sources.down')) : null,
+                'down' => $state($url),
                 'access' => false,
+                'setting' => null,
                 'credentials' => null,
                 'drop' => null,
                 'hidden' => [],
@@ -211,6 +241,7 @@ final class ModuleController extends AbstractController
                 'source' => $archive['name'].' '.$archive['version'],
                 'down' => null,
                 'access' => false,
+                'setting' => null,
                 'credentials' => null,
                 'drop' => $this->generateUrl('admin_module_zip_drop'),
                 'hidden' => ['package' => $archive['name'], 'version' => $archive['normalized']],
@@ -219,8 +250,9 @@ final class ModuleController extends AbstractController
         foreach ($this->sources->own() as $source) {
             $origins[] = [
                 'source' => $source->getUrl(),
-                'down' => \in_array($source->getUrl(), $down, true) ? Badge::bad(t('admin.sources.down')) : null,
+                'down' => $state($source->getUrl()),
                 'access' => null !== $source->getTokenCipher(),
+                'setting' => null,
                 'credentials' => $source->getId(),
                 'drop' => $this->generateUrl('admin_module_source_drop', ['id' => $source->getId()]),
                 'hidden' => [],

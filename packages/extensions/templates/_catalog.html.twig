@@ -15,7 +15,7 @@
                     {% set description = row.description|trans %}
                     {% if description %}<p>{{ description }}</p>{% endif %}
                     <div class="offer-actions">
-                        {{ card.link(row.demo, 'extensions.link.demo', '') }}
+                        {{ card.link(row.demo, 'core.extension.demo', '') }}
                         {{ card.link(row.homepage, 'extensions.link.homepage', 'secondary') }}
                         {{ card.link(row.source, 'extensions.link.source', 'secondary') }}
                     </div>

@@ -154,7 +154,7 @@ final class ExportTest extends SchemaTestCase
 
         $refusal = self::service(Settings::class)->save($field, 'ftp://opotopo.example.test');
 
-        self::assertSame(self::phrase('opotopo.refusal.url'), self::phrase($refusal->reason ?? self::fail('the address is accepted')));
+        self::assertSame(self::phrase('core.setting.url', ['field' => self::phrase('opotopo.setting.url')]), self::phrase($refusal->reason ?? self::fail('the address is accepted')));
     }
 
     private static function shelf(): ShelfCatalog

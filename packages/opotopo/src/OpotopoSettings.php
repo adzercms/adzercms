@@ -41,7 +41,7 @@ final readonly class OpotopoSettings implements Owner, Rule
 
     public function check(Field $field, string $value): ?Refusal
     {
-        return self::URL === $field->name && !WebLink::valid($value) ? new Refusal(t('opotopo.refusal.url')) : null;
+        return self::URL === $field->name && !WebLink::valid($value) ? new Refusal(t('core.setting.url', ['field' => $field->label])) : null;
     }
 
     public function config(): ?ClientConfig

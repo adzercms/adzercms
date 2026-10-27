@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Module;
 
 use AdzerCMS\Contracts\Module\CoreKind;
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Module\Kind;
 use AdzerCMS\Core\Composer\Artifacts;
 use AdzerCMS\Core\Composer\Package;
@@ -31,6 +32,7 @@ final readonly class Catalog
         private Sources $sources,
         private Artifacts $artifacts,
         private Marks $marks,
+        private Store $store,
         #[Autowire('%kernel.bundles%')]
         private array $bundles,
     ) {
@@ -88,8 +90,14 @@ final readonly class Catalog
         }
         ksort($rows);
         $down = array_values(array_unique([...$down, ...$lookup->down]));
+        $url = $this->store->url();
+        $store = $this->store->read($url, $kept['store']);
+        if (null === $store) {
+            $down[] = $url;
+            $store = $url === $kept['store']?->url ? $kept['store'] : null;
+        }
         $marked = null === $marks ? $kept['marks'] : array_intersect_key($marks, $rows + array_flip(InstalledVersions::getInstalledPackagesByType(Registry::TYPE)));
-        $this->snapshot->write(self::SNAPSHOT, ['packages' => $rows, 'down' => $down, 'fingerprint' => $fingerprint, 'marks' => $marked], self::LIFETIME);
+        $this->snapshot->write(self::SNAPSHOT, ['packages' => $rows, 'down' => $down, 'fingerprint' => $fingerprint, 'marks' => $marked, 'store' => $store], self::LIFETIME);
 
         return null === $marks ? [...$down, Marks::REGISTRY] : $down;
     }
@@ -105,20 +113,23 @@ final readonly class Catalog
         }
 
         $marks = $held['marks'];
+        $entries = $held['store']->entries ?? [];
         $rows = [];
         foreach ($held['packages'] as $name => $row) {
-            $rows[$name] = new CatalogRow($name, $row['package'], self::kind($row['package']->kind, $kinds), $row['package']->version, null, $row['repository'], false, self::marked($marks, $name, $row['package']->reference), false, false, null);
+            $kind = self::kind($row['package']->kind, $kinds);
+            $rows[$name] = new CatalogRow($name, $row['package'], $kind, $row['package']->version, null, $row['repository'], false, self::marked($marks, $name, $row['package']->reference), false, false, null, self::type($kind, $entries[$name] ?? null), $entries[$name]->demo ?? null);
         }
         foreach (array_unique(InstalledVersions::getInstalledPackagesByType(Registry::TYPE)) as $name) {
             $installed = (string) InstalledVersions::getPrettyVersion($name);
             $offered = $held['packages'][$name] ?? null;
             $manifest = null === $offered ? Registry::manifest($name) : [];
             $module = $registry->package($name);
+            $kind = $module->kind ?? CoreKind::Feature;
             $reference = InstalledVersions::getReference($name);
             $rows[$name] = new CatalogRow(
                 $name,
                 $offered['package'] ?? Package::manifest(\is_array($manifest) ? $manifest : [], $installed),
-                $module->kind ?? CoreKind::Feature,
+                $kind,
                 $offered['package']->version ?? null,
                 $installed,
                 $offered['repository'] ?? null,
@@ -127,10 +138,24 @@ final readonly class Catalog
                 self::marked($marks, $name, $reference),
                 null !== $offered && self::newer($offered['package'], $installed, $reference),
                 $module?->key,
+                self::type($kind, $entries[$name] ?? null),
+                $entries[$name]->demo ?? null,
             );
         }
+        $positions = array_flip(array_keys($entries));
+        $rows = array_values($rows);
+        usort($rows, static fn (CatalogRow $left, CatalogRow $right): int => [$positions[$left->name] ?? \PHP_INT_MAX, $left->name] <=> [$positions[$right->name] ?? \PHP_INT_MAX, $right->name]);
 
-        return ['rows' => array_values($rows), 'down' => $held['down']];
+        return ['rows' => $rows, 'down' => $held['down']];
+    }
+
+    private static function type(Kind|string $kind, ?StoreEntry $entry): ExtensionType
+    {
+        return $entry->type ?? match ($kind) {
+            CoreKind::Theme => ExtensionType::Theme,
+            CoreKind::Feature => ExtensionType::Module,
+            default => ExtensionType::Integration,
+        };
     }
 
     private static function newer(Package $offered, string $installed, ?string $reference): bool
@@ -163,10 +188,10 @@ final readonly class Catalog
         }
         ksort($installed);
 
-        return hash('xxh128', serialize([$this->sources->fingerprint(), $installed]));
+        return hash('xxh128', serialize([$this->sources->fingerprint(), $installed, $this->store->url()]));
     }
 
-    /** @return array{at: ?\DateTimeImmutable, packages: array<string, array{package: Package, repository: string}>, down: list<string>, fingerprint: ?string, marks: array<string, list<string>>} */
+    /** @return array{at: ?\DateTimeImmutable, packages: array<string, array{package: Package, repository: string}>, down: list<string>, fingerprint: ?string, marks: array<string, list<string>>, store: ?StoreDocument} */
     private function held(): array
     {
         $held = $this->snapshot->read(self::SNAPSHOT);
@@ -185,7 +210,14 @@ final readonly class Catalog
             }
         }
 
-        return ['at' => $held['at'] ?? null, 'packages' => $packages, 'down' => $down, 'fingerprint' => \is_string($taken['fingerprint'] ?? null) ? $taken['fingerprint'] : null, 'marks' => $marks];
+        return [
+            'at' => $held['at'] ?? null,
+            'packages' => $packages,
+            'down' => $down,
+            'fingerprint' => \is_string($taken['fingerprint'] ?? null) ? $taken['fingerprint'] : null,
+            'marks' => $marks,
+            'store' => ($taken['store'] ?? null) instanceof StoreDocument ? $taken['store'] : null,
+        ];
     }
 
     /** @param array<string, Kind> $kinds */

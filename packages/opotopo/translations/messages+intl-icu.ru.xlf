@@ -13,12 +13,6 @@
         <target>Позиций отклонено ОПОТОПО: {count}</target>
       </segment>
     </unit>
-    <unit id="opotopo.refusal.url">
-      <segment>
-        <source>opotopo.refusal.url</source>
-        <target>Адрес площадки — не ссылка http или https</target>
-      </segment>
-    </unit>
     <unit id="opotopo.setting.area">
       <segment>
         <source>opotopo.setting.area</source>

@@ -31,7 +31,7 @@ final class CatalogController extends AbstractController
     public function index(Request $request): Response
     {
         $table = Table::of($request, self::PAGE, [], '', t('extensions.empty'), filters: [
-            Filter::tabs('type', t('extensions.tab.all'), ExtensionType::tabs()),
+            Filter::tabs('type', ExtensionType::all(), ExtensionType::tabs()),
             Filter::cases('category', t('extensions.filter.category'), Category::cases()),
             Filter::cases('price', t('extensions.filter.price'), ExtensionPrice::cases()),
         ]);

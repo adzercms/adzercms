@@ -1,0 +1,17 @@
+{% macro name(row) %}
+    {% if row.link %}<a href="{{ row.link }}" target="_blank" rel="noopener"><strong>{{ row.name }}</strong></a>{% else %}<strong>{{ row.name }}</strong>{% endif %}
+{% endmacro %}
+
+{% macro demo(row) %}
+    {% if row.demo %}<a class="demo" href="{{ row.demo }}" target="_blank" rel="noopener">{{ 'core.extension.demo'|trans }}</a>{% endif %}
+{% endmacro %}
+
+{% macro version(row) %}
+    {{ row.version ?: blank() }}{% if row.verified %} {{ badge(row.verified) }}{% endif %}
+    {% if row.update %}<br><span class="muted">{{ 'admin.modules.update'|trans({version: row.update}) }}</span>{% if row.update_verified %} {{ badge(row.update_verified) }}{% endif %}{% endif %}
+{% endmacro %}
+
+{% macro state(row) %}
+    {{ badge(row.state) }}
+    {% if row.operation %}<br><span class="muted">{{ row.operation|trans }}</span>{% endif %}
+{% endmacro %}

@@ -115,12 +115,6 @@
         <target>Free</target>
       </segment>
     </unit>
-    <unit id="extensions.link.demo">
-      <segment>
-        <source>extensions.link.demo</source>
-        <target>Demo</target>
-      </segment>
-    </unit>
     <unit id="extensions.link.homepage">
       <segment>
         <source>extensions.link.homepage</source>
@@ -136,7 +130,7 @@
     <unit id="extensions.menu">
       <segment>
         <source>extensions.menu</source>
-        <target>Extensions</target>
+        <target>Extension catalog</target>
       </segment>
     </unit>
     <unit id="extensions.new">
@@ -209,12 +203,6 @@
       <segment>
         <source>extensions.state.published</source>
         <target>On the site</target>
-      </segment>
-    </unit>
-    <unit id="extensions.tab.all">
-      <segment>
-        <source>extensions.tab.all</source>
-        <target>All</target>
       </segment>
     </unit>
   </file>

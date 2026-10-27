@@ -43,7 +43,7 @@ composer require acme/pigeon:@dev
 
 `extra.adzercms.bundle` points to the bundle class. The class name without `Bundle` is the module key, and it must be unique among installed modules. If your module requires another module's package, that module has to be enabled too.
 
-`description` says in English what the module does, and `extra.adzercms.description` translates it into the other engine languages. The modules section of the admin panel shows it in the reader's language, for packages that aren't installed yet too. `vendor/bin/adzercms-check` rejects a module without the description or without one of its translations.
+`description` says in English what the module does, and `extra.adzercms.description` translates it into the other engine languages. The Extensions section of the admin panel shows it in the reader's language, for packages that aren't installed yet too. `vendor/bin/adzercms-check` rejects a module without the description or without one of its translations.
 
 You don't require a module of some kind by its package name but through the kind's virtual package `adzercms/<kind key>-implementation`. Every module of a kind lists it in `provide` with the engine version whose contracts it implements; a kind module without that entry stops the build. This way Composer installs the requiring module only together with some module of the kind, and the instance builds only when such a module is enabled. A module with pages needs a theme: `"adzercms/theme-implementation": "^1.0"`. Modules needed only by the tests, such as the admin, go to `require-dev`: the module's test suite enables them itself.
 
