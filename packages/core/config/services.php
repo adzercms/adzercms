@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
+use AdzerCMS\Contracts\Login\Redirects;
 use AdzerCMS\Core\Build\PreviewMark;
 use AdzerCMS\Core\Composer\Artifacts;
 use AdzerCMS\Core\Composer\Repositories;
+use AdzerCMS\Core\Login\Authorizations;
 use AdzerCMS\Core\Module\Catalog;
 use AdzerCMS\Core\Module\ComposerRunner;
 use AdzerCMS\Core\Module\Execution;
@@ -39,6 +41,7 @@ return static function (ContainerConfigurator $container): void {
     $services->load('AdzerCMS\\Core\\Confirmation\\', '../src/Confirmation/');
     $services->load('AdzerCMS\\Core\\Controller\\', '../src/Controller/');
     $services->load('AdzerCMS\\Core\\Login\\', '../src/Login/');
+    $services->alias(Redirects::class, Authorizations::class);
     $services->load('AdzerCMS\\Core\\Notice\\', '../src/Notice/')->exclude('../src/Notice/BotChannel.php');
     $services->load('AdzerCMS\\Core\\Repository\\', '../src/Repository/');
     $services->load('AdzerCMS\\Core\\Security\\', '../src/Security/');

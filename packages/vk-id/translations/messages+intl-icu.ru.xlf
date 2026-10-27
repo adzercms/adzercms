@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
+    <unit id="vkid.guide.access">
+      <segment>
+        <source>vkid.guide.access</source>
+        <target>В «Доступы» включите «Почта» в базовых доступах и номер телефона в «Расширенные доступы» и нажмите «Сохранить»</target>
+      </segment>
+    </unit>
+    <unit id="vkid.guide.app">
+      <segment>
+        <source>vkid.guide.app</source>
+        <target>Под VK Бизнес ID откройте https://id.vk.ru/about/business/go, в «Мои приложения» нажмите «Добавить приложение», впишите название, выберите платформу «Web» и загрузите изображение</target>
+      </segment>
+    </unit>
+    <unit id="vkid.guide.client">
+      <segment>
+        <source>vkid.guide.client</source>
+        <target>В «Приложение» → «Информация о приложении» скопируйте «ID приложения» в поле «Идентификатор приложения»</target>
+      </segment>
+    </unit>
+    <unit id="vkid.guide.profile">
+      <segment>
+        <source>vkid.guide.profile</source>
+        <target>Нажмите «Подтвердить» в уведомлении «Подтвердите профиль» и подтвердите профиль бизнеса</target>
+      </segment>
+    </unit>
+    <unit id="vkid.guide.redirect">
+      <segment>
+        <source>vkid.guide.redirect</source>
+        <target>В «Базовый домен» впишите {host}, в «Доверенный redirect URL» — {url} и нажмите «Создать приложение»</target>
+      </segment>
+    </unit>
     <unit id="vkid.name">
       <segment>
         <source>vkid.name</source>

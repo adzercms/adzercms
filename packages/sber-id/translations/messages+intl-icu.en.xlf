@@ -13,6 +13,30 @@
         <target>The Sber ID answer does not belong to this login</target>
       </segment>
     </unit>
+    <unit id="sberid.guide.app">
+      <segment>
+        <source>sberid.guide.app</source>
+        <target>Register an app on the portal with the redirect_uri {url} and the name, email and phone data and wait for the moderation of the bank</target>
+      </segment>
+    </unit>
+    <unit id="sberid.guide.certificate">
+      <segment>
+        <source>sberid.guide.certificate</source>
+        <target>Issue a TLS certificate of the app with a password on the portal, upload the downloaded file into "PKCS#12 certificate container" and enter the password into "Container password"</target>
+      </segment>
+    </unit>
+    <unit id="sberid.guide.client">
+      <segment>
+        <source>sberid.guide.client</source>
+        <target>Copy Client ID into "Application ID" and Client Secret into "Application secret"</target>
+      </segment>
+    </unit>
+    <unit id="sberid.guide.offer">
+      <segment>
+        <source>sberid.guide.offer</source>
+        <target>Register the organization on the Sber ID portal https://id.sber.ru/profile/b2b and sign the offer of the bank through electronic document exchange as the portal instructs</target>
+      </segment>
+    </unit>
     <unit id="sberid.name">
       <segment>
         <source>sberid.name</source>

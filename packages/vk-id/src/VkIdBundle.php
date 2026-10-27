@@ -20,6 +20,6 @@ final class VkIdBundle extends Module
     /** @param array<string, mixed> $config */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        $container->services()->set(VkIdService::class)->autoconfigure();
+        $container->services()->set(VkIdService::class)->autowire()->autoconfigure();
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests\Login;
 
+use AdzerCMS\Contracts\Login\Redirects;
 use AdzerCMS\Core\Account\ConsentKind;
 use AdzerCMS\Core\Account\Status;
 use AdzerCMS\Core\Entity\ConnectedService;
@@ -53,6 +54,7 @@ final class LoginServiceTest extends SchemaTestCase
             ['response_type' => 'code', 'client_id' => 'latch-client', 'redirect_uri' => self::CALLBACK, 'scope' => 'profile phone', 'code_challenge_method' => 'S256'],
             array_diff_key($query, array_flip(['state', 'code_challenge'])),
         );
+        self::assertSame(self::CALLBACK, self::service(Redirects::class)->uri(self::service(LatchService::class)), 'the steps of the service name the address it returns to');
 
         $this->answers = [new JsonMockResponse(['access_token' => 'token']), new JsonMockResponse(['id' => 'p1', 'phone' => '8 900 111 22 33', 'login' => 'ivan'])];
         $this->client->request('GET', '/login/latch/callback', ['code' => 'c1', 'state' => $query['state']]);

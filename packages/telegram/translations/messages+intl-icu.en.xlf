@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
+    <unit id="telegram.guide.bot">
+      <segment>
+        <source>telegram.guide.bot</source>
+        <target>Open the BotFather mini app https://t.me/botfather?startapp and pick the bot of the site; without a bot create one there</target>
+      </segment>
+    </unit>
+    <unit id="telegram.guide.client">
+      <segment>
+        <source>telegram.guide.client</source>
+        <target>Copy "Client ID" into "Application ID" and "Client Secret" into "Application secret"</target>
+      </segment>
+    </unit>
+    <unit id="telegram.guide.urls">
+      <segment>
+        <source>telegram.guide.urls</source>
+        <target>In "Login Widget" add {origin} and {url} to "Allowed URLs"</target>
+      </segment>
+    </unit>
     <unit id="telegram.name">
       <segment>
         <source>telegram.name</source>

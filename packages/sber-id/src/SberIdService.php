@@ -11,14 +11,16 @@ use AdzerCMS\Contracts\Login\Client;
 use AdzerCMS\Contracts\Login\Exchange;
 use AdzerCMS\Contracts\Login\LoginFailed;
 use AdzerCMS\Contracts\Login\Profile;
+use AdzerCMS\Contracts\Login\Redirects;
 use AdzerCMS\Contracts\Module\Credentials;
 use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Guided;
 use AdzerCMS\Contracts\Setting\Type;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
 
-final readonly class SberIdService implements Attesting
+final readonly class SberIdService implements Attesting, Guided
 {
     public const AUTHORIZE = 'https://id.sber.ru/CSAFront/oidc/authorize.do';
     public const TOKEN = 'https://oauth.sber.ru/ru/prod/tokens/v2/oidc';
@@ -29,6 +31,11 @@ final readonly class SberIdService implements Attesting
     private const SCOPE = 'openid name email mobile';
     private const CLIENT_TYPE = 'PRIVATE';
     private const ACCEPTED = 204;
+
+    public function __construct(
+        private Redirects $redirects,
+    ) {
+    }
 
     public function name(): TranslatableInterface
     {
@@ -43,6 +50,11 @@ final readonly class SberIdService implements Attesting
     public function credentials(): array
     {
         return [Client::Id->field(), Client::Secret->field(), new Field(self::CONTAINER, t('sberid.container'), Type::Container, required: true)];
+    }
+
+    public function guide(): array
+    {
+        return [t('sberid.guide.offer'), t('sberid.guide.app', ['url' => $this->redirects->uri($this)]), t('sberid.guide.client'), t('sberid.guide.certificate')];
     }
 
     public function authorization(Credentials $credentials): Authorization

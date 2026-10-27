@@ -10,12 +10,14 @@ use AdzerCMS\Contracts\Login\Client;
 use AdzerCMS\Contracts\Login\Exchange;
 use AdzerCMS\Contracts\Login\LoginService;
 use AdzerCMS\Contracts\Login\Profile;
+use AdzerCMS\Contracts\Login\Redirects;
 use AdzerCMS\Contracts\Module\Credentials;
+use AdzerCMS\Contracts\Setting\Guided;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
 
-final class VkIdService implements LoginService
+final class VkIdService implements LoginService, Guided
 {
     public const AUTHORIZE = 'https://id.vk.ru/authorize';
     public const TOKEN = 'https://id.vk.ru/oauth2/auth';
@@ -23,6 +25,11 @@ final class VkIdService implements LoginService
 
     private const SCOPE = 'vkid.personal_info email phone';
     private const DEVICE = 'device_id';
+
+    public function __construct(
+        private readonly Redirects $redirects,
+    ) {
+    }
 
     public function name(): TranslatableInterface
     {
@@ -37,6 +44,13 @@ final class VkIdService implements LoginService
     public function credentials(): array
     {
         return [Client::Id->field()];
+    }
+
+    public function guide(): array
+    {
+        $url = $this->redirects->uri($this);
+
+        return [t('vkid.guide.app'), t('vkid.guide.redirect', ['host' => parse_url($url, \PHP_URL_HOST), 'url' => $url]), t('vkid.guide.profile'), t('vkid.guide.access'), t('vkid.guide.client')];
     }
 
     public function authorization(Credentials $credentials): Authorization

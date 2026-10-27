@@ -10,18 +10,25 @@ use AdzerCMS\Contracts\Login\Client;
 use AdzerCMS\Contracts\Login\Exchange;
 use AdzerCMS\Contracts\Login\LoginService;
 use AdzerCMS\Contracts\Login\Profile;
+use AdzerCMS\Contracts\Login\Redirects;
 use AdzerCMS\Contracts\Module\Credentials;
+use AdzerCMS\Contracts\Setting\Guided;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
 
-final class YandexIdService implements LoginService
+final class YandexIdService implements LoginService, Guided
 {
     public const AUTHORIZE = 'https://oauth.yandex.ru/authorize';
     public const TOKEN = 'https://oauth.yandex.ru/token';
     public const USER_INFO = 'https://login.yandex.ru/info?format=json';
 
     private const SCOPE = 'login:info login:email login:default_phone';
+
+    public function __construct(
+        private readonly Redirects $redirects,
+    ) {
+    }
 
     public function name(): TranslatableInterface
     {
@@ -36,6 +43,11 @@ final class YandexIdService implements LoginService
     public function credentials(): array
     {
         return [Client::Id->field(), Client::Secret->field()];
+    }
+
+    public function guide(): array
+    {
+        return [t('yandexid.guide.app'), t('yandexid.guide.redirect', ['url' => $this->redirects->uri($this)]), t('yandexid.guide.access'), t('yandexid.guide.client')];
     }
 
     public function authorization(Credentials $credentials): Authorization

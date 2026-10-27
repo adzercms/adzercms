@@ -132,6 +132,8 @@ final class PigeonGateway implements SmsGateway
 
 The service must live in its bundle's namespace: that's how the core knows which module it belongs to.
 
+The service with the credential fields also implements `AdzerCMS\Contracts\Setting\Guided`: `guide()` returns the steps to get the credentials at the external service as phrases of the module's catalog, one action per step: where to go, what to press, what to copy into which field, with the field's label and the full address. The module card in the admin lists them above the settings form.
+
 ## Notification channel
 
 A feature module can add a notification channel of its own with a service implementing `AdzerCMS\Core\Notice\Channel`; it's registered by autoconfiguration. The channel goes right after the bots and before the phone and email: in the delivery order of every notification, in the cabinet's switches and in the log. When the channel has nowhere to deliver a notification to a user, `missing()` tells them what to do to make it work. The way to connect the channel is rendered as a `Fragment` at `Fragment::CABINET_PROFILE`, which is also where `missing()` leads.
@@ -150,7 +152,7 @@ A login service implements `AdzerCMS\Contracts\Login\LoginService`. `authorizati
 
 `profile()` receives the return as a `Callback`: the code, `state`, the secret as `code_verifier` or the expected `nonce`, the redirect URI and any query parameter through `parameter()`. The service is called through `Exchange`: if the response isn't 200, contains `error` or doesn't arrive at all, `LoginFailed` is thrown with the reason. The response comes as an `Answer`: `text('user', 'email')` reads a field by a chain of keys, and a missing, empty or non-scalar field gives `null`. `claims()` takes an `id_token` together with the JWKS address, the issuer and the client id, checks the signature with the service's keys, `iss`, `aud` and expiry, and returns the claims as an `Answer`. `Client::basic()` builds the `Authorization` header from the application ID and secret. The module throws its own refusals as `LoginFailed` and in the end returns a `Profile` with the profile id at the service. The application ID and secret fields are `AdzerCMS\Contracts\Login\Client::Id->field()` and `Client::Secret->field()` with the core's labels. The service icon is its official logo in the package's `public/icon.svg`.
 
-In the application settings on the service side, register the redirect URI `https://<host>/login/<module key in lower case>/callback`. Sign-in starts at `/login/<module key in lower case>`.
+In the application settings on the service side, register the redirect URI `https://<host>/login/<module key in lower case>/callback`. Sign-in starts at `/login/<module key in lower case>`. A step of the guide gives this address in full: the service takes `AdzerCMS\Contracts\Login\Redirects` in its constructor, and `uri($this)` returns the redirect URI of the site.
 
 ## Package layout
 

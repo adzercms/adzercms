@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
+    <unit id="yandexid.guide.access">
+      <segment>
+        <source>yandexid.guide.access</source>
+        <target>In the data access tick the login with the name, the email address and the phone number, press "Continue", then confirm</target>
+      </segment>
+    </unit>
+    <unit id="yandexid.guide.app">
+      <segment>
+        <source>yandexid.guide.app</source>
+        <target>Open https://oauth.yandex.ru/client/new/id/, fill in the service name and the contact email and press "Continue"</target>
+      </segment>
+    </unit>
+    <unit id="yandexid.guide.client">
+      <segment>
+        <source>yandexid.guide.client</source>
+        <target>Copy ClientID from the app page into "Application ID" and Client secret into "Application secret"</target>
+      </segment>
+    </unit>
+    <unit id="yandexid.guide.redirect">
+      <segment>
+        <source>yandexid.guide.redirect</source>
+        <target>In the platforms tick web services, enter {url} into "Redirect URI" and press "Continue"</target>
+      </segment>
+    </unit>
     <unit id="yandexid.name">
       <segment>
         <source>yandexid.name</source>

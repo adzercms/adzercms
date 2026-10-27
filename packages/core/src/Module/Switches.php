@@ -89,9 +89,20 @@ final class Switches implements Owner
 
     public function setting(Switchable $module, Field $field): Field
     {
-        foreach ($this->keyed() as [$prefix, $owner]) {
+        return $this->prefixed($this->owner($module)[1], $field);
+    }
+
+    public function key(Switchable $module): string
+    {
+        return $this->owner($module)[0];
+    }
+
+    /** @return array{string, string} */
+    private function owner(Switchable $module): array
+    {
+        foreach ($this->keyed() as $key => [$prefix, $owner]) {
             if ($owner === $module) {
-                return $this->prefixed($prefix, $field);
+                return [$key, $prefix];
             }
         }
 

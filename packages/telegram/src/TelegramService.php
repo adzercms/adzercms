@@ -10,12 +10,14 @@ use AdzerCMS\Contracts\Login\Client;
 use AdzerCMS\Contracts\Login\Exchange;
 use AdzerCMS\Contracts\Login\LoginService;
 use AdzerCMS\Contracts\Login\Profile;
+use AdzerCMS\Contracts\Login\Redirects;
 use AdzerCMS\Contracts\Module\Credentials;
+use AdzerCMS\Contracts\Setting\Guided;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
 
-final class TelegramService implements LoginService
+final class TelegramService implements LoginService, Guided
 {
     public const ISSUER = 'https://oauth.telegram.org';
     public const AUTHORIZE = self::ISSUER.'/auth';
@@ -25,6 +27,11 @@ final class TelegramService implements LoginService
     public const BOT_SCOPE = 'telegram:bot_access';
 
     private const SCOPE = 'openid profile phone '.self::BOT_SCOPE;
+
+    public function __construct(
+        private readonly Redirects $redirects,
+    ) {
+    }
 
     public function name(): TranslatableInterface
     {
@@ -39,6 +46,13 @@ final class TelegramService implements LoginService
     public function credentials(): array
     {
         return [Client::Id->field(), Client::Secret->field()];
+    }
+
+    public function guide(): array
+    {
+        $url = $this->redirects->uri($this);
+
+        return [t('telegram.guide.bot'), t('telegram.guide.urls', ['origin' => substr($url, 0, -\strlen((string) parse_url($url, \PHP_URL_PATH))), 'url' => $url]), t('telegram.guide.client')];
     }
 
     public function authorization(Credentials $credentials): Authorization

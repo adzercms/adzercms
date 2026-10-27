@@ -20,6 +20,6 @@ final class YandexIdBundle extends Module
     /** @param array<string, mixed> $config */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        $container->services()->set(YandexIdService::class)->autoconfigure();
+        $container->services()->set(YandexIdService::class)->autowire()->autoconfigure();
     }
 }

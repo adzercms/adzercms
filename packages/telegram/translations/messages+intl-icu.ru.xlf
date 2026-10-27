@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
+    <unit id="telegram.guide.bot">
+      <segment>
+        <source>telegram.guide.bot</source>
+        <target>Откройте мини-приложение BotFather https://t.me/botfather?startapp и выберите бота сайта; бота нет — создайте его там же</target>
+      </segment>
+    </unit>
+    <unit id="telegram.guide.client">
+      <segment>
+        <source>telegram.guide.client</source>
+        <target>Скопируйте «Client ID» в поле «Идентификатор приложения», «Client Secret» — в поле «Секрет приложения»</target>
+      </segment>
+    </unit>
+    <unit id="telegram.guide.urls">
+      <segment>
+        <source>telegram.guide.urls</source>
+        <target>В «Login Widget» добавьте в «Allowed URLs» {origin} и {url}</target>
+      </segment>
+    </unit>
     <unit id="telegram.name">
       <segment>
         <source>telegram.name</source>

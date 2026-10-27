@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
+    <unit id="vkid.guide.access">
+      <segment>
+        <source>vkid.guide.access</source>
+        <target>In the accesses turn on the email among the basic ones and the phone number among the extended ones and save</target>
+      </segment>
+    </unit>
+    <unit id="vkid.guide.app">
+      <segment>
+        <source>vkid.guide.app</source>
+        <target>Signed in with VK Business ID, open https://id.vk.ru/about/business/go, add an app in your apps, enter its name, pick the Web platform and upload an image</target>
+      </segment>
+    </unit>
+    <unit id="vkid.guide.client">
+      <segment>
+        <source>vkid.guide.client</source>
+        <target>Copy the app ID from the app information into "Application ID"</target>
+      </segment>
+    </unit>
+    <unit id="vkid.guide.profile">
+      <segment>
+        <source>vkid.guide.profile</source>
+        <target>Confirm the business profile from the confirmation notice</target>
+      </segment>
+    </unit>
+    <unit id="vkid.guide.redirect">
+      <segment>
+        <source>vkid.guide.redirect</source>
+        <target>Enter {host} as the base domain and {url} as the trusted redirect URL and create the app</target>
+      </segment>
+    </unit>
     <unit id="vkid.name">
       <segment>
         <source>vkid.name</source>

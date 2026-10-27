@@ -13,6 +13,30 @@
         <target>Ответ Сбер ID не относится к этому входу</target>
       </segment>
     </unit>
+    <unit id="sberid.guide.app">
+      <segment>
+        <source>sberid.guide.app</source>
+        <target>Зарегистрируйте на портале приложение с redirect_uri {url} и данными имени, почты и телефона и дождитесь модерации банка</target>
+      </segment>
+    </unit>
+    <unit id="sberid.guide.certificate">
+      <segment>
+        <source>sberid.guide.certificate</source>
+        <target>Выпустите на портале TLS-сертификат приложения с паролем, загрузите скачанный файл в поле «Контейнер PKCS#12 сертификата», пароль впишите в «Пароль контейнера»</target>
+      </segment>
+    </unit>
+    <unit id="sberid.guide.client">
+      <segment>
+        <source>sberid.guide.client</source>
+        <target>Скопируйте Client ID в поле «Идентификатор приложения», Client Secret — в поле «Секрет приложения»</target>
+      </segment>
+    </unit>
+    <unit id="sberid.guide.offer">
+      <segment>
+        <source>sberid.guide.offer</source>
+        <target>Зарегистрируйте организацию на портале Сбер ID https://id.sber.ru/profile/b2b и подпишите оферту банка через ЭДО по инструкции портала</target>
+      </segment>
+    </unit>
     <unit id="sberid.name">
       <segment>
         <source>sberid.name</source>

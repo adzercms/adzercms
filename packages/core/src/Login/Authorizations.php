@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Login\Callback;
 use AdzerCMS\Contracts\Login\LoginFailed;
 use AdzerCMS\Contracts\Login\LoginService;
 use AdzerCMS\Contracts\Login\Profile;
+use AdzerCMS\Contracts\Login\Redirects;
 use AdzerCMS\Contracts\Module\Credentials;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Type;
@@ -19,7 +20,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 use function Symfony\Component\Translation\t;
 
-final class Authorizations
+final class Authorizations implements Redirects
 {
     public const CALLBACK = 'login_service_callback';
 
@@ -95,6 +96,11 @@ final class Authorizations
         }
 
         return '' === $profile->id ? new Refusal(t('core.login.nameless', ['service' => $module->name()])) : $profile;
+    }
+
+    public function uri(LoginService $service): string
+    {
+        return $this->redirect($this->switches->key($service));
     }
 
     /** @return array<string, LoginService> */

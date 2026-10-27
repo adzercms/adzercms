@@ -20,6 +20,6 @@ final class TelegramBundle extends Module
     /** @param array<string, mixed> $config */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        $container->services()->set(TelegramService::class)->autoconfigure();
+        $container->services()->set(TelegramService::class)->autowire()->autoconfigure();
     }
 }

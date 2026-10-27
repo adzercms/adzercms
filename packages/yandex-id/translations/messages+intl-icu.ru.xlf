@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
+    <unit id="yandexid.guide.access">
+      <segment>
+        <source>yandexid.guide.access</source>
+        <target>В доступе к данным отметьте «Логин, имя и фамилия, пол», «Адрес электронной почты» и «Номер телефона», нажмите «Продолжить», затем «Всё верно»</target>
+      </segment>
+    </unit>
+    <unit id="yandexid.guide.app">
+      <segment>
+        <source>yandexid.guide.app</source>
+        <target>Откройте https://oauth.yandex.ru/client/new/id/, впишите «Название вашего сервиса» и «Контактная почта» и нажмите «Продолжить»</target>
+      </segment>
+    </unit>
+    <unit id="yandexid.guide.client">
+      <segment>
+        <source>yandexid.guide.client</source>
+        <target>Скопируйте со страницы приложения ClientID в поле «Идентификатор приложения», Client secret — в поле «Секрет приложения»</target>
+      </segment>
+    </unit>
+    <unit id="yandexid.guide.redirect">
+      <segment>
+        <source>yandexid.guide.redirect</source>
+        <target>В платформах отметьте «Веб-сервисы», в «Redirect URI» впишите {url} и нажмите «Продолжить»</target>
+      </segment>
+    </unit>
     <unit id="yandexid.name">
       <segment>
         <source>yandexid.name</source>
