@@ -3,7 +3,7 @@
 <form class="modal-body" method="post" enctype="multipart/form-data" action="{{ path('admin_module_zip') }}">
     {{ csrf_field() }}
     <label>{{ 'admin.sources.archive'|trans }}
-        <input type="file" name="archive" accept=".zip,application/zip" required>
+        {% include '@Theme/_file.html.twig' with {name: 'archive', accept: '.zip,application/zip', required: true} only %}
     </label>
     <div class="button-row">
         <button type="submit">{{ 'admin.sources.upload'|trans }}</button>

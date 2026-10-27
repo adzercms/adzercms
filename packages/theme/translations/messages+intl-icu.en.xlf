@@ -43,6 +43,18 @@
         <target>Delete the saved data? Access by it will stop working.</target>
       </segment>
     </unit>
+    <unit id="theme.file.choose">
+      <segment>
+        <source>theme.file.choose</source>
+        <target>Choose file</target>
+      </segment>
+    </unit>
+    <unit id="theme.file.choose_many">
+      <segment>
+        <source>theme.file.choose_many</source>
+        <target>Choose files</target>
+      </segment>
+    </unit>
     <unit id="theme.impersonate_exit">
       <segment>
         <source>theme.impersonate_exit</source>

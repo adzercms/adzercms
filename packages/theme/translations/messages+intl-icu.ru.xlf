@@ -43,6 +43,18 @@
         <target>Удалить сохранённые данные? Вход по ним перестанет работать.</target>
       </segment>
     </unit>
+    <unit id="theme.file.choose">
+      <segment>
+        <source>theme.file.choose</source>
+        <target>Выбрать файл</target>
+      </segment>
+    </unit>
+    <unit id="theme.file.choose_many">
+      <segment>
+        <source>theme.file.choose_many</source>
+        <target>Выбрать файлы</target>
+      </segment>
+    </unit>
     <unit id="theme.impersonate_exit">
       <segment>
         <source>theme.impersonate_exit</source>

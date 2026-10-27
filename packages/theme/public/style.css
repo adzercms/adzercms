@@ -475,15 +475,15 @@ label { display: block; margin-bottom: 0.9rem; font-size: 13px; font-weight: 500
 .fields .field-wide, .fields .field-wide label { grid-column: 1 / -1; max-width: none; }
 .field label { margin-bottom: 0.5rem; }
 .fields.aligned > .field { display: grid; grid-row: span 3; grid-template-rows: subgrid; margin-bottom: 0.9rem; }
-.fields.aligned > .field > label { align-self: end; margin: 0; }
+.fields.aligned > .field > :first-child { align-self: end; margin: 0; }
 .field-extra { margin-top: 0.5rem; }
 .reveal { margin-top: 0.5rem; }
 .reveal[open] > summary { margin-bottom: 0.6rem; }
 .brand-preview { display: block; max-width: 100%; max-height: 3rem; margin-bottom: 0.5rem; }
 
-.credential { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.9rem; max-width: 28rem; }
+.credential { display: flex; flex-direction: column; margin-bottom: 0.9rem; max-width: 28rem; }
 .credential-label { font-size: 13px; font-weight: 500; }
-.credential-row { display: flex; align-items: center; gap: 0.5rem; min-height: var(--control-height); }
+.credential-row { display: flex; align-items: center; gap: 0.5rem; min-height: var(--control-height); margin-top: 0.3rem; }
 
 input, select, textarea {
     width: 100%;
@@ -513,6 +513,31 @@ input[type="color"] {
     padding: 0.25rem;
     cursor: pointer;
 }
+
+.file-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+    min-height: var(--control-height);
+    margin-top: 0.3rem;
+}
+
+.file-field > input[type="file"] {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-field > .button { flex: none; }
+.file-field:hover > .button { background: var(--border-light); }
+.file-field:has(> input:focus-visible) > .button { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+.file-names { min-width: 0; overflow: hidden; font-size: 13px; color: var(--text-gray); text-overflow: ellipsis; white-space: nowrap; }
 
 input:focus-visible, select:focus-visible, textarea:focus-visible {
     outline: 2px solid var(--focus-ring);

@@ -16,9 +16,9 @@
                         {% endfor %}
                     </select>
                 {% elseif field.type == constant(type ~ 'Image') %}
-                    <input id="{{ id }}" type="file" name="file[{{ field.name }}]" accept="image/png,image/jpeg,image/svg+xml,image/webp,image/vnd.microsoft.icon">
+                    {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: 'image/png,image/jpeg,image/svg+xml,image/webp,image/vnd.microsoft.icon'} only %}
                 {% elseif field.type == constant(type ~ 'Container') %}
-                    <input id="{{ id }}" type="file" name="file[{{ field.name }}]" accept=".p12,.pfx">
+                    {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: '.p12,.pfx'} only %}
                 {% elseif field.type == constant(type ~ 'Choice') %}
                     <select id="{{ id }}" name="value[{{ field.name }}]">
                         {% for choice, caption in field.choices %}

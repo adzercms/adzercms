@@ -165,7 +165,7 @@ Show dates in the reader's language through the translator, not with Twig's `dat
 
 Sums go out with the ruble sign in the reader's language: the `money` filter gives whole rubles, `precise` adds kopecks when there are any. In code, `AdzerCMS\Core\Ui\Money::rubles()` and `precise()` give a translatable sum for a phrase argument. Don't append the sign yourself; a field or column label names the unit in its own phrase.
 
-Buttons of a general action take core keys: `core.action.close`, `core.action.save`, `core.action.edit`, `core.action.drop` and `core.action.to_list` on the page of a record. An action on a particular object and a field label take keys of your module. A modal window starts with the theme's header `@Theme/_modal_header.html.twig` with the `title` argument; it holds the close button.
+Buttons of a general action take core keys: `core.action.close`, `core.action.save`, `core.action.edit`, `core.action.drop` and `core.action.to_list` on the page of a record. An action on a particular object and a field label take keys of your module. A modal window starts with the theme's header `@Theme/_modal_header.html.twig` with the `title` argument; it holds the close button. A file field is the theme's `@Theme/_file.html.twig` with the `name` and `accept` arguments, optional `id`, `multiple` and `required`: the button speaks the language of the page and the picked file names follow it.
 
 ## Tests
 

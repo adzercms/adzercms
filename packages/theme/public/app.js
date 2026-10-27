@@ -289,6 +289,13 @@ document.addEventListener('htmx:afterSwap', event => {
 });
 
 document.addEventListener('change', event => {
+    const names = event.target.matches('.file-field > input[type="file"]') && event.target.parentElement.querySelector('.file-names');
+    if (names) {
+        names.textContent = [...event.target.files].map(file => file.name).join(', ');
+    }
+});
+
+document.addEventListener('change', event => {
     const toggle = event.target.closest('.chart-toggle input[data-line]');
     if (toggle) {
         document.getElementById(toggle.dataset.line)?.classList.toggle('is-off', !toggle.checked);
