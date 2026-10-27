@@ -24,7 +24,7 @@ const registrable = () => {
 };
 
 const launch = () => {
-    if (!CookieConsent.acceptedCategory(ANALYTICS)) {
+    if (!CookieConsent.getUserPreferences().acceptedCategories.includes(ANALYTICS)) {
         return;
     }
     for (const counter of config.counters) {
@@ -36,12 +36,13 @@ const launch = () => {
 };
 
 CookieConsent.run({
+    mode: 'opt-out',
     cookie: {domain: registrable()},
     hideFromBots: true,
     guiOptions: {consentModal: {layout: 'cloud inline', position: 'bottom center'}},
     categories: {
         [NECESSARY]: {enabled: true, readOnly: true},
-        [ANALYTICS]: {autoClear: {cookies: config.counters.map(counter => ({name: new RegExp(counter.cookies)})), reloadPage: true}},
+        [ANALYTICS]: {enabled: true, autoClear: {cookies: config.counters.map(counter => ({name: new RegExp(counter.cookies)})), reloadPage: true}},
     },
     onConsent: launch,
     onChange: launch,
@@ -68,7 +69,7 @@ CookieConsent.run({
             },
         },
     },
-});
+}).then(launch);
 
 document.addEventListener('click', event => {
     if (event.target.closest('[data-consent-open]')) {

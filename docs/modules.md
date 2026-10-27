@@ -76,7 +76,7 @@ The first command lists all settings. Secrets are accepted only through stdin. S
 
 SMS and captcha use the first enabled module in list order. Sign-in services, bots and counters all work when enabled.
 
-An enabled counter brings a cookie consent window to the pages: the counter loads only after the visitor accepts statistics. The window links the privacy policy from the `legal.privacy_url` setting. A visitor changes the choice from the customer profile or from any element with the `data-consent-open` attribute; the `consent()` Twig function renders such a button for the footer of your own page layout, and nothing on a page without a counter. Administrators and impersonated records get neither the window nor the counters.
+An enabled counter brings a cookie notice bar to the bottom of the pages: the counter runs from the first page until the visitor turns statistics off in the cookie settings. The window links the privacy policy from the `legal.privacy_url` setting. A visitor changes the choice from the customer profile or from any element with the `data-consent-open` attribute; the `consent()` Twig function renders such a button for the footer of your own page layout, and nothing on a page without a counter. Administrators and impersonated records get neither the window nor the counters.
 
 ## Sell on OPOTOPO
 
