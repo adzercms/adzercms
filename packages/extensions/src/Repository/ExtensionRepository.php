@@ -9,6 +9,7 @@ use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\Entity\Extension;
+use AdzerCMS\Extensions\ExtensionDecision;
 use AdzerCMS\Extensions\ExtensionPrice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -93,7 +94,12 @@ class ExtensionRepository extends ServiceEntityRepository
 
     private function shown(): QueryBuilder
     {
-        return $this->createQueryBuilder('e')->andWhere('e.version IS NOT NULL');
+        return $this->createQueryBuilder('e')
+            ->leftJoin('e.author', 'a')
+            ->andWhere('e.decision = :published')
+            ->andWhere('e.version IS NOT NULL')
+            ->andWhere('e.author IS NULL OR e.authorKey = a.key')
+            ->setParameter('published', ExtensionDecision::Published);
     }
 
     private static function typed(QueryBuilder $builder, Table $table): QueryBuilder

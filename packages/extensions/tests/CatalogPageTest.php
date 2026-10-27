@@ -13,6 +13,7 @@ use AdzerCMS\Core\Seo\Indexing;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Queries;
 use AdzerCMS\Core\Ui\Money;
+use AdzerCMS\Extensions\ExtensionDecision;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
@@ -59,6 +60,22 @@ final class CatalogPageTest extends CatalogTestCase
         $russian = $this->client->request('GET', self::PAGE, server: ['HTTP_ACCEPT_LANGUAGE' => 'ru'])->filter('.offer-card');
         self::assertSame(['SEO module', 'Тема магазина'], [$russian->first()->filter('p')->text(), $russian->last()->filter('p')->text()],
             'the description goes in the language of the visitor, without a translation — in the source');
+    }
+
+    #[Group('ACMS-EXT-0004')]
+    #[Group('ACMS-EXT-0010')]
+    #[Group('ACMS-US-0034')]
+    public function testAuthorEntryGoesOnSitePublishedWithKeyOfItsAuthor(): void
+    {
+        $author = $this->author('79990000002');
+        $this->entry('acme/waiting', package: self::package('Waiting', author: $author->getKey()), author: $author);
+        $this->entry('acme/keyed', package: self::package('Keyed', author: $author->getKey()), author: $author)->decide(ExtensionDecision::Published);
+        $this->entry('acme/foreign', package: self::package('Foreign', author: $this->author('79990000003')->getKey()), author: $author)->decide(ExtensionDecision::Published);
+        $this->em->flush();
+
+        self::assertSame(['acme/keyed'], self::names($this->arrive(self::PAGE)));
+        $this->client->request('GET', self::STORE);
+        self::assertSame(['acme/keyed'], array_column(json_decode((string) $this->client->getResponse()->getContent(), true, flags: \JSON_THROW_ON_ERROR)['extensions'], 'name'));
     }
 
     /**
@@ -191,9 +208,9 @@ final class CatalogPageTest extends CatalogTestCase
      * @param list<Category>        $categories
      * @param array<string, string> $translations
      */
-    private static function package(string $description, ?string $homepage = null, array $categories = [Category::Other], array $translations = []): Package
+    private static function package(string $description, ?string $homepage = null, array $categories = [Category::Other], array $translations = [], ?string $author = null): Package
     {
-        return new Package(new Description($description, $translations), '1.0.0', $categories, self::SOURCE, $homepage, Registry::TYPE, null, null);
+        return new Package(new Description($description, $translations), '1.0.0', $categories, self::SOURCE, $homepage, Registry::TYPE, null, null, $author);
     }
 
     /** @return list<string> */

@@ -199,10 +199,34 @@
         <target>Нет метаданных</target>
       </segment>
     </unit>
+    <unit id="extensions.state.pending">
+      <segment>
+        <source>extensions.state.pending</source>
+        <target>Ждёт решения</target>
+      </segment>
+    </unit>
     <unit id="extensions.state.published">
       <segment>
         <source>extensions.state.published</source>
         <target>На сайте</target>
+      </segment>
+    </unit>
+    <unit id="extensions.state.rejected">
+      <segment>
+        <source>extensions.state.rejected</source>
+        <target>Отклонена</target>
+      </segment>
+    </unit>
+    <unit id="extensions.state.unclaimed">
+      <segment>
+        <source>extensions.state.unclaimed</source>
+        <target>Нет ключа автора</target>
+      </segment>
+    </unit>
+    <unit id="extensions.state.withdrawn">
+      <segment>
+        <source>extensions.state.withdrawn</source>
+        <target>Снята</target>
       </segment>
     </unit>
   </file>

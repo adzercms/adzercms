@@ -9,6 +9,7 @@ use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Composer\Description;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Ui\Placed;
+use AdzerCMS\Extensions\ExtensionDecision;
 use AdzerCMS\Extensions\ExtensionState;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -20,6 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'extension')]
 #[ORM\UniqueConstraint(name: 'uniq_extension_name', columns: ['name'])]
 #[ORM\Index(name: 'idx_extension_position', columns: ['position'])]
+#[ORM\Index(name: 'idx_extension_decision', columns: ['decision', 'position'])]
 class Extension implements Placed
 {
     private const VERSION = 64;
@@ -29,6 +31,19 @@ class Extension implements Placed
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(name: 'author_id', referencedColumnName: 'user_id', onDelete: 'CASCADE')]
+    private ?ExtensionAuthor $author;
+
+    #[ORM\Column(length: 16, enumType: ExtensionDecision::class)]
+    private ExtensionDecision $decision;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $reason = null;
+
+    #[ORM\Column(length: ExtensionAuthor::KEY, nullable: true)]
+    private ?string $authorKey = null;
 
     #[ORM\Column(length: 190)]
     private string $name = '';
@@ -65,14 +80,31 @@ class Extension implements Placed
     #[ORM\OneToMany(targetEntity: ExtensionCategory::class, mappedBy: 'extension', cascade: ['persist'], orphanRemoval: true)]
     private Collection $categories;
 
-    public function __construct()
+    public function __construct(?ExtensionAuthor $author = null)
     {
+        $this->author = $author;
+        $this->decision = null === $author ? ExtensionDecision::Published : ExtensionDecision::Pending;
         $this->categories = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getAuthor(): ?ExtensionAuthor
+    {
+        return $this->author;
+    }
+
+    public function getDecision(): ExtensionDecision
+    {
+        return $this->decision;
+    }
+
+    public function getReason(): ?string
+    {
+        return $this->reason;
     }
 
     public function getName(): string
@@ -128,7 +160,18 @@ class Extension implements Placed
 
     public function state(): ExtensionState
     {
-        return null === $this->version ? ExtensionState::Missing : ExtensionState::Published;
+        return match (true) {
+            ExtensionDecision::Published !== $this->decision => $this->decision->state(),
+            null === $this->version => ExtensionState::Missing,
+            null !== $this->author && $this->authorKey !== $this->author->getKey() => ExtensionState::Unclaimed,
+            default => ExtensionState::Published,
+        };
+    }
+
+    public function decide(ExtensionDecision $decision, ?string $reason = null): void
+    {
+        $this->decision = $decision;
+        $this->reason = $reason;
     }
 
     public function describe(string $name, ExtensionType $type, ?string $price, ?string $demo): self
@@ -152,6 +195,7 @@ class Extension implements Placed
         $this->version = self::fit($package?->version, self::VERSION);
         $this->source = self::fit($package?->source, self::LINK);
         $this->homepage = self::fit($package?->homepage, self::LINK);
+        $this->authorKey = self::fit($package?->author, ExtensionAuthor::KEY);
 
         $categories = $package->categories ?? [];
         foreach ($this->categories as $held) {

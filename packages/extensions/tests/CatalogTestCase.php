@@ -11,6 +11,7 @@ use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Extensions\Entity\Extension;
+use AdzerCMS\Extensions\Entity\ExtensionAuthor;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 
 abstract class CatalogTestCase extends SchemaTestCase
@@ -24,9 +25,18 @@ abstract class CatalogTestCase extends SchemaTestCase
         $this->em->flush();
     }
 
-    protected function entry(string $name, ExtensionType $type = ExtensionType::Module, ?string $price = null, ?Package $package = null, ?string $demo = null): Extension
+    protected function author(string $phone): ExtensionAuthor
     {
-        $entry = (new Extension())->describe($name, $type, $price, $demo)->know($package);
+        $author = new ExtensionAuthor($this->record($phone));
+        $this->em->persist($author);
+        $this->em->flush();
+
+        return $author;
+    }
+
+    protected function entry(string $name, ExtensionType $type = ExtensionType::Module, ?string $price = null, ?Package $package = null, ?string $demo = null, ?ExtensionAuthor $author = null): Extension
+    {
+        $entry = (new Extension($author))->describe($name, $type, $price, $demo)->know($package);
         $entry->place(\count(self::extensions()->findAll()) + 1);
         $this->em->persist($entry);
         $this->em->flush();

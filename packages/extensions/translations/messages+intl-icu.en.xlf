@@ -199,10 +199,34 @@
         <target>No metadata</target>
       </segment>
     </unit>
+    <unit id="extensions.state.pending">
+      <segment>
+        <source>extensions.state.pending</source>
+        <target>Awaiting decision</target>
+      </segment>
+    </unit>
     <unit id="extensions.state.published">
       <segment>
         <source>extensions.state.published</source>
         <target>On the site</target>
+      </segment>
+    </unit>
+    <unit id="extensions.state.rejected">
+      <segment>
+        <source>extensions.state.rejected</source>
+        <target>Rejected</target>
+      </segment>
+    </unit>
+    <unit id="extensions.state.unclaimed">
+      <segment>
+        <source>extensions.state.unclaimed</source>
+        <target>No author key</target>
+      </segment>
+    </unit>
+    <unit id="extensions.state.withdrawn">
+      <segment>
+        <source>extensions.state.withdrawn</source>
+        <target>Withdrawn</target>
       </segment>
     </unit>
   </file>

@@ -27,6 +27,7 @@ final readonly class Package
         public string $type,
         public ?string $kind,
         public ?string $reference,
+        public ?string $author = null,
     ) {
     }
 
@@ -106,6 +107,7 @@ final readonly class Package
             self::text($version['type'] ?? null) ?? self::LIBRARY,
             [] === $kinds ? null : reset($kinds),
             $reference,
+            self::text($extra['author'] ?? null),
         );
     }
 
