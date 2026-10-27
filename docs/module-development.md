@@ -51,7 +51,7 @@ A package requires every package and every PHP extension whose classes, function
 
 ## Links to the admin and the cabinet
 
-Links to admin and cabinet pages are built through entries: the Twig functions `admin('user', {id: id})` and `cabinet('profile')`, and in code `AdzerCMS\Core\Ui\Entries::url()` with `AdminEntry` or `CabinetEntry`. Without a module of that kind the entry returns `null`, and the page simply leaves the link out.
+Links to admin and cabinet pages are built through entries: the Twig functions `admin('user', {id: id})` and `cabinet('profile')`, and in code `AdzerCMS\Core\Ui\Entries::url()` with `AdminEntry` or `CabinetEntry`. Without a module of that kind the entry returns `null`, and the page simply leaves the link out. A list inside a tab of the admin dashboard or the user card pages by the route of its entry, `AdminEntry::Dashboard->route()` or `AdminEntry::User->route()`. `vendor/bin/adzercms-check` rejects a string in `src/` or in a template that names a route of an installed admin, cabinet, theme or other kind module outside that module.
 
 ## Admin and cabinet pages
 
@@ -205,6 +205,7 @@ bin/php vendor/bin/adzercms-module-check acme/pigeon
 
 - `build` — the container builds with the module, and its services get arguments of their declared types
 - `catalogs` — the module's translation catalogs pass the `translations/` rules above
+- `routes` — the module takes routes of kind modules only through [entries](#links-to-the-admin-and-the-cabinet)
 - `audit` — `composer audit` finds no advisory for the packages the module alone adds to the instance
 - `phpstan` — PHPStan of the module's `src/` at the engine's level
 - `psalm` — Psalm taint analysis of the module's `src/` with the Symfony plugin: request data doesn't reach the sinks Psalm tracks, such as SQL, shell commands and file paths. The Symfony plugin takes the body of any `Response` for HTML, so a plain text response is `AdzerCMS\Core\Http\TextResponse`
