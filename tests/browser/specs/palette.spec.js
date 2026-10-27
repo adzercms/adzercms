@@ -23,7 +23,7 @@ test('[ACMS-UI-0088] a swatch and an own color repaint the page before saving', 
 test('[ACMS-UI-0087] the text on the accent is black or white by its lightness', async ({ page }) => {
     await page.goto('/admin/settings?tab=brand');
     await page.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
-    const save = page.locator('form > button[type="submit"]');
+    const save = page.locator('form:has(.palette) > button[type="submit"]');
 
     await page.locator('.palette [data-palette-own]').fill('#0066cc');
     await expect.poll(() => ink(save)).toBe('255,255,255');

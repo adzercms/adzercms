@@ -475,7 +475,7 @@ label { display: block; margin-bottom: 0.9rem; font-size: 13px; font-weight: 500
 .fields label { max-width: 28rem; margin-bottom: 0.9rem; }
 .fields .field-wide, .fields .field-wide label { grid-column: 1 / -1; max-width: none; }
 .field label { margin-bottom: 0.5rem; }
-.fields.aligned > .field { display: grid; grid-row: span 3; grid-template-rows: subgrid; margin-bottom: 0.9rem; }
+.fields.aligned > .field { display: grid; grid-row: span 3; grid-template-rows: subgrid; align-items: start; margin-bottom: 0.9rem; }
 .fields.aligned > .field > :first-child { align-self: end; margin: 0; }
 .field-extra { margin-top: 0.5rem; }
 .reveal { margin-top: 0.5rem; }
