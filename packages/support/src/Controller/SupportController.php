@@ -23,6 +23,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -125,6 +126,9 @@ final class SupportController extends AbstractController
     public function show(#[CurrentUser] User $user, int $id): Response
     {
         $ticket = $this->found($this->tickets->conversation($id, $this->owner($user)));
+        if (!$this->staff($user) && !$this->isGranted(AuthenticatedVoter::IS_IMPERSONATOR)) {
+            $this->service->read($ticket);
+        }
 
         return $this->render('@Support/support/ticket.html.twig', [
             'ticket' => $ticket,
@@ -175,7 +179,7 @@ final class SupportController extends AbstractController
         return $this->redirectToRoute('support_tickets');
     }
 
-    #[Route('/message/{id}/{action}', name: 'support_message', requirements: ['id' => '\d+', 'action' => 'edit|drop'], methods: ['POST'])]
+    #[Route('/message/{id}/{action}', name: 'support_message', requirements: ['id' => '\d+', 'action' => 'edit|drop|redact'], methods: ['POST'])]
     public function message(#[CurrentUser] User $user, Request $request, int $id, string $action): Response
     {
         if (!$this->staff($user)) {
@@ -188,17 +192,20 @@ final class SupportController extends AbstractController
         }
 
         $ticket = $message->getTicket();
-        $refusal = 'drop' === $action
-            ? $this->service->remove($message)
-            : $this->service->edit(
-                $message,
-                (string) $request->request->get('body'),
-                $request->files->all('files'),
-                array_values(array_map(intval(...), (array) $request->request->all('dropped'))),
-            );
+        $body = (string) $request->request->get('body');
+        $dropped = array_values(array_map(intval(...), (array) $request->request->all('dropped')));
+        $refusal = match ($action) {
+            'drop' => $this->service->remove($message),
+            'edit' => $this->service->edit($message, $body, $request->files->all('files'), $dropped),
+            default => $this->service->redact($message, $body, $dropped),
+        };
 
         $this->addFlash(...null === $refusal
-            ? ['success', t('drop' === $action ? 'support.flash.dropped' : 'support.flash.edited')]
+            ? ['success', match ($action) {
+                'drop' => t('support.flash.dropped'),
+                'edit' => t('support.flash.edited'),
+                default => t('support.flash.redacted'),
+            }]
             : ['error', $refusal->reason]);
 
         return $this->redirectToRoute('support_ticket', ['id' => $ticket->getId()]);

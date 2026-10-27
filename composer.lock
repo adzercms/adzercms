@@ -1114,7 +1114,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/support",
-                "reference": "a7656bc9a2fb9066a49306047973c5c6f5c1c4f4"
+                "reference": "6e16edd81448ec9f6b2374efe0dc6858f53e5da9"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1137,6 +1137,7 @@
                 "symfony/polyfill-php86": "^1.43",
                 "symfony/routing": "7.4.*",
                 "symfony/security-bundle": "7.4.*",
+                "symfony/security-core": "7.4.*",
                 "symfony/security-http": "7.4.*",
                 "symfony/translation": "7.4.*",
                 "symfony/translation-contracts": "^3.7"

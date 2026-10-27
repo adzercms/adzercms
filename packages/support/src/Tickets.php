@@ -35,7 +35,7 @@ final readonly class Tickets
     public function open(User $user, string $subject, string $department, string $body, array $files = []): Ticket|Refusal
     {
         $subject = trim($subject);
-        $body = trim($body);
+        $body = self::text($body);
 
         if ('' === $subject) {
             return new Refusal(t('support.refusal.subject'));
@@ -69,7 +69,7 @@ final readonly class Tickets
             return new Refusal(t('support.refusal.closed'));
         }
 
-        $body = trim($body);
+        $body = self::text($body);
         if ('' === $body) {
             return new Refusal(t('support.refusal.body'));
         }
@@ -100,11 +100,12 @@ final readonly class Tickets
      */
     public function edit(TicketMessage $message, string $body, array $files = [], array $dropped = []): ?Refusal
     {
-        if ($message->getTicket()->getStatus()->isClosed()) {
-            return new Refusal(t('support.refusal.closed'));
+        $refusal = $this->locked($message);
+        if (null !== $refusal) {
+            return $refusal;
         }
 
-        $body = trim($body);
+        $body = self::text($body);
         if ('' === $body) {
             return new Refusal(t('support.refusal.body'));
         }
@@ -114,13 +115,7 @@ final readonly class Tickets
             return $kept;
         }
 
-        foreach ($message->getAttachments() as $attachment) {
-            if (\in_array($attachment->getId(), $dropped, true)) {
-                $message->getAttachments()->removeElement($attachment);
-                $this->em->remove($attachment);
-            }
-        }
-
+        $this->unattach($message, $dropped);
         $this->attach($message, $kept);
         $message->edit($body, now());
         $this->em->flush();
@@ -130,12 +125,47 @@ final readonly class Tickets
 
     public function remove(TicketMessage $message): ?Refusal
     {
-        if ($message->getTicket()->getStatus()->isClosed()) {
-            return new Refusal(t('support.refusal.closed'));
+        $refusal = $this->locked($message);
+        if (null !== $refusal) {
+            return $refusal;
         }
 
         $message->getTicket()->getMessages()->removeElement($message);
         $this->em->remove($message);
+        $this->em->flush();
+
+        return null;
+    }
+
+    public function read(Ticket $ticket): void
+    {
+        $unread = $ticket->getMessages()->filter(static fn (TicketMessage $message): bool => $message->isFromStaff() && null === $message->getReadAt());
+        if ($unread->isEmpty()) {
+            return;
+        }
+
+        $moment = now();
+        foreach ($unread as $message) {
+            $message->read($moment);
+        }
+        $this->em->flush();
+    }
+
+    /** @param list<int> $dropped */
+    public function redact(TicketMessage $message, string $body, array $dropped = []): ?Refusal
+    {
+        if (null === $message->getReadAt()) {
+            return new Refusal(t('support.refusal.unread'));
+        }
+
+        $whole = self::lines($message->getBody());
+        $left = self::lines($body);
+        $redacted = $left === $whole ? $whole : self::cut($whole, $left);
+        if (null === $redacted) {
+            return new Refusal(t('support.refusal.redaction'));
+        }
+
+        $message->redact($redacted, $this->unattach($message, $dropped));
         $this->em->flush();
 
         return null;
@@ -216,5 +246,62 @@ final readonly class Tickets
         foreach ($files as $file) {
             $this->em->persist(new TicketAttachment($message, $file));
         }
+    }
+
+    /** @param list<int> $dropped */
+    private function unattach(TicketMessage $message, array $dropped): int
+    {
+        $count = 0;
+        foreach ($message->getAttachments() as $attachment) {
+            if (\in_array($attachment->getId(), $dropped, true)) {
+                $message->getAttachments()->removeElement($attachment);
+                $this->em->remove($attachment);
+                ++$count;
+            }
+        }
+
+        return $count;
+    }
+
+    private function locked(TicketMessage $message): ?Refusal
+    {
+        return match (true) {
+            null !== $message->getReadAt() => new Refusal(t('support.refusal.read')),
+            $message->getTicket()->getStatus()->isClosed() => new Refusal(t('support.refusal.closed')),
+            default => null,
+        };
+    }
+
+    private static function text(string $body): string
+    {
+        return trim(str_replace(TicketMessage::REDACTED, '', $body));
+    }
+
+    private static function lines(string $text): string
+    {
+        return str_replace("\r\n", "\n", $text);
+    }
+
+    private static function cut(string $whole, string $left): ?string
+    {
+        $from = mb_str_split($whole);
+        $to = mb_str_split($left);
+        $shorter = \count($to);
+        if ($shorter >= \count($from)) {
+            return null;
+        }
+
+        $head = 0;
+        while ($head < $shorter && $from[$head] === $to[$head]) {
+            ++$head;
+        }
+        $tail = 0;
+        while ($head + $tail < $shorter && $from[\count($from) - 1 - $tail] === $to[$shorter - 1 - $tail]) {
+            ++$tail;
+        }
+
+        return $head + $tail === $shorter
+            ? implode(\array_slice($from, 0, $head)).TicketMessage::REDACTED.implode(\array_slice($from, \count($from) - $tail))
+            : null;
     }
 }

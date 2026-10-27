@@ -15,6 +15,7 @@
 {% block page %}
 {% import '@Theme/_icons.html.twig' as icon %}
 {% set author = login(ticket.user) %}
+{% set redacted = constant('AdzerCMS\\Support\\Entity\\TicketMessage::REDACTED') %}
 <div class="ticket-layout">
     <div class="ticket-main">
         <div class="section-head">
@@ -29,7 +30,9 @@
                         <div class="chat-head">
                             <span class="chat-author">{{ message.fromStaff ? support_label : author }}</span>
                             <span class="chat-time">{{ 'core.moment.day_time'|trans({at: message.createdAt}) }}</span>
-                            {% if staff and not ticket.status.closed %}
+                            {% if staff and message.readAt %}
+                                <button type="button" class="icon-act" data-modal="edit-{{ message.id }}" aria-label="{{ 'support.message.redact'|trans }}" title="{{ 'support.message.redact'|trans }}">{{ icon.redact() }}</button>
+                            {% elseif staff and not ticket.status.closed %}
                                 <button type="button" class="icon-act" data-modal="edit-{{ message.id }}" aria-label="{{ 'core.action.edit'|trans }}" title="{{ 'core.action.edit'|trans }}">{{ icon.edit() }}</button>
                                 <form method="post" action="{{ path('support_message', {id: message.id, action: 'drop'}) }}"
                                       data-confirm="{{ 'support.message.drop_confirm'|trans }}">
@@ -40,11 +43,11 @@
                         </div>
 
                         <div class="chat-text">
-                            {{ message.body|links|nl2br }}
-                            {% if message.editedAt %}<span class="chat-edited">{{ 'support.message.edited'|trans }}</span>{% endif %}
+                            {% for part in message.body|split(redacted) %}{% if not loop.first %}<span class="chat-redacted">{{ 'support.message.redacted'|trans }}</span>{% endif %}{{ part|links|nl2br }}{% endfor %}
+                            {% if staff and message.editedAt %}<span class="chat-edited">{{ 'support.message.edited'|trans }}</span>{% endif %}
                         </div>
 
-                        {% if message.attachments|length %}
+                        {% if message.attachments|length or message.redactedFiles %}
                             <div class="chat-files">
                                 {% for attachment in message.attachments %}
                                     {% set href = path('support_attachment', {id: attachment.id}) %}
@@ -54,24 +57,27 @@
                                         <a class="chat-file" href="{{ href }}" target="_blank">{{ attachment.file.name }}</a>
                                     {% endif %}
                                 {% endfor %}
+                                {% if message.redactedFiles %}<span class="chat-redacted">{{ 'support.message.redacted_files'|trans({count: message.redactedFiles}) }}</span>{% endif %}
                             </div>
                         {% endif %}
                     </div>
 
-                    {% if staff and not ticket.status.closed %}
+                    {% if staff and (message.readAt or not ticket.status.closed) %}
                         <dialog class="modal" id="edit-{{ message.id }}">
-                            {% include '@Theme/_modal_header.html.twig' with {title: 'support.ticket.message'|trans} only %}
+                            {% include '@Theme/_modal_header.html.twig' with {title: (message.readAt ? 'support.message.redact' : 'support.ticket.message')|trans} only %}
                             <form class="modal-body" method="post" enctype="multipart/form-data"
-                                  action="{{ path('support_message', {id: message.id, action: 'edit'}) }}">
+                                  action="{{ path('support_message', {id: message.id, action: message.readAt ? 'redact' : 'edit'}) }}">
                                 {{ csrf_field() }}
-                                <label>{{ 'support.message.text'|trans }}<textarea name="body" rows="6" required>{{ message.body }}</textarea></label>
+                                <label>{{ 'support.message.text'|trans }}<textarea name="body" rows="6" {{ message.readAt ? '' : 'required' }}>{{ message.body }}</textarea></label>
                                 {% for attachment in message.attachments %}
                                     <label class="check">
                                         <input type="checkbox" name="dropped[]" value="{{ attachment.id }}">
                                         {{ 'support.message.unattach'|trans({name: attachment.file.name}) }}
                                     </label>
                                 {% endfor %}
-                                {% include '@Theme/_attachments.html.twig' with {label: 'support.message.attach'|trans, allowance: allowance} only %}
+                                {% if not message.readAt %}
+                                    {% include '@Theme/_attachments.html.twig' with {label: 'support.message.attach'|trans, allowance: allowance} only %}
+                                {% endif %}
                                 <button type="submit">{{ 'core.action.save'|trans }}</button>
                             </form>
                         </dialog>

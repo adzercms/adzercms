@@ -115,6 +115,12 @@
         <target>Ticket No. {number} created</target>
       </segment>
     </unit>
+    <unit id="support.flash.redacted">
+      <segment>
+        <source>support.flash.redacted</source>
+        <target>Redacted</target>
+      </segment>
+    </unit>
     <unit id="support.flash.sent">
       <segment>
         <source>support.flash.sent</source>
@@ -217,6 +223,24 @@
         <target>corrected</target>
       </segment>
     </unit>
+    <unit id="support.message.redact">
+      <segment>
+        <source>support.message.redact</source>
+        <target>Redact</target>
+      </segment>
+    </unit>
+    <unit id="support.message.redacted">
+      <segment>
+        <source>support.message.redacted</source>
+        <target>removed by support</target>
+      </segment>
+    </unit>
+    <unit id="support.message.redacted_files">
+      <segment>
+        <source>support.message.redacted_files</source>
+        <target>{count, plural, one {# file removed by support} other {# files removed by support}}</target>
+      </segment>
+    </unit>
     <unit id="support.message.text">
       <segment>
         <source>support.message.text</source>
@@ -313,10 +337,28 @@
         <target>Wrong department</target>
       </segment>
     </unit>
+    <unit id="support.refusal.read">
+      <segment>
+        <source>support.refusal.read</source>
+        <target>The answer is read: correct it with a new answer, redact a leak</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.redaction">
+      <segment>
+        <source>support.refusal.redaction</source>
+        <target>Redaction removes a single fragment of the text</target>
+      </segment>
+    </unit>
     <unit id="support.refusal.subject">
       <segment>
         <source>support.refusal.subject</source>
         <target>The ticket subject is empty</target>
+      </segment>
+    </unit>
+    <unit id="support.refusal.unread">
+      <segment>
+        <source>support.refusal.unread</source>
+        <target>The answer is unread: edit it instead of redacting</target>
       </segment>
     </unit>
     <unit id="support.setting.area">

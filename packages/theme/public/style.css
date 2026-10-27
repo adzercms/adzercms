@@ -1224,6 +1224,7 @@ html:has(dialog[open]:modal) { overflow: hidden; }
 .chat-head > .icon-act:first-of-type { margin-left: auto; }
 .chat-text { line-height: 1.6; }
 .chat-edited { margin-left: 0.4rem; font-size: 11px; color: var(--text-gray); }
+.chat-redacted { padding: 0.1rem 0.4rem; background: var(--bg-gray); border-radius: var(--radius); color: var(--text-gray); font-size: 12px; font-style: italic; }
 
 .chat-files { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
 .chat-picture img { display: block; max-width: 12rem; max-height: 9rem; border: 1px solid var(--border-light); border-radius: var(--radius); }
