@@ -199,6 +199,12 @@
         <target>Подтверждение уже отправлено, дождитесь его либо повторите позже</target>
       </segment>
     </unit>
+    <unit id="core.consent.accept">
+      <segment>
+        <source>core.consent.accept</source>
+        <target>Принять</target>
+      </segment>
+    </unit>
     <unit id="core.consent.accept_all">
       <segment>
         <source>core.consent.accept_all</source>
@@ -245,12 +251,6 @@
       <segment>
         <source>core.consent.policy</source>
         <target>Политика обработки данных</target>
-      </segment>
-    </unit>
-    <unit id="core.consent.preferences">
-      <segment>
-        <source>core.consent.preferences</source>
-        <target>Настроить</target>
       </segment>
     </unit>
     <unit id="core.consent.save">

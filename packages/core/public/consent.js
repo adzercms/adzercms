@@ -38,7 +38,7 @@ const launch = () => {
 CookieConsent.run({
     cookie: {domain: registrable()},
     hideFromBots: true,
-    guiOptions: {consentModal: {position: 'middle center'}},
+    guiOptions: {consentModal: {layout: 'cloud inline', position: 'bottom center'}},
     categories: {
         [NECESSARY]: {enabled: true, readOnly: true},
         [ANALYTICS]: {autoClear: {cookies: config.counters.map(counter => ({name: new RegExp(counter.cookies)})), reloadPage: true}},
@@ -50,11 +50,9 @@ CookieConsent.run({
         translations: {
             [config.language]: {
                 consentModal: {
-                    title: texts.title,
+                    label: texts.title,
                     description: texts.description,
-                    acceptAllBtn: texts.acceptAll,
-                    acceptNecessaryBtn: texts.acceptNecessary,
-                    showPreferencesBtn: texts.preferences,
+                    acceptAllBtn: texts.accept,
                 },
                 preferencesModal: {
                     title: texts.settings,
