@@ -7,6 +7,8 @@ namespace AdzerCMS\Extensions\Tests;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Ui\AdminEntry;
 use AdzerCMS\Core\Account\LoginNames;
+use AdzerCMS\Core\Tests\Configuration;
+use AdzerCMS\Core\Tests\Delivery;
 use AdzerCMS\Core\Tests\Queries;
 use AdzerCMS\Core\Ui\Entries;
 use AdzerCMS\Core\Ui\Money;
@@ -20,6 +22,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 final class CatalogAdminTest extends CatalogTestCase
 {
+    use Configuration;
+    use Delivery;
     use Queries;
 
     private const LIST = '/admin/extensions';
@@ -147,6 +151,70 @@ final class CatalogAdminTest extends CatalogTestCase
         yield 'unclaimed' => [ExtensionState::Unclaimed, ['vendor/keyless', 'vendor/foreign']];
         yield 'rejected' => [ExtensionState::Rejected, ['vendor/rejected']];
         yield 'withdrawn' => [ExtensionState::Withdrawn, ['vendor/withdrawn']];
+    }
+
+    #[Group('ACMS-EXT-0009')]
+    #[Group('ACMS-US-0035')]
+    #[Group('ACMS-US-0044')]
+    #[DataProvider('decisions')]
+    public function testOperatorDecisionOnAuthorEntryReachesTheAuthor(ExtensionDecision $from, ExtensionDecision $decision, string $reason): void
+    {
+        $this->configure(self::MAIL);
+        $author = $this->author('79990000002', 'author@example.org');
+        $entry = $this->entry('vendor/tool', package: self::package('Tool', author: $author->getKey()), author: $author);
+        $entry->decide($from, ExtensionDecision::Pending === $from ? null : 'Earlier');
+        $this->em->flush();
+        $record = self::LIST.'/'.$entry->getId();
+
+        $this->post($record, ['name' => 'vendor/other', 'type' => 'theme', 'demo' => '']);
+        $card = $this->client->request('GET', $record);
+        self::assertCount(0, $card->filter('input[name="name"]'), 'the operator does not edit fields of an author entry');
+        self::assertSame(array_map(static fn (ExtensionDecision $next): string => $next->value, $from->next()),
+            $card->filter('input[name="decision"]')->each(static fn (Crawler $field): string => (string) $field->attr('value')));
+
+        $this->post($record.'/decide', ['decision' => $decision->value, 'reason' => $reason]);
+
+        self::assertResponseHeaderSame('HX-Redirect', self::LIST);
+        $entry = $this->reread($entry);
+        self::assertSame(['vendor/tool', $decision, '' === $reason ? null : $reason], [$entry->getName(), $entry->getDecision(), $entry->getReason()]);
+        self::assertEmailCount(1);
+        self::assertStringContainsString('vendor/tool', (string) $this->letter()->getSubject());
+        self::assertStringContainsString(self::phrase($entry->state()->label()), $this->letterText());
+        self::assertStringContainsString($reason, $this->letterText());
+    }
+
+    /** @return iterable<string, array{ExtensionDecision, ExtensionDecision, string}> */
+    public static function decisions(): iterable
+    {
+        yield 'publication of a pending entry' => [ExtensionDecision::Pending, ExtensionDecision::Published, ''];
+        yield 'rejection of a pending entry' => [ExtensionDecision::Pending, ExtensionDecision::Rejected, 'No demo'];
+        yield 'withdrawal of a published entry' => [ExtensionDecision::Published, ExtensionDecision::Withdrawn, 'Broken demo'];
+    }
+
+    #[Group('ACMS-EXT-0009')]
+    #[Group('ACMS-US-0035')]
+    #[DataProvider('refusedDecisions')]
+    public function testDecisionOutsideItsRuleIsRefused(ExtensionDecision $from, string $decision, string $reason, string $refusal): void
+    {
+        $this->configure(self::MAIL);
+        $author = $this->author('79990000002', 'author@example.org');
+        $entry = $this->entry('vendor/tool', author: $author);
+        $entry->decide($from, ExtensionDecision::Pending === $from ? null : 'Earlier');
+        $this->em->flush();
+
+        $card = $this->post(self::LIST.'/'.$entry->getId().'/decide', ['decision' => $decision, 'reason' => $reason]);
+
+        self::assertSame(self::phrase($refusal, ['name' => 'vendor/tool']), trim($card->filter('.flash-error')->text()));
+        self::assertSame($from, $this->reread($entry)->getDecision());
+        self::assertEmailCount(0);
+    }
+
+    /** @return iterable<string, array{ExtensionDecision, string, string, string}> */
+    public static function refusedDecisions(): iterable
+    {
+        yield 'rejection without a reason' => [ExtensionDecision::Pending, 'rejected', '  ', 'extensions.refusal.reason'];
+        yield 'decision the state does not lead to' => [ExtensionDecision::Rejected, 'published', '', 'extensions.refusal.decision'];
+        yield 'unknown decision' => [ExtensionDecision::Pending, 'approved', '', 'extensions.refusal.decision'];
     }
 
     #[Group('ACMS-US-0035')]

@@ -1,0 +1,47 @@
+{% include '@Theme/_modal_header.html.twig' with {title: extension.name} only %}
+
+<div class="modal-body">
+    {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+    <div class="info-grid">
+        <div class="info-item">
+            <span class="info-label">{{ 'extensions.column.type'|trans }}</span>
+            <span class="info-value">{{ extension.type.label|trans }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'extensions.column.price'|trans }}</span>
+            <span class="info-value">{{ extension.price ? amount(extension.price, false) : 'extensions.free'|trans }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'extensions.column.demo'|trans }}</span>
+            <span class="info-value">{% if extension.demo %}<a href="{{ extension.demo }}" target="_blank" rel="noreferrer noopener">{{ clip(extension.demo, 32) }}</a>{% else %}{{ blank() }}{% endif %}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'extensions.column.version'|trans }}</span>
+            <span class="info-value">{{ extension.version ?? blank() }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'extensions.column.author'|trans }}</span>
+            <span class="info-value">{% include '@Theme/_user.html.twig' with {user: extension.author.user} only %}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'extensions.column.state'|trans }}</span>
+            <span class="info-value">{{ badge(extension.state) }}{{ caption(extension.reason) }}</span>
+        </div>
+    </div>
+
+    {% for decision in extension.decision.next %}
+        {% set publish = decision == constant('AdzerCMS\\Extensions\\ExtensionDecision::Published') %}
+        <form hx-post="{{ path('admin_extension_decide', {id: extension.id}) }}" hx-target="#record">
+            {{ csrf_field() }}
+            <input type="hidden" name="decision" value="{{ decision.value }}">
+            {% if not publish %}
+                <div class="fields">
+                    <label class="field-wide">{{ 'extensions.reason'|trans }}
+                        <textarea name="reason" required></textarea>
+                    </label>
+                </div>
+            {% endif %}
+            <button type="submit" class="{{ publish ? '' : 'secondary' }}">{{ decision.action|trans }}</button>
+        </form>
+    {% endfor %}
+</div>

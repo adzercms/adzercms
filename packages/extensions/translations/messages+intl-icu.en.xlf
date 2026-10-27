@@ -67,6 +67,24 @@
         <target>Remove {name} from the catalog?</target>
       </segment>
     </unit>
+    <unit id="extensions.decide.published">
+      <segment>
+        <source>extensions.decide.published</source>
+        <target>Publish</target>
+      </segment>
+    </unit>
+    <unit id="extensions.decide.rejected">
+      <segment>
+        <source>extensions.decide.rejected</source>
+        <target>Reject</target>
+      </segment>
+    </unit>
+    <unit id="extensions.decide.withdrawn">
+      <segment>
+        <source>extensions.decide.withdrawn</source>
+        <target>Withdraw from the site</target>
+      </segment>
+    </unit>
     <unit id="extensions.edition">
       <segment>
         <source>extensions.edition</source>
@@ -77,6 +95,12 @@
       <segment>
         <source>extensions.empty</source>
         <target>No extensions yet</target>
+      </segment>
+    </unit>
+    <unit id="extensions.event.decision">
+      <segment>
+        <source>extensions.event.decision</source>
+        <target>Extension decision</target>
       </segment>
     </unit>
     <unit id="extensions.filter.category">
@@ -95,6 +119,12 @@
       <segment>
         <source>extensions.filter.type</source>
         <target>Type</target>
+      </segment>
+    </unit>
+    <unit id="extensions.flash.decided">
+      <segment>
+        <source>extensions.flash.decided</source>
+        <target>{name}: {state}</target>
       </segment>
     </unit>
     <unit id="extensions.flash.dropped">
@@ -181,10 +211,46 @@
         <target>New extension</target>
       </segment>
     </unit>
+    <unit id="extensions.notice.decision.body">
+      <segment>
+        <source>extensions.notice.decision.body</source>
+        <target>Decision on the extension {name}: {state}.</target>
+      </segment>
+    </unit>
+    <unit id="extensions.notice.decision.reason">
+      <segment>
+        <source>extensions.notice.decision.reason</source>
+        <target>Reason: {reason}</target>
+      </segment>
+    </unit>
+    <unit id="extensions.notice.decision.short">
+      <segment>
+        <source>extensions.notice.decision.short</source>
+        <target>Decision on the extension {name}: {state}. Details are in your account.</target>
+      </segment>
+    </unit>
+    <unit id="extensions.notice.decision.subject">
+      <segment>
+        <source>extensions.notice.decision.subject</source>
+        <target>{brand}: decision on the extension {name}</target>
+      </segment>
+    </unit>
     <unit id="extensions.paid">
       <segment>
         <source>extensions.paid</source>
         <target>Paid</target>
+      </segment>
+    </unit>
+    <unit id="extensions.reason">
+      <segment>
+        <source>extensions.reason</source>
+        <target>Reason</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.decision">
+      <segment>
+        <source>extensions.refusal.decision</source>
+        <target>This decision does not suit the current state of {name}</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.demo">
@@ -209,6 +275,12 @@
       <segment>
         <source>extensions.refusal.price</source>
         <target>Enter a price above zero and up to {max}; a free extension has no price</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.reason">
+      <segment>
+        <source>extensions.refusal.reason</source>
+        <target>A rejection and a withdrawal carry a reason</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.repository">

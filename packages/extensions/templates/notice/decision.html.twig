@@ -1,0 +1,18 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+{% import '@Core/notice/_macros.html.twig' as mail %}
+
+{% block subject %}{{ 'extensions.notice.decision.subject'|trans({brand: brand.title, name: name}) }}{% endblock %}
+
+{% block text %}
+{{ 'extensions.notice.decision.body'|trans({name: name, state: state}) }}
+{% if reason %}{{ 'extensions.notice.decision.reason'|trans({reason: reason}) }}
+{% endif %}
+{{ 'extensions.mine.menu'|trans }}: {{ url('extensions_mine') }}
+{% endblock %}
+
+{% block content %}
+<h2>{{ 'extensions.event.decision'|trans }}</h2>
+<p>{{ 'extensions.notice.decision.body'|trans({name: name, state: state}) }}</p>
+{% if reason %}<p>{{ 'extensions.notice.decision.reason'|trans({reason: reason}) }}</p>{% endif %}
+{{ mail.button(url('extensions_mine'), 'extensions.mine.menu'|trans) }}
+{% endblock %}

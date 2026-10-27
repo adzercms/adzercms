@@ -7,6 +7,7 @@ namespace AdzerCMS\Extensions;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Entity\User;
+use AdzerCMS\Core\Notice\Notifier;
 use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Core\Ui\WebLink;
 use AdzerCMS\Extensions\Entity\Extension;
@@ -25,12 +26,17 @@ final readonly class Catalog
         private EntityManagerInterface $em,
         private ExtensionRepository $extensions,
         private Metadata $metadata,
+        private Notifier $notifier,
     ) {
     }
 
     /** @param InputBag<string> $input */
     public function save(Extension $extension, InputBag $input): ?Refusal
     {
+        if (null !== $extension->getAuthor()) {
+            throw new \LogicException('an author entry goes by submit');
+        }
+
         $entry = $this->read($extension, $input);
         if ($entry instanceof Refusal) {
             return $entry;
@@ -71,6 +77,29 @@ final readonly class Catalog
         $extension->describe($entry['name'], $entry['type'], null, $entry['demo'])->know($package)->revise();
         $this->keep($extension);
         $this->em->flush();
+
+        return null;
+    }
+
+    public function decide(Extension $extension, ?ExtensionDecision $decision, string $reason): ?Refusal
+    {
+        $author = $extension->getAuthor() ?? throw new \LogicException('an operator entry is published by its creation');
+        if (null === $decision || !\in_array($decision, $extension->getDecision()->next(), true)) {
+            return new Refusal(t('extensions.refusal.decision', ['name' => $extension->getName()]));
+        }
+
+        $reason = trim($reason);
+        if (ExtensionDecision::Published !== $decision && '' === $reason) {
+            return new Refusal(t('extensions.refusal.reason'));
+        }
+
+        $extension->decide($decision, ExtensionDecision::Published === $decision ? null : $reason);
+        $this->em->flush();
+        $this->notifier->notify($author->getUser(), ExtensionEvent::Decision, [
+            'name' => $extension->getName(),
+            'state' => $extension->state()->label(),
+            'reason' => $extension->getReason(),
+        ], implode("\0", ['extensions', (string) $extension->getId(), $decision->value, (string) $extension->getReason()]));
 
         return null;
     }

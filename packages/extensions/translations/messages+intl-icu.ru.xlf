@@ -67,6 +67,24 @@
         <target>Убрать {name} из каталога?</target>
       </segment>
     </unit>
+    <unit id="extensions.decide.published">
+      <segment>
+        <source>extensions.decide.published</source>
+        <target>Опубликовать</target>
+      </segment>
+    </unit>
+    <unit id="extensions.decide.rejected">
+      <segment>
+        <source>extensions.decide.rejected</source>
+        <target>Отклонить</target>
+      </segment>
+    </unit>
+    <unit id="extensions.decide.withdrawn">
+      <segment>
+        <source>extensions.decide.withdrawn</source>
+        <target>Снять с сайта</target>
+      </segment>
+    </unit>
     <unit id="extensions.edition">
       <segment>
         <source>extensions.edition</source>
@@ -77,6 +95,12 @@
       <segment>
         <source>extensions.empty</source>
         <target>Расширений пока нет</target>
+      </segment>
+    </unit>
+    <unit id="extensions.event.decision">
+      <segment>
+        <source>extensions.event.decision</source>
+        <target>Решение по расширению</target>
       </segment>
     </unit>
     <unit id="extensions.filter.category">
@@ -95,6 +119,12 @@
       <segment>
         <source>extensions.filter.type</source>
         <target>Тип</target>
+      </segment>
+    </unit>
+    <unit id="extensions.flash.decided">
+      <segment>
+        <source>extensions.flash.decided</source>
+        <target>{name}: {state}</target>
       </segment>
     </unit>
     <unit id="extensions.flash.dropped">
@@ -181,10 +211,46 @@
         <target>Новое расширение</target>
       </segment>
     </unit>
+    <unit id="extensions.notice.decision.body">
+      <segment>
+        <source>extensions.notice.decision.body</source>
+        <target>Решение по расширению {name}: {state}.</target>
+      </segment>
+    </unit>
+    <unit id="extensions.notice.decision.reason">
+      <segment>
+        <source>extensions.notice.decision.reason</source>
+        <target>Причина: {reason}</target>
+      </segment>
+    </unit>
+    <unit id="extensions.notice.decision.short">
+      <segment>
+        <source>extensions.notice.decision.short</source>
+        <target>Решение по расширению {name}: {state}. Подробности в кабинете.</target>
+      </segment>
+    </unit>
+    <unit id="extensions.notice.decision.subject">
+      <segment>
+        <source>extensions.notice.decision.subject</source>
+        <target>{brand}: решение по расширению {name}</target>
+      </segment>
+    </unit>
     <unit id="extensions.paid">
       <segment>
         <source>extensions.paid</source>
         <target>Платно</target>
+      </segment>
+    </unit>
+    <unit id="extensions.reason">
+      <segment>
+        <source>extensions.reason</source>
+        <target>Причина</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.decision">
+      <segment>
+        <source>extensions.refusal.decision</source>
+        <target>Это решение не подходит текущему состоянию {name}</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.demo">
@@ -209,6 +275,12 @@
       <segment>
         <source>extensions.refusal.price</source>
         <target>Укажите цену больше нуля и не выше {max}; у бесплатного расширения цены нет</target>
+      </segment>
+    </unit>
+    <unit id="extensions.refusal.reason">
+      <segment>
+        <source>extensions.refusal.reason</source>
+        <target>Отказ и снятие — с причиной</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.repository">

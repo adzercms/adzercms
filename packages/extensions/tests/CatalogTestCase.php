@@ -30,9 +30,9 @@ abstract class CatalogTestCase extends SchemaTestCase
         $this->em->flush();
     }
 
-    protected function author(string $phone): ExtensionAuthor
+    protected function author(string $phone, ?string $email = null): ExtensionAuthor
     {
-        $author = new ExtensionAuthor($this->record($phone));
+        $author = new ExtensionAuthor($this->record($phone, $email));
         $this->em->persist($author);
         $this->em->flush();
 

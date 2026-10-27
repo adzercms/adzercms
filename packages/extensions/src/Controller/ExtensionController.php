@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
 
@@ -68,7 +69,21 @@ final class ExtensionController extends AbstractController
     #[Route('/{id}', name: 'admin_extension', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Extension $extension, Request $request): Response
     {
-        return $this->record($extension, $request);
+        return null === $extension->getAuthor() ? $this->record($extension, $request) : $this->card($extension);
+    }
+
+    #[Route('/{id}/decide', name: 'admin_extension_decide', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function decide(Extension $extension, Request $request): Response
+    {
+        $refusal = $this->catalog->decide($extension, ExtensionDecision::tryFrom($request->request->getString('decision')), $request->request->getString('reason'));
+        if (null !== $refusal) {
+            return $this->card($extension, $refusal->reason);
+        }
+
+        $this->addFlash(ExtensionDecision::Published === $extension->getDecision() && ExtensionState::Published !== $extension->state() ? 'error' : 'success',
+            t('extensions.flash.decided', ['name' => $extension->getName(), 'state' => $extension->state()->label()]));
+
+        return Fragment::go($this->generateUrl(self::LIST));
     }
 
     #[Route('/{id}/drop', name: 'admin_extension_drop', requirements: ['id' => '\d+'], methods: ['POST'])]
@@ -104,6 +119,11 @@ final class ExtensionController extends AbstractController
             'input' => $request->request->all(),
             'error' => $refusal?->reason,
         ]);
+    }
+
+    private function card(Extension $extension, ?TranslatableInterface $error = null): Response
+    {
+        return $this->render('@Extensions/admin/_entry.html.twig', ['extension' => $extension, 'error' => $error]);
     }
 
     /** @return array<string, mixed> */
