@@ -173,7 +173,7 @@ Buttons of a general action take core keys: `core.action.close`, `core.action.sa
 
 ## Tests
 
-A module's tests run in an instance that keeps the module in `modules/`. Composer reads `autoload-dev` of the root package only, so the instance maps the module's test namespace itself and adds a suite named after the module key to `phpunit.dist.xml`.
+A module's tests run in an instance that keeps the module in `modules/`. Composer reads `autoload-dev` and `require-dev` of the root package only, so the instance maps the module's test namespace and requires the modules of its `require-dev` itself, and adds a suite named after the module key to `phpunit.dist.xml`. A module installed only by `require-dev` is visible to the test environment only.
 
 ```json
 "autoload-dev": {
@@ -197,7 +197,7 @@ bin/phpunit --testsuite Pigeon
 vendor/bin/adzercms-check
 ```
 
-A database test extends `AdzerCMS\Core\Tests\SchemaTestCase`, and responses of external services are set up with `AdzerCMS\Core\Tests\HttpAnswers`.
+A database test extends `AdzerCMS\Core\Tests\SchemaTestCase`, and responses of external services are set up with `AdzerCMS\Core\Tests\HttpAnswers`. Services the module's tests give to the tests of other modules go to `tests/services.php` of its package: in the test environment the core imports it for a selected module whose test namespace is autoloaded.
 
 ## Module check
 

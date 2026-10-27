@@ -106,6 +106,27 @@ final class SelectionTest extends TestCase
         Registry::of(['acme/drum' => ['extra' => ['adzercms' => ['bundle' => Fixture\DrumBundle::class]]]]);
     }
 
+    #[Group('ACMS-CORE-1005')]
+    #[DataProvider('environments')]
+    public function testDevelopmentOnlyModuleIsInstalledOnlyForSuites(string $environment, bool $installed): void
+    {
+        $server = $_SERVER;
+        $_SERVER['APP_ENV'] = $environment;
+
+        try {
+            self::assertSame($installed, null !== Registry::installed()->package('adzercms/trespass'));
+        } finally {
+            $_SERVER = $server;
+        }
+    }
+
+    /** @return iterable<string, array{string, bool}> */
+    public static function environments(): iterable
+    {
+        yield 'suites' => ['test', true];
+        yield 'instance' => ['prod', false];
+    }
+
     #[Group('ACMS-CORE-0018')]
     public function testSelectionIdFollowsSelectedSet(): void
     {

@@ -16,6 +16,9 @@ final class Registry
     public const IMPLEMENTATION = '~^adzercms/([a-z0-9-]+)-implementation$~';
     public const MIGRATIONS = '/migrations';
 
+    private const ENVIRONMENT = 'APP_ENV';
+    private const SUITES = 'test';
+
     /** @var array<string, Installed> */
     private array $byPackage = [];
 
@@ -29,12 +32,26 @@ final class Registry
 
     public static function installed(): self
     {
+        $suites = self::SUITES === Selection::environment(self::ENVIRONMENT);
         $manifests = [];
         foreach (array_unique(InstalledVersions::getInstalledPackagesByType(self::TYPE)) as $package) {
-            $manifests[$package] = self::manifest($package);
+            if ($suites || !self::developed($package)) {
+                $manifests[$package] = self::manifest($package);
+            }
         }
 
         return self::of($manifests);
+    }
+
+    private static function developed(string $package): bool
+    {
+        foreach (InstalledVersions::getAllRawData() as $installed) {
+            if (isset($installed['versions'][$package])) {
+                return $installed['versions'][$package]['dev_requirement'];
+            }
+        }
+
+        return false;
     }
 
     public static function manifest(string $package): mixed

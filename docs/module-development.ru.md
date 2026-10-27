@@ -173,7 +173,7 @@ final class PigeonGateway implements SmsGateway
 
 ## Тесты
 
-Тесты модуля запускаются в экземпляре, где модуль лежит в `modules/`. Composer читает `autoload-dev` только корневого пакета, поэтому экземпляр сам прописывает namespace тестов модуля и заводит в `phpunit.dist.xml` набор с именем ключа модуля.
+Тесты модуля запускаются в экземпляре, где модуль лежит в `modules/`. Composer читает `autoload-dev` и `require-dev` только корневого пакета, поэтому экземпляр сам прописывает namespace тестов модуля и требует модули из его `require-dev`, а в `phpunit.dist.xml` заводит набор с именем ключа модуля. Модуль, поставленный только через `require-dev`, виден только окружению тестов.
 
 ```json
 "autoload-dev": {
@@ -197,7 +197,7 @@ bin/phpunit --testsuite Pigeon
 vendor/bin/adzercms-check
 ```
 
-Тест с базой данных наследует `AdzerCMS\Core\Tests\SchemaTestCase`, а ответы внешних сервисов задаются через `AdzerCMS\Core\Tests\HttpAnswers`.
+Тест с базой данных наследует `AdzerCMS\Core\Tests\SchemaTestCase`, а ответы внешних сервисов задаются через `AdzerCMS\Core\Tests\HttpAnswers`. Службы, которые тесты модуля дают тестам других модулей, лежат в `tests/services.php` его пакета: в окружении тестов ядро импортирует этот файл у выбранного модуля, чей namespace тестов есть в автозагрузке.
 
 ## Проверка модуля
 
