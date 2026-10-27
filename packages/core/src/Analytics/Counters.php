@@ -11,11 +11,10 @@ use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Module\Switches;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 
 final readonly class Counters implements ContentSource
 {
-    private const IMPERSONATOR = 'IS_IMPERSONATOR';
-
     public function __construct(
         private Switches $switches,
         private Security $security,
@@ -25,7 +24,7 @@ final readonly class Counters implements ContentSource
     /** @return list<array{Counter, Credentials}> */
     public function active(): array
     {
-        if ($this->security->isGranted(Role::ADMIN) || $this->security->isGranted(self::IMPERSONATOR)) {
+        if ($this->security->isGranted(Role::ADMIN) || $this->security->isGranted(AuthenticatedVoter::IS_IMPERSONATOR)) {
             return [];
         }
 
