@@ -85,8 +85,11 @@ final class KernelTest extends KernelTestCase
     }
 
     #[Group('ACMS-CORE-0045')]
-    public function testKernelWithoutDebugTakesModulesOfSwitchedBuildNotOfLiveEnvironment(): void
+    #[Group('ACMS-CORE-0970')]
+    #[DataProvider('liveSelections')]
+    public function testKernelWithoutDebugTakesModulesOfSwitchedBuildNotOfDotenvEdit(string $dotenv, string $cached): void
     {
+        [$server, $env] = [$_SERVER, $_ENV];
         $cache = sys_get_temp_dir().'/adzercms-kernel-'.bin2hex(random_bytes(4));
         $_SERVER['APP_CACHE_DIR'] = $cache;
 
@@ -95,16 +98,23 @@ final class KernelTest extends KernelTestCase
             $refresh = new CommandTester((new Application(self::createKernel(['debug' => false])))->find('adzercms:cache'));
             self::assertSame(Command::SUCCESS, $refresh->execute([]));
             unset($_SERVER[Builds::ENV]);
-            $_SERVER['MODULES'] = $_ENV['MODULES'] = 'Nope';
+            $_SERVER['THEME_MODULE'] = $_ENV['THEME_MODULE'] = 'Threadbare';
+            $_SERVER['SYMFONY_DOTENV_VARS'] = $dotenv;
+            $set = Selection::of(Registry::installed(), static fn (string $name): string => 'THEME_MODULE' === $name ? 'Threadbare' : '')->id();
 
-            $running = self::bootKernel(['debug' => false]);
-
-            self::assertSame($cache.'/test/b1', $running->getCacheDir(), 'the selection edited before the refresh stays out of the running instance');
+            self::assertSame($cache.'/'.\sprintf($cached, $set), self::bootKernel(['debug' => false])->getCacheDir());
         } finally {
             self::ensureKernelShutdown();
-            unset($_SERVER['APP_CACHE_DIR'], $_SERVER[Builds::ENV], $_SERVER['MODULES'], $_ENV['MODULES']);
+            [$_SERVER, $_ENV] = [$server, $env];
             (new Filesystem())->remove($cache);
         }
+    }
+
+    /** @return iterable<string, array{string, string}> */
+    public static function liveSelections(): iterable
+    {
+        yield 'edited .env stays out of the running instance' => ['THEME_MODULE', 'test/b1'];
+        yield 'environment of the process selects for the process' => ['', 'test_%s'];
     }
 
     #[Group('ACMS-CORE-0970')]

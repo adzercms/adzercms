@@ -33,6 +33,7 @@ abstract class Kernel extends BaseKernel
     private const SELECTION = '.selection';
     private const PREVIEW = '.preview';
     private const SECRET = 'APP_SECRET';
+    private const DOTENV = 'SYMFONY_DOTENV_VARS';
 
     private ?Selection $modules = null;
     private ?HeldBuild $held = null;
@@ -150,10 +151,15 @@ abstract class Kernel extends BaseKernel
         }
 
         $values = $this->previewing() ?? (is_file($file) ? json_decode((string) file_get_contents($file), true, flags: \JSON_THROW_ON_ERROR) : null);
+        $dotenv = explode(',', (string) ($_SERVER[self::DOTENV] ?? $_ENV[self::DOTENV] ?? ''));
 
         return null === $values
             ? Selection::environment(...)
-            : static fn (string $name): string => \is_array($values) && \is_string($values[$name] ?? null) ? $values[$name] : '';
+            : static fn (string $name): string => match (true) {
+                !\in_array($name, $dotenv, true) && null !== ($_SERVER[$name] ?? $_ENV[$name] ?? null) => Selection::environment($name),
+                \is_array($values) && \is_string($values[$name] ?? null) => $values[$name],
+                default => '',
+            };
     }
 
     /** @return array<string, string>|null */
