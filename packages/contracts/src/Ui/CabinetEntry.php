@@ -11,6 +11,7 @@ enum CabinetEntry: string
     case Security = 'security';
     case Theme = 'theme';
     case Login = 'login';
+    case Register = 'register';
     case Forgot = 'forgot';
     case PasswordChange = 'password_change';
     case Deletion = 'deletion';
@@ -25,6 +26,7 @@ enum CabinetEntry: string
             self::Profile, self::Security => 'cabinet_profile',
             self::Theme => 'cabinet_profile_theme',
             self::Login => 'cabinet_login',
+            self::Register => 'cabinet_register',
             self::Forgot => 'cabinet_forgot',
             self::PasswordChange => 'cabinet_password_change',
             self::Deletion => 'cabinet_delete',

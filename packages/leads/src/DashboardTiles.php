@@ -31,6 +31,6 @@ final readonly class DashboardTiles implements Fragment
             ];
         }
 
-        return ['template' => '@Leads/admin/_dashboard_tiles.html.twig', 'context' => ['tiles' => $tiles, 'route' => DashboardTab::ROUTE]];
+        return ['template' => '@Leads/admin/_dashboard_tiles.html.twig', 'context' => ['tiles' => $tiles]];
     }
 }
