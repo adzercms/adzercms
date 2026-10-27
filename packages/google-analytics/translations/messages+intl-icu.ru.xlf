@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
+    <unit id="googleanalytics.guide.measurement">
+      <segment>
+        <source>googleanalytics.guide.measurement</source>
+        <target>Скопируйте «Идентификатор потока данных» из первой строки сведений о потоке, G- и знаки после него, в поле «Идентификатор потока данных»</target>
+      </segment>
+    </unit>
+    <unit id="googleanalytics.guide.stream">
+      <segment>
+        <source>googleanalytics.guide.stream</source>
+        <target>Откройте поток данных сайта; потока нет — «Добавить поток» → «Веб» с адресом сайта</target>
+      </segment>
+    </unit>
+    <unit id="googleanalytics.guide.streams">
+      <segment>
+        <source>googleanalytics.guide.streams</source>
+        <target>Откройте https://analytics.google.com, ресурс сайта, «Администратор» → «Сбор и редактирование данных» → «Потоки данных» → вкладка «Веб»</target>
+      </segment>
+    </unit>
     <unit id="googleanalytics.measurement">
       <segment>
         <source>googleanalytics.measurement</source>
-        <target>Идентификатор измерения</target>
+        <target>Идентификатор потока данных</target>
       </segment>
     </unit>
     <unit id="googleanalytics.name">

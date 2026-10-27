@@ -19,6 +19,30 @@
         <target>Номер счётчика</target>
       </segment>
     </unit>
+    <unit id="yandexmetrika.guide.allow">
+      <segment>
+        <source>yandexmetrika.guide.allow</source>
+        <target>Под той же учёткой откройте https://oauth.yandex.ru/authorize?response_type=token&amp;client_id= с ClientID в конце адреса и нажмите «Разрешить»</target>
+      </segment>
+    </unit>
+    <unit id="yandexmetrika.guide.app">
+      <segment>
+        <source>yandexmetrika.guide.app</source>
+        <target>Под учёткой владельца счётчика либо представителя с правом редактирования откройте https://oauth.yandex.ru/client/new, выберите «Для доступа к API или отладки», в «Доступ к данным» отметьте metrika:offline_data, нажмите «Создать приложение» и скопируйте его ClientID</target>
+      </segment>
+    </unit>
+    <unit id="yandexmetrika.guide.counter">
+      <segment>
+        <source>yandexmetrika.guide.counter</source>
+        <target>Откройте перечень счётчиков https://metrika.yandex.ru/list и скопируйте номер счётчика сайта в поле «Номер счётчика»</target>
+      </segment>
+    </unit>
+    <unit id="yandexmetrika.guide.token">
+      <segment>
+        <source>yandexmetrika.guide.token</source>
+        <target>Скопируйте токен со страницы в поле «Токен» кнопкой «Сменить» учётных данных</target>
+      </segment>
+    </unit>
     <unit id="yandexmetrika.name">
       <segment>
         <source>yandexmetrika.name</source>

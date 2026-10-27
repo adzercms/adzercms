@@ -7,13 +7,14 @@ namespace AdzerCMS\YandexMetrika;
 use AdzerCMS\Contracts\Analytics\Counter;
 use AdzerCMS\Contracts\Module\Credentials;
 use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Guided;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Contracts\Ui\ContentSource;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
 
-final readonly class YandexMetrikaCounter implements Counter
+final readonly class YandexMetrikaCounter implements Counter, Guided
 {
     public const COUNTER = 'counter';
     public const TOKEN = 'token';
@@ -48,6 +49,11 @@ final readonly class YandexMetrikaCounter implements Counter
             new Field(self::COUNTER, t('yandexmetrika.counter'), required: true),
             new Field(self::TOKEN, t('yandexmetrika.token'), Type::Secret, group: self::ACCESS),
         ];
+    }
+
+    public function guide(): array
+    {
+        return [t('yandexmetrika.guide.counter'), t('yandexmetrika.guide.app'), t('yandexmetrika.guide.allow'), t('yandexmetrika.guide.token')];
     }
 
     public function entry(): string

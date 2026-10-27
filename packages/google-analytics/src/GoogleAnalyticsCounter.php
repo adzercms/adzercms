@@ -7,12 +7,13 @@ namespace AdzerCMS\GoogleAnalytics;
 use AdzerCMS\Contracts\Analytics\Counter;
 use AdzerCMS\Contracts\Module\Credentials;
 use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Guided;
 use AdzerCMS\Contracts\Ui\ContentSource;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
 
-final readonly class GoogleAnalyticsCounter implements Counter
+final readonly class GoogleAnalyticsCounter implements Counter, Guided
 {
     public const MEASUREMENT = 'measurement';
     public const TAG = 'https://www.googletagmanager.com/gtag/js?id=%s';
@@ -31,6 +32,11 @@ final readonly class GoogleAnalyticsCounter implements Counter
     public function credentials(): array
     {
         return [new Field(self::MEASUREMENT, t('googleanalytics.measurement'), required: true)];
+    }
+
+    public function guide(): array
+    {
+        return [t('googleanalytics.guide.streams'), t('googleanalytics.guide.stream'), t('googleanalytics.guide.measurement')];
     }
 
     public function entry(): string

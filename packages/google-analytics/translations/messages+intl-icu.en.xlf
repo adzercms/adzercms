@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
+    <unit id="googleanalytics.guide.measurement">
+      <segment>
+        <source>googleanalytics.guide.measurement</source>
+        <target>Copy the "Measurement ID" from the stream details, G- and the characters after it, into "Measurement ID"</target>
+      </segment>
+    </unit>
+    <unit id="googleanalytics.guide.stream">
+      <segment>
+        <source>googleanalytics.guide.stream</source>
+        <target>Open the web stream of the site; without one — "Add stream" → "Web" with the site address</target>
+      </segment>
+    </unit>
+    <unit id="googleanalytics.guide.streams">
+      <segment>
+        <source>googleanalytics.guide.streams</source>
+        <target>Open https://analytics.google.com, the property of the site, "Admin" → "Data collection and modification" → "Data streams" → the "Web" tab</target>
+      </segment>
+    </unit>
     <unit id="googleanalytics.measurement">
       <segment>
         <source>googleanalytics.measurement</source>

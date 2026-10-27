@@ -19,6 +19,30 @@
         <target>Counter number</target>
       </segment>
     </unit>
+    <unit id="yandexmetrika.guide.allow">
+      <segment>
+        <source>yandexmetrika.guide.allow</source>
+        <target>In the same account open https://oauth.yandex.ru/authorize?response_type=token&amp;client_id= with the ClientID at the end of the address and allow the access</target>
+      </segment>
+    </unit>
+    <unit id="yandexmetrika.guide.app">
+      <segment>
+        <source>yandexmetrika.guide.app</source>
+        <target>Signed in as the counter owner or a representative with edit rights, open https://oauth.yandex.ru/client/new, pick the app for API access or debugging, tick metrika:offline_data in data access, create the app and copy its ClientID</target>
+      </segment>
+    </unit>
+    <unit id="yandexmetrika.guide.counter">
+      <segment>
+        <source>yandexmetrika.guide.counter</source>
+        <target>Open the counter list https://metrika.yandex.ru/list and copy the counter number of the site into "Counter number"</target>
+      </segment>
+    </unit>
+    <unit id="yandexmetrika.guide.token">
+      <segment>
+        <source>yandexmetrika.guide.token</source>
+        <target>Copy the token from the page into "Token" through "Change" of the credentials</target>
+      </segment>
+    </unit>
     <unit id="yandexmetrika.name">
       <segment>
         <source>yandexmetrika.name</source>
