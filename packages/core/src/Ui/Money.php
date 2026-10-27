@@ -12,6 +12,8 @@ final class Money
     public const SCALE = 2;
     public const CURRENCY = 'RUB';
 
+    private const DECIMAL = '/^[+-]?(\d+\.?\d*|\.\d+)$/';
+
     public static function add(string $left, string $right): string
     {
         return bcadd(self::numeric($left), self::numeric($right), self::SCALE);
@@ -86,7 +88,7 @@ final class Money
     {
         $value = str_replace([' ', "\u{a0}", ','], ['', '', '.'], trim((string) $value));
 
-        return is_numeric($value) ? self::normalize($value) : null;
+        return 1 === preg_match(self::DECIMAL, $value) ? self::normalize($value) : null;
     }
 
     #[AsTwigFilter('plain')]
