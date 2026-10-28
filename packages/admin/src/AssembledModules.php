@@ -49,7 +49,7 @@ final readonly class AssembledModules
         foreach ($this->guides as $guided) {
             $owner = null;
             foreach ($namespaces as $bundle => $namespace) {
-                if (str_starts_with($guided::class, $namespace.'\\') && \strlen($namespace) > \strlen($namespaces[$owner] ?? '')) {
+                if (str_starts_with($guided::class, $namespace.'\\') && (null === $owner || \strlen($namespace) > \strlen($namespaces[$owner]))) {
                     $owner = $bundle;
                 }
             }
