@@ -6,6 +6,6 @@ namespace AdzerCMS\Contracts\Showcase;
 
 interface Showcase
 {
-    /** @return array<string, mixed> */
+    /** @return array<mixed> */
     public function section(): array;
 }
