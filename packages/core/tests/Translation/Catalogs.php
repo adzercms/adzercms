@@ -83,8 +83,8 @@ final readonly class Catalogs
                 }
             }
         }
-        $settings = $services instanceof ContainerInterface ? $services->get(Catalog::class) : null;
-        $fields = $services instanceof ContainerInterface ? self::fields($services, $package, $manifest) : [];
+        $settings = $services->get(Catalog::class);
+        $fields = self::fields($services, $package, $manifest);
         foreach ($settings instanceof Catalog ? $settings->groups() : [] as $group) {
             $label = $group['label'];
             if ($label instanceof TranslatableMessage && array_any($group['fields'], static fn (Field $field): bool => isset($fields[$field->name])) && !$defined->defines($label->getMessage(), $label->getDomain() ?? self::DOMAIN)) {
