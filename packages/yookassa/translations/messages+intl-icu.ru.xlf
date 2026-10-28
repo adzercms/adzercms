@@ -7,18 +7,6 @@
         <target>Предмет расчёта закрывающего чека</target>
       </segment>
     </unit>
-    <unit id="yookassa.fee_page">
-      <segment>
-        <source>yookassa.fee_page</source>
-        <target>Комиссия оплаты картой, %</target>
-      </segment>
-    </unit>
-    <unit id="yookassa.fee_sbp">
-      <segment>
-        <source>yookassa.fee_sbp</source>
-        <target>Комиссия оплаты по СБП, %</target>
-      </segment>
-    </unit>
     <unit id="yookassa.guide.key">
       <segment>
         <source>yookassa.guide.key</source>

@@ -14,7 +14,6 @@ use AdzerCMS\Payments\Acquiring\PaymentCallback;
 use AdzerCMS\Payments\Acquiring\PaymentFailed;
 use AdzerCMS\Payments\Acquiring\PaymentOffer;
 use AdzerCMS\Payments\Entity\Payment;
-use AdzerCMS\Payments\PaymentStatus;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -128,7 +127,7 @@ final readonly class BankTransferService implements AcquiringService
         return new Response();
     }
 
-    public function charge(Payment $payment, string $token, Addresses $addresses): PaymentStatus
+    public function charge(Payment $payment, string $token, Addresses $addresses): PaymentCallback
     {
         throw new PaymentFailed('a transfer saves no card');
     }

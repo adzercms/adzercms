@@ -15,6 +15,7 @@ final readonly class PaymentCallback
         public ?string $amount = null,
         public ?BoundCard $card = null,
         public ?string $cardPrint = null,
+        public ?string $fee = null,
     ) {
     }
 }

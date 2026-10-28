@@ -211,13 +211,17 @@ final readonly class TBankService implements AcquiringService, Guided
         return new Response('OK');
     }
 
-    public function charge(Payment $payment, string $token, Addresses $addresses): PaymentStatus
+    public function charge(Payment $payment, string $token, Addresses $addresses): PaymentCallback
     {
         $rebill = $this->rebill((string) $payment->getPayer(), $token) ?? throw new PaymentFailed('the saved card is not found');
         $this->init($payment, $addresses);
+        $answer = $this->call('Charge', ['PaymentId' => $payment->getOperationId(), 'RebillId' => $rebill]);
 
-        return self::status((string) ($this->call('Charge', ['PaymentId' => $payment->getOperationId(), 'RebillId' => $rebill])['Status'] ?? ''))
-            ?? PaymentStatus::Rejected;
+        return new PaymentCallback(
+            $payment->getNumber(),
+            self::status((string) ($answer['Status'] ?? '')) ?? PaymentStatus::Rejected,
+            $payment->getOperationId(),
+        );
     }
 
     public function forget(string $payer, string $token): void

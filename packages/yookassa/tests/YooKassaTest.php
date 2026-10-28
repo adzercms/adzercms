@@ -168,10 +168,12 @@ final class YooKassaTest extends SchemaTestCase
     #[Group('ACMS-PAY-0017')]
     #[Group('ACMS-PAY-0038')]
     #[Group('ACMS-PAY-0041')]
+    #[Group('ACMS-PAY-0047')]
     public function testCallbackTakesStateFromTheProviderItself(): void
     {
         $payment = $this->registered('500.00', 'op-5');
         $this->answers = [['id' => 'op-5', 'status' => 'succeeded', 'amount' => ['value' => '500.00', 'currency' => 'RUB'],
+            'income_amount' => ['value' => '489.00', 'currency' => 'RUB'],
             'metadata' => ['number' => $payment->getNumber()], 'payment_method' => self::method('pm-5', false, 'RU')]];
 
         $this->notify('op-5', self::SENDER);
@@ -181,6 +183,7 @@ final class YooKassaTest extends SchemaTestCase
         self::assertSame(['GET', 'https://api.yookassa.ru/v3/payments/op-5'], [$this->sent[0]['method'], $this->sent[0]['url']], 'the state is read again at the provider');
         $payment = $this->reread($payment);
         self::assertSame(PaymentStatus::Confirmed, $payment->getStatus());
+        self::assertSame('11.00', $payment->getFee(), 'the fee is the amount past the income of the shop');
         self::assertCount(1, $this->confirming);
         self::assertNull($this->confirming[0]->card, 'the card of a plain payment is not saved');
         self::assertSame(hash('sha256', '2202204242122027'), $this->confirming[0]->cardPrint, 'the card of the payment gives the print');
@@ -206,13 +209,14 @@ final class YooKassaTest extends SchemaTestCase
     #[Group('ACMS-PAY-0039')]
     public function testSavedMethodChargesWithoutThePayerAndForgetsWithoutTheProvider(): void
     {
-        $this->answers = [['id' => 'op-6', 'status' => 'succeeded']];
+        $this->answers = [['id' => 'op-6', 'status' => 'succeeded', 'amount' => ['value' => '300.00'], 'income_amount' => ['value' => '287.10']]];
         $service = self::service(PaymentService::class);
 
         $payment = $service->charge([['name' => 'Hosting', 'quantity' => 1, 'price' => '300.00']], 'Hosting', null, self::EMAIL, 'payer-1', 'pm-1');
 
         self::assertInstanceOf(Payment::class, $payment);
         self::assertSame(PaymentStatus::Confirmed, $payment->getStatus());
+        self::assertSame('12.90', $payment->getFee(), 'the charge gives the fee as the callback does');
         self::assertSame('pm-1', $this->sent[0]['body']['payment_method_id']);
         self::assertCount(1, $this->confirming);
 

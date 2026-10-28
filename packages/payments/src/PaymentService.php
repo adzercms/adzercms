@@ -163,12 +163,12 @@ final class PaymentService
         $this->em->flush();
 
         try {
-            $status = $this->module()->charge($payment, $token, $this->addresses($payment));
+            $outcome = $this->module()->charge($payment, $token, $this->addresses($payment));
         } catch (PaymentFailed) {
-            $status = PaymentStatus::Rejected;
+            $outcome = null;
         }
 
-        if (PaymentStatus::Confirmed !== $status) {
+        if (PaymentStatus::Confirmed !== $outcome?->status) {
             $payment->setStatus(PaymentStatus::Rejected);
             $this->em->flush();
 
@@ -176,7 +176,7 @@ final class PaymentService
         }
 
         $this->em->flush();
-        $this->settle($payment, new PaymentCallback($payment->getNumber(), $status, $payment->getOperationId()));
+        $this->settle($payment, $outcome);
 
         return $payment;
     }
@@ -314,7 +314,11 @@ final class PaymentService
                 return null;
             }
 
-            $locked->confirm(null !== $callback->amount ? Money::normalize($callback->amount) : $locked->getAmount(), $callback->operationId);
+            $locked->confirm(
+                null !== $callback->amount ? Money::normalize($callback->amount) : $locked->getAmount(),
+                $callback->operationId,
+                null !== $callback->fee ? Money::normalize($callback->fee) : null,
+            );
             $this->events->dispatch(new PaymentConfirming($locked, $locked->remembers() ? $callback->card : null, $callback->cardPrint));
             $this->em->flush();
 

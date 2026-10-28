@@ -6,7 +6,6 @@ namespace AdzerCMS\Payments\Acquiring;
 
 use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Payments\Entity\Payment;
-use AdzerCMS\Payments\PaymentStatus;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,7 +48,7 @@ interface AcquiringService extends Owner
     public function acknowledgement(): Response;
 
     /** @throws PaymentFailed */
-    public function charge(Payment $payment, string $token, Addresses $addresses): PaymentStatus;
+    public function charge(Payment $payment, string $token, Addresses $addresses): PaymentCallback;
 
     /** @throws PaymentFailed */
     public function forget(string $payer, string $token): void;

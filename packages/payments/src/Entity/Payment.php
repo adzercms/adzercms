@@ -62,6 +62,9 @@ class Payment
     #[ORM\Column(length: 64, nullable: true, unique: true)]
     private ?string $operationId = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2, nullable: true)]
+    private ?string $fee = null;
+
     #[ORM\Column(length: 2048, nullable: true)]
     private ?string $payUrl = null;
 
@@ -244,11 +247,17 @@ class Payment
         return $this->confirmedAt;
     }
 
-    public function confirm(string $amount, ?string $operationId): self
+    public function getFee(): ?string
+    {
+        return $this->fee;
+    }
+
+    public function confirm(string $amount, ?string $operationId, ?string $fee = null): self
     {
         $this->status = PaymentStatus::Confirmed;
         $this->amount = $amount;
         $this->operationId = $operationId ?? $this->operationId;
+        $this->fee = $fee;
         $this->confirmedAt = now();
 
         return $this;

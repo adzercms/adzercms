@@ -40,8 +40,6 @@ final readonly class YooKassaService implements AcquiringService, Guided
     public const PAYMENT_MODE = 'payment.yookassa.payment_mode';
     public const PAYMENT_SUBJECT = 'payment.yookassa.payment_subject';
     public const CLOSING_SUBJECT = 'payment.yookassa.closing_subject';
-    public const FEE_SBP = 'payment.yookassa.fee_sbp';
-    public const FEE_PAGE = 'payment.yookassa.fee_page';
 
     public const METHOD_SBP = 'sbp';
     public const METHOD_PAGE = 'page';
@@ -80,8 +78,6 @@ final readonly class YooKassaService implements AcquiringService, Guided
             new Field(self::PAYMENT_MODE, t('yookassa.payment_mode'), Type::Choice, choices: self::choices('yookassa.payment_mode', self::MODES)),
             new Field(self::PAYMENT_SUBJECT, t('yookassa.payment_subject'), Type::Choice, choices: self::choices('yookassa.payment_subject', self::SUBJECTS)),
             new Field(self::CLOSING_SUBJECT, t('yookassa.closing_subject'), Type::Choice, choices: self::choices('yookassa.payment_subject', self::SUBJECTS)),
-            new Field(self::FEE_SBP, t('yookassa.fee_sbp'), Type::Decimal),
-            new Field(self::FEE_PAGE, t('yookassa.fee_page'), Type::Decimal),
         ];
     }
 
@@ -122,7 +118,7 @@ final readonly class YooKassaService implements AcquiringService, Guided
 
     public function fees(): array
     {
-        return [self::METHOD_SBP => $this->settings->get(self::FEE_SBP), self::METHOD_PAGE => $this->settings->get(self::FEE_PAGE)];
+        return [];
     }
 
     public function saves(): bool
@@ -208,11 +204,9 @@ final readonly class YooKassaService implements AcquiringService, Guided
         return new Response('', Response::HTTP_OK);
     }
 
-    public function charge(Payment $payment, string $token, Addresses $addresses): PaymentStatus
+    public function charge(Payment $payment, string $token, Addresses $addresses): PaymentCallback
     {
-        $answer = $this->register($payment, 'payments', ['payment_method_id' => $token] + $this->order($payment, $addresses));
-
-        return self::status($answer) ?? PaymentStatus::Rejected;
+        return self::paid($payment->getNumber(), $this->register($payment, 'payments', ['payment_method_id' => $token] + $this->order($payment, $addresses)));
     }
 
     public function forget(string $payer, string $token): void
@@ -241,17 +235,27 @@ final readonly class YooKassaService implements AcquiringService, Guided
     private static function paid(?string $number, array $answer): PaymentCallback
     {
         $named = \is_array($answer['metadata'] ?? null) ? ($answer['metadata']['number'] ?? null) : null;
-        $amount = \is_array($answer['amount'] ?? null) ? ($answer['amount']['value'] ?? null) : null;
+        $amount = self::value($answer, 'amount');
+        $income = self::value($answer, 'income_amount');
         $method = \is_array($answer['payment_method'] ?? null) ? $answer['payment_method'] : [];
 
         return new PaymentCallback(
             $number ?? (\is_string($named) ? $named : ''),
             self::status($answer) ?? PaymentStatus::Pending,
             \is_string($answer['id'] ?? null) ? $answer['id'] : null,
-            \is_string($amount) ? Money::normalize($amount) : null,
+            $amount,
             true === ($method['saved'] ?? null) ? self::card($method) : null,
             self::print($method),
+            null !== $amount && null !== $income ? Money::sub($amount, $income) : null,
         );
+    }
+
+    /** @param array<mixed> $answer */
+    private static function value(array $answer, string $field): ?string
+    {
+        $value = \is_array($answer[$field] ?? null) ? ($answer[$field]['value'] ?? null) : null;
+
+        return \is_string($value) ? Money::normalize($value) : null;
     }
 
     /** @param array<mixed> $answer */

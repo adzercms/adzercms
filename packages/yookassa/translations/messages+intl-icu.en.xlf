@@ -7,18 +7,6 @@
         <target>Payment subject of the closing receipt</target>
       </segment>
     </unit>
-    <unit id="yookassa.fee_page">
-      <segment>
-        <source>yookassa.fee_page</source>
-        <target>Card payment fee, %</target>
-      </segment>
-    </unit>
-    <unit id="yookassa.fee_sbp">
-      <segment>
-        <source>yookassa.fee_sbp</source>
-        <target>SBP payment fee, %</target>
-      </segment>
-    </unit>
     <unit id="yookassa.guide.key">
       <segment>
         <source>yookassa.guide.key</source>
