@@ -333,7 +333,9 @@ final readonly class YooKassaService implements AcquiringService, Guided
             throw new PaymentFailed('the receipt has neither phone nor email');
         }
 
-        return ['customer' => $customer, 'tax_system_code' => (int) $this->settings->get(self::TAXATION), 'items' => $items];
+        $taxation = $this->settings->get(self::TAXATION);
+
+        return ['customer' => $customer] + ('' === $taxation ? [] : ['tax_system_code' => (int) $taxation]) + ['items' => $items];
     }
 
     /**

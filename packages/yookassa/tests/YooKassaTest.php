@@ -17,6 +17,7 @@ use AdzerCMS\Payments\PaymentStatus;
 use AdzerCMS\Payments\Repository\PaymentRepository;
 use AdzerCMS\YooKassa\YooKassaService;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpClient\Response\JsonMockResponse;
 use Symfony\Contracts\Translation\LocaleAwareInterface;
@@ -71,8 +72,13 @@ final class YooKassaTest extends SchemaTestCase
     #[Group('ACMS-PAY-0035')]
     #[Group('ACMS-PAY-0036')]
     #[Group('ACMS-CORE-1004')]
-    public function testPageOrderGoesToProviderWithReceiptAndIdempotence(): void
+    #[TestWith([true])]
+    #[TestWith([false])]
+    public function testPageOrderGoesToProviderWithReceiptAndIdempotence(bool $taxed): void
     {
+        if (!$taxed) {
+            $this->unconfigure(YooKassaService::TAXATION);
+        }
         $this->answers = [['id' => 'op-1', 'status' => 'pending', 'confirmation' => ['type' => 'redirect', 'confirmation_url' => 'https://yoomoney.ru/checkout/op-1']]];
         $payment = $this->order('500.00');
 
@@ -86,9 +92,7 @@ final class YooKassaTest extends SchemaTestCase
         self::assertTrue($sent['body']['capture']);
         self::assertSame(['number' => $payment->getNumber()], $sent['body']['metadata']);
         self::assertArrayNotHasKey('save_payment_method', $sent['body']);
-        self::assertSame([
-            'customer' => ['email' => self::EMAIL, 'phone' => '79990000000'],
-            'tax_system_code' => 2,
+        self::assertSame(['customer' => ['email' => self::EMAIL, 'phone' => '79990000000']] + ($taxed ? ['tax_system_code' => 2] : []) + [
             'items' => [[
                 'description' => 'Hosting',
                 'quantity' => '2.00',
