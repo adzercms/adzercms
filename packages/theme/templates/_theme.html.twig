@@ -1,6 +1,6 @@
 {% set switch = cabinet('theme') %}
 {% if switch %}
-{% set other = brand.theme(app.user.theme).other %}
+{% set other = brand.theme.other %}
 <form class="theme-switch" method="post" action="{{ switch }}">
     {{ csrf_field() }}{{ back_field() }}
     <input type="hidden" name="theme" value="{{ other.value }}">

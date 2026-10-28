@@ -557,13 +557,20 @@ final class AdminWebTest extends SchemaTestCase
         $header = $this->client->request('GET', '/admin');
         self::assertSame('Village network', trim($header->filter('.header-logo span')->text()), 'without a logo the title carries the brand');
         self::assertStringEndsWith('/setting/'.Brand::ICON, (string) $header->filter('link[rel="icon"]')->attr('href'));
-        self::assertStringEndsWith('/setting/'.Brand::ICON, (string) $this->client->request('GET', '/admin/settings?tab='.$tab)->filter('img.brand-preview')->attr('src'));
+        self::assertStringEndsWith('/setting/'.Brand::ICON, (string) $this->client->request('GET', '/admin/settings?tab='.$tab)->filter('.brand-preview img')->attr('src'));
 
         $this->post('/admin/settings', ['tab' => $tab], ['file' => [Brand::LOGO => $this->picture('logo.png')]]);
         $logo = $this->client->request('GET', '/admin')->filter('.header-logo');
         self::assertCount(0, $logo->filter('span'), 'the logo stands in place of the title');
         self::assertSame('Village network', $logo->filter('img')->attr('alt'));
         self::assertStringEndsWith('/setting/'.Brand::LOGO, (string) $logo->filter('img')->attr('src'));
+
+        $this->configure([Brand::THEME => Theme::Dark->value]);
+        self::assertStringEndsWith('/setting/'.Brand::LOGO, (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'without a dark theme logo the dark theme keeps the logo');
+        $this->post('/admin/settings', ['tab' => $tab], ['file' => [Brand::LOGO_DARK => $this->picture('logo-dark.png')]]);
+        self::assertStringEndsWith('/setting/'.Brand::LOGO_DARK, (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'));
+        $this->configure([Brand::THEME => Theme::Light->value]);
+        self::assertStringEndsWith('/setting/'.Brand::LOGO, (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'the light theme keeps the logo');
 
         $this->post('/admin/settings', ['tab' => $tab, 'drop' => [Brand::ICON => '1']]);
         self::assertSame('', self::service(Settings::class)->get(Brand::ICON));

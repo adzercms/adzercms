@@ -11,6 +11,8 @@ use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Contracts\Ui\Palette;
 use AdzerCMS\Contracts\Ui\Scheme;
 use AdzerCMS\Core\Account\Theme;
+use AdzerCMS\Core\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -21,6 +23,7 @@ final class Brand implements Owner
 {
     public const TITLE = 'brand.title';
     public const LOGO = 'brand.logo';
+    public const LOGO_DARK = 'brand.logo_dark';
     public const ICON = 'brand.icon';
     public const THEME = 'brand.theme';
     public const LAYOUT = 'brand.layout';
@@ -33,6 +36,7 @@ final class Brand implements Owner
         private readonly Settings $settings,
         private readonly Images $images,
         private readonly UrlGeneratorInterface $urls,
+        private readonly Security $security,
         #[AutowireIterator(Palette::class)]
         iterable $palettes,
     ) {
@@ -44,6 +48,7 @@ final class Brand implements Owner
         return [
             new Field(self::TITLE, t('core.setting.title'), tab: Tab::Brand),
             self::logoField(),
+            self::darkLogoField(),
             self::iconField(),
             new Field(self::THEME, t('core.setting.theme'), Type::Choice, choices: self::themes(), tab: Tab::Brand),
             new Field(self::LAYOUT, t('core.setting.layout'), Type::Choice, choices: self::choices(Layout::cases()), tab: Tab::Brand),
@@ -62,9 +67,9 @@ final class Brand implements Owner
         return $this->settings->get(self::TITLE);
     }
 
-    public function logo(): ?string
+    public function logo(?Theme $theme = null): ?string
     {
-        return $this->image(self::logoField());
+        return (Theme::Dark === $theme ? $this->image(self::darkLogoField()) : null) ?? $this->image(self::logoField());
     }
 
     public function icon(): ?string
@@ -72,9 +77,11 @@ final class Brand implements Owner
         return $this->image(self::iconField());
     }
 
-    public function theme(?Theme $chosen = null): Theme
+    public function theme(): Theme
     {
-        return $chosen ?? Theme::tryFrom($this->settings->get(self::THEME)) ?? Theme::Light;
+        $user = $this->security->getUser();
+
+        return ($user instanceof User ? $user->getTheme() : null) ?? Theme::tryFrom($this->settings->get(self::THEME)) ?? Theme::Light;
     }
 
     public function layout(): Layout
@@ -112,6 +119,11 @@ final class Brand implements Owner
     private static function logoField(): Field
     {
         return new Field(self::LOGO, t('core.setting.logo'), Type::Image, tab: Tab::Brand);
+    }
+
+    private static function darkLogoField(): Field
+    {
+        return new Field(self::LOGO_DARK, t('core.setting.logo_dark'), Type::Image, tab: Tab::Brand);
     }
 
     private static function iconField(): Field

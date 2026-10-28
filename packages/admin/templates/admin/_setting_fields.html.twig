@@ -45,7 +45,10 @@
                         {% endif %}
 
                         {% if field.type == constant(type ~ 'Image') and stored %}
-                            <img class="brand-preview" src="{{ path('setting_image', {name: field.name}) }}" alt="{{ values[field.name] }}">
+                            <span class="brand-preview">
+                                <img src="{{ path('setting_image', {name: field.name}) }}" alt="{{ values[field.name] }}">
+                                <img src="{{ path('setting_image', {name: field.name}) }}" alt="">
+                            </span>
                         {% endif %}
 
                         {% if stored %}

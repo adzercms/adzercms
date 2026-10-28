@@ -128,7 +128,7 @@
         <div class="section-head">
             <h3>{{ 'cabinet.theme.title'|trans }}</h3>
         </div>
-        {% include '@Theme/_picker.html.twig' with {action: path('cabinet_profile_theme'), name: 'theme', choices: brand.themes, current: brand.theme(user.theme).value} %}
+        {% include '@Theme/_picker.html.twig' with {action: path('cabinet_profile_theme'), name: 'theme', choices: brand.themes, current: brand.theme.value} %}
     </div>
 
     <div class="section">

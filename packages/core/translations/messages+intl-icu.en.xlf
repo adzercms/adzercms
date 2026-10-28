@@ -1219,6 +1219,12 @@
         <target>Logo</target>
       </segment>
     </unit>
+    <unit id="core.setting.logo_dark">
+      <segment>
+        <source>core.setting.logo_dark</source>
+        <target>Dark theme logo</target>
+      </segment>
+    </unit>
     <unit id="core.setting.mail_host">
       <segment>
         <source>core.setting.mail_host</source>
