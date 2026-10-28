@@ -31,6 +31,12 @@
         <target>Заведён</target>
       </segment>
     </unit>
+    <unit id="bank_transfer.column.expires">
+      <segment>
+        <source>bank_transfer.column.expires</source>
+        <target>Срок оплаты</target>
+      </segment>
+    </unit>
     <unit id="bank_transfer.confirm.action">
       <segment>
         <source>bank_transfer.confirm.action</source>
@@ -71,6 +77,12 @@
       <segment>
         <source>bank_transfer.confirm.title</source>
         <target>Перевод {comment}</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.days">
+      <segment>
+        <source>bank_transfer.days</source>
+        <target>Срок оплаты, дней</target>
       </segment>
     </unit>
     <unit id="bank_transfer.empty">
@@ -143,6 +155,12 @@
       <segment>
         <source>bank_transfer.page.title</source>
         <target>Перевод {amount}</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.until">
+      <segment>
+        <source>bank_transfer.page.until</source>
+        <target>Оплатите до {at, date, ::yMMddjmm}</target>
       </segment>
     </unit>
     <unit id="bank_transfer.phone">

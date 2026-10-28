@@ -42,6 +42,7 @@ final readonly class TBankService implements AcquiringService, Guided
 
     private const TERMINAL = 'payment.tbank.terminal';
     private const FLOOR = '10.00';
+    private const LIFETIME = 'P1D';
     private const ORIGINS = [
         'https://pay.tbank.ru',
         'https://pay.tbank-online.com',
@@ -127,6 +128,11 @@ final readonly class TBankService implements AcquiringService, Guided
     public function binds(): bool
     {
         return false;
+    }
+
+    public function lifetime(): \DateInterval
+    {
+        return new \DateInterval(self::LIFETIME);
     }
 
     public function start(Payment $payment, Addresses $addresses): PaymentOffer

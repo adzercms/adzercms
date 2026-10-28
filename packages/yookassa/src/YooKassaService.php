@@ -48,6 +48,7 @@ final readonly class YooKassaService implements AcquiringService, Guided
 
     private const SHOP = 'payment.yookassa.shop';
     private const FLOOR = '1.00';
+    private const LIFETIME = 'P1D';
     private const TIMEOUT = 20.0;
     private const CARD = 'bank_card';
     private const METHOD_EVENT = 'payment_method.active';
@@ -132,6 +133,11 @@ final readonly class YooKassaService implements AcquiringService, Guided
     public function binds(): bool
     {
         return true;
+    }
+
+    public function lifetime(): \DateInterval
+    {
+        return new \DateInterval(self::LIFETIME);
     }
 
     public function start(Payment $payment, Addresses $addresses): PaymentOffer

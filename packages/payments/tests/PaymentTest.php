@@ -69,7 +69,7 @@ final class PaymentTest extends SchemaTestCase
 
     private function payment(): Payment
     {
-        $payment = new Payment([['name' => 'Hosting', 'quantity' => 1, 'price' => '100.00']], '100.00', 'page', 'Hosting', '79990000000', null, null, self::BACK);
+        $payment = new Payment([['name' => 'Hosting', 'quantity' => 1, 'price' => '100.00']], '100.00', 'page', 'Hosting', '79990000000', null, null, self::BACK, new \DateInterval('P1D'));
         $this->em->persist($payment);
         $this->em->flush();
 

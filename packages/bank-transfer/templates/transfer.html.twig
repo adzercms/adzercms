@@ -15,6 +15,7 @@
         {% endif %}
     {% endfor %}
     {% if phone and bank %}<p class="muted">{{ 'bank_transfer.page.bank'|trans({bank: bank}) }}</p>{% endif %}
+    <p class="muted">{{ 'bank_transfer.page.until'|trans({at: payment.expiresAt}) }}</p>
     <p class="muted">{{ 'bank_transfer.page.credit'|trans }}</p>
 
     <div class="pay-methods">

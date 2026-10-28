@@ -54,6 +54,11 @@ final class BankTransferTest extends SchemaTestCase
         self::assertFalse($service->saves());
         self::assertSame([], $service->origins());
 
+        $transfer = self::service(BankTransferService::class);
+        self::assertSame(BankTransferService::DEFAULT_DAYS, $transfer->lifetime()->d, 'the default payment term');
+        $this->configure([BankTransferService::DAYS => '0']);
+        self::assertSame(1, $transfer->lifetime()->d, 'a day at least');
+
         $this->unconfigure(BankTransferService::CARD);
         self::assertTrue($service->ready(), 'the phone alone is enough');
 
@@ -67,10 +72,12 @@ final class BankTransferTest extends SchemaTestCase
     #[Group('ACMS-PAY-0045')]
     public function testPageGivesDetailsToCopyWithPayerAsComment(): void
     {
-        $page = $this->client->request('GET', '/payment/'.$this->order('payer-7')->getNumber());
+        $payment = $this->order('payer-7');
+        $page = $this->client->request('GET', '/payment/'.$payment->getNumber());
 
         self::assertResponseIsSuccessful();
         self::assertStringContainsString(self::NOTE, $page->filter('.pay')->text(), 'the operator note');
+        self::assertStringContainsString(self::phrase('bank_transfer.page.until', ['at' => $payment->getExpiresAt()]), $page->filter('.pay')->text(), 'the payment term');
         self::assertSame(
             [self::CARD, self::PHONE, 'payer-7', '250'],
             array_map(static fn (string $key): ?string => $page->filter('#transfer-'.$key)->attr('value'), ['card', 'phone', 'comment', 'amount']),
@@ -99,7 +106,9 @@ final class BankTransferTest extends SchemaTestCase
         $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
         $this->em->flush();
 
-        self::assertSame(['payer-2'], self::comments($this->client->request('GET', '/admin/transfers')));
+        $list = $this->client->request('GET', '/admin/transfers');
+        self::assertSame(['payer-2'], self::comments($list));
+        self::assertSame(['/admin/transfers/'.$awaiting->getNumber()], $list->filter('.row-actions button')->each(static fn (Crawler $button): ?string => $button->attr('hx-get')), 'the row confirms by its button');
         self::assertSame(['payer-1'], self::comments($this->client->request('GET', '/admin/transfers?status=cancelled')));
 
         $this->post('/admin/transfers/'.$late->getNumber(), ['amount' => '0']);

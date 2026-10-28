@@ -26,7 +26,10 @@ final readonly class BankTransferService implements AcquiringService
     public const PHONE = 'payment.banktransfer.phone';
     public const BANK = 'payment.banktransfer.bank';
     public const NOTE = 'payment.banktransfer.note';
+    public const DAYS = 'payment.banktransfer.days';
     public const METHOD = 'transfer';
+
+    public const DEFAULT_DAYS = 2;
 
     private const PAGE = '@BankTransfer/transfer.html.twig';
 
@@ -46,6 +49,7 @@ final readonly class BankTransferService implements AcquiringService
             new Field(self::PHONE, t('bank_transfer.phone')),
             new Field(self::BANK, t('bank_transfer.bank')),
             new Field(self::NOTE, t('bank_transfer.note')),
+            new Field(self::DAYS, t('bank_transfer.days')),
         ];
     }
 
@@ -82,6 +86,11 @@ final readonly class BankTransferService implements AcquiringService
     public function binds(): bool
     {
         return false;
+    }
+
+    public function lifetime(): \DateInterval
+    {
+        return new \DateInterval(\sprintf('P%dD', max(1, $this->settings->int(self::DAYS, self::DEFAULT_DAYS))));
     }
 
     public function start(Payment $payment, Addresses $addresses): PaymentOffer

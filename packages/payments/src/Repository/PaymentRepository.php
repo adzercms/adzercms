@@ -43,14 +43,14 @@ class PaymentRepository extends ServiceEntityRepository
     }
 
     /** @return list<Payment> */
-    public function started(\DateTimeImmutable $after): array
+    public function started(\DateTimeImmutable $now): array
     {
         return $this->createQueryBuilder('p')
             ->where('p.status = :pending')
-            ->andWhere('p.createdAt >= :after')
+            ->andWhere('p.expiresAt > :now')
             ->andWhere('p.operationId IS NOT NULL')
             ->setParameter('pending', PaymentStatus::Pending->value)
-            ->setParameter('after', $after)
+            ->setParameter('now', $now)
             ->orderBy('p.createdAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
@@ -72,16 +72,16 @@ class PaymentRepository extends ServiceEntityRepository
         return (int) $this->ofMethod($method, $status)->select('COUNT(p.id)')->getQuery()->getSingleScalarResult();
     }
 
-    public function cancelStale(\DateTimeImmutable $before): int
+    public function cancelStale(\DateTimeImmutable $now): int
     {
         return (int) $this->createQueryBuilder('p')
             ->update()
             ->set('p.status', ':cancelled')
             ->where('p.status = :pending')
-            ->andWhere('p.createdAt < :before')
+            ->andWhere('p.expiresAt <= :now')
             ->setParameter('cancelled', PaymentStatus::Cancelled->value)
             ->setParameter('pending', PaymentStatus::Pending->value)
-            ->setParameter('before', $before)
+            ->setParameter('now', $now)
             ->getQuery()
             ->execute();
     }

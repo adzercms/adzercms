@@ -4,6 +4,8 @@
             <td class="{{ table.aside('comment') }}">{{ cell(comments[row.number]) }}</td>
             <td class="{{ table.aside('amount') }}">{{ row.amount|money }}</td>
             <td class="{{ table.aside('created') }}">{{ moment(row.createdAt) }}</td>
+            <td class="{{ table.aside('expires') }}">{{ moment(row.expiresAt) }}</td>
+            <td class="row-actions">{% include '@Theme/_actions.html.twig' with {actions: [{label: 'bank_transfer.confirm.action', route: 'admin_bank_transfer', params: {number: row.number}}]} only %}</td>
         </tr>
     {% endblock %}
 {% endembed %}

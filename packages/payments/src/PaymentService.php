@@ -30,8 +30,6 @@ use function Symfony\Component\Translation\t;
 /** @phpstan-import-type Item from Payment */
 final class PaymentService
 {
-    private const LIFETIME = '-1 day';
-
     private readonly ?AcquiringService $acquiring;
 
     /** @param iterable<AcquiringService> $modules */
@@ -96,7 +94,7 @@ final class PaymentService
             return $refusal;
         }
 
-        $payment = new Payment($items, $amount, $method, $description, ContactKind::Phone->normalize($phone), ContactKind::Email->normalize($email), $payer, $back);
+        $payment = new Payment($items, $amount, $method, $description, ContactKind::Phone->normalize($phone), ContactKind::Email->normalize($email), $payer, $back, $this->module()->lifetime());
         if ($remember && $this->saves()) {
             $payment->remember();
         }
@@ -132,7 +130,7 @@ final class PaymentService
             return new Refusal(t('payments.refusal.binding'));
         }
 
-        $binding = new Payment([], Money::normalize('0'), Payment::BINDING, '', ContactKind::Phone->normalize($phone), ContactKind::Email->normalize($email), $payer, $back);
+        $binding = new Payment([], Money::normalize('0'), Payment::BINDING, '', ContactKind::Phone->normalize($phone), ContactKind::Email->normalize($email), $payer, $back, $this->module()->lifetime());
         $binding->remember();
         $this->em->persist($binding);
         $this->em->flush();
@@ -160,7 +158,7 @@ final class PaymentService
             return $refusal;
         }
 
-        $payment = new Payment($items, $amount, Payment::SAVED, $description, ContactKind::Phone->normalize($phone), ContactKind::Email->normalize($email), $payer, '');
+        $payment = new Payment($items, $amount, Payment::SAVED, $description, ContactKind::Phone->normalize($phone), ContactKind::Email->normalize($email), $payer, '', $this->module()->lifetime());
         $this->em->persist($payment);
         $this->em->flush();
 
@@ -277,7 +275,7 @@ final class PaymentService
 
     public function cancelStale(): int
     {
-        return $this->payments->cancelStale(now(self::LIFETIME));
+        return $this->payments->cancelStale(now());
     }
 
     /** @return array{settled: list<string>, failures: list<string>} */
@@ -286,7 +284,7 @@ final class PaymentService
         $settled = [];
         $failures = [];
 
-        foreach ($this->payments->started(now(self::LIFETIME)) as $payment) {
+        foreach ($this->payments->started(now()) as $payment) {
             try {
                 $this->refresh($payment);
             } catch (PaymentFailed $failure) {

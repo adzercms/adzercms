@@ -31,6 +31,12 @@
         <target>Created</target>
       </segment>
     </unit>
+    <unit id="bank_transfer.column.expires">
+      <segment>
+        <source>bank_transfer.column.expires</source>
+        <target>Payment term</target>
+      </segment>
+    </unit>
     <unit id="bank_transfer.confirm.action">
       <segment>
         <source>bank_transfer.confirm.action</source>
@@ -71,6 +77,12 @@
       <segment>
         <source>bank_transfer.confirm.title</source>
         <target>Transfer {comment}</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.days">
+      <segment>
+        <source>bank_transfer.days</source>
+        <target>Payment term, days</target>
       </segment>
     </unit>
     <unit id="bank_transfer.empty">
@@ -143,6 +155,12 @@
       <segment>
         <source>bank_transfer.page.title</source>
         <target>Transfer of {amount}</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.until">
+      <segment>
+        <source>bank_transfer.page.until</source>
+        <target>Pay by {at, date, ::yMMddjmm}</target>
       </segment>
     </unit>
     <unit id="bank_transfer.phone">

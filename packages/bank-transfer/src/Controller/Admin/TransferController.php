@@ -49,6 +49,8 @@ final class TransferController extends AbstractController
             Column::plain('comment', t('bank_transfer.column.comment')),
             Column::of('amount', t('bank_transfer.column.amount'), 'p.amount'),
             Column::of('created', t('bank_transfer.column.created'), 'p.createdAt'),
+            Column::of('expires', t('bank_transfer.column.expires'), 'p.expiresAt'),
+            Column::plain('actions'),
         ], 'created', t('bank_transfer.empty'), false, filters: [
             Filter::tabs(self::STATUS, $this->tab(PaymentStatus::Pending), [PaymentStatus::Cancelled->value => $this->tab(PaymentStatus::Cancelled)]),
             Filter::search(),

@@ -17,6 +17,7 @@ use function Symfony\Component\Clock\now;
 #[ORM\Table(name: 'payment')]
 #[ORM\Index(name: 'idx_payment_status_time', columns: ['status', 'created_at'])]
 #[ORM\Index(name: 'idx_payment_payer', columns: ['payer'])]
+#[ORM\Index(name: 'idx_payment_status_expiry', columns: ['status', 'expires_at'])]
 class Payment
 {
     public const BINDING = 'binding';
@@ -76,6 +77,9 @@ class Payment
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
 
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private \DateTimeImmutable $expiresAt;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $confirmedAt = null;
 
@@ -89,6 +93,7 @@ class Payment
         ?string $email,
         ?string $payer,
         string $back,
+        \DateInterval $lifetime,
     ) {
         $this->number = bin2hex(random_bytes(16));
         $this->items = $items;
@@ -100,6 +105,7 @@ class Payment
         $this->payer = $payer;
         $this->back = $back;
         $this->createdAt = now();
+        $this->expiresAt = $this->createdAt->add($lifetime);
     }
 
     public function getId(): ?int
@@ -226,6 +232,11 @@ class Payment
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function getExpiresAt(): \DateTimeImmutable
+    {
+        return $this->expiresAt;
     }
 
     public function getConfirmedAt(): ?\DateTimeImmutable

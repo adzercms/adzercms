@@ -61,13 +61,11 @@ final class Menus implements ResetInterface
         }
         usort($items, static fn (MenuItem $left, MenuItem $right): int => $left->weight <=> $right->weight);
 
+        $current = self::current($items, $route);
         $labels = [];
         $entries = [];
         foreach ($items as $item) {
-            $entry = ['item' => $item, 'active' => $route === $item->route || [] !== array_filter(
-                $item->routes,
-                static fn (string $prefix): bool => str_starts_with($route, $prefix),
-            )];
+            $entry = ['item' => $item, 'active' => $item === $current];
             $index = array_search($item->group, $labels, false);
             if (false === $index) {
                 $labels[] = $item->group;
@@ -78,5 +76,24 @@ final class Menus implements ResetInterface
         }
 
         return array_map(static fn (?TranslatableInterface $group, array $items): array => ['group' => $group, 'items' => $items], $labels, $entries);
+    }
+
+    /** @param list<MenuItem> $items */
+    private static function current(array $items, string $route): ?MenuItem
+    {
+        $current = null;
+        $longest = 0;
+        foreach ($items as $item) {
+            if ($route === $item->route) {
+                return $item;
+            }
+            foreach ($item->routes as $prefix) {
+                if (\strlen($prefix) > $longest && str_starts_with($route, $prefix)) {
+                    [$current, $longest] = [$item, \strlen($prefix)];
+                }
+            }
+        }
+
+        return $current;
     }
 }
