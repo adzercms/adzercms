@@ -10,7 +10,9 @@ use AdzerCMS\Core\Entity\Setting;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Notice\QuietHours;
 use AdzerCMS\Core\Setting\Catalog;
+use AdzerCMS\Core\Setting\Keychain;
 use AdzerCMS\Core\Setting\Settings;
+use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelayGateway;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -23,6 +25,7 @@ use function Symfony\Component\Translation\t;
 
 final class SettingCommandTest extends SchemaTestCase
 {
+    use Browser;
     use Configuration;
 
     #[Group('ACMS-CORE-0056')]
@@ -79,6 +82,32 @@ final class SettingCommandTest extends SchemaTestCase
         $listing->execute([]);
         self::assertMatchesRegularExpression('~shop\.token\s+Till token\s+set~', $listing->getDisplay());
         self::assertStringNotContainsString('till-token', $listing->getDisplay().$piped->getDisplay());
+    }
+
+    #[Group('ACMS-CORE-0062')]
+    public function testContainerComesByPathWithPasswordFromStdin(): void
+    {
+        $path = $this->scratchFile('till.p12', $this->container())->getPathname();
+        $field = self::service(Catalog::class)->fields()[Shop::CERTIFICATE];
+        $keychain = self::service(Keychain::class);
+
+        $argued = self::command('adzercms:setting');
+        self::assertSame(Command::INVALID, $argued->execute(['name' => Shop::CERTIFICATE, 'value' => $path]), 'a container without a piped password is refused');
+
+        $wrong = self::command('adzercms:setting');
+        $wrong->setInputs(['other-password']);
+        self::assertSame(Command::INVALID, $wrong->execute(['name' => Shop::CERTIFICATE, 'value' => $path, '--stdin' => true]));
+        self::assertNull($keychain->client($field));
+
+        $piped = self::command('adzercms:setting');
+        $piped->setInputs([self::CONTAINER_PASSWORD]);
+        self::assertSame(Command::SUCCESS, $piped->execute(['name' => Shop::CERTIFICATE, 'value' => $path, '--stdin' => true]));
+        self::assertSame('till.p12', self::service(Settings::class)->get(Shop::CERTIFICATE));
+        self::assertNotNull($keychain->client($field));
+        self::assertStringNotContainsString(self::CONTAINER_PASSWORD, $piped->getDisplay());
+
+        self::assertSame(Command::SUCCESS, self::command('adzercms:setting')->execute(['name' => Shop::CERTIFICATE, 'value' => '']));
+        self::assertNull($keychain->client($field), 'an empty value removes the files');
     }
 
     #[Group('ACMS-CORE-1015')]

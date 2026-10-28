@@ -9,6 +9,7 @@ use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Setting\Catalog;
 use AdzerCMS\Core\Setting\Images;
+use AdzerCMS\Core\Setting\Keychain;
 use AdzerCMS\Core\Setting\Settings;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\Argument;
@@ -29,6 +30,7 @@ final class SettingCommand
         private readonly Catalog $catalog,
         private readonly Settings $settings,
         private readonly Images $images,
+        private readonly Keychain $keychain,
         private readonly EntityManagerInterface $em,
         private readonly TranslatorInterface $translator,
     ) {
@@ -38,8 +40,8 @@ final class SettingCommand
         InputInterface $input,
         SymfonyStyle $io,
         #[Argument('Setting key; lists all settings without it')] ?string $name = null,
-        #[Argument('Value, a file path for an image; an empty value removes the setting')] ?string $value = null,
-        #[Option('Read the value from stdin, the only way for a secret')] bool $stdin = false,
+        #[Argument('Value, a file path for an image or a PKCS#12 container; an empty value removes the setting')] ?string $value = null,
+        #[Option('Read the value from stdin, the only way for a secret; a container takes its password from stdin')] bool $stdin = false,
         #[Option('Print all stored rows as JSON, secrets encrypted by the instance key')] bool $export = false,
         #[Option('Write stored rows as JSON from stdin over the present ones')] bool $import = false,
     ): int {
@@ -68,8 +70,14 @@ final class SettingCommand
             return $this->refuse($io, \sprintf('secret "%s" is accepted only from stdin: --stdin', $name));
         }
 
-        if ($stdin) {
-            $value = rtrim(Body::of($input), "\r\n");
+        $container = Type::Container === $field->type;
+        if ($container && '' !== (string) $value && !$stdin) {
+            return $this->refuse($io, \sprintf('container "%s" password is accepted only from stdin: --stdin', $name));
+        }
+
+        $piped = $stdin ? rtrim(Body::of($input), "\r\n") : '';
+        if ($stdin && !$container) {
+            $value = $piped;
         }
 
         if (null === $value) {
@@ -78,7 +86,7 @@ final class SettingCommand
             return Command::SUCCESS;
         }
 
-        $refusal = $this->write($field, $value);
+        $refusal = $this->write($field, $value, $piped);
         if (null !== $refusal) {
             return $this->refuse($io, $refusal->reason->trans($this->translator));
         }
@@ -125,9 +133,9 @@ final class SettingCommand
         return Command::INVALID;
     }
 
-    private function write(Field $field, string $value): ?Refusal
+    private function write(Field $field, string $value, string $password): ?Refusal
     {
-        if (Type::Image !== $field->type) {
+        if (Type::Image !== $field->type && Type::Container !== $field->type) {
             $refusal = $this->settings->save($field, $value);
             $this->em->flush();
 
@@ -135,12 +143,16 @@ final class SettingCommand
         }
 
         if ('' === $value) {
-            $this->images->clear($field);
+            Type::Image === $field->type ? $this->images->clear($field) : $this->keychain->clear($field);
 
             return null;
         }
 
-        return is_file($value) ? $this->images->store($field, new File($value)) : new Refusal(t('core.setting.no_file', ['path' => $value]));
+        if (!is_file($value)) {
+            return new Refusal(t('core.setting.no_file', ['path' => $value]));
+        }
+
+        return Type::Image === $field->type ? $this->images->store($field, new File($value)) : $this->keychain->store($field, new File($value), $password);
     }
 
     private function shown(Field $field): string

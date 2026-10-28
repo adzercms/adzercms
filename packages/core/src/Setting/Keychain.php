@@ -9,6 +9,7 @@ use AdzerCMS\Contracts\Setting\Field;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 use function Symfony\Component\Translation\t;
@@ -35,7 +36,7 @@ final readonly class Keychain
         return '' !== $this->settings->get($field->name) && is_file($certificate) && is_file($key) ? ['local_cert' => $certificate, 'local_pk' => $key] : null;
     }
 
-    public function store(Field $field, UploadedFile $file, string $password): ?Refusal
+    public function store(Field $field, File $file, string $password): ?Refusal
     {
         $parts = [];
         if (!openssl_pkcs12_read((string) file_get_contents($file->getPathname()), $parts, $password)) {
@@ -48,7 +49,7 @@ final readonly class Keychain
             $filesystem->dumpFile($this->directory.'/'.$field->name.$suffix, $pem);
             $filesystem->chmod($this->directory.'/'.$field->name.$suffix, 0o600);
         }
-        $this->settings->save($field, $file->getClientOriginalName());
+        $this->settings->save($field, $file instanceof UploadedFile ? $file->getClientOriginalName() : $file->getFilename());
         $this->em->flush();
 
         return null;
