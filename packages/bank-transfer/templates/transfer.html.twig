@@ -1,0 +1,25 @@
+{% extends '@Theme/page.html.twig' %}
+
+{% block title %}{{ 'bank_transfer.page.title'|trans({amount: payment.amount|money}) }}{% endblock %}
+
+{% block page %}
+<div class="pay">
+    {% for key, value in {amount: payment.amount|plain, card: card, phone: phone, comment: comment} %}
+        {% if value %}
+            <div class="credential">
+                <span class="credential-label">{{ ('bank_transfer.page.' ~ key)|trans }}</span>
+                <span class="credential-row">
+                    <input type="text" id="transfer-{{ key }}" value="{{ value }}" readonly>
+                    {% include '@Theme/_copy.html.twig' with {target: '#transfer-' ~ key} only %}
+                </span>
+            </div>
+        {% endif %}
+    {% endfor %}
+    {% if phone and bank %}<p class="muted">{{ 'bank_transfer.page.bank'|trans({bank: bank}) }}</p>{% endif %}
+    <p class="muted">{{ 'bank_transfer.page.credit'|trans }}</p>
+
+    <div class="pay-methods">
+        <a class="button secondary" href="{{ payment.back }}">{{ 'bank_transfer.page.back'|trans }}</a>
+    </div>
+</div>
+{% endblock %}

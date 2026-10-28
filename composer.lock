@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b79cd67a37e7434344986e8cb4de06bf",
+    "content-hash": "6509224580092d3cb170fc1c356c3fbd",
     "packages": [
         {
             "name": "adzercms/admin",
@@ -65,6 +65,71 @@
                 "admin-panel",
                 "adzercms",
                 "backoffice",
+                "symfony"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "adzercms/bank-transfer",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/bank-transfer",
+                "reference": "5cd4cf71ad837b5ec944fe9d415c5d3612824bd4"
+            },
+            "require": {
+                "adzercms/contracts": "^1.0",
+                "adzercms/core": "^1.0",
+                "adzercms/payments": "^1.0",
+                "adzercms/theme-implementation": "^1.0",
+                "php": ">=8.4",
+                "symfony/dependency-injection": "7.4.*",
+                "symfony/framework-bundle": "7.4.*",
+                "symfony/http-foundation": "7.4.*",
+                "symfony/polyfill-php86": "^1.43",
+                "symfony/routing": "7.4.*",
+                "symfony/security-http": "7.4.*",
+                "symfony/translation": "7.4.*",
+                "symfony/translation-contracts": "^3.7"
+            },
+            "provide": {
+                "adzercms/payment-implementation": "self.version"
+            },
+            "require-dev": {
+                "adzercms/admin": "^1.0"
+            },
+            "type": "adzercms-module",
+            "extra": {
+                "adzercms": {
+                    "bundle": "AdzerCMS\\BankTransfer\\BankTransferBundle",
+                    "description": {
+                        "ru": "Оплата переводом на карту либо телефон получателя с подтверждением оператором"
+                    },
+                    "categories": [
+                        "payments"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AdzerCMS\\BankTransfer\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Payment by a transfer to the card or the phone of the recipient, confirmed by the operator",
+            "keywords": [
+                "adzercms",
+                "bank-transfer",
+                "payments",
+                "sbp",
                 "symfony"
             ],
             "transport-options": {
@@ -16604,6 +16669,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "adzercms/admin": 20,
+        "adzercms/bank-transfer": 20,
         "adzercms/cabinet": 20,
         "adzercms/centrifugo": 20,
         "adzercms/contracts": 20,

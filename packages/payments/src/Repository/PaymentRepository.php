@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Payments\Repository;
 
+use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Payments\Entity\Payment;
 use AdzerCMS\Payments\PaymentStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /** @extends ServiceEntityRepository<Payment> */
@@ -52,6 +54,22 @@ class PaymentRepository extends ServiceEntityRepository
             ->orderBy('p.createdAt', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
+    }
+
+    public function ofMethod(string $method, PaymentStatus $status, string $term = ''): QueryBuilder
+    {
+        $builder = $this->createQueryBuilder('p')
+            ->where('p.status = :status')
+            ->andWhere('p.method = :method')
+            ->setParameter('status', $status->value)
+            ->setParameter('method', $method);
+
+        return '' === $term ? $builder : $builder->andWhere(Filter::matching($builder, $term, ['p.payer', 'p.description']));
+    }
+
+    public function countOfMethod(string $method, PaymentStatus $status): int
+    {
+        return (int) $this->ofMethod($method, $status)->select('COUNT(p.id)')->getQuery()->getSingleScalarResult();
     }
 
     public function cancelStale(\DateTimeImmutable $before): int

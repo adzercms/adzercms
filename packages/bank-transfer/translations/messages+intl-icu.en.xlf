@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="bank_transfer.bank">
+      <segment>
+        <source>bank_transfer.bank</source>
+        <target>Recipient bank</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.card">
+      <segment>
+        <source>bank_transfer.card</source>
+        <target>Card number</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.column.amount">
+      <segment>
+        <source>bank_transfer.column.amount</source>
+        <target>Amount</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.column.comment">
+      <segment>
+        <source>bank_transfer.column.comment</source>
+        <target>Comment</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.column.created">
+      <segment>
+        <source>bank_transfer.column.created</source>
+        <target>Created</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.confirm.action">
+      <segment>
+        <source>bank_transfer.confirm.action</source>
+        <target>Credit</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.confirm.amount">
+      <segment>
+        <source>bank_transfer.confirm.amount</source>
+        <target>Received</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.confirm.done">
+      <segment>
+        <source>bank_transfer.confirm.done</source>
+        <target>Transfer {comment} is credited: {amount}</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.confirm.ordered">
+      <segment>
+        <source>bank_transfer.confirm.ordered</source>
+        <target>Payment of {amount}</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.confirm.positive">
+      <segment>
+        <source>bank_transfer.confirm.positive</source>
+        <target>The received amount must be above zero</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.confirm.question">
+      <segment>
+        <source>bank_transfer.confirm.question</source>
+        <target>Credit transfer {comment}?</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.confirm.title">
+      <segment>
+        <source>bank_transfer.confirm.title</source>
+        <target>Transfer {comment}</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.empty">
+      <segment>
+        <source>bank_transfer.empty</source>
+        <target>No transfers</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.menu">
+      <segment>
+        <source>bank_transfer.menu</source>
+        <target>Transfers</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.method">
+      <segment>
+        <source>bank_transfer.method</source>
+        <target>By transfer</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.amount">
+      <segment>
+        <source>bank_transfer.page.amount</source>
+        <target>Amount</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.back">
+      <segment>
+        <source>bank_transfer.page.back</source>
+        <target>Back</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.bank">
+      <segment>
+        <source>bank_transfer.page.bank</source>
+        <target>Recipient bank: {bank}</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.card">
+      <segment>
+        <source>bank_transfer.page.card</source>
+        <target>Card number</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.comment">
+      <segment>
+        <source>bank_transfer.page.comment</source>
+        <target>Transfer comment</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.credit">
+      <segment>
+        <source>bank_transfer.page.credit</source>
+        <target>The amount arrives once the transfer is checked</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.phone">
+      <segment>
+        <source>bank_transfer.page.phone</source>
+        <target>Phone, transfer by SBP</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.title">
+      <segment>
+        <source>bank_transfer.page.title</source>
+        <target>Transfer of {amount}</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.phone">
+      <segment>
+        <source>bank_transfer.phone</source>
+        <target>Phone for SBP transfers</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.tab.cancelled">
+      <segment>
+        <source>bank_transfer.tab.cancelled</source>
+        <target>Cancelled ({count})</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.tab.pending">
+      <segment>
+        <source>bank_transfer.tab.pending</source>
+        <target>Awaiting confirmation ({count})</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

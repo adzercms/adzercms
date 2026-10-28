@@ -1,0 +1,51 @@
+{
+    "name": "adzercms/bank-transfer",
+    "type": "adzercms-module",
+    "description": "Payment by a transfer to the card or the phone of the recipient, confirmed by the operator",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "payments",
+        "bank-transfer",
+        "sbp"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
+        "adzercms/payments": "^1.0",
+        "adzercms/theme-implementation": "^1.0",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/framework-bundle": "7.4.*",
+        "symfony/http-foundation": "7.4.*",
+        "symfony/polyfill-php86": "^1.43",
+        "symfony/routing": "7.4.*",
+        "symfony/security-http": "7.4.*",
+        "symfony/translation": "7.4.*",
+        "symfony/translation-contracts": "^3.7"
+    },
+    "require-dev": {
+        "adzercms/admin": "^1.0"
+    },
+    "provide": {
+        "adzercms/payment-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\BankTransfer\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\BankTransfer\\BankTransferBundle",
+            "description": {
+                "ru": "Оплата переводом на карту либо телефон получателя с подтверждением оператором"
+            },
+            "categories": ["payments"]
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

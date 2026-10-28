@@ -1,0 +1,16 @@
+{% include '@Theme/_modal_header.html.twig' with {title: 'bank_transfer.confirm.title'|trans({comment: comment})} only %}
+
+<div class="modal-body">
+    {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+    <p class="muted">{{ 'bank_transfer.confirm.ordered'|trans({amount: payment.amount|money}) }} {{ moment(payment.createdAt) }}</p>
+    <form hx-post="{{ path('admin_bank_transfer', {number: payment.number}) }}" hx-target="#record"
+          data-confirm="{{ 'bank_transfer.confirm.question'|trans({comment: comment}) }}">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label>{{ 'bank_transfer.confirm.amount'|trans }}
+                <span class="money"><input type="number" name="amount" step="0.01" value="{{ amount|plain }}" required></span>
+            </label>
+        </div>
+        <button type="submit">{{ 'bank_transfer.confirm.action'|trans }}</button>
+    </form>
+</div>

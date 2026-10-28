@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="bank_transfer.bank">
+      <segment>
+        <source>bank_transfer.bank</source>
+        <target>Банк получателя</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.card">
+      <segment>
+        <source>bank_transfer.card</source>
+        <target>Номер карты</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.column.amount">
+      <segment>
+        <source>bank_transfer.column.amount</source>
+        <target>Сумма</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.column.comment">
+      <segment>
+        <source>bank_transfer.column.comment</source>
+        <target>Комментарий</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.column.created">
+      <segment>
+        <source>bank_transfer.column.created</source>
+        <target>Заведён</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.confirm.action">
+      <segment>
+        <source>bank_transfer.confirm.action</source>
+        <target>Зачислить</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.confirm.amount">
+      <segment>
+        <source>bank_transfer.confirm.amount</source>
+        <target>Поступило</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.confirm.done">
+      <segment>
+        <source>bank_transfer.confirm.done</source>
+        <target>Перевод {comment} зачислен: {amount}</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.confirm.ordered">
+      <segment>
+        <source>bank_transfer.confirm.ordered</source>
+        <target>Оплата на {amount}</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.confirm.positive">
+      <segment>
+        <source>bank_transfer.confirm.positive</source>
+        <target>Сумма поступления должна быть больше нуля</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.confirm.question">
+      <segment>
+        <source>bank_transfer.confirm.question</source>
+        <target>Зачислить перевод {comment}?</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.confirm.title">
+      <segment>
+        <source>bank_transfer.confirm.title</source>
+        <target>Перевод {comment}</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.empty">
+      <segment>
+        <source>bank_transfer.empty</source>
+        <target>Переводов нет</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.menu">
+      <segment>
+        <source>bank_transfer.menu</source>
+        <target>Переводы</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.method">
+      <segment>
+        <source>bank_transfer.method</source>
+        <target>Переводом</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.amount">
+      <segment>
+        <source>bank_transfer.page.amount</source>
+        <target>Сумма</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.back">
+      <segment>
+        <source>bank_transfer.page.back</source>
+        <target>Вернуться</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.bank">
+      <segment>
+        <source>bank_transfer.page.bank</source>
+        <target>Банк получателя: {bank}</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.card">
+      <segment>
+        <source>bank_transfer.page.card</source>
+        <target>Номер карты</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.comment">
+      <segment>
+        <source>bank_transfer.page.comment</source>
+        <target>Комментарий к переводу</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.credit">
+      <segment>
+        <source>bank_transfer.page.credit</source>
+        <target>Сумма поступит после проверки перевода</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.phone">
+      <segment>
+        <source>bank_transfer.page.phone</source>
+        <target>Телефон, перевод по СБП</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.title">
+      <segment>
+        <source>bank_transfer.page.title</source>
+        <target>Перевод {amount}</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.phone">
+      <segment>
+        <source>bank_transfer.phone</source>
+        <target>Телефон для перевода по СБП</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.tab.cancelled">
+      <segment>
+        <source>bank_transfer.tab.cancelled</source>
+        <target>Отменённые ({count})</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.tab.pending">
+      <segment>
+        <source>bank_transfer.tab.pending</source>
+        <target>Ждут подтверждения ({count})</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

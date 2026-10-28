@@ -26,6 +26,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "adzercms/admin": "^1.0@dev",
+        "adzercms/bank-transfer": "^1.0@dev",
         "adzercms/cabinet": "^1.0@dev",
         "adzercms/centrifugo": "^1.0@dev",
         "adzercms/contracts": "^1.0@dev",
@@ -94,6 +95,7 @@
     "autoload-dev": {
         "psr-4": {
             "AdzerCMS\\Admin\\Tests\\": "packages/admin/tests/",
+            "AdzerCMS\\BankTransfer\\Tests\\": "packages/bank-transfer/tests/",
             "AdzerCMS\\Cabinet\\Tests\\": "packages/cabinet/tests/",
             "AdzerCMS\\Centrifugo\\Tests\\": "packages/centrifugo/tests/",
             "AdzerCMS\\Core\\Tests\\": "packages/core/tests/",

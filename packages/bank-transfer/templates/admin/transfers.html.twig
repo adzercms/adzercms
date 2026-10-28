@@ -1,0 +1,7 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'bank_transfer.menu'|trans }}{% endblock %}
+
+{% block page %}
+{% include '@BankTransfer/admin/_transfers.html.twig' %}
+{% endblock %}

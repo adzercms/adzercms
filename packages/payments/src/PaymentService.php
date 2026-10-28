@@ -243,26 +243,31 @@ final class PaymentService
             return false;
         }
 
-        $payment = '' !== $callback->number
-            ? $this->payments->findByNumber($callback->number)
-            : (null !== $callback->operationId ? $this->payments->findByOperation($callback->operationId) : null);
-
-        if (null === $payment) {
-            return true;
-        }
-
-        if (PaymentStatus::Rejected === $callback->status && PaymentStatus::Pending === $payment->getStatus()) {
-            $payment->setStatus(PaymentStatus::Rejected)->setOperationId($callback->operationId ?? $payment->getOperationId());
-            $this->em->flush();
-
-            return true;
-        }
-
-        if (PaymentStatus::Confirmed === $callback->status) {
-            $this->settle($payment, $callback);
-        }
+        $this->conclude($callback);
 
         return true;
+    }
+
+    public function conclude(PaymentCallback $outcome): void
+    {
+        $payment = '' !== $outcome->number
+            ? $this->payments->findByNumber($outcome->number)
+            : (null !== $outcome->operationId ? $this->payments->findByOperation($outcome->operationId) : null);
+
+        if (null === $payment) {
+            return;
+        }
+
+        if (PaymentStatus::Rejected === $outcome->status && PaymentStatus::Pending === $payment->getStatus()) {
+            $payment->setStatus(PaymentStatus::Rejected)->setOperationId($outcome->operationId ?? $payment->getOperationId());
+            $this->em->flush();
+
+            return;
+        }
+
+        if (PaymentStatus::Confirmed === $outcome->status) {
+            $this->settle($payment, $outcome);
+        }
     }
 
     public function acknowledgement(): \Symfony\Component\HttpFoundation\Response

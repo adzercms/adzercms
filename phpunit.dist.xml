@@ -39,6 +39,9 @@
         <testsuite name="Admin">
             <directory>packages/admin/tests</directory>
         </testsuite>
+        <testsuite name="BankTransfer">
+            <directory>packages/bank-transfer/tests</directory>
+        </testsuite>
         <testsuite name="Cabinet">
             <directory>packages/cabinet/tests</directory>
         </testsuite>

@@ -59,6 +59,10 @@ final class PaymentController extends AbstractController
             return $this->redirect($payment->getBack());
         }
 
+        if (null !== $offer->template) {
+            return $this->render($offer->template, ['payment' => $payment] + $offer->context);
+        }
+
         if (null === $offer->qr) {
             return $this->redirect((string) $offer->url);
         }
