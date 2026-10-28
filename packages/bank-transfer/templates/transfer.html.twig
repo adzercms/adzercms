@@ -4,15 +4,14 @@
 
 {% block page %}
 <div class="pay">
-    {% for key, value in {amount: payment.amount|plain, card: card, phone: phone, comment: comment} %}
-        {% if value %}
-            <div class="credential">
-                <span class="credential-label">{{ ('bank_transfer.page.' ~ key)|trans }}</span>
-                <span class="credential-row">
-                    <input type="text" id="transfer-{{ key }}" value="{{ value }}" readonly>
-                    {% include '@Theme/_copy.html.twig' with {target: '#transfer-' ~ key} only %}
-                </span>
-            </div>
+    {% if note %}<p>{{ note }}</p>{% endif %}
+    {% for key, value in {card: [card, card], phone: [phone, phone], comment: [comment, comment], amount: [payment.amount|plain, payment.amount|money]} %}
+        {% if value[0] %}
+            <p class="detail">
+                <span>{{ ('bank_transfer.page.' ~ key)|trans }}:</span>
+                <data id="transfer-{{ key }}" value="{{ value[0] }}">{{ value[1] }}</data>
+                {% include '@Theme/_copy.html.twig' with {target: '#transfer-' ~ key, small: true} only %}
+            </p>
         {% endif %}
     {% endfor %}
     {% if phone and bank %}<p class="muted">{{ 'bank_transfer.page.bank'|trans({bank: bank}) }}</p>{% endif %}

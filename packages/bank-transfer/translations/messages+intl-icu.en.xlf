@@ -82,13 +82,19 @@
     <unit id="bank_transfer.menu">
       <segment>
         <source>bank_transfer.menu</source>
-        <target>Transfers</target>
+        <target>Transfer payments</target>
       </segment>
     </unit>
     <unit id="bank_transfer.method">
       <segment>
         <source>bank_transfer.method</source>
         <target>By transfer</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.note">
+      <segment>
+        <source>bank_transfer.note</source>
+        <target>Note above the details</target>
       </segment>
     </unit>
     <unit id="bank_transfer.page.amount">
@@ -112,13 +118,13 @@
     <unit id="bank_transfer.page.card">
       <segment>
         <source>bank_transfer.page.card</source>
-        <target>Card number</target>
+        <target>Card</target>
       </segment>
     </unit>
     <unit id="bank_transfer.page.comment">
       <segment>
         <source>bank_transfer.page.comment</source>
-        <target>Transfer comment</target>
+        <target>Comment</target>
       </segment>
     </unit>
     <unit id="bank_transfer.page.credit">
@@ -130,7 +136,7 @@
     <unit id="bank_transfer.page.phone">
       <segment>
         <source>bank_transfer.page.phone</source>
-        <target>Phone, transfer by SBP</target>
+        <target>SBP phone</target>
       </segment>
     </unit>
     <unit id="bank_transfer.page.title">

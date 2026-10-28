@@ -82,13 +82,19 @@
     <unit id="bank_transfer.menu">
       <segment>
         <source>bank_transfer.menu</source>
-        <target>Переводы</target>
+        <target>Оплаты переводом</target>
       </segment>
     </unit>
     <unit id="bank_transfer.method">
       <segment>
         <source>bank_transfer.method</source>
         <target>Переводом</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.note">
+      <segment>
+        <source>bank_transfer.note</source>
+        <target>Пояснение над реквизитами</target>
       </segment>
     </unit>
     <unit id="bank_transfer.page.amount">
@@ -112,13 +118,13 @@
     <unit id="bank_transfer.page.card">
       <segment>
         <source>bank_transfer.page.card</source>
-        <target>Номер карты</target>
+        <target>Карта</target>
       </segment>
     </unit>
     <unit id="bank_transfer.page.comment">
       <segment>
         <source>bank_transfer.page.comment</source>
-        <target>Комментарий к переводу</target>
+        <target>Комментарий</target>
       </segment>
     </unit>
     <unit id="bank_transfer.page.credit">
@@ -130,7 +136,7 @@
     <unit id="bank_transfer.page.phone">
       <segment>
         <source>bank_transfer.page.phone</source>
-        <target>Телефон, перевод по СБП</target>
+        <target>Телефон СБП</target>
       </segment>
     </unit>
     <unit id="bank_transfer.page.title">

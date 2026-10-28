@@ -28,6 +28,7 @@ final class BankTransferTest extends SchemaTestCase
     private const BACK = 'https://village.example.org/balance';
     private const CARD = '2200 0000 0000 0000';
     private const PHONE = '+7 900 000-00-00';
+    private const NOTE = 'Payments are taken by transfer for now';
 
     /** @var list<object> */
     private array $events = [];
@@ -35,7 +36,7 @@ final class BankTransferTest extends SchemaTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->configure([BankTransferService::CARD => self::CARD, BankTransferService::PHONE => self::PHONE, BankTransferService::BANK => 'Village bank']);
+        $this->configure([BankTransferService::CARD => self::CARD, BankTransferService::PHONE => self::PHONE, BankTransferService::BANK => 'Village bank', BankTransferService::NOTE => self::NOTE]);
         $dispatcher = self::service(EventDispatcherInterface::class, 'event_dispatcher');
         foreach ([PaymentConfirming::class, PaymentConfirmed::class] as $event) {
             $dispatcher->addListener($event, function (object $happened): void {
@@ -69,11 +70,12 @@ final class BankTransferTest extends SchemaTestCase
         $page = $this->client->request('GET', '/payment/'.$this->order('payer-7')->getNumber());
 
         self::assertResponseIsSuccessful();
+        self::assertStringContainsString(self::NOTE, $page->filter('.pay')->text(), 'the operator note');
         self::assertSame(
-            [self::CARD, self::PHONE, 'payer-7'],
-            array_map(static fn (string $key): ?string => $page->filter('#transfer-'.$key)->attr('value'), ['card', 'phone', 'comment']),
+            [self::CARD, self::PHONE, 'payer-7', '250'],
+            array_map(static fn (string $key): ?string => $page->filter('#transfer-'.$key)->attr('value'), ['card', 'phone', 'comment', 'amount']),
         );
-        self::assertCount(4, $page->filter('.pay [data-copy]'), 'amount, card, phone and comment are copied');
+        self::assertCount(4, $page->filter('.pay [data-copy]'), 'card, phone, comment and amount are copied');
         self::assertCount(0, $page->filter('[hx-get]'), 'the page does not wait for the outcome');
         self::assertSame(self::BACK, $page->filter('.pay-methods a')->attr('href'));
 

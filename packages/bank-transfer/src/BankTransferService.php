@@ -25,6 +25,7 @@ final readonly class BankTransferService implements AcquiringService
     public const CARD = 'payment.banktransfer.card';
     public const PHONE = 'payment.banktransfer.phone';
     public const BANK = 'payment.banktransfer.bank';
+    public const NOTE = 'payment.banktransfer.note';
     public const METHOD = 'transfer';
 
     private const PAGE = '@BankTransfer/transfer.html.twig';
@@ -44,6 +45,7 @@ final readonly class BankTransferService implements AcquiringService
             new Field(self::CARD, t('bank_transfer.card')),
             new Field(self::PHONE, t('bank_transfer.phone')),
             new Field(self::BANK, t('bank_transfer.bank')),
+            new Field(self::NOTE, t('bank_transfer.note')),
         ];
     }
 
@@ -92,6 +94,7 @@ final readonly class BankTransferService implements AcquiringService
             'card' => $this->detail(self::CARD),
             'phone' => $this->detail(self::PHONE),
             'bank' => $this->detail(self::BANK),
+            'note' => $this->detail(self::NOTE),
             'comment' => self::comment($payment),
         ]);
     }
