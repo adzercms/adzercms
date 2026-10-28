@@ -148,9 +148,52 @@ final class Settings implements ResetInterface
         unset($this->stored[$field->name]);
     }
 
+    /** @return array<string, string> */
+    public function rows(): array
+    {
+        return $this->stored();
+    }
+
+    /**
+     * @param array<string, string> $rows
+     *
+     * @return list<string>
+     */
+    public function restore(array $rows): array
+    {
+        $damaged = array_keys(array_filter($rows, fn (string $value): bool => !$this->decrypted($value)));
+        if ([] !== $damaged) {
+            return $damaged;
+        }
+
+        foreach ($rows as $name => $value) {
+            $setting = $this->em->find(Setting::class, $name);
+            null === $setting ? $this->em->persist(new Setting($name, $value)) : $setting->setValue($value);
+        }
+
+        $this->reset();
+
+        return [];
+    }
+
     public function reset(): void
     {
         $this->stored = null;
+    }
+
+    private function decrypted(string $value): bool
+    {
+        if (!str_starts_with($value, self::SECRET)) {
+            return true;
+        }
+
+        try {
+            $this->secrets->decrypt(substr($value, \strlen(self::SECRET)));
+        } catch (\RuntimeException|\SodiumException) {
+            return false;
+        }
+
+        return true;
     }
 
     private static function time(string $value): ?int

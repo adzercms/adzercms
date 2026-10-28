@@ -66,6 +66,7 @@ git config core.hooksPath .githooks
 
 - `adzercms:admin <login>` — сделать пользователя администратором или создать нового, пароль передаётся через `--stdin`
 - `adzercms:setting [key] [value]` — посмотреть и изменить настройки; секреты — только через `--stdin`
+- `adzercms:setting --export`, `adzercms:setting --import` — перенести настройки в другую базу через JSON: секреты остаются зашифрованными `APP_SECRET`, поэтому у экземпляра-приёмника нужен тот же ключ
 - `adzercms:cache` — перевести сайт на свежую сборку кеша и удалить сборки, которыми не пользуется ни один процесс
 - `adzercms:notices`, `adzercms:sweep` и задания модулей — для [планировщика](docs/installation.ru.md#планировщик)
 

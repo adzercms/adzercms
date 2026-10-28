@@ -40,7 +40,13 @@ final class SettingCommand
         #[Argument('Setting key; lists all settings without it')] ?string $name = null,
         #[Argument('Value, a file path for an image; an empty value removes the setting')] ?string $value = null,
         #[Option('Read the value from stdin, the only way for a secret')] bool $stdin = false,
+        #[Option('Print all stored rows as JSON, secrets encrypted by the instance key')] bool $export = false,
+        #[Option('Write stored rows as JSON from stdin over the present ones')] bool $import = false,
     ): int {
+        if ($export || $import) {
+            return null === $name && !$stdin && !($export && $import) ? $this->carry($input, $io, $import) : $this->refuse($io, 'export and import go alone');
+        }
+
         $fields = $this->catalog->fields();
 
         if (null === $name) {
@@ -54,16 +60,12 @@ final class SettingCommand
 
         $field = $fields[$name] ?? null;
         if (null === $field) {
-            $io->error(\sprintf('setting "%s" does not exist, available: %s', $name, implode(', ', array_keys($fields))));
-
-            return Command::INVALID;
+            return $this->refuse($io, \sprintf('setting "%s" does not exist, available: %s', $name, implode(', ', array_keys($fields))));
         }
 
         $secret = Type::Secret === $field->type;
         if ($secret && null !== $value) {
-            $io->error(\sprintf('secret "%s" is accepted only from stdin: --stdin', $name));
-
-            return Command::INVALID;
+            return $this->refuse($io, \sprintf('secret "%s" is accepted only from stdin: --stdin', $name));
         }
 
         if ($stdin) {
@@ -78,14 +80,49 @@ final class SettingCommand
 
         $refusal = $this->write($field, $value);
         if (null !== $refusal) {
-            $io->error($refusal->reason->trans($this->translator));
-
-            return Command::INVALID;
+            return $this->refuse($io, $refusal->reason->trans($this->translator));
         }
 
         $io->success(\sprintf('%s: %s', $name, $this->shown($field)));
 
         return Command::SUCCESS;
+    }
+
+    private function carry(InputInterface $input, SymfonyStyle $io, bool $import): int
+    {
+        if (!$import) {
+            $io->writeln(json_encode($this->settings->rows(), \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES));
+
+            return Command::SUCCESS;
+        }
+
+        try {
+            $rows = json_decode(Body::of($input), true, flags: \JSON_THROW_ON_ERROR);
+        } catch (\JsonException $failure) {
+            return $this->refuse($io, 'stdin is no JSON: '.$failure->getMessage());
+        }
+
+        if (!\is_array($rows) || array_is_list($rows) && [] !== $rows || [] !== array_filter($rows, static fn (mixed $value): bool => !\is_string($value))) {
+            return $this->refuse($io, 'stdin is no JSON object of string values');
+        }
+
+        /** @var array<string, string> $rows */
+        $damaged = $this->settings->restore($rows);
+        if ([] !== $damaged) {
+            return $this->refuse($io, 'secrets not decrypted by the instance key: '.implode(', ', $damaged));
+        }
+
+        $this->em->flush();
+        $io->success(\sprintf('%d settings written', \count($rows)));
+
+        return Command::SUCCESS;
+    }
+
+    private function refuse(SymfonyStyle $io, string $reason): int
+    {
+        $io->error($reason);
+
+        return Command::INVALID;
     }
 
     private function write(Field $field, string $value): ?Refusal

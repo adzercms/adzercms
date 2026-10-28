@@ -66,6 +66,7 @@ Set up the development app like any project: environment and administrator as in
 
 - `adzercms:admin <login>` — make a user an administrator or create a new one, the password comes through `--stdin`
 - `adzercms:setting [key] [value]` — view and change settings; secrets only through `--stdin`
+- `adzercms:setting --export`, `adzercms:setting --import` — move settings to another database as JSON: secrets stay encrypted by `APP_SECRET`, so the target instance needs the same key
 - `adzercms:cache` — switch the site to a fresh cache build and remove builds no process uses
 - `adzercms:notices`, `adzercms:sweep` and module jobs — for the [scheduler](docs/installation.md#scheduler)
 

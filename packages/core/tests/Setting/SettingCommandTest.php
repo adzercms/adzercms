@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Tests\Setting;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
+use AdzerCMS\Core\Entity\Setting;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Notice\QuietHours;
 use AdzerCMS\Core\Setting\Catalog;
@@ -78,6 +79,35 @@ final class SettingCommandTest extends SchemaTestCase
         $listing->execute([]);
         self::assertMatchesRegularExpression('~shop\.token\s+Till token\s+set~', $listing->getDisplay());
         self::assertStringNotContainsString('till-token', $listing->getDisplay().$piped->getDisplay());
+    }
+
+    #[Group('ACMS-CORE-1015')]
+    public function testExportedRowsComeBackOnEmptyBaseAndUndecryptedSecretRefusesWholeImport(): void
+    {
+        $this->configure([Shop::TITLE => 'Bridge shop']);
+        $piped = self::command('adzercms:setting');
+        $piped->setInputs(['till-token']);
+        $piped->execute(['name' => Shop::TOKEN, '--stdin' => true]);
+
+        $export = self::command('adzercms:setting');
+        self::assertSame(Command::SUCCESS, $export->execute(['--export' => true]));
+        $rows = json_decode($export->getDisplay(), true, flags: \JSON_THROW_ON_ERROR);
+        self::assertStringNotContainsString('till-token', $export->getDisplay(), 'a secret leaves encrypted');
+
+        $this->em->getConnection()->executeStatement(\sprintf('DELETE FROM %s', Setting::TABLE));
+        $this->em->clear();
+        self::service(Settings::class)->reset();
+
+        $damaged = self::command('adzercms:setting');
+        $damaged->setInputs([json_encode([Shop::TITLE => 'Other shop', Shop::TOKEN => 'secret:'.base64_encode(str_repeat('x', 64))], \JSON_THROW_ON_ERROR)]);
+        self::assertSame(Command::INVALID, $damaged->execute(['--import' => true]));
+        self::assertStringContainsString(Shop::TOKEN, $damaged->getDisplay());
+        self::assertSame('', self::service(Settings::class)->get(Shop::TITLE), 'nothing is written beside an undecrypted secret');
+
+        $import = self::command('adzercms:setting');
+        $import->setInputs([json_encode($rows, \JSON_THROW_ON_ERROR)]);
+        self::assertSame(Command::SUCCESS, $import->execute(['--import' => true]));
+        self::assertSame(['Bridge shop', 'till-token'], [self::service(Settings::class)->get(Shop::TITLE), self::service(Settings::class)->get(Shop::TOKEN)]);
     }
 
     #[Group('ACMS-CORE-0055')]
