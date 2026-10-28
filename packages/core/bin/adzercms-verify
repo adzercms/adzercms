@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+
+if [ $# -eq 0 ]; then
+    copy=$(pwd -P)/var/verify
+    excluded=$(dirname "$0")/../config/stage.exclude
+    rm -rf "$copy"
+    trap 'rm -rf "$copy"' EXIT
+    mkdir -p "$copy"
+    sed 's#^#/#' "$excluded" | rsync -a --exclude-from=- ./ "$copy/"
+    bin/php "$(command -v composer)" install --working-dir="$copy" --no-scripts --no-interaction --no-progress
+    set -- "$copy"
+fi
+
+cd "$1"
+vendor/bin/adzercms-check
+[ ! -f phpunit.dist.xml ] || bin/phpunit --colors=never

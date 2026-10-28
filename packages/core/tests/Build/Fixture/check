@@ -1,0 +1,4 @@
+#!/bin/sh
+root=$(cd ../.. && pwd -P)
+find . -mindepth 1 | LC_ALL=C sort > "$root/copied"
+[ ! -f "$root/var/refusal" ] || { cat "$root/var/refusal"; exit 1; }

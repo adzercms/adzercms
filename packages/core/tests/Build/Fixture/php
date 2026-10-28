@@ -1,0 +1,7 @@
+#!/bin/sh
+root=$(cd "$(dirname "$0")/.." && pwd -P)
+printf '%s\n' "$*" >> "$root/calls"
+for argument; do case $argument in --working-dir=*) copy=${argument#--working-dir=} ;; esac; done
+[ -n "${copy:-}" ] || exit 0
+mkdir -p "$copy/vendor/bin"
+ln -s "$(dirname "$(readlink -f "$0")")/check" "$copy/vendor/bin/adzercms-check"

@@ -5,10 +5,13 @@ set -eu
 
 root=$(pwd -P)
 [ "${ADZERCMS_REFRESHED:-}" != "$root" ] || exit 0
+stamp=var/composer.installed
+
 if [ "${ADZERCMS_ENTRY:-}" != "$root" ]; then
     mkdir -p var/lock
     exec 9> var/lock/refresh 8> var/lock/entry 7> var/lock/serve 6> var/lock/served
     flock 9
+    [ "$(cat "$stamp" 2>/dev/null || true)" = "$(sha256sum composer.lock | cut -d' ' -f1)" ] || "$(dirname "$0")/adzercms-verify"
     flock 8
     flock 7
     flock 6
@@ -16,7 +19,6 @@ if [ "${ADZERCMS_ENTRY:-}" != "$root" ]; then
     export ADZERCMS_ENTRY
 fi
 
-stamp=var/composer.installed
 locked=$(sha256sum composer.lock | cut -d' ' -f1)
 
 if [ "$(cat "$stamp" 2>/dev/null || true)" != "$locked" ]; then

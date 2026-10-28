@@ -506,9 +506,12 @@ final class ModuleWebTest extends SchemaTestCase
     #[Group('ACMS-CORE-0946')]
     #[Group('ACMS-US-0004')]
     #[DataProvider('compositions')]
-    public function testComposerOperationRunsInStagedCopyCommittedOnlyOnSuccess(ModuleAction $action, string $package, OperationState $state, array $locked, bool $zipped = false): void
+    public function testComposerOperationRunsInStagedCopyCommittedOnlyOnSuccess(ModuleAction $action, string $package, OperationState $state, array $locked, bool $zipped = false, ?string $check = null): void
     {
         $tree = $this->tree(__DIR__.'/Fixture/site');
+        if (null !== $check) {
+            file_put_contents($tree.'/verify-refusal', $check);
+        }
         $this->answerCatalog();
         $this->listed([$package]);
         ModuleAction::Update === $action ? $this->branch($package, '1.0.x-dev') : $this->offer($package, '1.0.0');
@@ -530,9 +533,10 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertSame($zipped, \in_array('adzercms-zip', array_column($manifest['repositories'], 'name'), true), 'the repositories carry the ZIP directory while it holds archives');
         self::assertDirectoryDoesNotExist($tree.'/var/stage');
         self::assertSame(OperationState::Done === $state, is_file($tree.'/refreshed.env'), 'the refresh follows a committed change only');
+        self::assertStringContainsString(null === $check ? '' : $check.' in '.$tree.'/var/stage', (string) $operation->getOutput(), 'the check of the staged copy refuses the transfer');
     }
 
-    /** @return iterable<string, array{ModuleAction, string, OperationState, list<string>}> */
+    /** @return iterable<string, array{0: ModuleAction, 1: string, 2: OperationState, 3: list<string>, 4?: bool, 5?: string}> */
     public static function compositions(): iterable
     {
         yield 'install' => [ModuleAction::Install, 'acme/shop', OperationState::Done, ['acme/shop', 'adzercms/sms-pilot', 'adzercms/theme']];
@@ -540,6 +544,7 @@ final class ModuleWebTest extends SchemaTestCase
         yield 'update of an engine package' => [ModuleAction::Update, 'adzercms/sms-pilot', OperationState::Done, ['adzercms/sms-pilot', 'adzercms/theme']];
         yield 'remove' => [ModuleAction::Remove, 'adzercms/sms-pilot', OperationState::Done, ['adzercms/theme']];
         yield 'install of an uploaded ZIP' => [ModuleAction::Install, 'acme/zipped', OperationState::Done, ['acme/zipped', 'adzercms/sms-pilot', 'adzercms/theme'], true];
+        yield 'install refused by the check of the copy' => [ModuleAction::Install, 'acme/shop', OperationState::Failed, ['adzercms/sms-pilot', 'adzercms/theme'], false, 'container of the copy fails'];
     }
 
     /** @param list<string> $locked */
@@ -661,7 +666,7 @@ final class ModuleWebTest extends SchemaTestCase
     {
         $this->tree = sys_get_temp_dir().'/adzercms-tree-'.bin2hex(random_bytes(4));
         null === $site ? (new Filesystem())->mkdir($this->tree) : (new Filesystem())->mirror($site, $this->tree);
-        self::getContainer()->set(Tree::class, new Tree($this->tree, __DIR__.'/Fixture/refresh', __DIR__.'/Fixture/selection', __DIR__.'/Fixture/build'));
+        self::getContainer()->set(Tree::class, new Tree($this->tree, __DIR__.'/Fixture/refresh', __DIR__.'/Fixture/selection', __DIR__.'/Fixture/build', __DIR__.'/Fixture/verify'));
 
         return $this->tree;
     }

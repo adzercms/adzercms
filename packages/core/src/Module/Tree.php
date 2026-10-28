@@ -19,6 +19,7 @@ final readonly class Tree
     private const REFRESH = __DIR__.'/../../bin/adzercms-refresh';
     private const SELECTOR = __DIR__.'/../../bin/adzercms-selection';
     private const BUILD = __DIR__.'/../../bin/adzercms-build';
+    private const VERIFY = __DIR__.'/../../bin/adzercms-verify';
     private const PREVIEW = '--preview';
     private const SHARED = '.env';
     private const LOCAL = '.env.local';
@@ -36,6 +37,7 @@ final readonly class Tree
         private string $refresh = self::REFRESH,
         private string $selector = self::SELECTOR,
         private string $build = self::BUILD,
+        private string $verify = self::VERIFY,
     ) {
     }
 
@@ -101,6 +103,12 @@ final readonly class Tree
         } finally {
             array_map(fclose(...), array_reverse($locks));
         }
+    }
+
+    /** @param array<string, string> $environment */
+    public function verify(string $copy, array $environment): ?string
+    {
+        return $this->run([$this->verify, $copy], $environment);
     }
 
     /** @param array<string, string> $selection */

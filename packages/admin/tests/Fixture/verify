@@ -1,0 +1,2 @@
+#!/bin/sh
+[ ! -f verify-refusal ] || { printf '%s in %s\n' "$(cat verify-refusal)" "$1"; exit 1; }
