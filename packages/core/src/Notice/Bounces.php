@@ -103,7 +103,7 @@ final class Bounces
             $reason = $failures[(int) $notice->getId()];
             $notice->fail($reason);
             $user = $notice->getUser();
-            if (null !== $user && $user->getEmail() === $notice->getRecipient()) {
+            if (null !== $user && $user->getEmail() === $notice->getRecipient() && !DeliveryStatus::policy($reason)) {
                 $user->markUndeliverable($reason);
             }
         }

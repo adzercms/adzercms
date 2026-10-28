@@ -9,6 +9,9 @@ use ZBateson\MailMimeParser\IMessage;
 final class DeliveryStatus
 {
     private const TYPES = ['message/delivery-status', 'message/global-delivery-status'];
+    private const CODE = '/^(?:(\d{3})[ -])?#?(?:[245]\.(\d{1,3})\.\d{1,3}(?!\d))?/';
+    private const POLICY_SUBJECT = '7';
+    private const POLICY_REPLY = '554';
 
     /** @param list<array<string, string>> $groups */
     private function __construct(private readonly array $groups)
@@ -65,5 +68,13 @@ final class DeliveryStatus
         }
 
         return null;
+    }
+
+    public static function policy(string $reason): bool
+    {
+        preg_match(self::CODE, $reason, $code);
+        $subject = $code[2] ?? '';
+
+        return '' !== $subject ? self::POLICY_SUBJECT === $subject : self::POLICY_REPLY === ($code[1] ?? '');
     }
 }

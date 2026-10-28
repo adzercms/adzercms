@@ -35,15 +35,16 @@ final class BounceTest extends SchemaTestCase
     private const ADDRESS = 'owner@example.org';
     private const BOUNCES = [MailChannel::BOUNCE_ADDRESS => 'Bounces@Example.org', MailChannel::BOUNCE_HOST => 'imap.example.org', MailChannel::BOUNCE_LOGIN => 'bounces@example.org'];
 
-    /** @return iterable<string, array{string, string}> */
+    /** @return iterable<string, array{string, string, bool}> */
     public static function reports(): iterable
     {
-        yield 'Exim without a diagnostic' => ['exim', '5.0.0'];
-        yield 'Exim with a diagnostic' => ['exim-diagnostic', '554 5.7.1 Message rejected under suspicion of SPAM'];
-        yield 'Exim with a folded diagnostic' => ['exim-folded', "550-5.1.1 The email account that you tried to reach does not exist. Please try 550-5.1.1 double-checking the recipient's email address for typos or 550 5.1.1 unnecessary spaces."];
-        yield 'Exim with recipient groups' => ['exim-groups', '552 5.2.2 <second@example.net> Quota exceeded (mailbox for user is full)'];
-        yield 'Exim of an international address' => ['exim-global', '550 5.1.1 Почтовый ящик не существует'];
-        yield 'Postfix' => ['postfix', 'Message delivery failed'];
+        yield 'Exim without a diagnostic' => ['exim', '5.0.0', true];
+        yield 'Exim with a policy diagnostic' => ['exim-diagnostic', '554 5.7.1 Message rejected under suspicion of SPAM', false];
+        yield 'Exim with a policy reply without the enhanced code' => ['exim-reply', '554 Message refused by the sender reputation policy', false];
+        yield 'Exim with a folded diagnostic' => ['exim-folded', "550-5.1.1 The email account that you tried to reach does not exist. Please try 550-5.1.1 double-checking the recipient's email address for typos or 550 5.1.1 unnecessary spaces.", true];
+        yield 'Exim with recipient groups' => ['exim-groups', '552 5.2.2 <second@example.net> Quota exceeded (mailbox for user is full)', true];
+        yield 'Exim of an international address' => ['exim-global', '550 5.1.1 Почтовый ящик не существует', true];
+        yield 'Postfix' => ['postfix', 'Message delivery failed', true];
     }
 
     #[DataProvider('reports')]
@@ -51,7 +52,7 @@ final class BounceTest extends SchemaTestCase
     #[Group('ACMS-CORE-1008')]
     #[Group('ACMS-CORE-1009')]
     #[Group('ACMS-US-0005')]
-    public function testBouncedLetterFailsNoticeAndMarksMail(string $report, string $reason): void
+    public function testBouncedLetterFailsNoticeAndMarksMailUnlessPolicyRefusal(string $report, string $reason, bool $marked): void
     {
         self::mockTime(self::MOMENT);
         $this->configure(self::MAIL + self::BOUNCES);
@@ -67,7 +68,8 @@ final class BounceTest extends SchemaTestCase
         $notice = $this->reread($notice);
         self::assertSame([Status::Failed, $reason], [$notice->getStatus(), $notice->getError()]);
         $user = $this->reread($user);
-        self::assertSame([self::MOMENT, $reason], [$user->getUndeliverableAt()?->format('Y-m-d H:i:s'), $user->getUndeliverableReason()]);
+        self::assertSame($marked ? [self::MOMENT, $reason] : [null, null], [$user->getUndeliverableAt()?->format('Y-m-d H:i:s'), $user->getUndeliverableReason()],
+            'a recipient policy refusal leaves the mail unmarked');
         self::assertSame([], $inbox->getMessages(), 'the report leaves the mailbox');
     }
 
