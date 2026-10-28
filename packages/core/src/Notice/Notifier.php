@@ -155,6 +155,7 @@ final class Notifier
             if ($quiet) {
                 $last->defer($letter);
             } else {
+                $this->em->flush();
                 $this->send($channel, $last, $letter);
             }
             if (Status::Failed !== $last->getStatus()) {
@@ -170,7 +171,7 @@ final class Notifier
     private function send(Channel $channel, Notice $notice, Letter $letter): void
     {
         try {
-            $channel->send($notice->getRecipient(), $letter);
+            $channel->send($notice->getRecipient(), $letter, $notice->getId());
             $notice->sent();
         } catch (Undelivered $failure) {
             $notice->fail($failure->getMessage());

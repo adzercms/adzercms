@@ -18,7 +18,9 @@ use AdzerCMS\Core\Module\Staging;
 use AdzerCMS\Core\Module\Store;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Module\Tree;
+use AdzerCMS\Core\Notice\Bounces;
 use AdzerCMS\Core\Schema\MigrationOrder;
+use DirectoryTree\ImapEngine\MailboxInterface;
 use PhpTuf\ComposerStager\API\Core\BeginnerInterface;
 use PhpTuf\ComposerStager\API\Process\Service\ComposerProcessRunnerInterface;
 use Symfony\Component\DependencyInjection\Definition;
@@ -43,6 +45,7 @@ return static function (ContainerConfigurator $container): void {
     $services->load('AdzerCMS\\Core\\Login\\', '../src/Login/');
     $services->alias(Redirects::class, Authorizations::class);
     $services->load('AdzerCMS\\Core\\Notice\\', '../src/Notice/')->exclude('../src/Notice/BotChannel.php');
+    $services->set(Bounces::MAILBOX, MailboxInterface::class)->factory([Bounces::class, 'mailbox']);
     $services->load('AdzerCMS\\Core\\Repository\\', '../src/Repository/');
     $services->load('AdzerCMS\\Core\\Security\\', '../src/Security/');
     $services->load('AdzerCMS\\Core\\Seo\\', '../src/Seo/')->exclude('../src/Seo/Head.php');

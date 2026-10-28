@@ -29,5 +29,6 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `TextResponse`: a plain text response that the Psalm taint analysis of the module check doesn't take for HTML
 - The cabinet home lives at `/cabinet`: the root of the instance is the public home of a feature module, without one it leads to the cabinet home; a login without an interrupted page leads to the cabinet home
 - Theme preview: an installed theme opens on the pages of the site to the admin only before it is enabled; the module operation builds the preview with `adzercms-build --preview` of the core, the bar of the preview leads out of it; `adzercms:sweep` removes the static of module sets without cache
+- Bounce mailbox on the Mail and notices tab: a notification letter goes with a signed subaddress of the mailbox as the envelope sender, `adzercms:notices` reads the mailbox over IMAP with directorytree/imapengine and turns a failed delivery report into a failed notice; the bounced address of a record is marked undeliverable and gets awaited letters only until the address changes
 
 [Unreleased]: https://github.com/adzercms/adzercms/commits/main

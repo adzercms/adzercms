@@ -62,6 +62,11 @@ class Notice
         $this->createdAt = now();
     }
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
     public function getUser(): ?User
     {
         return $this->user;

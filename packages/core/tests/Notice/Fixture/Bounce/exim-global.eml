@@ -1,0 +1,36 @@
+Return-path: <>
+Envelope-to: {to}
+Delivery-date: Fri, 16 Oct 2026 10:00:01 +0300
+Auto-Submitted: auto-replied
+From: Mail Delivery System <Mailer-Daemon@mail.example.org>
+To: {to}
+Content-Type: multipart/report; report-type=delivery-status; boundary=1760598001-eximdsn-777
+MIME-Version: 1.0
+Subject: Mail delivery failed: returning message to sender
+Date: Fri, 16 Oct 2026 10:00:01 +0300
+
+--1760598001-eximdsn-777
+Content-type: text/plain; charset=utf-8
+
+This message was created automatically by mail delivery software.
+
+--1760598001-eximdsn-777
+Content-type: message/global-delivery-status
+
+Reporting-MTA: dns; mail.example.org
+
+Action: failed
+Final-Recipient: utf-8;{address}
+Status: 5.1.1
+Remote-MTA: dns; mx.example.org
+Diagnostic-Code: smtp; 550 5.1.1 Почтовый ящик не существует
+
+--1760598001-eximdsn-777
+Content-type: message/global-headers
+
+Return-path: <{to}>
+From: Village network <robot@example.org>
+To: {address}
+Subject: Village network: Invoice
+
+--1760598001-eximdsn-777--

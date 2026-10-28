@@ -11,4 +11,5 @@ return (new Configuration())->ignoreErrorsOnPackages([
     'symfony/http-client',
     'symfony/lock',
     'symfony/twig-bundle',
-], [ErrorType::UNUSED_DEPENDENCY]);
+], [ErrorType::UNUSED_DEPENDENCY])
+    ->ignoreErrorsOnPackageAndPath('illuminate/collections', __DIR__.'/src/Seo/Indexing.php', [ErrorType::SHADOW_DEPENDENCY]);

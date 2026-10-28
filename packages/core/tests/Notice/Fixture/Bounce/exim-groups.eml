@@ -1,0 +1,56 @@
+Return-path: <>
+Delivery-date: Fri, 16 Oct 2026 10:00:01 +0300
+X-Failed-Recipients: {address}
+Auto-Submitted: auto-replied
+From: Mail Delivery System <Mailer-Daemon@mx4.example.net>
+To: "Village network" <{to}>
+Content-Type: multipart/report; report-type=delivery-status; boundary=1760598001-eximdsn-1054114771
+MIME-Version: 1.0
+Subject: Mail delivery failed: returning message to sender
+Date: Fri, 16 Oct 2026 10:00:01 +0100
+
+--1760598001-eximdsn-1054114771
+Content-type: text/plain; charset=us-ascii
+
+This message was created automatically by mail delivery software.
+
+A message that you sent could not be delivered to one or more of its
+recipients. This is a permanent error. The following address(es) failed:
+
+  first@example.net
+    (generated from {address})
+    LMTP error after BDAT 4468 LAST: 552 5.2.2 <first@example.net> Quota exceeded (mailbox for user is full)
+  second@example.net
+    (generated from {address})
+    LMTP error after BDAT 4468 LAST: 552 5.2.2 <second@example.net> Quota exceeded (mailbox for user is full)
+
+--1760598001-eximdsn-1054114771
+Content-type: message/delivery-status
+
+Reporting-MTA: dns; mx4.example.net
+
+Action: failed
+Final-Recipient: rfc822;{address}
+Status: 5.0.0
+Remote-MTA: dns; lmtp.example.net
+Diagnostic-Code: smtp; 552 5.2.2 <second@example.net> Quota exceeded (mailbox for user is full)
+
+Action: failed
+Final-Recipient: rfc822;{address}
+Status: 5.0.0
+Remote-MTA: dns; lmtp.example.net
+Diagnostic-Code: smtp; 552 5.2.2 <first@example.net> Quota exceeded (mailbox for user is full)
+
+--1760598001-eximdsn-1054114771
+Content-type: message/rfc822
+
+Return-path: <{to}>
+From: Village network <robot@example.org>
+To: {address}
+Subject: Village network: Invoice
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Invoice 7 is issued
+
+--1760598001-eximdsn-1054114771--

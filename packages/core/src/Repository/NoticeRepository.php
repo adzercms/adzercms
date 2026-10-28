@@ -35,6 +35,22 @@ final class NoticeRepository extends ServiceEntityRepository
         return $this->findBy(['status' => Status::Deferred], ['id' => 'ASC']);
     }
 
+    /**
+     * @param list<int> $ids
+     *
+     * @return list<Notice>
+     */
+    public function numbered(array $ids): array
+    {
+        return $this->createQueryBuilder('n')
+            ->leftJoin('n.user', 'u')
+            ->addSelect('u')
+            ->where('n.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function sweep(\DateTimeImmutable $before): int
     {
         return $this->createQueryBuilder('n')

@@ -15,7 +15,7 @@ Version 1.0 is still in development: the module API may change before it ships.
 - Active sessions with device and city, sign out of any of them
 - Email and phone confirmation by code or link
 - Settings live in the database with encrypted secrets; change them in the admin panel or from the console
-- Notifications by email, SMS and Telegram and MAX bots, quiet hours, a delivery log
+- Notifications by email, SMS and Telegram and MAX bots, quiet hours, a delivery log, bounce handling
 - Admin panel and customer account area, a replaceable theme
 - Ready modules: payments, support, newsletters, real-time page updates, extension catalog, catalog export to the OPOTOPO marketplace
 - MySQL, MariaDB or PostgreSQL; sessions in Valkey or Redis, or in files without them

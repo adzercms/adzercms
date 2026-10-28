@@ -1,0 +1,55 @@
+Return-Path: <>
+Delivered-To: {to}
+X-Original-To: {to}
+Date: Fri, 16 Oct 2026 07:00:11 +0000 (UTC)
+From: Mail Delivery System <MAILER-DAEMON@mx.example.net>
+Subject: Undelivered Mail Returned to Sender
+To: Village network <{mailbox}>
+Auto-Submitted: auto-replied
+MIME-Version: 1.0
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="D2180C002D9.1760598011/mx.example.net"
+Message-Id: <20261016070011.5AA38C002C2@mx.example.net>
+
+This is a MIME-encapsulated message.
+
+--D2180C002D9.1760598011/mx.example.net
+Content-Description: Notification
+Content-Type: text/plain; charset=us-ascii
+
+This is the mail system at host mx.example.net.
+
+I'm sorry to have to inform you that your message could not
+be delivered to one or more recipients.
+
+<{address}>: Message delivery failed
+
+--D2180C002D9.1760598011/mx.example.net
+Content-Description: Delivery report
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; mx.example.net
+X-Postfix-Queue-ID: D2180C002D9
+X-Postfix-Sender: rfc822; {to}
+Arrival-Date: Fri, 16 Oct 2026 07:00:08 +0000 (UTC)
+
+Final-Recipient: rfc822; {address}
+Original-Recipient: rfc822;{address}
+Action: failed
+Status: 5.2.0
+Diagnostic-Code: X-Postfix; Message delivery failed
+
+--D2180C002D9.1760598011/mx.example.net
+Content-Description: Undelivered Message
+Content-Type: message/rfc822
+
+Return-Path: <{to}>
+From: Village network <robot@example.org>
+To: {address}
+Subject: Village network: Invoice
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Invoice 7 is issued
+
+--D2180C002D9.1760598011/mx.example.net--

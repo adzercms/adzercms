@@ -1093,6 +1093,18 @@
         <target>User</target>
       </segment>
     </unit>
+    <unit id="core.setting.bounce_address">
+      <segment>
+        <source>core.setting.bounce_address</source>
+        <target>Bounce address</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.bounce_host">
+      <segment>
+        <source>core.setting.bounce_host</source>
+        <target>Incoming mail server (IMAP)</target>
+      </segment>
+    </unit>
     <unit id="core.setting.brand_color">
       <segment>
         <source>core.setting.brand_color</source>
@@ -1235,6 +1247,12 @@
       <segment>
         <source>core.setting.privacy_url</source>
         <target>Privacy policy link</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.section.bounces">
+      <segment>
+        <source>core.setting.section.bounces</source>
+        <target>Bounce mailbox</target>
       </segment>
     </unit>
     <unit id="core.setting.section.confirmation">

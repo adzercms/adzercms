@@ -1,0 +1,49 @@
+Return-path: <>
+Envelope-to: {to}
+Delivery-date: Fri, 16 Oct 2026 10:00:01 +0300
+X-Failed-Recipients: {address}
+Auto-Submitted: auto-replied
+From: Mail Delivery System <Mailer-Daemon@mail.example.org>
+To: {to}
+Content-Type: multipart/report; report-type=delivery-status; boundary=1760598001-eximdsn-431805317
+MIME-Version: 1.0
+Subject: Mail delivery failed: returning message to sender
+Date: Fri, 16 Oct 2026 10:00:01 +0300
+
+--1760598001-eximdsn-431805317
+Content-type: text/plain; charset=us-ascii
+
+This message was created automatically by mail delivery software.
+
+A message that you sent could not be delivered to one or more of its
+recipients. This is a permanent error. The following address(es) failed:
+
+  {address}
+    host mx.example.org [192.0.2.25]
+    SMTP error from remote mail server after RCPT TO:<{address}>:
+    554 5.7.1 Message rejected under suspicion of SPAM
+
+--1760598001-eximdsn-431805317
+Content-type: message/delivery-status
+
+Reporting-MTA: dns; mail.example.org
+
+Action: failed
+Final-Recipient: rfc822;{address}
+Status: 5.0.0
+Remote-MTA: dns; mx.example.org
+Diagnostic-Code: smtp; 554 5.7.1 Message rejected under suspicion of SPAM
+
+--1760598001-eximdsn-431805317
+Content-type: message/rfc822
+
+Return-path: <{to}>
+From: Village network <robot@example.org>
+To: {address}
+Subject: Village network: Invoice
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Invoice 7 is issued
+
+--1760598001-eximdsn-431805317--

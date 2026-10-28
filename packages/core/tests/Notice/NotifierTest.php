@@ -382,16 +382,16 @@ final class NotifierTest extends SchemaTestCase
         self::assertSame(Status::Deferred->value, $this->message($user, 'Invoice', 'Invoice 7 is issued', 'invoices.7'));
         self::assertSame(NoticeController::SKIPPED, $this->message($user, 'Invoice', 'Invoice 7 is issued', 'invoices.7'), 'the deferred letter takes the item');
         $clock->sleep(7 * 3600 + 29 * self::MINUTE);
-        self::assertSame('', $this->release(), 'the quiet goes on past midnight');
+        self::assertSame('', $this->notices(), 'the quiet goes on past midnight');
         self::assertEmailCount(0);
 
         $clock->sleep(self::MINUTE);
-        self::assertSame('notices sent: 1, failed: 0', $this->release());
+        self::assertSame('notices sent: 1, failed: 0', $this->notices());
         $email = $this->letter();
         self::assertSame(['Village network: Invoice', 'Invoice 7 is issued'], [$email->getSubject(), $email->getTextBody()]);
         self::assertStringContainsString('Invoice 7 is issued</p>', (string) $email->getHtmlBody());
         self::assertSame([Status::Sent], array_map(static fn (Notice $notice): Status => $notice->getStatus(), $this->journal($user)));
-        self::assertSame('', $this->release(), 'a released letter goes once');
+        self::assertSame('', $this->notices(), 'a released letter goes once');
     }
 
     #[Group('ACMS-CORE-0131')]
@@ -415,7 +415,7 @@ final class NotifierTest extends SchemaTestCase
         $this->configure([MailChannel::HOST => '']);
         $clock->sleep(8 * 3600);
 
-        self::assertSame('notices sent: 0, failed: 1', $this->release());
+        self::assertSame('notices sent: 0, failed: 1', $this->notices());
         self::assertSame(
             [[Status::Failed, 'channel mail is not ready']],
             array_map(static fn (Notice $notice): array => [$notice->getStatus(), $notice->getError()], $this->journal($user)),
@@ -494,14 +494,6 @@ final class NotifierTest extends SchemaTestCase
         self::assertResponseIsSuccessful();
 
         return (string) $this->client->getResponse()->getContent();
-    }
-
-    private function release(): string
-    {
-        $release = self::command('adzercms:notices');
-        self::assertSame(Command::SUCCESS, $release->execute([]));
-
-        return trim($release->getDisplay());
     }
 
     private function mute(User $user, ContactKind $kind = ContactKind::Email): User

@@ -8,6 +8,7 @@ use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Notice\MailChannel;
 use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelayGateway;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Mime\Email;
 
 trait Delivery
@@ -34,6 +35,14 @@ trait Delivery
     protected function letterText(): string
     {
         return (string) $this->letter()->getTextBody();
+    }
+
+    protected function notices(): string
+    {
+        $notices = self::command('adzercms:notices');
+        self::assertSame(Command::SUCCESS, $notices->execute([]));
+
+        return trim($notices->getDisplay());
     }
 
     protected static function code(string $text): string

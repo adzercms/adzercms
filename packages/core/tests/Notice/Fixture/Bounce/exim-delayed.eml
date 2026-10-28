@@ -1,0 +1,38 @@
+Return-path: <>
+Envelope-to: {to}
+Delivery-date: Fri, 16 Oct 2026 12:00:01 +0300
+Auto-Submitted: auto-replied
+From: Mail Delivery System <Mailer-Daemon@mail.example.org>
+To: {to}
+Content-Type: multipart/report; report-type=delivery-status; boundary=1760605201-eximdsn-1804289383
+MIME-Version: 1.0
+Subject: Warning: message 1uyW5E-0000000027m-37Db delayed 2 hours
+Date: Fri, 16 Oct 2026 12:00:01 +0300
+
+--1760605201-eximdsn-1804289383
+Content-type: text/plain; charset=us-ascii
+
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 2 hours on the queue on mail.example.org.
+
+--1760605201-eximdsn-1804289383
+Content-type: message/delivery-status
+
+Reporting-MTA: dns; mail.example.org
+
+Action: delayed
+Final-Recipient: rfc822;{address}
+Status: 4.0.0
+Remote-MTA: dns; mx.example.org
+Will-Retry-Until: Mon, 19 Oct 2026 10:00:00 +0300
+
+--1760605201-eximdsn-1804289383
+Content-type: text/rfc822-headers
+
+Return-path: <{to}>
+From: Village network <robot@example.org>
+To: {address}
+Subject: Village network: Invoice
+
+--1760605201-eximdsn-1804289383--

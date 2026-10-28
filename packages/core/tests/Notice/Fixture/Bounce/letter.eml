@@ -1,0 +1,10 @@
+Return-path: <{address}>
+Envelope-to: {to}
+From: Owner <{address}>
+To: {to}
+Subject: Re: Village network: Invoice
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Action: failed
+Status: 5.0.0

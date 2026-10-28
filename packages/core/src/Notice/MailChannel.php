@@ -11,6 +11,7 @@ use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Setting\Settings;
+use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
@@ -27,17 +28,25 @@ final class MailChannel extends ContactChannel implements Owner
     public const PASSWORD = 'mail.password';
     public const SENDER = 'mail.sender';
     public const ACCOUNT = 'mail.account';
+    public const BOUNCE_ADDRESS = 'mail.bounce_address';
+    public const BOUNCE_HOST = 'mail.bounce_host';
+    public const BOUNCE_PORT = 'mail.bounce_port';
+    public const BOUNCE_LOGIN = 'mail.bounce_login';
+    public const BOUNCE_PASSWORD = 'mail.bounce_password';
+    public const BOUNCE_ACCOUNT = 'mail.bounce_account';
 
     public function __construct(
         private readonly Settings $settings,
         private readonly MailerInterface $mailer,
         private readonly Brand $brand,
+        private readonly Bounces $bounces,
     ) {
     }
 
     public function settingFields(): array
     {
         $section = t('core.setting.section.mail');
+        $bounces = t('core.setting.section.bounces');
 
         return [
             new Field(self::HOST, t('core.setting.mail_host'), section: $section, tab: Tab::Mail),
@@ -45,6 +54,11 @@ final class MailChannel extends ContactChannel implements Owner
             new Field(self::LOGIN, t('core.setting.mail_login'), group: self::ACCOUNT, section: $section, tab: Tab::Mail),
             new Field(self::PASSWORD, t('core.setting.mail_password'), Type::Secret, group: self::ACCOUNT, section: $section, tab: Tab::Mail),
             new Field(self::SENDER, t('core.setting.mail_sender'), section: $section, tab: Tab::Mail),
+            new Field(self::BOUNCE_ADDRESS, t('core.setting.bounce_address'), section: $bounces, tab: Tab::Mail),
+            new Field(self::BOUNCE_HOST, t('core.setting.bounce_host'), section: $bounces, tab: Tab::Mail),
+            new Field(self::BOUNCE_PORT, t('core.setting.mail_port'), section: $bounces, tab: Tab::Mail),
+            new Field(self::BOUNCE_LOGIN, t('core.setting.mail_login'), group: self::BOUNCE_ACCOUNT, section: $bounces, tab: Tab::Mail),
+            new Field(self::BOUNCE_PASSWORD, t('core.setting.mail_password'), Type::Secret, group: self::BOUNCE_ACCOUNT, section: $bounces, tab: Tab::Mail),
         ];
     }
 
@@ -80,8 +94,15 @@ final class MailChannel extends ContactChannel implements Owner
             $email->attach($attachment->body, $attachment->name, $attachment->mime);
         }
 
+        $envelope = null;
+        $sender = null === $notice ? null : $this->bounces->sender($notice);
+        if (null !== $sender) {
+            $envelope = Envelope::create($email);
+            $envelope->setSender($sender);
+        }
+
         try {
-            $this->mailer->send($email);
+            $this->mailer->send($email, $envelope);
         } catch (TransportExceptionInterface $failure) {
             throw new Undelivered($failure->getMessage(), previous: $failure);
         }

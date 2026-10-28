@@ -27,6 +27,7 @@
         "adzercms/contracts": "^1.0",
         "composer/metadata-minifier": "^1.0.1",
         "composer/semver": "^3.5.1",
+        "directorytree/imapengine": "^1.25.7",
         "doctrine/dbal": "^4.5",
         "doctrine/doctrine-bundle": "^3.3",
         "doctrine/doctrine-migrations-bundle": "^4.0",
@@ -70,7 +71,8 @@
         "symfony/translation-contracts": "^3.7",
         "symfony/twig-bundle": "7.4.*",
         "twig/cssinliner-extra": "^3.26",
-        "twig/twig": "^3.30"
+        "twig/twig": "^3.30",
+        "zbateson/mail-mime-parser": "^4.0.8"
     },
     "autoload": {
         "psr-4": {
