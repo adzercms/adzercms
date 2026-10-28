@@ -1023,8 +1023,10 @@ label.switch {
 
 .pay h2 { margin: 0 0 1.25rem; }
 .pay .muted { margin: 0.75rem 0; }
-.pay .detail { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem; margin: 0.6rem 0; }
-.pay .detail data { font-weight: 600; }
+.pay .info-grid { grid-template-columns: 1fr; gap: 0.6rem; text-align: left; }
+.pay .info-item { display: grid; grid-template-columns: 1fr auto; column-gap: 0.75rem; align-items: center; }
+.pay .info-item > button { grid-area: 1 / 2 / 3; align-self: center; margin: 0; }
+.pay .info-value { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .pay-methods { display: grid; gap: 0.6rem; }
 
 td.row-actions { width: 1%; text-align: right; white-space: nowrap; }
