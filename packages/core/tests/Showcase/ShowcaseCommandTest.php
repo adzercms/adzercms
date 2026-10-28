@@ -46,4 +46,20 @@ final class ShowcaseCommandTest extends SchemaTestCase
         self::assertStringStartsWith('{', $display, 'the showcase is an object even without sections');
         self::assertSame($showcase, json_decode($display, true, flags: \JSON_THROW_ON_ERROR));
     }
+
+    #[Group('ACMS-CORE-1012')]
+    public function testFileTakesTheShowcaseInsteadOfOutput(): void
+    {
+        $file = sys_get_temp_dir().'/adzercms-showcase-'.bin2hex(random_bytes(4)).'.json';
+        file_put_contents($file, 'previous');
+
+        $command = self::command('adzercms:showcase');
+        try {
+            self::assertSame(Command::SUCCESS, $command->execute(['file' => $file]));
+            self::assertSame('', $command->getDisplay());
+            self::assertSame([], json_decode((string) file_get_contents($file), true, flags: \JSON_THROW_ON_ERROR));
+        } finally {
+            unlink($file);
+        }
+    }
 }
