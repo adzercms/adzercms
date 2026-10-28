@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Admin;
 
-use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Guided;
 use AdzerCMS\Core\Composer\Description;
+use AdzerCMS\Core\Module\Bundles;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Setting\Catalog;
 use Doctrine\Migrations\DependencyFactory;
@@ -17,13 +17,9 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 
 final readonly class AssembledModules
 {
-    /**
-     * @param array<string, class-string> $bundles
-     * @param iterable<Guided>            $guides
-     */
+    /** @param iterable<Guided> $guides */
     public function __construct(
-        #[Autowire('%kernel.bundles%')]
-        private array $bundles,
+        private Bundles $bundles,
         private Catalog $settings,
         #[Autowire(service: 'doctrine.migrations.dependency_factory')]
         private DependencyFactory $migrations,
@@ -37,35 +33,17 @@ final readonly class AssembledModules
     {
         $fields = $this->settings->fields();
         $registry = Registry::installed();
-        $namespaces = [];
-
-        foreach ($this->bundles as $bundle) {
-            if (is_subclass_of($bundle, Module::class)) {
-                $namespaces[$bundle] = substr($bundle, 0, (int) strrpos($bundle, '\\'));
-            }
-        }
 
         $guides = [];
         foreach ($this->guides as $guided) {
-            $owner = null;
-            foreach ($namespaces as $bundle => $namespace) {
-                if (str_starts_with($guided::class, $namespace.'\\') && (null === $owner || \strlen($namespace) > \strlen($namespaces[$owner]))) {
-                    $owner = $bundle;
-                }
-            }
-
-            if (null === $owner) {
-                throw new \LogicException(\sprintf('guide %s lies outside of a module bundle namespace', $guided::class));
-            }
-
-            $guides[$owner] = $guided->guide();
+            $guides[$this->bundles->owner($guided)] = $guided->guide();
         }
 
         $modules = [];
-        foreach ($namespaces as $bundle => $namespace) {
+        foreach ($this->bundles->namespaces() as $bundle => $namespace) {
             $name = Registry::key($bundle);
             $prefix = Registry::settings($bundle);
-            $modules[strtolower($name)] = [
+            $modules[Registry::lowerKey($bundle)] = [
                 'name' => $name,
                 'description' => $registry->find($name)->description ?? new Description('', []),
                 'namespace' => $namespace,

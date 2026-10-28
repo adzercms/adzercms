@@ -173,9 +173,15 @@ final class Registry
         return substr((new \ReflectionClass($bundle))->getShortName(), 0, -\strlen('Bundle'));
     }
 
+    /** @param class-string $bundle */
+    public static function lowerKey(string $bundle): string
+    {
+        return strtolower(self::key($bundle));
+    }
+
     /** @param class-string<Module> $bundle */
     public static function settings(string $bundle): string
     {
-        return \sprintf('%s.%s.', $bundle::kind()->key(), strtolower(self::key($bundle)));
+        return \sprintf('%s.%s.', $bundle::kind()->key(), self::lowerKey($bundle));
     }
 }

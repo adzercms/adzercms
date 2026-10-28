@@ -7,6 +7,7 @@ use AdzerCMS\Core\Build\PreviewMark;
 use AdzerCMS\Core\Composer\Artifacts;
 use AdzerCMS\Core\Composer\Repositories;
 use AdzerCMS\Core\Login\Authorizations;
+use AdzerCMS\Core\Module\Bundles;
 use AdzerCMS\Core\Module\Catalog;
 use AdzerCMS\Core\Module\ComposerRunner;
 use AdzerCMS\Core\Module\Execution;
@@ -66,6 +67,7 @@ return static function (ContainerConfigurator $container): void {
     $services->set(Operations::class);
     $services->set(Staging::class);
     $services->set(Execution::class);
+    $services->set(Bundles::class);
     $services->set(Switches::class);
     $services->set(PreviewMark::class);
     $services->set(MigrationOrder::class);

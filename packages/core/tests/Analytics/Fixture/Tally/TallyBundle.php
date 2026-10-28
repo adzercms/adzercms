@@ -21,5 +21,6 @@ final class TallyBundle extends Module
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $container->services()->set(TallyCounter::class)->autoconfigure();
+        $container->services()->set(TallyShowcase::class)->autowire()->autoconfigure();
     }
 }

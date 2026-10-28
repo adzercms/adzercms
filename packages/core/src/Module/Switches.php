@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Module;
 
 use AdzerCMS\Contracts\Module\Credentials;
-use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Contracts\Module\Switchable;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Setting\Settings;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 use function Symfony\Component\Translation\t;
@@ -20,15 +18,11 @@ final class Switches implements Owner
 {
     public const ENABLED = 'enabled';
 
-    /**
-     * @param iterable<Switchable>        $modules
-     * @param array<string, class-string> $bundles
-     */
+    /** @param iterable<Switchable> $modules */
     public function __construct(
         #[AutowireIterator(Switchable::class)]
         private readonly iterable $modules,
-        #[Autowire('%kernel.bundles%')]
-        private readonly array $bundles,
+        private readonly Bundles $bundles,
         private readonly Settings $settings,
     ) {
     }
@@ -125,28 +119,17 @@ final class Switches implements Owner
     /** @return array<string, array{string, Switchable}> */
     private function keyed(): array
     {
-        $keys = [];
-        foreach ($this->bundles as $bundle) {
-            if (is_subclass_of($bundle, Module::class)) {
-                $keys[substr($bundle, 0, (int) strrpos($bundle, '\\') + 1)] = [Registry::settings($bundle), strtolower(Registry::key($bundle))];
-            }
-        }
-
         $keyed = [];
-        foreach ($keys as [, $key]) {
-            $keyed[$key] = null;
+        foreach (array_keys($this->bundles->namespaces()) as $bundle) {
+            $keyed[Registry::lowerKey($bundle)] = null;
         }
         foreach ($this->modules as $module) {
-            $owners = array_filter($keys, static fn (string $namespace): bool => str_starts_with($module::class, $namespace), \ARRAY_FILTER_USE_KEY);
-            if ([] === $owners) {
-                throw new \LogicException(\sprintf('switchable %s lies outside of a module bundle namespace', $module::class));
-            }
-            uksort($owners, static fn (string $left, string $right): int => \strlen($right) <=> \strlen($left));
-            [$prefix, $key] = reset($owners);
+            $bundle = $this->bundles->owner($module);
+            $key = Registry::lowerKey($bundle);
             if (null !== $keyed[$key]) {
                 throw new \LogicException(\sprintf('module %s has two switchables: %s and %s', $key, $keyed[$key][1]::class, $module::class));
             }
-            $keyed[$key] = [$prefix, $module];
+            $keyed[$key] = [Registry::settings($bundle), $module];
         }
 
         return array_filter($keyed);
