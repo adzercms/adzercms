@@ -215,8 +215,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     {
         $email = ContactKind::Email->normalize($email);
         if ($email !== $this->email) {
-            $this->undeliverableAt = null;
-            $this->undeliverableReason = null;
+            $this->markDeliverable();
         }
         $this->email = $email;
 
@@ -237,6 +236,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     {
         $this->undeliverableAt = now();
         $this->undeliverableReason = mb_substr($reason, 0, Notice::ERROR_LIMIT);
+
+        return $this;
+    }
+
+    public function markDeliverable(): self
+    {
+        $this->undeliverableAt = null;
+        $this->undeliverableReason = null;
 
         return $this;
     }

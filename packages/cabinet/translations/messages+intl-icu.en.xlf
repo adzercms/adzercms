@@ -7,6 +7,12 @@
         <target>Add</target>
       </segment>
     </unit>
+    <unit id="cabinet.contact.bounced">
+      <segment>
+        <source>cabinet.contact.bounced</source>
+        <target>Letters to {contact} come back undelivered: change the email or check it in the profile</target>
+      </segment>
+    </unit>
     <unit id="cabinet.contact.cancel">
       <segment>
         <source>cabinet.contact.cancel</source>
@@ -133,6 +139,12 @@
         <target>Contacts</target>
       </segment>
     </unit>
+    <unit id="cabinet.contact.undeliverable">
+      <segment>
+        <source>cabinet.contact.undeliverable</source>
+        <target>letters bounce</target>
+      </segment>
+    </unit>
     <unit id="cabinet.contact.unreachable">
       <segment>
         <source>cabinet.contact.unreachable</source>
@@ -143,6 +155,12 @@
       <segment>
         <source>cabinet.contact.unsent</source>
         <target>The confirmation was not sent, try again later</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.verify">
+      <segment>
+        <source>cabinet.contact.verify</source>
+        <target>Check the email</target>
       </segment>
     </unit>
     <unit id="cabinet.deletion.confirm_hint">
@@ -815,6 +833,30 @@
       <segment>
         <source>cabinet.theme.unknown</source>
         <target>No such theme</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.verify.agree">
+      <segment>
+        <source>cabinet.verify.agree</source>
+        <target>Confirm the email</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.verify.done">
+      <segment>
+        <source>cabinet.verify.done</source>
+        <target>The email is confirmed, notifications go to it again</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.verify.hint">
+      <segment>
+        <source>cabinet.verify.hint</source>
+        <target>The letter with the link has arrived: after the confirmation notifications go to this email again.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.verify.title">
+      <segment>
+        <source>cabinet.verify.title</source>
+        <target>Email check</target>
       </segment>
     </unit>
   </file>

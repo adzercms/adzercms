@@ -7,6 +7,12 @@
         <target>Добавить</target>
       </segment>
     </unit>
+    <unit id="cabinet.contact.bounced">
+      <segment>
+        <source>cabinet.contact.bounced</source>
+        <target>Письма на {contact} возвращаются недоставленными: смените почту либо проверьте её в профиле</target>
+      </segment>
+    </unit>
     <unit id="cabinet.contact.cancel">
       <segment>
         <source>cabinet.contact.cancel</source>
@@ -133,6 +139,12 @@
         <target>Контакты</target>
       </segment>
     </unit>
+    <unit id="cabinet.contact.undeliverable">
+      <segment>
+        <source>cabinet.contact.undeliverable</source>
+        <target>письма не доходят</target>
+      </segment>
+    </unit>
     <unit id="cabinet.contact.unreachable">
       <segment>
         <source>cabinet.contact.unreachable</source>
@@ -143,6 +155,12 @@
       <segment>
         <source>cabinet.contact.unsent</source>
         <target>Подтверждение не отправилось, повторите позже</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.contact.verify">
+      <segment>
+        <source>cabinet.contact.verify</source>
+        <target>Проверить почту</target>
       </segment>
     </unit>
     <unit id="cabinet.deletion.confirm_hint">
@@ -815,6 +833,30 @@
       <segment>
         <source>cabinet.theme.unknown</source>
         <target>Такой темы нет</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.verify.agree">
+      <segment>
+        <source>cabinet.verify.agree</source>
+        <target>Подтвердить почту</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.verify.done">
+      <segment>
+        <source>cabinet.verify.done</source>
+        <target>Почта подтверждена, оповещения снова идут на неё</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.verify.hint">
+      <segment>
+        <source>cabinet.verify.hint</source>
+        <target>Письмо со ссылкой дошло: после подтверждения оповещения снова пойдут на эту почту.</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.verify.title">
+      <segment>
+        <source>cabinet.verify.title</source>
+        <target>Проверка почты</target>
       </segment>
     </unit>
   </file>

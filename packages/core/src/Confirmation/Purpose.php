@@ -12,6 +12,7 @@ enum Purpose: string
     case Delayed = 'delayed';
     case Release = 'release';
     case Revert = 'revert';
+    case Verify = 'verify';
     case Deletion = 'deletion';
     case Messenger = 'messenger';
 }

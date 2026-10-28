@@ -289,6 +289,12 @@
         <target>Email change</target>
       </segment>
     </unit>
+    <unit id="core.event.mail_verify">
+      <segment>
+        <source>core.event.mail_verify</source>
+        <target>Email check</target>
+      </segment>
+    </unit>
     <unit id="core.event.message">
       <segment>
         <source>core.event.message</source>
@@ -893,6 +899,36 @@
       <segment>
         <source>core.notice.mail_changed.title</source>
         <target>{state, select, delayed {Email change} other {Email changed}}</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_verify.action">
+      <segment>
+        <source>core.notice.mail_verify.action</source>
+        <target>The email works</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_verify.body">
+      <segment>
+        <source>core.notice.mail_verify.body</source>
+        <target>Letters of {brand} to {contact} came back undelivered. Confirm that the email takes letters: notifications go to it again.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_verify.note">
+      <segment>
+        <source>core.notice.mail_verify.note</source>
+        <target>If you did not request the check, ignore this letter.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_verify.subject">
+      <segment>
+        <source>core.notice.mail_verify.subject</source>
+        <target>{brand}: email check</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_verify.title">
+      <segment>
+        <source>core.notice.mail_verify.title</source>
+        <target>Email check</target>
       </segment>
     </unit>
     <unit id="core.notice.password_issued.action">

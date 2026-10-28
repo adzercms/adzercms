@@ -1,0 +1,15 @@
+{% extends '@Cabinet/cabinet/auth.html.twig' %}
+
+{% block title %}{{ 'cabinet.verify.title'|trans }}{% endblock %}
+
+{% block subtitle %}<p class="auth-subtitle">{{ contact }}</p>{% endblock %}
+
+{% block auth %}
+<form method="post">
+    {{ csrf_field() }}
+    <p class="hint">{{ 'cabinet.verify.hint'|trans }}</p>
+    <button class="wide" type="submit">{{ 'cabinet.verify.agree'|trans }}</button>
+</form>
+
+<p class="auth-links"><a href="{{ path('cabinet_login') }}">{{ 'cabinet.login.back'|trans }}</a></p>
+{% endblock %}

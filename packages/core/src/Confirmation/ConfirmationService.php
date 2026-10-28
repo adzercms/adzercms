@@ -72,6 +72,11 @@ final readonly class ConfirmationService
         return $this->mailLink($user, Purpose::Deletion, CabinetEntry::Deletion, CoreEvent::AccountDeletion);
     }
 
+    public function requestVerify(User $user): ContactOutcome
+    {
+        return $this->mailLink($user, Purpose::Verify, CabinetEntry::ContactVerify, CoreEvent::MailVerify, $user->getEmail());
+    }
+
     public function requestRegistration(string $contact): ContactOutcome
     {
         $kind = ContactKind::of($contact);
@@ -112,7 +117,9 @@ final readonly class ConfirmationService
 
     public function askFormer(User $user, string $wanted): ContactOutcome
     {
-        return $this->toMail($wanted, fn (string $mail): ContactOutcome => $this->askRelease($user, $mail));
+        return null === $user->reachableContact(ContactKind::Email)
+            ? ContactOutcome::Unavailable
+            : $this->toMail($wanted, fn (string $mail): ContactOutcome => $this->askRelease($user, $mail));
     }
 
     public function askPhone(User $user, string $wanted): ContactOutcome
@@ -268,6 +275,19 @@ final readonly class ConfirmationService
         return true;
     }
 
+    public function verifyMail(Confirmation $confirmation): bool
+    {
+        $user = $confirmation->requireUser();
+        $current = $user->getEmail() === $confirmation->getContact();
+        $confirmation->use();
+        if ($current) {
+            $user->markDeliverable();
+        }
+        $this->em->flush();
+
+        return $current;
+    }
+
     public function awaited(User $user, Purpose $purpose): ?string
     {
         $confirmation = $this->confirmations->last($purpose, Kind::Code, $user);
@@ -335,13 +355,13 @@ final readonly class ConfirmationService
         return $user;
     }
 
-    private function mailLink(User $user, Purpose $purpose, CabinetEntry $entry, CoreEvent $event): ContactOutcome
+    private function mailLink(User $user, Purpose $purpose, CabinetEntry $entry, CoreEvent $event, ?string $contact = null): ContactOutcome
     {
         if (null === $user->getEmail() || !$this->notifier->reachable(ContactKind::Email)) {
             return ContactOutcome::Unavailable;
         }
 
-        $token = $this->secrets->link($purpose, $user);
+        $token = $this->secrets->link($purpose, $user, $contact);
 
         return null === $token ? ContactOutcome::TooOften : self::outcome($this->notifier->notifyMail($user, $event, [
             'url' => $this->url($entry, ['token' => $token]),

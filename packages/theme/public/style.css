@@ -686,6 +686,7 @@ button:disabled { opacity: 0.5; pointer-events: none; }
 
 .fields > .field { display: flex; flex-direction: column; margin-bottom: 0.9rem; }
 .fields > .field > .contact-change { margin-top: auto; }
+.fields > .field > .contact-change ~ .contact-change { margin-top: 0.5rem; }
 .contact-change { margin-top: 0.5rem; }
 .inline-change-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem; }
 .inline-change-form input { width: auto; flex: 1 1 12rem; }

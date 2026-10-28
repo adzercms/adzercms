@@ -17,6 +17,7 @@ use AdzerCMS\Core\Account\Theme;
 use AdzerCMS\Core\Confirmation\Confirmations;
 use AdzerCMS\Core\Confirmation\ConfirmationService;
 use AdzerCMS\Core\Confirmation\Purpose;
+use AdzerCMS\Core\Entity\Confirmation;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Login\Authorizations;
 use AdzerCMS\Core\Login\ConnectedServices;
@@ -38,6 +39,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
 
@@ -110,8 +112,10 @@ final class AccountController extends AbstractController
                 'state' => match (true) {
                     ContactKind::Email === $kind && null !== $delayed => Badge::warn(t('cabinet.contact.delayed', ['contact' => $delayed->getAddress(), 'until' => $delayed->getDueAt()])),
                     null === $user->getContact($kind) => Badge::idle(t('cabinet.contact.empty')),
+                    null === $user->reachableContact($kind) => Badge::bad(t('cabinet.contact.undeliverable')),
                     default => Badge::good(t('cabinet.contact.confirmed')),
                 },
+                'bounce' => ContactKind::Email === $kind ? $user->getUndeliverableReason() : null,
                 'open' => \in_array($kind, $kinds, true),
             ], ContactKind::cases()),
             'awaited' => $confirmations->awaited($user, Purpose::Contact),
@@ -201,6 +205,7 @@ final class AccountController extends AbstractController
             'user' => $user,
             'contact' => $contact,
             'awaited' => null !== $awaited,
+            'former' => $user->reachableContact(ContactKind::Email),
             'phone' => $confirmations->releasePhone($user),
             'services' => array_intersect_key($logins->enabled(), $connected),
             'linked' => $connected,
@@ -271,6 +276,17 @@ final class AccountController extends AbstractController
         return $this->redirectToRoute('cabinet_profile');
     }
 
+    #[Route('/profile/email/verify', name: 'cabinet_profile_email_verify', methods: ['POST'])]
+    #[IsGranted(Role::USER)]
+    public function verifyEmail(#[CurrentUser] User $user, ConfirmationService $confirmations): Response
+    {
+        if (null !== $user->getUndeliverableAt()) {
+            $this->addFlash(...ContactFlash::of($confirmations->requestVerify($user), (string) $user->getEmail(), $user));
+        }
+
+        return $this->redirectToRoute('cabinet_profile');
+    }
+
     #[Route('/profile/contact/code', name: 'cabinet_profile_contact_code', methods: ['POST'])]
     #[IsGranted(Role::USER)]
     public function contactCode(#[CurrentUser] User $user, Request $request, ConfirmationService $confirmations, Intent $intent): Response
@@ -312,44 +328,37 @@ final class AccountController extends AbstractController
     #[Route('/contact/release/{token}', name: 'cabinet_contact_release', requirements: ['token' => '[0-9a-f]{64}'], methods: ['GET', 'POST'])]
     public function contactRelease(Request $request, string $token, ConfirmationService $confirmations): Response
     {
-        $pending = $confirmations->pending(Purpose::Release, $token);
-
-        if (null === $pending) {
-            $this->addFlash('error', t('cabinet.contact.release_link'));
-
-            return $this->redirectToRoute('cabinet_login');
-        }
-
-        $contact = (string) $pending->getContact();
-
-        if (!$request->isMethod('POST')) {
-            return $this->render('@Cabinet/cabinet/contact_release.html.twig', ['user' => $pending->requireUser(), 'contact' => $contact]);
-        }
-
-        $this->addFlash(...ContactFlash::of($confirmations->release($pending), $contact, $pending->requireUser()));
-
-        return $this->redirectToRoute('cabinet_login');
+        return $this->confirmationPage(
+            $request,
+            $confirmations->pending(Purpose::Release, $token),
+            '@Cabinet/cabinet/contact_release.html.twig',
+            'cabinet.contact.release_link',
+            static fn (Confirmation $pending): array => ContactFlash::of($confirmations->release($pending), (string) $pending->getContact(), $pending->requireUser()),
+        );
     }
 
     #[Route('/contact/revert/{token}', name: 'cabinet_contact_revert', requirements: ['token' => '[0-9a-f]{64}'], methods: ['GET', 'POST'])]
     public function contactRevert(Request $request, string $token, ConfirmationService $confirmations): Response
     {
-        $pending = $confirmations->pending(Purpose::Revert, $token);
+        return $this->confirmationPage(
+            $request,
+            $confirmations->pending(Purpose::Revert, $token),
+            '@Cabinet/cabinet/contact_revert.html.twig',
+            'cabinet.contact.link',
+            static fn (Confirmation $pending): array => $confirmations->revertMail($pending) ? ['success', t('cabinet.revert.done')] : ['error', t('cabinet.contact.taken')],
+        );
+    }
 
-        if (null === $pending) {
-            $this->addFlash('error', t('cabinet.contact.link'));
-
-            return $this->redirectToRoute('cabinet_login');
-        }
-
-        if (!$request->isMethod('POST')) {
-            return $this->render('@Cabinet/cabinet/contact_revert.html.twig', ['user' => $pending->requireUser(), 'contact' => (string) $pending->getContact()]);
-        }
-
-        $returned = $confirmations->revertMail($pending);
-        $this->addFlash($returned ? 'success' : 'error', t($returned ? 'cabinet.revert.done' : 'cabinet.contact.taken'));
-
-        return $this->redirectToRoute('cabinet_login');
+    #[Route('/contact/verify/{token}', name: 'cabinet_contact_verify', requirements: ['token' => '[0-9a-f]{64}'], methods: ['GET', 'POST'])]
+    public function contactVerify(Request $request, string $token, ConfirmationService $confirmations): Response
+    {
+        return $this->confirmationPage(
+            $request,
+            $confirmations->pending(Purpose::Verify, $token),
+            '@Cabinet/cabinet/contact_verify.html.twig',
+            'cabinet.contact.link',
+            static fn (Confirmation $pending): array => $confirmations->verifyMail($pending) ? ['success', t('cabinet.verify.done')] : ['error', t('cabinet.contact.link')],
+        );
     }
 
     #[Route('/profile/service/{service}', name: 'cabinet_service_unlink', requirements: ['service' => '[a-z0-9_]+'], methods: ['POST'])]
@@ -482,20 +491,34 @@ final class AccountController extends AbstractController
     public function delete(Request $request, string $token, AccountDeletion $deletion, ConfirmationService $confirmations): Response
     {
         $this->deletable($deletion);
-        $pending = $confirmations->pending(Purpose::Deletion, $token);
 
+        return $this->confirmationPage(
+            $request,
+            $confirmations->pending(Purpose::Deletion, $token),
+            '@Cabinet/cabinet/delete.html.twig',
+            'cabinet.deletion.link',
+            static function (Confirmation $pending) use ($deletion): array {
+                $refusal = $deletion->confirm($pending);
+
+                return null === $refusal ? ['success', t('cabinet.deletion.done')] : ['error', $refusal->reason];
+            },
+        );
+    }
+
+    /** @param \Closure(Confirmation): array{string, TranslatableInterface} $apply */
+    private function confirmationPage(Request $request, ?Confirmation $pending, string $template, string $expired, \Closure $apply): Response
+    {
         if (null === $pending) {
-            $this->addFlash('error', t('cabinet.deletion.link'));
+            $this->addFlash('error', t($expired));
 
             return $this->redirectToRoute('cabinet_login');
         }
 
         if (!$request->isMethod('POST')) {
-            return $this->render('@Cabinet/cabinet/delete.html.twig', ['user' => $pending->requireUser()]);
+            return $this->render($template, ['user' => $pending->requireUser(), 'contact' => (string) $pending->getContact()]);
         }
 
-        $refusal = $deletion->confirm($pending);
-        $this->addFlash(null === $refusal ? 'success' : 'error', $refusal->reason ?? t('cabinet.deletion.done'));
+        $this->addFlash(...$apply($pending));
 
         return $this->redirectToRoute('cabinet_login');
     }

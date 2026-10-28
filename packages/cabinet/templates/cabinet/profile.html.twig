@@ -161,7 +161,14 @@
                             {{ badge(contact.state) }}
                         </label>
                         <div class="settings-value">{{ contact.value ?? blank() }}</div>
+                        {% if contact.bounce %}<span class="hint">{{ contact.bounce }}</span>{% endif %}
                         {% if contact.open %}
+                            {% if contact.bounce %}
+                                <form method="post" action="{{ path('cabinet_profile_email_verify') }}" class="contact-change">
+                                    {{ csrf_field() }}
+                                    <button class="small" type="submit">{{ 'cabinet.contact.verify'|trans }}</button>
+                                </form>
+                            {% endif %}
                             <details class="reveal contact-change">
                                 <summary class="button secondary small">{{ (contact.value ? 'cabinet.contact.change' : 'cabinet.contact.add')|trans }}</summary>
                                 <form method="post" action="{{ path('cabinet_profile_contact') }}" class="inline-change-form">

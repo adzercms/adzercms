@@ -22,14 +22,16 @@
         <form id="email-cancel" method="post" action="{{ path('cabinet_profile_email_cancel') }}">{{ csrf_field() }}</form>
     {% else %}
         <div class="fields">
-            <div class="field">
-                <label>{{ 'cabinet.email.former'|trans }}</label>
-                <div class="settings-value">{{ user.email }}</div>
-                <form method="post" action="{{ path('cabinet_profile_email_ask', {way: 'former'}) }}" class="contact-change">
-                    {{ csrf_field() }}<input type="hidden" name="contact" value="{{ contact }}">
-                    <button class="small" type="submit">{{ 'cabinet.email.send'|trans }}</button>
-                </form>
-            </div>
+            {% if former %}
+                <div class="field">
+                    <label>{{ 'cabinet.email.former'|trans }}</label>
+                    <div class="settings-value">{{ former }}</div>
+                    <form method="post" action="{{ path('cabinet_profile_email_ask', {way: 'former'}) }}" class="contact-change">
+                        {{ csrf_field() }}<input type="hidden" name="contact" value="{{ contact }}">
+                        <button class="small" type="submit">{{ 'cabinet.email.send'|trans }}</button>
+                    </form>
+                </div>
+            {% endif %}
             {% if phone %}
                 <div class="field">
                     <label>{{ 'cabinet.email.phone'|trans }}</label>

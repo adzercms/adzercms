@@ -16,6 +16,7 @@ use AdzerCMS\Core\Tests\Seo\Fixture\GuideController;
 use AdzerCMS\Core\Tests\Seo\Fixture\GuidePages;
 use AdzerCMS\Core\Tests\Setting\Fixture\Shop;
 use AdzerCMS\Core\Tests\Translation\Fixture\LocaleController;
+use AdzerCMS\Core\Tests\Ui\Fixture\Desk;
 use AdzerCMS\Core\Tests\Ui\Fixture\FrameController;
 use AdzerCMS\Core\Tests\Ui\Fixture\Ledger;
 use AdzerCMS\Core\Tests\Ui\Fixture\ListController;
@@ -30,6 +31,7 @@ return static function (ContainerConfigurator $container): void {
     $services->set(Ledger::class)->autoconfigure()->public();
     $services->set(Masthead::class)->autoconfigure();
     $services->set(Pager::class)->autoconfigure();
+    $services->set(Desk::class)->autoconfigure()->public();
     $services->set(EchoListener::class)->autoconfigure();
     $services->set(CatchListener::class)->autoconfigure();
     $services->set(FlareChannel::class)->autoconfigure()->autowire()->public();

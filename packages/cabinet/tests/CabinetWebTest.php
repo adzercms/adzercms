@@ -18,6 +18,7 @@ use AdzerCMS\Core\Tests\Login\Fixture\Latch\LatchService;
 use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelayGateway;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Tests\ServiceLogin;
+use AdzerCMS\Core\Tests\Ui\Fixture\Desk;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
@@ -248,6 +249,46 @@ final class CabinetWebTest extends SchemaTestCase
 
         $this->client->request('GET', $release);
         self::assertResponseRedirects('/login', null, 'the consent link works once');
+    }
+
+    #[Group('ACMS-CORE-0097')]
+    #[Group('ACMS-US-0002')]
+    public function testUndeliverableMailIsNotAskedForConsent(): void
+    {
+        $this->configure(self::MAIL);
+        $user = $this->record('79990000010', 'abonent@example.org')->markUndeliverable('550 5.1.1 User unknown');
+        $this->em->flush();
+        $this->client->loginUser($user);
+
+        $this->client->submit($this->contactForm(ContactKind::Email, 'fresh@example.org'));
+        self::assertCount(0, $this->client->followRedirect()->filter('form[action="/profile/email/former"]'), 'the undeliverable mail is not offered for consent');
+
+        $this->post('/profile/email/former', ['contact' => 'fresh@example.org']);
+        self::assertEmailCount(0, null, 'the undeliverable mail gets no consent link');
+    }
+
+    #[Group('ACMS-CORE-1010')]
+    #[Group('ACMS-US-0002')]
+    public function testUndeliverableMailIsVerifiedByLinkToIt(): void
+    {
+        self::service(Desk::class)->open = true;
+        $this->configure(self::MAIL);
+        $user = $this->record('79990000010', 'abonent@example.org')->markUndeliverable('550 5.1.1 User unknown');
+        $this->em->flush();
+        $this->client->loginUser($user);
+
+        self::assertSame('/profile', $this->client->request('GET', '/cabinet')->filter('.flash-error a')->attr('href'), 'the home asks to change the mail in the profile');
+        $cell = $this->client->request('GET', '/profile')->filter('.field')->reduce(static fn (Crawler $field): bool => str_contains($field->text(), 'abonent@example.org'));
+        self::assertStringContainsString('550 5.1.1 User unknown', $cell->text(), 'the mail cell names the bounce');
+
+        $this->client->submit($cell->filter('form[action="/profile/email/verify"]')->form());
+        self::assertSame('abonent@example.org', $this->letter()->getTo()[0]->getAddress(), 'the check goes to the undeliverable mail');
+        $page = $this->client->request('GET', self::link('#/contact/verify/[0-9a-f]{64}#', $this->letterText()));
+        self::assertNotNull($this->reread($user)->getUndeliverableAt(), 'opening the link keeps the mark');
+
+        $this->client->submit($page->selectButton(self::phrase('cabinet.verify.agree'))->form());
+        self::assertNull($this->reread($user)->getUndeliverableAt());
+        self::assertCount(0, $this->client->request('GET', '/cabinet')->filter('.flash-error'), 'the home asks no more');
     }
 
     #[Group('ACMS-CORE-0097')]

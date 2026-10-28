@@ -15,6 +15,7 @@
 </label>
 <label>{{ 'admin.user.email'|trans }}
     <input type="email" name="email" value="{{ user.email }}">
+    {% if user.undeliverableAt %}<span class="field-refusal">{{ 'admin.user.undeliverable'|trans({at: user.undeliverableAt, reason: user.undeliverableReason}) }}</span>{% endif %}
 </label>
 {% if user is same as(app.user) %}
     <label>{{ 'admin.user.state'|trans }}

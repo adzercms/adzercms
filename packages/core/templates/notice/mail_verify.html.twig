@@ -1,0 +1,17 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+{% import '@Core/notice/_macros.html.twig' as mail %}
+
+{% block subject %}{{ 'core.notice.mail_verify.subject'|trans({brand: brand.title}) }}{% endblock %}
+
+{% block text %}
+{{ 'core.notice.mail_verify.body'|trans({brand: brand.title, contact: user.email}) }} {{ url }}
+{{ 'core.notice.lifetime'|trans({minutes: minutes}) }}
+{{ 'core.notice.mail_verify.note'|trans }}
+{% endblock %}
+
+{% block content %}
+<h2>{{ 'core.notice.mail_verify.title'|trans }}</h2>
+<p>{{ 'core.notice.mail_verify.body'|trans({brand: brand.title, contact: user.email}) }}</p>
+{{ mail.link(url, 'core.notice.mail_verify.action'|trans, minutes) }}
+<p class="note">{{ 'core.notice.mail_verify.note'|trans }}</p>
+{% endblock %}

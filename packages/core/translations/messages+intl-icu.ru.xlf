@@ -289,6 +289,12 @@
         <target>Смена почты</target>
       </segment>
     </unit>
+    <unit id="core.event.mail_verify">
+      <segment>
+        <source>core.event.mail_verify</source>
+        <target>Проверка почты</target>
+      </segment>
+    </unit>
     <unit id="core.event.message">
       <segment>
         <source>core.event.message</source>
@@ -893,6 +899,36 @@
       <segment>
         <source>core.notice.mail_changed.title</source>
         <target>{state, select, delayed {Смена почты} other {Почта сменена}}</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_verify.action">
+      <segment>
+        <source>core.notice.mail_verify.action</source>
+        <target>Почта работает</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_verify.body">
+      <segment>
+        <source>core.notice.mail_verify.body</source>
+        <target>Письма {brand} на почту {contact} возвращались недоставленными. Подтвердите, что почта принимает письма: оповещения снова пойдут на неё.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_verify.note">
+      <segment>
+        <source>core.notice.mail_verify.note</source>
+        <target>Если проверку запрашивали не вы, письмо можно не читать.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_verify.subject">
+      <segment>
+        <source>core.notice.mail_verify.subject</source>
+        <target>{brand}: проверка почты</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.mail_verify.title">
+      <segment>
+        <source>core.notice.mail_verify.title</source>
+        <target>Проверка почты</target>
       </segment>
     </unit>
     <unit id="core.notice.password_issued.action">

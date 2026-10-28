@@ -244,6 +244,22 @@ final class AdminWebTest extends SchemaTestCase
         self::assertSame('79990000010', $returned->getPhone());
     }
 
+    #[Group('ACMS-CORE-1009')]
+    #[Group('ACMS-US-0003')]
+    public function testProfileMarksUndeliverableMailWithReasonAndMoment(): void
+    {
+        self::mockTime('2026-10-16 10:00');
+        $user = $this->record('79990000010', 'abonent@example.org')->markUndeliverable('550 5.1.1 User unknown');
+        $this->em->flush();
+        $this->client->loginUser($this->admin);
+
+        $mail = $this->client->request('GET', \sprintf('/admin/users/%d', $user->getId()))->filter('input[name="email"]')->closest('label');
+        self::assertSame(
+            self::phrase('admin.user.undeliverable', ['at' => new \DateTimeImmutable('2026-10-16 10:00'), 'reason' => '550 5.1.1 User unknown']),
+            $mail?->filter('.field-refusal')->text(),
+        );
+    }
+
     #[Group('ACMS-UI-0021')]
     #[Group('ACMS-CORE-0069')]
     #[Group('ACMS-US-0003')]

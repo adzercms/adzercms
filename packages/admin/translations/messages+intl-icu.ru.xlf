@@ -655,6 +655,12 @@
         <target>Пользователь #{id}</target>
       </segment>
     </unit>
+    <unit id="admin.user.undeliverable">
+      <segment>
+        <source>admin.user.undeliverable</source>
+        <target>Письма не доходят с {at, date, ::yMMddjmm}: {reason}</target>
+      </segment>
+    </unit>
     <unit id="admin.users.add">
       <segment>
         <source>admin.users.add</source>

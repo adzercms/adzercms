@@ -3,6 +3,9 @@
 {% block title %}{{ 'cabinet.menu.home'|trans }}{% endblock %}
 
 {% block page %}
+{% if app.user.undeliverableAt %}
+    <p class="flash flash-error"><a href="{{ path('cabinet_profile') }}">{{ 'cabinet.contact.bounced'|trans({contact: app.user.email}) }}</a></p>
+{% endif %}
 {% for part in fragments('cabinet.home', app.user.id) %}{% include part.template with part.context only %}{% endfor %}
 {% if tabs|length > 1 %}
     <nav class="tabs">

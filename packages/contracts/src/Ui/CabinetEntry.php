@@ -18,6 +18,7 @@ enum CabinetEntry: string
     case ContactConfirm = 'contact_confirm';
     case ContactRelease = 'contact_release';
     case ContactRevert = 'contact_revert';
+    case ContactVerify = 'contact_verify';
 
     public function route(): string
     {
@@ -33,6 +34,7 @@ enum CabinetEntry: string
             self::ContactConfirm => 'cabinet_contact_confirm',
             self::ContactRelease => 'cabinet_contact_release',
             self::ContactRevert => 'cabinet_contact_revert',
+            self::ContactVerify => 'cabinet_contact_verify',
         };
     }
 
