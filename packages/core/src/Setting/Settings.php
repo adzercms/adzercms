@@ -102,7 +102,7 @@ final class Settings implements ResetInterface
             return new Refusal(t('core.setting.toggle', ['field' => $field->label]));
         }
 
-        if (Type::Choice === $field->type && !isset($field->choices[$value])) {
+        if (Type::Choice === $field->type && !isset($field->choices()[$value])) {
             return new Refusal(t('core.setting.choice', ['field' => $field->label]));
         }
 

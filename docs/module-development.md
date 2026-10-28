@@ -244,6 +244,8 @@ An applied migration is remembered by its class name. If the module changes its 
 
 A service implementing `AdzerCMS\Contracts\Setting\Owner` declares setting fields. Keys start with the module prefix; if two owners declare the same key, the settings catalog won't build. Values are changed with `bin/console adzercms:setting`.
 
+`settingFields()` reads no data: the static checks call it without a database. A `Type::Choice` field whose variants come from data passes `choices:` a closure; the form and the value check call it.
+
 In the admin, the fields of a module make its own settings tab titled by the `<module>.setting.area` phrase; module tabs follow the core tabs in title order. A field with `tab:` set to a case of `AdzerCMS\Contracts\Setting\Tab` goes to that core tab instead. `section:` puts fields under a heading, and fields without a section open the tab without one. A label fits one line of a column: the setting's name, then the unit after a comma.
 
 ## Values for the project site

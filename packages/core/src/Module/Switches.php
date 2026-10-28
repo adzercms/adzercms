@@ -33,7 +33,7 @@ final class Switches implements Owner
         foreach ($this->keyed() as [$prefix, $module]) {
             $fields[] = new Field($prefix.self::ENABLED, t('core.setting.enabled'), Type::Toggle);
             foreach ($module->credentials() as $field) {
-                $fields[] = $this->prefixed($prefix, $field);
+                $fields[] = $field->prefixed($prefix);
             }
         }
 
@@ -83,7 +83,7 @@ final class Switches implements Owner
 
     public function setting(Switchable $module, Field $field): Field
     {
-        return $this->prefixed($this->owner($module)[1], $field);
+        return $field->prefixed($this->owner($module)[1]);
     }
 
     public function key(Switchable $module): string
@@ -101,19 +101,6 @@ final class Switches implements Owner
         }
 
         throw new \LogicException(\sprintf('switchable %s belongs to no selected module', $module::class));
-    }
-
-    private function prefixed(string $prefix, Field $field): Field
-    {
-        return new Field(
-            $prefix.$field->name,
-            $field->label,
-            $field->type,
-            $field->required,
-            $field->choices,
-            null === $field->group ? null : $prefix.$field->group,
-            $field->section,
-        );
     }
 
     /** @return array<string, array{string, Switchable}> */

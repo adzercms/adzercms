@@ -15,6 +15,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - Notice channels of modules: a feature module brings its own channel after the bots
 - Sums carry the ruble sign in the reader's language through ICU: the `money` and `precise` filters, `Money::rubles()` and `Money::precise()` give a translatable `Sum` for phrase arguments
 - Setting field `Type::Color`: the admin picks the color in the browser's color picker, the setting keeps `#rrggbb`
+- Variants of a `Type::Choice` setting field from data: `choices:` takes a closure that the form and the value check call, `Field::choices()` gives the variants; the package console runs without a database, so the field list reads no data
 - Setting tabs `AdzerCMS\Contracts\Setting\Tab`: the core settings sit on the tabs General, Branding, Mail and notices, a field joins a core tab by `tab:`; module tabs follow in title order, fields without a section open a tab, labels and fields of a row line up
 - File field `@Theme/_file.html.twig`: a button in the language of the page and the picked file names over the native field, which keeps drag and drop and form validation
 - Fragment place `Fragment::CABINET_PROFILE`: the profile under the contacts

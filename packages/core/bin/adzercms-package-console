@@ -21,6 +21,7 @@ if (false === $directory || !is_file($directory.'/composer.json')) {
 
 $input = new ArgvInput([$_SERVER['argv'][0] ?? '', ...array_slice($tokens, 1)]);
 $env = (string) $input->getParameterOption(['--env', '-e'], 'test', true);
+$_SERVER['DATABASE_URL'] = $_ENV['DATABASE_URL'] = '';
 ModuleSuite::environment($env);
 
 if (ModuleSuite::root() !== $directory) {
