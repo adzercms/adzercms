@@ -1025,8 +1025,8 @@ label.switch {
 .pay .muted { margin: 0.75rem 0; }
 .pay .info-grid { grid-template-columns: 1fr; gap: 0.6rem; text-align: left; }
 .pay .info-item { display: grid; grid-template-columns: 1fr auto; column-gap: 0.75rem; align-items: center; }
-.pay .info-item > button { grid-area: 1 / 2 / 3; align-self: center; margin: 0; }
-.pay .info-value { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pay .info-item > button { grid-area: 1 / 2; margin: 0; }
+.pay .info-value { grid-column: 1 / -1; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .pay-methods { display: grid; gap: 0.6rem; }
 
 td.row-actions { width: 1%; text-align: right; white-space: nowrap; }
