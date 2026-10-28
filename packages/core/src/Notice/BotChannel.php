@@ -62,7 +62,7 @@ final readonly class BotChannel implements Channel
         return $recipients;
     }
 
-    public function send(string $recipient, Letter $letter): void
+    public function send(string $recipient, Letter $letter, ?int $notice = null): void
     {
         try {
             $this->gateway->send($this->credentials, $recipient, $letter->text);

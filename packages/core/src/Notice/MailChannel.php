@@ -68,7 +68,7 @@ final class MailChannel extends ContactChannel implements Owner
         return true;
     }
 
-    public function send(string $recipient, Letter $letter): void
+    public function send(string $recipient, Letter $letter, ?int $notice = null): void
     {
         $email = (new Email())
             ->from(new Address($this->settings->get(self::SENDER), $this->brand->title()))

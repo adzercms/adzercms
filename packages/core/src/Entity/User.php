@@ -82,6 +82,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $deletedAt = null;
 
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $undeliverableAt = null;
+
+    #[ORM\Column(length: Notice::ERROR_LIMIT, nullable: true)]
+    private ?string $undeliverableReason = null;
+
     public function __construct()
     {
         $this->createdAt = now();
@@ -207,7 +213,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
 
     public function setEmail(?string $email): self
     {
-        $this->email = ContactKind::Email->normalize($email);
+        $email = ContactKind::Email->normalize($email);
+        if ($email !== $this->email) {
+            $this->undeliverableAt = null;
+            $this->undeliverableReason = null;
+        }
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getUndeliverableAt(): ?\DateTimeImmutable
+    {
+        return $this->undeliverableAt;
+    }
+
+    public function getUndeliverableReason(): ?string
+    {
+        return $this->undeliverableReason;
+    }
+
+    public function markUndeliverable(string $reason): self
+    {
+        $this->undeliverableAt = now();
+        $this->undeliverableReason = mb_substr($reason, 0, Notice::ERROR_LIMIT);
 
         return $this;
     }
@@ -218,6 +247,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
             ContactKind::Phone => $this->phone,
             ContactKind::Email => $this->email,
         };
+    }
+
+    public function reachableContact(ContactKind $kind): ?string
+    {
+        return ContactKind::Email === $kind && null !== $this->undeliverableAt ? null : $this->getContact($kind);
     }
 
     public function setContact(ContactKind $kind, string $contact): self

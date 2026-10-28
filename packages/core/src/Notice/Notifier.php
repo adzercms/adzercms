@@ -42,7 +42,7 @@ final class Notifier
      */
     public function notifyMail(User $user, Event $event, array $context = [], array $attachments = [], ?string $item = null, ?\DateTimeImmutable $window = null): ?Notice
     {
-        $reaching = $this->toward(ContactKind::Email, $user->getEmail());
+        $reaching = $this->toward(ContactKind::Email, $event->awaited() ? $user->getEmail() : $user->reachableContact(ContactKind::Email));
 
         return $this->reach($user, $reaching, $event, $context, self::idempotency($event, (string) $user->getId(), $item, $window), $event->awaited(), $attachments);
     }

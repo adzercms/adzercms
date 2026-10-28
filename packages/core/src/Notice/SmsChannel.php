@@ -38,7 +38,7 @@ final class SmsChannel extends ContactChannel
         return false;
     }
 
-    public function send(string $recipient, Letter $letter): void
+    public function send(string $recipient, Letter $letter, ?int $notice = null): void
     {
         [$gateway, $credentials] = $this->switches->first(SmsGateway::class) ?? throw new Undelivered('no message gateway is enabled');
 

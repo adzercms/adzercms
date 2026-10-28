@@ -27,5 +27,5 @@ interface Channel
     public function recipients(array $users): array;
 
     /** @throws Undelivered */
-    public function send(string $recipient, Letter $letter): void;
+    public function send(string $recipient, Letter $letter, ?int $notice = null): void;
 }

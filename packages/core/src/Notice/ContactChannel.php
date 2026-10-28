@@ -23,7 +23,7 @@ abstract class ContactChannel implements Channel
 
         $recipients = [];
         foreach ($users as $at => $user) {
-            $contact = $user->getContact($this->kind());
+            $contact = $user->reachableContact($this->kind());
             if (null !== $contact) {
                 $recipients[$at] = $contact;
             }

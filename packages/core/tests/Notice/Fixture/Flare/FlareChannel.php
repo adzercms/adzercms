@@ -66,7 +66,7 @@ final class FlareChannel implements Channel, Owner
         return $recipients;
     }
 
-    public function send(string $recipient, Letter $letter): void
+    public function send(string $recipient, Letter $letter, ?int $notice = null): void
     {
         $this->sent[] = [$recipient, $letter->text];
     }
