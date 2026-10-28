@@ -409,6 +409,12 @@
         <target>The last stage of a group stays</target>
       </segment>
     </unit>
+    <unit id="leads.setting.area">
+      <segment>
+        <source>leads.setting.area</source>
+        <target>Leads</target>
+      </segment>
+    </unit>
     <unit id="leads.setting.reasons">
       <segment>
         <source>leads.setting.reasons</source>
