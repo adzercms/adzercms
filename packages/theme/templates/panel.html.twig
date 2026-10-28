@@ -1,4 +1,4 @@
-{% extends '@Theme/page.html.twig' %}
+{% extends '@Theme/base.html.twig' %}
 
 {% block header_side %}
     {% for part in fragments('header', app.user.id) %}{% include part.template with part.context only %}{% endfor %}
@@ -35,4 +35,15 @@
         {{ _self.items('admin', 'theme.admin', 'nav-section-admin') }}
     {% endif %}
     {{ _self.items('cabinet', 'theme.main', '') }}
+{% endblock %}
+
+{% block body %}
+<section class="card">
+    <header class="card-head">
+        <h1>{% block heading %}{{ block('title') }}{% endblock %}</h1>
+        <div class="card-actions">{% block actions %}{% endblock %}</div>
+    </header>
+
+    {% block page %}{% endblock %}
+</section>
 {% endblock %}

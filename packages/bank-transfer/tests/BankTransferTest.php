@@ -70,6 +70,7 @@ final class BankTransferTest extends SchemaTestCase
     #[Group('ACMS-FLOW-0006')]
     #[Group('ACMS-PAY-0006')]
     #[Group('ACMS-PAY-0045')]
+    #[Group('ACMS-UI-0002')]
     public function testPageGivesDetailsToCopyWithPayerAsComment(): void
     {
         $payment = $this->order('payer-7');
@@ -91,6 +92,11 @@ final class BankTransferTest extends SchemaTestCase
 
         self::assertCount(0, $page->filter('#transfer-phone'), 'an empty setting is not shown');
         self::assertSame('Hosting', $page->filter('#transfer-comment')->attr('value'), 'the description without a payer');
+
+        $this->client->loginUser($this->record('79990000003'));
+        $page = $this->client->request('GET', '/payment/'.$payment->getNumber());
+
+        self::assertCount(1, $page->filter('.panel-header details.menu'), 'a signed-in payer keeps the frame of the cabinet');
     }
 
     #[Group('ACMS-PAY-0043')]

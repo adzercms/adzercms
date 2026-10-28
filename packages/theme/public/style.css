@@ -302,7 +302,9 @@ summary::-webkit-details-marker { display: none; }
 }
 
 .nav-item {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     padding: 8px 18px 8px 15px;
     border-left: 3px solid transparent;
     color: var(--text);
@@ -311,6 +313,8 @@ summary::-webkit-details-marker { display: none; }
 }
 
 .nav-item:hover { background: var(--tint-hover); text-decoration: none; }
+
+.nav-item .badge { margin-left: auto; }
 
 .nav-item.active {
     background: var(--surface);
