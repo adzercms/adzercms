@@ -12,6 +12,7 @@ use PHPUnit\Runner\Extension\Extension;
 use PHPUnit\Runner\Extension\Facade;
 use PHPUnit\Runner\Extension\ParameterCollection;
 use PHPUnit\TextUI\Configuration\Configuration;
+use PHPUnit\TextUI\Configuration\TestSuite;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -32,6 +33,9 @@ final class ModuleSuite implements Extension
         $suites = $configuration->includeTestSuites();
         if ([] === $suites && $configuration->hasDefaultTestSuite()) {
             $suites = [$configuration->defaultTestSuite()];
+        }
+        if ([] === $suites) {
+            $suites = array_diff(array_map(static fn (TestSuite $suite): string => $suite->name(), $configuration->testSuite()->asArray()), $configuration->excludeTestSuites());
         }
 
         self::select($registry, array_values(array_filter(array_map($registry->find(...), $suites))));
