@@ -1050,6 +1050,8 @@ td.row-handle:hover { color: var(--text); }
 .subscribe :is(.muted, .qr, .onboard) { margin: 0; }
 .subscribe .onboard { justify-self: stretch; }
 .check { display: flex; align-items: center; gap: 0.5rem; }
+.checks { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-bottom: 0.9rem; }
+.checks .check { margin: 0; }
 .pay .check { justify-content: center; color: var(--text-gray); }
 
 .money { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.9rem; }
