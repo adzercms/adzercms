@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Leads;
 
-use AdzerCMS\Contracts\Ui\Columns;
 use AdzerCMS\Core\Account\LoginNames;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
+use AdzerCMS\Core\Ui\ModuleColumns;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Leads\Entity\Lead;
 use AdzerCMS\Leads\Entity\Stage;
 use AdzerCMS\Leads\Repository\LeadRepository;
 use AdzerCMS\Leads\Repository\StageRepository;
-use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Symfony\Component\Translation\t;
@@ -26,14 +25,12 @@ final readonly class LeadRows
     public const MANAGER = 'manager';
     public const STAGE = 'stage';
 
-    /** @param iterable<Columns> $columns */
     public function __construct(
         private LeadRepository $leads,
         private StageRepository $stages,
         private Handling $handling,
         private LoginNames $logins,
-        #[AutowireIterator(Columns::class)]
-        private iterable $columns,
+        private ModuleColumns $modules,
     ) {
     }
 
@@ -60,13 +57,7 @@ final readonly class LeadRows
         $managers = $this->handling->managers();
         $topics = $this->leads->topics();
 
-        $modules = array_values(array_filter([...$this->columns], static fn (Columns $columns): bool => LeadSubject::LISTING === $columns->listing()));
-        $extra = [];
-        foreach ($modules as $module) {
-            foreach ($module->columns() as $column) {
-                $extra[] = $column->secondary ? Column::plain($column->key, $column->label)->aside() : Column::plain($column->key, $column->label);
-            }
-        }
+        $extra = $this->modules->columns(LeadSubject::LISTING);
 
         $table = Table::of($request, $route, [
             Column::of('number', t('leads.column.number'), 'l.id'),
@@ -87,22 +78,17 @@ final readonly class LeadRows
         ])), sticky: $sticky);
 
         $term = trim($table->term());
-        $found = [];
-        if ('' !== $term) {
-            foreach ($modules as $module) {
-                $found = [...$found, ...$module->search($term)];
-            }
-        }
 
         $builder = $this->leads->listing(
             $slice,
             $term,
-            $found,
+            $this->modules->search(LeadSubject::LISTING, $term),
             $table->value(self::TOPIC),
             '' === $table->value(self::MANAGER) ? null : (int) $table->value(self::MANAGER),
             '' === $table->value(self::STAGE) ? null : (int) $table->value(self::STAGE),
         );
         $total = (int) (clone $builder)->select('COUNT(l.id)')->getQuery()->getSingleScalarResult();
+        $this->modules->order(LeadSubject::LISTING, $table, $builder, 'l.id');
         $table->apply($builder)->total($total);
 
         /** @var list<Lead> $rows */
@@ -114,13 +100,6 @@ final readonly class LeadRows
             ->getQuery()
             ->getResult();
 
-        $ids = array_map(static fn (Lead $lead): int => (int) $lead->getId(), $rows);
-        $cells = [];
-        foreach ($modules as $module) {
-            foreach ($module->cells($ids) as $id => $values) {
-                $cells[$id] = ($cells[$id] ?? []) + $values;
-            }
-        }
         $assigned = [];
         foreach ($rows as $row) {
             $manager = $row->getManager();
@@ -133,7 +112,7 @@ final readonly class LeadRows
             'table' => $table,
             'rows' => $rows,
             'extra' => $extra,
-            'cells' => $cells,
+            'cells' => $this->modules->cells(LeadSubject::LISTING, array_map(static fn (Lead $lead): int => (int) $lead->getId(), $rows)),
             'managers' => $this->logins->ofMany(array_values($assigned)),
         ];
     }

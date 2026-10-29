@@ -285,8 +285,9 @@ final class AdminWebTest extends SchemaTestCase
     #[Group('ACMS-US-0003')]
     public function testUserListNamesRecordByLoginAndCarriesModuleColumnsBeforeState(): void
     {
-        $owing = $this->record('79990000010');
-        $paid = $this->record('79990000011');
+        $owing = $this->record('79990000010')->setComment('b');
+        $paid = $this->record('79990000011')->setComment('a');
+        $this->em->flush();
         $ledger = self::service(Ledger::class);
         $ledger->balances = [(int) $owing->getId() => '-150', (int) $paid->getId() => '300'];
         $this->client->loginUser($this->admin);
@@ -298,7 +299,11 @@ final class AdminWebTest extends SchemaTestCase
             [$login, self::phrase('core.user.created'), Ledger::LABEL, self::phrase('core.user.state')],
             $listing->filter('thead th')->each(static fn (Crawler $head): string => trim($head->text())),
         );
-        self::assertCount(0, $listing->filter('thead th a')->reduce(static fn (Crawler $link): bool => Ledger::LABEL === trim($link->text())), 'a column of a module is not sorted');
+        $pair = [$paid->getId(), $owing->getId()];
+        foreach (['asc' => $pair, 'desc' => array_reverse($pair)] as $order => $expected) {
+            $sorted = self::ids($this->fragment('/admin/users?sort='.Ledger::BALANCE.'&order='.$order));
+            self::assertSame($expected, array_values(array_intersect($sorted, $pair)), 'a column of a module sorts the listing by the order of the module');
+        }
 
         $row = 'u'.$owing->getId();
         self::assertSame($row, trim(self::cell($listing, $row, $login)->filter('strong')->text()), 'the login of the module names the record');

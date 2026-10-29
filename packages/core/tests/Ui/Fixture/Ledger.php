@@ -7,6 +7,7 @@ namespace AdzerCMS\Core\Tests\Ui\Fixture;
 use AdzerCMS\Contracts\Ui\Cell;
 use AdzerCMS\Contracts\Ui\Column;
 use AdzerCMS\Contracts\Ui\Columns;
+use AdzerCMS\Core\Entity\User;
 use Symfony\Component\Translation\TranslatableMessage;
 
 final class Ledger implements Columns
@@ -27,7 +28,11 @@ final class Ledger implements Columns
 
     public function columns(): array
     {
-        return [new Column(self::BALANCE, new TranslatableMessage(self::LABEL))];
+        return [new Column(
+            self::BALANCE,
+            new TranslatableMessage(self::LABEL),
+            order: static fn (string $subject): string => \sprintf('SELECT ledger.comment FROM %s ledger WHERE ledger.id = %s', User::class, $subject),
+        )];
     }
 
     public function cells(array $subjects): array

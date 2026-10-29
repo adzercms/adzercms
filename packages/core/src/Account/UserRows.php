@@ -9,9 +9,9 @@ use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Repository\UserRepository;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
+use AdzerCMS\Core\Ui\ModuleColumns;
 use AdzerCMS\Core\Ui\Table;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Symfony\Component\Translation\t;
@@ -21,12 +21,10 @@ final readonly class UserRows
     public const TEMPLATE = '@Admin/admin/_users.html.twig';
     public const STATE = 'state';
 
-    /** @param iterable<Columns> $columns */
     public function __construct(
         private UserRepository $users,
         private LoginNames $logins,
-        #[AutowireIterator(Columns::class)]
-        private iterable $columns,
+        private ModuleColumns $modules,
     ) {
     }
 
@@ -43,13 +41,7 @@ final readonly class UserRows
             $filters[] = Filter::cases(self::STATE, t('core.user.any_state'), [Status::Active, Status::Stopped]);
         }
 
-        $modules = array_values(array_filter([...$this->columns], static fn (Columns $columns): bool => Columns::ADMIN_USERS === $columns->listing()));
-        $extra = [];
-        foreach ($modules as $module) {
-            foreach ($module->columns() as $column) {
-                $extra[] = $column->secondary ? Column::plain($column->key, $column->label)->aside() : Column::plain($column->key, $column->label);
-            }
-        }
+        $extra = $this->modules->columns(Columns::ADMIN_USERS);
 
         $table = Table::of($request, $route, [
             Column::of('id', t('core.user.login'), 's.id'),
@@ -59,18 +51,13 @@ final readonly class UserRows
         ], 'created', t('core.user.empty'), false, filters: $filters, sticky: $sticky);
 
         $term = trim($table->term());
-        $found = [];
-        if ('' !== $term) {
-            foreach ($modules as $module) {
-                $found = [...$found, ...$module->search($term)];
-            }
-        }
 
-        $builder = $this->users->listing($term, $archive, Status::tryFrom($table->value(self::STATE)), $found);
+        $builder = $this->users->listing($term, $archive, Status::tryFrom($table->value(self::STATE)), $this->modules->search(Columns::ADMIN_USERS, $term));
         if (null !== $narrow) {
             $narrow($builder);
         }
         $total = (int) (clone $builder)->select('COUNT(s.id)')->getQuery()->getSingleScalarResult();
+        $this->modules->order(Columns::ADMIN_USERS, $table, $builder, 's.id');
         $table->apply($builder)->total($total);
 
         /** @var list<User> $rows */
@@ -80,13 +67,6 @@ final readonly class UserRows
             ->setFirstResult($table->offset())
             ->getQuery()
             ->getResult();
-        $ids = array_map(static fn (User $user): int => (int) $user->getId(), $rows);
-        $cells = [];
-        foreach ($modules as $module) {
-            foreach ($module->cells($ids) as $id => $values) {
-                $cells[$id] = ($cells[$id] ?? []) + $values;
-            }
-        }
 
         return [
             'table' => $table,
@@ -94,7 +74,7 @@ final readonly class UserRows
             'rows' => $rows,
             'logins' => $this->logins->ofMany($rows),
             'extra' => $extra,
-            'cells' => $cells,
+            'cells' => $this->modules->cells(Columns::ADMIN_USERS, array_map(static fn (User $user): int => (int) $user->getId(), $rows)),
         ];
     }
 }
