@@ -83,13 +83,7 @@ final class Filter
     /** @param list<Titled&\BackedEnum> $cases */
     public static function cases(string $name, TranslatableInterface $any, array $cases): self
     {
-        $options = [];
-
-        foreach ($cases as $case) {
-            $options[(string) $case->value] = $case->label();
-        }
-
-        return self::select($name, $any, $options);
+        return self::select($name, $any, Labels::of($cases));
     }
 
     public function required(): bool

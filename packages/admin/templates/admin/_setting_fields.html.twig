@@ -12,7 +12,7 @@
                 {% if field.type == constant(type ~ 'Toggle') %}
                     <select id="{{ id }}" name="value[{{ field.name }}]">
                         {% for case in enum('AdzerCMS\\Core\\Setting\\Toggle').cases %}
-                            <option value="{{ case.value }}" {{ values[field.name] == case.value ? 'selected' }}>{{ ('core.toggle.' ~ case.name|lower)|trans }}</option>
+                            <option value="{{ case.value }}" {{ values[field.name] == case.value ? 'selected' }}>{{ case.label|trans }}</option>
                         {% endfor %}
                     </select>
                 {% elseif field.type == constant(type ~ 'Image') %}

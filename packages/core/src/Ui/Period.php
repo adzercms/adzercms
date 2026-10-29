@@ -86,15 +86,10 @@ final readonly class Period
             $years[(string) $year] = (string) $year;
         }
 
-        $scales = [];
-        foreach (PeriodScale::cases() as $case) {
-            $scales[$case->value] = $case->label();
-        }
-
         $own = PeriodScale::Custom === $this->scale;
 
         return [
-            Filter::choice('scale', $scales, $this->scale->value),
+            Filter::choice('scale', Labels::of(PeriodScale::cases()), $this->scale->value),
             Filter::choice('year', $years, (string) $this->year, $own),
             Filter::choice('month', self::months(), (string) $this->month, PeriodScale::Month !== $this->scale),
             Filter::date('from', $this->from->format(self::DAY), !$own),
