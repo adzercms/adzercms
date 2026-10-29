@@ -11,6 +11,7 @@ use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Contracts\Ui\Scheme;
 use AdzerCMS\Core\Entity\Setting;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Contracts\Service\ResetInterface;
 
@@ -31,6 +32,7 @@ final class Settings implements ResetInterface
         private readonly Secrets $secrets,
         #[AutowireIterator(Rule::class)]
         private readonly iterable $rules,
+        private readonly EventDispatcherInterface $events,
     ) {
     }
 
@@ -133,6 +135,7 @@ final class Settings implements ResetInterface
 
         $this->stored();
         $this->stored[$field->name] = $stored;
+        $this->events->dispatch(new SettingSaved($field->name));
 
         return null;
     }
@@ -146,6 +149,7 @@ final class Settings implements ResetInterface
 
         $this->stored();
         unset($this->stored[$field->name]);
+        $this->events->dispatch(new SettingSaved($field->name));
     }
 
     /** @return array<string, string> */
@@ -166,12 +170,12 @@ final class Settings implements ResetInterface
             return $damaged;
         }
 
+        $this->stored = [...$this->stored(), ...$rows];
         foreach ($rows as $name => $value) {
             $setting = $this->em->find(Setting::class, $name);
             null === $setting ? $this->em->persist(new Setting($name, $value)) : $setting->setValue($value);
+            $this->events->dispatch(new SettingSaved($name));
         }
-
-        $this->reset();
 
         return [];
     }
