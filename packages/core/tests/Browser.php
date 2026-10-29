@@ -111,6 +111,12 @@ trait Browser
             : self::fail(\sprintf('the listing carries no cell %s of the row %s', $column, $row));
     }
 
+    /** @return list<string> */
+    protected static function firstCells(Crawler $listing, string $part = ''): array
+    {
+        return $listing->filter(trim('tbody tr td:first-child '.$part))->each(static fn (Crawler $cell): string => $cell->text());
+    }
+
     protected static function tile(Crawler $page, string $label): string
     {
         foreach ($page->filter('.info-item, .stat-card') as $node) {

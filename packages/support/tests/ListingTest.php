@@ -113,6 +113,6 @@ final class ListingTest extends SupportTestCase
     /** @return list<string> */
     private static function numbers(Crawler $crawler): array
     {
-        return $crawler->filter('#rows tbody tr td:first-child')->each(static fn (Crawler $cell): string => $cell->text());
+        return self::firstCells($crawler->filter('#rows'));
     }
 }

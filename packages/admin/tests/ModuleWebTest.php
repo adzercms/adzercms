@@ -150,10 +150,10 @@ final class ModuleWebTest extends SchemaTestCase
             $page->filter('nav.tabs a.tab')->each($text),
             'a type goes as a tab while the catalog has its rows',
         );
-        self::assertSame(['acme/site', 'acme/look'], \array_slice($page->filter('#rows tbody tr td:first-child strong')->each($text), 0, 2), 'the rows go in the order of the extension catalog');
+        self::assertSame(['acme/site', 'acme/look'], \array_slice(self::firstCells($page->filter('#rows'), 'strong'), 0, 2), 'the rows go in the order of the extension catalog');
 
-        $templates = $this->client->request('GET', self::MODULES.'?tab='.ExtensionType::Template->value)->filter('#rows tbody tr');
-        self::assertSame(['acme/site'], $templates->filter('td:first-child strong')->each($text));
+        $templates = $this->client->request('GET', self::MODULES.'?tab='.ExtensionType::Template->value)->filter('#rows');
+        self::assertSame(['acme/site'], self::firstCells($templates, 'strong'));
         self::assertSame(['https://site.example.test'], $templates->filter('a.demo')->each(static fn (Crawler $link): string => (string) $link->attr('href')));
 
         $cards = $this->client->request('GET', self::MODULES.'?tab='.ExtensionType::Theme->value)->filter('#rows');
@@ -228,7 +228,7 @@ final class ModuleWebTest extends SchemaTestCase
         );
         self::assertSame([self::phrase(ModuleState::Disabled->label())], $cells($idle->name, 'admin.modules.status'));
 
-        $names = fn (string $query): array => $this->fragment(self::MODULES.'?'.$query)->filter('#rows tbody tr td:first-child strong')->each(static fn (Crawler $name): string => trim($name->text()));
+        $names = fn (string $query): array => self::firstCells($this->fragment(self::MODULES.'?'.$query)->filter('#rows'), 'strong');
         $category = $names('category=messaging');
         self::assertContains('acme/till', $category);
         self::assertNotContains('acme/shop', $category);

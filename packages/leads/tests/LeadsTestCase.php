@@ -50,6 +50,6 @@ abstract class LeadsTestCase extends SchemaTestCase
     /** @return list<string> */
     protected static function names(Crawler $listing): array
     {
-        return $listing->filter('tbody tr td:first-child .clip')->each(static fn (Crawler $name): string => trim($name->text()));
+        return self::firstCells($listing, '.clip');
     }
 }

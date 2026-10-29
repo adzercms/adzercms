@@ -163,6 +163,6 @@ final class BankTransferTest extends SchemaTestCase
     /** @return list<string> */
     private static function comments(Crawler $listing): array
     {
-        return $listing->filter('tbody tr td:first-child')->each(static fn (Crawler $cell): string => trim($cell->text()));
+        return self::firstCells($listing);
     }
 }
