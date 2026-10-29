@@ -8,11 +8,11 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 
 final readonly class Column
 {
-    /** @param (\Closure(string): string)|null $order */
+    /** @param \Closure(string): string $order */
     public function __construct(
         public string $key,
         public TranslatableInterface $label,
-        public ?\Closure $order,
+        public \Closure $order,
         public bool $secondary = false,
     ) {
     }

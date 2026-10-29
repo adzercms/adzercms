@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Tests\Ui;
 
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
+use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Core\Ui\Table;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -37,5 +38,34 @@ final class TableTest extends TestCase
         yield 'descending' => [['sort' => 'name', 'order' => 'desc'], ['zeta', 'gamma', 'beta', 'alpha']];
         yield 'search past the lead' => [['q' => 'al'], ['alpha']];
         yield 'search of the lead' => [['q' => 'z'], ['zeta']];
+    }
+
+    #[Group('ACMS-UI-0009')]
+    #[DataProvider('declarations')]
+    public function testLabelledColumnWithoutOrderOfItsListingIsRefusedOutsideTheManualOrder(Column $column, bool $live, ?Order $order, bool $refused): void
+    {
+        if ($refused) {
+            $this->expectException(\LogicException::class);
+        }
+
+        $table = Table::of(new Request(), 'list', [$column], $column->key, live: $live, order: $order);
+
+        self::assertSame([$column], $table->columns);
+    }
+
+    /** @return iterable<string, array{Column, bool, ?Order, bool}> */
+    public static function declarations(): iterable
+    {
+        $field = Column::of('name', t('name'), 'e.name');
+        $value = Column::live('name', t('name'), static fn (string $row): string => $row);
+        $plain = Column::plain('name', t('name'));
+
+        yield 'query by field' => [$field, false, null, false];
+        yield 'query by value' => [$value, false, null, true];
+        yield 'memory by value' => [$value, true, null, false];
+        yield 'memory by field' => [$field, true, null, true];
+        yield 'label without order' => [$plain, false, null, true];
+        yield 'label in the manual order' => [$plain, false, Order::of('list_order', 'e.position'), false];
+        yield 'no label' => [Column::plain('actions'), false, null, false];
     }
 }

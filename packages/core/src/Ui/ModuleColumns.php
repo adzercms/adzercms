@@ -41,9 +41,7 @@ final readonly class ModuleColumns
     {
         $columns = [];
         foreach ($declared as $column) {
-            $listed = null === $column->order
-                ? Column::plain($column->key, $column->label)
-                : Column::of($column->key, $column->label, self::alias($column->key));
+            $listed = Column::of($column->key, $column->label, self::alias($column->key));
             $columns[] = $column->secondary ? $listed->aside() : $listed;
         }
 
@@ -54,7 +52,7 @@ final readonly class ModuleColumns
     public static function sort(array $declared, Table $table, QueryBuilder $builder, string $subject): void
     {
         foreach ($declared as $column) {
-            if (null !== $column->order && $column->key === $table->key) {
+            if ($column->key === $table->key) {
                 $builder->addSelect(\sprintf('(%s) AS HIDDEN %s', ($column->order)($subject), self::alias($column->key)));
             }
         }

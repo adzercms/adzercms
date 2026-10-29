@@ -63,8 +63,10 @@ final class Table
     ): self {
         $sortable = [];
         foreach (null === $order ? $columns : [] as $column) {
-            if ($live ? null !== $column->value : [] !== $column->fields) {
+            if (self::sorts($column, $live)) {
                 $sortable[$column->key] = true;
+            } elseif (null !== $column->label) {
+                throw new \LogicException(\sprintf('labelled column %s of listing %s has no order', $column->key, $route));
             }
         }
 
@@ -195,7 +197,7 @@ final class Table
 
     public function sortable(Column $column): bool
     {
-        return null === $this->order && ($this->live ? null !== $column->value : [] !== $column->fields);
+        return null === $this->order && self::sorts($column, $this->live);
     }
 
     public function offset(): int
@@ -285,6 +287,11 @@ final class Table
         $this->total = \count($rows);
 
         return \array_slice($rows, $this->offset(), $this->size);
+    }
+
+    private static function sorts(Column $column, bool $live): bool
+    {
+        return $live ? null !== $column->value : [] !== $column->fields;
     }
 
     private static function param(string $id, string $name): string

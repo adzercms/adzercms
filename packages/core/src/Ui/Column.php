@@ -28,9 +28,9 @@ final class Column
         return new self($key, $label, [], null);
     }
 
-    public static function of(string $key, TranslatableInterface $label, string ...$fields): self
+    public static function of(string $key, TranslatableInterface $label, string $field, string ...$fields): self
     {
-        return new self($key, $label, array_values($fields), null);
+        return new self($key, $label, [$field, ...array_values($fields)], null);
     }
 
     public static function live(string $key, TranslatableInterface $label, \Closure $value): self
