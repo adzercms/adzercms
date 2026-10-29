@@ -299,17 +299,18 @@ final class AdminWebTest extends SchemaTestCase
             [$login, self::phrase('core.user.created'), Ledger::LABEL, self::phrase('core.user.state')],
             $listing->filter('thead th')->each(static fn (Crawler $head): string => trim($head->text())),
         );
-        $pair = [$paid->getId(), $owing->getId()];
-        foreach (['asc' => $pair, 'desc' => array_reverse($pair)] as $order => $expected) {
-            $sorted = self::ids($this->fragment('/admin/users?sort='.Ledger::BALANCE.'&order='.$order));
-            self::assertSame($expected, array_values(array_intersect($sorted, $pair)), 'a column of a module sorts the listing by the order of the module');
-        }
 
         $row = 'u'.$owing->getId();
         self::assertSame($row, trim(self::cell($listing, $row, $login)->filter('strong')->text()), 'the login of the module names the record');
         self::assertSame('-150', trim(self::cell($listing, $row, Ledger::LABEL)->text()));
         self::assertStringContainsString('minus', (string) self::cell($listing, $row, Ledger::LABEL)->attr('class'));
         self::assertSame([self::ids($listing)], $ledger->asked, 'the module gives the cells of the page at once');
+
+        $pair = [$paid->getId(), $owing->getId()];
+        foreach (['asc' => $pair, 'desc' => array_reverse($pair)] as $order => $expected) {
+            $sorted = self::ids($this->fragment('/admin/users?sort='.Ledger::BALANCE.'&order='.$order));
+            self::assertSame($expected, array_values(array_intersect($sorted, $pair)), 'a column of a module sorts the listing by the order of the module');
+        }
     }
 
     #[Group('ACMS-UI-0010')]
