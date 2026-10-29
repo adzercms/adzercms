@@ -59,7 +59,7 @@ final class Notifier
      *
      * @return list<Notice>
      */
-    public function each(array $users, Event $event, array $context, string $item, ?Channel $only = null): array
+    public function each(array $users, Event $event, array $context, ?string $item = null, ?Channel $only = null): array
     {
         $notices = [];
         foreach ($this->channels->reachingEach($users, $only) as $at => $reaching) {
@@ -205,7 +205,7 @@ final class Notifier
 
     private static function idempotency(Event $event, string $addressee, ?string $item, ?\DateTimeImmutable $window): ?string
     {
-        return CoreEvent::Message === $event && null === $item
+        return null === $item
             ? null
             : hash('sha256', implode("\0", [$event->key(), $addressee, ($window ?? now())->format('Y-m-d'), $item]));
     }

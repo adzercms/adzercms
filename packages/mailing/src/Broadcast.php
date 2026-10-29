@@ -64,7 +64,7 @@ final readonly class Broadcast
         }
 
         $counts = ['sent' => 0, 'deferred' => 0, 'failed' => 0];
-        $notices = $this->notifier->each($this->reachable($scope, $value, $channel), MailingEvent::Broadcast, ['body' => $body], bin2hex(random_bytes(8)), $channel);
+        $notices = $this->notifier->each($this->reachable($scope, $value, $channel), MailingEvent::Broadcast, ['body' => $body], only: $channel);
 
         foreach ($notices as $notice) {
             ++$counts[match ($notice->getStatus()) {

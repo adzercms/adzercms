@@ -243,15 +243,17 @@ final class NotifierTest extends SchemaTestCase
         self::assertEmailCount(1);
     }
 
-    #[Group('ACMS-CORE-0120')]
-    public function testMessageWithoutItemIsNotLimited(): void
+    #[Group('ACMS-CORE-0129')]
+    public function testEventWithoutItemIsNotLimited(): void
     {
         $this->configure(self::MAIL);
         $user = $this->record('+7 900 111-22-33', 'owner@example.org');
+        $notifier = self::service(Notifier::class);
 
-        self::assertSame(self::SENT, $this->message($user, 'Backup', 'Backup is done'));
-        self::assertSame(self::SENT, $this->message($user, 'Backup', 'Backup is done'));
-        self::assertEmailCount(1);
+        $notifier->notify($user, CoreEvent::AccountDeletion, ['url' => 'http://localhost/deletion', 'minutes' => 30]);
+        $notifier->notify($user, CoreEvent::AccountDeletion, ['url' => 'http://localhost/deletion', 'minutes' => 30]);
+
+        self::assertEmailCount(2);
     }
 
     #[Group('ACMS-CORE-0122')]
