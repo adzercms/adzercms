@@ -105,6 +105,17 @@ final class YooKassaTest extends SchemaTestCase
         self::assertTrue($payment->isAdvance());
     }
 
+    #[Group('ACMS-PAY-0048')]
+    public function testLongDescriptionAndItemNameAreCutToTheLimitOfTheProvider(): void
+    {
+        $this->answers = [['id' => 'op-1', 'status' => 'pending', 'confirmation' => ['type' => 'redirect', 'confirmation_url' => 'https://yoomoney.ru/checkout/op-1']]];
+
+        $this->offer($this->order('500.00', name: str_repeat('Ж', 200)));
+
+        self::assertSame(str_repeat('Ж', 128), $this->sent[0]['body']['description']);
+        self::assertSame(str_repeat('Ж', 128), $this->sent[0]['body']['receipt']['items'][0]['description']);
+    }
+
     #[Group('ACMS-PAY-0035')]
     public function testSbpOrderComesAsCode(): void
     {
@@ -276,12 +287,12 @@ final class YooKassaTest extends SchemaTestCase
             'card' => ['first6' => '220220', 'last4' => '4242', 'expiry_month' => '12', 'expiry_year' => '2027', 'card_type' => 'Mir', 'issuer_country' => $country]];
     }
 
-    private function order(string $amount, string $method = YooKassaService::METHOD_PAGE, bool $remember = false): Payment
+    private function order(string $amount, string $method = YooKassaService::METHOD_PAGE, bool $remember = false, string $name = 'Hosting'): Payment
     {
         $payment = self::service(PaymentService::class)->order(
-            [['name' => 'Hosting', 'quantity' => 2, 'price' => bcdiv($amount, '2', 2)]],
+            [['name' => $name, 'quantity' => 2, 'price' => bcdiv($amount, '2', 2)]],
             $method,
-            'Hosting',
+            $name,
             '79990000000',
             self::EMAIL,
             self::BACK,
