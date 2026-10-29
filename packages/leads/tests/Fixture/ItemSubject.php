@@ -62,7 +62,11 @@ final class ItemSubject implements LeadSubject, Columns
 
     public function columns(): array
     {
-        return [new Column(self::FIELD, new TranslatableMessage(self::LABEL))];
+        return [new Column(
+            self::FIELD,
+            new TranslatableMessage(self::LABEL),
+            static fn (string $subject): string => \sprintf('SELECT item.amount FROM %s item WHERE item.id = %s', Lead::class, $subject),
+        )];
     }
 
     public function cells(array $subjects): array

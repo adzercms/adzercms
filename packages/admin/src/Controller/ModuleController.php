@@ -39,6 +39,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function Symfony\Component\Translation\t;
 
+/** @phpstan-type Origin array{source: string, down: ?Badge, access: bool, setting: ?string, credentials: ?int, drop: ?string, hidden: array<string, string>} */
 #[Route('/admin/modules')]
 #[IsGranted(Role::ADMIN)]
 final class ModuleController extends AbstractController
@@ -123,8 +124,9 @@ final class ModuleController extends AbstractController
             Column::live('access', t('admin.sources.access'), static fn (array $row): bool => $row['access']),
             Column::plain('actions'),
         ], 'source', sticky: ['tab' => self::SOURCES], live: true, id: self::SOURCES);
+        [$base, $own] = $this->origins($down);
 
-        return ['table' => $table, 'rows' => $table->rows($this->origins($down))];
+        return ['table' => $table, 'rows' => $table->rows($own, $base)];
     }
 
     /** @return array<string, mixed> */
@@ -231,12 +233,12 @@ final class ModuleController extends AbstractController
     /**
      * @param list<string> $down
      *
-     * @return list<array{source: string, down: ?Badge, access: bool, setting: ?string, credentials: ?int, drop: ?string, hidden: array<string, string>}>
+     * @return array{list<Origin>, list<Origin>}
      */
     private function origins(array $down): array
     {
         $state = static fn (string $url): ?Badge => \in_array($url, $down, true) ? Badge::bad(t('admin.sources.down')) : null;
-        $origins = [[
+        $base = [[
             'source' => $this->store->url(),
             'down' => $state($this->store->url()),
             'access' => false,
@@ -246,7 +248,7 @@ final class ModuleController extends AbstractController
             'hidden' => [],
         ]];
         foreach (Sources::BASE as $url) {
-            $origins[] = [
+            $base[] = [
                 'source' => $url,
                 'down' => $state($url),
                 'access' => false,
@@ -256,8 +258,9 @@ final class ModuleController extends AbstractController
                 'hidden' => [],
             ];
         }
+        $own = [];
         foreach ($this->artifacts->archives() as $archive) {
-            $origins[] = [
+            $own[] = [
                 'source' => $archive['name'].' '.$archive['version'],
                 'down' => null,
                 'access' => false,
@@ -268,7 +271,7 @@ final class ModuleController extends AbstractController
             ];
         }
         foreach ($this->sources->own() as $source) {
-            $origins[] = [
+            $own[] = [
                 'source' => $source->getUrl(),
                 'down' => $state($source->getUrl()),
                 'access' => null !== $source->getTokenCipher(),
@@ -279,7 +282,7 @@ final class ModuleController extends AbstractController
             ];
         }
 
-        return $origins;
+        return [$base, $own];
     }
 
     #[Route('/sources/new', name: 'admin_module_source_new', methods: ['GET', 'POST'])]

@@ -12,8 +12,8 @@ final readonly class Column
     public function __construct(
         public string $key,
         public TranslatableInterface $label,
+        public ?\Closure $order,
         public bool $secondary = false,
-        public ?\Closure $order = null,
     ) {
     }
 }

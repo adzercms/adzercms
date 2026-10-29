@@ -651,7 +651,7 @@ final class ModuleWebTest extends SchemaTestCase
 
         $this->post('/admin/modules/sources/'.$one->getId().'/drop');
         self::assertSame(
-            [Store::DEFAULT, ...Sources::BASE, self::REPOSITORY.'/two', self::REPOSITORY.'/three'],
+            [Store::DEFAULT, ...Sources::BASE, self::REPOSITORY.'/three', self::REPOSITORY.'/two'],
             $this->arrive(self::SOURCES)->filter('#sources tbody tr td strong')->each(static fn (Crawler $source): string => trim($source->text())),
         );
     }

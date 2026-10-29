@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Ui;
 
 use AdzerCMS\Contracts\Ui\Cell;
+use AdzerCMS\Contracts\Ui\Column as Declared;
 use AdzerCMS\Contracts\Ui\Columns;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
@@ -23,26 +24,38 @@ final readonly class ModuleColumns
     /** @return list<Column> */
     public function columns(string $listing): array
     {
+        return self::declare($this->declared($listing));
+    }
+
+    public function order(string $listing, Table $table, QueryBuilder $builder, string $subject): void
+    {
+        self::sort($this->declared($listing), $table, $builder, $subject);
+    }
+
+    /**
+     * @param list<Declared> $declared
+     *
+     * @return list<Column>
+     */
+    public static function declare(array $declared): array
+    {
         $columns = [];
-        foreach ($this->modules($listing) as $module) {
-            foreach ($module->columns() as $column) {
-                $declared = null === $column->order
-                    ? Column::plain($column->key, $column->label)
-                    : Column::of($column->key, $column->label, self::alias($column->key));
-                $columns[] = $column->secondary ? $declared->aside() : $declared;
-            }
+        foreach ($declared as $column) {
+            $listed = null === $column->order
+                ? Column::plain($column->key, $column->label)
+                : Column::of($column->key, $column->label, self::alias($column->key));
+            $columns[] = $column->secondary ? $listed->aside() : $listed;
         }
 
         return $columns;
     }
 
-    public function order(string $listing, Table $table, QueryBuilder $builder, string $subject): void
+    /** @param list<Declared> $declared */
+    public static function sort(array $declared, Table $table, QueryBuilder $builder, string $subject): void
     {
-        foreach ($this->modules($listing) as $module) {
-            foreach ($module->columns() as $column) {
-                if (null !== $column->order && $column->key === $table->key) {
-                    $builder->addSelect(\sprintf('(%s) AS HIDDEN %s', ($column->order)($subject), self::alias($column->key)));
-                }
+        foreach ($declared as $column) {
+            if (null !== $column->order && $column->key === $table->key) {
+                $builder->addSelect(\sprintf('(%s) AS HIDDEN %s', ($column->order)($subject), self::alias($column->key)));
             }
         }
     }
@@ -73,6 +86,17 @@ final readonly class ModuleColumns
         }
 
         return $cells;
+    }
+
+    /** @return list<Declared> */
+    private function declared(string $listing): array
+    {
+        $declared = [];
+        foreach ($this->modules($listing) as $module) {
+            $declared = [...$declared, ...$module->columns()];
+        }
+
+        return $declared;
     }
 
     /** @return list<Columns> */
