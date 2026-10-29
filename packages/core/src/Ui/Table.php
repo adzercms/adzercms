@@ -219,6 +219,14 @@ final class Table
 
     public function apply(QueryBuilder $builder): self
     {
+        foreach ($this->filters as $filter) {
+            $value = $this->value($filter->name);
+            if (null !== $filter->field && '' !== $value) {
+                $parameter = 'filter_'.preg_replace('/\W/', '_', $filter->name);
+                $builder->andWhere(\sprintf('%s = :%s', $filter->field, $parameter))->setParameter($parameter, $value);
+            }
+        }
+
         $direction = $this->ascending ? \SortDirection::Ascending : \SortDirection::Descending;
 
         foreach ($this->fields() as $field) {
@@ -271,6 +279,15 @@ final class Table
             $found = fn (mixed $row): bool => $this->matches($row, $term);
             $rows = array_filter($rows, $found);
             $lead = array_filter($lead, $found);
+        }
+
+        foreach ($this->filters as $filter) {
+            $value = $this->value($filter->name);
+            if (null !== $filter->value && '' !== $value) {
+                $kept = static fn (mixed $row): bool => Filter::key(($filter->value)($row)) === $value;
+                $rows = array_filter($rows, $kept);
+                $lead = array_filter($lead, $kept);
+            }
         }
 
         $column = null === $this->order ? $this->column($this->key) : null;

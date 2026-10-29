@@ -21,6 +21,7 @@ use AdzerCMS\Core\Module\Catalog;
 use AdzerCMS\Core\Module\CatalogRow;
 use AdzerCMS\Core\Module\ModuleAction;
 use AdzerCMS\Core\Module\Operations;
+use AdzerCMS\Core\Module\OperationState;
 use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Module\Store;
 use AdzerCMS\Core\Repository\ModuleOperationRepository;
@@ -138,7 +139,10 @@ final class ModuleController extends AbstractController
             Column::of('state', t('admin.operations.state'), 'o.state'),
             Column::of('filed', t('admin.operations.filed'), 'o.id'),
             Column::of('finished', t('admin.operations.finished'), 'o.finished')->aside(),
-        ], 'filed', t('admin.operations.empty'), ascending: false, sticky: ['tab' => self::OPERATIONS], id: self::OPERATIONS);
+        ], 'filed', t('admin.operations.empty'), ascending: false, filters: [
+            Filter::cases('action', t('admin.operations.any_action'), ModuleAction::cases())->on('o.action'),
+            Filter::cases('state', t('admin.operations.any_state'), OperationState::cases())->on('o.state'),
+        ], sticky: ['tab' => self::OPERATIONS], id: self::OPERATIONS);
 
         return ['table' => $table, 'rows' => $this->filings->page($table)];
     }

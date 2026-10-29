@@ -211,6 +211,18 @@
         <target>Action</target>
       </segment>
     </unit>
+    <unit id="admin.operations.any_action">
+      <segment>
+        <source>admin.operations.any_action</source>
+        <target>Any action</target>
+      </segment>
+    </unit>
+    <unit id="admin.operations.any_state">
+      <segment>
+        <source>admin.operations.any_state</source>
+        <target>Any state</target>
+      </segment>
+    </unit>
     <unit id="admin.operations.done">
       <segment>
         <source>admin.operations.done</source>

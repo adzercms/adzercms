@@ -400,6 +400,12 @@ final class ModuleWebTest extends SchemaTestCase
             [[$idle->name, self::phrase(ModuleAction::Enable->label()), self::phrase(OperationState::Pending->label())], ['acme/shop', self::phrase(ModuleAction::Install->label()), self::phrase(OperationState::Pending->label())]],
             $page->filter('#operations tbody tr')->each(static fn (Crawler $row): array => \array_slice($row->filter('td')->each(static fn (Crawler $cell): string => trim($cell->text())), 0, 3)),
         );
+        self::assertSame(
+            [$idle->name],
+            $this->client->request('GET', self::OPERATIONS.'&operations_action='.ModuleAction::Enable->value)
+                ->filter('#operations tbody tr td:first-child')->each(static fn (Crawler $cell): string => trim($cell->text())),
+            'the action filter narrows the operations by their field',
+        );
 
         $running = self::service(ModuleOperationRepository::class)->inState(OperationState::Pending)[0] ?? self::fail('the operation is not filed');
         $running->start();

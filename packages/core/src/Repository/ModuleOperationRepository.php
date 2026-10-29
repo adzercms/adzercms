@@ -69,13 +69,8 @@ class ModuleOperationRepository extends ServiceEntityRepository
     public function page(Table $table): array
     {
         $builder = $this->createQueryBuilder('o');
-        $table->apply($builder)->total($this->count());
+        $table->apply($builder);
 
-        return $builder
-            ->addOrderBy('o.id', \SortDirection::Descending)
-            ->setMaxResults($table->size)
-            ->setFirstResult($table->offset())
-            ->getQuery()
-            ->getResult();
+        return $table->paginate($builder->addOrderBy('o.id', \SortDirection::Descending)->getQuery());
     }
 }

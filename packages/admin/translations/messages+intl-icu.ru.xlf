@@ -211,6 +211,18 @@
         <target>Действие</target>
       </segment>
     </unit>
+    <unit id="admin.operations.any_action">
+      <segment>
+        <source>admin.operations.any_action</source>
+        <target>Любое действие</target>
+      </segment>
+    </unit>
+    <unit id="admin.operations.any_state">
+      <segment>
+        <source>admin.operations.any_state</source>
+        <target>Любое состояние</target>
+      </segment>
+    </unit>
     <unit id="admin.operations.done">
       <segment>
         <source>admin.operations.done</source>

@@ -27,7 +27,29 @@ final class Filter
         public readonly bool $hidden,
         public readonly bool $day = false,
         public readonly bool $tabs = false,
+        public readonly ?string $field = null,
+        public readonly ?\Closure $value = null,
     ) {
+    }
+
+    public function on(string $field): self
+    {
+        return new self($this->name, $this->label, $this->options, $this->search, $this->selected, $this->hidden, $this->day, $this->tabs, $field);
+    }
+
+    public function by(\Closure $value): self
+    {
+        return new self($this->name, $this->label, $this->options, $this->search, $this->selected, $this->hidden, $this->day, $this->tabs, value: $value);
+    }
+
+    public static function key(mixed $value): string
+    {
+        return match (true) {
+            $value instanceof \BackedEnum => (string) $value->value,
+            \is_bool($value) => $value ? '1' : '0',
+            \is_scalar($value) => (string) $value,
+            default => '',
+        };
     }
 
     public static function search(): self

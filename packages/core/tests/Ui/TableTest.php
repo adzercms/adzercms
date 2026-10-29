@@ -22,11 +22,13 @@ final class TableTest extends TestCase
      * @param list<string>          $expected
      */
     #[Group('ACMS-UI-0081')]
+    #[Group('ACMS-UI-0009')]
     #[DataProvider('cuts')]
-    public function testLeadRowsStayAboveTheSortedRecordsAndGoThroughTheSearch(array $query, array $expected): void
+    public function testLeadRowsStayAboveTheSortedRecordsAndGoThroughTheSearchAndTheFilters(array $query, array $expected): void
     {
+        $initial = Filter::select('initial', t('initial'), ['a' => 'a', 'b' => 'b', 'z' => 'z'])->by(static fn (string $row): string => $row[0]);
         $table = Table::of(new Request($query), 'list', [Column::live('name', t('name'), static fn (string $row): string => $row)], 'name',
-            filters: [Filter::search()], live: true);
+            filters: [Filter::search(), $initial], live: true);
 
         self::assertSame($expected, $table->rows(['beta', 'alpha', 'gamma'], ['zeta']));
     }
@@ -38,6 +40,8 @@ final class TableTest extends TestCase
         yield 'descending' => [['sort' => 'name', 'order' => 'desc'], ['zeta', 'gamma', 'beta', 'alpha']];
         yield 'search past the lead' => [['q' => 'al'], ['alpha']];
         yield 'search of the lead' => [['q' => 'z'], ['zeta']];
+        yield 'filter past the lead' => [['initial' => 'b'], ['beta']];
+        yield 'filter of the lead' => [['initial' => 'z'], ['zeta']];
     }
 
     #[Group('ACMS-UI-0009')]
