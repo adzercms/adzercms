@@ -1265,12 +1265,13 @@
             "dist": {
                 "type": "path",
                 "url": "packages/tbank",
-                "reference": "21d6f48e48654d44946d185ba50e2a2a57bb6733"
+                "reference": "69e89006052b04587cb01185ae7f27b4ddb72279"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
                 "adzercms/core": "^1.0",
                 "adzercms/payments": "^1.0",
+                "ext-mbstring": "*",
                 "php": ">=8.4",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/http-client-contracts": "^3.7",

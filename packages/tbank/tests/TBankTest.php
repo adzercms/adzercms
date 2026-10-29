@@ -112,6 +112,18 @@ final class TBankTest extends SchemaTestCase
         ], $sent['Receipt']);
     }
 
+    #[Group('ACMS-PAY-0048')]
+    public function testLongDescriptionAndItemNameAreCutToTheLimitsOfTheBank(): void
+    {
+        $this->respond(['Init' => ['Success' => true, 'PaymentId' => '900001', 'PaymentURL' => 'https://pay.tbank.ru/form']]);
+
+        $this->offer($this->order('250.00', name: str_repeat('Ж', 200)));
+
+        $sent = $this->sent('Init');
+        self::assertSame(str_repeat('Ж', 140), $sent['Description']);
+        self::assertSame(str_repeat('Ж', 128), $sent['Receipt']['Items'][0]['Name']);
+    }
+
     #[Group('ACMS-PAY-0008')]
     public function testRepeatedStartGivesKeptOfferWithoutSecondRegistration(): void
     {
@@ -492,12 +504,12 @@ final class TBankTest extends SchemaTestCase
         return $this->requests[$api] ?? self::fail(\sprintf('the bank was not asked %s', $api));
     }
 
-    private function order(string $amount, string $method = 'page', ?string $payer = null, bool $remember = false): Payment
+    private function order(string $amount, string $method = 'page', ?string $payer = null, bool $remember = false, string $name = 'Hosting'): Payment
     {
         $payment = self::service(PaymentService::class)->order(
-            [['name' => 'Hosting', 'quantity' => 2, 'price' => Money::divide($amount, 2)]],
+            [['name' => $name, 'quantity' => 2, 'price' => Money::divide($amount, 2)]],
             $method,
-            'Hosting',
+            $name,
             self::PHONE,
             null,
             self::BACK,

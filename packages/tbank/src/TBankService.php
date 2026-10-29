@@ -54,6 +54,8 @@ final readonly class TBankService implements AcquiringService, Guided
     private const METHOD_PAGE = 'page';
     private const CARD_ACTIVE = 'A';
     private const TIMEOUT = 20.0;
+    private const DESCRIPTION_LENGTH = 140;
+    private const NAME_LENGTH = 128;
     private const CLOSING = '../cashbox/SendClosingReceipt';
     private const FINAL_FAILURES = ['REJECTED', 'CANCELED', 'DEADLINE_EXPIRED', 'AUTH_FAIL'];
     private const TAXATIONS = ['osn', 'usn_income', 'usn_income_outcome', 'esn', 'patent'];
@@ -263,7 +265,7 @@ final readonly class TBankService implements AcquiringService, Guided
         $request = [
             'Amount' => Money::toMinorUnits($payment->getAmount()),
             'OrderId' => $payment->getNumber(),
-            'Description' => $payment->getDescription(),
+            'Description' => mb_substr($payment->getDescription(), 0, self::DESCRIPTION_LENGTH),
             'NotificationURL' => $addresses->callback,
             'SuccessURL' => $addresses->return,
             'FailURL' => $addresses->return,
@@ -333,7 +335,7 @@ final readonly class TBankService implements AcquiringService, Guided
     private function item(string $name, int $price, int $quantity, string $method, string $object): array
     {
         return [
-            'Name' => $name,
+            'Name' => mb_substr($name, 0, self::NAME_LENGTH),
             'Price' => $price,
             'Quantity' => $quantity,
             'Amount' => $price * $quantity,

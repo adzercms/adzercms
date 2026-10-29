@@ -48,6 +48,7 @@ final readonly class YooKassaService implements AcquiringService, Guided
     private const FLOOR = '1.00';
     private const LIFETIME = 'P1D';
     private const TIMEOUT = 20.0;
+    private const DESCRIPTION_LENGTH = 128;
     private const CARD = 'bank_card';
     private const METHOD_EVENT = 'payment_method.active';
     private const INACTIVE = 'inactive';
@@ -318,7 +319,7 @@ final readonly class YooKassaService implements AcquiringService, Guided
         $request = [
             'amount' => ['value' => Money::normalize($payment->getAmount()), 'currency' => Money::CURRENCY],
             'capture' => true,
-            'description' => $payment->getDescription(),
+            'description' => mb_substr($payment->getDescription(), 0, self::DESCRIPTION_LENGTH),
             'metadata' => ['number' => $payment->getNumber()],
             'confirmation' => ['type' => 'redirect', 'return_url' => $addresses->return],
             'receipt' => $this->receipt($payment->getPhone(), $payment->getEmail(), $items),
@@ -356,7 +357,7 @@ final readonly class YooKassaService implements AcquiringService, Guided
     private function item(string $description, string $quantity, array $amount, string $mode, string $subject): array
     {
         return [
-            'description' => $description,
+            'description' => mb_substr($description, 0, self::DESCRIPTION_LENGTH),
             'quantity' => $quantity,
             'amount' => $amount,
             'vat_code' => (int) $this->settings->get(self::VAT),
