@@ -94,6 +94,19 @@ final class ListTest extends LeadsTestCase
         self::assertSame(['Глеб'], self::names($this->fragment(self::LIST.'?'.LeadRows::SLICE.'='.Slice::Work->value.'&'.LeadRows::STAGE.'='.$call->getId())));
     }
 
+    #[Group('ACMS-US-0041')]
+    public function testStageColumnSortsByFunnelOrder(): void
+    {
+        $call = self::service(Stages::class)->add(StageGroup::Work, 'Звонок');
+        self::assertInstanceOf(Stage::class, $call);
+        $this->lead(StageGroup::Work, 'Глеб', stage: $call);
+        $this->lead(StageGroup::Work, 'Вера');
+        $sorted = fn (string $order): array => self::names($this->fragment(self::LIST.'?'.LeadRows::SLICE.'='.Slice::Work->value.'&sort=stage&order='.$order));
+
+        self::assertSame(['Вера', 'Глеб'], $sorted('asc'), 'stages go in the order of the funnel');
+        self::assertSame(['Глеб', 'Вера'], $sorted('desc'));
+    }
+
     #[Group('ACMS-LEAD-0006')]
     #[Group('ACMS-US-0041')]
     #[DataProvider('dues')]

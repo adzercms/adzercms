@@ -119,10 +119,10 @@ final class ModuleController extends AbstractController
     private function sourcesTab(Request $request, array $down): array
     {
         $table = Table::of($request, 'admin_modules', [
-            Column::plain('source', t('admin.sources.source')),
-            Column::plain('access', t('admin.sources.access')),
+            Column::live('source', t('admin.sources.source'), static fn (array $row): string => $row['source']),
+            Column::live('access', t('admin.sources.access'), static fn (array $row): bool => $row['access']),
             Column::plain('actions'),
-        ], 'source', sticky: ['tab' => self::SOURCES], id: self::SOURCES);
+        ], 'source', sticky: ['tab' => self::SOURCES], live: true, id: self::SOURCES);
 
         return ['table' => $table, 'rows' => $table->rows($this->origins($down))];
     }
@@ -131,11 +131,11 @@ final class ModuleController extends AbstractController
     private function operationsTab(Request $request): array
     {
         $table = Table::of($request, 'admin_modules', [
-            Column::plain('package', t('admin.operations.package')),
-            Column::plain('action', t('admin.operations.action')),
-            Column::plain('state', t('admin.operations.state')),
+            Column::of('package', t('admin.operations.package'), 'o.package'),
+            Column::of('action', t('admin.operations.action'), 'o.action'),
+            Column::of('state', t('admin.operations.state'), 'o.state'),
             Column::of('filed', t('admin.operations.filed'), 'o.id'),
-            Column::plain('finished', t('admin.operations.finished'))->aside(),
+            Column::of('finished', t('admin.operations.finished'), 'o.finished')->aside(),
         ], 'filed', t('admin.operations.empty'), ascending: false, sticky: ['tab' => self::OPERATIONS], id: self::OPERATIONS);
 
         return ['table' => $table, 'rows' => $this->filings->page($table)];

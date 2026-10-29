@@ -93,9 +93,9 @@ final class AuthorController extends AbstractController
     {
         $table = Table::of($request, self::LIST, [
             Column::of('name', t('extensions.column.name'), 'e.name'),
-            Column::plain('type', t('extensions.column.type')),
-            Column::plain('price', t('extensions.column.price')),
-            Column::plain('version', t('extensions.column.version'))->aside(),
+            Column::of('type', t('extensions.column.type'), 'e.type'),
+            Column::of('price', t('extensions.column.price'), 'e.price'),
+            Column::of('version', t('extensions.column.version'), 'e.version')->aside(),
             Column::plain('state', t('extensions.column.state')),
         ], 'name', t('extensions.mine.empty'));
 

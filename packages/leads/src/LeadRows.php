@@ -61,14 +61,14 @@ final readonly class LeadRows
 
         $table = Table::of($request, $route, [
             Column::of('number', t('leads.column.number'), 'l.id'),
-            Column::plain('topic', t('leads.field.topic')),
-            Column::plain('contacts', t('leads.column.contacts')),
+            Column::of('topic', t('leads.field.topic'), 'l.topic'),
+            Column::of('contacts', t('leads.column.contacts'), 'l.phone', 'l.email'),
             ...$extra,
             Column::of('amount', t('leads.field.amount'), 'l.amount')->aside(),
-            Column::plain('manager', t('leads.field.manager'))->aside(),
+            Column::of('manager', t('leads.field.manager'), 'm.id')->aside(),
             Column::of('due', t('leads.field.due'), 'l.due'),
             Column::of('arrived', t('leads.field.arrived'), 'l.arrived')->aside(),
-            Column::plain('stage', t('leads.field.stage')),
+            Column::of('stage', t('leads.field.stage'), 's.position'),
         ], 'arrived', t('leads.empty'), false, filters: array_values(array_filter([
             $tabs,
             Filter::search(),

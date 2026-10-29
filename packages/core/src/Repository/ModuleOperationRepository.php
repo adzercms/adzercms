@@ -72,6 +72,7 @@ class ModuleOperationRepository extends ServiceEntityRepository
         $table->apply($builder)->total($this->count());
 
         return $builder
+            ->addOrderBy('o.id', \SortDirection::Descending)
             ->setMaxResults($table->size)
             ->setFirstResult($table->offset())
             ->getQuery()

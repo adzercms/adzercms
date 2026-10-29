@@ -46,7 +46,7 @@ final class TransferController extends AbstractController
     public function index(Request $request): Response
     {
         $table = Table::of($request, self::LIST, [
-            Column::plain('comment', t('bank_transfer.column.comment')),
+            Column::of('comment', t('bank_transfer.column.comment'), 'CASE WHEN p.payer IS NULL THEN p.description ELSE p.payer END'),
             Column::of('amount', t('bank_transfer.column.amount'), 'p.amount'),
             Column::of('created', t('bank_transfer.column.created'), 'p.createdAt'),
             Column::of('expires', t('bank_transfer.column.expires'), 'p.expiresAt'),

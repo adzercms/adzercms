@@ -132,6 +132,19 @@ final class BankTransferTest extends SchemaTestCase
         self::assertSame(PaymentStatus::Pending, $this->reread($awaiting)->getStatus());
     }
 
+    #[Group('ACMS-US-0066')]
+    public function testTransfersSortByPayerOrDescriptionInItsPlace(): void
+    {
+        $this->order('I-payer');
+        $this->order(null);
+        $this->order('A-payer');
+        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
+        $this->em->flush();
+
+        self::assertSame(['A-payer', 'Hosting', 'I-payer'], self::comments($this->client->request('GET', '/admin/transfers?sort=comment&order=asc')),
+            'a transfer without payer sorts by the description shown in its place');
+    }
+
     private function order(?string $payer): Payment
     {
         $payment = self::service(PaymentService::class)->order(
