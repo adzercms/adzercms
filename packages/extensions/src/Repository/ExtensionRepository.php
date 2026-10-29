@@ -106,19 +106,12 @@ class ExtensionRepository extends ServiceEntityRepository
 
     private function shown(): QueryBuilder
     {
-        return self::stated($this->createQueryBuilder('e')->leftJoin('e.author', 'a'), ExtensionState::Published);
+        return self::stated($this->createQueryBuilder('e'), ExtensionState::Published);
     }
 
     private static function stated(QueryBuilder $builder, ExtensionState $state): QueryBuilder
     {
-        $builder->andWhere('e.decision = :decision')->setParameter('decision', $state->decision());
-
-        return match ($state) {
-            ExtensionState::Pending, ExtensionState::Rejected, ExtensionState::Withdrawn => $builder,
-            ExtensionState::Missing => $builder->andWhere('e.version IS NULL'),
-            ExtensionState::Unclaimed => $builder->andWhere('e.version IS NOT NULL', 'e.author IS NOT NULL', 'e.authorKey IS NULL OR e.authorKey <> a.key'),
-            ExtensionState::Published => $builder->andWhere('e.version IS NOT NULL', 'e.author IS NULL OR e.authorKey = a.key'),
-        };
+        return $builder->andWhere('e.state = :state')->setParameter('state', $state);
     }
 
     private static function typed(QueryBuilder $builder, Table $table): QueryBuilder

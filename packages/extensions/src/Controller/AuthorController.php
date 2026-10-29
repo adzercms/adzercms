@@ -96,7 +96,7 @@ final class AuthorController extends AbstractController
             Column::of('type', t('extensions.column.type'), 'e.type'),
             Column::of('price', t('extensions.column.price'), 'e.price'),
             Column::of('version', t('extensions.column.version'), 'e.version')->aside(),
-            Column::plain('state', t('extensions.column.state')),
+            Column::of('state', t('extensions.column.state'), 'e.state'),
         ], 'name', t('extensions.mine.empty'));
 
         return ['table' => $table, 'rows' => $this->extensions->authored($author, $table)];

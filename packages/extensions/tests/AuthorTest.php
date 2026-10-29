@@ -49,6 +49,22 @@ final class AuthorTest extends CatalogTestCase
         self::assertSame([self::phrase(ExtensionState::Rejected->label()), 'No demo site'], [$state->filter('.badge')->text(), $state->filter('.muted')->text()]);
     }
 
+    #[Group('ACMS-EXT-0012')]
+    #[Group('ACMS-US-0044')]
+    public function testOwnEntriesSortByState(): void
+    {
+        $this->arrive(self::SECTION);
+        $mine = $this->mine();
+        $this->entry('acme/alpha', author: $mine)->decide(ExtensionDecision::Rejected, 'No demo site');
+        $this->entry('acme/zeta', author: $mine);
+        $this->em->flush();
+        $sorted = fn (string $order): array => $this->arrive(self::SECTION.'?sort=state&order='.$order)
+            ->filter('tbody tr strong')->each(static fn (Crawler $name): string => $name->text());
+
+        self::assertSame(['acme/zeta', 'acme/alpha'], $sorted('asc'), 'a pending entry goes before a rejected one');
+        self::assertSame(['acme/alpha', 'acme/zeta'], $sorted('desc'));
+    }
+
     #[Group('ACMS-EXT-0009')]
     #[Group('ACMS-EXT-0010')]
     #[Group('ACMS-US-0044')]

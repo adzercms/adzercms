@@ -23,6 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\UniqueConstraint(name: 'uniq_extension_name', columns: ['name'])]
 #[ORM\Index(name: 'idx_extension_position', columns: ['position'])]
 #[ORM\Index(name: 'idx_extension_decision', columns: ['decision', 'position'])]
+#[ORM\Index(name: 'idx_extension_state', columns: ['state', 'position'])]
 class Extension implements Placed
 {
     public const PRICE = '99999999.99';
@@ -43,6 +44,9 @@ class Extension implements Placed
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $reason = null;
+
+    #[ORM\Column(length: 16, enumType: ExtensionState::class)]
+    private ExtensionState $state;
 
     #[ORM\Column(length: ExtensionAuthor::KEY, nullable: true)]
     private ?string $authorKey = null;
@@ -87,6 +91,7 @@ class Extension implements Placed
         $this->author = $author;
         $this->decision = null === $author ? ExtensionDecision::Published : ExtensionDecision::Pending;
         $this->categories = new ArrayCollection();
+        $this->state = $this->resolve();
     }
 
     public function getId(): ?int
@@ -162,18 +167,14 @@ class Extension implements Placed
 
     public function state(): ExtensionState
     {
-        return match (true) {
-            ExtensionDecision::Published !== $this->decision => $this->decision->state(),
-            null === $this->version => ExtensionState::Missing,
-            null !== $this->author && $this->authorKey !== $this->author->getKey() => ExtensionState::Unclaimed,
-            default => ExtensionState::Published,
-        };
+        return $this->state;
     }
 
     public function decide(ExtensionDecision $decision, ?string $reason = null): void
     {
         $this->decision = $decision;
         $this->reason = $reason;
+        $this->state = $this->resolve();
     }
 
     public function revise(): void
@@ -205,6 +206,7 @@ class Extension implements Placed
         $this->source = self::fit($package?->source, self::LINK);
         $this->homepage = self::fit($package?->homepage, self::LINK);
         $this->authorKey = self::fit($package?->author, ExtensionAuthor::KEY);
+        $this->state = $this->resolve();
         if (null !== $this->author) {
             $this->price = null !== $package?->price && Money::compare($package->price, self::PRICE) <= 0 ? $package->price : null;
         }
@@ -227,6 +229,16 @@ class Extension implements Placed
     public function place(int $position): void
     {
         $this->position = $position;
+    }
+
+    private function resolve(): ExtensionState
+    {
+        return match (true) {
+            ExtensionDecision::Published !== $this->decision => $this->decision->state(),
+            null === $this->version => ExtensionState::Missing,
+            null !== $this->author && $this->authorKey !== $this->author->getKey() => ExtensionState::Unclaimed,
+            default => ExtensionState::Published,
+        };
     }
 
     private static function fit(?string $value, int $length): ?string
