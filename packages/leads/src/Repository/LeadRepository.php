@@ -92,19 +92,9 @@ class LeadRepository extends ServiceEntityRepository
     }
 
     /** @param list<int> $found */
-    public function listing(Slice $slice, string $term, array $found, string $topic, ?int $manager, ?int $stage): QueryBuilder
+    public function listing(Slice $slice, string $term, array $found): QueryBuilder
     {
         $builder = self::sliced($this->createQueryBuilder('l')->join('l.stage', 's')->leftJoin('l.manager', 'm'), $slice);
-
-        if ('' !== $topic) {
-            $builder->andWhere('l.topic = :topic')->setParameter('topic', $topic);
-        }
-        if (null !== $manager) {
-            $builder->andWhere('l.manager = :manager')->setParameter('manager', $manager);
-        }
-        if (null !== $stage) {
-            $builder->andWhere('l.stage = :stage')->setParameter('stage', $stage);
-        }
 
         $term = trim($term);
         if ('' === $term) {

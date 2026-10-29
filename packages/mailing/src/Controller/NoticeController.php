@@ -67,8 +67,8 @@ final class NoticeController extends AbstractController
         ], 'at', t('mailing.empty'), false,
             filters: [
                 Filter::search(),
-                Filter::select('event', t('mailing.column.event'), $events),
-                Filter::cases('status', t('mailing.filter.status'), Status::cases()),
+                Filter::select('event', t('mailing.column.event'), $events)->on('n.event'),
+                Filter::cases('status', t('mailing.filter.status'), Status::cases())->on('n.status'),
             ],
             sticky: ['tab' => $tab, 'view' => 'journal'],
         );
@@ -79,7 +79,7 @@ final class NoticeController extends AbstractController
             'view' => 'journal',
             'channels' => $channels,
             'table' => $table,
-            'rows' => $this->notices->journal($tab, $table, Status::tryFrom($table->value('status'))),
+            'rows' => $this->notices->journal($tab, $table),
             'configured' => null !== $this->channels->ready($tab),
             'sms' => $sms,
         ];

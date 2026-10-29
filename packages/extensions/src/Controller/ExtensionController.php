@@ -141,8 +141,8 @@ final class ExtensionController extends AbstractController
         ], 'name', t('extensions.empty'),
             filters: [
                 Filter::search(),
-                Filter::cases('type', t('extensions.filter.type'), ExtensionType::cases()),
-                Filter::cases('state', t('extensions.column.state'), ExtensionState::cases()),
+                Filter::cases('type', t('extensions.filter.type'), ExtensionType::cases())->on('e.type'),
+                Filter::cases('state', t('extensions.column.state'), ExtensionState::cases())->on('e.state'),
             ],
             order: Order::of('admin_extensions_order', 'e.decision', 'e.position', 'e.id'),
         );

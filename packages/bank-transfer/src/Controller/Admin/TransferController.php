@@ -57,16 +57,10 @@ final class TransferController extends AbstractController
         ]);
 
         $builder = $this->payments->ofMethod(BankTransferService::METHOD, PaymentStatus::tryFrom($table->value(self::STATUS)) ?? PaymentStatus::Pending, trim($table->term()));
-        $total = (int) (clone $builder)->select('COUNT(p.id)')->getQuery()->getSingleScalarResult();
-        $table->apply($builder)->total($total);
+        $table->apply($builder);
 
         /** @var list<Payment> $rows */
-        $rows = $builder
-            ->addOrderBy('p.id', \SortDirection::Descending)
-            ->setMaxResults($table->size)
-            ->setFirstResult($table->offset())
-            ->getQuery()
-            ->getResult();
+        $rows = $table->paginate($builder->addOrderBy('p.id', \SortDirection::Descending)->getQuery());
 
         $comments = [];
         foreach ($rows as $row) {

@@ -74,7 +74,7 @@ final class NoticeRepository extends ServiceEntityRepository
     }
 
     /** @return list<Notice> */
-    public function journal(string $channel, Table $table, ?Status $status): array
+    public function journal(string $channel, Table $table): array
     {
         $builder = $this->createQueryBuilder('n')
             ->leftJoin('n.user', 'u')
@@ -82,25 +82,11 @@ final class NoticeRepository extends ServiceEntityRepository
             ->where('n.channel = :channel')
             ->setParameter('channel', $channel);
 
-        if ('' !== $table->value('event')) {
-            $builder->andWhere('n.event = :event')->setParameter('event', $table->value('event'));
-        }
-        if (null !== $status) {
-            $builder->andWhere('n.status = :status')->setParameter('status', $status);
-        }
         if ('' !== $table->term()) {
             $builder->andWhere($this->users->matchTerm($builder, 'u', $table->term(), fields: ['n.recipient', 'n.body']));
         }
-
-        $table->total((int) (clone $builder)->select('COUNT(n.id)')->getQuery()->getSingleScalarResult());
-
         $table->apply($builder);
 
-        return $builder
-            ->addOrderBy('n.id', \SortDirection::Descending)
-            ->setMaxResults($table->size)
-            ->setFirstResult($table->offset())
-            ->getQuery()
-            ->getResult();
+        return $table->paginate($builder->addOrderBy('n.id', \SortDirection::Descending)->getQuery());
     }
 }

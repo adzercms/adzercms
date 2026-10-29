@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AdzerCMS\Extensions\Repository;
 
 use AdzerCMS\Contracts\Module\Category;
-use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\Entity\Extension;
@@ -28,14 +27,14 @@ class ExtensionRepository extends ServiceEntityRepository
     /** @return list<Extension> */
     public function page(Table $table): array
     {
-        $builder = $this->listing($table);
-        $table->apply($builder)->total((int) $this->listing($table)->select('COUNT(e.id)')->getQuery()->getSingleScalarResult());
+        $builder = $this->createQueryBuilder('e')->leftJoin('e.author', 'a')->leftJoin('a.user', 'u')->addSelect('a', 'u');
 
-        return $builder
-            ->setMaxResults($table->size)
-            ->setFirstResult($table->offset())
-            ->getQuery()
-            ->getResult();
+        if ('' !== $table->term()) {
+            $builder->andWhere(Filter::matching($builder, $table->term(), ['e.name']));
+        }
+        $table->apply($builder);
+
+        return $table->paginate($builder->getQuery());
     }
 
     /** @return list<Extension> */
@@ -75,22 +74,10 @@ class ExtensionRepository extends ServiceEntityRepository
         return $this->findOneBy(['name' => $name]);
     }
 
-    private function listing(Table $table): QueryBuilder
-    {
-        $builder = $this->createQueryBuilder('e')->leftJoin('e.author', 'a')->leftJoin('a.user', 'u')->addSelect('a', 'u');
-
-        if ('' !== $table->term()) {
-            $builder->andWhere(Filter::matching($builder, $table->term(), ['e.name']));
-        }
-
-        $state = ExtensionState::tryFrom($table->value('state'));
-
-        return self::typed(null === $state ? $builder : self::stated($builder, $state), $table);
-    }
-
     private function catalog(Table $table): QueryBuilder
     {
-        $builder = self::typed($this->shown(), $table);
+        $builder = $this->shown();
+        $table->apply($builder);
 
         $category = Category::tryFrom($table->value('category'));
         if (null !== $category) {
@@ -106,19 +93,7 @@ class ExtensionRepository extends ServiceEntityRepository
 
     private function shown(): QueryBuilder
     {
-        return self::stated($this->createQueryBuilder('e'), ExtensionState::Published);
-    }
-
-    private static function stated(QueryBuilder $builder, ExtensionState $state): QueryBuilder
-    {
-        return $builder->andWhere('e.state = :state')->setParameter('state', $state);
-    }
-
-    private static function typed(QueryBuilder $builder, Table $table): QueryBuilder
-    {
-        $type = ExtensionType::tryFrom($table->value('type'));
-
-        return null === $type ? $builder : $builder->andWhere('e.type = :type')->setParameter('type', $type);
+        return $this->createQueryBuilder('e')->andWhere('e.state = :state')->setParameter('state', ExtensionState::Published);
     }
 
     private static function placed(QueryBuilder $builder): QueryBuilder

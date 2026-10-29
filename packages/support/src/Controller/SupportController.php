@@ -63,23 +63,17 @@ final class SupportController extends AbstractController
         ])), 'at', t('support.empty'), false,
             filters: array_filter([
                 Filter::search(),
-                Filter::select('department', t('support.column.department'), array_combine($departments, $departments)),
-                $archive ? null : Filter::cases('status', t('support.filter.status'), TicketStatus::active()),
+                Filter::select('department', t('support.column.department'), array_combine($departments, $departments))->on('t.department'),
+                $archive ? null : Filter::cases('status', t('support.filter.status'), TicketStatus::active())->on('t.status'),
             ]),
             sticky: $archive ? ['tab' => 'archive'] : [],
         );
-
-        $filters = [
-            'search' => $table->term(),
-            'department' => $table->value('department'),
-            'status' => $table->value('status'),
-        ];
 
         $context = [
             'staff' => $staff,
             'archive' => $archive,
             'table' => $table,
-            'rows' => $this->tickets->page($owner, $archive, $filters, $table),
+            'rows' => $this->tickets->page($owner, $archive, $table),
             'counts' => $this->tickets->counts($owner),
         ];
 

@@ -72,33 +72,19 @@ final readonly class LeadRows
         ], 'arrived', t('leads.empty'), false, filters: array_values(array_filter([
             $tabs,
             Filter::search(),
-            [] === $topics ? null : Filter::select(self::TOPIC, t('leads.filter.topic'), array_combine($topics, $topics)),
-            [] === $managers ? null : Filter::select(self::MANAGER, t('leads.filter.manager'), $managers),
-            \count($stages) < 2 ? null : Filter::select(self::STAGE, t('leads.filter.stage'), $stages),
+            [] === $topics ? null : Filter::select(self::TOPIC, t('leads.filter.topic'), array_combine($topics, $topics))->on('l.topic'),
+            [] === $managers ? null : Filter::select(self::MANAGER, t('leads.filter.manager'), $managers)->on('l.manager'),
+            \count($stages) < 2 ? null : Filter::select(self::STAGE, t('leads.filter.stage'), $stages)->on('l.stage'),
         ])), sticky: $sticky);
 
         $term = trim($table->term());
 
-        $builder = $this->leads->listing(
-            $slice,
-            $term,
-            $this->modules->search(LeadSubject::LISTING, $term),
-            $table->value(self::TOPIC),
-            '' === $table->value(self::MANAGER) ? null : (int) $table->value(self::MANAGER),
-            '' === $table->value(self::STAGE) ? null : (int) $table->value(self::STAGE),
-        );
-        $total = (int) (clone $builder)->select('COUNT(l.id)')->getQuery()->getSingleScalarResult();
+        $builder = $this->leads->listing($slice, $term, $this->modules->search(LeadSubject::LISTING, $term));
         $this->modules->order(LeadSubject::LISTING, $table, $builder, 'l.id');
-        $table->apply($builder)->total($total);
+        $table->apply($builder);
 
         /** @var list<Lead> $rows */
-        $rows = $builder
-            ->addSelect('s', 'm')
-            ->addOrderBy('l.id', \SortDirection::Descending)
-            ->setMaxResults($table->size)
-            ->setFirstResult($table->offset())
-            ->getQuery()
-            ->getResult();
+        $rows = $table->paginate($builder->addSelect('s', 'm')->addOrderBy('l.id', \SortDirection::Descending)->getQuery());
 
         $assigned = [];
         foreach ($rows as $row) {

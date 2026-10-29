@@ -53,15 +53,11 @@ final class UserRepository extends ServiceEntityRepository
     }
 
     /** @param list<int> $found */
-    public function listing(string $term, bool $archive, ?Status $status = null, array $found = []): QueryBuilder
+    public function listing(string $term, bool $archive, array $found = []): QueryBuilder
     {
         $builder = $this->createQueryBuilder('s')
             ->where($archive ? 's.status = :archived' : 's.status <> :archived')
             ->setParameter('archived', Status::Archived);
-
-        if (null !== $status) {
-            $builder->andWhere('s.status = :status')->setParameter('status', $status);
-        }
 
         $term = trim($term);
 
@@ -97,11 +93,6 @@ final class UserRepository extends ServiceEntityRepository
         return $match;
     }
 
-    public function total(string $term, bool $archive, ?Status $status = null): int
-    {
-        return (int) $this->listing($term, $archive, $status)->select('COUNT(s.id)')->getQuery()->getSingleScalarResult();
-    }
-
     public function firstYear(\DateTimeImmutable $fallback): int
     {
         $first = $this->createQueryBuilder('s')->select('MIN(s.createdAt)')->getQuery()->getSingleScalarResult();
@@ -112,7 +103,15 @@ final class UserRepository extends ServiceEntityRepository
     /** @return array{users: int, archive: int} */
     public function counts(): array
     {
-        return ['users' => $this->total('', false), 'archive' => $this->total('', true)];
+        $row = $this->createQueryBuilder('s')
+            ->select('COUNT(s.id) AS total')
+            ->addSelect('SUM(CASE WHEN s.status = :archived THEN 1 ELSE 0 END) AS archive')
+            ->setParameter('archived', Status::Archived)
+            ->getQuery()
+            ->getSingleResult();
+        $archive = (int) $row['archive'];
+
+        return ['users' => (int) $row['total'] - $archive, 'archive' => $archive];
     }
 
     public function byLogin(string $login): ?User

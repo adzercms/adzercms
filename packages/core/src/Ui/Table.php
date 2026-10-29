@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Ui;
 
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\AST\JoinAssociationDeclaration;
+use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\OffsetPaginator;
 use Doctrine\ORM\Tools\Pagination\Window;
 use Symfony\Component\HttpFoundation\Request;
@@ -217,14 +220,33 @@ final class Table
         return max(1, (int) ceil($this->total / $this->size));
     }
 
-    public function apply(QueryBuilder $builder): self
+    /** @return array{list<string>, array<string, string>} */
+    public function narrowing(): array
     {
+        $conditions = [];
+        $parameters = [];
+
         foreach ($this->filters as $filter) {
             $value = $this->value($filter->name);
             if (null !== $filter->field && '' !== $value) {
                 $parameter = 'filter_'.preg_replace('/\W/', '_', $filter->name);
-                $builder->andWhere(\sprintf('%s = :%s', $filter->field, $parameter))->setParameter($parameter, $value);
+                $conditions[] = \sprintf('%s = :%s', $filter->field, $parameter);
+                $parameters[$parameter] = $value;
             }
+        }
+
+        return [$conditions, $parameters];
+    }
+
+    public function apply(QueryBuilder $builder): self
+    {
+        [$conditions, $parameters] = $this->narrowing();
+
+        foreach ($conditions as $condition) {
+            $builder->andWhere($condition);
+        }
+        foreach ($parameters as $parameter => $value) {
+            $builder->setParameter($parameter, $value);
         }
 
         $direction = $this->ascending ? \SortDirection::Ascending : \SortDirection::Descending;
@@ -245,10 +267,45 @@ final class Table
      */
     public function paginate(Query $query): array
     {
-        $page = (new OffsetPaginator())->paginate($query, new Window($this->offset(), $this->size));
+        $multiplied = self::multiplied($query);
+        if (!$multiplied) {
+            $query->setHint(CountWalker::HINT_DISTINCT, false);
+        }
+
+        $page = (new OffsetPaginator($multiplied, $multiplied ? null : false))->paginate($query, new Window($this->offset(), $this->size));
         $this->total = $page->getTotalCount();
 
         return $page->getItems();
+    }
+
+    /** @param Query<mixed, mixed> $query */
+    private static function multiplied(Query $query): bool
+    {
+        $statement = $query->getAST();
+        $declarations = $statement instanceof SelectStatement ? $statement->fromClause->identificationVariableDeclarations : [];
+        $root = 1 === \count($declarations) ? $declarations[0]->rangeVariableDeclaration : null;
+        if (null === $root || !class_exists($root->abstractSchemaName)) {
+            return true;
+        }
+
+        $manager = $query->getEntityManager();
+        $classes = [$root->aliasIdentificationVariable => $root->abstractSchemaName];
+
+        foreach ($declarations[0]->joins as $join) {
+            $association = $join->joinAssociationDeclaration;
+            if (!$association instanceof JoinAssociationDeclaration) {
+                return true;
+            }
+
+            $path = $association->joinAssociationPathExpression;
+            $metadata = $manager->getClassMetadata($classes[$path->identificationVariable]);
+            if (!$metadata->isSingleValuedAssociation($path->associationField)) {
+                return true;
+            }
+            $classes[$association->aliasIdentificationVariable] = $metadata->getAssociationTargetClass($path->associationField);
+        }
+
+        return false;
     }
 
     public function order(string $tail): string

@@ -38,7 +38,7 @@ final readonly class UserRows
     {
         $filters = [Filter::search()];
         if (!$archive) {
-            $filters[] = Filter::cases(self::STATE, t('core.user.any_state'), [Status::Active, Status::Stopped]);
+            $filters[] = Filter::cases(self::STATE, t('core.user.any_state'), [Status::Active, Status::Stopped])->on('s.status');
         }
 
         $extra = $this->modules->columns(Columns::ADMIN_USERS);
@@ -52,21 +52,15 @@ final readonly class UserRows
 
         $term = trim($table->term());
 
-        $builder = $this->users->listing($term, $archive, Status::tryFrom($table->value(self::STATE)), $this->modules->search(Columns::ADMIN_USERS, $term));
+        $builder = $this->users->listing($term, $archive, $this->modules->search(Columns::ADMIN_USERS, $term));
         if (null !== $narrow) {
             $narrow($builder);
         }
-        $total = (int) (clone $builder)->select('COUNT(s.id)')->getQuery()->getSingleScalarResult();
         $this->modules->order(Columns::ADMIN_USERS, $table, $builder, 's.id');
-        $table->apply($builder)->total($total);
+        $table->apply($builder);
 
         /** @var list<User> $rows */
-        $rows = $builder
-            ->addOrderBy('s.id', \SortDirection::Ascending)
-            ->setMaxResults($table->size)
-            ->setFirstResult($table->offset())
-            ->getQuery()
-            ->getResult();
+        $rows = $table->paginate($builder->addOrderBy('s.id', \SortDirection::Ascending)->getQuery());
 
         return [
             'table' => $table,

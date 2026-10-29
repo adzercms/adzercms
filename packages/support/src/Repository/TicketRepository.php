@@ -22,31 +22,13 @@ class TicketRepository extends ServiceEntityRepository
         parent::__construct($registry, Ticket::class);
     }
 
-    /**
-     * @param array<string, string> $filters
-     *
-     * @return list<Ticket>
-     */
-    public function page(?User $user, bool $archive, array $filters, Table $table): array
+    /** @return list<Ticket> */
+    public function page(?User $user, bool $archive, Table $table): array
     {
-        $builder = $this->listing($user, $archive, $filters);
-        $table->apply($builder)->total($this->total($user, $archive, $filters));
+        $builder = $this->listing($user, $archive, $table->term());
+        $table->apply($builder);
 
-        return $builder
-            ->addOrderBy('t.id', \SortDirection::Descending)
-            ->setMaxResults($table->size)
-            ->setFirstResult($table->offset())
-            ->getQuery()
-            ->getResult();
-    }
-
-    /** @param array<string, string> $filters */
-    public function total(?User $user, bool $archive, array $filters): int
-    {
-        return (int) $this->listing($user, $archive, $filters)
-            ->select('COUNT(t.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
+        return $table->paginate($builder->addOrderBy('t.id', \SortDirection::Descending)->getQuery());
     }
 
     /** @return array{active: int, archive: int} */
@@ -179,8 +161,7 @@ class TicketRepository extends ServiceEntityRepository
         return $builder;
     }
 
-    /** @param array<string, string> $filters */
-    private function listing(?User $user, bool $archive, array $filters): QueryBuilder
+    private function listing(?User $user, bool $archive, string $term): QueryBuilder
     {
         $builder = $this->createQueryBuilder('t')
             ->leftJoin('t.user', 's')
@@ -194,18 +175,7 @@ class TicketRepository extends ServiceEntityRepository
             $builder->andWhere('t.user = :user')->setParameter('user', $user);
         }
 
-        if (!empty($filters['department'])) {
-            $builder->andWhere('t.department = :department')->setParameter('department', $filters['department']);
-        }
-
-        if (!empty($filters['status'])) {
-            $status = TicketStatus::tryFrom((string) $filters['status']);
-            if (null !== $status) {
-                $builder->andWhere('t.status = :status')->setParameter('status', $status);
-            }
-        }
-
-        $term = trim($filters['search'] ?? '');
+        $term = trim($term);
         if ('' === $term) {
             return $builder;
         }
