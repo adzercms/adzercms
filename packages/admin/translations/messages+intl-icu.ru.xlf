@@ -517,18 +517,6 @@
         <target>Фамилия</target>
       </segment>
     </unit>
-    <unit id="admin.user.malformed.email">
-      <segment>
-        <source>admin.user.malformed.email</source>
-        <target>Почта задана неверно</target>
-      </segment>
-    </unit>
-    <unit id="admin.user.malformed.phone">
-      <segment>
-        <source>admin.user.malformed.phone</source>
-        <target>Телефон задан неверно</target>
-      </segment>
-    </unit>
     <unit id="admin.user.middle_name">
       <segment>
         <source>admin.user.middle_name</source>
@@ -665,18 +653,6 @@
       <segment>
         <source>admin.user.switch</source>
         <target>Войти как пользователь</target>
-      </segment>
-    </unit>
-    <unit id="admin.user.taken.email">
-      <segment>
-        <source>admin.user.taken.email</source>
-        <target>Почта занята пользователем #{id}</target>
-      </segment>
-    </unit>
-    <unit id="admin.user.taken.phone">
-      <segment>
-        <source>admin.user.taken.phone</source>
-        <target>Телефон занят пользователем #{id}</target>
       </segment>
     </unit>
     <unit id="admin.user.title">
