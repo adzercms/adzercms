@@ -49,6 +49,12 @@
         <target>Настройки</target>
       </segment>
     </unit>
+    <unit id="admin.menu.traffic">
+      <segment>
+        <source>admin.menu.traffic</source>
+        <target>Посещаемость</target>
+      </segment>
+    </unit>
     <unit id="admin.menu.translations">
       <segment>
         <source>admin.menu.translations</source>
@@ -401,6 +407,60 @@
       <segment>
         <source>admin.sources.zip</source>
         <target>ZIP</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.empty">
+      <segment>
+        <source>admin.traffic.empty</source>
+        <target>За этот срок посещений нет</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.moment">
+      <segment>
+        <source>admin.traffic.moment</source>
+        <target>Период</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.step.day">
+      <segment>
+        <source>admin.traffic.step.day</source>
+        <target>По дням</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.step.month">
+      <segment>
+        <source>admin.traffic.step.month</source>
+        <target>По месяцам</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.step.week">
+      <segment>
+        <source>admin.traffic.step.week</source>
+        <target>По неделям</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.total">
+      <segment>
+        <source>admin.traffic.total</source>
+        <target>За период</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.views">
+      <segment>
+        <source>admin.traffic.views</source>
+        <target>Просмотры</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.visitors">
+      <segment>
+        <source>admin.traffic.visitors</source>
+        <target>Посетители</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.visits">
+      <segment>
+        <source>admin.traffic.visits</source>
+        <target>Визиты</target>
       </segment>
     </unit>
     <unit id="admin.translation.catalog">

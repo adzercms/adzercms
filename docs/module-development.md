@@ -134,6 +134,10 @@ The service must live in its bundle's namespace: that's how the core knows which
 
 The service with the credential fields also implements `AdzerCMS\Contracts\Setting\Guided`: `guide()` returns the steps to get the credentials at the external service as phrases of the module's catalog, one action per step: where to go, what to press, what to copy into which field, with the field's label and the full address. The module card in the admin lists them above the settings form.
 
+## Traffic
+
+An analytics counter module shows the site traffic in the admin with a service implementing `AdzerCMS\Contracts\Analytics\Traffic`; it's registered by autoconfiguration. `available()` tells whether the counter can give reports now, such as when it has its number and token. `report()` gets the first and the last day of the period and a `Step` of a day, a week or a month, and returns a `Report` or a `Refusal` with the reason from the service: the visitors, visits and views of the whole period, where a person who came on different days counts once, the same numbers by steps, and the first day of the counter statistics. The admin section "Traffic" takes the first available report, and without one the section is not in the menu and its address answers 404.
+
 ## User creation
 
 A feature module can offer the admin other places to create a user in, such as the sites the instance serves, with a service implementing `AdzerCMS\Contracts\Account\UserPlaces`; it's registered by autoconfiguration, and one module of the instance provides places. `label()` names the place field of the new user form, `places()` returns the place titles by key, and `create()` gets the picked key and a `Newcomer` with the name, the normalized phone and email and the password the admin typed, and returns a `Refusal` or `null` once the user exists there. The instance checks only the form of the contacts and the password length, the place checks the rest. The comment, notes, state and role belong to a user of the instance, and a user created at a place doesn't appear in its list.

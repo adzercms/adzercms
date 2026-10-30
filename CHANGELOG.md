@@ -15,6 +15,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `UserPlaces` and `UserCreation`: the new user form of the admin creates a user at a place of a feature module, such as a site the instance serves, and a feature module closes creating users on the instance itself
 - `Contacts`: one core check of the phone and email of a user for the admin and modules that create or change users, a malformed contact or one held by another user is refused with the holder named
 - `Roles`: the admin picks the role of a user only when a feature module has a section in the cabinet, otherwise the user form has no role field, a user the admin creates is an administrator and a saved user keeps the role
+- `Traffic`: an analytics counter module gives the admin section "Traffic" the visitors, visits and views of a month, a year or own dates by days, weeks or months under the total of the period; the Yandex Metrica module reports them from its counter by a token with `metrika:read`
 - Notice channels of modules: a feature module brings its own channel after the bots
 - Sums carry the ruble sign in the reader's language through ICU: the `money` and `precise` filters, `Money::rubles()` and `Money::precise()` give a translatable `Sum` for phrase arguments
 - Setting field `Type::Color`: the admin picks the color in the browser's color picker, the setting keeps `#rrggbb`
