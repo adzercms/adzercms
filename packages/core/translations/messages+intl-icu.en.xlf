@@ -241,10 +241,34 @@
         <target>Email</target>
       </segment>
     </unit>
+    <unit id="core.contact.malformed.email">
+      <segment>
+        <source>core.contact.malformed.email</source>
+        <target>Email is malformed</target>
+      </segment>
+    </unit>
+    <unit id="core.contact.malformed.phone">
+      <segment>
+        <source>core.contact.malformed.phone</source>
+        <target>Phone is malformed</target>
+      </segment>
+    </unit>
     <unit id="core.contact.phone">
       <segment>
         <source>core.contact.phone</source>
         <target>Phone</target>
+      </segment>
+    </unit>
+    <unit id="core.contact.taken.email">
+      <segment>
+        <source>core.contact.taken.email</source>
+        <target>Email is taken by user #{id}</target>
+      </segment>
+    </unit>
+    <unit id="core.contact.taken.phone">
+      <segment>
+        <source>core.contact.taken.phone</source>
+        <target>Phone is taken by user #{id}</target>
       </segment>
     </unit>
     <unit id="core.deletion.no_mail">

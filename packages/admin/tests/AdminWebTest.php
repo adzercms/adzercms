@@ -132,6 +132,7 @@ final class AdminWebTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-0068')]
     #[Group('ACMS-CORE-0099')]
+    #[Group('ACMS-CORE-1028')]
     #[Group('ACMS-US-0003')]
     public function testContactsAreKeptNormalizedAndTakenOnesNameTheirHolder(): void
     {
@@ -147,7 +148,7 @@ final class AdminWebTest extends SchemaTestCase
         $url = \sprintf('/admin/users/%d', $user->getId());
         foreach (['phone' => '12345', 'email' => 'no-at-sign'] as $kind => $value) {
             $page = $this->post($url, [$kind => $value] + ['phone' => '79997654321', 'email' => 'abonent@example.org']);
-            self::assertSame(self::phrase('admin.user.malformed.'.$kind), trim($page->filter('.flash-error')->text()));
+            self::assertSame(self::phrase('core.contact.malformed.'.$kind), trim($page->filter('.flash-error')->text()));
         }
 
         $kept = $this->reread($user);
@@ -157,7 +158,7 @@ final class AdminWebTest extends SchemaTestCase
         foreach (['phone' => '8 999 123 45 67', 'email' => 'holder@example.org'] as $kind => $value) {
             $dialog = $this->post('/admin/users/new', [$kind => $value]);
             self::assertResponseIsSuccessful();
-            self::assertSame(self::phrase('admin.user.taken.'.$kind, ['id' => $holder->getId()]), trim($dialog->filter('.flash-error')->text()));
+            self::assertSame(self::phrase('core.contact.taken.'.$kind, ['id' => $holder->getId()]), trim($dialog->filter('.flash-error')->text()));
         }
         self::assertSame(3, self::service(UserRepository::class)->count([]));
     }

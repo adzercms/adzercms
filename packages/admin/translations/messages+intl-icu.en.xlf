@@ -517,18 +517,6 @@
         <target>Last name</target>
       </segment>
     </unit>
-    <unit id="admin.user.malformed.email">
-      <segment>
-        <source>admin.user.malformed.email</source>
-        <target>Email is malformed</target>
-      </segment>
-    </unit>
-    <unit id="admin.user.malformed.phone">
-      <segment>
-        <source>admin.user.malformed.phone</source>
-        <target>Phone is malformed</target>
-      </segment>
-    </unit>
     <unit id="admin.user.middle_name">
       <segment>
         <source>admin.user.middle_name</source>
@@ -665,18 +653,6 @@
       <segment>
         <source>admin.user.switch</source>
         <target>Log in as the user</target>
-      </segment>
-    </unit>
-    <unit id="admin.user.taken.email">
-      <segment>
-        <source>admin.user.taken.email</source>
-        <target>Email is taken by user #{id}</target>
-      </segment>
-    </unit>
-    <unit id="admin.user.taken.phone">
-      <segment>
-        <source>admin.user.taken.phone</source>
-        <target>Phone is taken by user #{id}</target>
       </segment>
     </unit>
     <unit id="admin.user.title">
