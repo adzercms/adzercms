@@ -12,6 +12,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - The admin section "Translations": the admin changes any text of the enabled packages in each language of the catalogs without code, the language of the instance first, clearing it brings back the catalog text
 - `BotListener`: a feature module takes what people send to the bots
 - `LoginListener`: a feature module that waits for a login takes the profile of the login service instead of the entry
+- `UserPlaces` and `UserCreation`: the new user form of the admin creates a user at a place of a feature module, such as a site the instance serves, and a feature module closes creating users on the instance itself
 - Notice channels of modules: a feature module brings its own channel after the bots
 - Sums carry the ruble sign in the reader's language through ICU: the `money` and `precise` filters, `Money::rubles()` and `Money::precise()` give a translatable `Sum` for phrase arguments
 - Setting field `Type::Color`: the admin picks the color in the browser's color picker, the setting keeps `#rrggbb`
