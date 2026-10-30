@@ -134,6 +134,12 @@ The service must live in its bundle's namespace: that's how the core knows which
 
 The service with the credential fields also implements `AdzerCMS\Contracts\Setting\Guided`: `guide()` returns the steps to get the credentials at the external service as phrases of the module's catalog, one action per step: where to go, what to press, what to copy into which field, with the field's label and the full address. The module card in the admin lists them above the settings form.
 
+## User creation
+
+A feature module can offer the admin other places to create a user in, such as the sites the instance serves, with a service implementing `AdzerCMS\Contracts\Account\UserPlaces`; it's registered by autoconfiguration, and one module of the instance provides places. `label()` names the place field of the new user form, `places()` returns the place titles by key, and `create()` gets the picked key and a `Newcomer` with the name, the normalized phone and email and the password the admin typed, and returns a `Refusal` or `null` once the user exists there. The instance checks only the form of the contacts and the password length, the place checks the rest. The comment, notes, state and role belong to a user of the instance, and a user created at a place doesn't appear in its list.
+
+A feature module closes creating users on the instance itself with a service implementing `AdzerCMS\Contracts\Account\UserCreation` whose `here()` returns `false`: the form then creates users only at the module places, and without places the admin has no button to add a user and the form answers 404.
+
 ## Notification channel
 
 A feature module can add a notification channel of its own with a service implementing `AdzerCMS\Core\Notice\Channel`; it's registered by autoconfiguration. The channel goes right after the bots and before the phone and email: in the delivery order of every notification, in the cabinet's switches and in the log. When the channel has nowhere to deliver a notification to a user, `missing()` tells them what to do to make it work. The way to connect the channel is rendered as a `Fragment` at `Fragment::CABINET_PROFILE`, which is also where `missing()` leads.

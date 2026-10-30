@@ -3,7 +3,7 @@
 {% block title %}{{ 'admin.menu.users'|trans }}{% endblock %}
 
 {% block actions %}
-    <button type="button" hx-get="{{ path('admin_user_new') }}" hx-target="#record">{{ 'admin.users.add'|trans }}</button>
+    {% if creation %}<button type="button" hx-get="{{ path('admin_user_new') }}" hx-target="#record">{{ 'admin.users.add'|trans }}</button>{% endif %}
 {% endblock %}
 
 {% block page %}

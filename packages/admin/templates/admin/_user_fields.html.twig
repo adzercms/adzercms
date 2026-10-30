@@ -1,4 +1,5 @@
-<label>{{ 'admin.user.comment'|trans }}
+{% set local = places is defined and places ? 'place=' : null %}
+<label{% if local %} data-when="{{ local }}"{% endif %}>{{ 'admin.user.comment'|trans }}
     <input type="text" name="comment" maxlength="{{ constant('AdzerCMS\\Core\\Entity\\User::COMMENT_LIMIT') }}" value="{{ user.comment }}">
 </label>
 <label>{{ 'admin.user.last_name'|trans }}
@@ -25,14 +26,14 @@
         <input type="text" value="{{ user.role.label|trans }}" readonly>
     </label>
 {% else %}
-    <label>{{ 'admin.user.state'|trans }}
+    <label{% if local %} data-when="{{ local }}"{% endif %}>{{ 'admin.user.state'|trans }}
         <select name="status" id="user-status">
             {% for case in enum('AdzerCMS\\Core\\Account\\Status').cases %}
                 <option value="{{ case.value }}" {{ user.id and user.status == case ? 'selected' }}>{{ case.label|trans }}</option>
             {% endfor %}
         </select>
     </label>
-    <label>{{ 'admin.user.role'|trans }}
+    <label{% if local %} data-when="{{ local }}"{% endif %}>{{ 'admin.user.role'|trans }}
         <select name="role">
             {% for case in enum('AdzerCMS\\Core\\Account\\Role').cases %}
                 <option value="{{ case.value }}" {{ user.id and user.role == case ? 'selected' }}>{{ case.label|trans }}</option>

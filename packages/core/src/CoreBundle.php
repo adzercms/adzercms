@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace AdzerCMS\Core;
 
 use AdzerCMS\Contracts\Account\Identifier;
+use AdzerCMS\Contracts\Account\UserCreation;
+use AdzerCMS\Contracts\Account\UserPlaces;
 use AdzerCMS\Contracts\Login\LoginListener;
 use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Contracts\Module\Switchable;
@@ -154,7 +156,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
         $builder->register(self::MIGRATION_MARKS, \Closure::class)
             ->setFactory([\Closure::class, 'fromCallable'])
             ->setArguments([[MigrationMarks::class, 'of']]);
-        foreach ([Owner::class, Rule::class, Guided::class, Identifier::class, Switchable::class, ContentSource::class, Fragment::class, Menu::class, Tabs::class, Columns::class, Palette::class, BotListener::class, LoginListener::class, Channel::class, Pages::class, Showcase::class] as $contract) {
+        foreach ([Owner::class, Rule::class, Guided::class, Identifier::class, UserPlaces::class, UserCreation::class, Switchable::class, ContentSource::class, Fragment::class, Menu::class, Tabs::class, Columns::class, Palette::class, BotListener::class, LoginListener::class, Channel::class, Pages::class, Showcase::class] as $contract) {
             $builder->registerForAutoconfiguration($contract)->addTag($contract);
         }
     }

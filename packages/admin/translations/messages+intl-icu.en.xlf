@@ -493,6 +493,12 @@
         <target>First name</target>
       </segment>
     </unit>
+    <unit id="admin.user.here">
+      <segment>
+        <source>admin.user.here</source>
+        <target>This site</target>
+      </segment>
+    </unit>
     <unit id="admin.user.info">
       <segment>
         <source>admin.user.info</source>
@@ -605,6 +611,18 @@
       <segment>
         <source>admin.user.phone</source>
         <target>Phone</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.place">
+      <segment>
+        <source>admin.user.place</source>
+        <target>Pick where to create the user</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.placed">
+      <segment>
+        <source>admin.user.placed</source>
+        <target>User created: {place}</target>
       </segment>
     </unit>
     <unit id="admin.user.profile">
