@@ -17,6 +17,7 @@
         "adzercms/theme-implementation": "^1.0",
         "doctrine/migrations": "^3.9",
         "doctrine/orm": "^3.7",
+        "symfony/clock": "7.4.*",
         "symfony/dependency-injection": "7.4.*",
         "symfony/framework-bundle": "7.4.*",
         "symfony/http-foundation": "7.4.*",

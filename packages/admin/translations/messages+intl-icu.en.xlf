@@ -49,6 +49,12 @@
         <target>Settings</target>
       </segment>
     </unit>
+    <unit id="admin.menu.traffic">
+      <segment>
+        <source>admin.menu.traffic</source>
+        <target>Traffic</target>
+      </segment>
+    </unit>
     <unit id="admin.menu.translations">
       <segment>
         <source>admin.menu.translations</source>
@@ -401,6 +407,60 @@
       <segment>
         <source>admin.sources.zip</source>
         <target>ZIP</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.empty">
+      <segment>
+        <source>admin.traffic.empty</source>
+        <target>No visits in this period</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.moment">
+      <segment>
+        <source>admin.traffic.moment</source>
+        <target>Period</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.step.day">
+      <segment>
+        <source>admin.traffic.step.day</source>
+        <target>By day</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.step.month">
+      <segment>
+        <source>admin.traffic.step.month</source>
+        <target>By month</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.step.week">
+      <segment>
+        <source>admin.traffic.step.week</source>
+        <target>By week</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.total">
+      <segment>
+        <source>admin.traffic.total</source>
+        <target>For the period</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.views">
+      <segment>
+        <source>admin.traffic.views</source>
+        <target>Views</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.visitors">
+      <segment>
+        <source>admin.traffic.visitors</source>
+        <target>Visitors</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.visits">
+      <segment>
+        <source>admin.traffic.visits</source>
+        <target>Visits</target>
       </segment>
     </unit>
     <unit id="admin.translation.catalog">
