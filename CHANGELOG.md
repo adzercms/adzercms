@@ -13,6 +13,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `BotListener`: a feature module takes what people send to the bots
 - `LoginListener`: a feature module that waits for a login takes the profile of the login service instead of the entry
 - `UserPlaces` and `UserCreation`: the new user form of the admin creates a user at a place of a feature module, such as a site the instance serves, and a feature module closes creating users on the instance itself
+- `Traffic`: an analytics counter module gives the admin section "Traffic" the visitors, visits and views of a month, a year or own dates by days, weeks or months under the total of the period; the Yandex Metrica module reports them from its counter by a token with `metrika:read`
 - Notice channels of modules: a feature module brings its own channel after the bots
 - Sums carry the ruble sign in the reader's language through ICU: the `money` and `precise` filters, `Money::rubles()` and `Money::precise()` give a translatable `Sum` for phrase arguments
 - Setting field `Type::Color`: the admin picks the color in the browser's color picker, the setting keeps `#rrggbb`

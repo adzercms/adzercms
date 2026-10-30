@@ -1,0 +1,15 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'admin.menu.traffic'|trans }}{% endblock %}
+
+{% block page %}
+{% embed '@Theme/_table.html.twig' %}
+    {% block row %}
+        <tr>
+            {% for value in [row.label|trans, row.visits.visitors, row.visits.visits, row.visits.views] %}
+                <td>{% if row.lead %}<strong>{{ value }}</strong>{% else %}{{ value }}{% endif %}</td>
+            {% endfor %}
+        </tr>
+    {% endblock %}
+{% endembed %}
+{% endblock %}

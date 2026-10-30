@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/admin",
-                "reference": "5d587e84d1171ecfa0eb8c7eb7c6ef661eca5c7c"
+                "reference": "d93ee6e6775e557de01a133c7082c317fe6b653d"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -21,6 +21,7 @@
                 "doctrine/migrations": "^3.9",
                 "doctrine/orm": "^3.7",
                 "php": ">=8.4",
+                "symfony/clock": "7.4.*",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/framework-bundle": "7.4.*",
                 "symfony/http-foundation": "7.4.*",
@@ -1651,7 +1652,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/yandex-metrika",
-                "reference": "13a226d000dd2b76e386ae9e26142187f1a8f30a"
+                "reference": "b5c7df33c2303dfa4199fda85fda6d3c7638b100"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1671,7 +1672,7 @@
                 "adzercms": {
                     "bundle": "AdzerCMS\\YandexMetrika\\YandexMetrikaBundle",
                     "description": {
-                        "ru": "Счётчик Яндекс Метрики на страницах после согласия на cookie и выгрузка ему офлайн-конверсий"
+                        "ru": "Счётчик Яндекс Метрики на страницах после согласия на cookie, выгрузка ему офлайн-конверсий и посещаемость сайта в админке"
                     },
                     "categories": [
                         "marketing"
@@ -1689,7 +1690,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Yandex Metrica counter on pages after cookie consent and offline conversions upload to it",
+            "description": "Yandex Metrica counter on pages after cookie consent, offline conversions upload to it and the site traffic in the admin",
             "keywords": [
                 "adzercms",
                 "analytics",
