@@ -493,6 +493,12 @@
         <target>Имя</target>
       </segment>
     </unit>
+    <unit id="admin.user.here">
+      <segment>
+        <source>admin.user.here</source>
+        <target>Этот сайт</target>
+      </segment>
+    </unit>
     <unit id="admin.user.info">
       <segment>
         <source>admin.user.info</source>
@@ -605,6 +611,18 @@
       <segment>
         <source>admin.user.phone</source>
         <target>Телефон</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.place">
+      <segment>
+        <source>admin.user.place</source>
+        <target>Выберите, где завести пользователя</target>
+      </segment>
+    </unit>
+    <unit id="admin.user.placed">
+      <segment>
+        <source>admin.user.placed</source>
+        <target>Пользователь заведён: {place}</target>
       </segment>
     </unit>
     <unit id="admin.user.profile">
