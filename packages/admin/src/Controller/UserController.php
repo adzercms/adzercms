@@ -7,8 +7,10 @@ namespace AdzerCMS\Admin\Controller;
 use AdzerCMS\Contracts\Account\Newcomer;
 use AdzerCMS\Contracts\Account\UserCreation;
 use AdzerCMS\Contracts\Account\UserPlaces;
+use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Ui\Tabs;
 use AdzerCMS\Core\Account\ContactKind;
+use AdzerCMS\Core\Account\Contacts;
 use AdzerCMS\Core\Account\Password;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Account\Status;
@@ -51,6 +53,7 @@ final class UserController extends AbstractController
     public function __construct(
         private readonly UserRepository $users,
         private readonly UserRows $rows,
+        private readonly Contacts $contacts,
         private readonly UserRemoval $removal,
         private readonly PageTabs $pages,
         private readonly EntityManagerInterface $em,
@@ -274,23 +277,13 @@ final class UserController extends AbstractController
     /** @return array<string, ?string>|TranslatableInterface */
     private function contacts(Request $request, ?User $user): array|TranslatableInterface
     {
-        $contacts = [];
-
+        $values = [];
         foreach (ContactKind::cases() as $kind) {
-            $value = trim($request->request->getString($kind->value));
-            $contact = '' === $value ? null : $kind->normalize($value);
-            if ('' !== $value && null === $contact) {
-                return t('admin.user.malformed.'.$kind->value);
-            }
-
-            $holder = null === $contact || null === $user ? null : $this->users->findOneBy([$kind->value => $contact]);
-            if (null !== $holder && $holder !== $user) {
-                return t('admin.user.taken.'.$kind->value, ['id' => $holder->getId()]);
-            }
-            $contacts[$kind->value] = $contact;
+            $values[$kind->value] = $request->request->getString($kind->value);
         }
+        $contacts = null === $user ? Contacts::forms($values) : $this->contacts->free($values, $user);
 
-        return $contacts;
+        return $contacts instanceof Refusal ? $contacts->reason : $contacts;
     }
 
     private function fill(User $user, Request $request, UserPasswordHasherInterface $hasher): ?TranslatableInterface

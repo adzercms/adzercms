@@ -138,6 +138,8 @@ The service with the credential fields also implements `AdzerCMS\Contracts\Setti
 
 A feature module can offer the admin other places to create a user in, such as the sites the instance serves, with a service implementing `AdzerCMS\Contracts\Account\UserPlaces`; it's registered by autoconfiguration, and one module of the instance provides places. `label()` names the place field of the new user form, `places()` returns the place titles by key, and `create()` gets the picked key and a `Newcomer` with the name, the normalized phone and email and the password the admin typed, and returns a `Refusal` or `null` once the user exists there. The instance checks only the form of the contacts and the password length, the place checks the rest. The comment, notes, state and role belong to a user of the instance, and a user created at a place doesn't appear in its list.
 
+A module that creates or changes a user checks the contacts with `AdzerCMS\Core\Account\Contacts`: the static `forms()` takes the raw phone and email by `ContactKind` value and returns them normalized or a `Refusal` for a malformed one, and `free()` also refuses a contact that another user holds and names that user.
+
 A feature module closes creating users on the instance itself with a service implementing `AdzerCMS\Contracts\Account\UserCreation` whose `here()` returns `false`: the form then creates users only at the module places, and without places the admin has no button to add a user and the form answers 404.
 
 ## Notification channel
