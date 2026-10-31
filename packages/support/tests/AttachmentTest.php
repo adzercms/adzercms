@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Support\Tests;
 
+use AdzerCMS\Core\Account\UserRemoval;
 use AdzerCMS\Core\Attachment\Attachments;
 use AdzerCMS\Core\Security\CsrfGuard;
 use AdzerCMS\Support\Entity\TicketAttachment;
@@ -92,5 +93,23 @@ final class AttachmentTest extends SupportTestCase
             self::assertNull(self::service(TicketAttachmentRepository::class)->find($id), $action);
             self::assertFileDoesNotExist($path, $action);
         }
+    }
+
+    #[Group('ACMS-SUP-0023')]
+    #[Group('ACMS-US-0008')]
+    public function testRemovedUserLeavesNoFilesOfTheirTickets(): void
+    {
+        $paths = [];
+        foreach ([$user = $this->member(), $this->member()] as $member) {
+            $this->client->loginUser($member);
+            $this->open(['subject' => 'Screenshot', 'body' => 'Here is the error'], [$this->picture('shot.png')]);
+            $attachment = $this->attachmentsOf($this->messagesOf($this->ticketOf($member) ?? self::fail('no ticket was opened'))[0])[0] ?? self::fail('the attachment is not kept');
+            $paths[] = self::service(Attachments::class)->path($attachment);
+        }
+
+        self::service(UserRemoval::class)->remove($this->reread($user));
+
+        self::assertFileDoesNotExist($paths[0]);
+        self::assertFileExists($paths[1], 'the files of other users stay');
     }
 }
