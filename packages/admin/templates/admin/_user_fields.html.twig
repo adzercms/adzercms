@@ -22,9 +22,11 @@
     <label>{{ 'admin.user.state'|trans }}
         <input type="text" value="{{ user.status.label|trans }}" readonly>
     </label>
-    <label>{{ 'admin.user.role'|trans }}
-        <input type="text" value="{{ user.role.label|trans }}" readonly>
-    </label>
+    {% if roles %}
+        <label>{{ 'admin.user.role'|trans }}
+            <input type="text" value="{{ user.role.label|trans }}" readonly>
+        </label>
+    {% endif %}
 {% else %}
     <label{% if local %} data-when="{{ local }}"{% endif %}>{{ 'admin.user.state'|trans }}
         <select name="status" id="user-status">
@@ -33,11 +35,13 @@
             {% endfor %}
         </select>
     </label>
-    <label{% if local %} data-when="{{ local }}"{% endif %}>{{ 'admin.user.role'|trans }}
-        <select name="role">
-            {% for case in enum('AdzerCMS\\Core\\Account\\Role').cases %}
-                <option value="{{ case.value }}" {{ user.id and user.role == case ? 'selected' }}>{{ case.label|trans }}</option>
-            {% endfor %}
-        </select>
-    </label>
+    {% if roles %}
+        <label{% if local %} data-when="{{ local }}"{% endif %}>{{ 'admin.user.role'|trans }}
+            <select name="role">
+                {% for case in enum('AdzerCMS\\Core\\Account\\Role').cases %}
+                    <option value="{{ case.value }}" {{ user.id and user.role == case ? 'selected' }}>{{ case.label|trans }}</option>
+                {% endfor %}
+            </select>
+        </label>
+    {% endif %}
 {% endif %}

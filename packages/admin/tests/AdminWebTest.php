@@ -165,16 +165,18 @@ final class AdminWebTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-0066')]
     #[Group('ACMS-CORE-0163')]
+    #[Group('ACMS-CORE-1029')]
     #[Group('ACMS-US-0003')]
     public function testCreationAsksNothingAndKeepsWhatIsGiven(): void
     {
         $this->client->loginUser($this->admin);
+        self::assertCount(0, $this->client->request('GET', '/admin/users/new')->filter('[name="role"]'), 'no feature module has a cabinet section');
 
-        $this->post('/admin/users/new');
+        $this->post('/admin/users/new', ['role' => Role::User->value]);
         $empty = $this->created();
 
         self::assertSame(Status::Active, $empty->getStatus());
-        self::assertSame(Role::User, $empty->getRole());
+        self::assertSame(Role::Admin, $empty->getRole());
         self::assertNull($empty->getPhone());
         self::assertNull($empty->getEmail());
         self::assertNull($empty->getComment());
@@ -464,7 +466,7 @@ final class AdminWebTest extends SchemaTestCase
 
         $page = $this->client->request('GET', \sprintf('/admin/users/%d', $other->getId()));
         self::assertCount(1, $page->filter('form[action$="/drop"]'));
-        self::assertCount(2, $page->filter('select[name="status"], select[name="role"]'));
+        self::assertCount(1, $page->filter('select[name="status"]'));
     }
 
     #[Group('ACMS-CORE-0021')]

@@ -142,6 +142,8 @@ A module that creates or changes a user checks the contacts with `AdzerCMS\Core\
 
 A feature module closes creating users on the instance itself with a service implementing `AdzerCMS\Contracts\Account\UserCreation` whose `here()` returns `false`: the form then creates users only at the module places, and without places the admin has no button to add a user and the form answers 404.
 
+The admin picks the role of a user only when a feature module has a section in the cabinet: its `Menu` service returns items for `Area::Cabinet`. Without such a section the user form has no role field, and every user the admin creates or saves is an administrator.
+
 ## Notification channel
 
 A feature module can add a notification channel of its own with a service implementing `AdzerCMS\Core\Notice\Channel`; it's registered by autoconfiguration. The channel goes right after the bots and before the phone and email: in the delivery order of every notification, in the cabinet's switches and in the log. When the channel has nowhere to deliver a notification to a user, `missing()` tells them what to do to make it work. The way to connect the channel is rendered as a `Fragment` at `Fragment::CABINET_PROFILE`, which is also where `missing()` leads.

@@ -13,6 +13,7 @@ use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Account\Contacts;
 use AdzerCMS\Core\Account\Password;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Account\Roles;
 use AdzerCMS\Core\Account\Status;
 use AdzerCMS\Core\Account\UserRemoval;
 use AdzerCMS\Core\Account\UserRows;
@@ -56,6 +57,7 @@ final class UserController extends AbstractController
         private readonly Contacts $contacts,
         private readonly UserRemoval $removal,
         private readonly PageTabs $pages,
+        private readonly Roles $roles,
         private readonly EntityManagerInterface $em,
         #[AutowireIterator(UserPlaces::class)]
         iterable $places,
@@ -127,6 +129,7 @@ final class UserController extends AbstractController
             'places' => $places,
             'place' => $place,
             'place_label' => $this->places?->label(),
+            'roles' => $this->roles->chosen(),
         ]);
     }
 
@@ -163,6 +166,7 @@ final class UserController extends AbstractController
             'error' => $error,
             'kept' => self::PROFILE === $tab && $user !== $operator ? $this->removal->kept($user) : null,
             'fragment' => $fragment,
+            'roles' => $this->roles->chosen(),
         ]);
     }
 
@@ -312,7 +316,7 @@ final class UserController extends AbstractController
 
         if ($user !== $this->getUser()) {
             $user->setStatus($input->getEnum('status', Status::class, Status::Active))
-                ->setRole($input->getEnum('role', Role::class, Role::User));
+                ->setRole($this->roles->chosen() ? $input->getEnum('role', Role::class, Role::User) : Role::Admin);
         }
 
         $this->em->persist($user);
