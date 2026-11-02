@@ -180,8 +180,9 @@ const running = show => {
 const polling = element => (element?.getAttribute('hx-trigger') ?? '').includes('every');
 
 let approved = null;
+let sending = new WeakSet();
 
-const ask = (question, agreed, declined = () => {}) => {
+const ask =(question, agreed, declined = () => {}) => {
     const dialog = document.getElementById('confirm');
 
     dialog.querySelector('[data-confirm-text]').textContent = question;
@@ -196,6 +197,12 @@ const ask = (question, agreed, declined = () => {}) => {
     dialog.showModal();
 };
 
+document.addEventListener('submit', event => {
+    if (event.submitter && sending.has(event.target)) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+    }
+}, true);
 document.addEventListener('submit', event => {
     const form = event.target;
     const submitter = event.submitter ?? null;
@@ -217,10 +224,10 @@ document.addEventListener('submit', event => {
     }
 
     approved = null;
-    running(true);
-    form.querySelectorAll('button[type="submit"]').forEach(button => {
-        setTimeout(() => { button.disabled = true; }, 0);
-    });
+    if ((submitter?.formMethod || form.method) !== 'dialog') {
+        sending.add(form);
+        running(true);
+    }
 });
 document.addEventListener('htmx:confirm', event => {
     const question = event.detail.elt?.dataset?.confirm;
@@ -231,8 +238,14 @@ document.addEventListener('htmx:confirm', event => {
     }
 });
 document.addEventListener('htmx:beforeRequest', event => running(!polling(event.detail.elt)));
-document.addEventListener('htmx:afterRequest', () => running(false));
-window.addEventListener('pageshow', () => running(false));
+document.addEventListener('htmx:afterRequest', event => {
+    sending.delete(event.detail.elt);
+    running(false);
+});
+window.addEventListener('pageshow', () => {
+    sending = new WeakSet();
+    running(false);
+});
 
 document.addEventListener('htmx:beforeSwap', event => {
     if (event.detail.target && event.detail.target.id === 'record') {
