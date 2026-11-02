@@ -163,11 +163,5 @@
         <target>en_US</target>
       </segment>
     </unit>
-    <unit id="theme.show">
-      <segment>
-        <source>theme.show</source>
-        <target>Show</target>
-      </segment>
-    </unit>
   </file>
 </xliff>

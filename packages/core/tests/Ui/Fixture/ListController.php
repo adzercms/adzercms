@@ -32,7 +32,7 @@ final class ListController
     #[Route('/fixture/list', name: 'fixture_list', methods: ['GET'])]
     public function list(Request $request, Environment $twig): Response
     {
-        $table = Table::of($request, 'fixture_list', [Column::of('name', t('theme.show'), 'name')], 'name', t('theme.show'), filters: [Filter::search()], order: Order::of('fixture_list_order', 'position'));
+        $table = Table::of($request, 'fixture_list', [Column::of('name', t('theme.main'), 'name')], 'name', t('theme.main'), filters: [Filter::search()], order: Order::of('fixture_list_order', 'position'));
 
         return new Response($twig->createTemplate(self::PAGE)->render(['table' => $table, 'rows' => self::ROWS]));
     }

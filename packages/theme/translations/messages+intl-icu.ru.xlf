@@ -163,11 +163,5 @@
         <target>ru_RU</target>
       </segment>
     </unit>
-    <unit id="theme.show">
-      <segment>
-        <source>theme.show</source>
-        <target>Показать</target>
-      </segment>
-    </unit>
   </file>
 </xliff>

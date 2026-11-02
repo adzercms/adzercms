@@ -1,9 +1,6 @@
-<form class="table-filters" method="get" action="{{ path(route, params|default({})) }}">
-    {% for name, value in params|default({}) %}
-        <input type="hidden" name="{{ name }}" value="{{ value }}">
-    {% endfor %}
+<form class="table-filters" hx-get="{{ path(route, params|default({})) }}" hx-trigger="change, submit" hx-target="closest .card" hx-select=".card"
+      hx-swap="outerHTML" hx-push-url="true" hx-sync="this:replace">
     {% for filter in periods %}
         {% include '@Theme/_filter_field.html.twig' with {filter: filter} only %}
     {% endfor %}
-    <button type="submit" class="secondary">{{ 'theme.show'|trans }}</button>
 </form>
