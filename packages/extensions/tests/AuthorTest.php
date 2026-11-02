@@ -127,7 +127,7 @@ final class AuthorTest extends CatalogTestCase
         yield 'beyond the price column' => ['100000000.00', null];
     }
 
-    #[Group('ACMS-EXT-0009')]
+    #[Group('ACMS-EXT-0013')]
     #[Group('ACMS-US-0044')]
     public function testEditOfRejectedEntryReturnsItToDecisionWhilePublishedStays(): void
     {

@@ -154,6 +154,7 @@ final class CatalogAdminTest extends CatalogTestCase
     }
 
     #[Group('ACMS-EXT-0009')]
+    #[Group('ACMS-EXT-0014')]
     #[Group('ACMS-US-0035')]
     #[Group('ACMS-US-0044')]
     #[DataProvider('decisions')]
