@@ -165,7 +165,7 @@ final class AdminWebTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-0066')]
     #[Group('ACMS-CORE-0163')]
-    #[Group('ACMS-CORE-1030')]
+    #[Group('ACMS-CORE-1033')]
     #[Group('ACMS-US-0003')]
     public function testCreationAsksNothingAndKeepsWhatIsGiven(): void
     {
