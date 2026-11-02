@@ -6,5 +6,8 @@ if [ "$root" = "$here" ]; then call=$*; else call="copy $*"; fi
 printf '%s\n' "$call" >> "$root/calls"
 for argument; do case $argument in --working-dir=*) copy=${argument#--working-dir=} ;; esac; done
 [ -n "${copy:-}" ] && [ ! -e "$copy/vendor/bin/adzercms-check" ] || exit 0
+fixture=$(dirname "$(readlink -f "$0")")
 mkdir -p "$copy/vendor/bin"
-ln -s "$(dirname "$(readlink -f "$0")")/check" "$copy/vendor/bin/adzercms-check"
+ln -s "$fixture/check" "$copy/vendor/bin/adzercms-check"
+ln -s "$fixture/verify" "$copy/vendor/bin/adzercms-verify"
+ln -s "$fixture/../../../bin/adzercms-suites" "$copy/vendor/bin/adzercms-suites"

@@ -1,9 +1,8 @@
 #!/bin/sh
 set -eu
 
-scripts=$(cd "$(dirname "$0")" && pwd -P)
-
 if [ $# -eq 0 ]; then
+    scripts=$(cd "$(dirname "$0")" && pwd -P)
     copy=$(pwd -P)/var/verify
     excluded=$scripts/../config/stage.exclude
     rm -rf "$copy"
@@ -14,7 +13,8 @@ if [ $# -eq 0 ]; then
     changed=$("$scripts/adzercms-patched")
     # shellcheck disable=SC2086
     [ -z "$changed" ] || bin/php "$(command -v composer)" reinstall --working-dir="$copy" --no-interaction --no-progress $changed
-    set -- "$copy"
+    "$copy/vendor/bin/adzercms-verify" "$copy"
+    exit
 fi
 
 mkdir -p "$1/var"
@@ -22,4 +22,4 @@ ln -sfn "$(pwd -P)/var/tests.lock" "$1/var/tests.lock"
 cd "$1"
 bin/php bin/console importmap:install --no-interaction --env=test
 vendor/bin/adzercms-check
-[ ! -f phpunit.dist.xml ] || "$scripts/adzercms-suites"
+[ ! -f phpunit.dist.xml ] || vendor/bin/adzercms-suites

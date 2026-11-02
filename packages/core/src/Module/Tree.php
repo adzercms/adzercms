@@ -7,6 +7,7 @@ namespace AdzerCMS\Core\Module;
 use AdzerCMS\Contracts\Refusal;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\Process;
 
@@ -19,7 +20,7 @@ final readonly class Tree
     private const REFRESH = __DIR__.'/../../bin/adzercms-refresh';
     private const SELECTOR = __DIR__.'/../../bin/adzercms-selection';
     private const BUILD = __DIR__.'/../../bin/adzercms-build';
-    private const VERIFY = __DIR__.'/../../bin/adzercms-verify';
+    private const VERIFY = 'vendor/bin/adzercms-verify';
     private const PREVIEW = '--preview';
     private const SHARED = '.env';
     private const LOCAL = '.env.local';
@@ -108,7 +109,7 @@ final readonly class Tree
     /** @param array<string, string> $environment */
     public function verify(string $copy, array $environment): ?string
     {
-        return $this->run([$this->verify, $copy], $environment);
+        return $this->run([Path::makeAbsolute($this->verify, $copy), $copy], $environment);
     }
 
     /** @param array<string, string> $selection */
