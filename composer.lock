@@ -298,7 +298,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "7742ab6abd0191b44783a167ecd9b6ef82873339"
+                "reference": "3ea00183de2cfe66dc66af9a738c24e306ef4214"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -371,6 +371,7 @@
                 "bin/adzercms-package-routes",
                 "bin/adzercms-pre-commit",
                 "bin/adzercms-refresh",
+                "bin/adzercms-suites",
                 "bin/adzercms-verify"
             ],
             "type": "symfony-bundle",
