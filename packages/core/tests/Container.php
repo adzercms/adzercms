@@ -42,7 +42,10 @@ trait Container
 
     protected static function command(string $name): CommandTester
     {
-        $command = (new Application(self::$kernel ?? self::bootKernel()))->find($name);
+        $application = new Application(self::$kernel ?? self::bootKernel());
+        $command = $application->find($name);
+        $shadowed = array_intersect_key($command->getNativeDefinition()->getOptions(), $application->getDefinition()->getOptions());
+        self::assertSame([], array_keys($shadowed), \sprintf('command %s declares options of the console application', $name));
         self::service(EventDispatcherInterface::class, 'event_dispatcher')
             ->dispatch(new ConsoleCommandEvent($command, new ArrayInput([]), new NullOutput()), ConsoleEvents::COMMAND);
 
