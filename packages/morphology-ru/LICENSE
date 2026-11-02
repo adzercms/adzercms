@@ -1,0 +1,6 @@
+The files in data/ are the Russian dictionary of pymorphy3-dicts-ru
+(https://github.com/no-plagiarism/pymorphy3-dicts) compiled from the
+OpenCorpora dictionary and corpus (https://opencorpora.org).
+
+They are licensed under the Creative Commons Attribution-ShareAlike 3.0
+Unported License: https://creativecommons.org/licenses/by-sa/3.0/

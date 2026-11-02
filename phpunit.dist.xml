@@ -65,6 +65,9 @@
         <testsuite name="MaxBot">
             <directory>packages/max-bot/tests</directory>
         </testsuite>
+        <testsuite name="Morphology">
+            <directory>packages/morphology/tests</directory>
+        </testsuite>
         <testsuite name="MtsMarketolog">
             <directory>packages/mts-marketolog/tests</directory>
         </testsuite>

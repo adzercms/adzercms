@@ -1,0 +1,18 @@
+{
+    "name": "adzercms/morphology-ru",
+    "type": "library",
+    "description": "Russian dictionary of adzercms/morphology: the OpenCorpora dictionary as compiled by pymorphy3-dicts-ru",
+    "keywords": [
+        "adzercms",
+        "morphology",
+        "russian",
+        "dictionary",
+        "opencorpora"
+    ],
+    "license": "CC-BY-SA-3.0",
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

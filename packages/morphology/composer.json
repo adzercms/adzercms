@@ -1,0 +1,30 @@
+{
+    "name": "adzercms/morphology",
+    "type": "library",
+    "description": "Russian word form analysis: the pymorphy3 analyzer and DAWG-Python ported to PHP",
+    "keywords": [
+        "adzercms",
+        "morphology",
+        "russian",
+        "lemmatization",
+        "pymorphy"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "ext-intl": "*",
+        "ext-mbstring": "*",
+        "adzercms/morphology-ru": "^1.0",
+        "composer-runtime-api": "^2.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Morphology\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

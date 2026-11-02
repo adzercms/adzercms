@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6509224580092d3cb170fc1c356c3fbd",
+    "content-hash": "f3617fc6738830346ff82d9f38d13601",
     "packages": [
         {
             "name": "adzercms/admin",
@@ -762,6 +762,78 @@
                 "max",
                 "notifications",
                 "symfony"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "adzercms/morphology",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/morphology",
+                "reference": "0ff2146d5cfd4dcf09c660288ee64d2fd39b41e4"
+            },
+            "require": {
+                "adzercms/morphology-ru": "^1.0",
+                "composer-runtime-api": "^2.2",
+                "ext-intl": "*",
+                "ext-mbstring": "*",
+                "php": ">=8.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AdzerCMS\\Morphology\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Russian word form analysis: the pymorphy3 analyzer and DAWG-Python ported to PHP",
+            "keywords": [
+                "adzercms",
+                "lemmatization",
+                "morphology",
+                "pymorphy",
+                "russian"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "adzercms/morphology-ru",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/morphology-ru",
+                "reference": "72dc0f81186baad7f0030613e8898a8b2b0728dd"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "license": [
+                "CC-BY-SA-3.0"
+            ],
+            "description": "Russian dictionary of adzercms/morphology: the OpenCorpora dictionary as compiled by pymorphy3-dicts-ru",
+            "keywords": [
+                "adzercms",
+                "dictionary",
+                "morphology",
+                "opencorpora",
+                "russian"
             ],
             "transport-options": {
                 "symlink": true,
@@ -16684,6 +16756,8 @@
         "adzercms/leads": 20,
         "adzercms/mailing": 20,
         "adzercms/max-bot": 20,
+        "adzercms/morphology": 20,
+        "adzercms/morphology-ru": 20,
         "adzercms/mts-marketolog": 20,
         "adzercms/opotopo": 20,
         "adzercms/payments": 20,

@@ -21,9 +21,20 @@ if (is_dir($package.'/tests')) {
     $configuration->addPathToExclude($package.'/tests');
 }
 
-$fileless = array_filter(
+$symbolless = array_filter(
     array_keys($manifest['require'] ?? []),
-    static fn (string $required): bool => str_contains($required, '/') && InstalledVersions::isInstalled($required) && null === InstalledVersions::getInstallPath($required),
+    static function (string $required): bool {
+        if (!str_contains($required, '/') || !InstalledVersions::isInstalled($required)) {
+            return false;
+        }
+        $path = InstalledVersions::getInstallPath($required);
+        if (null === $path) {
+            return true;
+        }
+        $installed = json_decode((string) file_get_contents($path.'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
+
+        return \is_array($installed) && !isset($installed['autoload']);
+    },
 );
 $suggested = array_keys($manifest['suggest'] ?? []);
 $extensions = array_filter($suggested, static fn (string $suggestion): bool => str_starts_with($suggestion, 'ext-'));
@@ -35,4 +46,4 @@ return $configuration
     ->ignoreErrorsOnPackage($manifest['name'], [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnPackages(array_values(array_diff($suggested, $extensions)), [ErrorType::SHADOW_DEPENDENCY, ErrorType::DEV_DEPENDENCY_IN_PROD])
     ->ignoreErrorsOnExtensions(array_values($extensions), [ErrorType::SHADOW_DEPENDENCY, ErrorType::DEV_DEPENDENCY_IN_PROD])
-    ->ignoreErrorsOnPackages(array_values($fileless), [ErrorType::UNUSED_DEPENDENCY]);
+    ->ignoreErrorsOnPackages(array_values($symbolless), [ErrorType::UNUSED_DEPENDENCY]);

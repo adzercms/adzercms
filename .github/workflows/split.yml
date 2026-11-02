@@ -101,7 +101,7 @@ jobs:
           jq -r --arg monorepo "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" \
             '"# \(.name)\n\n\(.description)\n\nRead-only package repository: changes go to the monorepository \($monorepo)."' \
             composer.json > README.md
-          if [ -f ../../LICENSE ]; then cp ../../LICENSE LICENSE; fi
+          if [ ! -f LICENSE ] && [ -f ../../LICENSE ]; then cp ../../LICENSE LICENSE; fi
       - uses: danharrin/monorepo-split-github-action@14e42e2437f674b8987c1f50ca3689116aea1893
         env:
           GITHUB_TOKEN: ${{ secrets.SPLIT_TOKEN }}

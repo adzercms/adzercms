@@ -7,7 +7,7 @@ The rules the engine's own code and tests follow. To build a module of your own,
 ## Monorepository
 
 - Every package lives in `packages/<name>/`: code goes in `src/` under the namespace `AdzerCMS\<Name>\`, tests under `AdzerCMS\<Name>\Tests\`. Other directories follow [Package layout](module-development.md#package-layout).
-- `contracts` is a `library` versioned by SemVer, `core` is a `symfony-bundle`, `skeleton` is the project template. Every other package is an `adzercms-module`.
+- `contracts` is a `library` versioned by SemVer, `morphology` and its dictionary `morphology-ru` are libraries too, `core` is a `symfony-bundle`, `skeleton` is the project template. Every other package is an `adzercms-module`.
 - The development application pulls in `packages/*` as a path repository.
 - All `symfony/*` packages stay on one LTS version, set by `extra.symfony.require`.
 - `composer install` and `composer update` put the JavaScript libraries from each package's `importmap.php` into `assets/vendor/`.

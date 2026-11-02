@@ -7,7 +7,7 @@
 ## Монорепозиторий
 
 - Каждый пакет лежит в `packages/<имя>/`: код — в `src/` с namespace `AdzerCMS\<Имя>\`, тесты — в namespace `AdzerCMS\<Имя>\Tests\`. Остальные каталоги устроены так, как описано в разделе [Раскладка пакета](module-development.ru.md#раскладка-пакета).
-- `contracts` — библиотека (`library`) с версиями по SemVer, `core` — бандл Symfony (`symfony-bundle`), `skeleton` — шаблон проекта. Все остальные пакеты — модули (`adzercms-module`).
+- `contracts` — библиотека (`library`) с версиями по SemVer, `morphology` и его словарь `morphology-ru` — тоже библиотеки, `core` — бандл Symfony (`symfony-bundle`), `skeleton` — шаблон проекта. Все остальные пакеты — модули (`adzercms-module`).
 - Приложение для разработки подключает `packages/*` как path-репозиторий.
 - Все пакеты `symfony/*` держатся одной LTS-версии, её задаёт `extra.symfony.require`.
 - `composer install` и `composer update` ставят JavaScript-библиотеки из `importmap.php` каждого пакета в `assets/vendor/`.

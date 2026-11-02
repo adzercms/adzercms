@@ -39,6 +39,7 @@
 - `sms-pilot`, `mts-marketolog` — отправка SMS; `telegram-bot`, `max-bot` — боты мессенджеров
 - `smart-captcha`, `turnstile`, `hcaptcha` — капча
 - `tbank`, `yookassa` — приём оплаты; `centrifugo` — сервер для обновлений в реальном времени
+- `morphology`, `morphology-ru` — словоформы русского языка: анализатор pymorphy3 на PHP и его словарь OpenCorpora
 - в корне — приложение для разработки: подключает все пакеты и запускает тесты и проверки
 
 После каждого push в `main` и каждого тега `v*` пакеты копируются в свои репозитории `adzercms/<имя>`, они только для чтения. Pull request'ы принимаются здесь.
@@ -99,4 +100,4 @@ vendor/bin/adzercms-check
 
 ## Лицензия
 
-[MIT](LICENSE)
+[MIT](LICENSE). `morphology` — MIT с уведомлениями pymorphy3 и DAWG-Python: [packages/morphology/LICENSE](packages/morphology/LICENSE). Словарь `morphology-ru` — CC BY-SA 3.0: [packages/morphology-ru/LICENSE](packages/morphology-ru/LICENSE).

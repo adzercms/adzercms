@@ -39,6 +39,7 @@ Each `packages/<name>` directory is the `adzercms/<name>` package:
 - `sms-pilot`, `mts-marketolog` — SMS delivery; `telegram-bot`, `max-bot` — messenger bots
 - `smart-captcha`, `turnstile`, `hcaptcha` — captcha
 - `tbank`, `yookassa` — online payments; `centrifugo` — real-time updates server
+- `morphology`, `morphology-ru` — Russian word forms: the pymorphy3 analyzer in PHP and its OpenCorpora dictionary
 - the root is the development app: it pulls in every package and runs the tests and checks
 
 Every push to `main` and every `v*` tag copies the packages into their own read-only repositories `adzercms/<name>`. Pull requests go here.
@@ -99,4 +100,4 @@ Installing modules from the admin panel and checking third-party modules.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). `morphology` — MIT with the notices of pymorphy3 and DAWG-Python: [packages/morphology/LICENSE](packages/morphology/LICENSE). The `morphology-ru` dictionary — CC BY-SA 3.0: [packages/morphology-ru/LICENSE](packages/morphology-ru/LICENSE).
