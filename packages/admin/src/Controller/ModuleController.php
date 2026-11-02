@@ -94,7 +94,7 @@ final class ModuleController extends AbstractController
     {
         $table = Table::of($request, 'admin_modules', [
             Column::live('name', t('admin.modules.name'), static fn (array $row): string => $row['name'].' '.$row['description']),
-            Column::live('version', t('admin.modules.version'), static fn (array $row): string => $row['version']),
+            Column::live('version', t('admin.modules.version'), static fn (array $row): string => $row['version'])->aside(),
             Column::live('repository', t('admin.modules.repository'), static fn (array $row): string => $row['repository'])->aside(),
             Column::live('state', t('admin.modules.status'), static fn (array $row): TranslatableInterface => $row['state']->label()),
             Column::plain('actions'),
