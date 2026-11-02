@@ -315,8 +315,13 @@ final class UserController extends AbstractController
             ->setEmail($contacts[ContactKind::Email->value]);
 
         if ($user !== $this->getUser()) {
-            $user->setStatus($input->getEnum('status', Status::class, Status::Active))
-                ->setRole($this->roles->chosen() ? $input->getEnum('role', Role::class, Role::User) : Role::Admin);
+            $user->setStatus($input->getEnum('status', Status::class, Status::Active));
+
+            if ($this->roles->chosen()) {
+                $user->setRole($input->getEnum('role', Role::class, Role::User));
+            } elseif (null === $user->getId()) {
+                $user->setRole(Role::Admin);
+            }
         }
 
         $this->em->persist($user);

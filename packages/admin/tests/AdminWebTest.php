@@ -165,7 +165,7 @@ final class AdminWebTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-0066')]
     #[Group('ACMS-CORE-0163')]
-    #[Group('ACMS-CORE-1029')]
+    #[Group('ACMS-CORE-1030')]
     #[Group('ACMS-US-0003')]
     public function testCreationAsksNothingAndKeepsWhatIsGiven(): void
     {
@@ -177,6 +177,9 @@ final class AdminWebTest extends SchemaTestCase
 
         self::assertSame(Status::Active, $empty->getStatus());
         self::assertSame(Role::Admin, $empty->getRole());
+        $member = $this->record('79990000010');
+        $this->post(\sprintf('/admin/users/%d', $member->getId()), ['phone' => '79990000010', 'role' => Role::Admin->value]);
+        self::assertSame(Role::User, $this->reread($member)->getRole(), 'a saved record keeps its role without the role field');
         self::assertNull($empty->getPhone());
         self::assertNull($empty->getEmail());
         self::assertNull($empty->getComment());

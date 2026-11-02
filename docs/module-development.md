@@ -142,7 +142,7 @@ A module that creates or changes a user checks the contacts with `AdzerCMS\Core\
 
 A feature module closes creating users on the instance itself with a service implementing `AdzerCMS\Contracts\Account\UserCreation` whose `here()` returns `false`: the form then creates users only at the module places, and without places the admin has no button to add a user and the form answers 404.
 
-The admin picks the role of a user only when a feature module has a section in the cabinet: its `Menu` service returns items for `Area::Cabinet`. Without such a section the user form has no role field, and every user the admin creates or saves is an administrator.
+The admin picks the role of a user only when a feature module has a section in the cabinet: its `Menu` service returns items for `Area::Cabinet`. Without such a section the user form has no role field: a user the admin creates is an administrator, and a saved user keeps the role.
 
 ## Notification channel
 

@@ -23,7 +23,7 @@ final class RolesTest extends TestCase
         yield 'admin sections of a feature module and the own items of the cabinet' => [false];
     }
 
-    #[Group('ACMS-CORE-1029')]
+    #[Group('ACMS-CORE-1030')]
     #[DataProvider('sections')]
     public function testRoleIsChosenOnlyWithCabinetSectionOfFeatureModule(bool $cabinet): void
     {
