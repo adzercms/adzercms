@@ -502,7 +502,7 @@
     <unit id="leads.tab.stages">
       <segment>
         <source>leads.tab.stages</source>
-        <target>Stages</target>
+        <target>Lead stages</target>
       </segment>
     </unit>
     <unit id="leads.window.policy">

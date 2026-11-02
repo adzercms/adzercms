@@ -15,7 +15,9 @@ use Symfony\Component\DomCrawler\Crawler;
 final class StageTest extends LeadsTestCase
 {
     private const STAGES = self::LIST.'/stages';
+    private const TAB = '/admin/references?tab=lead-stages';
 
+    #[Group('ACMS-CORE-1041')]
     #[Group('ACMS-LEAD-0003')]
     #[Group('ACMS-US-0041')]
     public function testFunnelGoesByGroupsThenManualOrderWithinGroup(): void
@@ -23,7 +25,7 @@ final class StageTest extends LeadsTestCase
         self::assertSame(array_map(static fn (StageGroup $group): string => self::phrase($group->label()), StageGroup::cases()), $this->labels(), 'the migration lays an unlabeled stage per group named by the group');
 
         $this->post(self::STAGES.'/new', ['label' => 'Звонок', 'group' => StageGroup::Work->value]);
-        self::assertResponseHeaderSame('HX-Redirect', self::STAGES);
+        self::assertResponseHeaderSame('HX-Redirect', self::TAB);
         $this->post(self::STAGES.'/new', ['label' => 'Замер', 'group' => StageGroup::Work->value]);
         $work = self::service(StageRepository::class)->ofGroup(StageGroup::Work);
         self::assertSame([self::phrase(StageGroup::Fresh->label()), self::phrase(StageGroup::Work->label()), 'Звонок', 'Замер', self::phrase(StageGroup::Done->label()), self::phrase(StageGroup::Refused->label())], $this->labels());
@@ -46,7 +48,7 @@ final class StageTest extends LeadsTestCase
         }
 
         $this->post(self::STAGES.'/'.$stage->getId().'/drop');
-        $page = $this->arrive(self::STAGES);
+        $page = $this->arrive(self::TAB);
 
         self::assertSame(null === $refusal ? self::phrase('leads.flash.stage_dropped') : self::phrase($refusal), self::toast($page, null === $refusal ? 'success' : 'error'));
         self::assertSame(null !== $refusal, null !== self::service(StageRepository::class)->find((int) $stage->getId()));
@@ -63,7 +65,7 @@ final class StageTest extends LeadsTestCase
     private function stage(string $label, StageGroup $group): Stage
     {
         $this->post(self::STAGES.'/new', ['label' => $label, 'group' => $group->value]);
-        $this->arrive(self::STAGES);
+        $this->arrive(self::TAB);
 
         return self::service(StageRepository::class)->findOneBy(['label' => $label]) ?? self::fail('the stage is not added');
     }
@@ -71,6 +73,6 @@ final class StageTest extends LeadsTestCase
     /** @return list<string> */
     private function labels(): array
     {
-        return $this->fragment(self::STAGES)->filter('tbody tr td:nth-child(2)')->each(static fn (Crawler $cell): string => trim($cell->text()));
+        return $this->fragment(self::TAB)->filter('tbody tr td:nth-child(2)')->each(static fn (Crawler $cell): string => trim($cell->text()));
     }
 }

@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Leads\Controller\Admin;
 
+use AdzerCMS\Contracts\Ui\AdminEntry;
 use AdzerCMS\Core\Account\Role;
-use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Fragment;
 use AdzerCMS\Core\Ui\Order;
-use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Leads\Entity\Stage;
-use AdzerCMS\Leads\Repository\StageRepository;
 use AdzerCMS\Leads\StageGroup;
 use AdzerCMS\Leads\Stages;
+use AdzerCMS\Leads\StageTab;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,24 +24,10 @@ use function Symfony\Component\Translation\t;
 #[IsGranted(Role::ADMIN)]
 final class StageController extends AbstractController
 {
-    private const LIST = 'admin_lead_stages';
-
     public function __construct(
-        private readonly StageRepository $stages,
         private readonly Stages $service,
+        private readonly StageTab $tab,
     ) {
-    }
-
-    #[Route('', name: self::LIST, methods: ['GET'])]
-    public function index(Request $request): Response
-    {
-        $context = $this->listing($request);
-
-        if ($request->headers->has('HX-Request')) {
-            return $this->render('@Leads/admin/_stages.html.twig', $context);
-        }
-
-        return $this->render('@Leads/admin/stages.html.twig', $context);
     }
 
     #[Route('/order', name: 'admin_lead_stages_order', methods: ['POST'])]
@@ -50,7 +35,7 @@ final class StageController extends AbstractController
     {
         $this->service->arrange(Order::moved($request));
 
-        return $this->render('@Leads/admin/_stages.html.twig', $this->listing($request));
+        return $this->render(StageTab::TEMPLATE, $this->tab->listing($request));
     }
 
     #[Route('/new', name: 'admin_lead_stage_new', methods: ['GET', 'POST'])]
@@ -64,7 +49,7 @@ final class StageController extends AbstractController
             if ($outcome instanceof Stage) {
                 $this->addFlash('success', t('leads.flash.stage_added', ['label' => (string) $outcome->getLabel()]));
 
-                return Fragment::go($this->generateUrl(self::LIST));
+                return Fragment::go($this->list());
             }
             $refusal = $outcome;
         }
@@ -82,18 +67,11 @@ final class StageController extends AbstractController
         $refusal = $this->service->drop($stage);
         $this->addFlash(...null === $refusal ? ['success', t('leads.flash.stage_dropped')] : ['error', $refusal->reason]);
 
-        return $this->redirectToRoute(self::LIST);
+        return $this->redirect($this->list());
     }
 
-    /** @return array<string, mixed> */
-    private function listing(Request $request): array
+    private function list(): string
     {
-        $table = Table::of($request, self::LIST, [
-            Column::plain('label', t('leads.stage.title')),
-            Column::plain('group', t('leads.stage.group')),
-            Column::plain('actions'),
-        ], 'label', t('leads.stage.empty'), order: Order::of('admin_lead_stages_order', 's.position', 's.id'));
-
-        return ['table' => $table, 'rows' => $table->rows($this->stages->funnel())];
+        return $this->generateUrl(AdminEntry::References->route(), ['tab' => StageTab::KEY]);
     }
 }
