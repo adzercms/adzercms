@@ -98,7 +98,7 @@ jobs:
     steps:
       - *checkout
       - *composer
-      - run: packages/core/bin/adzercms-suites
+      - run: vendor/bin/adzercms-suites
 
   passed:
     needs: [static, tests]
