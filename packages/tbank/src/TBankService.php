@@ -58,6 +58,7 @@ final readonly class TBankService implements AcquiringService, Guided
     private const NAME_LENGTH = 128;
     private const CLOSING = '../cashbox/SendClosingReceipt';
     private const FINAL_FAILURES = ['REJECTED', 'CANCELED', 'DEADLINE_EXPIRED', 'AUTH_FAIL'];
+    private const NO_RECEIPT = 'none';
     private const TAXATIONS = ['osn', 'usn_income', 'usn_income_outcome', 'esn', 'patent'];
     private const VATS = ['none', 'vat0', 'vat5', 'vat7', 'vat10', 'vat22', 'vat105', 'vat107', 'vat110', 'vat122'];
     private const PAYMENT_METHODS = ['full_prepayment', 'prepayment', 'advance', 'full_payment', 'partial_payment', 'credit', 'credit_payment'];
@@ -76,7 +77,7 @@ final readonly class TBankService implements AcquiringService, Guided
             new Field(self::API_URL, t('tbank.api_url'), required: true),
             new Field(self::TERMINAL_KEY, t('tbank.terminal_key'), required: true, group: self::TERMINAL),
             new Field(self::TERMINAL_PASSWORD, t('tbank.terminal_password'), Type::Secret, true, group: self::TERMINAL),
-            new Field(self::TAXATION, t('tbank.taxation'), Type::Choice, choices: self::choices('tbank.taxation', self::TAXATIONS)),
+            new Field(self::TAXATION, t('tbank.taxation'), Type::Choice, choices: self::choices('tbank.taxation', [self::NO_RECEIPT, ...self::TAXATIONS])),
             new Field(self::VAT, t('tbank.vat'), Type::Choice, choices: self::choices('tbank.vat', self::VATS)),
             new Field(self::PAYMENT_METHOD, t('tbank.payment_method'), Type::Choice, choices: self::choices('tbank.payment_method', self::PAYMENT_METHODS)),
             new Field(self::PAYMENT_OBJECT, t('tbank.payment_object'), Type::Choice, choices: self::choices('tbank.payment_object', self::PAYMENT_OBJECTS)),
@@ -254,13 +255,7 @@ final readonly class TBankService implements AcquiringService, Guided
         }
 
         $method = $this->settings->get(self::PAYMENT_METHOD);
-        $items = array_map(fn (array $item): array => $this->item(
-            $item['name'],
-            Money::toMinorUnits($item['price']),
-            $item['quantity'],
-            $method,
-            $this->settings->get(self::PAYMENT_OBJECT),
-        ), $payment->getItems());
+        $receipts = self::NO_RECEIPT !== $this->settings->get(self::TAXATION);
 
         $request = [
             'Amount' => Money::toMinorUnits($payment->getAmount()),
@@ -269,8 +264,16 @@ final readonly class TBankService implements AcquiringService, Guided
             'NotificationURL' => $addresses->callback,
             'SuccessURL' => $addresses->return,
             'FailURL' => $addresses->return,
-            'Receipt' => $this->receipt($payment->getPhone(), $payment->getEmail(), $items),
         ];
+        if ($receipts) {
+            $request['Receipt'] = $this->receipt($payment->getPhone(), $payment->getEmail(), array_map(fn (array $item): array => $this->item(
+                $item['name'],
+                Money::toMinorUnits($item['price']),
+                $item['quantity'],
+                $method,
+                $this->settings->get(self::PAYMENT_OBJECT),
+            ), $payment->getItems()));
+        }
         if (null !== $payment->getPayer()) {
             $request['CustomerKey'] = $payment->getPayer();
         }
@@ -284,7 +287,7 @@ final readonly class TBankService implements AcquiringService, Guided
             throw new PaymentFailed(self::fault($data, 'the bank did not accept the order'));
         }
 
-        $payment->setOperationId((string) $operation)->markAdvance(\in_array($method, self::ADVANCES, true));
+        $payment->setOperationId((string) $operation)->markAdvance($receipts && \in_array($method, self::ADVANCES, true));
 
         return $data;
     }

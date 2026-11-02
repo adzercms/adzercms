@@ -72,12 +72,15 @@ final class YooKassaTest extends SchemaTestCase
     #[Group('ACMS-PAY-0035')]
     #[Group('ACMS-PAY-0036')]
     #[Group('ACMS-CORE-1004')]
-    #[TestWith([true])]
-    #[TestWith([false])]
-    public function testPageOrderGoesToProviderWithReceiptAndIdempotence(bool $taxed): void
+    #[TestWith(['2'])]
+    #[TestWith([''])]
+    #[TestWith(['none'])]
+    public function testPageOrderGoesToProviderWithReceiptAndIdempotence(string $taxation): void
     {
-        if (!$taxed) {
+        if ('' === $taxation) {
             $this->unconfigure(YooKassaService::TAXATION);
+        } else {
+            $this->configure([YooKassaService::TAXATION => $taxation]);
         }
         $this->answers = [['id' => 'op-1', 'status' => 'pending', 'confirmation' => ['type' => 'redirect', 'confirmation_url' => 'https://yoomoney.ru/checkout/op-1']]];
         $payment = $this->order('500.00');
@@ -92,7 +95,13 @@ final class YooKassaTest extends SchemaTestCase
         self::assertTrue($sent['body']['capture']);
         self::assertSame(['number' => $payment->getNumber()], $sent['body']['metadata']);
         self::assertArrayNotHasKey('save_payment_method', $sent['body']);
-        self::assertSame(['customer' => ['email' => self::EMAIL, 'phone' => '79990000000']] + ($taxed ? ['tax_system_code' => 2] : []) + [
+        if ('none' === $taxation) {
+            self::assertArrayNotHasKey('receipt', $sent['body']);
+            self::assertFalse($payment->isAdvance(), 'no receipt is no advance');
+
+            return;
+        }
+        self::assertSame(['customer' => ['email' => self::EMAIL, 'phone' => '79990000000']] + ('' === $taxation ? [] : ['tax_system_code' => 2]) + [
             'items' => [[
                 'description' => 'Hosting',
                 'quantity' => '2.00',

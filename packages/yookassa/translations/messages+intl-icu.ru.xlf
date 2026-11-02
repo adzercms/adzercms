@@ -253,6 +253,12 @@
         <target>Патент</target>
       </segment>
     </unit>
+    <unit id="yookassa.taxation.none">
+      <segment>
+        <source>yookassa.taxation.none</source>
+        <target>Без чека</target>
+      </segment>
+    </unit>
     <unit id="yookassa.vat">
       <segment>
         <source>yookassa.vat</source>

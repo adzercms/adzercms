@@ -199,6 +199,12 @@
         <target>ESKhN</target>
       </segment>
     </unit>
+    <unit id="tbank.taxation.none">
+      <segment>
+        <source>tbank.taxation.none</source>
+        <target>No receipt</target>
+      </segment>
+    </unit>
     <unit id="tbank.taxation.osn">
       <segment>
         <source>tbank.taxation.osn</source>

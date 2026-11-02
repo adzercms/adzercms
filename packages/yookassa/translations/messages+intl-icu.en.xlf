@@ -253,6 +253,12 @@
         <target>Patent</target>
       </segment>
     </unit>
+    <unit id="yookassa.taxation.none">
+      <segment>
+        <source>yookassa.taxation.none</source>
+        <target>No receipt</target>
+      </segment>
+    </unit>
     <unit id="yookassa.vat">
       <segment>
         <source>yookassa.vat</source>

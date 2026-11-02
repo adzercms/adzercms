@@ -19,6 +19,7 @@ use AdzerCMS\Payments\PaymentStatus;
 use AdzerCMS\Payments\Repository\PaymentRepository;
 use AdzerCMS\TBank\TBankService;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpClient\Exception\TransportException;
@@ -75,8 +76,13 @@ final class TBankTest extends SchemaTestCase
     #[Group('ACMS-PAY-0025')]
     #[Group('ACMS-PAY-0030')]
     #[Group('ACMS-PAY-0032')]
-    public function testStartRegistersSignedOrderWithReceiptAndGivesBankPage(): void
+    #[TestWith([true])]
+    #[TestWith([false])]
+    public function testStartRegistersSignedOrderWithReceiptAndGivesBankPage(bool $receipts): void
     {
+        if (!$receipts) {
+            $this->configure([TBankService::TAXATION => 'none']);
+        }
         $this->respond(['Init' => ['Success' => true, 'PaymentId' => '900001', 'PaymentURL' => 'https://pay.tbank.ru/form']]);
         $payment = $this->order('250.00', payer: 'payer-1');
 
@@ -84,7 +90,7 @@ final class TBankTest extends SchemaTestCase
 
         self::assertSame('https://pay.tbank.ru/form', $offer->url);
         self::assertSame('900001', $payment->getOperationId());
-        self::assertTrue($payment->isAdvance(), 'the receipt goes by the payment method of the setting: full prepayment is an advance');
+        self::assertSame($receipts, $payment->isAdvance(), 'the receipt goes by the payment method of the setting: full prepayment is an advance, no receipt is no advance');
 
         $sent = $this->sent('Init');
         $urls = self::service(UrlGeneratorInterface::class);
@@ -97,6 +103,11 @@ final class TBankTest extends SchemaTestCase
         self::assertSame($urls->generate('payment_return', ['number' => $payment->getNumber()], UrlGeneratorInterface::ABSOLUTE_URL), $sent['SuccessURL']);
         self::assertSame($sent['SuccessURL'], $sent['FailURL']);
         self::assertSame(self::sign(array_filter($sent, static fn (mixed $value, string $key): bool => !\is_array($value) && 'Token' !== $key, \ARRAY_FILTER_USE_BOTH)), $sent['Token'], 'the root scalars are signed, the receipt is not');
+        if (!$receipts) {
+            self::assertArrayNotHasKey('Receipt', $sent);
+
+            return;
+        }
         self::assertSame([
             'Phone' => '+'.self::PHONE,
             'Taxation' => 'usn_income',

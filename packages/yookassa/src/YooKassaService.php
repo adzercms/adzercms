@@ -56,6 +56,7 @@ final readonly class YooKassaService implements AcquiringService, Guided
     private const MASK = '******';
     private const ORIGINS = ['https://yoomoney.ru', 'https://yookassa.ru', 'https://qr.nspk.ru'];
     private const SENDERS = ['185.71.76.0/27', '185.71.77.0/27', '77.75.153.0/25', '77.75.154.128/25', '77.75.156.11/32', '77.75.156.35/32', '2a02:5180::/32'];
+    private const NO_RECEIPT = 'none';
     private const TAXATIONS = ['1', '2', '3', '4', '5', '6'];
     private const VATS = ['1', '2', '7', '8', '3', '4', '11', '9', '10', '5', '6', '12'];
     private const MODES = ['full_prepayment', 'partial_prepayment', 'advance', 'full_payment', 'partial_payment', 'credit', 'credit_payment'];
@@ -74,7 +75,7 @@ final readonly class YooKassaService implements AcquiringService, Guided
         return [
             new Field(self::SHOP_ID, t('yookassa.shop_id'), required: true, group: self::SHOP),
             new Field(self::SECRET_KEY, t('yookassa.secret_key'), Type::Secret, true, group: self::SHOP),
-            new Field(self::TAXATION, t('yookassa.taxation'), Type::Choice, choices: self::choices('yookassa.taxation', self::TAXATIONS)),
+            new Field(self::TAXATION, t('yookassa.taxation'), Type::Choice, choices: self::choices('yookassa.taxation', [self::NO_RECEIPT, ...self::TAXATIONS])),
             new Field(self::VAT, t('yookassa.vat'), Type::Choice, choices: self::choices('yookassa.vat', self::VATS)),
             new Field(self::PAYMENT_MODE, t('yookassa.payment_mode'), Type::Choice, choices: self::choices('yookassa.payment_mode', self::MODES)),
             new Field(self::PAYMENT_SUBJECT, t('yookassa.payment_subject'), Type::Choice, choices: self::choices('yookassa.payment_subject', self::SUBJECTS)),
@@ -308,13 +309,7 @@ final readonly class YooKassaService implements AcquiringService, Guided
     private function order(Payment $payment, Addresses $addresses): array
     {
         $mode = $this->settings->get(self::PAYMENT_MODE);
-        $items = array_map(fn (array $item): array => $this->item(
-            $item['name'],
-            $item['quantity'].'.00',
-            ['value' => Money::normalize($item['price']), 'currency' => Money::CURRENCY],
-            $mode,
-            $this->settings->get(self::PAYMENT_SUBJECT),
-        ), $payment->getItems());
+        $receipts = self::NO_RECEIPT !== $this->settings->get(self::TAXATION);
 
         $request = [
             'amount' => ['value' => Money::normalize($payment->getAmount()), 'currency' => Money::CURRENCY],
@@ -322,12 +317,20 @@ final readonly class YooKassaService implements AcquiringService, Guided
             'description' => mb_substr($payment->getDescription(), 0, self::DESCRIPTION_LENGTH),
             'metadata' => ['number' => $payment->getNumber()],
             'confirmation' => ['type' => 'redirect', 'return_url' => $addresses->return],
-            'receipt' => $this->receipt($payment->getPhone(), $payment->getEmail(), $items),
         ];
+        if ($receipts) {
+            $request['receipt'] = $this->receipt($payment->getPhone(), $payment->getEmail(), array_map(fn (array $item): array => $this->item(
+                $item['name'],
+                $item['quantity'].'.00',
+                ['value' => Money::normalize($item['price']), 'currency' => Money::CURRENCY],
+                $mode,
+                $this->settings->get(self::PAYMENT_SUBJECT),
+            ), $payment->getItems()));
+        }
         if ($payment->remembers()) {
             $request['save_payment_method'] = true;
         }
-        $payment->markAdvance(\in_array($mode, self::ADVANCES, true));
+        $payment->markAdvance($receipts && \in_array($mode, self::ADVANCES, true));
 
         return $request;
     }
@@ -346,7 +349,7 @@ final readonly class YooKassaService implements AcquiringService, Guided
 
         $taxation = $this->settings->get(self::TAXATION);
 
-        return ['customer' => $customer] + ('' === $taxation ? [] : ['tax_system_code' => (int) $taxation]) + ['items' => $items];
+        return ['customer' => $customer] + (\in_array($taxation, self::TAXATIONS, true) ? ['tax_system_code' => (int) $taxation] : []) + ['items' => $items];
     }
 
     /**
