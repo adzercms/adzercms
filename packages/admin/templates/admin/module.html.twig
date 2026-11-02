@@ -1,50 +1,25 @@
 {% extends '@Theme/panel.html.twig' %}
 
-{% block title %}{{ 'admin.module.title'|trans({name: module.name}) }}{% endblock %}
+{% block title %}{{ module.title|trans }}{% endblock %}
 
-{% block heading %}<span class="record-title">{{ module.name }}</span>{% endblock %}
+{% block heading %}<span class="record-title">{{ module.title|trans }}</span>{% endblock %}
 
 {% block actions %}
+    {% if module.settings %}
+        <a class="button" href="{{ path('admin_settings_module', {key: key}) }}">{{ 'admin.modules.settings'|trans }}</a>
+    {% endif %}
     <a class="button secondary" href="{{ path('admin_modules') }}">{{ 'core.action.to_list'|trans }}</a>
 {% endblock %}
 
 {% block page %}
-<div class="section">
-    <div class="section-head">
-        <h3>{{ 'admin.module.module'|trans }}</h3>
+<div class="info-grid">
+    <div class="info-item">
+        <span class="info-label">{{ 'admin.modules.description'|trans }}</span>
+        <span class="info-value">{{ module.description|trans }}</span>
     </div>
-    <div class="info-grid">
-        <div class="info-item">
-            <span class="info-label">{{ 'admin.modules.description'|trans }}</span>
-            <span class="info-value">{{ module.description|trans }}</span>
-        </div>
-        <div class="info-item">
-            <span class="info-label">{{ 'admin.modules.schema'|trans }}</span>
-            <span class="info-value">{{ schema ?: blank() }}</span>
-        </div>
+    <div class="info-item">
+        <span class="info-label">{{ 'admin.modules.schema'|trans }}</span>
+        <span class="info-value">{{ schema ?: blank() }}</span>
     </div>
 </div>
-
-{% if module.guide %}
-    <div class="section">
-        <div class="section-head">
-            <h3>{{ 'admin.module.guide'|trans }}</h3>
-        </div>
-        <div class="prose">
-            <ol>
-                {% for step in module.guide %}
-                    <li>{{ step|trans|links }}</li>
-                {% endfor %}
-            </ol>
-        </div>
-    </div>
-{% endif %}
-
-{% if sections %}
-    <form id="settings" method="post" enctype="multipart/form-data">
-        {{ csrf_field() }}
-        {% include '@Admin/admin/_setting_fields.html.twig' with {sections: sections, values: values} %}
-        <button type="submit">{{ 'core.action.save'|trans }}</button>
-    </form>
-{% endif %}
 {% endblock %}

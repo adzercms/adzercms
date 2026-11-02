@@ -129,6 +129,30 @@ trait Browser
         return self::fail(\sprintf('the page carries no tile %s', $label));
     }
 
+    /** @return list<array{string, list<array{?string, list<string>}>}> */
+    protected static function subnav(Crawler $page): array
+    {
+        return $page->filter('.subnav-group')->each(static function (Crawler $group): array {
+            $subgroups = [];
+            $label = null;
+            $items = [];
+            foreach ($group->children()->each(static fn (Crawler $node): array => [(string) $node->attr('class'), trim($node->text())]) as [$class, $text]) {
+                if (str_contains($class, 'subnav-subtitle')) {
+                    if (null !== $label || [] !== $items) {
+                        $subgroups[] = [$label, $items];
+                    }
+                    $label = $text;
+                    $items = [];
+                } elseif (str_contains($class, 'subnav-item')) {
+                    $items[] = $text;
+                }
+            }
+            $subgroups[] = [$label, $items];
+
+            return [trim($group->filter('.subnav-title')->text()), $subgroups];
+        });
+    }
+
     protected static function toast(Crawler $page, string $kind): string
     {
         $toast = $page->filter('.toast-'.$kind);

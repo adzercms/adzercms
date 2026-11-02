@@ -34,7 +34,11 @@
             "description": {
                 "ru": "SMS через МТС Маркетолог: оповещения и коды подтверждения"
             },
-            "categories": ["messaging"]
+            "categories": ["messaging"],
+            "title": {
+                "en": "MTS Marketolog",
+                "ru": "МТС Маркетолог"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

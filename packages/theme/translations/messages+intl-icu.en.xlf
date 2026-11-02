@@ -163,5 +163,11 @@
         <target>en_US</target>
       </segment>
     </unit>
+    <unit id="theme.settings">
+      <segment>
+        <source>theme.settings</source>
+        <target>Settings</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

@@ -41,7 +41,11 @@
 <section class="card">
     <header class="card-head">
         <h1>{% block heading %}{{ block('title') }}{% endblock %}</h1>
-        <div class="card-actions">{% block actions %}{% endblock %}</div>
+        <div class="card-actions">
+            {%- block actions %}{% endblock -%}
+            {%- set settings = is_granted('ROLE_ADMIN') ? section_settings() : null %}
+            {%- if settings %}<a class="button secondary" href="{{ settings }}">{{ 'theme.settings'|trans }}</a>{% endif -%}
+        </div>
     </header>
 
     {% block page %}{% endblock %}

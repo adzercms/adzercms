@@ -7,7 +7,7 @@ namespace AdzerCMS\Core\Seo;
 use AdzerCMS\Contracts\Seo\Page;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
-use AdzerCMS\Contracts\Setting\Tab;
+use AdzerCMS\Contracts\Setting\Page as SettingPage;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Entity\SourceChange;
 use AdzerCMS\Core\Setting\Settings;
@@ -40,7 +40,7 @@ final readonly class Indexing implements Owner
 
     public function settingFields(): array
     {
-        return [new Field(self::NAME, t('core.setting.indexing'), Type::Toggle, tab: Tab::General)];
+        return [new Field(self::NAME, t('core.setting.indexing'), Type::Toggle, page: SettingPage::General)];
     }
 
     public function on(): bool

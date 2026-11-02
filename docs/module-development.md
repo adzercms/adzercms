@@ -35,7 +35,8 @@ composer require acme/pigeon:@dev
     "extra": {
         "adzercms": {
             "bundle": "Acme\\Pigeon\\PigeonBundle",
-            "description": {"ru": "SMS голубиной почтой"}
+            "description": {"ru": "SMS голубиной почтой"},
+            "title": {"en": "Pigeon SMS", "ru": "SMS голубями"}
         }
     }
 }
@@ -45,6 +46,8 @@ composer require acme/pigeon:@dev
 
 `description` says in English what the module does, and `extra.adzercms.description` translates it into the other engine languages. The Extensions section of the admin panel shows it in the reader's language, for packages that aren't installed yet too. `vendor/bin/adzercms-check` rejects a module without the description or without one of its translations.
 
+`extra.adzercms.title` names the module in every engine language, English included. The module page and its settings page in the admin show the title in the reader's language. `vendor/bin/adzercms-check` rejects a module without the title in one of the engine languages.
+
 `extra.adzercms.categories` lists one to three categories of what the module is for, the values of [`AdzerCMS\Contracts\Module\Category`](../packages/contracts/src/Module/Category.php). The Extensions section of the admin panel and the [extension catalog](../packages/extensions/docs/publishing.md) filter by them. A module without a known category goes under Other, and categories past the third are ignored.
 
 You don't require a module of some kind by its package name but through the kind's virtual package `adzercms/<kind key>-implementation`. Every module of a kind lists it in `provide` with the engine version whose contracts it implements; a kind module without that entry stops the build. This way Composer installs the requiring module only together with some module of the kind, and the instance builds only when such a module is enabled. A module with pages needs a theme: `"adzercms/theme-implementation": "^1.0"`. Modules needed only by the tests, such as the admin, go to `require-dev`: the module's test suite enables them itself.
@@ -53,7 +56,7 @@ A package requires every package and every PHP extension whose classes, function
 
 ## Links to the admin and the cabinet
 
-Links to admin and cabinet pages are built through entries: the Twig functions `admin('user', {id: id})` and `cabinet('profile')`, and in code `AdzerCMS\Core\Ui\Entries::url()` with `AdminEntry` or `CabinetEntry`. Without a module of that kind the entry returns `null`, and the page simply leaves the link out. A list inside a tab of the admin dashboard or the user card pages by the route of its entry, `AdminEntry::Dashboard->route()` or `AdminEntry::User->route()`. The module card with its settings is `AdminEntry::Module` with the module key in `key`: a section that has nothing to show without credentials leads there. `vendor/bin/adzercms-check` rejects a string in `src/` or in a template that names a route of an installed admin, cabinet, theme or other kind module outside that module.
+Links to admin and cabinet pages are built through entries: the Twig functions `admin('user', {id: id})` and `cabinet('profile')`, and in code `AdzerCMS\Core\Ui\Entries::url()` with `AdminEntry` or `CabinetEntry`. Without a module of that kind the entry returns `null`, and the page simply leaves the link out. A list inside a tab of the admin dashboard or the user card pages by the route of its entry, `AdminEntry::Dashboard->route()` or `AdminEntry::User->route()`. The settings page of a module is `AdminEntry::ModuleSettings` with the module key in `key`: a section that has nothing to show without credentials leads there. `vendor/bin/adzercms-check` rejects a string in `src/` or in a template that names a route of an installed admin, cabinet, theme or other kind module outside that module.
 
 ## Admin and cabinet pages
 
@@ -134,7 +137,7 @@ final class PigeonGateway implements SmsGateway
 
 The service must live in its bundle's namespace: that's how the core knows which module it belongs to.
 
-The service with the credential fields also implements `AdzerCMS\Contracts\Setting\Guided`: `guide()` returns the steps to get the credentials at the external service as phrases of the module's catalog, one action per step: where to go, what to press, what to copy into which field, with the field's label and the full address. The module card in the admin lists them above the settings form.
+The service with the credential fields also implements `AdzerCMS\Contracts\Setting\Guided`: `guide()` returns the steps to get the credentials at the external service as phrases of the module's catalog, one action per step: where to go, what to press, what to copy into which field, with the field's label and the full address. The settings page of the module in the admin lists them above its fields.
 
 ## Traffic
 
@@ -258,11 +261,11 @@ An applied migration is remembered by its class name. If the module changes its 
 
 ## Settings
 
-A service implementing `AdzerCMS\Contracts\Setting\Owner` declares setting fields. Keys start with the module prefix; if two owners declare the same key, the settings catalog won't build. Values are changed with `bin/console adzercms:setting`.
+A service implementing `AdzerCMS\Contracts\Setting\Owner` declares setting fields. Keys of a feature module start with its key in lower case and a dot, keys of a kind module with `<kind>.<module>.`; if a key lacks its prefix or two owners declare the same key, the settings catalog won't build. Values are changed with `bin/console adzercms:setting`.
 
 `settingFields()` reads no data: the static checks call it without a database. A `Type::Choice` field whose variants come from data passes `choices:` a closure; the form and the value check call it.
 
-In the admin, the fields of a module make its own settings tab titled by the `<module>.setting.area` phrase; module tabs follow the core tabs in title order. A field with `tab:` set to a case of `AdzerCMS\Contracts\Setting\Tab` goes to that core tab instead. `section:` puts fields under a heading, and fields without a section open the tab without one. A label fits one line of a column: the setting's name, then the unit after a comma.
+The settings section of the admin has a menu on the left: the System pages, then a page for each enabled module with fields, titled by the module title in title order. A feature module's page goes under Modules, a kind module's page under Integrations in the group of its kind. The module card in the Extensions section and the heading of the module's admin sections link to its page. `section:` puts fields under a heading, and fields without a section open the page without one. A label fits one line of a column: the setting's name, then the unit after a comma.
 
 ## Values for the project site
 

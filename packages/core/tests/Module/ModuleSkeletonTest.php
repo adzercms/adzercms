@@ -17,6 +17,8 @@ final class ModuleSkeletonTest extends TestCase
 {
     private const DESCRIPTION = 'SMS through a pigeon post';
     private const RUSSIAN = 'SMS голубиной почтой';
+    private const TITLE = 'Pigeon SMS';
+    private const RUSSIAN_TITLE = 'SMS голубями';
 
     private string $directory;
 
@@ -48,7 +50,7 @@ final class ModuleSkeletonTest extends TestCase
         self::assertIsArray($manifest);
         self::assertSame(['name', 'type', 'description', 'license', 'require', 'autoload', 'extra'], array_keys($manifest));
         self::assertSame(
-            ['adzercms-module', self::DESCRIPTION, ['psr-4' => [$namespace.'\\' => 'src/']], ['adzercms' => ['bundle' => $namespace.'\\'.$bundle, 'description' => ['ru' => self::RUSSIAN]]]],
+            ['adzercms-module', self::DESCRIPTION, ['psr-4' => [$namespace.'\\' => 'src/']], ['adzercms' => ['bundle' => $namespace.'\\'.$bundle, 'description' => ['ru' => self::RUSSIAN], 'title' => ['en' => self::TITLE, 'ru' => self::RUSSIAN_TITLE]]]],
             [$manifest['type'], $manifest['description'], $manifest['autoload'], $manifest['extra']],
         );
 
@@ -63,7 +65,7 @@ final class ModuleSkeletonTest extends TestCase
     /** @return iterable<string, array{list<string>, string, string, string}> */
     public static function answers(): iterable
     {
-        yield 'defaults from the package name' => [['acme/sms-pilot', '', '', self::DESCRIPTION, self::RUSSIAN], 'Acme\SmsPilot', 'SmsPilotBundle', 'SmsPilot'];
-        yield 'own namespace and bundle after a wrong name and an empty description' => [['Acme/Pigeon', 'acme/pigeon', 'Acme\Post\Pigeon', 'CarrierBundle', ' ', self::DESCRIPTION, self::RUSSIAN], 'Acme\Post\Pigeon', 'CarrierBundle', 'Carrier'];
+        yield 'defaults from the package name' => [['acme/sms-pilot', '', '', self::TITLE, self::RUSSIAN_TITLE, self::DESCRIPTION, self::RUSSIAN], 'Acme\SmsPilot', 'SmsPilotBundle', 'SmsPilot'];
+        yield 'own namespace and bundle after a wrong name, an empty title and an empty description' => [['Acme/Pigeon', 'acme/pigeon', 'Acme\Post\Pigeon', 'CarrierBundle', '', self::TITLE, self::RUSSIAN_TITLE, ' ', self::DESCRIPTION, self::RUSSIAN], 'Acme\Post\Pigeon', 'CarrierBundle', 'Carrier'];
     }
 }

@@ -31,7 +31,11 @@
             "description": {
                 "ru": "Счётчик Google Analytics на страницах после согласия на cookie"
             },
-            "categories": ["marketing"]
+            "categories": ["marketing"],
+            "title": {
+                "en": "Google Analytics",
+                "ru": "Google Analytics"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

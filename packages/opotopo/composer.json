@@ -49,7 +49,11 @@
             "description": {
                 "ru": "Каталоги сайта уходят на OPOTOPO позициями продавца через Seller API"
             },
-            "categories": ["commerce"]
+            "categories": ["commerce"],
+            "title": {
+                "en": "OPOTOPO",
+                "ru": "OPOTOPO"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

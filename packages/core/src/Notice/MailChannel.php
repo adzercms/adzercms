@@ -6,7 +6,7 @@ namespace AdzerCMS\Core\Notice;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
-use AdzerCMS\Contracts\Setting\Tab;
+use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Setting\Brand;
@@ -49,16 +49,16 @@ final class MailChannel extends ContactChannel implements Owner
         $bounces = t('core.setting.section.bounces');
 
         return [
-            new Field(self::HOST, t('core.setting.mail_host'), section: $section, tab: Tab::Mail),
-            new Field(self::PORT, t('core.setting.mail_port'), section: $section, tab: Tab::Mail),
-            new Field(self::LOGIN, t('core.setting.mail_login'), group: self::ACCOUNT, section: $section, tab: Tab::Mail),
-            new Field(self::PASSWORD, t('core.setting.mail_password'), Type::Secret, group: self::ACCOUNT, section: $section, tab: Tab::Mail),
-            new Field(self::SENDER, t('core.setting.mail_sender'), section: $section, tab: Tab::Mail),
-            new Field(self::BOUNCE_ADDRESS, t('core.setting.bounce_address'), section: $bounces, tab: Tab::Mail),
-            new Field(self::BOUNCE_HOST, t('core.setting.bounce_host'), section: $bounces, tab: Tab::Mail),
-            new Field(self::BOUNCE_PORT, t('core.setting.mail_port'), section: $bounces, tab: Tab::Mail),
-            new Field(self::BOUNCE_LOGIN, t('core.setting.mail_login'), group: self::BOUNCE_ACCOUNT, section: $bounces, tab: Tab::Mail),
-            new Field(self::BOUNCE_PASSWORD, t('core.setting.mail_password'), Type::Secret, group: self::BOUNCE_ACCOUNT, section: $bounces, tab: Tab::Mail),
+            new Field(self::HOST, t('core.setting.mail_host'), section: $section, page: Page::Mail),
+            new Field(self::PORT, t('core.setting.mail_port'), section: $section, page: Page::Mail),
+            new Field(self::LOGIN, t('core.setting.mail_login'), group: self::ACCOUNT, section: $section, page: Page::Mail),
+            new Field(self::PASSWORD, t('core.setting.mail_password'), Type::Secret, group: self::ACCOUNT, section: $section, page: Page::Mail),
+            new Field(self::SENDER, t('core.setting.mail_sender'), section: $section, page: Page::Mail),
+            new Field(self::BOUNCE_ADDRESS, t('core.setting.bounce_address'), section: $bounces, page: Page::Mail),
+            new Field(self::BOUNCE_HOST, t('core.setting.bounce_host'), section: $bounces, page: Page::Mail),
+            new Field(self::BOUNCE_PORT, t('core.setting.mail_port'), section: $bounces, page: Page::Mail),
+            new Field(self::BOUNCE_LOGIN, t('core.setting.mail_login'), group: self::BOUNCE_ACCOUNT, section: $bounces, page: Page::Mail),
+            new Field(self::BOUNCE_PASSWORD, t('core.setting.mail_password'), Type::Secret, group: self::BOUNCE_ACCOUNT, section: $bounces, page: Page::Mail),
         ];
     }
 

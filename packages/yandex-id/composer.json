@@ -31,7 +31,11 @@
             "description": {
                 "ru": "Вход через Яндекс ID с привязкой к учётной записи"
             },
-            "categories": ["security"]
+            "categories": ["security"],
+            "title": {
+                "en": "Yandex ID",
+                "ru": "Яндекс ID"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

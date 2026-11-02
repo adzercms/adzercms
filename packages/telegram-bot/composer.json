@@ -34,7 +34,11 @@
             "description": {
                 "ru": "Бот Telegram для оповещений"
             },
-            "categories": ["messaging"]
+            "categories": ["messaging"],
+            "title": {
+                "en": "Telegram bot",
+                "ru": "Бот Telegram"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

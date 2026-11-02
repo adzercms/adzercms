@@ -41,7 +41,11 @@
             "description": {
                 "ru": "Онлайн-оплата: история платежей, подтверждения и модули платёжных систем"
             },
-            "categories": ["payments"]
+            "categories": ["payments"],
+            "title": {
+                "en": "Online payments",
+                "ru": "Онлайн-оплата"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

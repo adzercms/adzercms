@@ -7,7 +7,7 @@ namespace AdzerCMS\Extensions\Tests;
 use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Account\Role;
-use AdzerCMS\Core\Composer\Description;
+use AdzerCMS\Core\Composer\Localized;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Tests\Accounts;
@@ -55,7 +55,7 @@ abstract class CatalogTestCase extends SchemaTestCase
      */
     protected static function package(string $description, ?string $homepage = null, array $categories = [Category::Other], array $translations = [], ?string $author = null): Package
     {
-        return new Package(new Description($description, $translations), '1.0.0', $categories, self::SOURCE, $homepage, Registry::TYPE, null, null, $author);
+        return new Package(new Localized($description, $translations), '1.0.0', $categories, self::SOURCE, $homepage, Registry::TYPE, null, null, $author);
     }
 
     protected static function extensions(): ExtensionRepository

@@ -46,7 +46,11 @@
             "description": {
                 "ru": "Каталог расширений: модули, темы и шаблоны сайтов с ценами и демо"
             },
-            "categories": ["content"]
+            "categories": ["content"],
+            "title": {
+                "en": "Extension catalog",
+                "ru": "Каталог расширений"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

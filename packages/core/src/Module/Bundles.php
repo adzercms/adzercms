@@ -33,6 +33,12 @@ final readonly class Bundles
     /** @return class-string<Module> */
     public function owner(object $service): string
     {
+        return $this->find($service) ?? throw new \LogicException(\sprintf('%s lies outside of a module bundle namespace', $service::class));
+    }
+
+    /** @return class-string<Module>|null */
+    public function find(object $service): ?string
+    {
         $owner = null;
         foreach ($this->namespaces as $bundle => $namespace) {
             if (str_starts_with($service::class, $namespace.'\\') && (null === $owner || \strlen($namespace) > \strlen($this->namespaces[$owner]))) {
@@ -40,6 +46,6 @@ final readonly class Bundles
             }
         }
 
-        return $owner ?? throw new \LogicException(\sprintf('%s lies outside of a module bundle namespace', $service::class));
+        return $owner;
     }
 }

@@ -7,27 +7,18 @@ namespace AdzerCMS\Core\Setting;
 use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
-use AdzerCMS\Contracts\Setting\Tab;
+use AdzerCMS\Contracts\Setting\Page;
+use AdzerCMS\Core\Module\Bundles;
 use AdzerCMS\Core\Module\Registry;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
-use Symfony\Contracts\Translation\TranslatableInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
-use function Symfony\Component\Translation\t;
-
-final class Catalog
+final readonly class Catalog
 {
-    /**
-     * @param iterable<Owner>             $owners
-     * @param array<string, class-string> $bundles
-     */
+    /** @param iterable<Owner> $owners */
     public function __construct(
         #[AutowireIterator(Owner::class)]
-        private readonly iterable $owners,
-        #[Autowire('%kernel.bundles%')]
-        private readonly array $bundles,
-        private readonly TranslatorInterface $translator,
+        private iterable $owners,
+        private Bundles $bundles,
     ) {
     }
 
@@ -35,53 +26,84 @@ final class Catalog
     public function fields(): array
     {
         $fields = [];
-        foreach ($this->owners as $owner) {
-            foreach ($owner->settingFields() as $field) {
-                if (isset($fields[$field->name])) {
-                    throw new \LogicException(\sprintf('setting key %s is declared by two owners', $field->name));
-                }
-                $fields[$field->name] = $field;
+        foreach ($this->owned() as [$field]) {
+            if (isset($fields[$field->name])) {
+                throw new \LogicException(\sprintf('setting key %s is declared by two owners', $field->name));
             }
+            $fields[$field->name] = $field;
         }
 
         return $fields;
     }
 
-    /** @return array<string, array{label: TranslatableInterface, fields: list<Field>}> */
-    public function groups(): array
+    /** @return array<string, non-empty-list<Field>> */
+    public function system(): array
     {
-        $cards = [];
-        foreach ($this->bundles as $bundle) {
-            if (is_subclass_of($bundle, Module::class)) {
-                $cards[] = Registry::settings($bundle);
+        $pages = array_fill_keys(array_column(Page::cases(), 'value'), []);
+        foreach ($this->owned() as [$field, $bundle]) {
+            if (null === $bundle) {
+                $pages[$field->page->value ?? throw new \LogicException(\sprintf('core setting key %s names no page', $field->name))][] = $field;
             }
         }
 
-        $groups = [];
-        foreach ($this->owners as $owner) {
-            foreach ($owner->settingFields() as $field) {
-                if (array_any($cards, static fn (string $card): bool => str_starts_with($field->name, $card))) {
-                    continue;
-                }
-                $area = strstr($field->name, '.', true) ?: $field->name;
-                $key = $field->tab->value ?? $area;
-                $groups[$key] ??= ['label' => $field->tab?->label() ?? t($area.'.setting.area'), 'fields' => []];
-                $groups[$key]['fields'][] = $field;
+        return array_filter($pages);
+    }
+
+    /** @return array<string, array{bundle: class-string<Module>, fields: non-empty-list<Field>}> */
+    public function modules(): array
+    {
+        $modules = [];
+        foreach ($this->owned() as [$field, $bundle]) {
+            if (null !== $bundle) {
+                $key = Registry::lowerKey($bundle);
+                $modules[$key] ??= ['bundle' => $bundle, 'fields' => []];
+                $modules[$key]['fields'][] = $field;
             }
         }
 
-        $rank = array_flip(array_column(Tab::cases(), 'value'));
-        $collator = new \Collator($this->translator->getLocale());
-        $title = fn (string $key): string => $groups[$key]['label']->trans($this->translator);
-        uksort($groups, static fn (string $one, string $other): int => ($rank[$one] ?? \count($rank)) <=> ($rank[$other] ?? \count($rank))
-            ?: (int) $collator->compare($title($one), $title($other)));
-
-        return $groups;
+        return $modules;
     }
 
     /** @return list<Field> */
     public function credential(string $group): array
     {
         return array_values(array_filter($this->fields(), static fn (Field $field): bool => $group === $field->group));
+    }
+
+    /** @return iterable<array{Field, class-string<Module>|null}> */
+    private function owned(): iterable
+    {
+        $prefixes = [];
+        foreach (array_keys($this->bundles->namespaces()) as $bundle) {
+            $prefixes[$bundle] = Registry::settings($bundle);
+        }
+
+        foreach ($this->owners as $owner) {
+            $module = $this->bundles->find($owner);
+            foreach ($owner->settingFields() as $field) {
+                $bundle = $module ?? (null === $field->page ? self::prefixed($prefixes, $field->name) : null);
+                if (null !== $bundle && !str_starts_with($field->name, $prefixes[$bundle])) {
+                    throw new \LogicException(\sprintf('setting key %s of module %s lacks its prefix %s', $field->name, Registry::key($bundle), $prefixes[$bundle]));
+                }
+                yield [$field, $bundle];
+            }
+        }
+    }
+
+    /**
+     * @param array<class-string<Module>, string> $prefixes
+     *
+     * @return class-string<Module>|null
+     */
+    private static function prefixed(array $prefixes, string $name): ?string
+    {
+        $found = null;
+        foreach ($prefixes as $bundle => $prefix) {
+            if (str_starts_with($name, $prefix) && (null === $found || \strlen($prefix) > \strlen($prefixes[$found]))) {
+                $found = $bundle;
+            }
+        }
+
+        return $found;
     }
 }

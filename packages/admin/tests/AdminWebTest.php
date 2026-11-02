@@ -7,7 +7,8 @@ namespace AdzerCMS\Admin\Tests;
 use AdzerCMS\Admin\Tests\Fixture\Branches;
 use AdzerCMS\Contracts\Account\Newcomer;
 use AdzerCMS\Contracts\Refusal;
-use AdzerCMS\Contracts\Setting\Tab;
+use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Contracts\Ui\Scheme;
 use AdzerCMS\Core\Account\ConsentKind;
 use AdzerCMS\Core\Account\Password;
@@ -51,6 +52,8 @@ final class AdminWebTest extends SchemaTestCase
     use Configuration;
     use Delivery;
     use Queries;
+
+    private const SETTINGS = '/admin/settings/';
 
     private User $admin;
 
@@ -490,26 +493,38 @@ final class AdminWebTest extends SchemaTestCase
     #[Group('ACMS-CORE-0054')]
     #[Group('ACMS-CORE-0055')]
     #[Group('ACMS-CORE-0057')]
+    #[Group('ACMS-CORE-1049')]
+    #[Group('ACMS-CORE-1050')]
     #[Group('ACMS-US-0004')]
-    public function testSettingsTabSavesWholeAndRefusesValueOutsideItsForm(): void
+    public function testSettingsPageSavesWholeAndRefusesValueOutsideItsForm(): void
     {
         $this->client->loginUser($this->admin);
-        $brand = Tab::Brand->value;
+        $brand = self::SETTINGS.Page::Brand->value;
 
         $general = $this->client->request('GET', '/admin/settings');
-        self::assertSame(Tab::General->value, $general->filter('form input[name="tab"]')->attr('value'), 'the settings open on the general tab');
-        $tabs = $general->filter('.tabs .tab')->each(static fn (Crawler $tab): string => trim($tab->text()));
-        self::assertSame(array_map(static fn (Tab $tab): string => self::phrase($tab->label()), Tab::cases()), \array_slice($tabs, 0, \count(Tab::cases())), 'the core tabs go first in their order');
-        $modules = $sorted = \array_slice($tabs, \count(Tab::cases()));
-        (new \Collator(self::service(Language::class)->instance()))->sort($sorted);
-        self::assertSame($sorted, $modules, 'the module tabs follow by their title');
+        self::assertSame(self::phrase(Page::General->label()), trim($general->filter('.subnav-item.active')->text()), 'the settings open on the general page');
+        $menu = self::subnav($general);
+        $named = array_map(static fn (Field $field): ?Page => $field->page, self::service(Catalog::class)->fields());
+        self::assertSame(
+            [self::phrase('admin.settings.system'), [[null, array_map(static fn (Page $page): string => self::phrase($page->label()), array_values(array_filter(Page::cases(), static fn (Page $page): bool => \in_array($page, $named, true))))]]],
+            $menu[0],
+            'the system pages with fields go first in their order',
+        );
+        $collator = new \Collator(self::service(Language::class)->instance());
+        foreach (\array_slice($menu, 1) as [, $subgroups]) {
+            foreach ([array_values(array_filter(array_column($subgroups, 0), is_string(...))), ...array_column($subgroups, 1)] as $labels) {
+                $sorted = $labels;
+                $collator->sort($sorted);
+                self::assertSame($sorted, $labels, 'the kinds and the module pages go by their title');
+            }
+        }
         $top = $general->filter('form .section')->first();
         self::assertCount(0, $top->filter('.section-head'), 'the fields without a section go first without a heading');
         self::assertCount(1, $top->filter(\sprintf('select[name="value[%s]"]', Language::NAME)));
         self::assertSame(Toggle::Off->value, $general->filter(\sprintf('select[name="value[%s]"] option[selected]', Indexing::NAME))->attr('value'),
             'an unset switch shows its off state');
 
-        $page = $this->client->request('GET', '/admin/settings?tab='.$brand);
+        $page = $this->client->request('GET', $brand);
         $names = $page->filter('form [name]')->each(static fn (Crawler $node): string => (string) $node->attr('name'));
         self::assertNotContains(Brand::TITLE, $names, 'PHP replaces the dot of a field name');
         self::assertContains(\sprintf('value[%s]', Brand::TITLE), $names);
@@ -523,20 +538,20 @@ final class AdminWebTest extends SchemaTestCase
             \sprintf('value[%s]', Brand::TITLE) => 'Village network',
             \sprintf('value[%s]', Brand::THEME) => Theme::Dark->value,
         ]));
-        self::assertResponseRedirects('/admin/settings?tab='.$brand);
+        self::assertResponseRedirects($brand);
 
         $settings = self::service(Settings::class);
         self::assertSame('Village network', $settings->get(Brand::TITLE));
-        self::assertSame(Theme::Dark->value, $this->client->request('GET', '/admin/settings?tab='.$brand)
+        self::assertSame(Theme::Dark->value, $this->client->request('GET', $brand)
             ->filter(\sprintf('select[name="value[%s]"] option[selected]', Brand::THEME))->attr('value'));
 
-        $this->post('/admin/settings', ['tab' => $brand, 'value' => [Brand::TITLE => 'Village', Brand::THEME => 'purple']]);
+        $this->post($brand, ['value' => [Brand::TITLE => 'Village', Brand::THEME => 'purple']]);
         self::assertResponseRedirects();
         self::assertNotSame('', self::toast($this->client->followRedirect(), 'error'));
         self::assertSame(Theme::Dark->value, $settings->get(Brand::THEME), 'the value outside the form is refused');
-        self::assertSame('Village', $settings->get(Brand::TITLE), 'other fields of the tab are saved');
+        self::assertSame('Village', $settings->get(Brand::TITLE), 'other fields of the page are saved');
 
-        $this->post('/admin/settings', ['tab' => Tab::Mail->value, 'value' => [QuietHours::FROM => '25:99', QuietHours::TO => '08:00']]);
+        $this->post(self::SETTINGS.Page::Mail->value, ['value' => [QuietHours::FROM => '25:99', QuietHours::TO => '08:00']]);
         self::assertNotSame('', self::toast($this->client->followRedirect(), 'error'));
         self::assertSame('', $settings->get(QuietHours::FROM));
         self::assertSame('08:00', $settings->get(QuietHours::TO));
@@ -554,10 +569,10 @@ final class AdminWebTest extends SchemaTestCase
         $login = \sprintf('value[%s]', MailChannel::LOGIN);
         $password = \sprintf('value[%s]', MailChannel::PASSWORD);
 
-        $page = $this->client->request('GET', '/admin/settings?tab='.Tab::Mail->value);
+        $page = $this->client->request('GET', self::SETTINGS.Page::Mail->value);
         $names = $page->filter('form [name]')->each(static fn (Crawler $node): string => (string) $node->attr('name'));
         self::assertContains(\sprintf('value[%s]', MailChannel::HOST), $names);
-        self::assertNotContains($login, $names, 'the access data is not in the form of the tab');
+        self::assertNotContains($login, $names, 'the access data is not in the form of the page');
         self::assertNotContains($password, $names);
         self::assertCount(1, $page->filter(\sprintf('[hx-get="%s"]', $dialog)));
 
@@ -589,9 +604,9 @@ final class AdminWebTest extends SchemaTestCase
     {
         $this->configure([Brand::TITLE => 'Village network']);
         $this->client->loginUser($this->admin);
-        $tab = Tab::Brand->value;
+        $brand = self::SETTINGS.Page::Brand->value;
 
-        $this->post('/admin/settings', ['tab' => $tab], ['file' => [Brand::ICON => $this->picture('icon.png')]]);
+        $this->post($brand, [], ['file' => [Brand::ICON => $this->picture('icon.png')]]);
         self::assertResponseRedirects();
 
         $this->client->request('GET', '/setting/'.Brand::ICON);
@@ -604,9 +619,9 @@ final class AdminWebTest extends SchemaTestCase
         $header = $this->client->request('GET', '/admin');
         self::assertSame('Village network', trim($header->filter('.header-logo span')->text()), 'without a logo the title carries the brand');
         self::assertStringEndsWith('/setting/'.Brand::ICON, (string) $header->filter('link[rel="icon"]')->attr('href'));
-        self::assertStringEndsWith('/setting/'.Brand::ICON, (string) $this->client->request('GET', '/admin/settings?tab='.$tab)->filter('.brand-preview img')->attr('src'));
+        self::assertStringEndsWith('/setting/'.Brand::ICON, (string) $this->client->request('GET', $brand)->filter('.brand-preview img')->attr('src'));
 
-        $this->post('/admin/settings', ['tab' => $tab], ['file' => [Brand::LOGO => $this->picture('logo.png')]]);
+        $this->post($brand, [], ['file' => [Brand::LOGO => $this->picture('logo.png')]]);
         $logo = $this->client->request('GET', '/admin')->filter('.header-logo');
         self::assertCount(0, $logo->filter('span'), 'the logo stands in place of the title');
         self::assertSame('Village network', $logo->filter('img')->attr('alt'));
@@ -614,12 +629,12 @@ final class AdminWebTest extends SchemaTestCase
 
         $this->configure([Brand::THEME => Theme::Dark->value]);
         self::assertStringEndsWith('/setting/'.Brand::LOGO, (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'without a dark theme logo the dark theme keeps the logo');
-        $this->post('/admin/settings', ['tab' => $tab], ['file' => [Brand::LOGO_DARK => $this->picture('logo-dark.png')]]);
+        $this->post($brand, [], ['file' => [Brand::LOGO_DARK => $this->picture('logo-dark.png')]]);
         self::assertStringEndsWith('/setting/'.Brand::LOGO_DARK, (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'));
         $this->configure([Brand::THEME => Theme::Light->value]);
         self::assertStringEndsWith('/setting/'.Brand::LOGO, (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'the light theme keeps the logo');
 
-        $this->post('/admin/settings', ['tab' => $tab, 'drop' => [Brand::ICON => '1']]);
+        $this->post($brand, ['drop' => [Brand::ICON => '1']]);
         self::assertSame('', self::service(Settings::class)->get(Brand::ICON));
         $this->client->request('GET', '/setting/'.Brand::ICON);
         self::assertResponseStatusCodeSame(404);
@@ -632,12 +647,12 @@ final class AdminWebTest extends SchemaTestCase
     {
         $this->client->loginUser($this->admin);
         $schemes = (self::service(Catalog::class)->fields()[Brand::COLOR] ?? self::fail('the theme declares no palette'))->schemes;
-        $tab = Tab::Brand->value;
+        $brand = self::SETTINGS.Page::Brand->value;
         $field = \sprintf('value[%s]', Brand::COLOR);
         $picked = \sprintf('input[name="%s"][checked]', $field);
         $reset = \sprintf('button[name="drop[%s]"]', Brand::COLOR);
 
-        $page = $this->client->request('GET', '/admin/settings?tab='.$tab);
+        $page = $this->client->request('GET', $brand);
         self::assertSame(
             array_map(static fn (Scheme $scheme): string => $scheme->key, $schemes),
             $page->filter(\sprintf('input.swatch[name="%s"]', $field))->each(static fn (Crawler $swatch): string => (string) $swatch->attr('value')),
@@ -646,17 +661,17 @@ final class AdminWebTest extends SchemaTestCase
         self::assertSame('--brand: '.$schemes[0]->color, $page->filter('html')->attr('style'));
         self::assertCount(0, $page->filter($reset), 'an empty setting has nothing to reset');
 
-        $this->post('/admin/settings', ['tab' => $tab, 'value' => [Brand::COLOR => $schemes[1]->key]]);
+        $this->post($brand, ['value' => [Brand::COLOR => $schemes[1]->key]]);
         self::assertSame('--brand: '.$schemes[1]->color, $this->client->request('GET', '/admin')->filter('html')->attr('style'));
 
-        $this->post('/admin/settings', ['tab' => $tab, 'value' => [Brand::COLOR => '#C8F031']]);
-        $own = $this->client->request('GET', '/admin/settings?tab='.$tab);
+        $this->post($brand, ['value' => [Brand::COLOR => '#C8F031']]);
+        $own = $this->client->request('GET', $brand);
         self::assertSame('#c8f031', $own->filter($picked)->attr('value'), 'the own color is the picked one');
         self::assertSame('--brand: #c8f031', $own->filter('html')->attr('style'));
 
         $this->client->submit($own->filter($reset)->form());
         self::assertSame('', self::service(Settings::class)->get(Brand::COLOR), 'the reset clears the setting');
-        self::assertSame($schemes[0]->key, $this->client->request('GET', '/admin/settings?tab='.$tab)->filter($picked)->attr('value'));
+        self::assertSame($schemes[0]->key, $this->client->request('GET', $brand)->filter($picked)->attr('value'));
     }
 
     #[Group('ACMS-CORE-0027')]

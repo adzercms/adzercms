@@ -55,30 +55,6 @@
         <target>Пользователи</target>
       </segment>
     </unit>
-    <unit id="admin.module.guide">
-      <segment>
-        <source>admin.module.guide</source>
-        <target>Получение доступа</target>
-      </segment>
-    </unit>
-    <unit id="admin.module.module">
-      <segment>
-        <source>admin.module.module</source>
-        <target>Модуль</target>
-      </segment>
-    </unit>
-    <unit id="admin.module.saved">
-      <segment>
-        <source>admin.module.saved</source>
-        <target>Настройки модуля сохранены</target>
-      </segment>
-    </unit>
-    <unit id="admin.module.title">
-      <segment>
-        <source>admin.module.title</source>
-        <target>Модуль {name}</target>
-      </segment>
-    </unit>
     <unit id="admin.modules.category">
       <segment>
         <source>admin.modules.category</source>
@@ -265,10 +241,34 @@
         <target>не задано</target>
       </segment>
     </unit>
+    <unit id="admin.settings.guide">
+      <segment>
+        <source>admin.settings.guide</source>
+        <target>Получение доступа</target>
+      </segment>
+    </unit>
+    <unit id="admin.settings.integrations">
+      <segment>
+        <source>admin.settings.integrations</source>
+        <target>Интеграции</target>
+      </segment>
+    </unit>
+    <unit id="admin.settings.modules">
+      <segment>
+        <source>admin.settings.modules</source>
+        <target>Модули</target>
+      </segment>
+    </unit>
     <unit id="admin.settings.saved">
       <segment>
         <source>admin.settings.saved</source>
         <target>Настройки сохранены</target>
+      </segment>
+    </unit>
+    <unit id="admin.settings.system">
+      <segment>
+        <source>admin.settings.system</source>
+        <target>Система</target>
       </segment>
     </unit>
     <unit id="admin.sources.access">

@@ -39,6 +39,10 @@
             "bundle": "AdzerCMS\\Realtime\\RealtimeBundle",
             "description": {
                 "ru": "Живые страницы: части страницы обновляются без перезагрузки"
+            },
+            "title": {
+                "en": "Live pages",
+                "ru": "Живые страницы"
             }
         },
         "branch-alias": {

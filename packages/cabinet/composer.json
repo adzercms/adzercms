@@ -37,6 +37,10 @@
             "bundle": "AdzerCMS\\Cabinet\\CabinetBundle",
             "description": {
                 "ru": "Кабинет клиента: регистрация и вход, профиль, сеансы и страницы модулей"
+            },
+            "title": {
+                "en": "Customer account",
+                "ru": "Кабинет клиента"
             }
         },
         "branch-alias": {

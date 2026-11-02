@@ -7,6 +7,7 @@ namespace AdzerCMS\Core\Tests\Setting\Fixture;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
+use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Contracts\Setting\Rule;
 use AdzerCMS\Contracts\Setting\Type;
 
@@ -23,10 +24,10 @@ final class Shop implements Owner, Rule
     public function settingFields(): array
     {
         return [
-            new Field(self::TITLE, t('Shop title')),
-            new Field(self::PHONE, t('Shop phone')),
-            new Field(self::TOKEN, t('Till token'), Type::Secret),
-            new Field(self::CERTIFICATE, t('Till certificate'), Type::Container),
+            new Field(self::TITLE, t('Shop title'), page: Page::General),
+            new Field(self::PHONE, t('Shop phone'), page: Page::General),
+            new Field(self::TOKEN, t('Till token'), Type::Secret, page: Page::General),
+            new Field(self::CERTIFICATE, t('Till certificate'), Type::Container, page: Page::General),
         ];
     }
 

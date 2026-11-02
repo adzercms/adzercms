@@ -13,12 +13,6 @@
         <target>Items refused by OPOTOPO: {count}</target>
       </segment>
     </unit>
-    <unit id="opotopo.setting.area">
-      <segment>
-        <source>opotopo.setting.area</source>
-        <target>OPOTOPO</target>
-      </segment>
-    </unit>
     <unit id="opotopo.setting.key">
       <segment>
         <source>opotopo.setting.key</source>

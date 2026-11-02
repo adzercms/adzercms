@@ -30,7 +30,11 @@
             "description": {
                 "ru": "Защита форм от спама Cloudflare Turnstile"
             },
-            "categories": ["security"]
+            "categories": ["security"],
+            "title": {
+                "en": "Cloudflare Turnstile",
+                "ru": "Cloudflare Turnstile"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

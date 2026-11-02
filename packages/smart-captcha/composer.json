@@ -30,7 +30,11 @@
             "description": {
                 "ru": "Защита форм от спама Yandex SmartCaptcha"
             },
-            "categories": ["security"]
+            "categories": ["security"],
+            "title": {
+                "en": "Yandex SmartCaptcha",
+                "ru": "Yandex SmartCaptcha"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

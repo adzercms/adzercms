@@ -7,11 +7,11 @@ namespace AdzerCMS\Admin\Controller;
 use AdzerCMS\Admin\AssembledModules;
 use AdzerCMS\Admin\ModuleScope;
 use AdzerCMS\Admin\ModuleState;
-use AdzerCMS\Admin\SettingForm;
+use AdzerCMS\Admin\SettingPages;
 use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Refusal;
-use AdzerCMS\Contracts\Setting\Tab;
+use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Contracts\Ui\Badge;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Build\PreviewMark;
@@ -59,7 +59,6 @@ final class ModuleController extends AbstractController
         private readonly Artifacts $artifacts,
         private readonly Store $store,
         private readonly ModuleOperationRepository $filings,
-        private readonly SettingForm $form,
         private readonly PreviewMark $mark,
     ) {
     }
@@ -209,7 +208,7 @@ final class ModuleController extends AbstractController
                 'state' => $operation?->getState() ?? ModuleState::of($row),
                 'operation' => $operation?->getAction()->label(),
                 'actions' => [
-                    ...null !== $module && [] !== $module['fields'] ? [['label' => t('admin.modules.settings'), 'href' => $this->generateUrl('admin_module', ['key' => $key]).'#settings']] : [],
+                    ...null !== $module && $module['settings'] ? [['label' => t('admin.modules.settings'), 'href' => $this->generateUrl(SettingPages::MODULE_ROUTE, ['key' => $key])]] : [],
                     ...null === $operation && $this->operations->previewed($row) ? [['label' => t('admin.modules.preview'), 'route' => 'admin_module_preview', 'params' => ['package' => $row->name], 'post' => true]] : [],
                     ...array_map(static fn (ModuleAction $action): array => [
                         'label' => $action->label(),
@@ -246,7 +245,7 @@ final class ModuleController extends AbstractController
             'source' => $this->store->url(),
             'down' => $state($this->store->url()),
             'access' => false,
-            'setting' => $this->generateUrl('admin_settings', ['tab' => Tab::General->value]),
+            'setting' => $this->generateUrl('admin_settings', ['page' => Page::General->value]),
             'credentials' => null,
             'drop' => null,
             'hidden' => [],
@@ -359,29 +358,15 @@ final class ModuleController extends AbstractController
         return $this->redirectToRoute('admin_modules', ['tab' => self::SOURCES]);
     }
 
-    #[Route('/{key}', name: 'admin_module', methods: ['GET', 'POST'])]
-    public function module(string $key, Request $request): Response
+    #[Route('/{key}', name: 'admin_module', methods: ['GET'])]
+    public function module(string $key): Response
     {
         $module = $this->assembled->modules()[$key] ?? throw $this->createNotFoundException();
-        $fields = $module['fields'];
-
-        if ($request->isMethod('POST')) {
-            if ($this->form->save($fields, $request)) {
-                $this->addFlash('success', t('admin.module.saved'));
-            }
-
-            foreach ($this->form->faults() as $fault) {
-                $this->addFlash('error', $fault);
-            }
-
-            return $this->redirectToRoute('admin_module', ['key' => $key]);
-        }
 
         return $this->render('@Admin/admin/module.html.twig', [
             'module' => $module,
+            'key' => $key,
             'schema' => $this->assembled->schema($module['namespace']),
-            'values' => $this->form->values($fields),
-            'sections' => $this->form->sections($fields),
         ]);
     }
 }

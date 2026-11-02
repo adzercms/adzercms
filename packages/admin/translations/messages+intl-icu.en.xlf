@@ -55,30 +55,6 @@
         <target>Users</target>
       </segment>
     </unit>
-    <unit id="admin.module.guide">
-      <segment>
-        <source>admin.module.guide</source>
-        <target>Getting access</target>
-      </segment>
-    </unit>
-    <unit id="admin.module.module">
-      <segment>
-        <source>admin.module.module</source>
-        <target>Module</target>
-      </segment>
-    </unit>
-    <unit id="admin.module.saved">
-      <segment>
-        <source>admin.module.saved</source>
-        <target>Module settings saved</target>
-      </segment>
-    </unit>
-    <unit id="admin.module.title">
-      <segment>
-        <source>admin.module.title</source>
-        <target>Module {name}</target>
-      </segment>
-    </unit>
     <unit id="admin.modules.category">
       <segment>
         <source>admin.modules.category</source>
@@ -265,10 +241,34 @@
         <target>not set</target>
       </segment>
     </unit>
+    <unit id="admin.settings.guide">
+      <segment>
+        <source>admin.settings.guide</source>
+        <target>Getting access</target>
+      </segment>
+    </unit>
+    <unit id="admin.settings.integrations">
+      <segment>
+        <source>admin.settings.integrations</source>
+        <target>Integrations</target>
+      </segment>
+    </unit>
+    <unit id="admin.settings.modules">
+      <segment>
+        <source>admin.settings.modules</source>
+        <target>Modules</target>
+      </segment>
+    </unit>
     <unit id="admin.settings.saved">
       <segment>
         <source>admin.settings.saved</source>
         <target>Settings saved</target>
+      </segment>
+    </unit>
+    <unit id="admin.settings.system">
+      <segment>
+        <source>admin.settings.system</source>
+        <target>System</target>
       </segment>
     </unit>
     <unit id="admin.sources.access">

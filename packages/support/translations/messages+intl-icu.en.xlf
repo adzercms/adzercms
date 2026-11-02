@@ -349,12 +349,6 @@
         <target>The answer is unread: edit it instead of redacting</target>
       </segment>
     </unit>
-    <unit id="support.setting.area">
-      <segment>
-        <source>support.setting.area</source>
-        <target>Support</target>
-      </segment>
-    </unit>
     <unit id="support.setting.attachment_max_mb">
       <segment>
         <source>support.setting.attachment_max_mb</source>

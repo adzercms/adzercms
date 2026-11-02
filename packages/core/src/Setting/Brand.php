@@ -6,7 +6,7 @@ namespace AdzerCMS\Core\Setting;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
-use AdzerCMS\Contracts\Setting\Tab;
+use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Contracts\Ui\Palette;
 use AdzerCMS\Contracts\Ui\Scheme;
@@ -46,12 +46,12 @@ final class Brand implements Owner
     public function settingFields(): array
     {
         return [
-            new Field(self::TITLE, t('core.setting.title'), tab: Tab::Brand),
+            new Field(self::TITLE, t('core.setting.title'), page: Page::Brand),
             self::logoField(),
             self::darkLogoField(),
             self::iconField(),
-            new Field(self::THEME, t('core.setting.theme'), Type::Choice, choices: self::themes(), tab: Tab::Brand),
-            new Field(self::LAYOUT, t('core.setting.layout'), Type::Choice, choices: self::choices(Layout::cases()), tab: Tab::Brand),
+            new Field(self::THEME, t('core.setting.theme'), Type::Choice, choices: self::themes(), page: Page::Brand),
+            new Field(self::LAYOUT, t('core.setting.layout'), Type::Choice, choices: self::choices(Layout::cases()), page: Page::Brand),
             ...null === $this->palette ? [] : [self::colorField($this->palette)],
         ];
     }
@@ -118,21 +118,21 @@ final class Brand implements Owner
 
     private static function logoField(): Field
     {
-        return new Field(self::LOGO, t('core.setting.logo'), Type::Image, tab: Tab::Brand);
+        return new Field(self::LOGO, t('core.setting.logo'), Type::Image, page: Page::Brand);
     }
 
     private static function darkLogoField(): Field
     {
-        return new Field(self::LOGO_DARK, t('core.setting.logo_dark'), Type::Image, tab: Tab::Brand);
+        return new Field(self::LOGO_DARK, t('core.setting.logo_dark'), Type::Image, page: Page::Brand);
     }
 
     private static function iconField(): Field
     {
-        return new Field(self::ICON, t('core.setting.icon'), Type::Image, tab: Tab::Brand);
+        return new Field(self::ICON, t('core.setting.icon'), Type::Image, page: Page::Brand);
     }
 
     private static function colorField(Palette $palette): Field
     {
-        return new Field(self::COLOR, t('core.setting.brand_color'), Type::Palette, tab: Tab::Brand, schemes: $palette->schemes());
+        return new Field(self::COLOR, t('core.setting.brand_color'), Type::Palette, page: Page::Brand, schemes: $palette->schemes());
     }
 }

@@ -42,7 +42,11 @@
             "description": {
                 "ru": "Оплата переводом на карту либо телефон получателя с подтверждением оператором"
             },
-            "categories": ["payments"]
+            "categories": ["payments"],
+            "title": {
+                "en": "Transfer payment",
+                "ru": "Оплата переводом"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

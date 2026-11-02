@@ -51,7 +51,11 @@
             "description": {
                 "ru": "Заявки с сайта: окно заявки на любой странице, стадии воронки, менеджеры и сроки"
             },
-            "categories": ["marketing"]
+            "categories": ["marketing"],
+            "title": {
+                "en": "Website leads",
+                "ru": "Заявки с сайта"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

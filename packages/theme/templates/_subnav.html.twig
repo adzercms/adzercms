@@ -1,0 +1,13 @@
+<nav class="subnav">
+    {%- for group in groups %}
+        <div class="subnav-group">
+            <div class="subnav-title">{{ group.label|trans }}</div>
+            {%- for subgroup in group.subgroups %}
+                {%- if subgroup.label %}<div class="subnav-subtitle">{{ subgroup.label|trans }}</div>{% endif %}
+                {%- for item in subgroup.items %}
+                    <a class="subnav-item {{ item.active ? 'active' }}" href="{{ item.href }}">{{ item.label|trans }}</a>
+                {%- endfor %}
+            {%- endfor %}
+        </div>
+    {%- endfor %}
+</nav>

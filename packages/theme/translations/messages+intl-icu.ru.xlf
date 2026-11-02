@@ -163,5 +163,11 @@
         <target>ru_RU</target>
       </segment>
     </unit>
+    <unit id="theme.settings">
+      <segment>
+        <source>theme.settings</source>
+        <target>Настройки</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

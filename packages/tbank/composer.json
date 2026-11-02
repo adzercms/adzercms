@@ -36,7 +36,11 @@
             "description": {
                 "ru": "Онлайн-оплата Т-Банка"
             },
-            "categories": ["payments"]
+            "categories": ["payments"],
+            "title": {
+                "en": "T-Bank",
+                "ru": "Т-Банк"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

@@ -13,12 +13,6 @@
         <target>Позиций отклонено ОПОТОПО: {count}</target>
       </segment>
     </unit>
-    <unit id="opotopo.setting.area">
-      <segment>
-        <source>opotopo.setting.area</source>
-        <target>ОПОТОПО</target>
-      </segment>
-    </unit>
     <unit id="opotopo.setting.key">
       <segment>
         <source>opotopo.setting.key</source>

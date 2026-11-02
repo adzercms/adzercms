@@ -33,6 +33,10 @@
             "bundle": "AdzerCMS\\Centrifugo\\CentrifugoBundle",
             "description": {
                 "ru": "Обновление страниц без перезагрузки через сервер Centrifugo"
+            },
+            "title": {
+                "en": "Centrifugo",
+                "ru": "Centrifugo"
             }
         },
         "branch-alias": {

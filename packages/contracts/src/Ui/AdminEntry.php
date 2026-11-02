@@ -10,7 +10,7 @@ enum AdminEntry: string
     case Users = 'users';
     case User = 'user';
     case Modules = 'modules';
-    case Module = 'module';
+    case ModuleSettings = 'module_settings';
     case References = 'references';
 
     public function route(): string
@@ -20,7 +20,7 @@ enum AdminEntry: string
             self::Users => 'admin_users',
             self::User => 'admin_user',
             self::Modules => 'admin_modules',
-            self::Module => 'admin_module',
+            self::ModuleSettings => 'admin_settings_module',
             self::References => 'admin_references',
         };
     }

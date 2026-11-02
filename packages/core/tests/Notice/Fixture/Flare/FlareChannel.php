@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Tests\Notice\Fixture\Flare;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
+use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Notice\Channel;
 use AdzerCMS\Core\Notice\Letter;
@@ -26,7 +27,7 @@ final class FlareChannel implements Channel, Owner
 
     public function settingFields(): array
     {
-        return [new Field(self::READY, new TranslatableMessage('Flare ready'), Type::Toggle)];
+        return [new Field(self::READY, new TranslatableMessage('Flare ready'), Type::Toggle, page: Page::Mail)];
     }
 
     public function key(): string

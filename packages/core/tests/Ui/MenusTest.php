@@ -7,6 +7,7 @@ namespace AdzerCMS\Core\Tests\Ui;
 use AdzerCMS\Contracts\Ui\Area;
 use AdzerCMS\Contracts\Ui\Menu;
 use AdzerCMS\Contracts\Ui\MenuItem;
+use AdzerCMS\Core\Module\Bundles;
 use AdzerCMS\Core\Ui\Menus;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -44,7 +45,7 @@ final class MenusTest extends TestCase
         $requests = new RequestStack();
         $requests->push(new Request(attributes: ['_route' => $route]));
 
-        $items = array_merge(...array_column((new Menus([$menu], $requests))->of(Area::Admin->value), 'items'));
+        $items = array_merge(...array_column((new Menus([$menu], $requests, new Bundles([])))->of(Area::Admin->value), 'items'));
 
         self::assertSame($active, array_values(array_map(
             static fn (array $entry): string => $entry['item']->route,

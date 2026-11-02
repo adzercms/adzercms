@@ -31,7 +31,11 @@
             "description": {
                 "ru": "Вход через Telegram с привязкой к учётной записи"
             },
-            "categories": ["security"]
+            "categories": ["security"],
+            "title": {
+                "en": "Telegram Login",
+                "ru": "Вход через Telegram"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

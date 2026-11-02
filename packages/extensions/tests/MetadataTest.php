@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Extensions\Tests;
 
 use AdzerCMS\Contracts\Module\Category;
-use AdzerCMS\Core\Composer\Description;
+use AdzerCMS\Core\Composer\Localized;
 use AdzerCMS\Core\Setting\Catalog;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Extensions\ExtensionsSettings;
@@ -40,7 +40,7 @@ final class MetadataTest extends CatalogTestCase
         $this->post('/admin/extensions/new', ['name' => self::NAME, 'type' => 'module', 'price' => '', 'demo' => '']);
 
         $entry = self::extensions()->named(self::NAME) ?? self::fail('the entry is not in the catalog');
-        self::assertEquals([new Description('Shop for AdzerCMS', ['ru' => 'Магазин для AdzerCMS']), '1.10.0', 'https://github.com/acme/shop.git', 'https://shop.example.test'],
+        self::assertEquals([new Localized('Shop for AdzerCMS', ['ru' => 'Магазин для AdzerCMS']), '1.10.0', 'https://github.com/acme/shop.git', 'https://shop.example.test'],
             [$entry->getDescription(), $entry->getVersion(), $entry->getSource(), $entry->getHomepage()]);
         self::assertSame(ExtensionState::Published, $entry->state());
 
@@ -48,7 +48,7 @@ final class MetadataTest extends CatalogTestCase
         $this->post('/admin/extensions/'.$entry->getId(), ['name' => self::NAME, 'type' => 'module', 'price' => '900', 'demo' => '']);
 
         $entry = $this->reread($entry);
-        self::assertEquals([new Description('Paid shop', []), '3.0.0'], [$entry->getDescription(), $entry->getVersion()]);
+        self::assertEquals([new Localized('Paid shop', []), '3.0.0'], [$entry->getDescription(), $entry->getVersion()]);
     }
 
     /** @param list<Category> $categories */

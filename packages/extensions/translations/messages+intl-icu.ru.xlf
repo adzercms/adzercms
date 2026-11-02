@@ -313,12 +313,6 @@
         <target>Репозиторий {name} недоступен, повторите позже</target>
       </segment>
     </unit>
-    <unit id="extensions.setting.area">
-      <segment>
-        <source>extensions.setting.area</source>
-        <target>Каталог расширений</target>
-      </segment>
-    </unit>
     <unit id="extensions.setting.repositories">
       <segment>
         <source>extensions.setting.repositories</source>

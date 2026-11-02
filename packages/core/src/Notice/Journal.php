@@ -6,7 +6,7 @@ namespace AdzerCMS\Core\Notice;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
-use AdzerCMS\Contracts\Setting\Tab;
+use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Core\Repository\NoticeRepository;
 use AdzerCMS\Core\Setting\Settings;
 
@@ -26,7 +26,7 @@ final class Journal implements Owner
 
     public function settingFields(): array
     {
-        return [new Field(self::KEEP_DAYS, t('core.setting.notice_keep_days'), tab: Tab::Mail)];
+        return [new Field(self::KEEP_DAYS, t('core.setting.notice_keep_days'), page: Page::Mail)];
     }
 
     public function sweep(): int

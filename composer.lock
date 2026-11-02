@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/admin",
-                "reference": "d93ee6e6775e557de01a133c7082c317fe6b653d"
+                "reference": "3cece9a9a941c46dedf821c6b14dfdb67351e668"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -20,6 +20,7 @@
                 "adzercms/theme-implementation": "^1.0",
                 "doctrine/migrations": "^3.9",
                 "doctrine/orm": "^3.7",
+                "ext-intl": "*",
                 "php": ">=8.4",
                 "symfony/clock": "7.4.*",
                 "symfony/dependency-injection": "7.4.*",
@@ -46,6 +47,10 @@
                     "bundle": "AdzerCMS\\Admin\\AdminBundle",
                     "description": {
                         "ru": "Админка: содержимое, пользователи и настройки сайта"
+                    },
+                    "title": {
+                        "en": "Admin panel",
+                        "ru": "Админка"
                     }
                 },
                 "branch-alias": {
@@ -79,7 +84,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/bank-transfer",
-                "reference": "5cd4cf71ad837b5ec944fe9d415c5d3612824bd4"
+                "reference": "0dbbd491b6ea4a6b4405b7fe6c3e00e241aeaf6d"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -111,7 +116,11 @@
                     },
                     "categories": [
                         "payments"
-                    ]
+                    ],
+                    "title": {
+                        "en": "Transfer payment",
+                        "ru": "Оплата переводом"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -144,7 +153,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/cabinet",
-                "reference": "ba1b1a2dcb06bc3014a6040f141fe558e4d8e5ad"
+                "reference": "49a845a32608f28d6ee288385dab556cb5d5e548"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -169,6 +178,10 @@
                     "bundle": "AdzerCMS\\Cabinet\\CabinetBundle",
                     "description": {
                         "ru": "Кабинет клиента: регистрация и вход, профиль, сеансы и страницы модулей"
+                    },
+                    "title": {
+                        "en": "Customer account",
+                        "ru": "Кабинет клиента"
                     }
                 },
                 "branch-alias": {
@@ -202,7 +215,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/centrifugo",
-                "reference": "fa265719d11226508327b5eb00b822e74b2238a9"
+                "reference": "1927dadafc46c7b5225a84c4e9a7b26bb165cfdf"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -223,6 +236,10 @@
                     "bundle": "AdzerCMS\\Centrifugo\\CentrifugoBundle",
                     "description": {
                         "ru": "Обновление страниц без перезагрузки через сервер Centrifugo"
+                    },
+                    "title": {
+                        "en": "Centrifugo",
+                        "ru": "Centrifugo"
                     }
                 },
                 "branch-alias": {
@@ -408,7 +425,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/extensions",
-                "reference": "2af3694a6aa6c070361ef36b5d46cf87b47307ae"
+                "reference": "aa5695dd5408ccdddb4a92e95ba783426c5e62f7"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -444,7 +461,11 @@
                     },
                     "categories": [
                         "content"
-                    ]
+                    ],
+                    "title": {
+                        "en": "Extension catalog",
+                        "ru": "Каталог расширений"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -477,7 +498,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/google-analytics",
-                "reference": "adc115cdbe433885824ec5bd53892466a92038d1"
+                "reference": "4e1b851e1ff95a2234022f005a43ff63c6a08f2a"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -498,7 +519,11 @@
                     },
                     "categories": [
                         "marketing"
-                    ]
+                    ],
+                    "title": {
+                        "en": "Google Analytics",
+                        "ru": "Google Analytics"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -531,7 +556,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/hcaptcha",
-                "reference": "ad3c410582380278cc357904acbc524b66801921"
+                "reference": "782ec24addae6d0b7a95159ea112aca3e77045d2"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -551,7 +576,11 @@
                     },
                     "categories": [
                         "security"
-                    ]
+                    ],
+                    "title": {
+                        "en": "hCaptcha",
+                        "ru": "hCaptcha"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -583,7 +612,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/leads",
-                "reference": "0ed8672d01718bb88eb5223bb128ac9333635054"
+                "reference": "96fc5d7ac314e3cc253cb7abe6190418ffd8d6ff"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -624,7 +653,11 @@
                     },
                     "categories": [
                         "marketing"
-                    ]
+                    ],
+                    "title": {
+                        "en": "Website leads",
+                        "ru": "Заявки с сайта"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -657,7 +690,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/mailing",
-                "reference": "746fcc8e080ea4ebb6ea6a95776914e3d008a21b"
+                "reference": "f2a5bae6848b90c03a1c298fe8c03506809d46de"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -686,7 +719,11 @@
                     "categories": [
                         "messaging",
                         "marketing"
-                    ]
+                    ],
+                    "title": {
+                        "en": "Mailings",
+                        "ru": "Рассылки"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -719,7 +756,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/max-bot",
-                "reference": "3a39e6ff4d424e5ac2bd122fa462f1319d73a4c1"
+                "reference": "88056acaaf16fe72fbbf70a1af9f6047432ca1df"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -741,7 +778,11 @@
                     },
                     "categories": [
                         "messaging"
-                    ]
+                    ],
+                    "title": {
+                        "en": "MAX bot",
+                        "ru": "Бот MAX"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -846,7 +887,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/mts-marketolog",
-                "reference": "deaf069314e66cbdeedc7ce98532cb37d4b827cc"
+                "reference": "4aac7326480a7245903fe39d9918a56167d268f3"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -870,7 +911,11 @@
                     },
                     "categories": [
                         "messaging"
-                    ]
+                    ],
+                    "title": {
+                        "en": "MTS Marketolog",
+                        "ru": "МТС Маркетолог"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -903,7 +948,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/opotopo",
-                "reference": "d69f33105d8247db57efc6e3b5f969db8b0474d7"
+                "reference": "3a37608e0e406bcdb0cd659c198128554787ab45"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -942,7 +987,11 @@
                     },
                     "categories": [
                         "commerce"
-                    ]
+                    ],
+                    "title": {
+                        "en": "OPOTOPO",
+                        "ru": "OPOTOPO"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -975,7 +1024,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/payments",
-                "reference": "7ce7d12bc9cb4840a33ddb1f7b9f2e78fa9a1915"
+                "reference": "5b6156709c963ebd898fd0248fa066a4927ae62a"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1007,7 +1056,11 @@
                     },
                     "categories": [
                         "payments"
-                    ]
+                    ],
+                    "title": {
+                        "en": "Online payments",
+                        "ru": "Онлайн-оплата"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1039,7 +1092,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/realtime",
-                "reference": "a36d20ea1e667a1d3829c3b1f2ae06a3fe58a1f2"
+                "reference": "ca1e29a73024128b247c58a2acdab00de71810c4"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1066,6 +1119,10 @@
                     "bundle": "AdzerCMS\\Realtime\\RealtimeBundle",
                     "description": {
                         "ru": "Живые страницы: части страницы обновляются без перезагрузки"
+                    },
+                    "title": {
+                        "en": "Live pages",
+                        "ru": "Живые страницы"
                     }
                 },
                 "branch-alias": {
@@ -1099,7 +1156,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/sber-id",
-                "reference": "23963b84bc3a13f75e1a1341b261ebd091379ba8"
+                "reference": "0efb6f89b5bf42c679fc93006f7511876c36e531"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1120,7 +1177,11 @@
                     },
                     "categories": [
                         "security"
-                    ]
+                    ],
+                    "title": {
+                        "en": "Sber ID",
+                        "ru": "Сбер ID"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1153,7 +1214,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/smart-captcha",
-                "reference": "617764395874743f6be2cb1ec0492d1db3793b3f"
+                "reference": "ba6a5fcbc9559d4ed8d9012602295c640b945faf"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1173,7 +1234,11 @@
                     },
                     "categories": [
                         "security"
-                    ]
+                    ],
+                    "title": {
+                        "en": "Yandex SmartCaptcha",
+                        "ru": "Yandex SmartCaptcha"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1206,7 +1271,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/sms-pilot",
-                "reference": "649b43ae32a73ae5ee1495cefc218fc6b8a5c77e"
+                "reference": "2c2495bcbc1cd50eff824a1f9c2b14d9b8191000"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1229,7 +1294,11 @@
                     },
                     "categories": [
                         "messaging"
-                    ]
+                    ],
+                    "title": {
+                        "en": "SMSPilot",
+                        "ru": "SMSPilot"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1262,7 +1331,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/support",
-                "reference": "6e16edd81448ec9f6b2374efe0dc6858f53e5da9"
+                "reference": "17eb729f5a69104ae04484c638a018dcd0ac2ec0"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1306,7 +1375,11 @@
                     },
                     "categories": [
                         "support"
-                    ]
+                    ],
+                    "title": {
+                        "en": "Customer support",
+                        "ru": "Поддержка"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1339,7 +1412,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/tbank",
-                "reference": "69e89006052b04587cb01185ae7f27b4ddb72279"
+                "reference": "b50420ca42f62b422c06dddecf61086685de823f"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1364,7 +1437,11 @@
                     },
                     "categories": [
                         "payments"
-                    ]
+                    ],
+                    "title": {
+                        "en": "T-Bank",
+                        "ru": "Т-Банк"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1398,7 +1475,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/telegram",
-                "reference": "1e4e3b2a253f3ecfa96a9d9c2e78b42303953c73"
+                "reference": "7e3f41cf4c7c8703eef35b0dee78096899d9bf4a"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1419,7 +1496,11 @@
                     },
                     "categories": [
                         "security"
-                    ]
+                    ],
+                    "title": {
+                        "en": "Telegram Login",
+                        "ru": "Вход через Telegram"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1452,7 +1533,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/telegram-bot",
-                "reference": "21c6f1e43416d68f840416e1b18b8c65ba75b0e3"
+                "reference": "30d9862cf7610a14fe5dbc0439523b5e09183a19"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1476,7 +1557,11 @@
                     },
                     "categories": [
                         "messaging"
-                    ]
+                    ],
+                    "title": {
+                        "en": "Telegram bot",
+                        "ru": "Бот Telegram"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1509,7 +1594,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/theme",
-                "reference": "581dfd8a4d60f274236b470015c43f4e4f6fe55b"
+                "reference": "eed7024835f5f70825e5390787456decc63117fd"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1532,6 +1617,10 @@
                     "bundle": "AdzerCMS\\Theme\\ThemeBundle",
                     "description": {
                         "ru": "Тема по умолчанию: раскладка страниц, компоненты интерфейса и стили"
+                    },
+                    "title": {
+                        "en": "Default theme",
+                        "ru": "Тема по умолчанию"
                     }
                 },
                 "branch-alias": {
@@ -1565,7 +1654,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/turnstile",
-                "reference": "3a19ed1ea9beed1fccc17de6457717d2773f6863"
+                "reference": "0d1e2eb7d6c4af9f498d9cf22323cdcd4be80fce"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1585,7 +1674,11 @@
                     },
                     "categories": [
                         "security"
-                    ]
+                    ],
+                    "title": {
+                        "en": "Cloudflare Turnstile",
+                        "ru": "Cloudflare Turnstile"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1618,7 +1711,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/vk-id",
-                "reference": "4bf740e0fe2c36f552ca0f5e8be58f8327e58339"
+                "reference": "8e3e91fa73c7bea20e48c89a8fbf42c4411b7e3f"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1639,7 +1732,11 @@
                     },
                     "categories": [
                         "security"
-                    ]
+                    ],
+                    "title": {
+                        "en": "VK ID",
+                        "ru": "VK ID"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1672,7 +1769,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/yandex-id",
-                "reference": "ae68a1ef090fc2579848888dced53c3f350669c1"
+                "reference": "18ab22b8f490da958c2451376363edc32dcd9c98"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1693,7 +1790,11 @@
                     },
                     "categories": [
                         "security"
-                    ]
+                    ],
+                    "title": {
+                        "en": "Yandex ID",
+                        "ru": "Яндекс ID"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1726,7 +1827,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/yandex-metrika",
-                "reference": "b5c7df33c2303dfa4199fda85fda6d3c7638b100"
+                "reference": "ad9f5c7f956eb657a31568a867e23b6857e4e9f7"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1750,7 +1851,11 @@
                     },
                     "categories": [
                         "marketing"
-                    ]
+                    ],
+                    "title": {
+                        "en": "Yandex Metrica",
+                        "ru": "Яндекс Метрика"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"
@@ -1783,7 +1888,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/yookassa",
-                "reference": "94a6eb8aaa02c79bb02a4a52fc38c9348047b844"
+                "reference": "e6eb5876e95ef5cb252271c963d5025d485f093d"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1811,7 +1916,11 @@
                     },
                     "categories": [
                         "payments"
-                    ]
+                    ],
+                    "title": {
+                        "en": "YooKassa",
+                        "ru": "ЮKassa"
+                    }
                 },
                 "branch-alias": {
                     "dev-main": "1.0.x-dev"

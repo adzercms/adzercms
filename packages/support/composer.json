@@ -54,7 +54,11 @@
             "description": {
                 "ru": "Поддержка клиентов: обращения с вложениями, сводка сотрудникам и подсказки статей помощи"
             },
-            "categories": ["support"]
+            "categories": ["support"],
+            "title": {
+                "en": "Customer support",
+                "ru": "Поддержка"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

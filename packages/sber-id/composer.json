@@ -31,7 +31,11 @@
             "description": {
                 "ru": "Вход через Сбер ID с привязкой к учётной записи"
             },
-            "categories": ["security"]
+            "categories": ["security"],
+            "title": {
+                "en": "Sber ID",
+                "ru": "Сбер ID"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

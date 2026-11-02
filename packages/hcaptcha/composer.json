@@ -29,7 +29,11 @@
             "description": {
                 "ru": "Защита форм от спама hCaptcha"
             },
-            "categories": ["security"]
+            "categories": ["security"],
+            "title": {
+                "en": "hCaptcha",
+                "ru": "hCaptcha"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

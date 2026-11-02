@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace AdzerCMS\Admin\Controller;
 
 use AdzerCMS\Admin\SettingForm;
+use AdzerCMS\Admin\SettingPages;
 use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Notice\Channels;
@@ -15,7 +17,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Requirement\EnumRequirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
 
@@ -25,41 +29,29 @@ final class SettingsController extends AbstractController
 {
     public function __construct(
         private readonly Catalog $catalog,
+        private readonly SettingPages $pages,
         private readonly SettingForm $form,
         private readonly Channels $channels,
     ) {
     }
 
-    #[Route('', name: 'admin_settings', methods: ['GET', 'POST'])]
-    public function settings(Request $request): Response
+    #[Route('/{page?}', name: 'admin_settings', requirements: ['page' => new EnumRequirement(Page::class)], methods: ['GET', 'POST'])]
+    public function system(?Page $page, Request $request): Response
     {
-        $groups = $this->catalog->groups();
-        $tab = (string) $request->query->get('tab', array_key_first($groups));
+        $system = $this->catalog->system();
+        $page ??= Page::from((string) array_key_first($system));
+        $fields = $system[$page->value] ?? throw $this->createNotFoundException();
 
-        if ($request->isMethod('POST')) {
-            $tab = (string) $request->request->get('tab', array_key_first($groups));
+        return $this->page($request, $fields, $page->label(), [], $this->pages->menu($page, null), $this->generateUrl('admin_settings', ['page' => $page->value]));
+    }
 
-            if ($this->form->save($groups[$tab]['fields'] ?? [], $request)) {
-                $this->addFlash('success', t('admin.settings.saved'));
-            }
+    #[Route('/modules/{key}', name: SettingPages::MODULE_ROUTE, methods: ['GET', 'POST'])]
+    public function module(string $key, Request $request): Response
+    {
+        $fields = $this->catalog->modules()[$key]['fields'] ?? throw $this->createNotFoundException();
+        $title = $this->pages->title($key) ?? throw $this->createNotFoundException();
 
-            foreach ($this->form->faults() as $fault) {
-                $this->addFlash('error', $fault);
-            }
-
-            return $this->redirectToRoute('admin_settings', ['tab' => $tab]);
-        }
-
-        if (!isset($groups[$tab])) {
-            $tab = array_key_first($groups) ?? throw new \LogicException('the settings form has no group');
-        }
-
-        return $this->render('@Admin/admin/settings.html.twig', [
-            'groups' => $groups,
-            'tab' => $tab,
-            'values' => $this->form->values($groups[$tab]['fields']),
-            'sections' => $this->form->sections($groups[$tab]['fields']),
-        ]);
+        return $this->page($request, $fields, $title, $this->pages->guide($key), $this->pages->menu(null, $key), $this->generateUrl(SettingPages::MODULE_ROUTE, ['key' => $key]));
     }
 
     #[Route('/credentials/{key}', name: 'admin_settings_credentials', methods: ['GET', 'POST'])]
@@ -108,13 +100,41 @@ final class SettingsController extends AbstractController
         return $this->render('@Theme/_credentials.html.twig', [
             'action' => $this->generateUrl('admin_settings_credentials', ['key' => $key]),
             'fields' => array_map(fn (Field $field): array => [
-                'name' => sprintf('value[%s]', $field->name),
+                'name' => \sprintf('value[%s]', $field->name),
                 'label' => $field->label,
                 'secret' => Type::Secret === $field->type,
                 'stored' => Type::Secret === $field->type && $this->form->filled([$field]),
                 'value' => $values[$field->name],
             ], $fields),
             'clearable' => $this->form->filled($fields),
+        ]);
+    }
+
+    /**
+     * @param list<Field>                 $fields
+     * @param list<TranslatableInterface> $guide
+     * @param list<mixed>                 $menu
+     */
+    private function page(Request $request, array $fields, TranslatableInterface $label, array $guide, array $menu, string $here): Response
+    {
+        if ($request->isMethod('POST')) {
+            if ($this->form->save($fields, $request)) {
+                $this->addFlash('success', t('admin.settings.saved'));
+            }
+
+            foreach ($this->form->faults() as $fault) {
+                $this->addFlash('error', $fault);
+            }
+
+            return $this->redirect($here);
+        }
+
+        return $this->render('@Admin/admin/settings.html.twig', [
+            'menu' => $menu,
+            'label' => $label,
+            'guide' => $guide,
+            'values' => $this->form->values($fields),
+            'sections' => $this->form->sections($fields),
         ]);
     }
 }

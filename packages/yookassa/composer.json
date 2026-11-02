@@ -38,7 +38,11 @@
             "description": {
                 "ru": "Онлайн-оплата ЮKassa"
             },
-            "categories": ["payments"]
+            "categories": ["payments"],
+            "title": {
+                "en": "YooKassa",
+                "ru": "ЮKassa"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

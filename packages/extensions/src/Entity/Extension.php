@@ -6,7 +6,7 @@ namespace AdzerCMS\Extensions\Entity;
 
 use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Contracts\Module\ExtensionType;
-use AdzerCMS\Core\Composer\Description;
+use AdzerCMS\Core\Composer\Localized;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Core\Ui\Placed;
@@ -139,9 +139,9 @@ class Extension implements Placed
         return $this->position;
     }
 
-    public function getDescription(): ?Description
+    public function getDescription(): ?Localized
     {
-        return null === $this->description ? null : new Description($this->description, $this->descriptionTranslations ?? []);
+        return null === $this->description ? null : new Localized($this->description, $this->descriptionTranslations ?? []);
     }
 
     public function getVersion(): ?string

@@ -313,12 +313,6 @@
         <target>The repository of {name} is unavailable, try again later</target>
       </segment>
     </unit>
-    <unit id="extensions.setting.area">
-      <segment>
-        <source>extensions.setting.area</source>
-        <target>Extension catalog</target>
-      </segment>
-    </unit>
     <unit id="extensions.setting.repositories">
       <segment>
         <source>extensions.setting.repositories</source>

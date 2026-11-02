@@ -33,7 +33,11 @@
             "description": {
                 "ru": "SMS через SMSPilot: оповещения и коды подтверждения"
             },
-            "categories": ["messaging"]
+            "categories": ["messaging"],
+            "title": {
+                "en": "SMSPilot",
+                "ru": "SMSPilot"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

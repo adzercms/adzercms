@@ -21,7 +21,7 @@ final readonly class Field
         private array|\Closure $choices = [],
         public ?string $group = null,
         public ?TranslatableInterface $section = null,
-        public ?Tab $tab = null,
+        public ?Page $page = null,
         public array $schemes = [],
     ) {
     }
@@ -42,7 +42,7 @@ final readonly class Field
             $this->choices,
             null === $this->group ? null : $prefix.$this->group,
             $this->section,
-            $this->tab,
+            $this->page,
             $this->schemes,
         );
     }

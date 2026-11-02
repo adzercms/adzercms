@@ -24,13 +24,15 @@ $package = $ask('Package name', null, '~^[a-z0-9]([_.-]?[a-z0-9]+)*/[a-z0-9](([_
 $namespace = $ask('Namespace', $studly($vendor).'\\'.$studly($name), '~^[A-Z][A-Za-z0-9]*(\\\\[A-Z][A-Za-z0-9]*)*$~');
 $bundle = $ask('Bundle class', $studly($name).'Bundle', '~^[A-Z][A-Za-z0-9]*Bundle$~');
 $key = substr($bundle, 0, -\strlen('Bundle'));
+$title = $ask('Module title, in English', null, '~\S~');
+$russianTitle = $ask('Module title, in Russian', null, '~\S~');
 $description = $ask('What the module does, in English', null, '~\S~');
 $russian = $ask('What the module does, in Russian', null, '~\S~');
 
 $manifest = json_decode((string) file_get_contents(__DIR__.'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
 $manifest = ['name' => $package, 'type' => 'adzercms-module', 'description' => $description] + array_diff_key(\is_array($manifest) ? $manifest : [], array_flip(['description', 'keywords', 'scripts']));
 $manifest['autoload'] = ['psr-4' => [$namespace.'\\' => 'src/']];
-$manifest['extra'] = ['adzercms' => ['bundle' => $namespace.'\\'.$bundle, 'description' => ['ru' => $russian]]];
+$manifest['extra'] = ['adzercms' => ['bundle' => $namespace.'\\'.$bundle, 'description' => ['ru' => $russian], 'title' => ['en' => $title, 'ru' => $russianTitle]]];
 file_put_contents(__DIR__.'/composer.json', json_encode($manifest, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE | \JSON_THROW_ON_ERROR)."\n");
 
 $names = [

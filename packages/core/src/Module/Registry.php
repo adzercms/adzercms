@@ -7,7 +7,7 @@ namespace AdzerCMS\Core\Module;
 use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Module\Kind;
 use AdzerCMS\Contracts\Module\Module;
-use AdzerCMS\Core\Composer\Description;
+use AdzerCMS\Core\Composer\Localized;
 use Composer\InstalledVersions;
 
 final class Registry
@@ -163,7 +163,8 @@ final class Registry
             array_values(array_intersect($packages, $required)),
             array_values(array_filter($required, static fn (string $name): bool => 1 === preg_match(self::IMPLEMENTATION, $name))),
             array_values(array_intersect($packages, $developed)),
-            Description::of($manifest),
+            Localized::description($manifest),
+            Localized::title($manifest),
         );
     }
 
@@ -182,6 +183,8 @@ final class Registry
     /** @param class-string<Module> $bundle */
     public static function settings(string $bundle): string
     {
-        return \sprintf('%s.%s.', $bundle::kind()->key(), self::lowerKey($bundle));
+        $kind = $bundle::kind();
+
+        return CoreKind::Feature === $kind ? self::lowerKey($bundle).'.' : \sprintf('%s.%s.', $kind->key(), self::lowerKey($bundle));
     }
 }

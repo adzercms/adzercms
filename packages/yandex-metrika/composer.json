@@ -34,7 +34,11 @@
             "description": {
                 "ru": "Счётчик Яндекс Метрики на страницах после согласия на cookie, выгрузка ему офлайн-конверсий и посещаемость сайта в админке"
             },
-            "categories": ["marketing"]
+            "categories": ["marketing"],
+            "title": {
+                "en": "Yandex Metrica",
+                "ru": "Яндекс Метрика"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

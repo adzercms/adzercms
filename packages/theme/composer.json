@@ -35,6 +35,10 @@
             "bundle": "AdzerCMS\\Theme\\ThemeBundle",
             "description": {
                 "ru": "Тема по умолчанию: раскладка страниц, компоненты интерфейса и стили"
+            },
+            "title": {
+                "en": "Default theme",
+                "ru": "Тема по умолчанию"
             }
         },
         "branch-alias": {

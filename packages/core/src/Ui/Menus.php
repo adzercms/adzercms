@@ -7,6 +7,8 @@ namespace AdzerCMS\Core\Ui;
 use AdzerCMS\Contracts\Ui\Area;
 use AdzerCMS\Contracts\Ui\Menu;
 use AdzerCMS\Contracts\Ui\MenuItem;
+use AdzerCMS\Core\Module\Bundles;
+use AdzerCMS\Core\Module\Registry;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Service\ResetInterface;
@@ -15,7 +17,7 @@ use Twig\Attribute\AsTwigFunction;
 
 final class Menus implements ResetInterface
 {
-    /** @var array<string, list<array{group: ?TranslatableInterface, items: list<array{item: MenuItem, active: bool}>}>> */
+    /** @var array<string, list<array{group: ?TranslatableInterface, items: list<array{item: MenuItem, active: bool, module: ?string}>}>> */
     private array $built = [];
 
     /** @param iterable<Menu> $menus */
@@ -23,17 +25,18 @@ final class Menus implements ResetInterface
         #[AutowireIterator(Menu::class)]
         private readonly iterable $menus,
         private readonly RequestStack $requests,
+        private readonly Bundles $bundles,
     ) {
     }
 
-    /** @return list<array{group: ?TranslatableInterface, items: list<array{item: MenuItem, active: bool}>}> */
+    /** @return list<array{group: ?TranslatableInterface, items: list<array{item: MenuItem, active: bool, module: ?string}>}> */
     #[AsTwigFunction('menu')]
     public function of(string $area): array
     {
         return $this->built[$area] ??= $this->build(Area::from($area));
     }
 
-    /** @return list<array{item: MenuItem, active: bool}> */
+    /** @return list<array{item: MenuItem, active: bool, module: ?string}> */
     #[AsTwigFunction('bar')]
     public function bar(string $area): array
     {
@@ -51,13 +54,18 @@ final class Menus implements ResetInterface
         $this->built = [];
     }
 
-    /** @return list<array{group: ?TranslatableInterface, items: list<array{item: MenuItem, active: bool}>}> */
+    /** @return list<array{group: ?TranslatableInterface, items: list<array{item: MenuItem, active: bool, module: ?string}>}> */
     private function build(Area $area): array
     {
         $route = (string) ($this->requests->getMainRequest()?->attributes->get('_route') ?? '');
         $items = [];
+        $modules = [];
         foreach ($this->menus as $menu) {
-            array_push($items, ...$menu->items($area));
+            $bundle = $this->bundles->find($menu);
+            foreach ($menu->items($area) as $item) {
+                $items[] = $item;
+                $modules[spl_object_id($item)] = null === $bundle ? null : Registry::lowerKey($bundle);
+            }
         }
         usort($items, static fn (MenuItem $left, MenuItem $right): int => $left->weight <=> $right->weight);
 
@@ -65,7 +73,7 @@ final class Menus implements ResetInterface
         $labels = [];
         $entries = [];
         foreach ($items as $item) {
-            $entry = ['item' => $item, 'active' => $item === $current];
+            $entry = ['item' => $item, 'active' => $item === $current, 'module' => $modules[spl_object_id($item)]];
             $index = array_search($item->group, $labels, false);
             if (false === $index) {
                 $labels[] = $item->group;

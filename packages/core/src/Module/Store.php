@@ -8,8 +8,8 @@ use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
+use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Contracts\Setting\Rule;
-use AdzerCMS\Contracts\Setting\Tab;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Ui\WebLink;
@@ -32,7 +32,7 @@ final readonly class Store implements Owner, Rule
 
     public function settingFields(): array
     {
-        return [new Field(self::NAME, t('core.setting.store'), section: t('core.setting.section.extensions'), tab: Tab::General)];
+        return [new Field(self::NAME, t('core.setting.store'), section: t('core.setting.section.extensions'), page: Page::General)];
     }
 
     public function check(Field $field, string $value): ?Refusal

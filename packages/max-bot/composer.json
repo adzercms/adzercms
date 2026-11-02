@@ -32,7 +32,11 @@
             "description": {
                 "ru": "Бот мессенджера MAX для оповещений"
             },
-            "categories": ["messaging"]
+            "categories": ["messaging"],
+            "title": {
+                "en": "MAX bot",
+                "ru": "Бот MAX"
+            }
         },
         "branch-alias": {
             "dev-main": "1.0.x-dev"

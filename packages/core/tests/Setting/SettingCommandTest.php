@@ -7,6 +7,7 @@ namespace AdzerCMS\Core\Tests\Setting;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Core\Entity\Setting;
+use AdzerCMS\Core\Module\Bundles;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Notice\QuietHours;
 use AdzerCMS\Core\Setting\Catalog;
@@ -19,7 +20,6 @@ use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Tests\Setting\Fixture\Shop;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function Symfony\Component\Translation\t;
 
@@ -197,6 +197,6 @@ final class SettingCommandTest extends SchemaTestCase
 
         $this->expectExceptionObject(new \LogicException('setting key shop.title is declared by two owners'));
 
-        (new Catalog([new Shop(), $twin], [], self::service(TranslatorInterface::class, 'translator')))->fields();
+        (new Catalog([new Shop(), $twin], new Bundles([])))->fields();
     }
 }

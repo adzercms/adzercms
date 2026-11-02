@@ -1297,6 +1297,30 @@
         <target>Ссылка на оферту</target>
       </segment>
     </unit>
+    <unit id="core.setting.page.brand">
+      <segment>
+        <source>core.setting.page.brand</source>
+        <target>Фирменный стиль</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.page.extensions">
+      <segment>
+        <source>core.setting.page.extensions</source>
+        <target>Расширения</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.page.general">
+      <segment>
+        <source>core.setting.page.general</source>
+        <target>Общие</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.page.mail">
+      <segment>
+        <source>core.setting.page.mail</source>
+        <target>Почта и уведомления</target>
+      </segment>
+    </unit>
     <unit id="core.setting.privacy_url">
       <segment>
         <source>core.setting.privacy_url</source>
@@ -1337,24 +1361,6 @@
       <segment>
         <source>core.setting.store</source>
         <target>Адрес каталога расширений</target>
-      </segment>
-    </unit>
-    <unit id="core.setting.tab.brand">
-      <segment>
-        <source>core.setting.tab.brand</source>
-        <target>Фирменный стиль</target>
-      </segment>
-    </unit>
-    <unit id="core.setting.tab.general">
-      <segment>
-        <source>core.setting.tab.general</source>
-        <target>Общие</target>
-      </segment>
-    </unit>
-    <unit id="core.setting.tab.mail">
-      <segment>
-        <source>core.setting.tab.mail</source>
-        <target>Почта и уведомления</target>
       </segment>
     </unit>
     <unit id="core.setting.theme">

@@ -10,7 +10,7 @@ use AdzerCMS\Admin\ModuleState;
 use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Refusal;
-use AdzerCMS\Contracts\Setting\Tab;
+use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Build\Preview;
 use AdzerCMS\Core\Kernel;
@@ -53,6 +53,8 @@ final class ModuleWebTest extends SchemaTestCase
     private const MODULES = '/admin/modules';
     private const SOURCES = '/admin/modules?tab=sources';
     private const OPERATIONS = '/admin/modules?tab=operations';
+    private const SETTINGS = '/admin/settings/modules/';
+    private const RELAY = self::SETTINGS.'relay';
 
     private ?string $tree = null;
 
@@ -109,9 +111,9 @@ final class ModuleWebTest extends SchemaTestCase
             'a row of an assembled module opens its card',
         );
         self::assertEqualsCanonicalizing(
-            array_map(static fn (string $key): string => '/admin/modules/'.$key.'#settings', array_values(array_filter($assembled, static fn (string $key): bool => [] !== $modules[$key]['fields']))),
+            array_map(static fn (string $key): string => self::SETTINGS.$key, array_values(array_filter($assembled, static fn (string $key): bool => $modules[$key]['settings']))),
             $listing->filter('#rows td.row-actions a')->each(static fn (Crawler $link): string => (string) $link->attr('href')),
-            'a module with settings leads to them',
+            'a module with settings leads to its settings page',
         );
         self::assertStringContainsString(self::phrase($modules['admin']['description']), self::cell($listing, 'adzercms/admin', self::phrase('admin.modules.name'))->text(),
             'an assembled module tells what it does in the language of the reader');
@@ -120,7 +122,8 @@ final class ModuleWebTest extends SchemaTestCase
             'the search goes by what the module does too');
 
         self::assertSame(self::phrase($modules['admin']['description']), self::tile($this->client->request('GET', '/admin/modules/admin'), self::phrase('admin.modules.description')));
-        self::assertCount(1, $this->client->request('GET', '/admin/modules/relay')->filter('form#settings'));
+        self::assertSame([self::RELAY], $this->client->request('GET', '/admin/modules/relay')->filter('.card-actions a[href^="/admin/settings/"]')->each(static fn (Crawler $link): string => (string) $link->attr('href')),
+            'the card of a module with settings leads to its settings page');
 
         $this->client->request('GET', '/admin/modules/absent');
         self::assertResponseStatusCodeSame(404);
@@ -169,36 +172,42 @@ final class ModuleWebTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0053')]
+    #[Group('ACMS-CORE-1050')]
     #[Group('ACMS-US-0004')]
-    public function testModuleSettingsLiveOnItsCardOnly(): void
+    public function testModuleSettingsLiveOnItsSettingsPageOnly(): void
     {
-        $card = $this->client->request('GET', '/admin/modules/relay');
-        $this->client->submit($card->selectButton(self::phrase('core.action.save'))->form([
+        $page = $this->client->request('GET', self::RELAY);
+        self::assertSame('Relay', trim($page->filter('.subnav-item.active')->text()), 'a module without a title goes by its key');
+        $integrations = array_column(array_merge(...array_column(array_filter(self::subnav($page), static fn (array $group): bool => self::phrase('admin.settings.integrations') === $group[0]), 1)), 1, 0);
+        self::assertContains('Relay', $integrations[self::phrase(CoreKind::Sms->label())] ?? [], 'a kind module goes to the integrations under its kind');
+        $this->client->submit($page->selectButton(self::phrase('core.action.save'))->form([
             \sprintf('value[%s]', self::SENDER) => 'VILLAGE',
             \sprintf('value[%s]', RelaySettings::SIGNATURE) => 'Village',
         ]));
 
-        self::assertResponseRedirects('/admin/modules/relay');
+        self::assertResponseRedirects(self::RELAY);
         self::assertSame('VILLAGE', self::service(Settings::class)->get(self::SENDER), 'credentials of the switch');
         self::assertSame('Village', self::service(Settings::class)->get(RelaySettings::SIGNATURE), 'own setting of the module');
 
-        foreach (array_keys(self::service(Catalog::class)->groups()) as $tab) {
-            $names = $this->client->request('GET', '/admin/settings?tab='.$tab)->filter('form [name]')->each(static fn (Crawler $node): string => (string) $node->attr('name'));
+        foreach (array_keys(self::service(Catalog::class)->system()) as $system) {
+            $names = $this->client->request('GET', '/admin/settings/'.$system)->filter('form [name]')->each(static fn (Crawler $node): string => (string) $node->attr('name'));
             foreach ([self::SENDER, RelaySettings::SIGNATURE] as $name) {
-                self::assertNotContains(\sprintf('value[%s]', $name), $names, 'the settings tabs do not repeat the module card');
+                self::assertNotContains(\sprintf('value[%s]', $name), $names, 'the system pages do not repeat the module page');
             }
         }
+
+        $this->client->request('GET', self::SETTINGS.'absent');
+        self::assertResponseStatusCodeSame(404);
     }
 
     #[Group('ACMS-CORE-1003')]
     #[Group('ACMS-US-0004')]
-    public function testCardOfExternalServiceGuidesToItsCredentials(): void
+    public function testSettingsPageOfExternalServiceGuidesToItsCredentials(): void
     {
-        $steps = $this->client->request('GET', '/admin/modules/relay')->filter('ol li');
+        $steps = $this->client->request('GET', self::RELAY)->filter('ol li');
 
         self::assertSame(['Open '.RelayGateway::KEYS, 'Issue a token and copy it into Relay token'], $steps->each(static fn (Crawler $step): string => trim($step->text())));
         self::assertSame(RelayGateway::KEYS, $steps->filter('a')->attr('href'), 'the address of a step leads to the service');
-        self::assertCount(0, $this->client->request('GET', '/admin/modules/admin')->filter('ol li'), 'a module without a service has no steps');
     }
 
     #[Group('ACMS-CORE-0934')]
@@ -631,7 +640,7 @@ final class ModuleWebTest extends SchemaTestCase
         $base = $this->client->request('GET', self::SOURCES)->filter('#sources tbody tr');
         self::assertSame([Store::DEFAULT, ...Sources::BASE], $base->filter('td strong')->each(static fn (Crawler $source): string => trim($source->text())));
         self::assertCount(0, $base->filter('td.row-actions form'), 'a base source is not dropped');
-        self::assertSame(['/admin/settings?tab='.Tab::General->value], $base->filter('td.row-actions a')->each(static fn (Crawler $link): string => (string) $link->attr('href')), 'the extension catalog leads to its setting');
+        self::assertSame(['/admin/settings/'.Page::General->value], $base->filter('td.row-actions a')->each(static fn (Crawler $link): string => (string) $link->attr('href')), 'the extension catalog leads to its setting');
 
         $this->connect(self::REPOSITORY.'/one');
         self::assertResponseRedirects(self::SOURCES, message: 'a source goes to its tab');

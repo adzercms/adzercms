@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests\Translation;
 
-use AdzerCMS\Contracts\Setting\Field;
-use AdzerCMS\Contracts\Setting\Owner;
-use AdzerCMS\Core\Composer\Description;
+use AdzerCMS\Core\Composer\Localized;
 use AdzerCMS\Core\Module\Registry;
-use AdzerCMS\Core\Setting\Catalog;
 use AdzerCMS\Core\Text\Texts;
 use AdzerCMS\Core\Ui\State;
 use Psr\Container\ContainerInterface;
@@ -16,17 +13,15 @@ use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Translation\Extractor\ExtractorInterface;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\TranslatableMessage;
 
-#[AsCommand(name: 'adzercms:catalogs', description: 'Translation catalogs of a package: the same keys in every language, keys of its code and templates and labels of the settings tabs of its owners in the source catalogs of the package and of the selected modules, the description of a module package in every engine language')]
+#[AsCommand(name: 'adzercms:catalogs', description: 'Translation catalogs of a package: the same keys in every language, keys of its code and templates in the source catalogs of the package and of the selected modules, the description and the title of a module package in every engine language')]
 final readonly class Catalogs
 {
     private const SOURCE = 'en';
-    private const DOMAIN = 'messages';
     private const COLUMN = 'core.column.';
 
     public function __construct(private KernelInterface $kernel)
@@ -46,14 +41,15 @@ final readonly class Catalogs
         $container = $this->kernel->getContainer();
         $manifest = json_decode((string) file_get_contents($package.'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
         if (\is_array($manifest) && null !== Registry::installed()->package(\is_string($manifest['name'] ?? null) ? $manifest['name'] : '')) {
-            $description = Description::of($manifest);
-            if ('' === $description->source) {
-                $refusals[] = 'composer.json lacks the module description';
-            }
             /** @var list<string> $locales */
             $locales = $container->getParameter('kernel.enabled_locales');
-            foreach (array_diff($locales, [self::SOURCE], array_keys($description->translations)) as $locale) {
-                $refusals[] = \sprintf('composer.json lacks the module description extra.adzercms.description.%s', $locale);
+            foreach (['description' => Localized::description($manifest), 'title' => Localized::title($manifest)] as $name => $text) {
+                if ('' === $text->source) {
+                    $refusals[] = \sprintf('composer.json lacks the module %s', $name);
+                }
+                foreach (array_diff($locales, [self::SOURCE], array_keys($text->translations)) as $locale) {
+                    $refusals[] = \sprintf('composer.json lacks the module %s extra.adzercms.%s.%s', $name, $name, $locale);
+                }
             }
         }
         /** @var array<string, list<string>> $files */
@@ -95,15 +91,6 @@ final readonly class Catalogs
                 }
             }
         }
-        $settings = $services->get(Catalog::class);
-        $fields = self::fields($services, $package, $manifest);
-        foreach ($settings instanceof Catalog ? $settings->groups() : [] as $group) {
-            $label = $group['label'];
-            if ($label instanceof TranslatableMessage && array_any($group['fields'], static fn (Field $field): bool => isset($fields[$field->name])) && !$defined->defines($label->getMessage(), $label->getDomain() ?? self::DOMAIN)) {
-                $refusals[] = \sprintf('settings tab label %s is missing in %s catalogs', $label->getMessage(), self::SOURCE);
-            }
-        }
-
         foreach ($refusals as $refusal) {
             $output->writeln($package.': '.$refusal);
         }
@@ -149,25 +136,5 @@ final readonly class Catalogs
         }
 
         return $keys;
-    }
-
-    /** @return array<string, true> */
-    private static function fields(ContainerInterface $services, string $package, mixed $manifest): array
-    {
-        $autoload = \is_array($manifest) && \is_array($manifest['autoload'] ?? null) ? $manifest['autoload'] : [];
-        $fields = [];
-        foreach (\is_array($autoload['psr-4'] ?? null) ? $autoload['psr-4'] : [] as $prefix => $directories) {
-            foreach (array_filter(array_map(static fn (mixed $directory): string => $package.'/'.(\is_string($directory) ? $directory : ''), (array) $directories), is_dir(...)) as $directory) {
-                foreach (Finder::create()->files()->in($directory)->name('*.php') as $file) {
-                    $class = $prefix.strtr(substr($file->getRelativePathname(), 0, -\strlen('.php')), '/', '\\');
-                    $owner = is_subclass_of($class, Owner::class) && $services->has($class) ? $services->get($class) : null;
-                    foreach ($owner instanceof Owner ? $owner->settingFields() : [] as $field) {
-                        $fields[$field->name] = true;
-                    }
-                }
-            }
-        }
-
-        return $fields;
     }
 }
