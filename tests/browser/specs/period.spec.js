@@ -7,7 +7,7 @@ test('[ACMS-TEST-0016][ACMS-UI-0012] a period field change redraws the page in p
     test.setTimeout(900000);
 
     const form = page.locator(PERIOD).first();
-    await crawl(page, '/admin', [], { ...WALK, stop: async () => await form.count() > 0 });
+    await crawl(page, '/admin', [], { ...WALK, visit: async () => await form.count() > 0 });
     expect(await form.count(), 'the admin walk meets no page period').toBeGreaterThan(0);
 
     const scale = form.locator('select[name="scale"]');

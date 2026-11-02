@@ -1,53 +1,7 @@
+const { expect } = require('@playwright/test');
+
 const UNSHAPED = /(^|_)(sort|order|page)$|^(year|month|from|to)$/;
 const DOWNLOAD = 'Download is starting';
-
-const measure = () => {
-    const width = document.documentElement.clientWidth;
-    const scrolled = (el) => {
-        for (let node = el.parentElement; node; node = node.parentElement) {
-            if (getComputedStyle(node).overflowX !== 'visible') {
-                return true;
-            }
-        }
-        return false;
-    };
-    const outside = [...document.querySelectorAll('body *')]
-        .filter((el) => el.getClientRects().length > 0)
-        .filter((el) => Math.round(el.getBoundingClientRect().right) > width + 1)
-        .filter((el) => !scrolled(el))
-        .map((el) => `${el.tagName.toLowerCase()}.${(el.className || '').toString().split(' ')[0]}`);
-
-    const stretched = [...document.querySelectorAll('input[type="radio"], input[type="checkbox"]')]
-        .filter((el) => el.getClientRects().length > 0)
-        .filter((el) => {
-            const box = el.getBoundingClientRect();
-
-            return box.width > 32 || box.height > 32;
-        })
-        .map((el) => `${el.type}[${el.name || '—'}]`);
-
-    const cells = [...document.querySelectorAll('td, th')]
-        .filter((el) => el.getClientRects().length > 0)
-        .filter((el) => getComputedStyle(el).display !== 'table-cell')
-        .map((el) => `${el.tagName.toLowerCase()}.${(el.className || '').toString().split(' ')[0]}`);
-
-    const counted = new Map();
-    document.querySelectorAll('[id]').forEach((el) => counted.set(el.id, (counted.get(el.id) ?? 0) + 1));
-
-    const logo = document.querySelector('.header-logo');
-    const column = [...document.querySelectorAll('.panel-sidebar .nav-item, .panel-content > *')]
-        .find((el) => el.getClientRects().length > 0);
-    const left = column?.getBoundingClientRect().left ?? 0;
-
-    return {
-        edge: logo && left > 0 ? Math.round(left - logo.getBoundingClientRect().left) : 0,
-        repeated: [...counted].filter(([, count]) => count > 1).map(([id]) => id).slice(0, 4),
-        overflow: document.documentElement.scrollWidth - width,
-        outside: [...new Set(outside)].slice(0, 4),
-        stretched: [...new Set(stretched)].slice(0, 4),
-        cells: [...new Set(cells)].slice(0, 4),
-    };
-};
 
 const links = () => [...document.querySelectorAll('a[href^="/"], [data-href^="/"]')]
     .map((el) => el.getAttribute('href') ?? el.getAttribute('data-href'))
@@ -83,7 +37,7 @@ const WALK = {
     skip: ['/logout', '/login', '_switch_user'],
 };
 
-const crawl = async (page, seed, faults, { limit, skip, stop = async () => false }) => {
+const crawl = async (page, seed, faults, { limit, skip, visit = async () => false }) => {
     const wanted = (href) => !skip.some((mark) => href.includes(mark));
     const queue = [seed];
     const seen = new Map();
@@ -120,29 +74,7 @@ const crawl = async (page, seed, faults, { limit, skip, stop = async () => false
 
             await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
 
-            const facts = await page.evaluate(measure);
-
-            if (facts.overflow > 0 || facts.outside.length > 0) {
-                faults.push(`${path}: +${facts.overflow}px ${facts.outside.join(', ')}`);
-            }
-
-            if (facts.edge !== 0) {
-                faults.push(`${path}: column ${facts.edge}px off the logo`);
-            }
-
-            if (facts.stretched.length > 0) {
-                faults.push(`${path}: stretched switch — ${facts.stretched.join(', ')}`);
-            }
-
-            if (facts.cells.length > 0) {
-                faults.push(`${path}: table cell out of the cell role — ${facts.cells.join(', ')}`);
-            }
-
-            if (facts.repeated.length > 0) {
-                faults.push(`${path}: repeated id — ${facts.repeated.join(', ')}`);
-            }
-
-            if (await stop(page)) {
+            if (await visit(page, path)) {
                 break;
             }
 
@@ -167,4 +99,41 @@ const records = async (page) => {
         .evaluateAll((found) => found.map((el) => el.getAttribute('data-href') ?? el.getAttribute('href'))))];
 };
 
-module.exports = { WALK, crawl, measure, records };
+const impersonate = async (page) => {
+    const served = await records(page);
+    expect(served.length, 'the admin lists no records').toBeGreaterThan(0);
+
+    for (const record of served) {
+        await page.goto(record, { waitUntil: 'domcontentloaded' });
+        const switcher = page.locator('a[href*="_switch_user="]');
+
+        if (await switcher.count() === 0) {
+            continue;
+        }
+        await switcher.first().click();
+
+        if (await page.locator('.impersonate-bar').isVisible()) {
+            return new URL(page.url()).pathname;
+        }
+    }
+
+    throw new Error('no record lets the operator in — the cabinet is not walked');
+};
+
+const walk = async (page, faults, visit) => {
+    const operator = await crawl(page, '/admin', faults, { ...WALK, visit });
+    expect.soft(operator, 'the admin walk does not reach record cards')
+        .toEqual(expect.arrayContaining(['/admin/users/*']));
+
+    const home = await impersonate(page);
+    const cabinet = await crawl(page, home, faults, { ...WALK, visit });
+    await page.goto(home, { waitUntil: 'domcontentloaded' });
+    await page.locator('.impersonate-exit').click();
+    await expect(page.locator('.impersonate-bar'), 'the impersonation ends').toHaveCount(0);
+
+    expect.soft(cabinet.length, 'the cabinet walk does not leave its home').toBeGreaterThan(1);
+    expect.soft(Math.max(operator.length, cabinet.length),
+        'the walk hits its limit — part of the screens stays unseen').toBeLessThan(WALK.limit);
+};
+
+module.exports = { WALK, crawl, walk };

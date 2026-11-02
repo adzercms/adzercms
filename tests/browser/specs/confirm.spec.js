@@ -22,7 +22,7 @@ test('[ACMS-TEST-0016][ACMS-TEST-0018][ACMS-UI-0026] an irreversible action wait
     test.setTimeout(900000);
 
     const asking = page.locator(ASKING).first();
-    await crawl(page, '/admin', [], { ...WALK, stop: async () => await asking.count() > 0 });
+    await crawl(page, '/admin', [], { ...WALK, visit: async () => await asking.count() > 0 });
     expect(await asking.count(), 'the admin walk meets no irreversible action').toBeGreaterThan(0);
 
     const { action, question } = await asking.evaluate((button) => ({
