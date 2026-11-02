@@ -117,8 +117,9 @@ final class BankTransferTest extends SchemaTestCase
         self::assertSame(['/admin/transfers/'.$awaiting->getNumber()], $list->filter('.row-actions button')->each(static fn (Crawler $button): ?string => $button->attr('hx-get')), 'the row confirms by its button');
         self::assertSame(['payer-1'], self::comments($this->client->request('GET', '/admin/transfers?status=cancelled')));
 
-        $this->post('/admin/transfers/'.$late->getNumber(), ['amount' => '0']);
-        self::assertResponseStatusCodeSame(422);
+        $refused = $this->post('/admin/transfers/'.$late->getNumber(), ['amount' => '0']);
+        self::assertResponseIsSuccessful('the dialog swaps in with its refusal');
+        self::assertSame(self::phrase('bank_transfer.confirm.positive'), trim($refused->filter('.flash-error')->text()));
 
         $this->post('/admin/transfers/'.$late->getNumber(), ['amount' => '300']);
         self::assertResponseStatusCodeSame(204);

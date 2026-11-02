@@ -104,7 +104,6 @@ final class TransferController extends AbstractController
         return $this->render(
             '@BankTransfer/admin/_transfer.html.twig',
             ['payment' => $payment, 'comment' => $comment, 'amount' => $amount, 'error' => $error],
-            new Response(status: null === $error ? Response::HTTP_OK : Response::HTTP_UNPROCESSABLE_ENTITY),
         );
     }
 
