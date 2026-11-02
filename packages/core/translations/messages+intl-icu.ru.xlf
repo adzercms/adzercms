@@ -82,7 +82,7 @@
     <unit id="core.bot.linked">
       <segment>
         <source>core.bot.linked</source>
-        <target>Бот подключён к записи: оповещения придут сюда</target>
+        <target>Бот подключён к записи: уведомления придут сюда</target>
       </segment>
     </unit>
     <unit id="core.bot.token">
@@ -934,7 +934,7 @@
     <unit id="core.notice.mail_verify.body">
       <segment>
         <source>core.notice.mail_verify.body</source>
-        <target>Письма {brand} на почту {contact} возвращались недоставленными. Подтвердите, что почта принимает письма: оповещения снова пойдут на неё.</target>
+        <target>Письма {brand} на почту {contact} возвращались недоставленными. Подтвердите, что почта принимает письма: уведомления снова пойдут на неё.</target>
       </segment>
     </unit>
     <unit id="core.notice.mail_verify.note">
@@ -1276,7 +1276,7 @@
     <unit id="core.setting.notice_keep_days">
       <segment>
         <source>core.setting.notice_keep_days</source>
-        <target>Хранить оповещения, дней</target>
+        <target>Хранить уведомления, дней</target>
       </segment>
     </unit>
     <unit id="core.setting.notice_quiet_from">
@@ -1354,7 +1354,7 @@
     <unit id="core.setting.tab.mail">
       <segment>
         <source>core.setting.tab.mail</source>
-        <target>Почта и оповещения</target>
+        <target>Почта и уведомления</target>
       </segment>
     </unit>
     <unit id="core.setting.theme">

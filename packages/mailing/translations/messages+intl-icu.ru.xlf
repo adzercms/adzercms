@@ -58,7 +58,7 @@
     <unit id="mailing.empty">
       <segment>
         <source>mailing.empty</source>
-        <target>Нет оповещений</target>
+        <target>Нет уведомлений</target>
       </segment>
     </unit>
     <unit id="mailing.event.broadcast">
@@ -136,7 +136,7 @@
     <unit id="mailing.menu.notices">
       <segment>
         <source>mailing.menu.notices</source>
-        <target>Оповещения</target>
+        <target>Уведомления</target>
       </segment>
     </unit>
     <unit id="mailing.notice.cabinet">
@@ -190,7 +190,7 @@
     <unit id="mailing.title">
       <segment>
         <source>mailing.title</source>
-        <target>Оповещения</target>
+        <target>Уведомления</target>
       </segment>
     </unit>
     <unit id="mailing.unconfigured">

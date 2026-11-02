@@ -376,7 +376,7 @@
     <unit id="cabinet.notices.bot_unlink_confirm">
       <segment>
         <source>cabinet.notices.bot_unlink_confirm</source>
-        <target>Отключить {bot}? Оповещения этим каналом приходить перестанут.</target>
+        <target>Отключить {bot}? Уведомления этим каналом приходить перестанут.</target>
       </segment>
     </unit>
     <unit id="cabinet.notices.none">
@@ -400,13 +400,13 @@
     <unit id="cabinet.notices.saved">
       <segment>
         <source>cabinet.notices.saved</source>
-        <target>Каналы оповещений сохранены</target>
+        <target>Каналы уведомлений сохранены</target>
       </segment>
     </unit>
     <unit id="cabinet.notices.title">
       <segment>
         <source>cabinet.notices.title</source>
-        <target>Каналы оповещений</target>
+        <target>Каналы уведомлений</target>
       </segment>
     </unit>
     <unit id="cabinet.password.change">
@@ -520,7 +520,7 @@
     <unit id="cabinet.profile.tab.notices">
       <segment>
         <source>cabinet.profile.tab.notices</source>
-        <target>Оповещения</target>
+        <target>Уведомления</target>
       </segment>
     </unit>
     <unit id="cabinet.profile.tab.security">
@@ -844,13 +844,13 @@
     <unit id="cabinet.verify.done">
       <segment>
         <source>cabinet.verify.done</source>
-        <target>Почта подтверждена, оповещения снова идут на неё</target>
+        <target>Почта подтверждена, уведомления снова идут на неё</target>
       </segment>
     </unit>
     <unit id="cabinet.verify.hint">
       <segment>
         <source>cabinet.verify.hint</source>
-        <target>Письмо со ссылкой дошло: после подтверждения оповещения снова пойдут на эту почту.</target>
+        <target>Письмо со ссылкой дошло: после подтверждения уведомления снова пойдут на эту почту.</target>
       </segment>
     </unit>
     <unit id="cabinet.verify.title">
