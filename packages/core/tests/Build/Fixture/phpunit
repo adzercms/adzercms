@@ -1,0 +1,4 @@
+#!/bin/sh
+here=$(pwd -P)
+printf 'copy phpunit %s\n' "$*" >> "${here%/var/verify}/calls"
+printf 'OK (1 test, 1 assertion)\n'

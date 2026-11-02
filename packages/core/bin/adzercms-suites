@@ -1,0 +1,16 @@
+#!/bin/sh
+set -u
+
+# shellcheck disable=SC2046
+[ $# -gt 0 ] || set -- $(grep -o '<testsuite name="[^"]*"' phpunit.dist.xml | cut -d'"' -f2)
+
+failed=0
+for suite; do
+    if out=$(bin/phpunit --colors=never --testsuite "$suite" 2>&1); then
+        printf '%s: %s\n' "$suite" "$(printf '%s\n' "$out" | grep '^OK' | tail -n 1)"
+    else
+        failed=1
+        printf '%s: failed\n%s\n' "$suite" "$out"
+    fi
+done
+exit "$failed"

@@ -98,10 +98,7 @@ jobs:
     steps:
       - *checkout
       - *composer
-      - run: |
-          for suite in $(sed -n 's/.*<testsuite name="\([^"]*\)".*/\1/p' phpunit.dist.xml); do
-            bin/phpunit --testsuite "$suite"
-          done
+      - run: packages/core/bin/adzercms-suites
 
   passed:
     needs: [static, tests]

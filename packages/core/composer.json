@@ -87,6 +87,7 @@
         "bin/adzercms-package-routes",
         "bin/adzercms-pre-commit",
         "bin/adzercms-refresh",
+        "bin/adzercms-suites",
         "bin/adzercms-verify"
     ],
     "extra": {
