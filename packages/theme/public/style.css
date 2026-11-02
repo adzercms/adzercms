@@ -1115,7 +1115,7 @@ html:has(dialog[open]:modal) { overflow: hidden; }
 
 .modal-header h2 { margin: 0; }
 .modal-body { flex: 1 1 auto; padding: 1.25rem; overflow-y: auto; overscroll-behavior: contain; }
-.modal-body .fields { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+.modal-body .fields { grid-template-columns: 1fr; }
 .modal-body .fields label { max-width: none; }
 
 .countdown {
