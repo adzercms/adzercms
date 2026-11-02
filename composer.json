@@ -146,8 +146,9 @@
         }
     },
     "scripts": {
-        "post-install-cmd": ["@importmap"],
-        "post-update-cmd": ["@importmap"],
+        "post-install-cmd": ["@drop-caches", "@importmap"],
+        "post-update-cmd": ["@drop-caches", "@importmap"],
+        "drop-caches": "rm -rf var/cache",
         "importmap": "for map in vendor/adzercms/*/importmap.php; do \"$PHP_BINARY\" vendor/bin/adzercms-package-console \"$(dirname \"$map\")\" importmap:install --env=dev || exit 1; done"
     }
 }
