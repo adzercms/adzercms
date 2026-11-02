@@ -182,7 +182,7 @@ const polling = element => (element?.getAttribute('hx-trigger') ?? '').includes(
 let approved = null;
 let sending = new WeakSet();
 
-const ask =(question, agreed, declined = () => {}) => {
+const ask = (question, agreed, declined = () => {}) => {
     const dialog = document.getElementById('confirm');
 
     dialog.querySelector('[data-confirm-text]').textContent = question;
