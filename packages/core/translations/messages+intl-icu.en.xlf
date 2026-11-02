@@ -451,6 +451,12 @@
         <target>Admin</target>
       </segment>
     </unit>
+    <unit id="core.kind.ads">
+      <segment>
+        <source>core.kind.ads</source>
+        <target>Ad platform</target>
+      </segment>
+    </unit>
     <unit id="core.kind.analytics">
       <segment>
         <source>core.kind.analytics</source>

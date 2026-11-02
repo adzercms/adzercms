@@ -2,7 +2,7 @@
 
 English | [Русский](modules.ru.md)
 
-A module is a Composer package of type `adzercms-module` with a Symfony bundle. Some modules add features to the site, others provide a replaceable part: the admin panel, the customer account area, the theme, sign-in with a service, SMS delivery, a messenger bot, captcha, an analytics counter.
+A module is a Composer package of type `adzercms-module` with a Symfony bundle. Some modules add features to the site, others provide a replaceable part: the admin panel, the customer account area, the theme, sign-in with a service, SMS delivery, a messenger bot, captcha, an analytics counter, an ad platform.
 
 ## Enable a module
 
@@ -30,6 +30,7 @@ The module name is the bundle class name without `Bundle`: for `ShopBundle` it's
 | `BOT_MODULES` | messenger bots | several |
 | `CAPTCHA_MODULES` | captcha | several |
 | `ANALYTICS_MODULES` | analytics counters | several |
+| `ADS_MODULES` | ad platforms | several |
 
 Separate several modules with commas. Feature modules can add their own kinds with their own variables.
 

@@ -63,22 +63,53 @@ final class Switches implements Owner
     {
         $enabled = [];
         foreach ($this->keyed() as $key => [$prefix, $module]) {
-            if (!$module instanceof $contract || !$this->settings->on($prefix.self::ENABLED)) {
-                continue;
+            if ($module instanceof $contract && null !== $credentials = $this->credentials($prefix, $module)) {
+                $enabled[$key] = [$module, $credentials];
             }
-
-            $values = [];
-            foreach ($module->credentials() as $field) {
-                $values[$field->name] = $this->settings->get($prefix.$field->name);
-                if ($field->required && '' === $values[$field->name]) {
-                    continue 2;
-                }
-            }
-
-            $enabled[$key] = [$module, new Credentials($values)];
         }
 
         return $enabled;
+    }
+
+    /**
+     * @template T of object
+     *
+     * @param iterable<T> $services
+     *
+     * @return array<string, array{T, Credentials}>
+     */
+    public function owned(iterable $services): array
+    {
+        $owned = [];
+        foreach ($services as $service) {
+            $owned[Registry::lowerKey($this->bundles->owner($service))] = $service;
+        }
+
+        $enabled = [];
+        foreach ($this->keyed() as $key => [$prefix, $module]) {
+            if (isset($owned[$key]) && null !== $credentials = $this->credentials($prefix, $module)) {
+                $enabled[$key] = [$owned[$key], $credentials];
+            }
+        }
+
+        return $enabled;
+    }
+
+    private function credentials(string $prefix, Switchable $module): ?Credentials
+    {
+        if (!$this->settings->on($prefix.self::ENABLED)) {
+            return null;
+        }
+
+        $values = [];
+        foreach ($module->credentials() as $field) {
+            $values[$field->name] = $this->settings->get($prefix.$field->name);
+            if ($field->required && '' === $values[$field->name]) {
+                return null;
+            }
+        }
+
+        return new Credentials($values);
     }
 
     public function setting(Switchable $module, Field $field): Field

@@ -451,6 +451,12 @@
         <target>Админка</target>
       </segment>
     </unit>
+    <unit id="core.kind.ads">
+      <segment>
+        <source>core.kind.ads</source>
+        <target>Рекламная площадка</target>
+      </segment>
+    </unit>
     <unit id="core.kind.analytics">
       <segment>
         <source>core.kind.analytics</source>
