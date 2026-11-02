@@ -17,6 +17,8 @@ if [ $# -eq 0 ]; then
     set -- "$copy"
 fi
 
+mkdir -p "$1/var"
+ln -sfn "$(pwd -P)/var/tests.lock" "$1/var/tests.lock"
 cd "$1"
 bin/php bin/console importmap:install --no-interaction --env=test
 vendor/bin/adzercms-check

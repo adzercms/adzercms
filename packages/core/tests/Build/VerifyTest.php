@@ -51,7 +51,7 @@ final class VerifyTest extends TestCase
         self::assertStringContainsString('install --working-dir='.$this->root.'/var/verify --no-scripts', $calls[0]);
         self::assertSame('copy bin/console importmap:install --no-interaction --env=test', $calls[1], 'the copy takes the importmap packages of the test environment');
         self::assertSame(
-            ['./.env.test.local', './bin', './bin/php', './bin/phpunit', './composer.lock', './phpunit.dist.xml', './public', './src', './src/Kernel.php', './vendor', './vendor/bin', './vendor/bin/adzercms-check'],
+            ['./.env.test.local', './bin', './bin/php', './bin/phpunit', './composer.lock', './phpunit.dist.xml', './public', './src', './src/Kernel.php', './var', './var/tests.lock', './vendor', './vendor/bin', './vendor/bin/adzercms-check'],
             file($this->root.'/copied', \FILE_IGNORE_NEW_LINES),
             'the copy is the tree without its environment, state and built static',
         );
@@ -77,6 +77,22 @@ final class VerifyTest extends TestCase
 
         self::assertSame(1, $reinstalled('--working-dir='.$this->root.'/var/verify '), 'the copy reinstalls the package of the changed patch for its check');
         self::assertSame(null === $refusal ? 1 : 0, $reinstalled(''), 'the live tree reinstalls it only after the check');
+    }
+
+    #[Group('ACMS-CORE-1022')]
+    #[Group('ACMS-TEST-0023')]
+    public function testSuitesOfCopyShareLockOfLiveTreeRuns(): void
+    {
+        $run = fopen($this->root.'/var/tests.lock', 'c') ?: self::fail('the run of the live tree takes no lock');
+        flock($run, \LOCK_EX);
+
+        try {
+            $calls = $this->refresh(null);
+        } finally {
+            fclose($run);
+        }
+
+        self::assertContains('copy lock busy', $calls, 'the suites of the copy run past the lock of the live tree');
     }
 
     /** @return iterable<string, array{?string}> */
