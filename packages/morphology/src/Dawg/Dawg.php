@@ -122,11 +122,17 @@ final readonly class Dawg
         return self::uint32($this->data, 4 + 4 * $index);
     }
 
+    /**
+     * @return int<0, 255>
+     */
     private function child(int $index): int
     {
         return \ord($this->data[$this->guide + 2 * $index]);
     }
 
+    /**
+     * @return int<0, 255>
+     */
     private function sibling(int $index): int
     {
         return \ord($this->data[$this->guide + 2 * $index + 1]);
