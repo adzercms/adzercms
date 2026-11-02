@@ -83,6 +83,8 @@ php=$(staged --diff-filter=ACM -- '*.php' bin/console public/index.php)
 for added in $(staged --diff-filter=AR -- '*/migrations/*.php'); do
     [ "$( { git ls-files -- '*/migrations/*.php'; find vendor -path '*/migrations/Version*.php'; } | grep -c "/$(basename "$added")$")" -le 1 ] \
         || refuse 'migration version is taken by another set' "$added"
+    git show ":./$added" | grep -qE "^(final )?class $(basename "$added" .php) " \
+        || refuse 'migration class is named by its file' "$added"
 done
 
 for changed in $(staged --diff-filter=M -- '*/migrations/*.php'); do
