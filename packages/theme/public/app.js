@@ -301,10 +301,189 @@ document.addEventListener('htmx:afterSwap', event => {
     (field ?? event.target).focus();
 });
 
+const UPLOAD_KEY = '_uploads[]';
+const uploads = new Map();
+const waiting = new Map();
+let opener = null;
+
+const busy = form => [...uploads.keys()].some(input => input.form === form);
+
+const mirror = form => {
+    const entry = waiting.get(form);
+    if (entry?.bar) {
+        const values = [...uploads.keys()].filter(input => input.form === form).map(input => input.parentElement.querySelector('.file-progress').value);
+        entry.bar.value = Math.min(100, ...values);
+    }
+};
+
+const send = form => {
+    const entry = waiting.get(form);
+    waiting.delete(form);
+    entry.row?.remove();
+    if (form.checkValidity()) {
+        form.addEventListener('htmx:afterRequest', () => entry.holder?.remove(), {once: true});
+        form.requestSubmit(entry.submitter);
+
+        return;
+    }
+
+    running(false);
+    if (entry.holder) {
+        const record = document.getElementById('record');
+        record.replaceChildren(...entry.holder.childNodes);
+        entry.holder.remove();
+        record.showModal();
+    }
+    form.reportValidity();
+};
+
+const settle = () => {
+    for (const form of waiting.keys()) {
+        if (!busy(form)) {
+            send(form);
+        }
+    }
+};
+
+const pendingRow = form => {
+    const scope = opener?.closest('main') ?? document.querySelector('main') ?? document.body;
+    const label = form.querySelector('input[type="text"]')?.value
+        || [...form.querySelectorAll('.file-names')].map(names => names.textContent).filter(Boolean).join(', ');
+    const bar = Object.assign(document.createElement('progress'), {max: 100, value: 0});
+    const body = scope.querySelector('table tbody');
+    const row = document.createElement(body ? 'tr' : 'p');
+    const place = body ? row.appendChild(Object.assign(document.createElement('td'), {colSpan: body.closest('table').tHead?.rows[0]?.cells.length ?? 1})) : row;
+    place.append(Object.assign(document.createElement('strong'), {textContent: label}), bar);
+    row.className = 'pending-row';
+    if (body) {
+        body.prepend(row);
+    } else {
+        const empty = scope.querySelector('.empty-state');
+        empty ? empty.before(row) : scope.prepend(row);
+    }
+
+    return {row, bar};
+};
+
+const fail = input => {
+    input.setCustomValidity(input.parentElement.dataset.failed);
+    if (!waiting.has(input.form)) {
+        input.reportValidity();
+    }
+};
+
+const pick = input => {
+    const field = input.parentElement;
+    const progress = field.querySelector('.file-progress');
+    const files = [...input.files];
+
+    field.querySelector('.file-names').textContent = files.map(file => file.name).join(', ');
+    input.dataset.name ??= input.name;
+    input.removeAttribute('name');
+    input.setCustomValidity('');
+    field.querySelectorAll(`input[name="${UPLOAD_KEY}"]`).forEach(key => key.remove());
+    uploads.get(input)?.forEach(request => request.abort());
+    uploads.delete(input);
+    progress.value = 0;
+    progress.hidden = files.length === 0;
+    if (files.length === 0) {
+        settle();
+
+        return;
+    }
+
+    const total = files.reduce((sum, file) => sum + file.size, 0) || 1;
+    const loaded = files.map(() => 0);
+    let left = files.length;
+    const requests = files.map((file, index) => {
+        const request = new XMLHttpRequest();
+        const body = new FormData();
+        body.append('_token', input.form.elements._token?.value ?? '');
+        body.append('field', input.dataset.name);
+        body.append('file', file);
+        request.responseType = 'json';
+        request.upload.addEventListener('progress', event => {
+            loaded[index] = event.loaded;
+            progress.value = Math.round(loaded.reduce((sum, part) => sum + part, 0) * 100 / total);
+            mirror(input.form);
+        });
+        request.addEventListener('load', () => {
+            if (request.status === 200 && request.response?.key) {
+                field.append(Object.assign(document.createElement('input'), {type: 'hidden', name: UPLOAD_KEY, value: request.response.key}));
+            } else {
+                fail(input);
+            }
+        });
+        request.addEventListener('error', () => fail(input));
+        request.addEventListener('loadend', () => {
+            left -= 1;
+            if (left === 0 && uploads.get(input) === requests) {
+                uploads.delete(input);
+                progress.hidden = true;
+                settle();
+            }
+        });
+        request.open('POST', field.dataset.upload);
+        request.send(body);
+
+        return request;
+    });
+    uploads.set(input, requests);
+};
+
 document.addEventListener('change', event => {
-    const names = event.target.matches('.file-field > input[type="file"]') && event.target.parentElement.querySelector('.file-names');
-    if (names) {
-        names.textContent = [...event.target.files].map(file => file.name).join(', ');
+    if (event.target.matches('.file-field > input[type="file"]')) {
+        pick(event.target);
+    }
+});
+
+document.addEventListener('submit', event => {
+    const form = event.target;
+    const question = event.submitter?.dataset.confirm ?? form.dataset.confirm;
+    if (!busy(form) || (question && approved !== form)) {
+        return;
+    }
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if (waiting.has(form)) {
+        return;
+    }
+
+    const record = form.closest('#record');
+    if (!record) {
+        waiting.set(form, {submitter: event.submitter});
+        running(true);
+
+        return;
+    }
+
+    const holder = Object.assign(document.createElement('div'), {hidden: true});
+    document.body.append(holder);
+    holder.append(...record.childNodes);
+    record.close();
+    waiting.set(form, {submitter: event.submitter, holder, ...pendingRow(form)});
+    mirror(form);
+}, true);
+
+document.addEventListener('close', event => {
+    for (const [input, requests] of uploads) {
+        if (event.target.contains(input)) {
+            requests.forEach(request => request.abort());
+            uploads.delete(input);
+        }
+    }
+}, true);
+
+document.addEventListener('htmx:beforeRequest', event => {
+    if (event.detail.target?.id === 'record' && !event.detail.elt.closest('#record')) {
+        opener = event.detail.elt;
+    }
+});
+
+window.addEventListener('beforeunload', event => {
+    if (waiting.size > 0 || [...uploads.keys()].some(input => input.isConnected)) {
+        event.preventDefault();
     }
 });
 

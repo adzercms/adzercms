@@ -55,6 +55,7 @@ return static function (ContainerConfigurator $container): void {
     $services->load('AdzerCMS\\Core\\Setting\\', '../src/Setting/');
     $services->load('AdzerCMS\\Core\\Text\\', '../src/Text/');
     $services->load('AdzerCMS\\Core\\Ui\\', '../src/Ui/');
+    $services->load('AdzerCMS\\Core\\Upload\\', '../src/Upload/');
     $services->set(Repositories::CLIENT, RetryableHttpClient::class)
         ->args([new Reference('http_client'), (new Definition(GenericRetryStrategy::class))->setArgument('$delayMs', 0), Repositories::RETRIES]);
     $services->set(Repositories::class)->arg('$httpClient', new Reference(Repositories::CLIENT));

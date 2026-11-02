@@ -55,6 +55,12 @@
         <target>Choose files</target>
       </segment>
     </unit>
+    <unit id="theme.file.failed">
+      <segment>
+        <source>theme.file.failed</source>
+        <target>The file didn't upload, pick it again</target>
+      </segment>
+    </unit>
     <unit id="theme.impersonate_exit">
       <segment>
         <source>theme.impersonate_exit</source>

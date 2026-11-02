@@ -9,13 +9,14 @@ use AdzerCMS\Core\Confirmation\ConfirmationService;
 use AdzerCMS\Core\Kernel;
 use AdzerCMS\Core\Notice\Journal;
 use AdzerCMS\Core\Session\Logins;
+use AdzerCMS\Core\Upload\Uploads;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 
-#[AsCommand(name: 'adzercms:sweep', description: 'Core cleanup: expired logins of the registry, notices past the journal term, expired confirmations, cache builds of former module sets; applies mail changes past their delay')]
+#[AsCommand(name: 'adzercms:sweep', description: 'Core cleanup: expired logins of the registry, notices past the journal term, expired confirmations, uploads past their term, cache builds of former module sets; applies mail changes past their delay')]
 final class SweepCommand
 {
     public function __construct(
@@ -23,6 +24,7 @@ final class SweepCommand
         private readonly Journal $journal,
         private readonly Confirmations $confirmations,
         private readonly ConfirmationService $changes,
+        private readonly Uploads $uploads,
         #[Autowire(service: 'kernel')]
         private readonly Kernel $kernel,
     ) {
@@ -34,6 +36,7 @@ final class SweepCommand
         $output->writeln(\sprintf('notices removed: %d', $this->journal->sweep()));
         $output->writeln(\sprintf('confirmations removed: %d', $this->confirmations->sweep()));
         $output->writeln(\sprintf('mail changes applied: %d', $this->changes->applyDelayed()));
+        $output->writeln(\sprintf('uploads removed: %d', $this->uploads->sweep()));
 
         $current = $this->kernel->currentBuilds();
         $builds = 0;
