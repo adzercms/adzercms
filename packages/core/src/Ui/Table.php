@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Ui;
 
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\AST\JoinAssociationDeclaration;
+use Doctrine\ORM\Query\AST\PathExpression;
 use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
@@ -271,27 +272,69 @@ final class Table
         if (!$multiplied) {
             $query->setHint(CountWalker::HINT_DISTINCT, false);
         }
+        $collection = $multiplied && !self::grouped($query);
 
-        $page = (new OffsetPaginator($multiplied, $multiplied ? null : false))->paginate($query, new Window($this->offset(), $this->size));
+        $page = (new OffsetPaginator($collection, $multiplied ? null : false))->paginate($query, new Window($this->offset(), $this->size));
         $this->total = $page->getTotalCount();
 
         return $page->getItems();
     }
 
-    /** @param Query<mixed, mixed> $query */
-    private static function multiplied(Query $query): bool
+    /**
+     * @param Query<mixed, mixed> $query
+     *
+     * @return array{string, class-string, mixed[]}|null
+     */
+    private static function root(Query $query): ?array
     {
         $statement = $query->getAST();
         $declarations = $statement instanceof SelectStatement ? $statement->fromClause->identificationVariableDeclarations : [];
-        $root = 1 === \count($declarations) ? $declarations[0]->rangeVariableDeclaration : null;
-        if (null === $root || !class_exists($root->abstractSchemaName)) {
+        $range = 1 === \count($declarations) ? $declarations[0]->rangeVariableDeclaration : null;
+        if (null === $range || !class_exists($range->abstractSchemaName)) {
+            return null;
+        }
+
+        return [$range->aliasIdentificationVariable, $range->abstractSchemaName, $declarations[0]->joins];
+    }
+
+    /** @param Query<mixed, mixed> $query */
+    private static function grouped(Query $query): bool
+    {
+        $statement = $query->getAST();
+        $root = self::root($query);
+        if (null === $root || !$statement instanceof SelectStatement || null === $statement->groupByClause) {
+            return false;
+        }
+
+        [$alias, $class] = $root;
+        $identifier = $query->getEntityManager()->getClassMetadata($class)->getIdentifierFieldNames();
+        $fields = [];
+        foreach ($statement->groupByClause->groupByItems as $item) {
+            if ($alias === $item) {
+                $fields = [...$fields, ...$identifier];
+            } elseif ($item instanceof PathExpression && $alias === $item->identificationVariable) {
+                $fields[] = $item->field;
+            } else {
+                return false;
+            }
+        }
+
+        return [] === array_diff($identifier, $fields);
+    }
+
+    /** @param Query<mixed, mixed> $query */
+    private static function multiplied(Query $query): bool
+    {
+        $root = self::root($query);
+        if (null === $root) {
             return true;
         }
 
+        [$alias, $class, $joins] = $root;
         $manager = $query->getEntityManager();
-        $classes = [$root->aliasIdentificationVariable => $root->abstractSchemaName];
+        $classes = [$alias => $class];
 
-        foreach ($declarations[0]->joins as $join) {
+        foreach ($joins as $join) {
             $association = $join->joinAssociationDeclaration;
             if (!$association instanceof JoinAssociationDeclaration) {
                 return true;

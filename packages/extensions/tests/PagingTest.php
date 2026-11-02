@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 final class PagingTest extends CatalogTestCase
 {
     #[Group('ACMS-UI-0014')]
+    #[Group('ACMS-UI-0093')]
     #[DataProvider('joins')]
     /** @param \Closure(ExtensionRepository, Table): list<Extension> $listing */
     public function testListingPagesAndCountsByItsJoins(\Closure $listing, int $statements, bool $distinct): void
@@ -45,5 +46,8 @@ final class PagingTest extends CatalogTestCase
     {
         yield 'collection' => [static fn (ExtensionRepository $extensions, Table $table): array => $extensions->published($table), 3, true];
         yield 'single records' => [static fn (ExtensionRepository $extensions, Table $table): array => $extensions->page($table), 2, false];
+        yield 'grouped by the root' => [static fn (ExtensionRepository $extensions, Table $table): array => $table->paginate(
+            $extensions->createQueryBuilder('e')->leftJoin('e.categories', 'c')->groupBy('e.id')->orderBy('e.name')->getQuery(),
+        ), 2, false];
     }
 }

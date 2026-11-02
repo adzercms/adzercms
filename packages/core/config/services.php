@@ -21,6 +21,7 @@ use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Module\Tree;
 use AdzerCMS\Core\Notice\Bounces;
 use AdzerCMS\Core\Schema\MigrationOrder;
+use AdzerCMS\Core\Schema\SqlMode;
 use DirectoryTree\ImapEngine\MailboxInterface;
 use PhpTuf\ComposerStager\API\Core\BeginnerInterface;
 use PhpTuf\ComposerStager\API\Process\Service\ComposerProcessRunnerInterface;
@@ -72,6 +73,10 @@ return static function (ContainerConfigurator $container): void {
     $services->set(PreviewMark::class);
     $services->set(MigrationOrder::class);
     $services->set(CssInlinerExtension::class);
+    if ('test' === $container->env()) {
+        $container->parameters()->set('env('.SqlMode::ENV.')', '');
+        $services->set(SqlMode::class)->arg('$mode', '%env('.SqlMode::ENV.')%')->tag('doctrine.middleware');
+    }
 
     $stager = \dirname((string) (new ReflectionClass(BeginnerInterface::class))->getFileName(), 3);
     $services->load('PhpTuf\\ComposerStager\\', $stager.'/*')
