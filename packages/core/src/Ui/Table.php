@@ -229,7 +229,9 @@ final class Table
 
         foreach ($this->filters as $filter) {
             $value = $this->value($filter->name);
-            if (null !== $filter->field && '' !== $value) {
+            if (null !== $filter->field && '' !== $value && null !== $filter->filled) {
+                $conditions[] = \sprintf('%s IS %sNULL', $filter->field, $filter->filled === $value ? 'NOT ' : '');
+            } elseif (null !== $filter->field && '' !== $value) {
                 $parameter = 'filter_'.preg_replace('/\W/', '_', $filter->name);
                 $conditions[] = \sprintf('%s = :%s', $filter->field, $parameter);
                 $parameters[$parameter] = $value;

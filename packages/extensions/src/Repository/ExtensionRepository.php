@@ -9,7 +9,6 @@ use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\Entity\Extension;
 use AdzerCMS\Extensions\Entity\ExtensionAuthor;
-use AdzerCMS\Extensions\ExtensionPrice;
 use AdzerCMS\Extensions\ExtensionState;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -84,11 +83,7 @@ class ExtensionRepository extends ServiceEntityRepository
             $builder->innerJoin('e.categories', 'f', Join::WITH, 'f.category = :category')->setParameter('category', $category);
         }
 
-        return match (ExtensionPrice::tryFrom($table->value('price'))) {
-            ExtensionPrice::Free => $builder->andWhere('e.price IS NULL'),
-            ExtensionPrice::Paid => $builder->andWhere('e.price IS NOT NULL'),
-            null => $builder,
-        };
+        return $builder;
     }
 
     private function shown(): QueryBuilder

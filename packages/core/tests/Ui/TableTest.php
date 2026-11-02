@@ -22,7 +22,7 @@ final class TableTest extends TestCase
      * @param list<string>          $expected
      */
     #[Group('ACMS-UI-0081')]
-    #[Group('ACMS-UI-0009')]
+    #[Group('ACMS-UI-0098')]
     #[DataProvider('cuts')]
     public function testLeadRowsStayAboveTheSortedRecordsAndGoThroughTheSearchAndTheFilters(array $query, array $expected): void
     {
@@ -44,7 +44,32 @@ final class TableTest extends TestCase
         yield 'filter of the lead' => [['initial' => 'z'], ['zeta']];
     }
 
-    #[Group('ACMS-UI-0009')]
+    /**
+     * @param array<string, string>                      $query
+     * @param array{list<string>, array<string, string>} $expected
+     */
+    #[Group('ACMS-UI-0097')]
+    #[DataProvider('narrowings')]
+    public function testQueryFilterNarrowsByTheValueOrByTheFilledField(array $query, array $expected): void
+    {
+        $table = Table::of(new Request($query), 'list', [Column::of('name', t('name'), 'e.name')], 'name', filters: [
+            Filter::select('kind', t('kind'), ['a' => 'a', 'b' => 'b'])->on('e.kind'),
+            Filter::select('state', t('state'), ['open' => 'open', 'closed' => 'closed'])->filled('e.closedAt', 'closed'),
+        ]);
+
+        self::assertSame($expected, $table->narrowing());
+    }
+
+    /** @return iterable<string, array{array<string, string>, array{list<string>, array<string, string>}}> */
+    public static function narrowings(): iterable
+    {
+        yield 'none' => [[], [[], []]];
+        yield 'value' => [['kind' => 'b'], [['e.kind = :filter_kind'], ['filter_kind' => 'b']]];
+        yield 'filled' => [['state' => 'closed'], [['e.closedAt IS NOT NULL'], []]];
+        yield 'empty' => [['state' => 'open'], [['e.closedAt IS NULL'], []]];
+    }
+
+    #[Group('ACMS-UI-0096')]
     #[DataProvider('declarations')]
     public function testLabelledColumnWithoutOrderOfItsListingIsRefusedOutsideTheManualOrder(Column $column, bool $live, ?Order $order, bool $refused): void
     {

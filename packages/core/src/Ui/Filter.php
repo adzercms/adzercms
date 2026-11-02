@@ -29,17 +29,28 @@ final class Filter
         public readonly bool $tabs = false,
         public readonly ?string $field = null,
         public readonly ?\Closure $value = null,
+        public readonly ?string $filled = null,
     ) {
     }
 
     public function on(string $field): self
     {
-        return new self($this->name, $this->label, $this->options, $this->search, $this->selected, $this->hidden, $this->day, $this->tabs, $field);
+        return $this->sourced($field, null, null);
+    }
+
+    public function filled(string $field, \BackedEnum|string $value): self
+    {
+        return $this->sourced($field, null, self::key($value));
     }
 
     public function by(\Closure $value): self
     {
-        return new self($this->name, $this->label, $this->options, $this->search, $this->selected, $this->hidden, $this->day, $this->tabs, value: $value);
+        return $this->sourced(null, $value, null);
+    }
+
+    private function sourced(?string $field, ?\Closure $value, ?string $filled): self
+    {
+        return new self($this->name, $this->label, $this->options, $this->search, $this->selected, $this->hidden, $this->day, $this->tabs, $field, $value, $filled);
     }
 
     public static function key(mixed $value): string

@@ -35,7 +35,7 @@ final class CatalogController extends AbstractController
         $table = Table::of($request, self::PAGE, [], '', t('extensions.empty'), filters: [
             Filter::tabs('type', ExtensionType::all(), ExtensionType::tabs())->on('e.type'),
             Filter::cases('category', t('extensions.filter.category'), Category::cases()),
-            Filter::cases('price', t('extensions.filter.price'), ExtensionPrice::cases()),
+            Filter::cases('price', t('extensions.filter.price'), ExtensionPrice::cases())->filled('e.price', ExtensionPrice::Paid),
         ]);
         $context = ['table' => $table, 'rows' => $this->extensions->published($table)];
 
