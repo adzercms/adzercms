@@ -27,7 +27,7 @@ test.beforeEach(async ({ page }) => {
     await page.goto(TEXTS);
 });
 
-test('[ACMS-UI-0091] a form sent by navigation goes once until its page comes, its button keeps the look', async ({ page }) => {
+test('[ACMS-UI-0092] a form sent by navigation goes once until its page comes, its button keeps the look', async ({ page }) => {
     const { sent, release } = await hold(page, (path) => path === SENDING, { contentType: 'text/html', body: '<!doctype html><title>sent</title>' });
     await page.locator('.panel-content').evaluate((content, action) => content.insertAdjacentHTML(
         'afterbegin',
@@ -54,7 +54,7 @@ test('[ACMS-UI-0091] a form sent by navigation goes once until its page comes, i
     expect(sent, 'the second press sends nothing').toHaveLength(1);
 });
 
-test('[ACMS-UI-0091] a fragment form goes once until its answer, then again', async ({ page }) => {
+test('[ACMS-UI-0092] a fragment form goes once until its answer, then again', async ({ page }) => {
     const { sent, release } = await hold(page, (path) => path.startsWith(`${TEXTS}/`), { status: 204 });
     await page.locator('tr[data-record]').first().click();
     const button = page.locator('#record button[type="submit"]:not([name])');
@@ -71,7 +71,7 @@ test('[ACMS-UI-0091] a fragment form goes once until its answer, then again', as
     await expect.poll(() => sent.length, 'the press after the answer sends again').toBe(2);
 });
 
-test('[ACMS-UI-0091] a dialog form closes its dialog without the progress', async ({ page }) => {
+test('[ACMS-UI-0092] a dialog form closes its dialog without the progress', async ({ page }) => {
     await page.locator('tr[data-record]').first().click();
     const record = page.locator('#record');
     await expect(record).toBeVisible();

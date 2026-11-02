@@ -95,7 +95,7 @@ final class AttachmentTest extends SupportTestCase
         }
     }
 
-    #[Group('ACMS-SUP-0023')]
+    #[Group('ACMS-SUP-0024')]
     #[Group('ACMS-US-0008')]
     public function testRemovedUserLeavesNoFilesOfTheirTickets(): void
     {
