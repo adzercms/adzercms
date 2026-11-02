@@ -21,7 +21,10 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LazyCommand;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class KernelTest extends KernelTestCase
 {
@@ -223,5 +226,24 @@ final class KernelTest extends KernelTestCase
         } finally {
             unset($_SERVER['MODULES'], $_ENV['MODULES']);
         }
+    }
+
+    #[Group('ACMS-TEST-0037')]
+    public function testImportmapClientOfTestEnvironmentGoesPastAnswersOfTests(): void
+    {
+        $asked = [];
+        self::service(HttpAnswers::class)->respond(static function (string $method, string $url) use (&$asked): MockResponse {
+            $asked[] = $url;
+
+            return new MockResponse();
+        });
+
+        try {
+            self::service(HttpClientInterface::class, 'asset_mapper.http_client')->request('GET', 'http://127.0.0.1:1/')->getStatusCode();
+            self::fail('a closed port answered the importmap client');
+        } catch (TransportExceptionInterface) {
+        }
+
+        self::assertSame([], $asked, 'the importmap client asked the answers of tests');
     }
 }

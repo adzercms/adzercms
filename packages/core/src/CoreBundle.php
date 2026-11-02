@@ -46,8 +46,10 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class CoreBundle extends AbstractBundle implements CompilerPassInterface
@@ -64,6 +66,8 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
     private const IMPORTMAP_READER = 'asset_mapper.importmap.config_reader';
     private const IMPORTMAPS = 'adzercms.importmaps';
     private const IMPORTMAP_VENDOR = 'assets/vendor';
+    private const IMPORTMAP_HTTP = 'asset_mapper.http_client';
+    private const HTTP_MOCK = 'http_client.mock_client';
     private const MIGRATION_MARKS = 'adzercms.migration_marks';
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
@@ -176,6 +180,10 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
         $container->register(ModuleImportMap::class, ModuleImportMap::class)
             ->setDecoratedService(self::IMPORTMAP_READER)
             ->setArguments([$reader->getArgument(0), $reader->getArgument(1), '%'.self::IMPORTMAPS.'%']);
+
+        if ($container->hasDefinition(self::HTTP_MOCK)) {
+            $container->register(self::IMPORTMAP_HTTP, HttpClientInterface::class)->setFactory([HttpClient::class, 'create']);
+        }
     }
 
     public function boot(): void
