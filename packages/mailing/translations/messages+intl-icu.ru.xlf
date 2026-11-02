@@ -121,12 +121,6 @@
         <target>Телефон</target>
       </segment>
     </unit>
-    <unit id="mailing.gateway.rescan">
-      <segment>
-        <source>mailing.gateway.rescan</source>
-        <target>Опросить</target>
-      </segment>
-    </unit>
     <unit id="mailing.gateway.senders">
       <segment>
         <source>mailing.gateway.senders</source>

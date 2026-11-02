@@ -37,6 +37,12 @@
         <target>Изменить</target>
       </segment>
     </unit>
+    <unit id="core.action.rescan">
+      <segment>
+        <source>core.action.rescan</source>
+        <target>Опросить</target>
+      </segment>
+    </unit>
     <unit id="core.action.save">
       <segment>
         <source>core.action.save</source>

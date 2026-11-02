@@ -121,12 +121,6 @@
         <target>Phone</target>
       </segment>
     </unit>
-    <unit id="mailing.gateway.rescan">
-      <segment>
-        <source>mailing.gateway.rescan</source>
-        <target>Poll</target>
-      </segment>
-    </unit>
     <unit id="mailing.gateway.senders">
       <segment>
         <source>mailing.gateway.senders</source>

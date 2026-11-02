@@ -37,6 +37,12 @@
         <target>Edit</target>
       </segment>
     </unit>
+    <unit id="core.action.rescan">
+      <segment>
+        <source>core.action.rescan</source>
+        <target>Poll</target>
+      </segment>
+    </unit>
     <unit id="core.action.save">
       <segment>
         <source>core.action.save</source>

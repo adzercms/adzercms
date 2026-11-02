@@ -1,0 +1,4 @@
+{% set target = target|default('rows') %}
+<button type="button" class="secondary" hx-get="{{ path(route, app.request.query.all|merge(params|default({}))) }}"
+        hx-target="#{{ target }}" hx-swap="outerHTML" hx-include="#{{ target }} form.table-filters"
+        hx-headers="{{ {(constant('AdzerCMS\\Core\\Module\\Snapshot::RESCAN')): '1'}|json_encode }}">{{ 'core.action.rescan'|trans }}</button>

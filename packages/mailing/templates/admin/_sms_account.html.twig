@@ -2,8 +2,7 @@
     <div class="section-head">
         <h3>{{ 'mailing.gateway.title'|trans }}</h3>
         <div class="card-actions">
-            <button type="button" class="secondary" hx-get="{{ path('admin_notice_gateway') }}"
-                    hx-target="#gateway" hx-swap="outerHTML" hx-headers='{"X-Rescan": "1"}'>{{ 'mailing.gateway.rescan'|trans }}</button>
+            {% include '@Theme/_rescan.html.twig' with {route: 'admin_notice_gateway', target: 'gateway'} only %}
         </div>
     </div>
 

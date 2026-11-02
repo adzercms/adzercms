@@ -53,7 +53,7 @@ A package requires every package and every PHP extension whose classes, function
 
 ## Links to the admin and the cabinet
 
-Links to admin and cabinet pages are built through entries: the Twig functions `admin('user', {id: id})` and `cabinet('profile')`, and in code `AdzerCMS\Core\Ui\Entries::url()` with `AdminEntry` or `CabinetEntry`. Without a module of that kind the entry returns `null`, and the page simply leaves the link out. A list inside a tab of the admin dashboard or the user card pages by the route of its entry, `AdminEntry::Dashboard->route()` or `AdminEntry::User->route()`. `vendor/bin/adzercms-check` rejects a string in `src/` or in a template that names a route of an installed admin, cabinet, theme or other kind module outside that module.
+Links to admin and cabinet pages are built through entries: the Twig functions `admin('user', {id: id})` and `cabinet('profile')`, and in code `AdzerCMS\Core\Ui\Entries::url()` with `AdminEntry` or `CabinetEntry`. Without a module of that kind the entry returns `null`, and the page simply leaves the link out. A list inside a tab of the admin dashboard or the user card pages by the route of its entry, `AdminEntry::Dashboard->route()` or `AdminEntry::User->route()`. The module card with its settings is `AdminEntry::Module` with the module key in `key`: a section that has nothing to show without credentials leads there. `vendor/bin/adzercms-check` rejects a string in `src/` or in a template that names a route of an installed admin, cabinet, theme or other kind module outside that module.
 
 ## Admin and cabinet pages
 
@@ -66,6 +66,8 @@ A feature module describes its parts of the admin and the cabinet with services 
 - `ContentSource` — extra sources for the `form-action`, `script-src`, `connect-src`, `frame-src` and `style-src` directives of the Content Security Policy.
 
 A status label is `Badge::good()`, `warn()`, `bad()` or `idle()`. When an action can't go ahead, it refuses with `AdzerCMS\Contracts\Refusal`, giving the reason and the route where it can be fixed.
+
+A list polled from an outside service sorts and searches a snapshot, `AdzerCMS\Core\Module\Snapshot`. The theme's button `@Theme/_rescan.html.twig` with the arguments `route`, `params` and `target`, the id of the block to refresh with the list by default, polls the service past the snapshot: its request carries the `Snapshot::RESCAN` header.
 
 ## Bundle
 
