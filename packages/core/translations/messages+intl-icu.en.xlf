@@ -199,6 +199,12 @@
         <target>SMS</target>
       </segment>
     </unit>
+    <unit id="core.column.seen">
+      <segment>
+        <source>core.column.seen</source>
+        <target>Last seen</target>
+      </segment>
+    </unit>
     <unit id="core.column.status">
       <segment>
         <source>core.column.status</source>

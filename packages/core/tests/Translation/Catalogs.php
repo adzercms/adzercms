@@ -27,7 +27,7 @@ final readonly class Catalogs
 {
     private const SOURCE = 'en';
     private const DOMAIN = 'messages';
-    private const STATUS = 'core.column.status';
+    private const COLUMN = 'core.column.';
 
     public function __construct(private KernelInterface $kernel)
     {
@@ -72,7 +72,7 @@ final readonly class Catalogs
                 foreach ($messages as $key => $text) {
                     $word = $words[self::word($text)] ?? (string) $key;
                     if ($word !== (string) $key) {
-                        $refusals[] = \sprintf('%s %s repeats %s of the core state vocabulary: the label goes by its key', $locale, $key, $word);
+                        $refusals[] = \sprintf('%s %s repeats %s of the core vocabulary: the label goes by its key', $locale, $key, $word);
                     }
                 }
             }
@@ -114,7 +114,7 @@ final readonly class Catalogs
     /** @return array<string, string> */
     private static function vocabulary(MessageCatalogue $catalogue): array
     {
-        $keys = [self::STATUS];
+        $keys = [];
         foreach (State::cases() as $state) {
             $label = $state->label();
             if ($label instanceof TranslatableMessage) {
@@ -123,8 +123,10 @@ final readonly class Catalogs
         }
         $words = [];
         foreach ($catalogue->all() as $messages) {
-            foreach (array_intersect_key($messages, array_flip($keys)) as $key => $text) {
-                $words[self::word($text)] = (string) $key;
+            foreach ($messages as $key => $text) {
+                if (str_starts_with((string) $key, self::COLUMN) || \in_array((string) $key, $keys, true)) {
+                    $words[self::word($text)] = (string) $key;
+                }
             }
         }
 
