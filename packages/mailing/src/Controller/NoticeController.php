@@ -60,7 +60,7 @@ final class NoticeController extends AbstractController
         $table = Table::of($request, 'admin_notices', [
             Column::of('at', t('mailing.column.at'), 'n.createdAt'),
             Column::of('event', t('mailing.column.event'), 'n.event'),
-            Column::of('user', t('mailing.column.user'), 'n.user'),
+            Column::of('user', t('mailing.column.user'), 'n.user')->aside(),
             Column::of('recipient', t('mailing.column.recipient'), 'n.recipient')->aside(),
             Column::of('body', t('mailing.column.body'), 'n.body')->aside(),
             Column::of('status', t('mailing.column.status'), 'n.status'),

@@ -21,7 +21,7 @@
     {% embed '@Theme/_table.html.twig' %}
         {% block row %}
             <tr>
-                <td class="{{ table.aside('source') }}"><strong>{{ row.source }}</strong>{% if row.down %} {{ badge(row.down) }}{% endif %}</td>
+                <td class="{{ table.aside('source') }}"><strong>{{ clip(row.source, 60) }}</strong>{% if row.down %} {{ badge(row.down) }}{% endif %}</td>
                 <td class="{{ table.aside('access') }}">{{ row.access ? 'admin.setting.set'|trans : blank() }}</td>
                 <td class="row-actions">
                     {% if row.setting %}

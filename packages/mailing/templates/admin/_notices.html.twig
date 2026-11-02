@@ -11,8 +11,8 @@
                     {{ blank() }}
                 {%- endif -%}
             </td>
-            <td class="{{ table.aside('recipient') }}">{{ row.recipient }}</td>
-            <td class="{{ table.aside('body') }}">{{ row.body }}</td>
+            <td class="{{ table.aside('recipient') }}">{{ clip(row.recipient, 40) }}</td>
+            <td class="{{ table.aside('body') }}">{{ clip(row.body, 40) }}</td>
             <td class="{{ table.aside('status') }}">{{ badge(row.status) }}{{ caption(row.error) }}</td>
         </tr>
     {% endblock %}

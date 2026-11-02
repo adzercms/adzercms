@@ -58,7 +58,7 @@ final class SupportController extends AbstractController
             $staff ? Column::of('user', t('support.column.user'), 's.id') : null,
             Column::of('subject', t('support.column.subject'), 't.subject'),
             Column::of('department', t('support.column.department'), 't.department')->aside(),
-            Column::of('at', t('support.column.at'), 't.lastMessageAt'),
+            Column::of('at', t('support.column.at'), 't.lastMessageAt')->aside(),
             Column::of('status', t('support.column.status'), 't.status'),
         ])), 'at', t('support.empty'), false,
             filters: array_filter([

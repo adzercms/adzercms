@@ -82,12 +82,12 @@ final class ThemeExtension extends AbstractExtension
         ]);
     }
 
-    public function clip(?string $value, int $length, string $extra = ''): string
+    public function clip(?string $value, ?int $length = null, string $extra = ''): string
     {
         $value = (string) $value;
         $classes = rtrim('clip '.$extra);
 
-        if (mb_strlen($value) <= $length) {
+        if (null === $length || mb_strlen($value) <= $length) {
             return sprintf('<span class="%s">%s</span>', $classes, htmlspecialchars($value, \ENT_QUOTES));
         }
 

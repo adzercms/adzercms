@@ -1,5 +1,5 @@
 {% macro name(row) %}
-    {% if row.link %}<a href="{{ row.link }}" target="_blank" rel="noopener"><strong>{{ row.name }}</strong></a>{% else %}<strong>{{ row.name }}</strong>{% endif %}
+    {% if row.link %}<a href="{{ row.link }}" target="_blank" rel="noopener"><strong>{{ clip(row.name, 60) }}</strong></a>{% else %}<strong>{{ clip(row.name, 60) }}</strong>{% endif %}
 {% endmacro %}
 
 {% macro demo(row) %}

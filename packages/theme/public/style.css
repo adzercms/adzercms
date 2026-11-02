@@ -794,7 +794,7 @@ tbody tr:hover { background: var(--row-hover); }
 .clickable-row:hover { background: var(--picked); }
 
 .table-responsive { overflow-x: auto; margin-bottom: 1rem; }
-.clip { white-space: nowrap; }
+.clip { overflow-wrap: anywhere; }
 
 .sortable-header { position: relative; padding: 0; user-select: none; }
 .sortable-header a { display: block; padding: 0.6rem 1rem 0.6rem 0.5rem; color: inherit; }
@@ -1414,7 +1414,7 @@ fieldset.choices label .muted { grid-column: 2; margin: 0; font-size: 12px; line
 
     th, td { padding: 0.5rem 0.4rem; overflow-wrap: normal; }
     th { font-size: 10px; letter-spacing: 0; white-space: normal; }
-    .clip { white-space: normal; }
+    td.row-actions { white-space: normal; }
     .hide-sm { display: none; }
     .sortable-header a { padding: 0.5rem 0.9rem 0.5rem 0; }
 
