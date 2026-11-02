@@ -24,6 +24,7 @@ use AdzerCMS\Core\Notice\Status as NoticeStatus;
 use AdzerCMS\Core\Repository\UserRepository;
 use AdzerCMS\Core\Setting\Toggle;
 use AdzerCMS\Core\Ui\Back;
+use AdzerCMS\Core\Ui\Fragment;
 use AdzerCMS\Core\Ui\PageTabs;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -102,10 +103,7 @@ final class UserController extends AbstractController
             if (null === $error) {
                 $this->addFlash('success', t('admin.user.placed', ['place' => $places[$place]]));
 
-                $response = new Response('', Response::HTTP_NO_CONTENT);
-                $response->headers->set('HX-Redirect', $this->generateUrl('admin_users'));
-
-                return $response;
+                return Fragment::go($this->generateUrl('admin_users'));
             }
         } elseif ($request->isMethod('POST')) {
             $error = $this->fill($user, $request, $hasher);
@@ -115,10 +113,7 @@ final class UserController extends AbstractController
                 $this->em->flush();
                 $this->addFlash('success', t('admin.user.created', ['id' => $user->getId()]));
 
-                $response = new Response('', Response::HTTP_NO_CONTENT);
-                $response->headers->set('HX-Redirect', $this->generateUrl('admin_user', ['id' => $user->getId()]));
-
-                return $response;
+                return Fragment::go($this->generateUrl('admin_user', ['id' => $user->getId()]));
             }
         }
 
