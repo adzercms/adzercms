@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const { WALK, crawl } = require('../crawl');
 
-const PERIOD = 'form.table-filters:has(select[name="scale"])';
+const PERIOD = '.card > form.table-filters:has(select[name="scale"])';
 
 test('[ACMS-TEST-0016][ACMS-UI-0012] a period field change redraws the page in place', async ({ page }) => {
     test.setTimeout(900000);
