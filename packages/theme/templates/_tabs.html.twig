@@ -4,7 +4,8 @@
         {%- if item.pane is defined %}
             <button type="button" class="tab {{ item.active ? 'active' }}" data-pane="{{ item.pane }}">{{ label }}</button>
         {%- else %}
-            <a class="tab {{ item.active ? 'active' }}" href="{{ item.href }}">{{ label }}</a>
+            <a class="tab {{ item.active ? 'active' }}" href="{{ item.href }}"
+                {%- if item.select is defined %} hx-get="{{ item.href }}" hx-select="#{{ item.select }}" hx-push-url="true"{% endif %}>{{ label }}</a>
         {%- endif %}
     {%- endfor %}
 </nav>

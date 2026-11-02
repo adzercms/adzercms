@@ -7,10 +7,10 @@
 {% endblock %}
 
 {% block page %}
-<nav class="tabs" id="live-ticket-tabs" data-live>
-    <a class="tab {{ archive ? '' : 'active' }}" href="{{ path('support_tickets') }}">{{ 'support.tab.active'|trans({count: counts.active|default(0)}) }}</a>
-    <a class="tab {{ archive ? 'active' }}" href="{{ path('support_tickets', {tab: 'archive'}) }}">{{ 'support.tab.archive'|trans({count: counts.archive|default(0)}) }}</a>
-</nav>
+{% include '@Theme/_tabs.html.twig' with {id: 'live-ticket-tabs', tabs: [
+    {label: t('support.tab.active', {count: counts.active|default(0)}), href: path('support_tickets'), active: not archive},
+    {label: t('support.tab.archive', {count: counts.archive|default(0)}), href: path('support_tickets', {tab: 'archive'}), active: archive},
+]} only %}
 
 {% include '@Support/support/_tickets.html.twig' %}
 {% endblock %}

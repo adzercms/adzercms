@@ -3,10 +3,10 @@
 {% block title %}{{ 'mailing.title'|trans }}{% endblock %}
 
 {% block page %}
-<nav class="tabs">
-    <a class="tab {{ view == 'broadcast' ? 'active' }}" href="{{ path('admin_notices') }}">{{ 'mailing.broadcast'|trans }}</a>
-    <a class="tab {{ view == 'journal' ? 'active' }}" href="{{ path('admin_notices', {view: 'journal', tab: tab}) }}">{{ 'mailing.journal'|trans }}</a>
-</nav>
+{% include '@Theme/_tabs.html.twig' with {tabs: [
+    {label: 'mailing.broadcast', href: path('admin_notices'), active: view == 'broadcast'},
+    {label: 'mailing.journal', href: path('admin_notices', {view: 'journal', tab: tab}), active: view == 'journal'},
+]} only %}
 
 {% if view == 'broadcast' %}
     <form method="post" action="{{ path('admin_broadcast') }}">
@@ -21,12 +21,7 @@
         <button type="submit">{{ 'mailing.send'|trans }}</button>
     </form>
 {% else %}
-    <nav class="tabs">
-        {% for item in channels %}
-            <a class="tab {{ tab == item.key ? 'active' }}"
-               href="{{ path('admin_notices', {view: 'journal', tab: item.key}) }}">{{ item.label|trans }}</a>
-        {% endfor %}
-    </nav>
+    {% include '@Theme/_tabs.html.twig' with {tabs: channels|map(item => {label: item.label, href: path('admin_notices', {view: 'journal', tab: item.key}), active: tab == item.key})} only %}
 
     {% if not configured %}
         <p class="flash flash-error">{{ 'mailing.unconfigured'|trans }}</p>

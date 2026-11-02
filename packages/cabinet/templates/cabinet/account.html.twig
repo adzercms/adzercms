@@ -8,11 +8,7 @@
 {% endif %}
 {% for part in fragments('cabinet.home', app.user.id) %}{% include part.template with part.context only %}{% endfor %}
 {% if tabs|length > 1 %}
-    <nav class="tabs">
-        {% for key, entry in tabs %}
-            <a class="tab {{ tab == key ? 'active' }}" href="{{ path('cabinet_account', {tab: key}) }}">{{ entry.tab.label|trans }}{% if entry.tab.count is not null %} ({{ entry.tab.count }}){% endif %}</a>
-        {% endfor %}
-    </nav>
+    {% include '@Theme/_tabs.html.twig' with {tabs: tabs|map((entry, key) => {label: entry.tab.label, count: entry.tab.count, href: path('cabinet_account', {tab: key}), active: tab == key})} only %}
 {% endif %}
 
 {% if fragment %}{% include fragment.template with fragment.context %}{% endif %}

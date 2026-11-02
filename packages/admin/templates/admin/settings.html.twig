@@ -3,11 +3,7 @@
 {% block title %}{{ 'admin.menu.settings'|trans }}{% endblock %}
 
 {% block page %}
-<nav class="tabs">
-    {% for key, group in groups %}
-        <a class="tab {{ tab == key ? 'active' }}" href="{{ path('admin_settings', {tab: key}) }}">{{ group.label|trans }}</a>
-    {% endfor %}
-</nav>
+{% include '@Theme/_tabs.html.twig' with {tabs: groups|map((group, key) => {label: group.label, href: path('admin_settings', {tab: key}), active: tab == key})} only %}
 
 <form method="post" enctype="multipart/form-data">
     {{ csrf_field() }}

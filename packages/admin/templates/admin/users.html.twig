@@ -7,10 +7,10 @@
 {% endblock %}
 
 {% block page %}
-<nav class="tabs">
-    <a class="tab {{ archive ? '' : 'active' }}" href="{{ path('admin_users') }}">{{ 'admin.users.tab'|trans({count: counts.users}) }}</a>
-    <a class="tab {{ archive ? 'active' }}" href="{{ path('admin_users', {tab: 'archive'}) }}">{{ 'admin.users.archive'|trans({count: counts.archive}) }}</a>
-</nav>
+{% include '@Theme/_tabs.html.twig' with {tabs: [
+    {label: t('admin.users.tab', {count: counts.users}), href: path('admin_users'), active: not archive},
+    {label: t('admin.users.archive', {count: counts.archive}), href: path('admin_users', {tab: 'archive'}), active: archive},
+]} only %}
 
 {% include '@Admin/admin/_users.html.twig' %}
 {% endblock %}

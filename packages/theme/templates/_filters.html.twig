@@ -1,13 +1,10 @@
-{% macro tab(table, filter, value, label) %}
-    {% set url = path(table.route, table.tab(filter, value)) %}
-    <a class="tab {{ table.value(filter.name) == value ? 'active' }}" href="{{ url }}" hx-get="{{ url }}" hx-select="#{{ table.id }}" hx-push-url="true">{{ label|trans }}</a>
-{% endmacro %}
-
 {% for filter in table.filters|filter(filter => filter.tabs) %}
-    <nav class="tabs">
-        {{ _self.tab(table, filter, '', filter.label) }}
-        {% for value, label in filter.options %}{{ _self.tab(table, filter, value, label) }}{% endfor %}
-    </nav>
+    {% include '@Theme/_tabs.html.twig' with {tabs: [{value: '', label: filter.label}]|merge(filter.options|map((label, value) => {value: value, label: label}))|map(option => {
+        label: option.label,
+        href: path(table.route, table.tab(filter, option.value)),
+        select: table.id,
+        active: table.value(filter.name) == option.value,
+    })} only %}
 {% endfor %}
 {% set fields = table.filters|filter(filter => not filter.tabs) %}
 {% if fields %}

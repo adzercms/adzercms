@@ -3,12 +3,7 @@
 {% block title %}{{ 'cabinet.profile.title'|trans }}{% endblock %}
 
 {% block page %}
-<nav class="tabs">
-    {% for key in tabs %}
-        <a class="tab {{ tab == key ? 'active' }}"
-           href="{{ path('cabinet_profile', key == 'account' ? {} : {tab: key}) }}">{{ ('cabinet.profile.tab.' ~ key)|trans }}</a>
-    {% endfor %}
-</nav>
+{% include '@Theme/_tabs.html.twig' with {tabs: tabs|map(key => {label: 'cabinet.profile.tab.' ~ key, href: path('cabinet_profile', key == 'account' ? {} : {tab: key}), active: tab == key})} only %}
 
 {% if tab == 'notices' %}
     <form method="post" action="{{ path('cabinet_profile_notices') }}">

@@ -12,11 +12,7 @@
 {% endblock %}
 
 {% block page %}
-<nav class="tabs">
-    {% for key, label in tabs %}
-        <a class="tab {{ tab == key ? 'active' }}" href="{{ path('admin_modules', {tab: key}) }}">{{ label|trans }}</a>
-    {% endfor %}
-</nav>
+{% include '@Theme/_tabs.html.twig' with {tabs: tabs|map((label, key) => {label: label, href: path('admin_modules', {tab: key}), active: tab == key})} only %}
 {% if tab == 'sources' %}
     {% embed '@Theme/_table.html.twig' %}
         {% block row %}

@@ -9,11 +9,7 @@
     <p class="flash">{{ 'cabinet.register.no_channel'|trans }}</p>
 {% else %}
     {% if kinds|length > 1 %}
-        <nav class="tabs">
-            {% for kind in kinds %}
-                <a class="tab {{ kind == active ? 'active' }}" href="{{ path('cabinet_register', {kind: kind.value}) }}">{{ kind.label|trans }}</a>
-            {% endfor %}
-        </nav>
+        {% include '@Theme/_tabs.html.twig' with {tabs: kinds|map(kind => {label: kind.label, href: path('cabinet_register', {kind: kind.value}), active: kind == active})} only %}
     {% endif %}
 
     <form method="post">
