@@ -87,6 +87,11 @@ final readonly class BankTransferService implements AcquiringService
         return false;
     }
 
+    public function manual(): bool
+    {
+        return true;
+    }
+
     public function lifetime(): \DateInterval
     {
         return new \DateInterval(\sprintf('P%dD', max(1, $this->settings->int(self::DAYS, self::DEFAULT_DAYS))));

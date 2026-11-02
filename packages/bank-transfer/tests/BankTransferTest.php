@@ -10,11 +10,16 @@ use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\SchemaTestCase;
+use AdzerCMS\Core\Ui\Money;
+use AdzerCMS\Payments\Acquiring\PaymentCallback;
 use AdzerCMS\Payments\Entity\Payment;
 use AdzerCMS\Payments\PaymentConfirmed;
 use AdzerCMS\Payments\PaymentConfirming;
+use AdzerCMS\Payments\PaymentRevoked;
+use AdzerCMS\Payments\PaymentRevoking;
 use AdzerCMS\Payments\PaymentService;
 use AdzerCMS\Payments\PaymentStatus;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -38,7 +43,7 @@ final class BankTransferTest extends SchemaTestCase
         parent::setUp();
         $this->configure([BankTransferService::CARD => self::CARD, BankTransferService::PHONE => self::PHONE, BankTransferService::BANK => 'Village bank', BankTransferService::NOTE => self::NOTE]);
         $dispatcher = self::service(EventDispatcherInterface::class, 'event_dispatcher');
-        foreach ([PaymentConfirming::class, PaymentConfirmed::class] as $event) {
+        foreach ([PaymentConfirming::class, PaymentConfirmed::class, PaymentRevoking::class, PaymentRevoked::class] as $event) {
             $dispatcher->addListener($event, function (object $happened): void {
                 $this->events[] = $happened;
             });
@@ -114,9 +119,12 @@ final class BankTransferTest extends SchemaTestCase
 
         $list = $this->client->request('GET', '/admin/transfers');
         self::assertSame(['payer-2'], self::comments($list));
-        self::assertSame(['/admin/transfers/'.$awaiting->getNumber()], $list->filter('.row-actions form')->each(static fn (Crawler $form): ?string => $form->attr('action')),
-            'the row button confirms at once, without a dialog and a question');
-        self::assertCount(0, $list->filter('[data-record], [data-confirm]'));
+        self::assertSame(
+            [['/admin/transfers/'.$awaiting->getNumber(), self::phrase('bank_transfer.confirm.question', ['amount' => self::phrase(Money::rubles($awaiting->getAmount())), 'comment' => 'payer-2'])]],
+            $list->filter('.row-actions form')->each(static fn (Crawler $form): array => [$form->attr('action'), $form->attr('data-confirm')]),
+            'the row button confirms by the payment amount after a question naming it',
+        );
+        self::assertCount(0, $list->filter('[data-record], .row-actions input[name=amount]'), 'no amount is entered');
         self::assertSame(['payer-1'], self::comments($this->client->request('GET', '/admin/transfers?status=cancelled')));
 
         $amount = $late->getAmount();
@@ -130,6 +138,34 @@ final class BankTransferTest extends SchemaTestCase
         self::assertResponseStatusCodeSame(404);
         self::assertCount(2, $this->events, 'the repeat credits nothing');
         self::assertSame(PaymentStatus::Pending, $this->reread($awaiting)->getStatus());
+    }
+
+    /** @return iterable<string, array{string, PaymentStatus}> */
+    public static function revocations(): iterable
+    {
+        yield 'within the term the payment awaits again' => ['2026-08-11 10:00', PaymentStatus::Pending];
+        yield 'past the term the payment is cancelled' => ['2026-08-13 10:00', PaymentStatus::Cancelled];
+    }
+
+    #[Group('ACMS-PAY-0049')]
+    #[Group('ACMS-US-0066')]
+    #[DataProvider('revocations')]
+    public function testOperatorRevokesConfirmedTransferOnce(string $at, PaymentStatus $status): void
+    {
+        self::mockTime('2026-08-10 10:00');
+        $payment = $this->order('payer-1');
+        $service = self::service(PaymentService::class);
+        $service->conclude(new PaymentCallback($payment->getNumber(), PaymentStatus::Confirmed));
+        self::mockTime($at);
+        $confirmed = \count($this->events);
+
+        self::assertTrue($service->revoke($this->reread($payment)));
+        $payment = $this->reread($payment);
+        self::assertSame([$status, null], [$payment->getStatus(), $payment->getConfirmedAt()]);
+        self::assertSame([PaymentRevoking::class, PaymentRevoked::class], array_map(get_class(...), \array_slice($this->events, $confirmed)));
+
+        self::assertFalse($service->revoke($payment), 'an unconfirmed payment is not revoked');
+        self::assertCount($confirmed + 2, $this->events);
     }
 
     #[Group('ACMS-US-0066')]

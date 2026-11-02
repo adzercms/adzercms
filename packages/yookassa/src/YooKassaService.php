@@ -133,6 +133,11 @@ final readonly class YooKassaService implements AcquiringService, Guided
         return true;
     }
 
+    public function manual(): bool
+    {
+        return false;
+    }
+
     public function lifetime(): \DateInterval
     {
         return new \DateInterval(self::LIFETIME);

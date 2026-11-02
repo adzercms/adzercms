@@ -6,7 +6,8 @@
             <td class="{{ table.aside('created') }}">{{ moment(row.createdAt) }}</td>
             <td class="{{ table.aside('expires') }}">{{ moment(row.expiresAt) }}</td>
             <td class="row-actions">
-                <form method="post" action="{{ path('admin_bank_transfer', {number: row.number}) }}">
+                <form method="post" action="{{ path('admin_bank_transfer', {number: row.number}) }}"
+                      data-confirm="{{ 'bank_transfer.confirm.question'|trans({amount: row.amount|money, comment: comments[row.number]}) }}">
                     {{ csrf_field() }}{{ back_field() }}
                     <button type="submit">{{ 'bank_transfer.confirm.action'|trans }}</button>
                 </form>

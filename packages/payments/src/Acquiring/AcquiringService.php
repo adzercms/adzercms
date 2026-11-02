@@ -31,6 +31,8 @@ interface AcquiringService extends Owner
 
     public function binds(): bool;
 
+    public function manual(): bool;
+
     public function lifetime(): \DateInterval;
 
     /** @throws PaymentFailed */

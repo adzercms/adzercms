@@ -49,6 +49,12 @@
         <target>Перевод {comment} зачислен: {amount}</target>
       </segment>
     </unit>
+    <unit id="bank_transfer.confirm.question">
+      <segment>
+        <source>bank_transfer.confirm.question</source>
+        <target>Зачислить {amount} по переводу {comment}?</target>
+      </segment>
+    </unit>
     <unit id="bank_transfer.days">
       <segment>
         <source>bank_transfer.days</source>

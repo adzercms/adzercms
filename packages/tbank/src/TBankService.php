@@ -133,6 +133,11 @@ final readonly class TBankService implements AcquiringService, Guided
         return false;
     }
 
+    public function manual(): bool
+    {
+        return false;
+    }
+
     public function lifetime(): \DateInterval
     {
         return new \DateInterval(self::LIFETIME);

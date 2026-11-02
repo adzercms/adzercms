@@ -262,4 +262,12 @@ class Payment
 
         return $this;
     }
+
+    public function revoke(): self
+    {
+        $this->status = $this->expiresAt > now() ? PaymentStatus::Pending : PaymentStatus::Cancelled;
+        $this->confirmedAt = null;
+
+        return $this;
+    }
 }

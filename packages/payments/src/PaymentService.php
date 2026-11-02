@@ -268,6 +268,39 @@ final class PaymentService
         }
     }
 
+    public function revocable(string $method): bool
+    {
+        return $this->ready() && $this->module()->manual() && isset($this->module()->methods()[$method]);
+    }
+
+    public function revoke(Payment $payment): bool
+    {
+        if (!$this->revocable($payment->getMethod())) {
+            return false;
+        }
+
+        $revoked = $this->em->wrapInTransaction(function () use ($payment): ?Payment {
+            $locked = $this->em->find(Payment::class, $payment->getId(), LockMode::PESSIMISTIC_WRITE);
+            if (null === $locked || PaymentStatus::Confirmed !== $locked->getStatus()) {
+                return null;
+            }
+
+            $locked->revoke();
+            $this->events->dispatch(new PaymentRevoking($locked));
+            $this->em->flush();
+
+            return $locked;
+        });
+
+        if (null === $revoked) {
+            return false;
+        }
+
+        $this->events->dispatch(new PaymentRevoked($revoked));
+
+        return true;
+    }
+
     public function acknowledgement(): \Symfony\Component\HttpFoundation\Response
     {
         return $this->module()->acknowledgement();

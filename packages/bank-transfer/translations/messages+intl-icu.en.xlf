@@ -49,6 +49,12 @@
         <target>Transfer {comment} is credited: {amount}</target>
       </segment>
     </unit>
+    <unit id="bank_transfer.confirm.question">
+      <segment>
+        <source>bank_transfer.confirm.question</source>
+        <target>Credit {amount} for transfer {comment}?</target>
+      </segment>
+    </unit>
     <unit id="bank_transfer.days">
       <segment>
         <source>bank_transfer.days</source>
