@@ -6,9 +6,9 @@ namespace AdzerCMS\BankTransfer\Controller\Admin;
 
 use AdzerCMS\BankTransfer\BankTransferService;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Ui\Back;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
-use AdzerCMS\Core\Ui\Fragment;
 use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Core\Ui\Once;
 use AdzerCMS\Core\Ui\Table;
@@ -73,38 +73,25 @@ final class TransferController extends AbstractController
         );
     }
 
-    #[Route('/{number}', name: self::ENTRY, requirements: ['number' => '[0-9a-f]{32}'], methods: ['GET', 'POST'])]
-    public function entry(string $number, Request $request, Once $once): Response
+    #[Route('/{number}', name: self::ENTRY, requirements: ['number' => '[0-9a-f]{32}'], methods: ['POST'])]
+    public function confirm(string $number, Request $request, Once $once): Response
     {
         $payment = $this->payments->findByNumber($number);
         if (null === $payment || BankTransferService::METHOD !== $payment->getMethod() || !\in_array($payment->getStatus(), self::AWAITING, true)) {
             throw $this->createNotFoundException();
         }
 
-        $comment = BankTransferService::comment($payment);
-        $amount = $payment->getAmount();
-        $error = null;
-
-        if ($request->isMethod('POST')) {
-            $amount = Money::parse($request->request->getString('amount')) ?? Money::normalize('0');
-            $error = match (true) {
-                !Money::isPositive($amount) => t('bank_transfer.confirm.positive'),
-                !$once->fresh('bank_transfer.confirm', [$number]) => Once::repeat(),
-                default => null,
-            };
-
-            if (null === $error) {
-                $this->service->conclude(new PaymentCallback($number, PaymentStatus::Confirmed, amount: $amount));
-                $this->addFlash('success', t('bank_transfer.confirm.done', ['comment' => $comment, 'amount' => Money::rubles($amount)]));
-
-                return Fragment::go($this->generateUrl(self::LIST));
-            }
+        if ($once->fresh('bank_transfer.confirm', [$number])) {
+            $this->service->conclude(new PaymentCallback($number, PaymentStatus::Confirmed));
+            $this->addFlash('success', t('bank_transfer.confirm.done', [
+                'comment' => BankTransferService::comment($payment),
+                'amount' => Money::rubles($payment->getAmount()),
+            ]));
+        } else {
+            $this->addFlash('error', Once::repeat());
         }
 
-        return $this->render(
-            '@BankTransfer/admin/_transfer.html.twig',
-            ['payment' => $payment, 'comment' => $comment, 'amount' => $amount, 'error' => $error],
-        );
+        return $this->redirect(Back::of($request, $this->generateUrl(self::LIST)));
     }
 
     private function tab(PaymentStatus $status): TranslatableInterface

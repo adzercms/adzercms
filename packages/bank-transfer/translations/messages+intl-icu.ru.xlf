@@ -43,40 +43,10 @@
         <target>Зачислить</target>
       </segment>
     </unit>
-    <unit id="bank_transfer.confirm.amount">
-      <segment>
-        <source>bank_transfer.confirm.amount</source>
-        <target>Поступило</target>
-      </segment>
-    </unit>
     <unit id="bank_transfer.confirm.done">
       <segment>
         <source>bank_transfer.confirm.done</source>
         <target>Перевод {comment} зачислен: {amount}</target>
-      </segment>
-    </unit>
-    <unit id="bank_transfer.confirm.ordered">
-      <segment>
-        <source>bank_transfer.confirm.ordered</source>
-        <target>Оплата на {amount}</target>
-      </segment>
-    </unit>
-    <unit id="bank_transfer.confirm.positive">
-      <segment>
-        <source>bank_transfer.confirm.positive</source>
-        <target>Сумма поступления должна быть больше нуля</target>
-      </segment>
-    </unit>
-    <unit id="bank_transfer.confirm.question">
-      <segment>
-        <source>bank_transfer.confirm.question</source>
-        <target>Зачислить перевод {comment}?</target>
-      </segment>
-    </unit>
-    <unit id="bank_transfer.confirm.title">
-      <segment>
-        <source>bank_transfer.confirm.title</source>
-        <target>Перевод {comment}</target>
       </segment>
     </unit>
     <unit id="bank_transfer.days">

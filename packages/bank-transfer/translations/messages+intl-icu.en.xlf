@@ -43,40 +43,10 @@
         <target>Credit</target>
       </segment>
     </unit>
-    <unit id="bank_transfer.confirm.amount">
-      <segment>
-        <source>bank_transfer.confirm.amount</source>
-        <target>Received</target>
-      </segment>
-    </unit>
     <unit id="bank_transfer.confirm.done">
       <segment>
         <source>bank_transfer.confirm.done</source>
         <target>Transfer {comment} is credited: {amount}</target>
-      </segment>
-    </unit>
-    <unit id="bank_transfer.confirm.ordered">
-      <segment>
-        <source>bank_transfer.confirm.ordered</source>
-        <target>Payment of {amount}</target>
-      </segment>
-    </unit>
-    <unit id="bank_transfer.confirm.positive">
-      <segment>
-        <source>bank_transfer.confirm.positive</source>
-        <target>The received amount must be above zero</target>
-      </segment>
-    </unit>
-    <unit id="bank_transfer.confirm.question">
-      <segment>
-        <source>bank_transfer.confirm.question</source>
-        <target>Credit transfer {comment}?</target>
-      </segment>
-    </unit>
-    <unit id="bank_transfer.confirm.title">
-      <segment>
-        <source>bank_transfer.confirm.title</source>
-        <target>Transfer {comment}</target>
       </segment>
     </unit>
     <unit id="bank_transfer.days">

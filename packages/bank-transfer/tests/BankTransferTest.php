@@ -102,7 +102,7 @@ final class BankTransferTest extends SchemaTestCase
     #[Group('ACMS-PAY-0043')]
     #[Group('ACMS-PAY-0046')]
     #[Group('ACMS-US-0066')]
-    public function testOperatorConfirmsAwaitingAndCancelledTransferByReceivedAmountOnce(): void
+    public function testOperatorConfirmsAwaitingAndCancelledTransferByItsButtonOnce(): void
     {
         self::mockTime('2026-08-10 10:00');
         $late = $this->order('payer-1');
@@ -114,20 +114,19 @@ final class BankTransferTest extends SchemaTestCase
 
         $list = $this->client->request('GET', '/admin/transfers');
         self::assertSame(['payer-2'], self::comments($list));
-        self::assertSame(['/admin/transfers/'.$awaiting->getNumber()], $list->filter('.row-actions button')->each(static fn (Crawler $button): ?string => $button->attr('hx-get')), 'the row confirms by its button');
+        self::assertSame(['/admin/transfers/'.$awaiting->getNumber()], $list->filter('.row-actions form')->each(static fn (Crawler $form): ?string => $form->attr('action')),
+            'the row button confirms at once, without a dialog and a question');
+        self::assertCount(0, $list->filter('[data-record], [data-confirm]'));
         self::assertSame(['payer-1'], self::comments($this->client->request('GET', '/admin/transfers?status=cancelled')));
 
-        $refused = $this->post('/admin/transfers/'.$late->getNumber(), ['amount' => '0']);
-        self::assertResponseIsSuccessful('the dialog swaps in with its refusal');
-        self::assertSame(self::phrase('bank_transfer.confirm.positive'), trim($refused->filter('.flash-error')->text()));
-
-        $this->post('/admin/transfers/'.$late->getNumber(), ['amount' => '300']);
-        self::assertResponseStatusCodeSame(204);
+        $amount = $late->getAmount();
+        $this->post('/admin/transfers/'.$late->getNumber(), ['back' => '/admin/transfers?status=cancelled']);
+        self::assertResponseRedirects('/admin/transfers?status=cancelled', message: 'the confirmation returns to the same cut of the list');
         $late = $this->reread($late);
-        self::assertSame([PaymentStatus::Confirmed, '300.00'], [$late->getStatus(), $late->getAmount()], 'the cancelled payment is confirmed by the received amount');
+        self::assertSame([PaymentStatus::Confirmed, $amount], [$late->getStatus(), $late->getAmount()], 'the cancelled payment is confirmed by its amount');
         self::assertSame([PaymentConfirming::class, PaymentConfirmed::class], array_map(get_class(...), $this->events));
 
-        $this->post('/admin/transfers/'.$late->getNumber(), ['amount' => '300']);
+        $this->post('/admin/transfers/'.$late->getNumber());
         self::assertResponseStatusCodeSame(404);
         self::assertCount(2, $this->events, 'the repeat credits nothing');
         self::assertSame(PaymentStatus::Pending, $this->reread($awaiting)->getStatus());
