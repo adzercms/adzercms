@@ -56,13 +56,12 @@ abstract class SchemaTestCase extends WebTestCase
      */
     protected function reread(object $entity): object
     {
-        if ($this->em->contains($entity)) {
-            $this->em->refresh($entity);
+        $managed = $this->em->contains($entity)
+            ? $entity
+            : $this->em->find($entity::class, $this->em->getClassMetadata($entity::class)->getIdentifierValues($entity)) ?? self::fail(\sprintf('%s is gone', $entity::class));
+        $this->em->refresh($managed);
 
-            return $entity;
-        }
-
-        return $this->em->find($entity::class, $this->em->getClassMetadata($entity::class)->getIdentifierValues($entity)) ?? self::fail(\sprintf('%s is gone', $entity::class));
+        return $managed;
     }
 
     protected function tearDown(): void
