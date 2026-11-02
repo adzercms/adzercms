@@ -29,7 +29,7 @@ console() {
 }
 
 tables() {
-    xargs -r grep -hoP "ORM\\\\Table\(name: '\K[a-z0-9_]+|const TABLE = '\K[a-z0-9_]+" | sort -u | paste -sd '|'
+    xargs -r grep -shoP "ORM\\\\Table\(name: '\K[a-z0-9_]+|const TABLE = '\K[a-z0-9_]+" | sort -u | paste -sd '|'
 }
 
 envs=$(staged --diff-filter=ACMR -- '.env' '.env.*' | grep -v -e '^\.env\.test$' -e '\.local$' || true)
