@@ -20,6 +20,7 @@ use Doctrine\ORM\Mapping\ToOneOwningSideMapping;
 use Doctrine\ORM\Tools\SchemaTool;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use Symfony\Component\Console\Command\Command;
 
 final class MigrationsTest extends SchemaTestCase
 {
@@ -40,6 +41,31 @@ final class MigrationsTest extends SchemaTestCase
             array_values(array_diff(self::foreignCollations($this->em->getConnection()), $this->jsonColumns())),
             'tables and string columns take the database collation',
         );
+    }
+
+    #[Group('ACMS-CORE-1035')]
+    #[Group('ACMS-CORE-1036')]
+    public function testStringEqualityTellsApartLettersDifferingByDiacriticAfterMigrationOverForeignCollation(): void
+    {
+        $connection = $this->em->getConnection();
+        $connection->rollBack();
+        if ($connection->getDatabasePlatform() instanceof AbstractMySQLPlatform) {
+            try {
+                $connection->executeStatement('ALTER DATABASE CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci');
+                $connection->executeStatement('ALTER TABLE setting CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci');
+                $migrate = self::command('doctrine:migrations:migrate');
+                $migrate->execute([], ['interactive' => false]);
+                self::assertSame(Command::SUCCESS, $migrate->getStatusCode(), $migrate->getDisplay());
+            } finally {
+                self::remigrate();
+            }
+        }
+        $connection->beginTransaction();
+
+        $connection->insert('setting', ['name' => 'ёлка', 'value' => 'yo']);
+        $connection->insert('setting', ['name' => 'елка', 'value' => 'ye']);
+
+        self::assertSame(['ye'], $connection->fetchFirstColumn('SELECT value FROM setting WHERE name = ?', ['елка']), 'equality tells «е» from «ё»');
     }
 
     #[Group('ACMS-CORE-0013')]

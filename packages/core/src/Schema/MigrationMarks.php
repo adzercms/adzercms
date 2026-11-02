@@ -19,6 +19,7 @@ final readonly class MigrationMarks implements MetadataStorage
     public function __construct(
         private MetadataStorage $storage,
         private MigrationsRepository $migrations,
+        private DatabaseCollation $collation,
     ) {
     }
 
@@ -29,11 +30,12 @@ final readonly class MigrationMarks implements MetadataStorage
             $dependencies->getVersionComparator(),
             $dependencies->getConfiguration()->getMetadataStorageConfiguration(),
             $dependencies->getMigrationRepository(),
-        ), $dependencies->getMigrationRepository());
+        ), $dependencies->getMigrationRepository(), new DatabaseCollation($dependencies->getConnection()));
     }
 
     public function ensureInitialized(): void
     {
+        $this->collation->ensure();
         $this->storage->ensureInitialized();
 
         $available = $this->migrations->getMigrations();
