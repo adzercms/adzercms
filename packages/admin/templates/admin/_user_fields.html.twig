@@ -19,7 +19,7 @@
     {% if user.undeliverableAt %}<span class="field-refusal">{{ 'admin.user.undeliverable'|trans({at: user.undeliverableAt, reason: user.undeliverableReason}) }}</span>{% endif %}
 </label>
 {% if user is same as(app.user) %}
-    <label>{{ 'admin.user.state'|trans }}
+    <label>{{ 'core.column.status'|trans }}
         <input type="text" value="{{ user.status.label|trans }}" readonly>
     </label>
     {% if roles %}
@@ -28,7 +28,7 @@
         </label>
     {% endif %}
 {% else %}
-    <label{% if local %} data-when="{{ local }}"{% endif %}>{{ 'admin.user.state'|trans }}
+    <label{% if local %} data-when="{{ local }}"{% endif %}>{{ 'core.column.status'|trans }}
         <select name="status" id="user-status">
             {% for case in enum('AdzerCMS\\Core\\Account\\Status').cases %}
                 <option value="{{ case.value }}" {{ user.id and user.status == case ? 'selected' }}>{{ case.label|trans }}</option>

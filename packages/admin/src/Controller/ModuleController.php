@@ -96,11 +96,11 @@ final class ModuleController extends AbstractController
             Column::live('name', t('admin.modules.name'), static fn (array $row): string => $row['name'].' '.$row['description']),
             Column::live('version', t('admin.modules.version'), static fn (array $row): string => $row['version'])->aside(),
             Column::live('repository', t('admin.modules.repository'), static fn (array $row): string => $row['repository'])->aside(),
-            Column::live('state', t('admin.modules.status'), static fn (array $row): TranslatableInterface => $row['state']->label()),
+            Column::live('state', t('core.column.status'), static fn (array $row): TranslatableInterface => $row['state']->label()),
             Column::plain('actions'),
         ], '', t('admin.modules.empty'), filters: [
             Filter::search(),
-            Filter::cases(self::STATUS, t('admin.modules.status'), ModuleScope::cases()),
+            Filter::cases(self::STATUS, t('core.column.status'), ModuleScope::cases()),
             Filter::cases(self::CATEGORY, t('admin.modules.category'), Category::cases()),
         ], sticky: ['tab' => $type?->value], live: true);
         $scope = ModuleScope::tryFrom($table->value(self::STATUS));
@@ -136,12 +136,12 @@ final class ModuleController extends AbstractController
         $table = Table::of($request, 'admin_modules', [
             Column::of('package', t('admin.operations.package'), 'o.package'),
             Column::of('action', t('admin.operations.action'), 'o.action'),
-            Column::of('state', t('admin.operations.state'), 'o.state'),
+            Column::of('state', t('core.column.status'), 'o.state'),
             Column::of('filed', t('admin.operations.filed'), 'o.id'),
             Column::of('finished', t('admin.operations.finished'), 'o.finished')->aside(),
         ], 'filed', t('admin.operations.empty'), ascending: false, filters: [
-            Filter::cases('action', t('admin.operations.any_action'), ModuleAction::cases())->on('o.action'),
-            Filter::cases('state', t('admin.operations.any_state'), OperationState::cases())->on('o.state'),
+            Filter::cases('action', t('admin.operations.action'), ModuleAction::cases())->on('o.action'),
+            Filter::cases('state', t('core.column.status'), OperationState::cases())->on('o.state'),
         ], sticky: ['tab' => self::OPERATIONS], id: self::OPERATIONS);
 
         return ['table' => $table, 'rows' => $this->filings->page($table)];

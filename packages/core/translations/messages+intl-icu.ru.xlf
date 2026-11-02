@@ -199,6 +199,12 @@
         <target>SMS</target>
       </segment>
     </unit>
+    <unit id="core.column.status">
+      <segment>
+        <source>core.column.status</source>
+        <target>Статус</target>
+      </segment>
+    </unit>
     <unit id="core.confirmation.too_often">
       <segment>
         <source>core.confirmation.too_often</source>
@@ -709,30 +715,6 @@
         <target>Адрес репозитория — ссылка http либо https до {max} символов</target>
       </segment>
     </unit>
-    <unit id="core.module.state.done">
-      <segment>
-        <source>core.module.state.done</source>
-        <target>Исполнена</target>
-      </segment>
-    </unit>
-    <unit id="core.module.state.failed">
-      <segment>
-        <source>core.module.state.failed</source>
-        <target>Отказ</target>
-      </segment>
-    </unit>
-    <unit id="core.module.state.pending">
-      <segment>
-        <source>core.module.state.pending</source>
-        <target>Ждёт</target>
-      </segment>
-    </unit>
-    <unit id="core.module.state.running">
-      <segment>
-        <source>core.module.state.running</source>
-        <target>Идёт</target>
-      </segment>
-    </unit>
     <unit id="core.module.zip.manifest">
       <segment>
         <source>core.module.zip.manifest</source>
@@ -1096,13 +1078,7 @@
     <unit id="core.notice.status.deferred">
       <segment>
         <source>core.notice.status.deferred</source>
-        <target>Ждёт конца тишины</target>
-      </segment>
-    </unit>
-    <unit id="core.notice.status.failed">
-      <segment>
-        <source>core.notice.status.failed</source>
-        <target>Отказ шлюза</target>
+        <target>Ожидает конца тишины</target>
       </segment>
     </unit>
     <unit id="core.notice.status.sent">
@@ -1211,12 +1187,6 @@
       <segment>
         <source>core.setting.decimal</source>
         <target>{field}: нужно число</target>
-      </segment>
-    </unit>
-    <unit id="core.setting.enabled">
-      <segment>
-        <source>core.setting.enabled</source>
-        <target>Включён</target>
       </segment>
     </unit>
     <unit id="core.setting.icon">
@@ -1411,22 +1381,64 @@
         <target>{field} — ссылка http либо https</target>
       </segment>
     </unit>
-    <unit id="core.status.active">
+    <unit id="core.state.active">
       <segment>
-        <source>core.status.active</source>
-        <target>Действует</target>
+        <source>core.state.active</source>
+        <target>Активен</target>
       </segment>
     </unit>
-    <unit id="core.status.archived">
+    <unit id="core.state.archived">
       <segment>
-        <source>core.status.archived</source>
+        <source>core.state.archived</source>
         <target>В архиве</target>
       </segment>
     </unit>
-    <unit id="core.status.stopped">
+    <unit id="core.state.disabled">
       <segment>
-        <source>core.status.stopped</source>
-        <target>Остановлен</target>
+        <source>core.state.disabled</source>
+        <target>Отключён</target>
+      </segment>
+    </unit>
+    <unit id="core.state.done">
+      <segment>
+        <source>core.state.done</source>
+        <target>Выполнено</target>
+      </segment>
+    </unit>
+    <unit id="core.state.failed">
+      <segment>
+        <source>core.state.failed</source>
+        <target>Ошибка</target>
+      </segment>
+    </unit>
+    <unit id="core.state.offline">
+      <segment>
+        <source>core.state.offline</source>
+        <target>Не в сети</target>
+      </segment>
+    </unit>
+    <unit id="core.state.online">
+      <segment>
+        <source>core.state.online</source>
+        <target>В сети</target>
+      </segment>
+    </unit>
+    <unit id="core.state.pending">
+      <segment>
+        <source>core.state.pending</source>
+        <target>Ожидает</target>
+      </segment>
+    </unit>
+    <unit id="core.state.running">
+      <segment>
+        <source>core.state.running</source>
+        <target>Выполняется</target>
+      </segment>
+    </unit>
+    <unit id="core.state.skipped">
+      <segment>
+        <source>core.state.skipped</source>
+        <target>Пропущено</target>
       </segment>
     </unit>
     <unit id="core.text.broken">
@@ -1459,12 +1471,6 @@
         <target>Включено</target>
       </segment>
     </unit>
-    <unit id="core.user.any_state">
-      <segment>
-        <source>core.user.any_state</source>
-        <target>Любое состояние</target>
-      </segment>
-    </unit>
     <unit id="core.user.created">
       <segment>
         <source>core.user.created</source>
@@ -1487,12 +1493,6 @@
       <segment>
         <source>core.user.remove_self</source>
         <target>Свою запись оператор не удаляет</target>
-      </segment>
-    </unit>
-    <unit id="core.user.state">
-      <segment>
-        <source>core.user.state</source>
-        <target>Состояние</target>
       </segment>
     </unit>
   </file>

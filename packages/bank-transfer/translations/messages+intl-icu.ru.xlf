@@ -154,7 +154,7 @@
     <unit id="bank_transfer.tab.pending">
       <segment>
         <source>bank_transfer.tab.pending</source>
-        <target>Ждут подтверждения ({count})</target>
+        <target>Ожидают подтверждения ({count})</target>
       </segment>
     </unit>
   </file>

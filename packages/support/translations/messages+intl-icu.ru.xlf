@@ -19,12 +19,6 @@
         <target>№</target>
       </segment>
     </unit>
-    <unit id="support.column.status">
-      <segment>
-        <source>support.column.status</source>
-        <target>Статус</target>
-      </segment>
-    </unit>
     <unit id="support.column.subject">
       <segment>
         <source>support.column.subject</source>
@@ -83,12 +77,6 @@
       <segment>
         <source>support.event.ticket_reply</source>
         <target>Ответ поддержки</target>
-      </segment>
-    </unit>
-    <unit id="support.filter.status">
-      <segment>
-        <source>support.filter.status</source>
-        <target>Состояние</target>
       </segment>
     </unit>
     <unit id="support.flash.closed">
@@ -481,12 +469,6 @@
         <target>Отправить</target>
       </segment>
     </unit>
-    <unit id="support.ticket.state">
-      <segment>
-        <source>support.ticket.state</source>
-        <target>Состояние</target>
-      </segment>
-    </unit>
     <unit id="support.ticket.subject">
       <segment>
         <source>support.ticket.subject</source>
@@ -526,13 +508,13 @@
     <unit id="support.ticket_status.waiting_staff">
       <segment>
         <source>support.ticket_status.waiting_staff</source>
-        <target>Ждёт ответа</target>
+        <target>Ожидает ответа</target>
       </segment>
     </unit>
     <unit id="support.ticket_status.waiting_user">
       <segment>
         <source>support.ticket_status.waiting_user</source>
-        <target>Ждёт пользователя</target>
+        <target>Ожидает пользователя</target>
       </segment>
     </unit>
   </file>

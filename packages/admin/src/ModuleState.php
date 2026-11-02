@@ -6,6 +6,7 @@ namespace AdzerCMS\Admin;
 
 use AdzerCMS\Contracts\Ui\Badged;
 use AdzerCMS\Core\Module\CatalogRow;
+use AdzerCMS\Core\Ui\State;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
@@ -27,14 +28,18 @@ enum ModuleState: string implements Badged
 
     public function label(): TranslatableInterface
     {
-        return t('admin.modules.state.'.$this->value);
+        return match ($this) {
+            self::Enabled => State::Active->label(),
+            self::Disabled => State::Disabled->label(),
+            self::Available => t('admin.modules.state.available'),
+        };
     }
 
     public function badge(): string
     {
         return match ($this) {
-            self::Enabled => 'success',
-            self::Disabled => 'secondary',
+            self::Enabled => State::Active->badge(),
+            self::Disabled => State::Disabled->badge(),
             self::Available => 'info',
         };
     }

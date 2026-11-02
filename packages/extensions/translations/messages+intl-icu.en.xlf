@@ -43,12 +43,6 @@
         <target>Price</target>
       </segment>
     </unit>
-    <unit id="extensions.column.state">
-      <segment>
-        <source>extensions.column.state</source>
-        <target>State</target>
-      </segment>
-    </unit>
     <unit id="extensions.column.type">
       <segment>
         <source>extensions.column.type</source>

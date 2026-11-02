@@ -112,7 +112,7 @@ final class MetadataTest extends CatalogTestCase
         $page = $this->arrive('/admin/extensions');
 
         self::assertSame(self::phrase('extensions.flash.missing', ['name' => self::NAME]), self::toast($page, 'error'));
-        self::assertSame(self::phrase(ExtensionState::Missing->label()), trim(self::cell($page, self::NAME, self::phrase('extensions.column.state'))->text()));
+        self::assertSame(self::phrase(ExtensionState::Missing->label()), trim(self::cell($page, self::NAME, self::phrase('core.column.status'))->text()));
     }
 
     #[Group('ACMS-EXT-0003')]

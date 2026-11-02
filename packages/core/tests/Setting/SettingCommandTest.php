@@ -51,7 +51,7 @@ final class SettingCommandTest extends SchemaTestCase
 
         $listing = self::command('adzercms:setting');
         $listing->execute([]);
-        self::assertMatchesRegularExpression('~sms\.relay\.enabled\s+Enabled\s+0\s*$~m', $listing->getDisplay(), 'a switched off toggle shows its value');
+        self::assertMatchesRegularExpression('~sms\.relay\.enabled\s+Active\s+0\s*$~m', $listing->getDisplay(), 'a switched off toggle shows its value');
         self::assertMatchesRegularExpression('~sms\.relay\.sender\s+Relay sender\s+—\s*$~m', $listing->getDisplay());
     }
 
@@ -170,7 +170,7 @@ final class SettingCommandTest extends SchemaTestCase
         $enabled = RelayGateway::SETTINGS.Switches::ENABLED;
         $wrong = self::command('adzercms:setting');
         self::assertSame(Command::INVALID, $wrong->execute(['name' => $enabled, 'value' => 'yes']));
-        self::assertStringContainsString('Enabled takes 1 to switch on or 0 to switch off', $wrong->getDisplay());
+        self::assertStringContainsString('Active takes 1 to switch on or 0 to switch off', $wrong->getDisplay());
 
         self::assertSame(Command::SUCCESS, self::command('adzercms:setting')->execute(['name' => $enabled, 'value' => '1']));
         self::assertTrue(self::service(Settings::class)->on($enabled));

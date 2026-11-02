@@ -45,7 +45,7 @@ final class AuthorTest extends CatalogTestCase
         $page = $this->arrive(self::SECTION);
         self::assertSame($key, $this->key(), 'the key is issued once');
         self::assertSame(['acme/mine'], $page->filter('tbody tr strong')->each(static fn (Crawler $name): string => $name->text()));
-        $state = self::cell($page, 'acme/mine', self::phrase('extensions.column.state'));
+        $state = self::cell($page, 'acme/mine', self::phrase('core.column.status'));
         self::assertSame([self::phrase(ExtensionState::Rejected->label()), 'No demo site'], [$state->filter('.badge')->text(), $state->filter('.muted')->text()]);
     }
 

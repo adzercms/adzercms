@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Module;
 
 use AdzerCMS\Contracts\Ui\Badged;
+use AdzerCMS\Core\Ui\State;
 use Symfony\Contracts\Translation\TranslatableInterface;
-
-use function Symfony\Component\Translation\t;
 
 enum OperationState: string implements Badged
 {
@@ -18,21 +17,26 @@ enum OperationState: string implements Badged
 
     public function label(): TranslatableInterface
     {
-        return t('core.module.state.'.$this->value);
+        return $this->state()->label();
     }
 
     public function badge(): string
     {
-        return match ($this) {
-            self::Pending => 'info',
-            self::Running => 'warning',
-            self::Done => 'success',
-            self::Failed => 'danger',
-        };
+        return $this->state()->badge();
     }
 
     public function open(): bool
     {
         return self::Pending === $this || self::Running === $this;
+    }
+
+    private function state(): State
+    {
+        return match ($this) {
+            self::Pending => State::Pending,
+            self::Running => State::Running,
+            self::Done => State::Done,
+            self::Failed => State::Failed,
+        };
     }
 }

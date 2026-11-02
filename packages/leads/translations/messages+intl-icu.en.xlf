@@ -139,24 +139,6 @@
         <target>Topic</target>
       </segment>
     </unit>
-    <unit id="leads.filter.manager">
-      <segment>
-        <source>leads.filter.manager</source>
-        <target>Any manager</target>
-      </segment>
-    </unit>
-    <unit id="leads.filter.stage">
-      <segment>
-        <source>leads.filter.stage</source>
-        <target>Any stage</target>
-      </segment>
-    </unit>
-    <unit id="leads.filter.topic">
-      <segment>
-        <source>leads.filter.topic</source>
-        <target>Any topic</target>
-      </segment>
-    </unit>
     <unit id="leads.flash.added">
       <segment>
         <source>leads.flash.added</source>
@@ -197,12 +179,6 @@
       <segment>
         <source>leads.flash.taken</source>
         <target>The request is sent, we will contact you soon</target>
-      </segment>
-    </unit>
-    <unit id="leads.group.done">
-      <segment>
-        <source>leads.group.done</source>
-        <target>Done</target>
       </segment>
     </unit>
     <unit id="leads.group.new">

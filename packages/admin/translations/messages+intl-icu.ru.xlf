@@ -19,12 +19,6 @@
         <target>{bot}: {failure}</target>
       </segment>
     </unit>
-    <unit id="admin.dashboard.archive">
-      <segment>
-        <source>admin.dashboard.archive</source>
-        <target>В архиве</target>
-      </segment>
-    </unit>
     <unit id="admin.dashboard.users">
       <segment>
         <source>admin.dashboard.users</source>
@@ -94,7 +88,7 @@
     <unit id="admin.modules.category">
       <segment>
         <source>admin.modules.category</source>
-        <target>Любая категория</target>
+        <target>Категория</target>
       </segment>
     </unit>
     <unit id="admin.modules.description">
@@ -169,24 +163,6 @@
         <target>Доступен</target>
       </segment>
     </unit>
-    <unit id="admin.modules.state.disabled">
-      <segment>
-        <source>admin.modules.state.disabled</source>
-        <target>Выключен</target>
-      </segment>
-    </unit>
-    <unit id="admin.modules.state.enabled">
-      <segment>
-        <source>admin.modules.state.enabled</source>
-        <target>Включён</target>
-      </segment>
-    </unit>
-    <unit id="admin.modules.status">
-      <segment>
-        <source>admin.modules.status</source>
-        <target>Статус</target>
-      </segment>
-    </unit>
     <unit id="admin.modules.unverified">
       <segment>
         <source>admin.modules.unverified</source>
@@ -217,18 +193,6 @@
         <target>Действие</target>
       </segment>
     </unit>
-    <unit id="admin.operations.any_action">
-      <segment>
-        <source>admin.operations.any_action</source>
-        <target>Любое действие</target>
-      </segment>
-    </unit>
-    <unit id="admin.operations.any_state">
-      <segment>
-        <source>admin.operations.any_state</source>
-        <target>Любое состояние</target>
-      </segment>
-    </unit>
     <unit id="admin.operations.done">
       <segment>
         <source>admin.operations.done</source>
@@ -257,12 +221,6 @@
       <segment>
         <source>admin.operations.package</source>
         <target>Пакет</target>
-      </segment>
-    </unit>
-    <unit id="admin.operations.state">
-      <segment>
-        <source>admin.operations.state</source>
-        <target>Состояние</target>
       </segment>
     </unit>
     <unit id="admin.operations.title">
@@ -707,12 +665,6 @@
       <segment>
         <source>admin.user.saved</source>
         <target>Изменения сохранены</target>
-      </segment>
-    </unit>
-    <unit id="admin.user.state">
-      <segment>
-        <source>admin.user.state</source>
-        <target>Состояние</target>
       </segment>
     </unit>
     <unit id="admin.user.switch">

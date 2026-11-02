@@ -72,9 +72,9 @@ final readonly class LeadRows
         ], 'arrived', t('leads.empty'), false, filters: array_values(array_filter([
             $tabs,
             Filter::search(),
-            [] === $topics ? null : Filter::select(self::TOPIC, t('leads.filter.topic'), array_combine($topics, $topics))->on('l.topic'),
-            [] === $managers ? null : Filter::select(self::MANAGER, t('leads.filter.manager'), $managers)->on('l.manager'),
-            \count($stages) < 2 ? null : Filter::select(self::STAGE, t('leads.filter.stage'), $stages)->on('l.stage'),
+            [] === $topics ? null : Filter::select(self::TOPIC, t('leads.field.topic'), array_combine($topics, $topics))->on('l.topic'),
+            [] === $managers ? null : Filter::select(self::MANAGER, t('leads.field.manager'), $managers)->on('l.manager'),
+            \count($stages) < 2 ? null : Filter::select(self::STAGE, t('leads.field.stage'), $stages)->on('l.stage'),
         ])), sticky: $sticky);
 
         $term = trim($table->term());

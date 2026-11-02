@@ -199,6 +199,12 @@
         <target>SMS</target>
       </segment>
     </unit>
+    <unit id="core.column.status">
+      <segment>
+        <source>core.column.status</source>
+        <target>Status</target>
+      </segment>
+    </unit>
     <unit id="core.confirmation.too_often">
       <segment>
         <source>core.confirmation.too_often</source>
@@ -709,30 +715,6 @@
         <target>The repository address is an http or https URL up to {max} characters</target>
       </segment>
     </unit>
-    <unit id="core.module.state.done">
-      <segment>
-        <source>core.module.state.done</source>
-        <target>Done</target>
-      </segment>
-    </unit>
-    <unit id="core.module.state.failed">
-      <segment>
-        <source>core.module.state.failed</source>
-        <target>Refused</target>
-      </segment>
-    </unit>
-    <unit id="core.module.state.pending">
-      <segment>
-        <source>core.module.state.pending</source>
-        <target>Waiting</target>
-      </segment>
-    </unit>
-    <unit id="core.module.state.running">
-      <segment>
-        <source>core.module.state.running</source>
-        <target>Running</target>
-      </segment>
-    </unit>
     <unit id="core.module.zip.manifest">
       <segment>
         <source>core.module.zip.manifest</source>
@@ -1099,12 +1081,6 @@
         <target>Awaiting the end of quiet hours</target>
       </segment>
     </unit>
-    <unit id="core.notice.status.failed">
-      <segment>
-        <source>core.notice.status.failed</source>
-        <target>Gateway refusal</target>
-      </segment>
-    </unit>
     <unit id="core.notice.status.sent">
       <segment>
         <source>core.notice.status.sent</source>
@@ -1211,12 +1187,6 @@
       <segment>
         <source>core.setting.decimal</source>
         <target>{field}: a number is required</target>
-      </segment>
-    </unit>
-    <unit id="core.setting.enabled">
-      <segment>
-        <source>core.setting.enabled</source>
-        <target>Enabled</target>
       </segment>
     </unit>
     <unit id="core.setting.icon">
@@ -1411,22 +1381,64 @@
         <target>{field} takes an http or https URL</target>
       </segment>
     </unit>
-    <unit id="core.status.active">
+    <unit id="core.state.active">
       <segment>
-        <source>core.status.active</source>
+        <source>core.state.active</source>
         <target>Active</target>
       </segment>
     </unit>
-    <unit id="core.status.archived">
+    <unit id="core.state.archived">
       <segment>
-        <source>core.status.archived</source>
+        <source>core.state.archived</source>
         <target>Archived</target>
       </segment>
     </unit>
-    <unit id="core.status.stopped">
+    <unit id="core.state.disabled">
       <segment>
-        <source>core.status.stopped</source>
-        <target>Stopped</target>
+        <source>core.state.disabled</source>
+        <target>Disabled</target>
+      </segment>
+    </unit>
+    <unit id="core.state.done">
+      <segment>
+        <source>core.state.done</source>
+        <target>Done</target>
+      </segment>
+    </unit>
+    <unit id="core.state.failed">
+      <segment>
+        <source>core.state.failed</source>
+        <target>Failed</target>
+      </segment>
+    </unit>
+    <unit id="core.state.offline">
+      <segment>
+        <source>core.state.offline</source>
+        <target>Offline</target>
+      </segment>
+    </unit>
+    <unit id="core.state.online">
+      <segment>
+        <source>core.state.online</source>
+        <target>Online</target>
+      </segment>
+    </unit>
+    <unit id="core.state.pending">
+      <segment>
+        <source>core.state.pending</source>
+        <target>Pending</target>
+      </segment>
+    </unit>
+    <unit id="core.state.running">
+      <segment>
+        <source>core.state.running</source>
+        <target>Running</target>
+      </segment>
+    </unit>
+    <unit id="core.state.skipped">
+      <segment>
+        <source>core.state.skipped</source>
+        <target>Skipped</target>
       </segment>
     </unit>
     <unit id="core.text.broken">
@@ -1459,12 +1471,6 @@
         <target>On</target>
       </segment>
     </unit>
-    <unit id="core.user.any_state">
-      <segment>
-        <source>core.user.any_state</source>
-        <target>Any state</target>
-      </segment>
-    </unit>
     <unit id="core.user.created">
       <segment>
         <source>core.user.created</source>
@@ -1487,12 +1493,6 @@
       <segment>
         <source>core.user.remove_self</source>
         <target>The operator does not delete their own record</target>
-      </segment>
-    </unit>
-    <unit id="core.user.state">
-      <segment>
-        <source>core.user.state</source>
-        <target>State</target>
       </segment>
     </unit>
   </file>

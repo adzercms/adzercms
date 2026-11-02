@@ -10,6 +10,7 @@ use AdzerCMS\Core\Composer\Description;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Setting\Catalog;
 use AdzerCMS\Core\Text\Texts;
+use AdzerCMS\Core\Ui\State;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -26,6 +27,7 @@ final readonly class Catalogs
 {
     private const SOURCE = 'en';
     private const DOMAIN = 'messages';
+    private const STATUS = 'core.column.status';
 
     public function __construct(private KernelInterface $kernel)
     {
@@ -54,13 +56,25 @@ final readonly class Catalogs
                 $refusals[] = \sprintf('composer.json lacks the module description extra.adzercms.description.%s', $locale);
             }
         }
-        foreach ($own as $locale => $files) {
-            $keys = self::keys(Texts::load($locale, $files));
+        /** @var array<string, list<string>> $files */
+        $files = $container->getParameter(Texts::FILES);
+        foreach ($own as $locale => $owned) {
+            $catalogue = Texts::load($locale, $owned);
+            $keys = self::keys($catalogue);
             foreach (array_diff($source, $keys) as $key) {
                 $refusals[] = \sprintf('%s catalog lacks %s of %s', $locale, $key, self::SOURCE);
             }
             foreach (array_diff($keys, $source) as $key) {
                 $refusals[] = \sprintf('%s catalog has %s beyond %s', $locale, $key, self::SOURCE);
+            }
+            $words = self::vocabulary(Texts::load($locale, [...$files[$locale] ?? [], ...$owned]));
+            foreach ($catalogue->all() as $messages) {
+                foreach ($messages as $key => $text) {
+                    $word = $words[self::word($text)] ?? (string) $key;
+                    if ($word !== (string) $key) {
+                        $refusals[] = \sprintf('%s %s repeats %s of the core state vocabulary: the label goes by its key', $locale, $key, $word);
+                    }
+                }
             }
         }
 
@@ -73,8 +87,6 @@ final readonly class Catalogs
         foreach (array_filter([$package.'/src', $package.'/templates'], is_dir(...)) as $directory) {
             $extractor->extract($directory, $extracted);
         }
-        /** @var array<string, list<string>> $files */
-        $files = $container->getParameter(Texts::FILES);
         $defined = Texts::load(self::SOURCE, [...$files[self::SOURCE] ?? [], ...$own[self::SOURCE] ?? []]);
         foreach ($extracted->all() as $domain => $messages) {
             foreach (array_map(strval(...), array_keys($messages)) as $key) {
@@ -97,6 +109,31 @@ final readonly class Catalogs
         }
 
         return [] === $refusals ? Command::SUCCESS : Command::FAILURE;
+    }
+
+    /** @return array<string, string> */
+    private static function vocabulary(MessageCatalogue $catalogue): array
+    {
+        $keys = [self::STATUS];
+        foreach (State::cases() as $state) {
+            $label = $state->label();
+            if ($label instanceof TranslatableMessage) {
+                $keys[] = $label->getMessage();
+            }
+        }
+        $words = [];
+        foreach ($catalogue->all() as $messages) {
+            foreach (array_intersect_key($messages, array_flip($keys)) as $key => $text) {
+                $words[self::word($text)] = (string) $key;
+            }
+        }
+
+        return $words;
+    }
+
+    private static function word(mixed $text): string
+    {
+        return mb_strtolower(trim(\is_scalar($text) ? (string) $text : ''));
     }
 
     /** @return list<string> */

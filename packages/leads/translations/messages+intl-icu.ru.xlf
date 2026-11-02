@@ -139,24 +139,6 @@
         <target>Тема</target>
       </segment>
     </unit>
-    <unit id="leads.filter.manager">
-      <segment>
-        <source>leads.filter.manager</source>
-        <target>Любой менеджер</target>
-      </segment>
-    </unit>
-    <unit id="leads.filter.stage">
-      <segment>
-        <source>leads.filter.stage</source>
-        <target>Любая стадия</target>
-      </segment>
-    </unit>
-    <unit id="leads.filter.topic">
-      <segment>
-        <source>leads.filter.topic</source>
-        <target>Любая тема</target>
-      </segment>
-    </unit>
     <unit id="leads.flash.added">
       <segment>
         <source>leads.flash.added</source>
@@ -197,12 +179,6 @@
       <segment>
         <source>leads.flash.taken</source>
         <target>Заявка отправлена, мы скоро свяжемся с вами</target>
-      </segment>
-    </unit>
-    <unit id="leads.group.done">
-      <segment>
-        <source>leads.group.done</source>
-        <target>Выполнена</target>
       </segment>
     </unit>
     <unit id="leads.group.new">

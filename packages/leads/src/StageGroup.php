@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Leads;
 
 use AdzerCMS\Contracts\Ui\Badged;
+use AdzerCMS\Core\Ui\State;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
@@ -18,7 +19,7 @@ enum StageGroup: string implements Badged
 
     public function label(): TranslatableInterface
     {
-        return t('leads.group.'.$this->value);
+        return self::Done === $this ? State::Done->label() : t('leads.group.'.$this->value);
     }
 
     public function badge(): string
@@ -26,7 +27,7 @@ enum StageGroup: string implements Badged
         return match ($this) {
             self::Fresh => 'info',
             self::Work => 'warning',
-            self::Done => 'success',
+            self::Done => State::Done->badge(),
             self::Refused => 'danger',
         };
     }

@@ -63,12 +63,12 @@ final class NoticeController extends AbstractController
             Column::of('user', t('mailing.column.user'), 'n.user')->aside(),
             Column::of('recipient', t('mailing.column.recipient'), 'n.recipient')->aside(),
             Column::of('body', t('mailing.column.body'), 'n.body')->aside(),
-            Column::of('status', t('mailing.column.status'), 'n.status'),
+            Column::of('status', t('core.column.status'), 'n.status'),
         ], 'at', t('mailing.empty'), false,
             filters: [
                 Filter::search(),
                 Filter::select('event', t('mailing.column.event'), $events)->on('n.event'),
-                Filter::cases('status', t('mailing.filter.status'), Status::cases())->on('n.status'),
+                Filter::cases('status', t('core.column.status'), Status::cases())->on('n.status'),
             ],
             sticky: ['tab' => $tab, 'view' => 'journal'],
         );

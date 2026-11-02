@@ -136,13 +136,13 @@ final class ExtensionController extends AbstractController
             Column::plain('demo', t('extensions.column.demo'))->aside(),
             Column::plain('version', t('extensions.column.version'))->aside(),
             Column::plain('author', t('extensions.column.author'))->aside(),
-            Column::plain('state', t('extensions.column.state')),
+            Column::plain('state', t('core.column.status')),
             Column::plain('actions'),
         ], 'name', t('extensions.empty'),
             filters: [
                 Filter::search(),
                 Filter::cases('type', t('extensions.filter.type'), ExtensionType::cases())->on('e.type'),
-                Filter::cases('state', t('extensions.column.state'), ExtensionState::cases())->on('e.state'),
+                Filter::cases('state', t('core.column.status'), ExtensionState::cases())->on('e.state'),
             ],
             order: Order::of('admin_extensions_order', 'e.decision', 'e.position', 'e.id'),
         );

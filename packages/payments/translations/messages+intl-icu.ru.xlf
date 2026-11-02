@@ -130,7 +130,7 @@
     <unit id="payments.status.pending">
       <segment>
         <source>payments.status.pending</source>
-        <target>Ждёт оплаты</target>
+        <target>Ожидает оплаты</target>
       </segment>
     </unit>
     <unit id="payments.status.rejected">

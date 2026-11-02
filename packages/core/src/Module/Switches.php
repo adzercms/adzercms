@@ -31,7 +31,7 @@ final class Switches implements Owner
     {
         $fields = [];
         foreach ($this->keyed() as [$prefix, $module]) {
-            $fields[] = new Field($prefix.self::ENABLED, t('core.setting.enabled'), Type::Toggle);
+            $fields[] = new Field($prefix.self::ENABLED, t('core.state.active'), Type::Toggle);
             foreach ($module->credentials() as $field) {
                 $fields[] = $field->prefixed($prefix);
             }

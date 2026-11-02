@@ -49,12 +49,6 @@
         <target>Адресат</target>
       </segment>
     </unit>
-    <unit id="mailing.column.status">
-      <segment>
-        <source>mailing.column.status</source>
-        <target>Статус</target>
-      </segment>
-    </unit>
     <unit id="mailing.column.user">
       <segment>
         <source>mailing.column.user</source>
@@ -71,12 +65,6 @@
       <segment>
         <source>mailing.event.broadcast</source>
         <target>Рассылка оператора</target>
-      </segment>
-    </unit>
-    <unit id="mailing.filter.status">
-      <segment>
-        <source>mailing.filter.status</source>
-        <target>Итог</target>
       </segment>
     </unit>
     <unit id="mailing.flash.sent">

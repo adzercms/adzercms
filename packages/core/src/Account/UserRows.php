@@ -38,7 +38,7 @@ final readonly class UserRows
     {
         $filters = [Filter::search()];
         if (!$archive) {
-            $filters[] = Filter::cases(self::STATE, t('core.user.any_state'), [Status::Active, Status::Stopped])->on('s.status');
+            $filters[] = Filter::cases(self::STATE, t('core.column.status'), [Status::Active, Status::Stopped])->on('s.status');
         }
 
         $extra = $this->modules->columns(Columns::ADMIN_USERS);
@@ -47,7 +47,7 @@ final readonly class UserRows
             Column::of('id', t('core.user.login'), 's.id'),
             Column::of('created', t('core.user.created'), 's.createdAt')->aside(),
             ...$extra,
-            Column::of('state', t('core.user.state'), 's.status'),
+            Column::of('state', t('core.column.status'), 's.status'),
         ], 'created', t('core.user.empty'), false, filters: $filters, sticky: $sticky);
 
         $term = trim($table->term());

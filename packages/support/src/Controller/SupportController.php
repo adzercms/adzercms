@@ -59,12 +59,12 @@ final class SupportController extends AbstractController
             Column::of('subject', t('support.column.subject'), 't.subject'),
             Column::of('department', t('support.column.department'), 't.department')->aside(),
             Column::of('at', t('support.column.at'), 't.lastMessageAt')->aside(),
-            Column::of('status', t('support.column.status'), 't.status'),
+            Column::of('status', t('core.column.status'), 't.status'),
         ])), 'at', t('support.empty'), false,
             filters: array_filter([
                 Filter::search(),
                 Filter::select('department', t('support.column.department'), array_combine($departments, $departments))->on('t.department'),
-                $archive ? null : Filter::cases('status', t('support.filter.status'), TicketStatus::active())->on('t.status'),
+                $archive ? null : Filter::cases('status', t('core.column.status'), TicketStatus::active())->on('t.status'),
             ]),
             sticky: $archive ? ['tab' => 'archive'] : [],
         );

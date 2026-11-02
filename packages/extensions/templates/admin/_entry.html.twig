@@ -24,7 +24,7 @@
             <span class="info-value">{% include '@Theme/_user.html.twig' with {user: extension.author.user} only %}</span>
         </div>
         <div class="info-item">
-            <span class="info-label">{{ 'extensions.column.state'|trans }}</span>
+            <span class="info-label">{{ 'core.column.status'|trans }}</span>
             <span class="info-value">{{ badge(extension.state) }}{{ caption(extension.reason) }}</span>
         </div>
     </div>

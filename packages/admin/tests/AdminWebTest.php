@@ -337,7 +337,7 @@ final class AdminWebTest extends SchemaTestCase
 
         $login = self::phrase('core.user.login');
         self::assertSame(
-            [$login, self::phrase('core.user.created'), Ledger::LABEL, self::phrase('core.user.state')],
+            [$login, self::phrase('core.user.created'), Ledger::LABEL, self::phrase('core.column.status')],
             $listing->filter('thead th')->each(static fn (Crawler $head): string => trim($head->text())),
         );
 
@@ -483,7 +483,7 @@ final class AdminWebTest extends SchemaTestCase
 
         $page = $this->client->request('GET', '/admin');
         self::assertSame('2', self::tile($page, self::phrase('admin.dashboard.users')));
-        self::assertSame('1', self::tile($page, self::phrase('admin.dashboard.archive')));
+        self::assertSame('1', self::tile($page, self::phrase('core.state.archived')));
     }
 
     #[Group('ACMS-CORE-0053')]

@@ -92,7 +92,7 @@ final class ModuleWebTest extends SchemaTestCase
             );
         }
         self::assertSame(
-            [...array_map(self::phrase(...), ['admin.modules.name', 'admin.modules.version', 'admin.modules.repository', 'admin.modules.status']), ''],
+            [...array_map(self::phrase(...), ['admin.modules.name', 'admin.modules.version', 'admin.modules.repository', 'core.column.status']), ''],
             $listing->filter('#rows thead th')->each(static fn (Crawler $head): string => trim($head->text())),
         );
         $assembled = [];
@@ -115,7 +115,7 @@ final class ModuleWebTest extends SchemaTestCase
         );
         self::assertStringContainsString(self::phrase($modules['admin']['description']), self::cell($listing, 'adzercms/admin', self::phrase('admin.modules.name'))->text(),
             'an assembled module tells what it does in the language of the reader');
-        self::assertSame(self::phrase(ModuleState::Enabled->label()), trim(self::cell($listing, 'adzercms/admin', self::phrase('admin.modules.status'))->text()));
+        self::assertSame(self::phrase(ModuleState::Enabled->label()), trim(self::cell($listing, 'adzercms/admin', self::phrase('core.column.status'))->text()));
         self::assertSame(['/admin/modules/admin'], self::cards($this->fragment(self::MODULES.'?q='.urlencode(self::phrase($modules['admin']['description'])))),
             'the search goes by what the module does too');
 
@@ -219,14 +219,14 @@ final class ModuleWebTest extends SchemaTestCase
 
         self::assertSame(
             ['1.2.0', 'repo.packagist.org', self::phrase(ModuleState::Available->label())],
-            $cells('acme/till', 'admin.modules.version', 'admin.modules.repository', 'admin.modules.status'),
+            $cells('acme/till', 'admin.modules.version', 'admin.modules.repository', 'core.column.status'),
         );
         self::assertSame(
             [InstalledVersions::getPrettyVersion('adzercms/admin').' '.self::phrase('admin.modules.update', ['version' => '1.0.x-dev']), self::phrase(ModuleState::Enabled->label())],
-            $cells('adzercms/admin', 'admin.modules.version', 'admin.modules.status'),
+            $cells('adzercms/admin', 'admin.modules.version', 'core.column.status'),
             'an installed module names its version and the newer one of the catalog',
         );
-        self::assertSame([self::phrase(ModuleState::Disabled->label())], $cells($idle->name, 'admin.modules.status'));
+        self::assertSame([self::phrase(ModuleState::Disabled->label())], $cells($idle->name, 'core.column.status'));
 
         $names = fn (string $query): array => self::firstCells($this->fragment(self::MODULES.'?'.$query)->filter('#rows'), 'strong');
         $category = $names('category=messaging');
@@ -390,7 +390,7 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertSame([], self::actions($page, 'acme/shop'), 'a row with an open operation takes no other one');
         self::assertSame(
             self::phrase(OperationState::Pending->label()).' '.self::phrase(ModuleAction::Install->label()),
-            trim(self::cell($page->filter('#rows'), 'acme/shop', self::phrase('admin.modules.status'))->text()),
+            trim(self::cell($page->filter('#rows'), 'acme/shop', self::phrase('core.column.status'))->text()),
         );
         $this->post('/admin/modules/operation/enable?package='.$idle->name);
         $this->post('/admin/modules/operation/enable?package='.$idle->name);
