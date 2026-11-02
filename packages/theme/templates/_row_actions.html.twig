@@ -9,5 +9,7 @@
             {% for name, value in hidden|default({}) %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
             <button type="submit" class="icon-act" aria-label="{{ 'core.action.drop'|trans }}" title="{{ 'core.action.drop'|trans }}">{{ icon.drop() }}</button>
         </form>
+    {% elseif drop_dialog|default(null) %}
+        <button type="button" class="icon-act" data-record="{{ drop_dialog }}" aria-label="{{ 'core.action.drop'|trans }}" title="{{ 'core.action.drop'|trans }}">{{ icon.drop() }}</button>
     {% endif %}
 </td>
