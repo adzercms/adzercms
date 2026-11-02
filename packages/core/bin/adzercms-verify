@@ -1,17 +1,23 @@
 #!/bin/sh
 set -eu
 
+scripts=$(cd "$(dirname "$0")" && pwd -P)
+
 if [ $# -eq 0 ]; then
     copy=$(pwd -P)/var/verify
-    excluded=$(dirname "$0")/../config/stage.exclude
+    excluded=$scripts/../config/stage.exclude
     rm -rf "$copy"
     trap 'rm -rf "$copy"' EXIT
     mkdir -p "$copy"
     sed 's#^#/#' "$excluded" | rsync -a --exclude-from=- ./ "$copy/"
     bin/php "$(command -v composer)" install --working-dir="$copy" --no-scripts --no-interaction --no-progress
+    changed=$("$scripts/adzercms-patched")
+    # shellcheck disable=SC2086
+    [ -z "$changed" ] || bin/php "$(command -v composer)" reinstall --working-dir="$copy" --no-interaction --no-progress $changed
     set -- "$copy"
 fi
 
 cd "$1"
+bin/php bin/console importmap:install --no-interaction --env=test
 vendor/bin/adzercms-check
-[ ! -f phpunit.dist.xml ] || bin/phpunit --colors=never
+[ ! -f phpunit.dist.xml ] || "$scripts/adzercms-suites"

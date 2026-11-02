@@ -6,12 +6,20 @@ set -eu
 root=$(pwd -P)
 [ "${ADZERCMS_REFRESHED:-}" != "$root" ] || exit 0
 stamp=var/composer.installed
+patched=var/patches.installed
+locked=$(sha256sum composer.lock | cut -d' ' -f1)
+
+repatched() {
+    { [ -f patches.lock.json ] || [ -f "$patched" ]; } && ! cmp -s patches.lock.json "$patched"
+}
 
 if [ "${ADZERCMS_ENTRY:-}" != "$root" ]; then
     mkdir -p var/lock
     exec 9> var/lock/refresh 8> var/lock/entry 7> var/lock/serve 6> var/lock/served
     flock 9
-    [ "$(cat "$stamp" 2>/dev/null || true)" = "$(sha256sum composer.lock | cut -d' ' -f1)" ] || "$(dirname "$0")/adzercms-verify"
+    if [ "$(cat "$stamp" 2>/dev/null || true)" != "$locked" ] || repatched; then
+        "$(dirname "$0")/adzercms-verify"
+    fi
     flock 8
     flock 7
     flock 6
@@ -19,23 +27,14 @@ if [ "${ADZERCMS_ENTRY:-}" != "$root" ]; then
     export ADZERCMS_ENTRY
 fi
 
-locked=$(sha256sum composer.lock | cut -d' ' -f1)
-
 if [ "$(cat "$stamp" 2>/dev/null || true)" != "$locked" ]; then
     bin/php "$(command -v composer)" install --no-interaction --no-progress --no-scripts
     printf '%s\n' "$locked" > "$stamp"
     exec "$0"
 fi
 
-patched=var/patches.installed
-
-if { [ -f patches.lock.json ] || [ -f "$patched" ]; } && ! cmp -s patches.lock.json "$patched"; then
-    # shellcheck disable=SC2016
-    changed=$(bin/php -r '
-        $patches = static fn (string $file): array => is_file($file) ? json_decode(file_get_contents($file), true)["patches"] ?? [] : [];
-        [$new, $old] = [$patches("patches.lock.json"), $patches($argv[1])];
-        echo implode(" ", array_filter(array_keys($new + $old), static fn (string $package): bool => ($new[$package] ?? null) != ($old[$package] ?? null) && is_dir("vendor/".$package)));
-    ' "$patched")
+if repatched; then
+    changed=$("$(dirname "$0")/adzercms-patched")
     # shellcheck disable=SC2086
     [ -z "$changed" ] || bin/php "$(command -v composer)" reinstall --no-interaction --no-progress $changed
     if [ -f patches.lock.json ]; then cp patches.lock.json "$patched"; else rm "$patched"; fi

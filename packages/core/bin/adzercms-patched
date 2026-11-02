@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+
+# shellcheck disable=SC2016
+exec bin/php -r '
+    $patches = static fn (string $file): array => is_file($file) ? json_decode(file_get_contents($file), true)["patches"] ?? [] : [];
+    [$new, $old] = [$patches("patches.lock.json"), $patches("var/patches.installed")];
+    echo implode(" ", array_filter(array_keys($new + $old), static fn (string $package): bool => ($new[$package] ?? null) != ($old[$package] ?? null) && is_dir("vendor/".$package)));
+'
