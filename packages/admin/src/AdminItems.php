@@ -12,15 +12,10 @@ use function Symfony\Component\Translation\t;
 
 final readonly class AdminItems implements Menu
 {
-    public function __construct(private TrafficReports $traffic)
-    {
-    }
-
     public function items(Area $area): array
     {
         return Area::Admin === $area ? [
             new MenuItem('admin_dashboard', t('admin.menu.dashboard'), 0),
-            ...(null === $this->traffic->available() ? [] : [new MenuItem('admin_traffic', t('admin.menu.traffic'), 50)]),
             new MenuItem('admin_users', t('admin.menu.users'), 100, ['admin_user']),
             new MenuItem('admin_modules', t('admin.menu.modules'), 900, ['admin_module']),
             new MenuItem('admin_references', t('admin.menu.references'), 950, ['admin_reference_']),

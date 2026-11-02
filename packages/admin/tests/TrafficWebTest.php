@@ -23,7 +23,7 @@ final class TrafficWebTest extends SchemaTestCase
     use Accounts;
     use Browser;
 
-    private const PAGE = '/admin/traffic';
+    private const PAGE = '/admin?tab=traffic';
 
     protected function setUp(): void
     {
@@ -40,9 +40,7 @@ final class TrafficWebTest extends SchemaTestCase
         $today = now()->setTime(0, 0);
         $year = (int) $today->format('Y');
 
-        self::assertCount(0, $this->arrive('/admin')->filter('a[href="'.self::PAGE.'"]'), 'without a report the section is not in the menu');
-        $this->client->request('GET', self::PAGE);
-        self::assertResponseStatusCodeSame(404);
+        self::assertCount(0, $this->arrive('/admin')->filter('a[href="'.self::PAGE.'"]'), 'without a report the dashboard has no traffic tab');
 
         $footfall->open = true;
         $footfall->since = new \DateTimeImmutable(($year - 2).'-05-14');
@@ -55,22 +53,22 @@ final class TrafficWebTest extends SchemaTestCase
             [self::phrase('core.moment.day', ['at' => $today]), '4', '5', '12'],
         ], self::rows($page));
         self::assertSame(array_map(strval(...), range($year - 2, $year)), $page->filter('select[name="year"] option')->each(static fn (Crawler $option): string => (string) $option->attr('value')), 'years from the start of the statistics');
-        self::assertSame(self::phrase('admin.traffic.total'), self::rows($this->arrive(self::PAGE.'?sort=visitors&order=desc'))[0][0], 'the total stays over the steps');
+        self::assertSame(self::phrase('admin.traffic.total'), self::rows($this->arrive(self::PAGE.'&sort=visitors&order=desc'))[0][0], 'the total stays over the steps');
 
         $january = new \DateTimeImmutable(($year - 1).'-01-01');
         $footfall->steps = [new Visits($january, $january->modify('last day of this month'), 30, 40, 90)];
         $footfall->asked = [];
-        self::assertSame([self::phrase('core.moment.period', ['scale' => 'month', 'since' => $january, 'last' => $january])], array_slice(array_column(self::rows($this->arrive(self::PAGE.'?scale=year&year='.($year - 1).'&step=month')), 0), 1));
+        self::assertSame([self::phrase('core.moment.period', ['scale' => 'month', 'since' => $january, 'last' => $january])], array_slice(array_column(self::rows($this->arrive(self::PAGE.'&scale=year&year='.($year - 1).'&step=month')), 0), 1));
         self::assertEquals([[$january, $january->modify('last day of december'), Step::Month]], $footfall->asked);
 
         $from = $today->modify('-2 days');
         $footfall->steps = [new Visits($from, $today, 6, 7, 15)];
         $footfall->asked = [];
-        self::assertSame(self::phrase('core.moment.period', ['scale' => 'custom', 'since' => $from, 'last' => $today]), self::rows($this->arrive(self::PAGE.'?scale=custom&from='.$from->format('Y-m-d').'&to='.$today->modify('+5 days')->format('Y-m-d').'&step=week'))[1][0]);
+        self::assertSame(self::phrase('core.moment.period', ['scale' => 'custom', 'since' => $from, 'last' => $today]), self::rows($this->arrive(self::PAGE.'&scale=custom&from='.$from->format('Y-m-d').'&to='.$today->modify('+5 days')->format('Y-m-d').'&step=week'))[1][0]);
         self::assertEquals([[$from, $today, Step::Week]], $footfall->asked, 'days after today stay out of the period');
 
         $footfall->asked = [];
-        self::assertSame(self::phrase('admin.traffic.empty'), trim($this->arrive(self::PAGE.'?scale=year&year='.($year + 1))->filter('.empty-state')->text()));
+        self::assertSame(self::phrase('admin.traffic.empty'), trim($this->arrive(self::PAGE.'&scale=year&year='.($year + 1))->filter('.empty-state')->text()));
         self::assertSame([], $footfall->asked, 'a period ahead asks nothing');
 
         $footfall->refusal = new Refusal(new TranslatableMessage('Counter is offline'));

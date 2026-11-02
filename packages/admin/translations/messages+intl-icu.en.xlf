@@ -49,12 +49,6 @@
         <target>Settings</target>
       </segment>
     </unit>
-    <unit id="admin.menu.traffic">
-      <segment>
-        <source>admin.menu.traffic</source>
-        <target>Traffic</target>
-      </segment>
-    </unit>
     <unit id="admin.menu.users">
       <segment>
         <source>admin.menu.users</source>
@@ -395,6 +389,12 @@
       <segment>
         <source>admin.traffic.step.week</source>
         <target>By week</target>
+      </segment>
+    </unit>
+    <unit id="admin.traffic.tab">
+      <segment>
+        <source>admin.traffic.tab</source>
+        <target>Traffic</target>
       </segment>
     </unit>
     <unit id="admin.traffic.total">

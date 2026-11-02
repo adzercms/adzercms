@@ -138,7 +138,7 @@ The service with the credential fields also implements `AdzerCMS\Contracts\Setti
 
 ## Traffic
 
-An analytics counter module shows the site traffic in the admin with a service implementing `AdzerCMS\Contracts\Analytics\Traffic`; it's registered by autoconfiguration. `available()` tells whether the counter can give reports now, such as when it has its number and token. `report()` gets the first and the last day of the period and a `Step` of a day, a week or a month, and returns a `Report` or a `Refusal` with the reason from the service: the visitors, visits and views of the whole period, where a person who came on different days counts once, the same numbers by steps, and the first day of the counter statistics. The admin section "Traffic" takes the first available report, and without one the section is not in the menu and its address answers 404.
+An analytics counter module shows the site traffic in the admin with a service implementing `AdzerCMS\Contracts\Analytics\Traffic`; it's registered by autoconfiguration. `available()` tells whether the counter can give reports now, such as when it has its number and token. `report()` gets the first and the last day of the period and a `Step` of a day, a week or a month, and returns a `Report` or a `Refusal` with the reason from the service: the visitors, visits and views of the whole period, where a person who came on different days counts once, the same numbers by steps, and the first day of the counter statistics. The "Traffic" tab of the admin dashboard takes the first available report, and without one there is no such tab.
 
 ## User creation
 

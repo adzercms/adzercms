@@ -94,7 +94,7 @@ final class YandexMetrikaTest extends SchemaTestCase
         self::assertStringContainsString("Yclid,Target,DateTime\n4504935055255666687,registration,".$moment->getTimestamp(), $sent[0]['body']);
     }
 
-    #[Group('ACMS-CORE-1027')]
+    #[Group('ACMS-CORE-1048')]
     public function testTrafficComesFromTheCounterReportsByItsToken(): void
     {
         $traffic = new YandexMetrikaTraffic(self::api());

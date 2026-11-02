@@ -1,8 +1,3 @@
-{% extends '@Theme/panel.html.twig' %}
-
-{% block title %}{{ 'admin.menu.traffic'|trans }}{% endblock %}
-
-{% block page %}
 {% embed '@Theme/_table.html.twig' %}
     {% block row %}
         <tr>
@@ -12,4 +7,3 @@
         </tr>
     {% endblock %}
 {% endembed %}
-{% endblock %}
