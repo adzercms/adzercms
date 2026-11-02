@@ -1,8 +1,3 @@
-{% extends '@Theme/panel.html.twig' %}
-
-{% block title %}{{ 'admin.menu.translations'|trans }}{% endblock %}
-
-{% block page %}
 <div hx-get="{{ path(table.route, table.params) }}" hx-trigger="{{ changed }} from:body" hx-target="#{{ table.id }}" hx-select="#{{ table.id }}" hx-swap="outerHTML">
 {% embed '@Theme/_table.html.twig' %}
     {% block row %}
@@ -13,4 +8,3 @@
     {% endblock %}
 {% endembed %}
 </div>
-{% endblock %}

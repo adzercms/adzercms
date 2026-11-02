@@ -1,0 +1,10 @@
+<nav class="tabs"{% if id|default(null) %} id="{{ id }}" data-live{% endif %}>
+    {%- for item in tabs %}
+        {%- set label %}{{ item.label|trans }}{% if item.count|default(null) is not null %} ({{ item.count }}){% endif %}{% endset %}
+        {%- if item.pane is defined %}
+            <button type="button" class="tab {{ item.active ? 'active' }}" data-pane="{{ item.pane }}">{{ label }}</button>
+        {%- else %}
+            <a class="tab {{ item.active ? 'active' }}" href="{{ item.href }}">{{ label }}</a>
+        {%- endif %}
+    {%- endfor %}
+</nav>

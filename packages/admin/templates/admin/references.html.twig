@@ -1,0 +1,9 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'admin.menu.references'|trans }}{% endblock %}
+
+{% block page %}
+{% include '@Theme/_tabs.html.twig' with {tabs: tabs|map((entry, key) => {label: entry.tab.label, count: entry.tab.count, href: path('admin_references', {tab: key}), active: key == tab})} only %}
+
+{% include fragment.template with fragment.context %}
+{% endblock %}

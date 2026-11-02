@@ -43,6 +43,12 @@
         <target>Extensions</target>
       </segment>
     </unit>
+    <unit id="admin.menu.references">
+      <segment>
+        <source>admin.menu.references</source>
+        <target>References</target>
+      </segment>
+    </unit>
     <unit id="admin.menu.settings">
       <segment>
         <source>admin.menu.settings</source>
@@ -53,12 +59,6 @@
       <segment>
         <source>admin.menu.traffic</source>
         <target>Traffic</target>
-      </segment>
-    </unit>
-    <unit id="admin.menu.translations">
-      <segment>
-        <source>admin.menu.translations</source>
-        <target>Translations</target>
       </segment>
     </unit>
     <unit id="admin.menu.users">
@@ -491,6 +491,12 @@
       <segment>
         <source>admin.translations.message</source>
         <target>Key</target>
+      </segment>
+    </unit>
+    <unit id="admin.translations.tab">
+      <segment>
+        <source>admin.translations.tab</source>
+        <target>Translations</target>
       </segment>
     </unit>
     <unit id="admin.translations.text">

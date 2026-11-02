@@ -10,6 +10,7 @@ interface Tabs
 {
     public const ADMIN_DASHBOARD = 'admin.dashboard';
     public const ADMIN_USER = 'admin.user';
+    public const ADMIN_REFERENCES = 'admin.references';
     public const CABINET_HOME = 'cabinet.home';
 
     public function page(): string;

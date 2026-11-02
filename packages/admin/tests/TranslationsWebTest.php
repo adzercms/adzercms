@@ -30,6 +30,7 @@ final class TranslationsWebTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0995')]
+    #[Group('ACMS-CORE-1041')]
     #[Group('ACMS-US-0004')]
     public function testAdminTranslatesTextOfEachLanguageAndRestoresCatalogOne(): void
     {
@@ -64,13 +65,13 @@ final class TranslationsWebTest extends SchemaTestCase
 
     private static function text(string $locale): string
     {
-        return '/admin/translations/'.$locale.'/'.self::DOMAIN.'/'.self::MESSAGE;
+        return '/admin/references/translations/'.$locale.'/'.self::DOMAIN.'/'.self::MESSAGE;
     }
 
     /** @return list<array{string, string}> */
     private function rows(string $language): array
     {
-        return $this->client->request('GET', '/admin/translations?'.http_build_query(['q' => self::MESSAGE, 'language' => $language]))
+        return $this->client->request('GET', '/admin/references?'.http_build_query(['q' => self::MESSAGE, 'language' => $language]))
             ->filter('tr.clickable-row')
             ->each(static fn (Crawler $row): array => [(string) $row->attr('data-record'), trim($row->filter('td')->first()->text())]);
     }

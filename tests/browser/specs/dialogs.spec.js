@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-const TEXTS = '/admin/translations';
+const TEXTS = '/admin/references';
 const ASKING = `${TEXTS}/asking`;
 const LISTED = new RegExp(`${TEXTS}$`);
 
