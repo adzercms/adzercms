@@ -46,13 +46,13 @@
     <unit id="tbank.method.page">
       <segment>
         <source>tbank.method.page</source>
-        <target>Картой</target>
+        <target>Оплатить другим способом</target>
       </segment>
     </unit>
     <unit id="tbank.method.qr">
       <segment>
         <source>tbank.method.qr</source>
-        <target>По СБП</target>
+        <target>Оплатить по QR</target>
       </segment>
     </unit>
     <unit id="tbank.payment_method">

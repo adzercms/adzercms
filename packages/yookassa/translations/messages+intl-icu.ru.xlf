@@ -28,13 +28,13 @@
     <unit id="yookassa.method.page">
       <segment>
         <source>yookassa.method.page</source>
-        <target>Картой</target>
+        <target>Оплатить другим способом</target>
       </segment>
     </unit>
     <unit id="yookassa.method.sbp">
       <segment>
         <source>yookassa.method.sbp</source>
-        <target>По СБП</target>
+        <target>Оплатить по QR</target>
       </segment>
     </unit>
     <unit id="yookassa.payment_mode">

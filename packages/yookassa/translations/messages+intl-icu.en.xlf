@@ -28,13 +28,13 @@
     <unit id="yookassa.method.page">
       <segment>
         <source>yookassa.method.page</source>
-        <target>By card</target>
+        <target>Pay another way</target>
       </segment>
     </unit>
     <unit id="yookassa.method.sbp">
       <segment>
         <source>yookassa.method.sbp</source>
-        <target>By SBP</target>
+        <target>Pay by QR</target>
       </segment>
     </unit>
     <unit id="yookassa.payment_mode">

@@ -46,13 +46,13 @@
     <unit id="tbank.method.page">
       <segment>
         <source>tbank.method.page</source>
-        <target>By card</target>
+        <target>Pay another way</target>
       </segment>
     </unit>
     <unit id="tbank.method.qr">
       <segment>
         <source>tbank.method.qr</source>
-        <target>By SBP</target>
+        <target>Pay by QR</target>
       </segment>
     </unit>
     <unit id="tbank.payment_method">
