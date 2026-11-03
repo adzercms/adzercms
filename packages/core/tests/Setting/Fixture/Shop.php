@@ -19,6 +19,7 @@ final class Shop implements Owner, Rule
     public const PHONE = 'shop.phone';
     public const TOKEN = 'shop.token';
     public const CERTIFICATE = 'shop.certificate';
+    public const PORTRAIT = 'shop.portrait';
     public const DIGITS = 'Shop phone takes digits only';
 
     public function settingFields(): array
@@ -28,6 +29,7 @@ final class Shop implements Owner, Rule
             new Field(self::PHONE, t('Shop phone'), page: Page::General),
             new Field(self::TOKEN, t('Till token'), Type::Secret, page: Page::General),
             new Field(self::CERTIFICATE, t('Till certificate'), Type::Container, page: Page::General),
+            new Field(self::PORTRAIT, t('Shop portrait'), Type::Photo, page: Page::General),
         ];
     }
 

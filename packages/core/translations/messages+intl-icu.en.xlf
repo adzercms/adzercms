@@ -1123,6 +1123,12 @@
         <target>Year</target>
       </segment>
     </unit>
+    <unit id="core.photo.type">
+      <segment>
+        <source>core.photo.type</source>
+        <target>{name} is not a JPEG, PNG or WebP picture</target>
+      </segment>
+    </unit>
     <unit id="core.preview.exit">
       <segment>
         <source>core.preview.exit</source>

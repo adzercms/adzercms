@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Controller;
 
-use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Setting\Catalog;
 use AdzerCMS\Core\Setting\Images;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -27,7 +26,7 @@ final class SettingImageController
     public function __invoke(string $name): BinaryFileResponse
     {
         $field = $this->catalog->fields()[$name] ?? null;
-        $path = null !== $field && Type::Image === $field->type ? $this->images->path($field) : null;
+        $path = null !== $field && $field->type->picture() ? $this->images->path($field) : null;
         if (null === $path) {
             throw new NotFoundHttpException();
         }

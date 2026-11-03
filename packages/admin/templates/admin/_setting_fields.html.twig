@@ -17,6 +17,8 @@
                     </select>
                 {% elseif field.type == constant(type ~ 'Image') %}
                     {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: 'image/png,image/jpeg,image/svg+xml,image/webp,image/vnd.microsoft.icon'} only %}
+                {% elseif field.type == constant(type ~ 'Photo') %}
+                    {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: 'image/png,image/jpeg,image/webp'} only %}
                 {% elseif field.type == constant(type ~ 'Container') %}
                     {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: '.p12,.pfx'} only %}
                 {% elseif field.type == constant(type ~ 'Choice') %}
@@ -44,10 +46,10 @@
                             </label>
                         {% endif %}
 
-                        {% if field.type == constant(type ~ 'Image') and stored %}
+                        {% if field.type.picture and stored %}
                             <span class="brand-preview">
                                 <img src="{{ path('setting_image', {name: field.name}) }}" alt="{{ values[field.name] }}">
-                                <img src="{{ path('setting_image', {name: field.name}) }}" alt="">
+                                {% if field.type == constant(type ~ 'Image') %}<img src="{{ path('setting_image', {name: field.name}) }}" alt="">{% endif %}
                             </span>
                         {% endif %}
 

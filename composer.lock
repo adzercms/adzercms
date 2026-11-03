@@ -315,7 +315,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "3ea00183de2cfe66dc66af9a738c24e306ef4214"
+                "reference": "dd74392d966645388e46f1632dbe7237e8e9c1a8"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -343,6 +343,7 @@
                 "facile-it/doctrine-mysql-come-back": "^3.0",
                 "firebase/php-jwt": "^7.2",
                 "geoip2/geoip2": "^3.4",
+                "intervention/image": "^4.4",
                 "matomo/device-detector": "^6.5",
                 "maxmind-db/reader": "^1.14",
                 "php": ">=8.4",
@@ -379,6 +380,9 @@
                 "twig/cssinliner-extra": "^3.26",
                 "twig/twig": "^3.30",
                 "zbateson/mail-mime-parser": "^4.0.8"
+            },
+            "suggest": {
+                "ext-imagick": "photo settings"
             },
             "bin": [
                 "bin/adzercms-check",
@@ -4250,6 +4254,150 @@
                 "source": "https://github.com/laravel/framework"
             },
             "time": "2026-10-06T02:42:44+00:00"
+        },
+        {
+            "name": "intervention/gif",
+            "version": "5.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Intervention/gif.git",
+                "reference": "bb395af960deffe64d70c976b4df9283f68e762d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Intervention/gif/zipball/bb395af960deffe64d70c976b4df9283f68e762d",
+                "reference": "bb395af960deffe64d70c976b4df9283f68e762d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^12.0",
+                "slevomat/coding-standard": "~8.0",
+                "squizlabs/php_codesniffer": "^4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Intervention\\Gif\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Oliver Vogel",
+                    "email": "oliver@intervention.io",
+                    "homepage": "https://intervention.io/"
+                }
+            ],
+            "description": "PHP GIF Encoder/Decoder",
+            "homepage": "https://github.com/intervention/gif",
+            "keywords": [
+                "animation",
+                "gd",
+                "gif",
+                "image"
+            ],
+            "support": {
+                "issues": "https://github.com/Intervention/gif/issues",
+                "source": "https://github.com/Intervention/gif/tree/5.0.1"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/interventionio",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/Intervention",
+                    "type": "github"
+                },
+                {
+                    "url": "https://ko-fi.com/interventionphp",
+                    "type": "ko_fi"
+                }
+            ],
+            "time": "2026-05-03T06:04:47+00:00"
+        },
+        {
+            "name": "intervention/image",
+            "version": "4.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Intervention/image.git",
+                "reference": "3a47838f2e0f4ec6c8c9b43a5d73ac985b975830"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Intervention/image/zipball/3a47838f2e0f4ec6c8c9b43a5d73ac985b975830",
+                "reference": "3a47838f2e0f4ec6c8c9b43a5d73ac985b975830",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "intervention/gif": "^5",
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "intervention/coding-standard": "^1",
+                "mockery/mockery": "^1.6",
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^12.0",
+                "psr/http-message": "^2"
+            },
+            "suggest": {
+                "ext-exif": "Recommended to be able to read EXIF data properly."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Intervention\\Image\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Oliver Vogel",
+                    "email": "oliver@intervention.io",
+                    "homepage": "https://intervention.io"
+                }
+            ],
+            "description": "PHP Image Processing",
+            "homepage": "https://image.intervention.io",
+            "keywords": [
+                "gd",
+                "image",
+                "imagick",
+                "resize",
+                "thumbnail",
+                "watermark"
+            ],
+            "support": {
+                "issues": "https://github.com/Intervention/image/issues",
+                "source": "https://github.com/Intervention/image/tree/4.4.1"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/interventionio",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/Intervention",
+                    "type": "github"
+                },
+                {
+                    "url": "https://ko-fi.com/interventionphp",
+                    "type": "ko_fi"
+                }
+            ],
+            "time": "2026-10-30T13:38:01+00:00"
         },
         {
             "name": "laravel/serializable-closure",

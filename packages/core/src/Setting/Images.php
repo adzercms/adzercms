@@ -6,6 +6,8 @@ namespace AdzerCMS\Core\Setting;
 
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Type;
+use AdzerCMS\Core\Photo\Photos;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
@@ -23,29 +25,35 @@ final class Images
         'image/vnd.microsoft.icon' => 'ico',
     ];
     private const MAX_BYTES = 512000;
+    private const PLACE = 'settings';
+    private const SIDE = 1920;
+
+    private readonly string $directory;
 
     public function __construct(
         private readonly Settings $settings,
         private readonly EntityManagerInterface $em,
-        #[Autowire('%adzercms.files_dir%/settings')]
-        private readonly string $directory,
+        private readonly Photos $photos,
+        #[Autowire('%adzercms.files_dir%')]
+        string $files,
     ) {
+        $this->directory = $files.'/'.self::PLACE;
     }
 
     public function store(Field $field, File $file): ?Refusal
     {
-        $extension = self::TYPES[(string) $file->getMimeType()] ?? null;
-        if (null === $extension) {
-            return new Refusal(t('core.image.type', ['field' => $field->label]));
-        }
-
-        if ($file->getSize() > self::MAX_BYTES) {
-            return new Refusal(t('core.image.size', ['field' => $field->label, 'kb' => intdiv(self::MAX_BYTES, 1024)]));
+        $refusal = Type::Photo === $field->type ? Photos::refusal([$file]) : self::refusal($field, $file);
+        if (null !== $refusal) {
+            return $refusal;
         }
 
         $this->drop($field);
-        $name = $field->name.'.'.$extension;
-        (new Filesystem())->copy($file->getPathname(), $this->directory.'/'.$name);
+        if (Type::Photo === $field->type) {
+            $name = $this->photos->store($file, self::PLACE, self::SIDE);
+        } else {
+            $name = $field->name.'.'.self::TYPES[(string) $file->getMimeType()];
+            (new Filesystem())->copy($file->getPathname(), $this->directory.'/'.$name);
+        }
         $this->settings->save($field, $name);
         $this->em->flush();
 
@@ -64,6 +72,15 @@ final class Images
         $name = $this->settings->get($field->name);
 
         return '' !== $name && is_file($this->directory.'/'.$name) ? $this->directory.'/'.$name : null;
+    }
+
+    private static function refusal(Field $field, File $file): ?Refusal
+    {
+        if (!isset(self::TYPES[(string) $file->getMimeType()])) {
+            return new Refusal(t('core.image.type', ['field' => $field->label]));
+        }
+
+        return $file->getSize() > self::MAX_BYTES ? new Refusal(t('core.image.size', ['field' => $field->label, 'kb' => intdiv(self::MAX_BYTES, 1024)])) : null;
     }
 
     private function drop(Field $field): void

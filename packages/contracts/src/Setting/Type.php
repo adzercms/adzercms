@@ -9,6 +9,7 @@ enum Type
     case Text;
     case Secret;
     case Image;
+    case Photo;
     case Time;
     case Toggle;
     case Container;
@@ -16,4 +17,9 @@ enum Type
     case Decimal;
     case Color;
     case Palette;
+
+    public function picture(): bool
+    {
+        return self::Image === $this || self::Photo === $this;
+    }
 }
