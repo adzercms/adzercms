@@ -46,9 +46,9 @@ final readonly class AssembledModules
         return $modules;
     }
 
-    public function schema(string $namespace): ?string
+    public function schema(string $namespace): ?\DateTimeImmutable
     {
-        $prefix = $namespace.'\\Migrations\\';
+        $prefix = $namespace.'\\Migrations\\Version';
         $applied = null;
 
         foreach ($this->migrations->getMetadataStorage()->getExecutedMigrations()->getItems() as $migration) {
@@ -59,6 +59,6 @@ final readonly class AssembledModules
             }
         }
 
-        return null === $applied ? null : substr($applied, \strlen($prefix));
+        return null === $applied ? null : (\DateTimeImmutable::createFromFormat('!YmdHis', substr($applied, \strlen($prefix))) ?: null);
     }
 }

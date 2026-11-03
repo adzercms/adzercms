@@ -61,12 +61,6 @@
         <target>Категория</target>
       </segment>
     </unit>
-    <unit id="admin.modules.description">
-      <segment>
-        <source>admin.modules.description</source>
-        <target>Описание</target>
-      </segment>
-    </unit>
     <unit id="admin.modules.empty">
       <segment>
         <source>admin.modules.empty</source>
@@ -100,7 +94,7 @@
     <unit id="admin.modules.schema">
       <segment>
         <source>admin.modules.schema</source>
-        <target>Схема</target>
+        <target>Версия схемы</target>
       </segment>
     </unit>
     <unit id="admin.modules.scope.available">

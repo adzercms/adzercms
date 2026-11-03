@@ -12,14 +12,12 @@
 {% endblock %}
 
 {% block page %}
+{% set description = module.description|trans %}
+{% if description %}<p class="page-lead">{{ description }}</p>{% endif %}
 <div class="info-grid">
     <div class="info-item">
-        <span class="info-label">{{ 'admin.modules.description'|trans }}</span>
-        <span class="info-value">{{ module.description|trans }}</span>
-    </div>
-    <div class="info-item">
         <span class="info-label">{{ 'admin.modules.schema'|trans }}</span>
-        <span class="info-value">{{ schema ?: blank() }}</span>
+        <span class="info-value">{{ moment(schema) }}</span>
     </div>
 </div>
 {% endblock %}

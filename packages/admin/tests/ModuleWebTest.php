@@ -122,7 +122,8 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertSame(['/admin/modules/admin'], self::cards($this->fragment(self::MODULES.'?q='.urlencode(self::phrase($modules['admin']['description'])))),
             'the search goes by what the module does too');
 
-        self::assertSame(self::phrase($modules['admin']['description']), self::tile($this->client->request('GET', '/admin/modules/admin'), self::phrase('admin.modules.description')));
+        self::assertSame(self::phrase($modules['admin']['description']), trim($this->client->request('GET', '/admin/modules/admin')->filter('.page-lead')->text()),
+            'the card tells what the module does above its details');
         self::assertSame([self::RELAY], $this->client->request('GET', '/admin/modules/relay')->filter('.card-actions a[href^="/admin/settings/"]')->each(static fn (Crawler $link): string => (string) $link->attr('href')),
             'the card of a module with settings leads to its settings page');
 
