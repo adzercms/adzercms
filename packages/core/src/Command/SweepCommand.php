@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Command;
 
+use AdzerCMS\Contracts\Schedule\Scheduled;
 use AdzerCMS\Core\Confirmation\Confirmations;
 use AdzerCMS\Core\Confirmation\ConfirmationService;
 use AdzerCMS\Core\Kernel;
@@ -17,6 +18,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 
 #[AsCommand(name: 'adzercms:sweep', description: 'Core cleanup: expired logins of the registry, notices past the journal term, expired confirmations, uploads past their term, cache builds of former module sets; applies mail changes past their delay')]
+#[Scheduled('15 4 * * *')]
 final class SweepCommand
 {
     public function __construct(

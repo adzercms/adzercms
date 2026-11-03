@@ -78,30 +78,25 @@ The engine updates with `composer update --no-install` and a commit of `composer
 
 ## Scheduler
 
-Add the jobs to the crontab of the user the site runs as; `/path` is the site directory. A failed job exits with a non-zero code, and its output isn't suppressed.
+Add one line to the crontab of the user the site runs as; `/path` is the site directory. Every minute `adzercms:schedule` starts the due jobs of the core and the enabled modules, each in its own process, and skips a job still running from an earlier minute. A failed job makes the run exit with a non-zero code, and the output of the jobs isn't suppressed.
 
 ```crontab
-*/15 * * * * /path/bin/php /path/bin/console adzercms:notices
-15 4 * * *   /path/bin/php /path/bin/console adzercms:sweep
-* * * * *    /path/bin/php /path/bin/console adzercms:modules
+* * * * * /path/bin/php /path/bin/console adzercms:schedule
 ```
 
-- `adzercms:notices` sends notifications held back by quiet hours and reads the bounce mailbox: a bounced email fails its notification, and the address is marked undeliverable
-- `adzercms:sweep` removes ended sessions, old log entries and confirmations, and the cache of module sets the site has left; it also applies email changes confirmed by password once their delay is over
-- `adzercms:modules` applies module operations from the admin panel and refreshes the module catalog from its repositories with the verified marks once a day
 - A site without git has no `adzercms.php`: put `PHP_BINARY=/usr/bin/php8.4` at the top of the crontab
 - Module operations need `composer` and `rsync` in the `PATH` of the crontab
+- Job times follow the PHP time zone of the site
 
-Module jobs, if the modules are enabled:
+Jobs of the core:
 
-```crontab
-*/5 * * * *  /path/bin/php /path/bin/console adzercms:payments
-10 3 * * *   /path/bin/php /path/bin/console adzercms:support
-20 3 * * *   /path/bin/php /path/bin/console adzercms:extensions
-30 * * * *   /path/bin/php /path/bin/console adzercms:opotopo
-```
+- `adzercms:notices`, every 15 minutes — sends notifications held back by quiet hours and reads the bounce mailbox: a bounced email fails its notification, and the address is marked undeliverable
+- `adzercms:sweep`, daily at 4:15 — removes ended sessions, old log entries and confirmations, and the cache of module sets the site has left; it also applies email changes confirmed by password once their delay is over
+- `adzercms:modules`, every minute — applies module operations from the admin panel and refreshes the module catalog from its repositories with the verified marks once a day
 
-- `adzercms:payments` — checks the status of unfinished payments with the payment service
-- `adzercms:support` — closes tickets the user hasn't answered for a long time
-- `adzercms:extensions` — refreshes package descriptions in the extension catalog from their Composer repositories
-- `adzercms:opotopo` — exports the module catalogs to [OPOTOPO](modules.md#sell-on-opotopo): sends new and changed items, archives the listings of dropped ones; `--full` sends every item, `--catalog <name>` exports one catalog
+Jobs of the modules, if the modules are enabled:
+
+- `adzercms:payments`, every 5 minutes — checks the status of unfinished payments with the payment service
+- `adzercms:support`, daily at 3:10 — closes tickets the user hasn't answered for a long time
+- `adzercms:extensions`, daily at 3:20 — refreshes package descriptions in the extension catalog from their Composer repositories
+- `adzercms:opotopo`, hourly at minute 30 — exports the module catalogs to [OPOTOPO](modules.md#sell-on-opotopo): sends new and changed items, archives the listings of dropped ones; run by hand, `--full` sends every item and `--catalog <name>` exports one catalog

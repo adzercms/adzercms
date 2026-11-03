@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Command;
 
+use AdzerCMS\Contracts\Schedule\Scheduled;
 use AdzerCMS\Core\Entity\Notice;
 use AdzerCMS\Core\Notice\Bounces;
 use AdzerCMS\Core\Notice\Channels;
@@ -15,6 +16,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: 'adzercms:notices', description: 'Notices: sends the ones deferred by quiet hours once the quiet is over, fails the ones whose letters bounced')]
+#[Scheduled('*/15 * * * *')]
 final class NoticeCommand
 {
     public function __construct(private readonly Notifier $notifier, private readonly Channels $channels, private readonly Bounces $bounces)

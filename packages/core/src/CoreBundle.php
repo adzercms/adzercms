@@ -30,6 +30,7 @@ use AdzerCMS\Core\Confirmation\Confirmations;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Notice\Channel;
 use AdzerCMS\Core\Notice\MailTransport;
+use AdzerCMS\Core\Schedule\Schedule;
 use AdzerCMS\Core\Schema\MigrationMarks;
 use AdzerCMS\Core\Schema\MigrationOrder;
 use AdzerCMS\Core\Security\LoginTarget;
@@ -164,6 +165,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
         foreach ([Owner::class, Rule::class, Guided::class, Identifier::class, UserPlaces::class, UserCreation::class, Traffic::class, Switchable::class, ContentSource::class, Fragment::class, Menu::class, Tabs::class, Columns::class, Palette::class, BotListener::class, LoginListener::class, Channel::class, Pages::class, Showcase::class] as $contract) {
             $builder->registerForAutoconfiguration($contract)->addTag($contract);
         }
+        Schedule::declare($builder);
     }
 
     public function build(ContainerBuilder $container): void
@@ -174,6 +176,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         self::texts($container);
+        Schedule::collect($container);
 
         if (!$container->hasDefinition(self::IMPORTMAP_READER)) {
             return;

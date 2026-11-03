@@ -267,6 +267,10 @@ A service implementing `AdzerCMS\Contracts\Setting\Owner` declares setting field
 
 The settings section of the admin has a menu on the left: the System pages, then a page for each enabled module with fields, titled by the module title in title order. A feature module's page goes under Modules, a kind module's page under Integrations in the group of its kind. The module card in the Extensions section and the heading of the module's admin sections link to its page. `section:` puts fields under a heading, and fields without a section open the page without one. A label fits one line of a column: the setting's name, then the unit after a comma.
 
+## Scheduled jobs
+
+A console command of the module becomes a job of the [scheduler](installation.md#scheduler) with the `AdzerCMS\Contracts\Schedule\Scheduled` attribute next to `AsCommand`: its argument is a cron expression, and the command takes no arguments. A job runs in its own process; the next run skips it while it's still going, so it needs no lock against itself. An invalid expression stops the container build.
+
 ## Values for the project site
 
 `bin/console adzercms:showcase` gives the project site what it shows from the instance as one JSON object. With a file path argument it replaces that file atomically instead of printing, so a site reading the file never sees it half-written. The `core` section holds the absolute addresses of the cabinet home, registration, password reset and profile and the settings of the enabled analytics counters under their module keys. A module adds its own section with a service implementing `AdzerCMS\Contracts\Showcase\Showcase` in its bundle namespace: `section()` returns public values only, addresses are absolute and only of the pages open with the current settings, sums are decimal strings. The section goes under the module key in lower case, and an empty one is left out.
