@@ -72,7 +72,7 @@ final class Menus implements ResetInterface
         $parents = array_fill_keys(array_map(static fn (MenuItem $item): string => $item->route, array_filter($items, static fn (MenuItem $item): bool => null === $item->parent)), true);
         $nested = [];
         foreach ($items as $item) {
-            if (isset($parents[$item->parent ?? ''])) {
+            if (null !== $item->parent && isset($parents[$item->parent])) {
                 $nested[$item->parent][] = $item;
             }
         }
