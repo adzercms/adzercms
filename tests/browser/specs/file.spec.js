@@ -7,7 +7,7 @@ test('[ACMS-UI-0085] the file field names the picked file', async ({ page }) => 
     await expect(field.locator('.file-names')).toHaveText('mark.png');
 });
 
-test('[ACMS-UI-0085] the picked file goes to the server at once and the form carries its key', async ({ page }) => {
+test('[ACMS-UI-0106] the picked file goes to the server at once and the form carries its key', async ({ page }) => {
     await page.goto('/admin/settings?tab=brand');
     const field = page.locator('.file-field').first();
     await field.locator('input[type="file"]').setInputFiles({ name: 'mark.png', mimeType: 'image/png', buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64') });

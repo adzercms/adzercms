@@ -29,6 +29,8 @@ final readonly class UploadController
             return new JsonResponse(null, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return new JsonResponse(['key' => $this->uploads->keep($file, $request->request->getString('field'), $request->getSession()->getId())]);
+        $key = $this->uploads->keep($file, $request->request->getString('field'), $request->getSession()->getId());
+
+        return null === $key ? new JsonResponse(null, Response::HTTP_TOO_MANY_REQUESTS) : new JsonResponse(['key' => $key]);
     }
 }
