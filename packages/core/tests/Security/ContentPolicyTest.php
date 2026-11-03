@@ -18,10 +18,10 @@ final class ContentPolicyTest extends TestCase
     /** @return iterable<string, array{array<ContentSource::IMG|ContentSource::WORKER, list<string>>, list<string>}> */
     public static function declarations(): iterable
     {
-        yield 'nothing declared' => [[], ["img-src 'self' data:"]];
+        yield 'nothing declared' => [[], ["img-src 'self' data:", "media-src 'self'"]];
         yield 'images and workers declared' => [
             [ContentSource::IMG => ['https://tiles.example'], ContentSource::WORKER => ['https://engine.example']],
-            ["img-src 'self' data: https://tiles.example", 'worker-src https://engine.example'],
+            ["img-src 'self' data: https://tiles.example", "media-src 'self'", 'worker-src https://engine.example'],
         ];
     }
 
@@ -30,7 +30,7 @@ final class ContentPolicyTest extends TestCase
      * @param list<string>                                                  $expected
      */
     #[DataProvider('declarations')]
-    public function testDeclaredImageAndWorkerSourcesReachThePolicy(array $declared, array $expected): void
+    public function testPolicyAllowsOwnMediaAndDeclaredImageAndWorkerSources(array $declared, array $expected): void
     {
         $source = new readonly class($declared) implements ContentSource {
             /** @param array<ContentSource::IMG|ContentSource::WORKER, list<string>> $declared */
@@ -54,6 +54,6 @@ final class ContentPolicyTest extends TestCase
         (new ContentPolicy([$source]))($event);
 
         $directives = array_map(trim(...), explode(';', (string) $event->getResponse()->headers->get('Content-Security-Policy')));
-        self::assertSame($expected, array_values(array_filter($directives, static fn (string $directive): bool => str_starts_with($directive, 'img-src') || str_starts_with($directive, 'worker-src'))));
+        self::assertSame($expected, array_values(array_filter($directives, static fn (string $directive): bool => str_starts_with($directive, 'img-src') || str_starts_with($directive, 'media-src') || str_starts_with($directive, 'worker-src'))));
     }
 }

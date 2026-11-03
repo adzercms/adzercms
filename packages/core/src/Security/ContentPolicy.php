@@ -47,6 +47,7 @@ final readonly class ContentPolicy
             $line(ContentSource::FRAME_ANCESTORS, "'self'"),
             $line(ContentSource::IMG, "'self' data:"),
             "font-src 'self'",
+            "media-src 'self'",
             $line(ContentSource::STYLE, "'self' 'unsafe-inline'"),
             $line(ContentSource::SCRIPT, "'self'"),
             $line(ContentSource::CONNECT, "'self'"),

@@ -43,5 +43,6 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `adzercms:showcase` gives the project site the public values as a JSON object of sections, printed or replacing the file named by its argument atomically: the `core` section holds the absolute cabinet home and registration addresses and the settings of the enabled analytics counters, a module adds its section under its lowercase key with a `Showcase` service of its bundle namespace; the support module gives the addresses of the tickets and of a new ticket
 - Admin entries `AdminEntry::Users`, `AdminEntry::Modules` and `AdminEntry::ModuleSettings`: a module reaches the user list, the modules section and its settings page of the admin without naming their routes
 - Rescan button `@Theme/_rescan.html.twig`: a block from a snapshot of an outside service polls it again, the table filters go along
+- The Content Security Policy allows media of the site's own origin by `media-src 'self'`: a `<video>` or `<audio>` of a module plays its own files
 
 [Unreleased]: https://github.com/adzercms/adzercms/commits/main
