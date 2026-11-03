@@ -6,11 +6,11 @@ namespace AdzerCMS\Admin\Tests;
 
 use AdzerCMS\Admin\AssembledModules;
 use AdzerCMS\Admin\ModuleScope;
+use AdzerCMS\Admin\ModuleSources;
 use AdzerCMS\Admin\ModuleState;
 use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Refusal;
-use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Build\Preview;
 use AdzerCMS\Core\Kernel;
@@ -51,7 +51,8 @@ final class ModuleWebTest extends SchemaTestCase
     private const SENDER = RelayGateway::SETTINGS.RelayGateway::SENDER;
     private const REPOSITORY = 'https://repo.acme.test';
     private const MODULES = '/admin/modules';
-    private const SOURCES = '/admin/modules?tab=sources';
+    private const SOURCES = '/admin/settings/'.ModuleSources::PAGE->value;
+    private const SOURCE = '/admin/settings/sources/';
     private const OPERATIONS = '/admin/modules?tab=operations';
     private const SETTINGS = '/admin/settings/modules/';
     private const RELAY = self::SETTINGS.'relay';
@@ -83,13 +84,13 @@ final class ModuleWebTest extends SchemaTestCase
         $tabs = $listing->filter('nav.tabs a.tab[href*="tab="]')->each(static fn (Crawler $tab): string => trim($tab->text()));
 
         self::assertSame(
-            [self::phrase(ExtensionType::all()), self::phrase('admin.sources.title'), self::phrase('admin.operations.title')],
-            [$tabs[0] ?? null, ...\array_slice($tabs, -2)],
+            [self::phrase(ExtensionType::all()), self::phrase('admin.operations.title')],
+            [$tabs[0] ?? null, ...\array_slice($tabs, -1)],
         );
-        foreach (['' => 'rows', '?tab=theme' => 'rows', '?tab=sources' => 'sources', '?tab=operations' => 'operations', '?tab=absent' => 'rows'] as $query => $table) {
+        foreach (['' => 'rows', '?tab=theme' => 'rows', '?tab=operations' => 'operations', '?tab=absent' => 'rows'] as $query => $table) {
             self::assertSame(
                 [$table],
-                $this->client->request('GET', self::MODULES.$query)->filter('#rows, #sources, #operations')->each(static fn (Crawler $built): string => (string) $built->attr('id')),
+                $this->client->request('GET', self::MODULES.$query)->filter('#rows, #operations')->each(static fn (Crawler $built): string => (string) $built->attr('id')),
                 'only the active tab is built',
             );
         }
@@ -149,7 +150,7 @@ final class ModuleWebTest extends SchemaTestCase
         $text = static fn (Crawler $node): string => trim($node->text());
 
         self::assertSame(
-            array_map(self::phrase(...), [ExtensionType::all(), ExtensionType::Module->tab(), ExtensionType::Integration->tab(), ExtensionType::Theme->tab(), ExtensionType::Template->tab(), 'admin.sources.title', 'admin.operations.title']),
+            array_map(self::phrase(...), [ExtensionType::all(), ExtensionType::Module->tab(), ExtensionType::Integration->tab(), ExtensionType::Theme->tab(), ExtensionType::Template->tab(), 'admin.operations.title']),
             $page->filter('nav.tabs a.tab')->each($text),
             'a type goes as a tab while the catalog has its rows',
         );
@@ -531,7 +532,7 @@ final class ModuleWebTest extends SchemaTestCase
         $this->listed([$package]);
         ModuleAction::Update === $action ? $this->branch($package, '1.0.x-dev') : $this->offer($package, '1.0.0');
         if ($zipped) {
-            $this->post('/admin/modules/sources/zip', [], ['archive' => $this->archive(['composer.json' => json_encode(self::manifest($package, '1.0.0'), \JSON_THROW_ON_ERROR)])]);
+            $this->post(self::SOURCE.'zip', [], ['archive' => $this->archive(['composer.json' => json_encode(self::manifest($package, '1.0.0'), \JSON_THROW_ON_ERROR)])]);
         }
         self::command('adzercms:modules')->execute([]);
 
@@ -634,21 +635,24 @@ final class ModuleWebTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-0143')]
     #[Group('ACMS-CORE-0944')]
+    #[Group('ACMS-CORE-1051')]
+    #[Group('ACMS-CORE-1055')]
     #[Group('ACMS-US-0004')]
     public function testOwnSourcesShareCredentialsOfTheirHostAndShowUnavailability(): void
     {
-        $base = $this->client->request('GET', self::SOURCES)->filter('#sources tbody tr');
+        $page = $this->client->request('GET', self::SOURCES);
+        $base = $page->filter('#sources tbody tr');
+        self::assertCount(1, $page->filter(\sprintf('form [name="value[%s]"]', Store::NAME)), 'the extension catalog address goes on the page of the sources');
         self::assertSame([Store::DEFAULT, ...Sources::BASE], $base->filter('td strong')->each(static fn (Crawler $source): string => trim($source->text())));
-        self::assertCount(0, $base->filter('td.row-actions form'), 'a base source is not dropped');
-        self::assertSame(['/admin/settings/'.Page::General->value], $base->filter('td.row-actions a')->each(static fn (Crawler $link): string => (string) $link->attr('href')), 'the extension catalog leads to its setting');
+        self::assertCount(0, $base->filter('td.row-actions form, td.row-actions a, td.row-actions button'), 'a base source is neither dropped nor edited');
 
         $this->connect(self::REPOSITORY.'/one');
-        self::assertResponseRedirects(self::SOURCES, message: 'a source goes to its tab');
+        self::assertResponseRedirects(self::SOURCES, message: 'a source returns to the page of the sources');
         $this->connect(self::REPOSITORY.'/two');
         $this->connect(self::REPOSITORY.'/one');
         self::assertSame(self::phrase('core.module.source.taken', ['url' => self::REPOSITORY.'/one']), self::toast($this->arrive(self::SOURCES), 'error'));
         $one = self::service(ModuleSourceRepository::class)->findOneBy(['url' => self::REPOSITORY.'/one']) ?? self::fail('the source is not kept');
-        $dialog = $this->client->request('GET', '/admin/modules/sources/'.$one->getId().'/credentials');
+        $dialog = $this->client->request('GET', self::SOURCE.$one->getId().'/credentials');
         $this->client->submit($dialog->selectButton(self::phrase('core.action.save'))->form(['token' => 'secret']));
         $this->connect(self::REPOSITORY.'/three');
 
@@ -664,7 +668,7 @@ final class ModuleWebTest extends SchemaTestCase
         }
         self::assertSame(self::phrase('admin.sources.down'), trim(self::cell($sources, Store::DEFAULT, self::phrase('admin.sources.source'))->filter('.badge')->text()));
 
-        $this->post('/admin/modules/sources/'.$one->getId().'/drop');
+        $this->post(self::SOURCE.$one->getId().'/drop');
         self::assertSame(
             [Store::DEFAULT, ...Sources::BASE, self::REPOSITORY.'/three', self::REPOSITORY.'/two'],
             $this->arrive(self::SOURCES)->filter('#sources tbody tr td strong')->each(static fn (Crawler $source): string => trim($source->text())),
@@ -673,7 +677,7 @@ final class ModuleWebTest extends SchemaTestCase
 
     private function connect(string $url): void
     {
-        $dialog = $this->client->request('GET', '/admin/modules/sources/new');
+        $dialog = $this->client->request('GET', self::SOURCE.'new');
         $this->client->submit($dialog->selectButton(self::phrase('admin.sources.add'))->form(['url' => $url]));
     }
 

@@ -32,7 +32,7 @@ final readonly class Store implements Owner, Rule
 
     public function settingFields(): array
     {
-        return [new Field(self::NAME, t('core.setting.store'), section: t('core.setting.section.extensions'), page: Page::General)];
+        return [new Field(self::NAME, t('core.setting.store'), page: Page::Extensions)];
     }
 
     public function check(Field $field, string $value): ?Refusal

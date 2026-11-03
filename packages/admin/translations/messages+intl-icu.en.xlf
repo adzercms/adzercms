@@ -328,7 +328,7 @@
     <unit id="admin.sources.title">
       <segment>
         <source>admin.sources.title</source>
-        <target>Sources</target>
+        <target>Module sources</target>
       </segment>
     </unit>
     <unit id="admin.sources.token">

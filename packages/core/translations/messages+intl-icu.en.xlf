@@ -1339,12 +1339,6 @@
         <target>Confirmation codes</target>
       </segment>
     </unit>
-    <unit id="core.setting.section.extensions">
-      <segment>
-        <source>core.setting.section.extensions</source>
-        <target>Extensions</target>
-      </segment>
-    </unit>
     <unit id="core.setting.section.legal">
       <segment>
         <source>core.setting.section.legal</source>

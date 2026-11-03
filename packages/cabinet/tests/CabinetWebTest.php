@@ -148,7 +148,7 @@ final class CabinetWebTest extends SchemaTestCase
         self::assertSame(['Petrov', 'Ivan', 'Sergeevich'], [$named->getLastName(), $named->getFirstName(), $named->getMiddleName()]);
     }
 
-    #[Group('ACMS-UI-0001')]
+    #[Group('ACMS-UI-0104')]
     public function testProfileCarriesFragmentsOfModulesUnderContacts(): void
     {
         $user = $this->record('79990000010');

@@ -27,6 +27,8 @@
             {% include '@Admin/admin/_setting_fields.html.twig' with {sections: sections, values: values} %}
             <button type="submit">{{ 'core.action.save'|trans }}</button>
         </form>
+
+        {% for part in fragments(place) %}{% include part.template with part.context only %}{% endfor %}
     </div>
 </div>
 {% endblock %}

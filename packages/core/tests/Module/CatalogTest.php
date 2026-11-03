@@ -162,6 +162,7 @@ final class CatalogTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-0998')]
     #[Group('ACMS-CORE-0999')]
+    #[Group('ACMS-CORE-1055')]
     public function testExtensionCatalogGivesRowsTypeDemoAndOrderAndKindTypesTheRest(): void
     {
         $this->listed(['acme/till', 'acme/shop', 'acme/look', 'acme/site', 'acme/zeta']);
@@ -193,6 +194,7 @@ final class CatalogTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-0998')]
     #[Group('ACMS-CORE-0934')]
+    #[Group('ACMS-CORE-1055')]
     public function testExtensionCatalogIsAskedConditionallyAndUnavailableOneKeepsEntriesOfItsAddress(): void
     {
         $other = 'https://store.acme.test/store.json';

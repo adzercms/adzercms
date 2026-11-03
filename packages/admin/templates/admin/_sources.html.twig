@@ -1,0 +1,23 @@
+{% embed '@Theme/_table.html.twig' with {heading: 'admin.sources.title', actions: [
+    {label: 'admin.sources.add', route: 'admin_source_new', params: {}},
+    {label: 'admin.sources.upload', route: 'admin_source_zip', params: {}},
+]} %}
+    {% block row %}
+        <tr>
+            <td class="{{ table.aside('source') }}"><strong>{{ clip(row.source, 60) }}</strong>{% if row.down %} {{ badge(row.down) }}{% endif %}</td>
+            <td class="{{ table.aside('access') }}">{{ row.access ? 'admin.setting.set'|trans : blank() }}</td>
+            <td class="row-actions">
+                {% if row.credentials %}
+                    {% include '@Theme/_actions.html.twig' with {actions: [{label: 'admin.setting.credentials', route: 'admin_source_credentials', params: {id: row.credentials}}]} %}
+                {% endif %}
+                {% if row.drop %}
+                    <form method="post" action="{{ row.drop }}" data-confirm="{{ 'admin.sources.drop_confirm'|trans({source: row.source}) }}">
+                        {{ csrf_field() }}
+                        {% for name, value in row.hidden %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+                        <button type="submit">{{ 'core.action.drop'|trans }}</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+    {% endblock %}
+{% endembed %}

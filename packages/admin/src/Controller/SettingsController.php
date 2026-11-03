@@ -9,6 +9,7 @@ use AdzerCMS\Admin\SettingPages;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Contracts\Setting\Type;
+use AdzerCMS\Contracts\Ui\Fragment;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Notice\Channels;
 use AdzerCMS\Core\Setting\Catalog;
@@ -42,7 +43,7 @@ final class SettingsController extends AbstractController
         $page ??= Page::from((string) array_key_first($system));
         $fields = $system[$page->value] ?? throw $this->createNotFoundException();
 
-        return $this->page($request, $fields, $page->label(), [], $this->pages->menu($page, null), $this->generateUrl('admin_settings', ['page' => $page->value]));
+        return $this->page($request, $fields, $page->label(), [], $this->pages->menu($page, null), $this->generateUrl('admin_settings', ['page' => $page->value]), Fragment::ADMIN_SETTINGS.$page->value);
     }
 
     #[Route('/modules/{key}', name: SettingPages::MODULE_ROUTE, methods: ['GET', 'POST'])]
@@ -51,7 +52,7 @@ final class SettingsController extends AbstractController
         $fields = $this->catalog->modules()[$key]['fields'] ?? throw $this->createNotFoundException();
         $title = $this->pages->title($key) ?? throw $this->createNotFoundException();
 
-        return $this->page($request, $fields, $title, $this->pages->guide($key), $this->pages->menu(null, $key), $this->generateUrl(SettingPages::MODULE_ROUTE, ['key' => $key]));
+        return $this->page($request, $fields, $title, $this->pages->guide($key), $this->pages->menu(null, $key), $this->generateUrl(SettingPages::MODULE_ROUTE, ['key' => $key]), Fragment::ADMIN_SETTINGS_MODULE.$key);
     }
 
     #[Route('/credentials/{key}', name: 'admin_settings_credentials', methods: ['GET', 'POST'])]
@@ -115,7 +116,7 @@ final class SettingsController extends AbstractController
      * @param list<TranslatableInterface> $guide
      * @param list<mixed>                 $menu
      */
-    private function page(Request $request, array $fields, TranslatableInterface $label, array $guide, array $menu, string $here): Response
+    private function page(Request $request, array $fields, TranslatableInterface $label, array $guide, array $menu, string $here, string $place): Response
     {
         if ($request->isMethod('POST')) {
             if ($this->form->save($fields, $request)) {
@@ -135,6 +136,7 @@ final class SettingsController extends AbstractController
             'guide' => $guide,
             'values' => $this->form->values($fields),
             'sections' => $this->form->sections($fields),
+            'place' => $place,
         ]);
     }
 }
