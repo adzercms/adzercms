@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Admin\Tests;
 
-use AdzerCMS\Contracts\Setting\Tab;
+use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Security\CsrfGuard;
 use AdzerCMS\Core\Setting\Brand;
@@ -30,14 +30,15 @@ final class UploadTest extends SchemaTestCase
         $this->post('/upload', ['field' => \sprintf('file[%s]', Brand::LOGO)], ['file' => $this->picture('mark.png')]);
         self::assertResponseIsSuccessful();
         $key = json_decode((string) $this->client->getResponse()->getContent(), true, flags: \JSON_THROW_ON_ERROR)['key'];
-        $form = ['tab' => Tab::Brand->value, Uploads::FIELD => [$key]];
+        $form = [Uploads::FIELD => [$key]];
+        $brand = '/admin/settings/'.Page::Brand->value;
 
         $stranger = $this->browser('Stranger', '192.0.2.7');
         $stranger->loginUser($admin);
-        $stranger->request('POST', '/admin/settings', $form + [CsrfGuard::FIELD => $this->formToken(CsrfGuard::TOKEN_ID, $stranger)]);
+        $stranger->request('POST', $brand, $form + [CsrfGuard::FIELD => $this->formToken(CsrfGuard::TOKEN_ID, $stranger)]);
         self::assertSame('', self::service(Settings::class)->get(Brand::LOGO), 'the key of another session brings no file');
 
-        $this->post('/admin/settings', $form);
+        $this->post($brand, $form);
         self::assertResponseRedirects();
         self::assertNotSame('', self::service(Settings::class)->get(Brand::LOGO));
     }
