@@ -26,7 +26,9 @@
             <form method="post" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 {% include '@Admin/admin/_setting_fields.html.twig' with {sections: sections, values: values} %}
-                <button type="submit">{{ 'core.action.save'|trans }}</button>
+                {% if sections|filter(block => block.fields)|length %}
+                    <button type="submit">{{ 'core.action.save'|trans }}</button>
+                {% endif %}
             </form>
         {% endif %}
 
