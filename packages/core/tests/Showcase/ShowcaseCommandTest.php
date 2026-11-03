@@ -35,6 +35,7 @@ final class ShowcaseCommandTest extends SchemaTestCase
      */
     #[DataProvider('settings')]
     #[Group('ACMS-CORE-1012')]
+    #[Group('ACMS-CORE-1060')]
     public function testSectionsGoUnderModuleKeysWithoutEmptyOnes(array $settings, array $showcase): void
     {
         $this->configure($settings);

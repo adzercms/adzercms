@@ -269,7 +269,7 @@ The settings section of the admin has a menu on the left: the System pages, then
 
 ## Values for the project site
 
-`bin/console adzercms:showcase` gives the project site what it shows from the instance as one JSON object. With a file path argument it replaces that file atomically instead of printing, so a site reading the file never sees it half-written. The `core` section holds the absolute addresses of the cabinet home and registration and the settings of the enabled analytics counters under their module keys. A module adds its own section with a service implementing `AdzerCMS\Contracts\Showcase\Showcase` in its bundle namespace: `section()` returns public values only, addresses are absolute, sums are decimal strings. The section goes under the module key in lower case, and an empty one is left out.
+`bin/console adzercms:showcase` gives the project site what it shows from the instance as one JSON object. With a file path argument it replaces that file atomically instead of printing, so a site reading the file never sees it half-written. The `core` section holds the absolute addresses of the cabinet home, registration, password reset and profile and the settings of the enabled analytics counters under their module keys. A module adds its own section with a service implementing `AdzerCMS\Contracts\Showcase\Showcase` in its bundle namespace: `section()` returns public values only, addresses are absolute and only of the pages open with the current settings, sums are decimal strings. The section goes under the module key in lower case, and an empty one is left out.
 
 ## Real-time page updates
 

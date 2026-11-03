@@ -10,14 +10,15 @@ use PHPUnit\Framework\Attributes\Group;
 
 final class ShowcaseTest extends SchemaTestCase
 {
-    #[Group('ACMS-CORE-1012')]
-    public function testCoreSectionLeadsToCabinetHomeAndRegistration(): void
+    #[Group('ACMS-CORE-1060')]
+    public function testCoreSectionLeadsToCabinetEntries(): void
     {
         $command = self::command('adzercms:showcase');
         $command->execute([]);
 
-        $core = json_decode($command->getDisplay(), true, flags: \JSON_THROW_ON_ERROR)[ShowcaseCommand::CORE];
-        self::assertSame('http://localhost/cabinet', $core['home']);
-        self::assertSame('http://localhost/register', $core['register']);
+        self::assertSame(
+            ['home' => 'http://localhost/cabinet', 'register' => 'http://localhost/register', 'forgot' => 'http://localhost/forgot', 'profile' => 'http://localhost/profile'],
+            json_decode($command->getDisplay(), true, flags: \JSON_THROW_ON_ERROR)[ShowcaseCommand::CORE],
+        );
     }
 }

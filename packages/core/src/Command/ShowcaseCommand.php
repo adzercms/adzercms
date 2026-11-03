@@ -22,6 +22,7 @@ use Symfony\Component\Filesystem\Filesystem;
 final readonly class ShowcaseCommand
 {
     public const CORE = 'core';
+    private const ENTRIES = [CabinetEntry::Home, CabinetEntry::Register, CabinetEntry::Forgot, CabinetEntry::Profile];
 
     /** @param iterable<Showcase> $sections */
     public function __construct(
@@ -61,10 +62,11 @@ final readonly class ShowcaseCommand
             $counters[$key] = $counter->settings($credentials);
         }
 
-        return array_filter([
-            'home' => $this->entries->url(CabinetEntry::Home, absolute: true),
-            'register' => $this->entries->url(CabinetEntry::Register, absolute: true),
-            'counters' => $counters,
-        ]);
+        $core = [];
+        foreach (self::ENTRIES as $entry) {
+            $core[$entry->value] = $this->entries->url($entry, absolute: true);
+        }
+
+        return array_filter($core + ['counters' => $counters]);
     }
 }
