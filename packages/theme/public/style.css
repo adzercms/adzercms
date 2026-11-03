@@ -316,6 +316,8 @@ summary::-webkit-details-marker { display: none; }
 
 .nav-item .badge { margin-left: auto; }
 
+.nav-item.nested { padding-left: 31px; font-size: 13px; }
+
 .nav-item.active {
     background: var(--surface);
     color: var(--primary-text);

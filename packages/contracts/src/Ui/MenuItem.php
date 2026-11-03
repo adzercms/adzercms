@@ -19,6 +19,7 @@ final readonly class MenuItem
         public bool $dialog = false,
         public ?string $icon = null,
         public ?TranslatableInterface $short = null,
+        public ?string $parent = null,
     ) {
     }
 }

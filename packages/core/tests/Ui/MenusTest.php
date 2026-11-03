@@ -52,4 +52,29 @@ final class MenusTest extends TestCase
             array_filter($items, static fn (array $entry): bool => $entry['active']),
         )));
     }
+
+    #[Group('ACMS-CORE-1054')]
+    public function testNestedItemGoesUnderItsParentAndWithoutParentAtTopLevel(): void
+    {
+        $menu = new class implements Menu {
+            public function items(Area $area): array
+            {
+                return [
+                    new MenuItem('admin_hosting', t('hosting'), 50, group: t('own'), parent: 'admin_services'),
+                    new MenuItem('admin_services', t('services'), 110),
+                    new MenuItem('admin_domains', t('domains'), 20, parent: 'admin_services'),
+                    new MenuItem('admin_tariffs', t('tariffs'), 150),
+                    new MenuItem('admin_orphan', t('orphan'), 10, parent: 'admin_absent'),
+                ];
+            }
+        };
+
+        $groups = (new Menus([$menu], new RequestStack(), new Bundles([])))->of(Area::Admin->value);
+
+        self::assertCount(1, $groups, 'a nested item goes in the group of its parent');
+        self::assertSame(
+            [['admin_orphan', false], ['admin_services', false], ['admin_domains', true], ['admin_hosting', true], ['admin_tariffs', false]],
+            array_map(static fn (array $entry): array => [$entry['item']->route, $entry['nested']], $groups[0]['items']),
+        );
+    }
 }

@@ -20,7 +20,7 @@
                 {% if item.dialog %}
                     <button type="button" class="nav-item" data-record="{{ path(item.route) }}">{{ item.label|trans }}</button>
                 {% else %}
-                    <a class="nav-item {{ entry.active ? 'active' }}" href="{{ path(item.route) }}"
+                    <a class="nav-item {{ entry.active ? 'active' }} {{ entry.nested ? 'nested' }}" href="{{ path(item.route) }}"
                        {% if item.count is not null %}id="live-menu-{{ area }}-{{ item.route }}" data-live{% endif %}>
                         {{ item.label|trans }}{% if item.count %} <span class="badge badge-warning">{{ item.count }}</span>{% endif %}
                     </a>
