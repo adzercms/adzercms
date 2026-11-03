@@ -18,6 +18,7 @@ use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelayGateway;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Tests\Setting\Fixture\Shop;
+use AdzerCMS\Core\Ui\Fragments;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Console\Command\Command;
 
@@ -197,6 +198,6 @@ final class SettingCommandTest extends SchemaTestCase
 
         $this->expectExceptionObject(new \LogicException('setting key shop.title is declared by two owners'));
 
-        (new Catalog([new Shop(), $twin], new Bundles([])))->fields();
+        (new Catalog([new Shop(), $twin], new Bundles([]), new Fragments([])))->fields();
     }
 }

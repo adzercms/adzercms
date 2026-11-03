@@ -49,7 +49,7 @@ final class SettingsController extends AbstractController
     #[Route('/modules/{key}', name: SettingPages::MODULE_ROUTE, methods: ['GET', 'POST'])]
     public function module(string $key, Request $request): Response
     {
-        $fields = $this->catalog->modules()[$key]['fields'] ?? throw $this->createNotFoundException();
+        $fields = $this->catalog->modules()[$key] ?? throw $this->createNotFoundException();
         $title = $this->pages->title($key) ?? throw $this->createNotFoundException();
 
         return $this->page($request, $fields, $title, $this->pages->guide($key), $this->pages->menu(null, $key), $this->generateUrl(SettingPages::MODULE_ROUTE, ['key' => $key]), Fragment::ADMIN_SETTINGS_MODULE.$key);

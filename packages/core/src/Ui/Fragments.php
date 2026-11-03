@@ -31,4 +31,15 @@ final readonly class Fragments
 
         return $parts;
     }
+
+    public function declares(string $place): bool
+    {
+        foreach ($this->fragments as $fragment) {
+            if ($place === $fragment->place()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

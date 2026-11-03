@@ -8,8 +8,10 @@ use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Contracts\Setting\Page;
+use AdzerCMS\Contracts\Ui\Fragment;
 use AdzerCMS\Core\Module\Bundles;
 use AdzerCMS\Core\Module\Registry;
+use AdzerCMS\Core\Ui\Fragments;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class Catalog
@@ -19,6 +21,7 @@ final readonly class Catalog
         #[AutowireIterator(Owner::class)]
         private iterable $owners,
         private Bundles $bundles,
+        private Fragments $fragments,
     ) {
     }
 
@@ -49,15 +52,19 @@ final readonly class Catalog
         return array_filter($pages);
     }
 
-    /** @return array<string, array{bundle: class-string<Module>, fields: non-empty-list<Field>}> */
+    /** @return array<string, list<Field>> */
     public function modules(): array
     {
         $modules = [];
         foreach ($this->owned() as [$field, $bundle]) {
             if (null !== $bundle) {
-                $key = Registry::lowerKey($bundle);
-                $modules[$key] ??= ['bundle' => $bundle, 'fields' => []];
-                $modules[$key]['fields'][] = $field;
+                $modules[Registry::lowerKey($bundle)][] = $field;
+            }
+        }
+        foreach (array_keys($this->bundles->namespaces()) as $bundle) {
+            $key = Registry::lowerKey($bundle);
+            if (!isset($modules[$key]) && $this->fragments->declares(Fragment::ADMIN_SETTINGS_MODULE.$key)) {
+                $modules[$key] = [];
             }
         }
 
