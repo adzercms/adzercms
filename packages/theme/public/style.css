@@ -592,6 +592,8 @@ input[type="color"] {
 .file-field:hover > .button { background: var(--border-light); }
 .file-field:has(> input:focus-visible) > .button { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
 .file-names { min-width: 0; overflow: hidden; font-size: 13px; color: var(--text-gray); text-overflow: ellipsis; white-space: nowrap; }
+.file-progress, .pending-row progress { flex: none; width: 6rem; height: 6px; accent-color: var(--brand); }
+.pending-row strong { margin-right: 0.8rem; }
 
 input:focus-visible, select:focus-visible, textarea:focus-visible {
     outline: 2px solid var(--focus-ring);

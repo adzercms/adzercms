@@ -10,6 +10,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `adzercms/morphology`: Russian word form analysis — the pymorphy3 analyzer in PHP gives every parse of a token of letters and digits with its OpenCorpora tag, normal form and score as pymorphy3 does; the dictionary is `adzercms/morphology-ru`
 - Panel layout `brand.layout`: sections on the side or in a bar under the header; fragment place `Fragment::TOP` of the top layout: its fragments replace the panel header, the admin bar and the sidebar
 - `adzercms-refresh` reinstalls the installed packages whose patches changed in `patches.lock.json` of cweagans/composer-patches
+- The theme file field sends the picked file to the server at once with progress in the field; the form takes it under the field name as before, a dialog form sent before the upload ends closes at once and goes when the upload ends, its row in the list shows the progress; leaving the page earlier asks first
 - The admin section "Translations": the admin changes any text of the enabled packages in each language of the catalogs without code, the language of the instance first, clearing it brings back the catalog text
 - `BotListener`: a feature module takes what people send to the bots
 - `LoginListener`: a feature module that waits for a login takes the profile of the login service instead of the entry
