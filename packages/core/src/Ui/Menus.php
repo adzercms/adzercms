@@ -17,7 +17,7 @@ use Twig\Attribute\AsTwigFunction;
 
 final class Menus implements ResetInterface
 {
-    /** @var array<string, list<array{group: ?TranslatableInterface, items: list<array{item: MenuItem, active: bool, module: ?string, nested: bool}>}>> */
+    /** @var array<string, list<array{group: ?TranslatableInterface, items: list<array{item: MenuItem, active: bool, module: ?string}>}>> */
     private array $built = [];
 
     /** @param iterable<Menu> $menus */
@@ -29,14 +29,14 @@ final class Menus implements ResetInterface
     ) {
     }
 
-    /** @return list<array{group: ?TranslatableInterface, items: list<array{item: MenuItem, active: bool, module: ?string, nested: bool}>}> */
+    /** @return list<array{group: ?TranslatableInterface, items: list<array{item: MenuItem, active: bool, module: ?string}>}> */
     #[AsTwigFunction('menu')]
     public function of(string $area): array
     {
         return $this->built[$area] ??= $this->build(Area::from($area));
     }
 
-    /** @return list<array{item: MenuItem, active: bool, module: ?string, nested: bool}> */
+    /** @return list<array{item: MenuItem, active: bool, module: ?string}> */
     #[AsTwigFunction('bar')]
     public function bar(string $area): array
     {
@@ -54,7 +54,7 @@ final class Menus implements ResetInterface
         $this->built = [];
     }
 
-    /** @return list<array{group: ?TranslatableInterface, items: list<array{item: MenuItem, active: bool, module: ?string, nested: bool}>}> */
+    /** @return list<array{group: ?TranslatableInterface, items: list<array{item: MenuItem, active: bool, module: ?string}>}> */
     private function build(Area $area): array
     {
         $route = (string) ($this->requests->getMainRequest()?->attributes->get('_route') ?? '');
@@ -69,31 +69,17 @@ final class Menus implements ResetInterface
         }
         usort($items, static fn (MenuItem $left, MenuItem $right): int => $left->weight <=> $right->weight);
 
-        $parents = array_fill_keys(array_map(static fn (MenuItem $item): string => $item->route, array_filter($items, static fn (MenuItem $item): bool => null === $item->parent)), true);
-        $nested = [];
-        foreach ($items as $item) {
-            if (null !== $item->parent && isset($parents[$item->parent])) {
-                $nested[$item->parent][] = $item;
-            }
-        }
-
         $current = self::current($items, $route);
-        $entry = static fn (MenuItem $item, bool $nested): array => ['item' => $item, 'active' => $item === $current, 'module' => $modules[spl_object_id($item)], 'nested' => $nested];
         $labels = [];
         $entries = [];
         foreach ($items as $item) {
-            if (isset($parents[$item->parent ?? ''])) {
-                continue;
-            }
+            $entry = ['item' => $item, 'active' => $item === $current, 'module' => $modules[spl_object_id($item)]];
             $index = array_search($item->group, $labels, false);
             if (false === $index) {
                 $labels[] = $item->group;
-                $index = array_key_last($labels);
-                $entries[$index] = [];
-            }
-            $entries[$index][] = $entry($item, false);
-            foreach ($nested[$item->route] ?? [] as $child) {
-                $entries[$index][] = $entry($child, true);
+                $entries[] = [$entry];
+            } else {
+                $entries[$index][] = $entry;
             }
         }
 
