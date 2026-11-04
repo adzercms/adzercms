@@ -147,11 +147,11 @@ const conditionals = scope => {
         changed = false;
         nodes.forEach(node => {
             const fields = node.closest('form')?.elements;
-            const hidden = !node.dataset.when.split('&').every(condition => {
+            const hidden = !node.dataset.when.split(';').some(set => set.split('&').every(condition => {
                 const [name, values] = condition.split('=');
 
                 return values.split('|').includes(liveValue(fields, name));
-            });
+            }));
             changed ||= node.hidden !== hidden;
             node.hidden = hidden;
         });
