@@ -9,6 +9,7 @@ use Doctrine\DBAL\Exception\ConnectionException;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Translation\Loader\LoaderInterface;
 use Symfony\Component\Translation\MessageCatalogue;
 
@@ -17,13 +18,19 @@ final readonly class TextLoader implements LoaderInterface
 {
     public const FORMAT = 'texts';
 
-    public function __construct(private EntityManagerInterface $em)
-    {
+    public function __construct(
+        private EntityManagerInterface $em,
+        #[Autowire(env: 'DATABASE_URL')] private string $database,
+    ) {
     }
 
     public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue
     {
         $catalogue = new MessageCatalogue($locale);
+        if ('' === $this->database) {
+            return $catalogue;
+        }
+
         $stored = str_ends_with($domain, MessageCatalogue::INTL_DOMAIN_SUFFIX) ? substr($domain, 0, -\strlen(MessageCatalogue::INTL_DOMAIN_SUFFIX)) : $domain;
         try {
             $texts = $this->em->getRepository(Text::class)->findBy(['locale' => $locale, 'domain' => $stored]);
