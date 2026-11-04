@@ -867,13 +867,31 @@ tbody tr:hover { background: var(--row-hover); }
     border: 2px solid var(--border-light);
     border-radius: var(--radius);
     padding: 1.65rem;
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
 }
 .offer-card:hover { border-color: var(--primary); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
+.offer-card.popular { border-color: var(--primary); background: linear-gradient(to bottom, var(--surface), var(--tint)); }
 .offer-card.picked { border-color: var(--primary); background: var(--picked); }
+.offer-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 18px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--warning), var(--error));
+    color: var(--on-fill);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    box-shadow: var(--shadow-sm);
+}
 .offer-head { padding-bottom: 1.35rem; margin-bottom: 0.6rem; border-bottom: 2px solid var(--border-light); }
 .offer-title { margin: 0 0 0.7rem; font-size: 1.25rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
 .offer-price { display: flex; align-items: baseline; flex-wrap: wrap; font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
