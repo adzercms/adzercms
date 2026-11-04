@@ -44,5 +44,6 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - Admin entries `AdminEntry::Users`, `AdminEntry::Modules` and `AdminEntry::ModuleSettings`: a module reaches the user list, the modules section and its settings page of the admin without naming their routes
 - Rescan button `@Theme/_rescan.html.twig`: a block from a snapshot of an outside service polls it again, the table filters go along
 - The Content Security Policy allows media of the site's own origin by `media-src 'self'`: a `<video>` or `<audio>` of a module plays its own files
+- A module cell `Cell` of a foreign listing carries bold text, a note in brackets, a warning mark with its text on hover and further parts with their own signs; the theme `cell()` draws it; the admin user list shows the login as a link to the card, the contact and the registration last
 
 [Unreleased]: https://github.com/adzercms/adzercms/commits/main

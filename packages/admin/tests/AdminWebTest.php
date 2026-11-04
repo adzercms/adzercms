@@ -330,7 +330,7 @@ final class AdminWebTest extends SchemaTestCase
     public function testUserListNamesRecordByLoginAndCarriesModuleColumnsBeforeState(): void
     {
         $owing = $this->record('79990000010')->setComment('b');
-        $paid = $this->record('79990000011')->setComment('a');
+        $paid = $this->record('79990000011', 'paid@example.org')->setComment('a');
         $this->em->flush();
         $ledger = self::service(Ledger::class);
         $ledger->balances = [(int) $owing->getId() => '-150', (int) $paid->getId() => '300'];
@@ -339,15 +339,19 @@ final class AdminWebTest extends SchemaTestCase
         $listing = $this->fragment('/admin/users');
 
         $login = self::phrase('core.user.login');
+        $contacts = self::phrase('core.contacts');
         self::assertSame(
-            [$login, self::phrase('core.user.created'), Ledger::LABEL, self::phrase('core.column.status')],
+            [$login, $contacts, Ledger::LABEL, self::phrase('core.column.status'), self::phrase('core.user.created')],
             $listing->filter('thead th')->each(static fn (Crawler $head): string => trim($head->text())),
         );
 
         $row = 'u'.$owing->getId();
-        self::assertSame($row, trim(self::cell($listing, $row, $login)->filter('strong')->text()), 'the login of the module names the record');
-        self::assertSame('-150', trim(self::cell($listing, $row, Ledger::LABEL)->text()));
-        self::assertStringContainsString('minus', (string) self::cell($listing, $row, Ledger::LABEL)->attr('class'));
+        $name = self::cell($listing, $row, $login)->filter('a');
+        self::assertSame($row, trim($name->text()), 'the login of the module names the record');
+        self::assertSame(\sprintf('/admin/users/%d', $owing->getId()), $name->attr('href'), 'the login leads to the card');
+        self::assertSame('79990000010', trim(self::cell($listing, $row, $contacts)->text()), 'without mail the contact is the phone');
+        self::assertSame('paid@example.org', trim(self::cell($listing, 'u'.$paid->getId(), $contacts)->text()));
+        self::assertSame('-150', trim(self::cell($listing, $row, Ledger::LABEL)->filter('.minus')->text()));
         self::assertSame([self::ids($listing)], $ledger->asked, 'the module gives the cells of the page at once');
 
         $pair = [$paid->getId(), $owing->getId()];

@@ -1356,6 +1356,8 @@ html:has(dialog[open]:modal) { overflow: hidden; }
 
 .tip::before { content: "?"; }
 .tip:hover { background: var(--border-light); color: var(--text); }
+.tip.mark, .tip.mark:hover { width: auto; height: auto; font-size: inherit; color: var(--warning); background: none; border: 0; }
+.tip.mark::before { content: "★"; }
 
 .tip-text {
     position: fixed;

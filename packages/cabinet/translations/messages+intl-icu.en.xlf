@@ -133,12 +133,6 @@
         <target>The contact is taken by another user</target>
       </segment>
     </unit>
-    <unit id="cabinet.contact.title">
-      <segment>
-        <source>cabinet.contact.title</source>
-        <target>Contacts</target>
-      </segment>
-    </unit>
     <unit id="cabinet.contact.undeliverable">
       <segment>
         <source>cabinet.contact.undeliverable</source>

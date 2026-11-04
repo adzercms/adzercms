@@ -133,12 +133,6 @@
         <target>Контакт занят другим пользователем</target>
       </segment>
     </unit>
-    <unit id="cabinet.contact.title">
-      <segment>
-        <source>cabinet.contact.title</source>
-        <target>Контакты</target>
-      </segment>
-    </unit>
     <unit id="cabinet.contact.undeliverable">
       <segment>
         <source>cabinet.contact.undeliverable</source>

@@ -7,12 +7,6 @@
         <target>+ Lead</target>
       </segment>
     </unit>
-    <unit id="leads.column.contacts">
-      <segment>
-        <source>leads.column.contacts</source>
-        <target>Contacts</target>
-      </segment>
-    </unit>
     <unit id="leads.column.number">
       <segment>
         <source>leads.column.number</source>

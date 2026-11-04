@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Theme;
 
 use AdzerCMS\Contracts\Ui\Badged;
+use AdzerCMS\Contracts\Ui\Cell;
 use AdzerCMS\Core\Ui\Money;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -49,10 +50,7 @@ final class ThemeExtension extends AbstractExtension
 
     public function hint(string $text): string
     {
-        return sprintf(
-            '<button type="button" class="tip" aria-label="%1$s"><span class="tip-text">%1$s</span></button>',
-            htmlspecialchars($text, \ENT_QUOTES),
-        );
+        return $this->tip($text, 'tip');
     }
 
     public function caption(string|TranslatableInterface|null $value): string
@@ -62,10 +60,11 @@ final class ThemeExtension extends AbstractExtension
         return '' === trim($text) ? '' : '<br>'.$this->clip($text, self::CAPTION, 'muted');
     }
 
-    /** @param string|list<string|TranslatableInterface>|\DateTimeInterface|TranslatableInterface|null $value */
-    public function cell(string|array|\DateTimeInterface|TranslatableInterface|null $value): string
+    /** @param string|list<string|TranslatableInterface>|\DateTimeInterface|TranslatableInterface|Cell|null $value */
+    public function cell(string|array|\DateTimeInterface|TranslatableInterface|Cell|null $value): string
     {
         return match (true) {
+            $value instanceof Cell => $this->part($value),
             $value instanceof \DateTimeInterface => $this->moment($value),
             $value instanceof TranslatableInterface => htmlspecialchars($value->trans($this->translator), \ENT_QUOTES),
             null === $value, '' === $value, [] === $value => self::BLANK,
@@ -133,6 +132,40 @@ final class ThemeExtension extends AbstractExtension
         }
 
         return $html.htmlspecialchars(substr($text, $at), \ENT_QUOTES);
+    }
+
+    private function part(Cell $cell): string
+    {
+        $text = '' === $cell->text ? self::BLANK : htmlspecialchars($cell->text, \ENT_QUOTES);
+        $class = match (true) {
+            $cell->sign > 0 => ' class="plus"',
+            $cell->sign < 0 => ' class="minus"',
+            default => '',
+        };
+        $html = $cell->strong || '' !== $class ? sprintf('<%1$s%2$s>%3$s</%1$s>', $cell->strong ? 'strong' : 'span', $class, $text) : $text;
+
+        if (null !== $cell->note) {
+            $html .= sprintf(' <span class="muted">(%s)</span>', htmlspecialchars($cell->note, \ENT_QUOTES));
+        }
+
+        if (null !== $cell->warning) {
+            $html .= ' '.$this->tip($cell->warning, 'tip mark');
+        }
+
+        foreach ($cell->more as $next) {
+            $html .= ' '.$this->part($next);
+        }
+
+        return $html;
+    }
+
+    private function tip(string $text, string $class): string
+    {
+        return sprintf(
+            '<button type="button" class="%1$s" aria-label="%2$s"><span class="tip-text">%2$s</span></button>',
+            $class,
+            htmlspecialchars($text, \ENT_QUOTES),
+        );
     }
 
     /** @param non-empty-list<string|TranslatableInterface> $lines */

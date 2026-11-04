@@ -45,9 +45,10 @@ final readonly class UserRows
 
         $table = Table::of($request, $route, [
             Column::of('id', t('core.user.login'), 's.id'),
-            Column::of('created', t('core.user.created'), 's.createdAt')->aside(),
+            Column::of('contact', t('core.contacts'), 's.email', 's.phone')->aside(),
             ...$extra,
             Column::of('state', t('core.column.status'), 's.status'),
+            Column::of('created', t('core.user.created'), 's.createdAt')->aside(),
         ], 'created', t('core.user.empty'), false, filters: $filters, sticky: $sticky);
 
         $term = trim($table->term());

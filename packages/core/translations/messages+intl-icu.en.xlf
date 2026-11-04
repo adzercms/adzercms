@@ -289,6 +289,12 @@
         <target>Phone is taken by user #{id}</target>
       </segment>
     </unit>
+    <unit id="core.contacts">
+      <segment>
+        <source>core.contacts</source>
+        <target>Contacts</target>
+      </segment>
+    </unit>
     <unit id="core.deletion.no_mail">
       <segment>
         <source>core.deletion.no_mail</source>
