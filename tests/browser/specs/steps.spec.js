@@ -2,6 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 const PAGE = '/admin/references';
 const ACTION = `${PAGE}/stepped`;
+const SENT = `${PAGE}?sent`;
 
 const FORM = `<form method="post" action="${ACTION}" id="stepped" data-steps>
     <section data-step="first" data-step-title="First"><input name="first" required></section>
@@ -22,7 +23,7 @@ const mount = async (page, open = '') => {
     await page.route((url) => url.pathname === ACTION, (route) => {
         sent.push(route.request().postData());
 
-        return route.abort();
+        return route.fulfill({ status: 303, headers: { location: SENT } });
     });
     await page.locator('.panel-content').evaluate((content, [html, opened]) => {
         content.insertAdjacentHTML('afterbegin', html);
@@ -119,9 +120,9 @@ test('[ACMS-UI-0113] a reload keeps the step and what was entered until the form
         form.elements.extra.value = 'two';
     });
     await page.locator('#stepped [data-step-submit]').click();
-    await expect.poll(() => sent.length).toBe(1);
+    await page.waitForURL(SENT);
+    expect(sent).toHaveLength(1);
 
-    await page.goto(PAGE);
     await mount(page);
     await expect(shown(page), 'the sent form starts anew').toHaveAttribute('data-step', 'first');
     await expect(page.locator('#stepped input[name="first"]')).toHaveValue('');
