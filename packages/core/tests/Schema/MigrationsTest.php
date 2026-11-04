@@ -15,6 +15,7 @@ use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use Doctrine\Migrations\Version\Direction;
 use Doctrine\Migrations\Version\ExecutionResult;
 use Doctrine\Migrations\Version\Version;
+use Doctrine\ORM\Mapping\FieldMapping;
 use Doctrine\ORM\Mapping\JoinColumnMapping;
 use Doctrine\ORM\Mapping\ToOneOwningSideMapping;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -113,9 +114,10 @@ final class MigrationsTest extends SchemaTestCase
         $connection = $this->em->getConnection();
         $refused = [];
         foreach ($this->em->getMetadataFactory()->getAllMetadata() as $metadata) {
-            $columns = $metadata->getColumnNames();
+            $columns = array_values(array_map(static fn (FieldMapping $field): string => $field->columnName,
+                array_filter($metadata->fieldMappings, static fn (FieldMapping $field): bool => null === $field->inherited)));
             foreach ($metadata->associationMappings as $association) {
-                if ($association instanceof ToOneOwningSideMapping) {
+                if ($association instanceof ToOneOwningSideMapping && null === $association->inherited) {
                     array_push($columns, ...array_map(static fn (JoinColumnMapping $join): string => $join->name, $association->joinColumns));
                 }
             }
