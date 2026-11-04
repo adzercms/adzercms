@@ -866,17 +866,24 @@ tbody tr:hover { background: var(--row-hover); }
 .offer-card {
     border: 2px solid var(--border-light);
     border-radius: var(--radius);
-    padding: 1.5rem;
+    padding: 1.65rem;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
 }
-.offer-card:hover { border-color: var(--primary); box-shadow: var(--shadow-sm); }
+.offer-card:hover { border-color: var(--primary); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
 .offer-card.picked { border-color: var(--primary); background: var(--picked); }
-.offer-title { margin: 0; font-size: 1.15rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-.offer-price { font-size: 1.7rem; font-weight: 700; }
-.offer-price span { font-size: 13px; font-weight: 400; color: var(--text-gray); margin-left: 0.35rem; }
+.offer-head { padding-bottom: 1.35rem; margin-bottom: 0.6rem; border-bottom: 2px solid var(--border-light); }
+.offer-title { margin: 0 0 0.7rem; font-size: 1.25rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.offer-price { display: flex; align-items: baseline; flex-wrap: wrap; font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+.offer-price span { font-size: 13px; font-weight: 400; letter-spacing: 0; color: var(--text-gray); margin-left: 0.35rem; }
+.offer-price-note { margin-top: 0.25rem; font-size: 13px; color: var(--text-muted); }
+.offer-card .offer-value { font-weight: 700; color: var(--primary-text); }
+.offer-included-label { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; font-size: 0.75rem; color: var(--text-muted); }
+.offer-included-label::before, .offer-included-label::after { content: ""; flex: 1; height: 1px; background: var(--border-light); }
+.offer-included-items { display: flex; flex-wrap: wrap; gap: 0.35rem; font-size: 0.7rem; color: var(--text-gray); }
+.offer-included-items span { background: var(--bg-light); padding: 0.15rem 0.4rem; border-radius: 4px; }
 .offer-features { list-style: none; margin: 0; padding: 0; }
 .offer-features li { padding: 0.35rem 0; border-bottom: 1px solid var(--border-light); font-size: 13px; }
 .offer-features li:last-child { border-bottom: 0; }
