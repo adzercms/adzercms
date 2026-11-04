@@ -172,7 +172,7 @@ const moveStep = (form, shift) => {
 
 const steppers = scope => [scope, ...scope.querySelectorAll('form[data-steps]')]
     .filter(node => node.matches?.('form[data-steps]'))
-    .forEach(form => showStep(form, form.dataset.stepOpen));
+    .forEach(form => showStep(form, form.dataset.stepAt ?? form.dataset.stepOpen));
 
 document.addEventListener('click', event => {
     const control = event.target.closest('[data-step-next], [data-step-back], [data-step-go]');
