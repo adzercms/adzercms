@@ -39,6 +39,7 @@ test('[ACMS-UI-0110] a choice option sets the field it names and the field stays
 });
 
 test('[ACMS-UI-0027] a field on several conditions shows only while all of them hold, on several sets — while any set holds', async ({ page }) => {
+    await field(page, 'select[name="provider"]').selectOption('other');
     await expect(field(page, 'input[name="either"]'), 'no set holds').toBeHidden();
     await field(page, 'select[name="provider"]').selectOption('1');
     await expect(field(page, 'input[name="vlan"]'), 'all conditions hold').toBeVisible();
