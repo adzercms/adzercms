@@ -1518,6 +1518,11 @@ form[data-steps] [data-step]:not(.current) { display: none; }
     border-radius: var(--radius);
 }
 
+.boxes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 0.75rem; margin: 0.75rem 0; }
+.box { padding: 0.75rem 1rem; background: var(--bg-gray); border: 1px solid var(--border-light); border-radius: var(--radius-lg); }
+.box > h4 { margin: 0 0 0.25rem; }
+.box > .hint { margin: 0 0 0.5rem; }
+
 .guide { display: grid; gap: 1.5rem; margin: 0 0 1rem; padding: 0; list-style: none; counter-reset: part; }
 .guide > li { counter-increment: part; }
 .guide > li > h3 { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.6rem; font-size: 15px; }

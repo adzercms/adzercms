@@ -235,9 +235,9 @@ const restoreDraft = form => {
 const steppers = scope => [scope, ...scope.querySelectorAll('form[data-steps]')]
     .filter(node => node.matches?.('form[data-steps]'))
     .forEach(form => {
-        const step = form.dataset.stepAt ? null : restoreDraft(form);
+        const step = restoreDraft(form);
         conditionals(form);
-        showStep(form, form.dataset.stepAt ?? form.dataset.stepOpen ?? step);
+        showStep(form, form.dataset.stepOpen ?? step);
     });
 
 document.addEventListener('input', event => {

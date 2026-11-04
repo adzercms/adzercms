@@ -75,25 +75,6 @@ test('[ACMS-UI-0107] steps open one by one, a step goes on only with its fields 
     await expect(shown(page), 'the title of a passed step goes back to it').toHaveAttribute('data-step', 'first');
 });
 
-test('[ACMS-UI-0108] a refresh of its area keeps the preserved form at its step with what was entered', async ({ page }) => {
-    await mount(page);
-    await page.locator('#stepped input[name="first"]').fill('one');
-    await page.locator('#stepped [data-step-next]').click();
-
-    await page.locator('#stepped').evaluate(async (form, html) => {
-        const { default: htmx } = await import('htmx.org');
-        const area = Object.assign(document.createElement('div'), { id: 'stepped-area' });
-        form.setAttribute('hx-preserve', '');
-        form.replaceWith(area);
-        area.append(form);
-        htmx.swap(area, `<div id="stepped-area">${html.replace('data-steps', 'hx-preserve data-steps')}</div>`, { swapStyle: 'outerHTML' });
-    }, FORM);
-
-    await expect(page.locator('#stepped-area #stepped'), 'the refreshed area keeps the form').toHaveCount(1);
-    await expect(shown(page), 'the kept form stays at its step').toHaveAttribute('data-step', 'choice');
-    await expect(page.locator('#stepped input[name="first"]')).toHaveValue('one');
-});
-
 test('[ACMS-UI-0114] a step change opens the top of the form', async ({ page }) => {
     await mount(page);
     await page.locator('#stepped').evaluate((form) => ['first', 'choice'].forEach((key) => form
