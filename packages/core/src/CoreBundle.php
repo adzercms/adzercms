@@ -26,6 +26,7 @@ use AdzerCMS\Contracts\Ui\Tabs;
 use AdzerCMS\Core\Account\Password;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Asset\ModuleImportMap;
+use AdzerCMS\Core\Command\ShowcaseFileCommand;
 use AdzerCMS\Core\Confirmation\Confirmations;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Notice\Channel;
@@ -157,6 +158,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $container->parameters()->set('env(GEOIP_CITY_DB)', '');
+        $container->parameters()->set('env('.ShowcaseFileCommand::ENV.')', '');
         $container->import('../config/services.php');
         $builder->setAlias(self::TRANSLATOR, 'translator')->setPublic(true);
         $builder->register(self::MIGRATION_MARKS, \Closure::class)

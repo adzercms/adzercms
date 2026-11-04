@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests\Showcase;
 
-use AdzerCMS\Core\Command\ShowcaseCommand;
+use AdzerCMS\Core\Command\ShowcaseFileCommand;
 use AdzerCMS\Core\Module\Switches;
+use AdzerCMS\Core\Showcase\Sections;
 use AdzerCMS\Core\Tests\Analytics\Fixture\Tally\TallyCounter;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -25,7 +26,7 @@ final class ShowcaseCommandTest extends SchemaTestCase
         yield 'nothing to show' => [[], []];
         yield 'counter switched on' => [
             [TallyCounter::SETTINGS.Switches::ENABLED => '1', TallyCounter::SETTINGS.TallyCounter::SITE => self::SITE],
-            [ShowcaseCommand::CORE => ['counters' => ['tally' => ['site' => self::SITE]]], 'tally' => [TallyCounter::SITE => self::SITE]],
+            [Sections::CORE => ['counters' => ['tally' => ['site' => self::SITE]]], 'tally' => [TallyCounter::SITE => self::SITE]],
         ];
     }
 
@@ -48,18 +49,20 @@ final class ShowcaseCommandTest extends SchemaTestCase
         self::assertSame($showcase, json_decode($display, true, flags: \JSON_THROW_ON_ERROR));
     }
 
-    #[Group('ACMS-CORE-1012')]
-    public function testFileTakesTheShowcaseInsteadOfOutput(): void
+    #[Group('ACMS-CORE-1073')]
+    public function testFileConsoleReplacesTheFileOfTheInstanceValue(): void
     {
         $file = sys_get_temp_dir().'/adzercms-showcase-'.bin2hex(random_bytes(4)).'.json';
         file_put_contents($file, 'previous');
+        $_SERVER[ShowcaseFileCommand::ENV] = $_ENV[ShowcaseFileCommand::ENV] = $file;
 
-        $command = self::command('adzercms:showcase');
         try {
-            self::assertSame(Command::SUCCESS, $command->execute(['file' => $file]));
+            $command = self::command('adzercms:showcase:file');
+            self::assertSame(Command::SUCCESS, $command->execute([]));
             self::assertSame('', $command->getDisplay());
             self::assertSame([], json_decode((string) file_get_contents($file), true, flags: \JSON_THROW_ON_ERROR));
         } finally {
+            unset($_SERVER[ShowcaseFileCommand::ENV], $_ENV[ShowcaseFileCommand::ENV]);
             unlink($file);
         }
     }

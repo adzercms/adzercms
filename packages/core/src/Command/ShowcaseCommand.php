@@ -4,69 +4,22 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Command;
 
-use AdzerCMS\Contracts\Analytics\Counter;
-use AdzerCMS\Contracts\Showcase\Showcase;
-use AdzerCMS\Contracts\Ui\CabinetEntry;
-use AdzerCMS\Core\Module\Bundles;
-use AdzerCMS\Core\Module\Registry;
-use AdzerCMS\Core\Module\Switches;
-use AdzerCMS\Core\Ui\Entries;
-use Symfony\Component\Console\Attribute\Argument;
+use AdzerCMS\Core\Showcase\Sections;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
-use Symfony\Component\Filesystem\Filesystem;
 
 #[AsCommand(name: 'adzercms:showcase', description: 'Public values of the core and the modules for the project site as JSON')]
 final readonly class ShowcaseCommand
 {
-    public const CORE = 'core';
-    private const ENTRIES = [CabinetEntry::Home, CabinetEntry::Register, CabinetEntry::Forgot, CabinetEntry::Profile];
-
-    /** @param iterable<Showcase> $sections */
-    public function __construct(
-        #[AutowireIterator(Showcase::class)]
-        private iterable $sections,
-        private Bundles $bundles,
-        private Entries $entries,
-        private Switches $switches,
-    ) {
+    public function __construct(private Sections $sections)
+    {
     }
 
-    public function __invoke(
-        OutputInterface $output,
-        #[Argument('File the showcase replaces atomically; prints it without one')] ?string $file = null,
-    ): int {
-        $showcase = [self::CORE => $this->core()];
-        foreach ($this->sections as $section) {
-            $showcase[Registry::lowerKey($this->bundles->owner($section))] = $section->section();
-        }
-
-        $json = json_encode((object) array_filter($showcase), \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES);
-
-        if (null === $file) {
-            $output->writeln($json);
-        } else {
-            (new Filesystem())->dumpFile($file, $json);
-        }
+    public function __invoke(OutputInterface $output): int
+    {
+        $output->writeln($this->sections->json());
 
         return Command::SUCCESS;
-    }
-
-    /** @return array<string, mixed> */
-    private function core(): array
-    {
-        $counters = [];
-        foreach ($this->switches->enabled(Counter::class) as $key => [$counter, $credentials]) {
-            $counters[$key] = $counter->settings($credentials);
-        }
-
-        $core = [];
-        foreach (self::ENTRIES as $entry) {
-            $core[$entry->value] = $this->entries->url($entry, absolute: true);
-        }
-
-        return array_filter($core + ['counters' => $counters]);
     }
 }
