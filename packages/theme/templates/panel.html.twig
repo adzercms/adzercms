@@ -42,7 +42,7 @@
     <header class="card-head">
         <h1>{% block heading %}{{ block('title') }}{% endblock %}</h1>
         <div class="card-actions">
-            {%- block actions %}{% if actions is defined and not (table is defined and rows is defined and table.bare(rows)) %}{% include '@Theme/_actions.html.twig' %}{% endif %}{% endblock -%}
+            {%- block actions %}{% if actions is defined %}{% include '@Theme/_actions.html.twig' %}{% endif %}{% endblock -%}
             {%- set settings = is_granted('ROLE_ADMIN') ? section_settings() : null %}
             {%- if settings %}<a class="button secondary" href="{{ settings }}">{{ 'theme.settings'|trans }}</a>{% endif -%}
         </div>

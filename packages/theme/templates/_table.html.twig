@@ -1,9 +1,8 @@
 <div id="{{ table.id }}" {% if heading|default(null) %}class="section" {% endif %}{% if live|default(false) %}data-live {% endif %}hx-target="#{{ table.id }}" hx-swap="outerHTML">
-    {% set bare = table.bare(rows) %}
     {% if heading|default(null) %}
         <div class="section-head">
             <h3>{{ heading|trans }}</h3>
-            {% if actions|default([]) and not bare %}
+            {% if actions|default([]) %}
                 <div class="card-actions">{% include '@Theme/_actions.html.twig' %}</div>
             {% endif %}
         </div>
@@ -16,7 +15,7 @@
     <div id="{{ table.id }}-data">
         {% if rows is empty %}
             <p class="empty-state">{{ table.empty|trans }}</p>
-            {% if bare and actions|default([]) %}
+            {% if actions|default([]) and table.bare(rows) %}
                 <div class="empty-actions">{% include '@Theme/_actions.html.twig' %}</div>
             {% endif %}
         {% else %}
