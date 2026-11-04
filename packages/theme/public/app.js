@@ -131,6 +131,80 @@ const conditionals = scope => {
     });
 };
 
+const STEP = '[data-step]';
+const stepsOf = form => [...form.querySelectorAll(STEP)].filter(step => !step.hidden);
+
+const showStep = (form, key) => {
+    const steps = stepsOf(form);
+    const at = Math.max(0, steps.findIndex(step => step.dataset.step === key));
+    const last = steps.length - 1;
+    if (!steps.length) {
+        return;
+    }
+
+    form.dataset.stepAt = steps[at].dataset.step;
+    form.querySelectorAll(STEP).forEach(step => step.classList.toggle('current', step === steps[at]));
+    const nav = form.querySelector(':scope > .steps-nav') ?? form.insertAdjacentElement('afterbegin',
+        Object.assign(document.createElement('ol'), {className: 'steps-nav'}));
+    nav.replaceChildren(...steps.map((step, index) => {
+        const item = Object.assign(document.createElement('li'), {textContent: step.dataset.stepTitle});
+        item.classList.toggle('done', index < at);
+        item.classList.toggle('current', index === at);
+        if (index < at) {
+            item.dataset.stepGo = step.dataset.step;
+        }
+        return item;
+    }));
+    form.querySelectorAll('[data-step-back]').forEach(button => button.hidden = at === 0);
+    form.querySelectorAll('[data-step-next]').forEach(button => button.hidden = at === last);
+    form.querySelectorAll('[data-step-submit]').forEach(button => button.hidden = at !== last);
+};
+
+const moveStep = (form, shift) => {
+    const steps = stepsOf(form);
+    const at = steps.findIndex(step => step.dataset.step === form.dataset.stepAt);
+    const fields = shift > 0 ? [...steps[at].querySelectorAll('input, select, textarea')] : [];
+
+    if (fields.every(field => field.disabled || field.closest('[hidden]') || field.reportValidity())) {
+        showStep(form, steps[Math.min(Math.max(at + shift, 0), steps.length - 1)].dataset.step);
+    }
+};
+
+const steppers = scope => [scope, ...scope.querySelectorAll('form[data-steps]')]
+    .filter(node => node.matches?.('form[data-steps]'))
+    .forEach(form => showStep(form, form.dataset.stepOpen));
+
+document.addEventListener('click', event => {
+    const control = event.target.closest('[data-step-next], [data-step-back], [data-step-go]');
+    const form = control?.closest('form[data-steps]');
+    if (!form) {
+        return;
+    }
+
+    if (control.dataset.stepGo !== undefined) {
+        showStep(form, control.dataset.stepGo);
+    } else {
+        moveStep(form, control.dataset.stepNext !== undefined ? 1 : -1);
+    }
+});
+
+const midway = form => form?.matches('[data-steps]') && stepsOf(form).at(-1)?.dataset.step !== form.dataset.stepAt;
+
+document.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && event.target.matches('input') && midway(event.target.form)) {
+        event.preventDefault();
+        moveStep(event.target.form, 1);
+    }
+});
+
+document.addEventListener('submit', event => {
+    if (midway(event.target)) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        moveStep(event.target, 1);
+    }
+}, true);
+
 let switched = null;
 
 document.addEventListener('change', event => {
@@ -144,6 +218,9 @@ document.addEventListener('change', event => {
     const form = event.target.closest('form');
     if (form) {
         conditionals(form);
+        if (form.matches('[data-steps]')) {
+            showStep(form, form.dataset.stepAt);
+        }
     }
 });
 
@@ -156,6 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
         openPane(hashed);
     }
     conditionals(document);
+    steppers(document);
     document.querySelector('dialog[data-open]')?.showModal();
     const toasts = document.querySelector('.toasts');
     if (toasts?.children.length) {
@@ -253,7 +331,10 @@ document.addEventListener('htmx:beforeSwap', event => {
     }
 });
 
-document.addEventListener('htmx:load', event => conditionals(event.target));
+document.addEventListener('htmx:load', event => {
+    conditionals(event.target);
+    steppers(event.target);
+});
 
 const ORDER_FIELD = 'ids[]';
 const ORDER_ANIMATION = 150;

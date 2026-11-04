@@ -1,0 +1,82 @@
+const { test, expect } = require('@playwright/test');
+
+const PAGE = '/admin/references';
+const ACTION = `${PAGE}/stepped`;
+
+const FORM = `<form method="post" action="${ACTION}" id="stepped" data-steps>
+    <section data-step="first" data-step-title="First"><input name="first" required></section>
+    <section data-step="choice" data-step-title="Choice">
+        <select name="kind"><option value="plain">plain</option><option value="extra">extra</option></select>
+    </section>
+    <section data-step="extra" data-step-title="Extra" data-when="kind=extra"><input name="extra" required></section>
+    <section data-step="last" data-step-title="Last"><input name="last"></section>
+    <div class="button-row">
+        <button type="button" data-step-back>back</button>
+        <button type="button" data-step-next>next</button>
+        <button type="submit" data-step-submit>send</button>
+    </div>
+</form>`;
+
+const mount = async (page, open = '') => {
+    const sent = [];
+    await page.route((url) => url.pathname === ACTION, (route) => {
+        sent.push(route.request().postData());
+
+        return route.abort();
+    });
+    await page.locator('.panel-content').evaluate((content, [html, opened]) => {
+        content.insertAdjacentHTML('afterbegin', html);
+        const form = document.getElementById('stepped');
+        if (opened) {
+            form.dataset.stepOpen = opened;
+        }
+        form.dispatchEvent(new CustomEvent('htmx:load', { bubbles: true }));
+    }, [FORM, open]);
+
+    return sent;
+};
+
+const shown = (page) => page.locator('#stepped [data-step].current');
+const titles = (page) => page.locator('#stepped .steps-nav li');
+
+test.beforeEach(async ({ page }) => {
+    await page.goto(PAGE);
+});
+
+test('[ACMS-UI-0107] steps open one by one, a step goes on only with its fields valid and the hidden one is skipped', async ({ page }) => {
+    const sent = await mount(page);
+
+    await expect(shown(page), 'the first step alone is shown').toHaveAttribute('data-step', 'first');
+    await expect(titles(page), 'the titles list the shown steps').toHaveText(['First', 'Choice', 'Last']);
+    await expect(page.locator('#stepped [data-step-back]')).toBeHidden();
+    await expect(page.locator('#stepped [data-step-submit]')).toBeHidden();
+
+    await page.locator('#stepped [data-step-next]').click();
+    await expect(shown(page), 'an empty required field keeps its step').toHaveAttribute('data-step', 'first');
+
+    await page.locator('#stepped input[name="first"]').fill('one');
+    await page.locator('#stepped input[name="first"]').press('Enter');
+    await expect(shown(page), 'Enter goes to the next step instead of sending').toHaveAttribute('data-step', 'choice');
+    expect(sent, 'nothing is sent before the last step').toHaveLength(0);
+
+    await page.locator('#stepped [data-step-next]').click();
+    await expect(shown(page), 'the step hidden by its condition is skipped').toHaveAttribute('data-step', 'last');
+    await expect(page.locator('#stepped [data-step-next]')).toBeHidden();
+    await expect(page.locator('#stepped [data-step-submit]'), 'the last step sends').toBeVisible();
+
+    await page.locator('#stepped [data-step-back]').click();
+    await page.locator('#stepped select[name="kind"]').selectOption('extra');
+    await expect(titles(page), 'the step shown by its condition joins the list').toHaveText(['First', 'Choice', 'Extra', 'Last']);
+    await page.locator('#stepped [data-step-next]').click();
+    await expect(shown(page)).toHaveAttribute('data-step', 'extra');
+
+    await titles(page).first().click();
+    await expect(shown(page), 'the title of a passed step goes back to it').toHaveAttribute('data-step', 'first');
+});
+
+test('[ACMS-UI-0107] a refused form opens the step named by the server', async ({ page }) => {
+    await mount(page, 'last');
+
+    await expect(shown(page)).toHaveAttribute('data-step', 'last');
+    await expect(page.locator('#stepped .steps-nav li.done'), 'the steps before it are passed').toHaveCount(2);
+});

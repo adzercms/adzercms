@@ -175,5 +175,17 @@
         <target>Settings</target>
       </segment>
     </unit>
+    <unit id="theme.steps.back">
+      <segment>
+        <source>theme.steps.back</source>
+        <target>Back</target>
+      </segment>
+    </unit>
+    <unit id="theme.steps.next">
+      <segment>
+        <source>theme.steps.next</source>
+        <target>Next</target>
+      </segment>
+    </unit>
   </file>
 </xliff>
