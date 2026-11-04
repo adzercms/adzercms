@@ -487,7 +487,8 @@ button.nav-item {
 .card-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
 .card-actions form { margin: 0; }
 
-.inline-action { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0 0 0.9rem; }
+.inline-action { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem; margin: 0 0 0.9rem; }
+.inline-action label { margin: 0; }
 .inline-action input, .inline-action select { width: auto; min-width: 14rem; margin: 0; }
 
 h1, h2, h3 { font-weight: 500; }

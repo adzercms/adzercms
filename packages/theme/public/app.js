@@ -274,10 +274,14 @@ const polling = element => (element?.getAttribute('hx-trigger') ?? '').includes(
 let approved = null;
 let sending = new WeakSet();
 
-const ask = (question, agreed, declined = () => {}) => {
+const question = (form, submitter) => submitter?.dataset.confirm
+    ?? form.querySelector('option:checked[data-confirm]')?.dataset.confirm
+    ?? form.dataset.confirm;
+
+const ask = (text, agreed, declined = () => {}) => {
     const dialog = document.getElementById('confirm');
 
-    dialog.querySelector('[data-confirm-text]').textContent = question;
+    dialog.querySelector('[data-confirm-text]').textContent = text;
     dialog.returnValue = '';
     dialog.addEventListener('close', () => {
         if (dialog.returnValue === 'yes') {
@@ -298,12 +302,12 @@ document.addEventListener('submit', event => {
 document.addEventListener('submit', event => {
     const form = event.target;
     const submitter = event.submitter ?? null;
-    const question = submitter?.dataset.confirm ?? form.dataset.confirm;
+    const asked = question(form, submitter);
 
-    if (question && approved !== form) {
+    if (asked && approved !== form) {
         const toggled = switched;
         event.preventDefault();
-        ask(question, () => {
+        ask(asked, () => {
             approved = form;
             form.requestSubmit(submitter);
         }, () => {
@@ -322,11 +326,11 @@ document.addEventListener('submit', event => {
     }
 });
 document.addEventListener('htmx:confirm', event => {
-    const question = event.detail.elt?.dataset?.confirm;
+    const asked = event.detail.elt?.dataset?.confirm;
 
-    if (question) {
+    if (asked) {
         event.preventDefault();
-        ask(question, () => event.detail.issueRequest(true));
+        ask(asked, () => event.detail.issueRequest(true));
     }
 });
 document.addEventListener('htmx:beforeRequest', event => running(!polling(event.detail.elt)));
@@ -534,8 +538,7 @@ document.addEventListener('change', event => {
 
 document.addEventListener('submit', event => {
     const form = event.target;
-    const question = event.submitter?.dataset.confirm ?? form.dataset.confirm;
-    if (!busy(form) || (question && approved !== form)) {
+    if (!busy(form) || (question(form, event.submitter) && approved !== form)) {
         return;
     }
 
