@@ -607,6 +607,7 @@ button:focus-visible, .button:focus-visible, .tab:focus-visible {
 
 textarea { min-height: 6rem; }
 textarea.note { min-height: 24rem; }
+textarea.code { min-height: 70vh; font-family: ui-monospace, monospace; font-size: 13px; tab-size: 4; white-space: pre; }
 textarea.onboard { margin: 0.5rem 0; font-family: ui-monospace, monospace; font-size: 12px; background: var(--bg-light); }
 .onboard-copy { margin-top: 0.5rem; }
 select[multiple] { min-height: 7rem; }
