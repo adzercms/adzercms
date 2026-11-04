@@ -18,21 +18,21 @@ const FORM = `<form method="post" action="${ACTION}" id="stepped" data-steps>
     </div>
 </form>`;
 
-const mount = async (page, open = '') => {
+const mount = async (page, open = '', html = FORM) => {
     const sent = [];
     await page.route((url) => url.pathname === ACTION, (route) => {
         sent.push(route.request().postData());
 
         return route.fulfill({ status: 303, headers: { location: SENT } });
     });
-    await page.locator('.panel-content').evaluate((content, [html, opened]) => {
-        content.insertAdjacentHTML('afterbegin', html);
-        const form = document.getElementById('stepped');
+    await page.locator('.panel-content').evaluate((content, [form, opened]) => {
+        content.insertAdjacentHTML('afterbegin', form);
+        const stepped = document.getElementById('stepped');
         if (opened) {
-            form.dataset.stepOpen = opened;
+            stepped.dataset.stepOpen = opened;
         }
-        form.dispatchEvent(new CustomEvent('htmx:load', { bubbles: true }));
-    }, [FORM, open]);
+        stepped.dispatchEvent(new CustomEvent('htmx:load', { bubbles: true }));
+    }, [html, open]);
 
     return sent;
 };
@@ -129,4 +129,25 @@ test('[ACMS-UI-0113] a reload keeps the step and what was entered until the form
     await mount(page);
     await expect(shown(page), 'the sent form starts anew').toHaveAttribute('data-step', 'first');
     await expect(page.locator('#stepped input[name="first"]')).toHaveValue('');
+});
+
+test('[ACMS-UI-0116] a draft comes back only to its own history entry and over the server value it started from', async ({ page }) => {
+    await mount(page);
+    await page.locator('#stepped input[name="first"]').fill('one');
+    await page.locator('#stepped [data-step-next]').click();
+    await page.locator('#stepped [data-step-next]').click();
+    await page.locator('#stepped input[name="last"]').fill('mine');
+
+    await page.reload();
+    await mount(page, '', FORM.replace('<input name="first" required>', '<input name="first" required value="sent">'));
+    await expect(page.locator('#stepped input[name="first"]'), 'the value sent by another window outranks the draft').toHaveValue('sent');
+    await expect(page.locator('#stepped input[name="last"]'), 'a field the server kept comes back').toHaveValue('mine');
+    await expect(shown(page)).toHaveAttribute('data-step', 'last');
+
+    await page.goto(SENT);
+    await page.goto(PAGE);
+    await mount(page);
+    await expect(shown(page), 'a link opens the form anew').toHaveAttribute('data-step', 'first');
+    await expect(page.locator('#stepped input[name="first"]')).toHaveValue('');
+    await expect(page.locator('#stepped input[name="last"]')).toHaveValue('');
 });

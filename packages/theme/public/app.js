@@ -218,12 +218,39 @@ const goStep = (form, key) => {
 
 const UNDRAFTED = ['hidden', 'file', 'password', 'submit', 'button', 'reset'];
 const draftKey = form => `steps:${new URL(form.action, location.href).pathname}`;
-const drafted = form => [...form.elements].filter(field => field.name && !UNDRAFTED.includes(field.type));
 const checkable = field => ['checkbox', 'radio'].includes(field.type);
+const entered = field => checkable(field) ? (field.checked ? field.value : null) : field.value;
+const served = field => {
+    if (checkable(field)) {
+        return field.defaultChecked ? field.value : null;
+    }
+    if (field.options) {
+        return ([...field.options].find(option => option.defaultSelected) ?? field.options[0])?.value ?? '';
+    }
+
+    return field.defaultValue;
+};
+
+const drafted = form => {
+    const named = new Map();
+    [...form.elements].filter(field => field.name && !UNDRAFTED.includes(field.type))
+        .forEach(field => named.set(field.name, [...(named.get(field.name) ?? []), field]));
+
+    return named;
+};
+
+const historyEntry = () => {
+    if (!history.state?.draftEntry) {
+        history.replaceState({...history.state, draftEntry: String(performance.timeOrigin)}, '');
+    }
+
+    return history.state.draftEntry;
+};
 
 const saveDraft = form => sessionStorage.setItem(draftKey(form), JSON.stringify({
+    entry: historyEntry(),
     step: form.dataset.stepAt,
-    fields: drafted(form).map(field => [field.name, checkable(field) ? (field.checked ? field.value : null) : field.value]),
+    fields: [...drafted(form)].map(([name, fields]) => [name, fields.map(entered), fields.map(served)]),
 }));
 
 const draftOf = form => {
@@ -236,24 +263,25 @@ const draftOf = form => {
 
 const restoreDraft = form => {
     const draft = draftOf(form);
-    if (!draft) {
+    if (draft?.entry !== historyEntry()) {
         return null;
     }
-    const values = new Map();
-    draft.fields.forEach(([name, value]) => values.set(name, [...(values.get(name) ?? []), value]));
-    drafted(form).forEach(field => {
-        const saved = values.get(field.name);
-        if (!saved) {
+    const saved = new Map(draft.fields.map(([name, values, bases]) => [name, {values, bases}]));
+    drafted(form).forEach((fields, name) => {
+        const {values, bases} = saved.get(name) ?? {};
+        if (JSON.stringify(bases) !== JSON.stringify(fields.map(served))) {
             return;
         }
-        if (checkable(field)) {
-            field.checked = saved.includes(field.value);
-        } else if (saved.length) {
-            field.value = saved.shift();
-        }
-        if (field.dataset.mirror) {
-            field.dataset.own = field.value === form.elements[field.dataset.mirror]?.value ? '' : '1';
-        }
+        fields.forEach((field, at) => {
+            if (checkable(field)) {
+                field.checked = values[at] === field.value;
+            } else {
+                field.value = values[at];
+            }
+            if (field.dataset.mirror) {
+                field.dataset.own = field.value === form.elements[field.dataset.mirror]?.value ? '' : '1';
+            }
+        });
     });
 
     return draft.step;
