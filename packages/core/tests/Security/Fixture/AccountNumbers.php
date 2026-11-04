@@ -8,9 +8,16 @@ use AdzerCMS\Contracts\Account\Identifier;
 
 final class AccountNumbers implements Identifier
 {
-    public function user(string $identifier): ?int
+    public function users(array $identifiers): array
     {
-        return 1 === preg_match('/^u(\d+)$/', $identifier, $match) ? (int) $match[1] : null;
+        $users = [];
+        foreach ($identifiers as $identifier) {
+            if (1 === preg_match('/^u(\d+)$/', $identifier, $match)) {
+                $users[$identifier] = (int) $match[1];
+            }
+        }
+
+        return $users;
     }
 
     public function logins(array $users): array

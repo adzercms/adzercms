@@ -5,8 +5,7 @@
             <td class="{{ table.aside('topic') }}">{{ cell(row.topic) }}</td>
             <td class="{{ table.aside('contacts') }}">{{ cell([row.phone, row.email]|filter(contact => contact)) }}</td>
             {% for column in extra %}
-                {% set value = cells[row.id][column.key] ?? null %}
-                <td class="{{ table.aside(column.key) }} {{ value and value.sign < 0 ? 'minus' }} {{ value and value.sign > 0 ? 'plus' }}">{{ cell(value ? value.text : null) }}</td>
+                <td class="{{ table.aside(column.key) }}">{{ cell(cells[row.id][column.key] ?? null) }}</td>
             {% endfor %}
             <td class="{{ table.aside('amount') }}">{{ cell(row.amount is null ? null : row.amount|money) }}</td>
             <td class="{{ table.aside('manager') }}">{{ cell(row.manager ? managers[row.manager.id] : null) }}</td>

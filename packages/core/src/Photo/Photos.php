@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Photo;
 
 use AdzerCMS\Contracts\Refusal;
+use Intervention\Image\Drivers\Imagick\Driver;
 use Intervention\Image\Encoders\WebpEncoder;
-use Intervention\Image\Interfaces\ImageManagerInterface;
+use Intervention\Image\ImageManager;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
@@ -16,12 +17,9 @@ use function Symfony\Component\Translation\t;
 
 final readonly class Photos
 {
-    public const IMAGES = 'adzercms.images';
     private const TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
     public function __construct(
-        #[Autowire(service: self::IMAGES)]
-        private ImageManagerInterface $images,
         #[Autowire('%adzercms.files_dir%')]
         private string $directory,
     ) {
@@ -43,7 +41,7 @@ final readonly class Photos
     {
         $name = bin2hex(random_bytes(16)).'.webp';
         (new Filesystem())->mkdir($this->directory.'/'.$place);
-        $this->images->decodePath($photo->getPathname())
+        ImageManager::usingDriver(Driver::class)->decodePath($photo->getPathname())
             ->scaleDown($side, $side)
             ->encode(new WebpEncoder(strip: true))
             ->save($this->directory.'/'.$place.'/'.$name);

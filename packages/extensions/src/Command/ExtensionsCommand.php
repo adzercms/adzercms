@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions\Command;
 
+use AdzerCMS\Contracts\Schedule\Scheduled;
 use AdzerCMS\Extensions\Metadata;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -11,6 +12,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: 'adzercms:extensions', description: 'Refreshes package metadata of the extension catalog from its Composer repositories')]
+#[Scheduled('20 3 * * *')]
 final class ExtensionsCommand
 {
     public function __construct(

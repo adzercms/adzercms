@@ -7,12 +7,6 @@
         <target>+ Заявка</target>
       </segment>
     </unit>
-    <unit id="leads.column.contacts">
-      <segment>
-        <source>leads.column.contacts</source>
-        <target>Контакты</target>
-      </segment>
-    </unit>
     <unit id="leads.column.number">
       <segment>
         <source>leads.column.number</source>

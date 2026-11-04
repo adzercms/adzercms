@@ -2,6 +2,8 @@
 
 {% block title %}{{ 'cabinet.menu.home'|trans }}{% endblock %}
 
+{% block actions %}{% for part in fragments('cabinet.home.actions', app.user.id) %}{% include part.template with part.context only %}{% endfor %}{% endblock %}
+
 {% block page %}
 {% if app.user.undeliverableAt %}
     <p class="flash flash-error"><a href="{{ path('cabinet_profile') }}">{{ 'cabinet.contact.bounced'|trans({contact: app.user.email}) }}</a></p>

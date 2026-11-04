@@ -181,6 +181,24 @@ final class BankTransferTest extends SchemaTestCase
             'a transfer without payer sorts by the description shown in its place');
     }
 
+    #[Group('ACMS-PAY-0050')]
+    #[Group('ACMS-US-0066')]
+    public function testTransferCommentOfRecordLoginShowsItsUser(): void
+    {
+        $payer = $this->record('79990000002')->setComment('Village shop');
+        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
+        $this->em->flush();
+        $this->order('u'.$payer->getId());
+        $this->order('payer-1');
+
+        $cells = $this->client->request('GET', '/admin/transfers?sort=comment&order=asc')->filter('tbody tr td:first-child');
+        self::assertSame([[null, 'payer-1', null], ['/admin/users/'.$payer->getId(), 'u'.$payer->getId(), 'Village shop']],
+            $cells->each(static fn (Crawler $cell): array => $cell->filter('a')->count() > 0
+                ? [$cell->filter('a')->attr('href'), $cell->filter('a')->text(), $cell->filter('.muted')->text()]
+                : [null, $cell->text(), $cell->filter('.muted')->count() > 0 ? $cell->filter('.muted')->text() : null]),
+            'a login comment links the card of its user with the user comment under it, another stays text');
+    }
+
     private function order(?string $payer): Payment
     {
         $payment = self::service(PaymentService::class)->order(

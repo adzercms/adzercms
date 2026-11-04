@@ -11,7 +11,7 @@ const ink = locator => locator.evaluate(element => {
 });
 
 test('[ACMS-UI-0088] a swatch and an own color repaint the page before saving', async ({ page }) => {
-    await page.goto('/admin/settings?tab=brand');
+    await page.goto('/admin/settings/brand');
     const swatch = page.locator('.palette input.swatch').nth(1);
     await swatch.check();
     await expect.poll(() => brand(page)).toBe(await swatch.getAttribute('data-color'));
@@ -21,7 +21,7 @@ test('[ACMS-UI-0088] a swatch and an own color repaint the page before saving', 
 });
 
 test('[ACMS-UI-0087] the text on the accent is black or white by its lightness', async ({ page }) => {
-    await page.goto('/admin/settings?tab=brand');
+    await page.goto('/admin/settings/brand');
     await page.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
     const save = page.locator('form:has(.palette) > button[type="submit"]');
 

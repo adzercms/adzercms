@@ -140,7 +140,7 @@ final class SettingCommandTest extends SchemaTestCase
         self::assertSame(['Bridge shop', 'till-token'], [self::service(Settings::class)->get(Shop::TITLE), self::service(Settings::class)->get(Shop::TOKEN)]);
     }
 
-    #[Group('ACMS-CORE-0055')]
+    #[Group('ACMS-CORE-1066')]
     public function testTimeIsRefusedOutsideDayAndStoredPadded(): void
     {
         $wrong = self::command('adzercms:setting');
@@ -164,7 +164,7 @@ final class SettingCommandTest extends SchemaTestCase
         self::assertSame('79990001122', self::service(Settings::class)->get(Shop::PHONE));
     }
 
-    #[Group('ACMS-CORE-0055')]
+    #[Group('ACMS-CORE-1067')]
     #[Group('ACMS-UI-0031')]
     public function testToggleTakesOnlyOnOrOff(): void
     {

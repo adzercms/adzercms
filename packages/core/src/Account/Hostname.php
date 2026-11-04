@@ -25,6 +25,14 @@ final class Hostname
         return false === $unicode ? $name : $unicode;
     }
 
+    public static function isFqdn(string $name): bool
+    {
+        $ascii = self::ascii($name);
+        $tld = substr((string) strrchr($ascii, '.'), 1);
+
+        return '' !== $tld && !ctype_digit($tld) && false !== filter_var($ascii, \FILTER_VALIDATE_DOMAIN, \FILTER_FLAG_HOSTNAME);
+    }
+
     public static function relative(string $name, string $zone): string
     {
         $name = self::unicode($name);

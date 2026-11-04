@@ -115,6 +115,13 @@ document.addEventListener('input', event => {
 });
 
 document.addEventListener('input', event => {
+    const field = event.target;
+    field.form?.querySelectorAll(`a[data-from="${CSS.escape(field.name)}"]`).forEach(link => {
+        link.href = link.dataset.url.replace('{}', encodeURIComponent(field.value));
+    });
+});
+
+document.addEventListener('input', event => {
     if (!event.target.matches('.pay input[name="amount"]')) {
         return;
     }
@@ -124,12 +131,158 @@ document.addEventListener('input', event => {
 
 const conditionals = scope => {
     scope.querySelectorAll('[data-when]').forEach(node => {
-        const [name, values] = node.dataset.when.split('=');
-        const field = node.closest('form')?.elements[name];
+        const fields = node.closest('form')?.elements;
 
-        node.hidden = !values.split('|').includes(field?.value ?? '');
+        node.hidden = !node.dataset.when.split('&').every(condition => {
+            const [name, values] = condition.split('=');
+
+            return values.split('|').includes(fields?.[name]?.value ?? '');
+        });
     });
 };
+
+const STEP = '[data-step]';
+const stepsOf = form => [...form.querySelectorAll(STEP)].filter(step => !step.hidden);
+
+const showStep = (form, key) => {
+    const steps = stepsOf(form);
+    const at = Math.max(0, steps.findIndex(step => step.dataset.step === key));
+    const last = steps.length - 1;
+    if (!steps.length) {
+        return;
+    }
+
+    form.dataset.stepAt = steps[at].dataset.step;
+    form.querySelectorAll(STEP).forEach(step => step.classList.toggle('current', step === steps[at]));
+    const nav = form.querySelector(':scope > .steps-nav') ?? form.insertAdjacentElement('afterbegin',
+        Object.assign(document.createElement('ol'), {className: 'steps-nav'}));
+    nav.replaceChildren(...steps.map((step, index) => {
+        const item = Object.assign(document.createElement('li'), {textContent: step.dataset.stepTitle});
+        item.classList.toggle('done', index < at);
+        item.classList.toggle('current', index === at);
+        if (index < at) {
+            item.dataset.stepGo = step.dataset.step;
+        }
+        return item;
+    }));
+    form.querySelectorAll('[data-step-back]').forEach(button => button.hidden = at === 0);
+    form.querySelectorAll('[data-step-next]').forEach(button => button.hidden = at === last);
+    form.querySelectorAll('[data-step-submit]').forEach(button => button.hidden = at !== last);
+    saveDraft(form);
+};
+
+const moveStep = (form, shift) => {
+    const steps = stepsOf(form);
+    const at = steps.findIndex(step => step.dataset.step === form.dataset.stepAt);
+    const fields = shift > 0 ? [...steps[at].querySelectorAll('input, select, textarea')] : [];
+
+    if (fields.every(field => field.disabled || field.closest('[hidden]') || field.reportValidity())) {
+        goStep(form, steps[Math.min(Math.max(at + shift, 0), steps.length - 1)].dataset.step);
+    }
+};
+
+const goStep = (form, key) => {
+    showStep(form, key);
+    const nav = form.querySelector(':scope > .steps-nav');
+    if (nav.getBoundingClientRect().top < parseFloat(getComputedStyle(nav).scrollMarginTop)) {
+        nav.scrollIntoView({block: 'start'});
+    }
+};
+
+const UNDRAFTED = ['hidden', 'file', 'password', 'submit', 'button', 'reset'];
+const draftKey = form => `steps:${new URL(form.action, location.href).pathname}`;
+const drafted = form => [...form.elements].filter(field => field.name && !UNDRAFTED.includes(field.type));
+const checkable = field => ['checkbox', 'radio'].includes(field.type);
+
+const saveDraft = form => sessionStorage.setItem(draftKey(form), JSON.stringify({
+    step: form.dataset.stepAt,
+    fields: drafted(form).map(field => [field.name, checkable(field) ? (field.checked ? field.value : null) : field.value]),
+}));
+
+const draftOf = form => {
+    try {
+        return JSON.parse(sessionStorage.getItem(draftKey(form)) ?? 'null');
+    } catch {
+        return null;
+    }
+};
+
+const restoreDraft = form => {
+    const draft = draftOf(form);
+    if (!draft) {
+        return null;
+    }
+    const values = new Map();
+    draft.fields.forEach(([name, value]) => values.set(name, [...(values.get(name) ?? []), value]));
+    drafted(form).forEach(field => {
+        const saved = values.get(field.name);
+        if (!saved) {
+            return;
+        }
+        if (checkable(field)) {
+            field.checked = saved.includes(field.value);
+        } else if (saved.length) {
+            field.value = saved.shift();
+        }
+        if (field.dataset.mirror) {
+            field.dataset.own = field.value === form.elements[field.dataset.mirror]?.value ? '' : '1';
+        }
+    });
+
+    return draft.step;
+};
+
+const steppers = scope => [scope, ...scope.querySelectorAll('form[data-steps]')]
+    .filter(node => node.matches?.('form[data-steps]'))
+    .forEach(form => {
+        const step = restoreDraft(form);
+        conditionals(form);
+        showStep(form, form.dataset.stepOpen ?? step);
+    });
+
+document.addEventListener('input', event => {
+    const form = event.target.form;
+    if (form?.matches('[data-steps]')) {
+        saveDraft(form);
+    }
+});
+
+document.addEventListener('submit', event => {
+    if (event.target.matches('form[data-steps]') && !event.defaultPrevented) {
+        sessionStorage.removeItem(draftKey(event.target));
+    }
+});
+
+document.addEventListener('click', event => {
+    const control = event.target.closest('[data-step-next], [data-step-back], [data-step-go]');
+    const form = control?.closest('form[data-steps]');
+    if (!form) {
+        return;
+    }
+
+    if (control.dataset.stepGo !== undefined) {
+        goStep(form, control.dataset.stepGo);
+    } else {
+        moveStep(form, control.dataset.stepNext !== undefined ? 1 : -1);
+    }
+});
+
+const midway = form => form?.matches('[data-steps]') && stepsOf(form).at(-1)?.dataset.step !== form.dataset.stepAt;
+
+document.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && event.target.matches('input') && midway(event.target.form)) {
+        event.preventDefault();
+        moveStep(event.target.form, 1);
+    }
+});
+
+document.addEventListener('submit', event => {
+    if (midway(event.target)) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        moveStep(event.target, 1);
+    }
+}, true);
 
 let switched = null;
 
@@ -142,8 +295,18 @@ document.addEventListener('change', event => {
     }
 
     const form = event.target.closest('form');
+    const preset = event.target.selectedOptions?.[0]?.dataset.sets;
+    if (form && preset) {
+        const [name, value] = preset.split('=');
+        if (form.elements[name]) {
+            form.elements[name].value = value;
+        }
+    }
     if (form) {
         conditionals(form);
+        if (form.matches('[data-steps]')) {
+            showStep(form, form.dataset.stepAt);
+        }
     }
 });
 
@@ -156,6 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
         openPane(hashed);
     }
     conditionals(document);
+    steppers(document);
     document.querySelector('dialog[data-open]')?.showModal();
     const toasts = document.querySelector('.toasts');
     if (toasts?.children.length) {
@@ -182,10 +346,14 @@ const polling = element => (element?.getAttribute('hx-trigger') ?? '').includes(
 let approved = null;
 let sending = new WeakSet();
 
-const ask = (question, agreed, declined = () => {}) => {
+const question = (form, submitter) => submitter?.dataset.confirm
+    ?? form.querySelector('option:checked[data-confirm]')?.dataset.confirm
+    ?? form.dataset.confirm;
+
+const ask = (text, agreed, declined = () => {}) => {
     const dialog = document.getElementById('confirm');
 
-    dialog.querySelector('[data-confirm-text]').textContent = question;
+    dialog.querySelector('[data-confirm-text]').textContent = text;
     dialog.returnValue = '';
     dialog.addEventListener('close', () => {
         if (dialog.returnValue === 'yes') {
@@ -206,12 +374,12 @@ document.addEventListener('submit', event => {
 document.addEventListener('submit', event => {
     const form = event.target;
     const submitter = event.submitter ?? null;
-    const question = submitter?.dataset.confirm ?? form.dataset.confirm;
+    const asked = question(form, submitter);
 
-    if (question && approved !== form) {
+    if (asked && approved !== form) {
         const toggled = switched;
         event.preventDefault();
-        ask(question, () => {
+        ask(asked, () => {
             approved = form;
             form.requestSubmit(submitter);
         }, () => {
@@ -230,11 +398,11 @@ document.addEventListener('submit', event => {
     }
 });
 document.addEventListener('htmx:confirm', event => {
-    const question = event.detail.elt?.dataset?.confirm;
+    const asked = event.detail.elt?.dataset?.confirm;
 
-    if (question) {
+    if (asked) {
         event.preventDefault();
-        ask(question, () => event.detail.issueRequest(true));
+        ask(asked, () => event.detail.issueRequest(true));
     }
 });
 document.addEventListener('htmx:beforeRequest', event => running(!polling(event.detail.elt)));
@@ -253,7 +421,10 @@ document.addEventListener('htmx:beforeSwap', event => {
     }
 });
 
-document.addEventListener('htmx:load', event => conditionals(event.target));
+document.addEventListener('htmx:load', event => {
+    conditionals(event.target);
+    steppers(event.target);
+});
 
 const ORDER_FIELD = 'ids[]';
 const ORDER_ANIMATION = 150;
@@ -301,10 +472,188 @@ document.addEventListener('htmx:afterSwap', event => {
     (field ?? event.target).focus();
 });
 
+const UPLOAD_KEY = '_uploads[]';
+const uploads = new Map();
+const waiting = new Map();
+let opener = null;
+
+const busy = form => [...uploads.keys()].some(input => input.form === form);
+
+const mirror = form => {
+    const entry = waiting.get(form);
+    if (entry?.bar) {
+        const values = [...uploads.keys()].filter(input => input.form === form).map(input => input.parentElement.querySelector('.file-progress').value);
+        entry.bar.value = Math.min(100, ...values);
+    }
+};
+
+const send = form => {
+    const entry = waiting.get(form);
+    waiting.delete(form);
+    entry.row?.remove();
+    if (form.checkValidity()) {
+        form.addEventListener('htmx:afterRequest', () => entry.holder?.remove(), {once: true});
+        form.requestSubmit(entry.submitter);
+
+        return;
+    }
+
+    running(false);
+    if (entry.holder) {
+        const record = document.getElementById('record');
+        record.replaceChildren(...entry.holder.childNodes);
+        entry.holder.remove();
+        record.showModal();
+    }
+    form.reportValidity();
+};
+
+const settle = () => {
+    for (const form of waiting.keys()) {
+        if (!busy(form)) {
+            send(form);
+        }
+    }
+};
+
+const pendingRow = form => {
+    const scope = opener?.closest('main') ?? document.querySelector('main') ?? document.body;
+    const label = form.querySelector('input[type="text"]')?.value
+        || [...form.querySelectorAll('.file-names')].map(names => names.textContent).filter(Boolean).join(', ');
+    const bar = Object.assign(document.createElement('progress'), {max: 100, value: 0});
+    const body = scope.querySelector('table tbody');
+    const row = document.createElement(body ? 'tr' : 'p');
+    const place = body ? row.appendChild(Object.assign(document.createElement('td'), {colSpan: body.closest('table').tHead?.rows[0]?.cells.length ?? 1})) : row;
+    place.append(Object.assign(document.createElement('strong'), {textContent: label}), bar);
+    row.className = 'pending-row';
+    if (body) {
+        body.prepend(row);
+    } else {
+        const empty = scope.querySelector('.empty-state');
+        empty ? empty.before(row) : scope.prepend(row);
+    }
+
+    return {row, bar};
+};
+
+const fail = input => {
+    input.setCustomValidity(input.parentElement.dataset.failed);
+    if (!waiting.has(input.form)) {
+        input.reportValidity();
+    }
+};
+
+const pick = input => {
+    const field = input.parentElement;
+    const progress = field.querySelector('.file-progress');
+    const files = [...input.files];
+
+    field.querySelector('.file-names').textContent = files.map(file => file.name).join(', ');
+    input.dataset.name ??= input.name;
+    input.removeAttribute('name');
+    input.setCustomValidity('');
+    field.querySelectorAll(`input[name="${UPLOAD_KEY}"]`).forEach(key => key.remove());
+    uploads.get(input)?.forEach(request => request.abort());
+    uploads.delete(input);
+    progress.value = 0;
+    progress.hidden = files.length === 0;
+    if (files.length === 0) {
+        settle();
+
+        return;
+    }
+
+    const total = files.reduce((sum, file) => sum + file.size, 0) || 1;
+    const loaded = files.map(() => 0);
+    let left = files.length;
+    const requests = files.map((file, index) => {
+        const request = new XMLHttpRequest();
+        const body = new FormData();
+        body.append('_token', input.form.elements._token?.value ?? '');
+        body.append('field', input.dataset.name);
+        body.append('file', file);
+        request.responseType = 'json';
+        request.upload.addEventListener('progress', event => {
+            loaded[index] = event.loaded;
+            progress.value = Math.round(loaded.reduce((sum, part) => sum + part, 0) * 100 / total);
+            mirror(input.form);
+        });
+        request.addEventListener('load', () => {
+            if (request.status === 200 && request.response?.key) {
+                field.append(Object.assign(document.createElement('input'), {type: 'hidden', name: UPLOAD_KEY, value: request.response.key}));
+            } else {
+                fail(input);
+            }
+        });
+        request.addEventListener('error', () => fail(input));
+        request.addEventListener('loadend', () => {
+            left -= 1;
+            if (left === 0 && uploads.get(input) === requests) {
+                uploads.delete(input);
+                progress.hidden = true;
+                settle();
+            }
+        });
+        request.open('POST', field.dataset.upload);
+        request.send(body);
+
+        return request;
+    });
+    uploads.set(input, requests);
+};
+
 document.addEventListener('change', event => {
-    const names = event.target.matches('.file-field > input[type="file"]') && event.target.parentElement.querySelector('.file-names');
-    if (names) {
-        names.textContent = [...event.target.files].map(file => file.name).join(', ');
+    if (event.target.matches('.file-field > input[type="file"]')) {
+        pick(event.target);
+    }
+});
+
+document.addEventListener('submit', event => {
+    const form = event.target;
+    if (!busy(form) || (question(form, event.submitter) && approved !== form)) {
+        return;
+    }
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if (waiting.has(form)) {
+        return;
+    }
+
+    const record = form.closest('#record');
+    if (!record) {
+        waiting.set(form, {submitter: event.submitter});
+        running(true);
+
+        return;
+    }
+
+    const holder = Object.assign(document.createElement('div'), {hidden: true});
+    document.body.append(holder);
+    holder.append(...record.childNodes);
+    record.close();
+    waiting.set(form, {submitter: event.submitter, holder, ...pendingRow(form)});
+    mirror(form);
+}, true);
+
+document.addEventListener('close', event => {
+    for (const [input, requests] of uploads) {
+        if (event.target.contains(input)) {
+            requests.forEach(request => request.abort());
+            uploads.delete(input);
+        }
+    }
+}, true);
+
+document.addEventListener('htmx:beforeRequest', event => {
+    if (event.detail.target?.id === 'record' && !event.detail.elt.closest('#record')) {
+        opener = event.detail.elt;
+    }
+});
+
+window.addEventListener('beforeunload', event => {
+    if (waiting.size > 0 || [...uploads.keys()].some(input => input.isConnected)) {
+        event.preventDefault();
     }
 });
 

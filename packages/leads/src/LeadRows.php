@@ -62,7 +62,7 @@ final readonly class LeadRows
         $table = Table::of($request, $route, [
             Column::of('number', t('leads.column.number'), 'l.id'),
             Column::of('topic', t('leads.field.topic'), 'l.topic'),
-            Column::of('contacts', t('leads.column.contacts'), 'l.phone', 'l.email'),
+            Column::of('contacts', t('core.contacts'), 'l.phone', 'l.email'),
             ...$extra,
             Column::of('amount', t('leads.field.amount'), 'l.amount')->aside(),
             Column::of('manager', t('leads.field.manager'), 'm.id')->aside(),

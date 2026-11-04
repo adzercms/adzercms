@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Command;
 
+use AdzerCMS\Contracts\Schedule\Scheduled;
 use AdzerCMS\Core\Module\Catalog;
 use AdzerCMS\Core\Module\Execution;
 use AdzerCMS\Core\Module\OperationState;
@@ -16,6 +17,7 @@ use Symfony\Component\Lock\LockFactory;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AsCommand(name: 'adzercms:modules', description: 'Modules: applies operations of the admin panel and snapshots the module catalog of its Composer repositories with verified marks once a day')]
+#[Scheduled('* * * * *')]
 final class ModulesCommand
 {
     private const LOCK = 'adzercms.modules';

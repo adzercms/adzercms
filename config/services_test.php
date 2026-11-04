@@ -10,6 +10,8 @@ use AdzerCMS\Core\Tests\Notice\Fixture\EchoListener;
 use AdzerCMS\Core\Tests\Notice\Fixture\Flare\FlareChannel;
 use AdzerCMS\Core\Tests\Notice\Fixture\NoticeController;
 use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelaySettings;
+use AdzerCMS\Core\Tests\Schedule\Fixture\Dormant;
+use AdzerCMS\Core\Tests\Schedule\Fixture\Tick;
 use AdzerCMS\Core\Tests\Security\Fixture\AccountController;
 use AdzerCMS\Core\Tests\Security\Fixture\AccountNumbers;
 use AdzerCMS\Core\Tests\Seo\Fixture\GuideController;
@@ -45,5 +47,7 @@ return static function (ContainerConfigurator $container): void {
     $services->set(ListController::class)->autoconfigure()->autowire();
     $services->set(GuidePages::class)->autoconfigure();
     $services->set(GuideController::class)->autoconfigure()->autowire();
+    $services->set(Tick::class)->autoconfigure();
+    $services->set(Dormant::class)->autoconfigure();
     $services->set('logger', NullLogger::class);
 };

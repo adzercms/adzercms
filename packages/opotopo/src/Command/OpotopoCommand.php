@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Opotopo\Command;
 
+use AdzerCMS\Contracts\Schedule\Scheduled;
 use AdzerCMS\Opotopo\Export;
 use AdzerCMS\Opotopo\OpotopoSettings;
 use Opotopo\SellerApi\ApiException;
@@ -15,6 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Lock\LockFactory;
 
 #[AsCommand(name: 'adzercms:opotopo', description: 'Exports the catalogs of the modules to OPOTOPO as seller listings through the Seller API')]
+#[Scheduled('30 * * * *')]
 final class OpotopoCommand
 {
     private const LOCK = 'adzercms.opotopo';

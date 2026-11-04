@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Payments\Command;
 
+use AdzerCMS\Contracts\Schedule\Scheduled;
 use AdzerCMS\Payments\PaymentService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: 'adzercms:payments', description: 'Settles started payments by asking the provider and cancels stale ones')]
+#[Scheduled('*/5 * * * *')]
 final class PaymentCommand
 {
     public function __construct(private readonly PaymentService $payments)
