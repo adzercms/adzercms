@@ -29,12 +29,33 @@ final class ListController
         {% endembed %}
         TWIG;
 
+    public const CREATE = '/fixture/list/new';
+
+    private const HEADED = <<<'TWIG'
+        {% embed '@Theme/_table.html.twig' %}
+            {% block row %}<tr><td>{{ row.name }}</td></tr>{% endblock %}
+        {% endembed %}
+        TWIG;
+
     #[Route('/fixture/list', name: 'fixture_list', methods: ['GET'])]
     public function list(Request $request, Environment $twig): Response
     {
         $table = Table::of($request, 'fixture_list', [Column::of('name', t('theme.main'), 'name')], 'name', t('theme.main'), filters: [Filter::search()], order: Order::of('fixture_list_order', 'position'));
 
         return new Response($twig->createTemplate(self::PAGE)->render(['table' => $table, 'rows' => self::ROWS]));
+    }
+
+    #[Route('/fixture/list/headed', name: 'fixture_list_headed', methods: ['GET'])]
+    public function headed(Request $request, Environment $twig): Response
+    {
+        $table = Table::of($request, 'fixture_list_headed', [Column::of('name', t('theme.main'), 'name')], 'name', t('theme.main'), filters: [Filter::search()]);
+
+        return new Response($twig->createTemplate(self::HEADED)->render([
+            'table' => $table,
+            'rows' => $request->query->has('none') ? [] : self::ROWS,
+            'heading' => 'theme.main',
+            'actions' => [['href' => self::CREATE, 'label' => 'theme.main']],
+        ]));
     }
 
     #[Route('/fixture/list/order', name: 'fixture_list_order', methods: ['POST'])]

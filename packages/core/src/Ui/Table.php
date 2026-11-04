@@ -129,6 +129,11 @@ final class Table
         return $this->values[$name] ?? '';
     }
 
+    public function narrowed(): bool
+    {
+        return [] !== $this->values;
+    }
+
     public function field(Filter $filter): string
     {
         return self::param($this->id, $filter->name);
