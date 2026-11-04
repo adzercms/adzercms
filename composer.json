@@ -57,7 +57,7 @@
         "adzercms/yandex-metrika": "^1.0@dev",
         "adzercms/yookassa": "^1.0@dev",
         "symfony/dotenv": "7.4.*",
-        "symfony/flex": "^2.11",
+        "symfony/flex": "^2.12",
         "symfony/runtime": "7.4.*",
         "symfony/yaml": "7.4.*"
     },
