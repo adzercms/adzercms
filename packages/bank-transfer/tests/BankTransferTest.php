@@ -192,8 +192,10 @@ final class BankTransferTest extends SchemaTestCase
         $this->order('payer-1');
 
         $cells = $this->client->request('GET', '/admin/transfers?sort=comment&order=asc')->filter('tbody tr td:first-child');
-        self::assertSame([[null, 'payer-1'], ['/admin/users/'.$payer->getId(), 'u'.$payer->getId().' Village shop']],
-            $cells->each(static fn (Crawler $cell): array => [$cell->filter('a')->count() > 0 ? $cell->filter('a')->attr('href') : null, $cell->text()]),
+        self::assertSame([[null, 'payer-1', null], ['/admin/users/'.$payer->getId(), 'u'.$payer->getId(), 'Village shop']],
+            $cells->each(static fn (Crawler $cell): array => $cell->filter('a')->count() > 0
+                ? [$cell->filter('a')->attr('href'), $cell->filter('a')->text(), $cell->filter('.muted')->text()]
+                : [null, $cell->text(), $cell->filter('.muted')->count() > 0 ? $cell->filter('.muted')->text() : null]),
             'a login comment links the card of its user with the user comment under it, another stays text');
     }
 
