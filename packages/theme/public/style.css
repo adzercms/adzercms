@@ -1508,6 +1508,7 @@ form[data-steps] [data-step]:not(.current) { display: none; }
     margin: 0.75rem 0;
 }
 .photos img { display: block; width: 100%; height: auto; border: 1px solid var(--border-light); border-radius: var(--radius); }
+.screenshot { display: block; max-width: 100%; height: auto; margin: 0.75rem 0; border: 1px solid var(--border-light); border-radius: var(--radius); }
 
 @media (max-width: 900px) {
     .subnav-layout { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
