@@ -99,3 +99,30 @@ test('[ACMS-UI-0107] a refused form opens the step named by the server', async (
     await expect(shown(page)).toHaveAttribute('data-step', 'last');
     await expect(page.locator('#stepped .steps-nav li.done'), 'the steps before it are passed').toHaveCount(2);
 });
+
+test('[ACMS-UI-0113] a reload keeps the step and what was entered until the form is sent', async ({ page }) => {
+    await mount(page);
+    await page.locator('#stepped input[name="first"]').fill('one');
+    await page.locator('#stepped [data-step-next]').click();
+    await page.locator('#stepped select[name="kind"]').selectOption('extra');
+
+    await page.reload();
+    await mount(page);
+    await expect(shown(page), 'the reloaded form opens at its step').toHaveAttribute('data-step', 'choice');
+    await expect(page.locator('#stepped input[name="first"]')).toHaveValue('one');
+    await expect(titles(page), 'the restored choice brings back its step').toHaveText(['First', 'Choice', 'Extra', 'Last']);
+
+    await page.reload();
+    const sent = await mount(page, 'last');
+    await expect(shown(page), 'the step named by the server outranks the step of the draft').toHaveAttribute('data-step', 'last');
+    await page.locator('#stepped').evaluate((form) => {
+        form.elements.extra.value = 'two';
+    });
+    await page.locator('#stepped [data-step-submit]').click();
+    await expect.poll(() => sent.length).toBe(1);
+
+    await page.goto(PAGE);
+    await mount(page);
+    await expect(shown(page), 'the sent form starts anew').toHaveAttribute('data-step', 'first');
+    await expect(page.locator('#stepped input[name="first"]')).toHaveValue('');
+});

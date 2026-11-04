@@ -165,6 +165,7 @@ const showStep = (form, key) => {
     form.querySelectorAll('[data-step-back]').forEach(button => button.hidden = at === 0);
     form.querySelectorAll('[data-step-next]').forEach(button => button.hidden = at === last);
     form.querySelectorAll('[data-step-submit]').forEach(button => button.hidden = at !== last);
+    saveDraft(form);
 };
 
 const moveStep = (form, shift) => {
@@ -177,9 +178,69 @@ const moveStep = (form, shift) => {
     }
 };
 
+const UNDRAFTED = ['hidden', 'file', 'password', 'submit', 'button', 'reset'];
+const draftKey = form => `steps:${new URL(form.action, location.href).pathname}`;
+const drafted = form => [...form.elements].filter(field => field.name && !UNDRAFTED.includes(field.type));
+const checkable = field => ['checkbox', 'radio'].includes(field.type);
+
+const saveDraft = form => sessionStorage.setItem(draftKey(form), JSON.stringify({
+    step: form.dataset.stepAt,
+    fields: drafted(form).map(field => [field.name, checkable(field) ? (field.checked ? field.value : null) : field.value]),
+}));
+
+const draftOf = form => {
+    try {
+        return JSON.parse(sessionStorage.getItem(draftKey(form)) ?? 'null');
+    } catch {
+        return null;
+    }
+};
+
+const restoreDraft = form => {
+    const draft = draftOf(form);
+    if (!draft) {
+        return null;
+    }
+    const values = new Map();
+    draft.fields.forEach(([name, value]) => values.set(name, [...(values.get(name) ?? []), value]));
+    drafted(form).forEach(field => {
+        const saved = values.get(field.name);
+        if (!saved) {
+            return;
+        }
+        if (checkable(field)) {
+            field.checked = saved.includes(field.value);
+        } else if (saved.length) {
+            field.value = saved.shift();
+        }
+        if (field.dataset.mirror) {
+            field.dataset.own = field.value === form.elements[field.dataset.mirror]?.value ? '' : '1';
+        }
+    });
+
+    return draft.step;
+};
+
 const steppers = scope => [scope, ...scope.querySelectorAll('form[data-steps]')]
     .filter(node => node.matches?.('form[data-steps]'))
-    .forEach(form => showStep(form, form.dataset.stepAt ?? form.dataset.stepOpen));
+    .forEach(form => {
+        const step = form.dataset.stepAt ? null : restoreDraft(form);
+        conditionals(form);
+        showStep(form, form.dataset.stepAt ?? form.dataset.stepOpen ?? step);
+    });
+
+document.addEventListener('input', event => {
+    const form = event.target.form;
+    if (form?.matches('[data-steps]')) {
+        saveDraft(form);
+    }
+});
+
+document.addEventListener('submit', event => {
+    if (event.target.matches('form[data-steps]') && !event.defaultPrevented) {
+        sessionStorage.removeItem(draftKey(event.target));
+    }
+});
 
 document.addEventListener('click', event => {
     const control = event.target.closest('[data-step-next], [data-step-back], [data-step-go]');
