@@ -129,9 +129,10 @@ final class Table
         return $this->values[$name] ?? '';
     }
 
-    public function narrowed(): bool
+    /** @param array<mixed> $rows */
+    public function bare(array $rows): bool
     {
-        return [] !== $this->values;
+        return [] === $rows && [] === $this->values;
     }
 
     public function field(Filter $filter): string

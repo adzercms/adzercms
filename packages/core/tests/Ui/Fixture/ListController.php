@@ -45,15 +45,36 @@ final class ListController
         return new Response($twig->createTemplate(self::PAGE)->render(['table' => $table, 'rows' => self::ROWS]));
     }
 
+    private const PAGED = <<<'TWIG'
+        {% extends '@Theme/panel.html.twig' %}
+        {% block title %}{{ 'theme.main'|trans }}{% endblock %}
+        {% block page %}
+        {% embed '@Theme/_table.html.twig' %}
+            {% block row %}<tr><td>{{ row.name }}</td></tr>{% endblock %}
+        {% endembed %}
+        {% endblock %}
+        TWIG;
+
     #[Route('/fixture/list/headed', name: 'fixture_list_headed', methods: ['GET'])]
     public function headed(Request $request, Environment $twig): Response
     {
-        $table = Table::of($request, 'fixture_list_headed', [Column::of('name', t('theme.main'), 'name')], 'name', t('theme.main'), filters: [Filter::search()]);
+        return $this->creating($request, $twig, 'fixture_list_headed', self::HEADED, ['heading' => 'theme.main']);
+    }
 
-        return new Response($twig->createTemplate(self::HEADED)->render([
+    #[Route('/fixture/list/paged', name: 'fixture_list_paged', methods: ['GET'])]
+    public function paged(Request $request, Environment $twig): Response
+    {
+        return $this->creating($request, $twig, 'fixture_list_paged', self::PAGED, []);
+    }
+
+    /** @param array<string, mixed> $context */
+    private function creating(Request $request, Environment $twig, string $route, string $template, array $context): Response
+    {
+        $table = Table::of($request, $route, [Column::of('name', t('theme.main'), 'name')], 'name', t('theme.main'), filters: [Filter::search()]);
+
+        return new Response($twig->createTemplate($template)->render($context + [
             'table' => $table,
             'rows' => $request->query->has('none') ? [] : self::ROWS,
-            'heading' => 'theme.main',
             'actions' => [['href' => self::CREATE, 'label' => 'theme.main']],
         ]));
     }

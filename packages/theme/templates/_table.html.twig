@@ -1,5 +1,5 @@
 <div id="{{ table.id }}" {% if heading|default(null) %}class="section" {% endif %}{% if live|default(false) %}data-live {% endif %}hx-target="#{{ table.id }}" hx-swap="outerHTML">
-    {% set bare = rows is empty and not table.narrowed() %}
+    {% set bare = table.bare(rows) %}
     {% if heading|default(null) %}
         <div class="section-head">
             <h3>{{ heading|trans }}</h3>

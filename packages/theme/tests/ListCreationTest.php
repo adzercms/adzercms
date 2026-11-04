@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Theme\Tests;
 
+use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Tests\Ui\Fixture\ListController;
@@ -12,23 +13,27 @@ use PHPUnit\Framework\Attributes\Group;
 
 final class ListCreationTest extends SchemaTestCase
 {
+    use Accounts;
     use Browser;
 
-    /** @return iterable<string, array{string, int, int}> */
+    /** @return iterable<string, array{string, string, string, int, int}> */
     public static function sets(): iterable
     {
-        yield 'records' => ['', 1, 0];
-        yield 'empty set' => ['?none=1', 0, 1];
-        yield 'nothing found' => ['?none=1&q=x', 1, 0];
+        foreach (['section' => ['headed', '.section-head'], 'page' => ['paged', '.card-head']] as $place => [$list, $title]) {
+            yield $place.' records' => [$list, $title, '', 1, 0];
+            yield $place.' empty set' => [$list, $title, '?none=1', 0, 1];
+            yield $place.' nothing found' => [$list, $title, '?none=1&q=x', 1, 0];
+        }
     }
 
     #[Group('ACMS-FLOW-0001')]
     #[DataProvider('sets')]
-    public function testCreationOfAnEmptySetStandsInPlaceOfItsRows(string $query, int $heading, int $empty): void
+    public function testCreationOfAnEmptySetStandsInPlaceOfItsTitle(string $list, string $title, string $query, int $heading, int $empty): void
     {
-        $page = $this->client->request('GET', '/fixture/list/headed'.$query);
+        $this->client->loginUser($this->record('+7 900 000-00-03'));
+        $page = $this->client->request('GET', '/fixture/list/'.$list.$query);
         $link = \sprintf('a[href="%s"]', ListController::CREATE);
 
-        self::assertSame([$heading, $empty], [$page->filter('.section-head '.$link)->count(), $page->filter('.empty-actions '.$link)->count()]);
+        self::assertSame([$heading, $empty], [$page->filter($title.' '.$link)->count(), $page->filter('.empty-actions '.$link)->count()]);
     }
 }
