@@ -492,6 +492,7 @@ final class AdminWebTest extends SchemaTestCase
     #[Group('ACMS-CORE-0053')]
     #[Group('ACMS-CORE-0054')]
     #[Group('ACMS-CORE-0055')]
+    #[Group('ACMS-CORE-1067')]
     #[Group('ACMS-CORE-0057')]
     #[Group('ACMS-CORE-1049')]
     #[Group('ACMS-CORE-1050')]

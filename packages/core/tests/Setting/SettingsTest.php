@@ -21,6 +21,7 @@ final class SettingsTest extends SchemaTestCase
     private const PAUSE = 'fixture.pause';
     private const COLOR = 'fixture.color';
     private const PALETTE = 'fixture.palette';
+    private const LINES = 'fixture.lines';
 
     #[Group('ACMS-CORE-0050')]
     #[Group('ACMS-US-0004')]
@@ -69,7 +70,7 @@ final class SettingsTest extends SchemaTestCase
         self::assertSame(0, $this->settings()->int(self::PAUSE, 7), 'a stored zero is a value');
     }
 
-    #[Group('ACMS-CORE-0055')]
+    #[Group('ACMS-CORE-1068')]
     #[Group('ACMS-US-0004')]
     public function testColorIsKeptAsLowercaseHex(): void
     {
@@ -80,7 +81,17 @@ final class SettingsTest extends SchemaTestCase
         self::assertSame('#c8f031', $this->settings()->get(self::COLOR));
     }
 
-    #[Group('ACMS-CORE-0055')]
+    #[Group('ACMS-CORE-1070')]
+    #[Group('ACMS-US-0004')]
+    public function testLinesKeepTrimmedNonEmptyLines(): void
+    {
+        $this->save(new Field(self::LINES, t('Lines'), Type::Lines), "  Daily backups \r\n\n\tDDoS protection\n ");
+
+        self::assertSame(['Daily backups', 'DDoS protection'], $this->settings()->lines(self::LINES));
+        self::assertSame([], $this->settings()->lines(self::TITLE));
+    }
+
+    #[Group('ACMS-CORE-1069')]
     #[Group('ACMS-US-0004')]
     public function testPaletteKeepsSchemeKeyOrOwnColorAndFallsBackToFirstScheme(): void
     {

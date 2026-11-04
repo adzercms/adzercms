@@ -30,6 +30,8 @@
                     {% include '@Theme/_palette.html.twig' with {id: id, name: 'value[' ~ field.name ~ ']', label: field.label, schemes: field.schemes, value: values[field.name]} only %}
                 {% elseif field.type == constant(type ~ 'Color') %}
                     <input id="{{ id }}" type="color" name="value[{{ field.name }}]" value="{{ values[field.name] ?: '#000000' }}">
+                {% elseif field.type == constant(type ~ 'Lines') %}
+                    <textarea id="{{ id }}" name="value[{{ field.name }}]">{{ values[field.name] }}</textarea>
                 {% elseif field.type == constant(type ~ 'Secret') %}
                     <input id="{{ id }}" type="text" class="secret" name="value[{{ field.name }}]" autocomplete="off" spellcheck="false">
                 {% else %}

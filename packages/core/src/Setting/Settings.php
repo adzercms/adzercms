@@ -50,6 +50,14 @@ final class Settings implements ResetInterface
         return '' === $value ? $default : (int) $value;
     }
 
+    /** @return list<string> */
+    public function lines(string $name): array
+    {
+        $value = $this->get($name);
+
+        return '' === $value ? [] : explode("\n", $value);
+    }
+
     public function minutes(string $name): ?int
     {
         return self::time($this->get($name));
@@ -82,7 +90,7 @@ final class Settings implements ResetInterface
 
     public function save(Field $field, string $value): ?Refusal
     {
-        $value = trim($value);
+        $value = Type::Lines === $field->type ? self::lined($value) : trim($value);
         $secret = Type::Secret === $field->type;
         if ('' === $value) {
             if (!$secret) {
@@ -198,6 +206,11 @@ final class Settings implements ResetInterface
         }
 
         return true;
+    }
+
+    private static function lined(string $value): string
+    {
+        return implode("\n", array_filter(array_map(trim(...), preg_split('/\R/u', $value) ?: []), static fn (string $line): bool => '' !== $line));
     }
 
     private static function time(string $value): ?int

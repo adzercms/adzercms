@@ -7,6 +7,7 @@ namespace AdzerCMS\Contracts\Setting;
 enum Type
 {
     case Text;
+    case Lines;
     case Secret;
     case Image;
     case Time;
