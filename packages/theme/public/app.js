@@ -129,15 +129,42 @@ document.addEventListener('input', event => {
     event.target.form.querySelectorAll('.amounts button').forEach(button => button.classList.remove('active'));
 });
 
+const FIELDS = 'input, select, textarea';
+const switchedOff = field => field.closest('[data-when][hidden]') !== null;
+
+const liveValue = (fields, name) => {
+    const found = fields?.[name];
+    const named = found instanceof RadioNodeList ? [...found] : found ? [found] : [];
+
+    return named.find(field => !switchedOff(field) && (!['checkbox', 'radio'].includes(field.type) || field.checked))?.value ?? '';
+};
+
 const conditionals = scope => {
-    scope.querySelectorAll('[data-when]').forEach(node => {
-        const fields = node.closest('form')?.elements;
+    const nodes = [...scope.querySelectorAll('[data-when]')];
+    let changed = true;
 
-        node.hidden = !node.dataset.when.split('&').every(condition => {
-            const [name, values] = condition.split('=');
+    for (let pass = 0; changed && pass <= nodes.length; pass++) {
+        changed = false;
+        nodes.forEach(node => {
+            const fields = node.closest('form')?.elements;
+            const hidden = !node.dataset.when.split('&').every(condition => {
+                const [name, values] = condition.split('=');
 
-            return values.split('|').includes(fields?.[name]?.value ?? '');
+                return values.split('|').includes(liveValue(fields, name));
+            });
+            changed ||= node.hidden !== hidden;
+            node.hidden = hidden;
         });
+    }
+
+    nodes.flatMap(node => [node, ...node.querySelectorAll(FIELDS)]).filter(field => field.matches(FIELDS)).forEach(field => {
+        if (switchedOff(field) && !field.disabled) {
+            field.disabled = true;
+            field.dataset.whenOff = '';
+        } else if (!switchedOff(field) && field.dataset.whenOff !== undefined) {
+            field.disabled = false;
+            delete field.dataset.whenOff;
+        }
     });
 };
 
@@ -266,6 +293,31 @@ document.addEventListener('click', event => {
         moveStep(form, control.dataset.stepNext !== undefined ? 1 : -1);
     }
 });
+
+const checking = new WeakMap();
+
+document.addEventListener('invalid', event => {
+    const field = event.target;
+    const form = field.form;
+    const step = field.closest(STEP);
+    if (!form?.matches('[data-steps]') || !step) {
+        return;
+    }
+
+    if (!checking.has(form)) {
+        checking.set(form, step);
+        setTimeout(() => {
+            checking.delete(form);
+            if (!step.classList.contains('current')) {
+                goStep(form, step.dataset.step);
+                field.reportValidity();
+            }
+        });
+    }
+    if (!checking.get(form).classList.contains('current')) {
+        event.preventDefault();
+    }
+}, true);
 
 const midway = form => form?.matches('[data-steps]') && stepsOf(form).at(-1)?.dataset.step !== form.dataset.stepAt;
 

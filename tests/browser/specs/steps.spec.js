@@ -88,6 +88,15 @@ test('[ACMS-UI-0114] a step change opens the top of the form', async ({ page }) 
     await expect(page.locator('#stepped .steps-nav'), 'the next step opens at the top of the form').toBeInViewport();
 });
 
+test('[ACMS-UI-0115] sending with a field of another step left invalid opens its step', async ({ page }) => {
+    const sent = await mount(page, 'last');
+
+    await page.locator('#stepped [data-step-submit]').click();
+    await expect(shown(page), 'the step of the empty required field opens').toHaveAttribute('data-step', 'first');
+    await expect(page.locator('#stepped input[name="first"]')).toBeFocused();
+    expect(sent, 'nothing is sent').toHaveLength(0);
+});
+
 test('[ACMS-UI-0107] a refused form opens the step named by the server', async ({ page }) => {
     await mount(page, 'last');
 

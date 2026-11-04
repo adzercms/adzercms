@@ -11,8 +11,10 @@ const FORM = `<form id="presets">
     </select>
     <label><input type="radio" name="type" value="pppoe">pppoe</label>
     <label><input type="radio" name="type" value="dhcp">dhcp</label>
-    <div data-when="type=pppoe"><input name="login"></div>
+    <div data-when="type=pppoe"><input name="login" required></div>
     <div data-when="type=pppoe&provider=1"><input name="vlan"></div>
+    <div data-when="type=pppoe"><label><input type="radio" name="ready" value="yes" required>yes</label></div>
+    <p data-when="ready=">guide</p>
     <input name="provider_name">
     <a data-from="provider_name" data-url="https://search.test/?text={} support" href="https://search.test/?text= support">search</a>
 </form>`;
@@ -39,8 +41,15 @@ test('[ACMS-UI-0027] a field on several conditions shows only while all of them 
     await field(page, 'select[name="provider"]').selectOption('1');
     await expect(field(page, 'input[name="vlan"]'), 'all conditions hold').toBeVisible();
 
+    await field(page, 'input[name="ready"]').check();
+    await expect(field(page, 'p'), 'a shown choice drives its dependants').toBeHidden();
+
     await field(page, 'input[value="dhcp"]').check();
     await expect(field(page, 'input[name="vlan"]'), 'one condition fails').toBeHidden();
+    await expect(field(page, 'p'), 'a hidden choice counts as empty for its dependants').toBeVisible();
+    expect(await page.locator('#presets').evaluate((form) => form.checkValidity()), 'a hidden required field does not hold the form').toBe(true);
+    expect(await page.locator('#presets').evaluate((form) => [...new FormData(form).keys()]), 'a hidden field is not sent')
+        .toEqual(['provider', 'type', 'provider_name']);
 });
 
 test('[ACMS-UI-0111] a link carries the value of the field it names', async ({ page }) => {
