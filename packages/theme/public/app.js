@@ -115,6 +115,13 @@ document.addEventListener('input', event => {
 });
 
 document.addEventListener('input', event => {
+    const field = event.target;
+    field.form?.querySelectorAll(`a[data-from="${CSS.escape(field.name)}"]`).forEach(link => {
+        link.href = link.dataset.url.replace('{}', encodeURIComponent(field.value));
+    });
+});
+
+document.addEventListener('input', event => {
     if (!event.target.matches('.pay input[name="amount"]')) {
         return;
     }
@@ -216,6 +223,13 @@ document.addEventListener('change', event => {
     }
 
     const form = event.target.closest('form');
+    const preset = event.target.selectedOptions?.[0]?.dataset.sets;
+    if (form && preset) {
+        const [name, value] = preset.split('=');
+        if (form.elements[name]) {
+            form.elements[name].value = value;
+        }
+    }
     if (form) {
         conditionals(form);
         if (form.matches('[data-steps]')) {

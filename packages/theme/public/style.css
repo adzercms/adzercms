@@ -1412,6 +1412,7 @@ fieldset.choices label {
 }
 
 fieldset.choices label .muted { grid-column: 2; margin: 0; font-size: 12px; line-height: 1.35; }
+fieldset.choices label img { grid-column: 2; width: min(100%, 12rem); height: auto; border: 1px solid var(--border-light); border-radius: var(--radius); }
 
 .setup-more { margin: 0.4rem 0; }
 .setup-more > summary { cursor: pointer; font-weight: 600; padding: 0.3rem 0; }
