@@ -1389,19 +1389,18 @@ fieldset.choices {
     grid-template-columns: repeat(auto-fill, minmax(min(26rem, 100%), 1fr));
     gap: 0.25rem 1.5rem;
     align-items: start;
+    margin-bottom: 0.9rem;
     padding: 0.9rem 1rem;
     border: 1px solid var(--border-light);
     border-radius: var(--radius-lg);
 }
 
-fieldset.choices legend { grid-column: 1 / -1; }
+fieldset.choices:has(img) { grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); }
+
+fieldset.choices legend { grid-column: 1 / -1; padding: 0 0.4rem; font-weight: 600; }
 
 .schedule { display: grid; grid-template-columns: max-content minmax(0, 9rem) minmax(0, 9rem); align-items: center; gap: 0.4rem 0.8rem; }
 .schedule input { margin: 0; }
-
-fieldset.choices { margin-bottom: 0.9rem; }
-
-fieldset.choices legend { padding: 0 0.4rem; font-weight: 600; }
 
 fieldset.choices label {
     display: grid;
