@@ -6,7 +6,12 @@ namespace AdzerCMS\Contracts\Account;
 
 interface Identifier
 {
-    public function user(string $identifier): ?int;
+    /**
+     * @param list<string> $identifiers
+     *
+     * @return array<string, int>
+     */
+    public function users(array $identifiers): array;
 
     /**
      * @param list<int> $users

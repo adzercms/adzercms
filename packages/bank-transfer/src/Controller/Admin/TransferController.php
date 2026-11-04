@@ -6,6 +6,7 @@ namespace AdzerCMS\BankTransfer\Controller\Admin;
 
 use AdzerCMS\BankTransfer\BankTransferService;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Repository\UserRepository;
 use AdzerCMS\Core\Ui\Back;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
@@ -39,6 +40,7 @@ final class TransferController extends AbstractController
     public function __construct(
         private readonly PaymentRepository $payments,
         private readonly PaymentService $service,
+        private readonly UserRepository $users,
     ) {
     }
 
@@ -66,10 +68,17 @@ final class TransferController extends AbstractController
         foreach ($rows as $row) {
             $comments[$row->getNumber()] = BankTransferService::comment($row);
         }
+        $users = $this->users->identifiedMany(array_values(array_unique($comments)));
+        $payers = [];
+        foreach ($comments as $number => $comment) {
+            if (isset($users[$comment])) {
+                $payers[$number] = $users[$comment];
+            }
+        }
 
         return $this->render(
             $request->headers->has('HX-Request') ? '@BankTransfer/admin/_transfers.html.twig' : '@BankTransfer/admin/transfers.html.twig',
-            ['table' => $table, 'rows' => $rows, 'comments' => $comments],
+            ['table' => $table, 'rows' => $rows, 'comments' => $comments, 'payers' => $payers],
         );
     }
 

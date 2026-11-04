@@ -1,7 +1,9 @@
 {% embed '@Theme/_table.html.twig' %}
     {% block row %}
         <tr>
-            <td class="{{ table.aside('comment') }}">{{ cell(comments[row.number]) }}</td>
+            <td class="{{ table.aside('comment') }}">
+                {%- if payers[row.number] is defined %}{% include '@Theme/_user.html.twig' with {user: payers[row.number], name: comments[row.number]} only %}{% else %}{{ cell(comments[row.number]) }}{% endif -%}
+            </td>
             <td class="{{ table.aside('amount') }}">{{ row.amount|money }}</td>
             <td class="{{ table.aside('created') }}">{{ moment(row.createdAt) }}</td>
             <td class="{{ table.aside('expires') }}">{{ moment(row.expiresAt) }}</td>

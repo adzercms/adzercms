@@ -82,7 +82,7 @@ final class UserRepository extends ServiceEntityRepository
 
         $ids = [Filter::number($term), ...$found];
         foreach ($this->identifiers as $identifier) {
-            $ids[] = $identifier->user($term);
+            $ids[] = $identifier->users([$term])[$term] ?? null;
         }
         $ids = array_values(array_filter($ids, static fn (?int $id): bool => null !== $id));
         if ([] !== $ids) {
@@ -130,13 +130,33 @@ final class UserRepository extends ServiceEntityRepository
 
     public function identified(string $key): ?User
     {
+        return $this->identifiedMany([$key])[$key] ?? null;
+    }
+
+    /**
+     * @param list<string> $keys
+     *
+     * @return array<string, User>
+     */
+    public function identifiedMany(array $keys): array
+    {
+        $ids = [];
         foreach ($this->identifiers as $identifier) {
-            $id = $identifier->user($key);
-            if (null !== $id) {
-                return $this->find($id);
+            $rest = array_values(array_diff($keys, array_map(strval(...), array_keys($ids))));
+            if ([] === $rest) {
+                break;
             }
+            $ids += $identifier->users($rest);
+        }
+        if ([] === $ids) {
+            return [];
         }
 
-        return null;
+        $users = [];
+        foreach ($this->findBy(['id' => array_values(array_unique($ids))]) as $user) {
+            $users[(int) $user->getId()] = $user;
+        }
+
+        return array_filter(array_map(static fn (int $id): ?User => $users[$id] ?? null, $ids));
     }
 }
