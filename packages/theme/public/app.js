@@ -131,10 +131,13 @@ document.addEventListener('input', event => {
 
 const conditionals = scope => {
     scope.querySelectorAll('[data-when]').forEach(node => {
-        const [name, values] = node.dataset.when.split('=');
-        const field = node.closest('form')?.elements[name];
+        const fields = node.closest('form')?.elements;
 
-        node.hidden = !values.split('|').includes(field?.value ?? '');
+        node.hidden = !node.dataset.when.split('&').every(condition => {
+            const [name, values] = condition.split('=');
+
+            return values.split('|').includes(fields?.[name]?.value ?? '');
+        });
     });
 };
 
@@ -174,7 +177,15 @@ const moveStep = (form, shift) => {
     const fields = shift > 0 ? [...steps[at].querySelectorAll('input, select, textarea')] : [];
 
     if (fields.every(field => field.disabled || field.closest('[hidden]') || field.reportValidity())) {
-        showStep(form, steps[Math.min(Math.max(at + shift, 0), steps.length - 1)].dataset.step);
+        goStep(form, steps[Math.min(Math.max(at + shift, 0), steps.length - 1)].dataset.step);
+    }
+};
+
+const goStep = (form, key) => {
+    showStep(form, key);
+    const nav = form.querySelector(':scope > .steps-nav');
+    if (nav.getBoundingClientRect().top < parseFloat(getComputedStyle(nav).scrollMarginTop)) {
+        nav.scrollIntoView({block: 'start'});
     }
 };
 
@@ -250,7 +261,7 @@ document.addEventListener('click', event => {
     }
 
     if (control.dataset.stepGo !== undefined) {
-        showStep(form, control.dataset.stepGo);
+        goStep(form, control.dataset.stepGo);
     } else {
         moveStep(form, control.dataset.stepNext !== undefined ? 1 : -1);
     }

@@ -1412,7 +1412,7 @@ fieldset.choices label {
 }
 
 fieldset.choices label .muted { grid-column: 2; margin: 0; font-size: 12px; line-height: 1.35; }
-fieldset.choices label img { grid-column: 2; width: min(100%, 12rem); height: auto; border: 1px solid var(--border-light); border-radius: var(--radius); }
+fieldset.choices label img { grid-column: 2; max-width: 12rem; aspect-ratio: 1; }
 
 .setup-more { margin: 0.4rem 0; }
 .setup-more > summary { cursor: pointer; font-weight: 600; padding: 0.3rem 0; }
@@ -1474,6 +1474,7 @@ form[data-steps] [data-step]:not(.current) { display: none; }
     padding: 0;
     list-style: none;
     counter-reset: step;
+    scroll-margin-top: calc(var(--chrome-height) + 1rem);
 }
 .steps-nav li {
     display: inline-flex;
@@ -1502,11 +1503,34 @@ form[data-steps] [data-step]:not(.current) { display: none; }
 
 .photos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 20rem));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 14rem));
     gap: 0.75rem;
     margin: 0.75rem 0;
 }
-.photos img { display: block; width: 100%; height: auto; border: 1px solid var(--border-light); border-radius: var(--radius); }
+.photos img { aspect-ratio: 3 / 4; }
+:is(.photos, fieldset.choices label) img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    background: var(--bg-gray);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+}
+
+.guide { display: grid; gap: 1.5rem; margin: 0 0 1rem; padding: 0; list-style: none; counter-reset: part; }
+.guide > li { counter-increment: part; }
+.guide > li > h3 { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.6rem; font-size: 15px; }
+.guide > li > h3::before {
+    content: counter(part);
+    display: inline-grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: var(--tint);
+    font-size: 13px;
+}
 .screenshot { display: block; max-width: 100%; height: auto; margin: 0.75rem 0; border: 1px solid var(--border-light); border-radius: var(--radius); }
 
 @media (max-width: 900px) {

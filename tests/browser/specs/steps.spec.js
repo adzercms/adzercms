@@ -94,6 +94,19 @@ test('[ACMS-UI-0108] a refresh of its area keeps the preserved form at its step 
     await expect(page.locator('#stepped input[name="first"]')).toHaveValue('one');
 });
 
+test('[ACMS-UI-0114] a step change opens the top of the form', async ({ page }) => {
+    await mount(page);
+    await page.locator('#stepped').evaluate((form) => ['first', 'choice'].forEach((key) => form
+        .querySelector(`[data-step="${key}"]`).append(Object.assign(document.createElement('div'), { style: 'height: 3000px' }))));
+    await page.locator('#stepped input[name="first"]').fill('one');
+    await page.locator('#stepped [data-step-next]').scrollIntoViewIfNeeded();
+    await expect(page.locator('#stepped .steps-nav')).not.toBeInViewport();
+
+    await page.locator('#stepped [data-step-next]').click();
+    await expect(shown(page)).toHaveAttribute('data-step', 'choice');
+    await expect(page.locator('#stepped .steps-nav'), 'the next step opens at the top of the form').toBeInViewport();
+});
+
 test('[ACMS-UI-0107] a refused form opens the step named by the server', async ({ page }) => {
     await mount(page, 'last');
 

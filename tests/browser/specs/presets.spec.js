@@ -12,6 +12,7 @@ const FORM = `<form id="presets">
     <label><input type="radio" name="type" value="pppoe">pppoe</label>
     <label><input type="radio" name="type" value="dhcp">dhcp</label>
     <div data-when="type=pppoe"><input name="login"></div>
+    <div data-when="type=pppoe&provider=1"><input name="vlan"></div>
     <input name="provider_name">
     <a data-from="provider_name" data-url="https://search.test/?text={} support" href="https://search.test/?text= support">search</a>
 </form>`;
@@ -32,6 +33,14 @@ test('[ACMS-UI-0110] a choice option sets the field it names and the field stays
     await field(page, 'select[name="provider"]').selectOption('other');
     await expect(field(page, 'input[value="dhcp"]'), 'the set field stays editable, an option without a preset keeps it').toBeChecked();
     await expect(field(page, 'input[name="login"]')).toBeHidden();
+});
+
+test('[ACMS-UI-0027] a field on several conditions shows only while all of them hold', async ({ page }) => {
+    await field(page, 'select[name="provider"]').selectOption('1');
+    await expect(field(page, 'input[name="vlan"]'), 'all conditions hold').toBeVisible();
+
+    await field(page, 'input[value="dhcp"]').check();
+    await expect(field(page, 'input[name="vlan"]'), 'one condition fails').toBeHidden();
 });
 
 test('[ACMS-UI-0111] a link carries the value of the field it names', async ({ page }) => {
