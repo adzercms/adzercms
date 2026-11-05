@@ -40,11 +40,13 @@ final readonly class BlockForm
      *
      * @return array<string, string|list<array<string, string>>>
      */
-    public static function shown(Block $type, array $values): array
+    public static function shown(Block $type, array $values, ?PageBlock $block): array
     {
         $shown = [];
         foreach ($type->fields() as $field) {
-            $shown[$field->name] = Values::form($field, Values::posted($field, $values[$field->name] ?? null) ?? '');
+            $shown[$field->name] = $field->type->picture()
+                ? $block?->getValues()[$field->name] ?? ''
+                : Values::form($field, Values::posted($field, $values[$field->name] ?? null) ?? '');
         }
 
         return $shown;

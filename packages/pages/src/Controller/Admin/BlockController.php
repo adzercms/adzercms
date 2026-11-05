@@ -85,7 +85,7 @@ final class BlockController extends AbstractController
             }
         }
 
-        return $this->dialog($block->getPage(), $block, $type, [], $refusals, $request->request->all(BlockForm::VALUE) + $block->getValues());
+        return $this->dialog($block->getPage(), $block, $type, [], $refusals, $request->isMethod('POST') ? $request->request->all(BlockForm::VALUE) : $block->getValues());
     }
 
     #[Route('/blocks/{id}/drop', name: 'admin_page_block_drop', requirements: ['id' => '\d+'], methods: ['POST'])]
@@ -110,7 +110,7 @@ final class BlockController extends AbstractController
             'block' => $block,
             'type' => $type,
             'types' => $types,
-            'values' => BlockForm::shown($type, $values),
+            'values' => BlockForm::shown($type, $values, $block),
             'refusals' => $refusals,
         ]);
     }
