@@ -17,7 +17,7 @@ use function Symfony\Component\Translation\t;
 
 final readonly class Photos
 {
-    private const TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+    public const TYPES = ['image/jpeg', 'image/png', 'image/webp'];
     private const NAME = '/^[0-9a-f]{32}\.webp$/';
 
     public function __construct(

@@ -17,7 +17,7 @@ use function Symfony\Component\Translation\t;
 
 final class Images
 {
-    private const TYPES = [
+    public const TYPES = [
         'image/png' => 'png',
         'image/jpeg' => 'jpg',
         'image/svg+xml' => 'svg',
