@@ -1,6 +1,16 @@
 {% set type = 'AdzerCMS\\Contracts\\Setting\\Type::' %}
 {% set named %}id="{{ id }}" name="{{ name }}"{% if label is defined %} aria-label="{{ label|trans }}"{% endif %}{% endset %}
-{% if field.type == constant(type ~ 'Toggle') %}
+{% if field.type == constant(type ~ 'Rows') %}
+    <div class="field-rows" style="--columns: {{ field.fields|length }}">
+        {% for column in field.fields %}<span class="field-rows-head">{{ column.label|trans }}</span>{% endfor %}
+        {% for row in value %}
+            {% set at = loop.index0 %}
+            {% for column in field.fields %}
+                {% include '@Theme/_field.html.twig' with {field: column, id: id ~ '-' ~ at ~ '-' ~ column.name, name: name ~ '[' ~ at ~ '][' ~ column.name ~ ']', value: row[column.name], label: column.label} only %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% elseif field.type == constant(type ~ 'Toggle') %}
     <select {{ named }}>
         {% for case in enum('AdzerCMS\\Core\\Setting\\Toggle').cases %}
             <option value="{{ case.value }}" {{ value == case.value ? 'selected' }}>{{ case.label|trans }}</option>
@@ -8,7 +18,7 @@
     </select>
 {% elseif field.type == constant(type ~ 'Choice') %}
     <select {{ named }}>
-        {% if value == '' %}<option value="" selected>{{ 'admin.setting.unset'|trans }}</option>{% endif %}
+        {% if value == '' %}<option value="" selected>{{ 'theme.field.unset'|trans }}</option>{% endif %}
         {% for choice, caption in field.choices %}
             <option value="{{ choice }}" {{ value == choice ? 'selected' }}>{{ caption|trans }}</option>
         {% endfor %}

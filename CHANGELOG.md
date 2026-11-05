@@ -13,6 +13,8 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - The theme file field sends the picked file to the server at once with progress in the field; the form takes it under the field name as before, a dialog form sent before the upload ends closes at once and goes when the upload ends, its row in the list shows the progress; leaving the page earlier asks first
 - The admin section "Translations": the admin changes any text of the enabled packages in each language of the catalogs without code, the language of the instance first, clearing it brings back the catalog text
 - `BotListener`: a feature module takes what people send to the bots
+- `adzercms/pages`: site pages of blocks in order on the theme site frame — hero, advantages, text, questions with FAQPage, call to action and block types of other modules through the `AdzerCMS\Pages\Block` service, a header menu, the pages in the sitemap
+- Setting field types `Type::Markup` — GitHub-flavoured Markdown shown by the `markup` Twig filter without raw HTML and unsafe links, and `Type::Rows` — rows of the fields it declares
 - `LoginListener`: a feature module that waits for a login takes the profile of the login service instead of the entry
 - `UserPlaces` and `UserCreation`: the new user form of the admin creates a user at a place of a feature module, such as a site the instance serves, and a feature module closes creating users on the instance itself
 - `Contacts`: one core check of the phone and email of a user for the admin and modules that create or change users, a malformed contact or one held by another user is refused with the holder named

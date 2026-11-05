@@ -1,0 +1,12 @@
+{% embed '@Theme/_section.html.twig' with {heading: values.title, level: level} %}
+    {% block content %}
+        <ul class="site-points">
+            {% for point in values.points %}
+                <li>
+                    {% if point.title %}<h{{ level + 1 }}>{{ point.title }}</h{{ level + 1 }}>{% endif %}
+                    {% for line in point.text|split("\n")|filter(line => line) %}<p>{{ line }}</p>{% endfor %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endblock %}
+{% endembed %}

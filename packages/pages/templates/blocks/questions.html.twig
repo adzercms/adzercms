@@ -1,0 +1,12 @@
+{% embed '@Theme/_section.html.twig' with {heading: values.title, level: level} %}
+    {% block content %}
+        <div class="site-questions">
+            {% for pair in values.pairs %}
+                <details>
+                    <summary>{{ pair.question }}</summary>
+                    <div class="prose">{{ pair.answer|markup }}</div>
+                </details>
+            {% endfor %}
+        </div>
+    {% endblock %}
+{% endembed %}

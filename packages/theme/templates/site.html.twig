@@ -1,0 +1,15 @@
+{% extends '@Theme/base.html.twig' %}
+
+{% block bodyclass %}site{% endblock %}
+
+{% block shell %}
+<!--noindex--><header class="site-header" data-nosnippet>
+    <div class="site-header-inner">
+        <a class="header-logo" href="/">{% include '@Theme/_brand.html.twig' %}</a>
+        <nav class="site-nav">{% for part in fragments(constant('AdzerCMS\\Contracts\\Ui\\Fragment::SITE_NAV')) %}{% include part.template with part.context only %}{% endfor %}</nav>
+        {% set entry = app.user ? cabinet('home') : cabinet('login') %}
+        {% if entry %}<a class="button site-entry" href="{{ entry }}">{{ (app.user ? 'theme.site.cabinet' : 'theme.site.login')|trans }}</a>{% endif %}
+    </div>
+</header><!--/noindex-->
+<main class="site-main">{% block page %}{% endblock %}</main>
+{% endblock %}

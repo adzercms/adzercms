@@ -43,6 +43,12 @@
         <target>Delete the saved data? Access by it will stop working.</target>
       </segment>
     </unit>
+    <unit id="theme.field.unset">
+      <segment>
+        <source>theme.field.unset</source>
+        <target>not set</target>
+      </segment>
+    </unit>
     <unit id="theme.file.choose">
       <segment>
         <source>theme.file.choose</source>
@@ -173,6 +179,18 @@
       <segment>
         <source>theme.settings</source>
         <target>Settings</target>
+      </segment>
+    </unit>
+    <unit id="theme.site.cabinet">
+      <segment>
+        <source>theme.site.cabinet</source>
+        <target>Account</target>
+      </segment>
+    </unit>
+    <unit id="theme.site.login">
+      <segment>
+        <source>theme.site.login</source>
+        <target>Log in</target>
       </segment>
     </unit>
     <unit id="theme.steps.back">

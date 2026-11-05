@@ -17,6 +17,15 @@ final class Values
     private const COLOR = '/^#[0-9a-f]{6}$/i';
     private const JSON = \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES;
 
+    public static function posted(Field $field, mixed $input): ?string
+    {
+        return match (true) {
+            \is_string($input) => $input,
+            Type::Rows === $field->type && \is_array($input) => json_encode(array_values($input), self::JSON),
+            default => null,
+        };
+    }
+
     public static function check(Field $field, string $value): string|Refusal
     {
         $value = match ($field->type) {

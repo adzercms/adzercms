@@ -10,24 +10,14 @@
             {% set rows = field.type == constant(type ~ 'Rows') %}
             <div class="field{{ rows or field.type == constant(type ~ 'Markup') ? ' field-wide' }}">
                 <label for="{{ rows ? id ~ '-0-' ~ field.fields|first.name : id }}">{{ field.label|trans }}</label>
-                {% if rows %}
-                    <div class="field-rows" style="--columns: {{ field.fields|length }}">
-                        {% for column in field.fields %}<span class="field-rows-head">{{ column.label|trans }}</span>{% endfor %}
-                        {% for row in values[field.name] %}
-                            {% set at = loop.index0 %}
-                            {% for column in field.fields %}
-                                {% include '@Admin/admin/_setting_control.html.twig' with {field: column, id: id ~ '-' ~ at ~ '-' ~ column.name, name: 'value[' ~ field.name ~ '][' ~ at ~ '][' ~ column.name ~ ']', value: row[column.name], label: column.label} only %}
-                            {% endfor %}
-                        {% endfor %}
-                    </div>
-                {% elseif field.type == constant(type ~ 'Image') %}
+                {% if field.type == constant(type ~ 'Image') %}
                     {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: constant('AdzerCMS\\Core\\Setting\\Images::TYPES')|keys|join(',')} only %}
                 {% elseif field.type == constant(type ~ 'Photo') %}
                     {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: constant('AdzerCMS\\Core\\Photo\\Photos::TYPES')|join(',')} only %}
                 {% elseif field.type == constant(type ~ 'Container') %}
                     {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: '.p12,.pfx'} only %}
                 {% else %}
-                    {% include '@Admin/admin/_setting_control.html.twig' with {field: field, id: id, name: 'value[' ~ field.name ~ ']', value: values[field.name]} only %}
+                    {% include '@Theme/_field.html.twig' with {field: field, id: id, name: 'value[' ~ field.name ~ ']', value: values[field.name]} only %}
                 {% endif %}
 
                 {% if field.type == constant(type ~ 'Container') or stored %}

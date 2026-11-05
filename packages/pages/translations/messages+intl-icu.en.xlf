@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="pages.block.advantages">
+      <segment>
+        <source>pages.block.advantages</source>
+        <target>Advantages</target>
+      </segment>
+    </unit>
+    <unit id="pages.block.call">
+      <segment>
+        <source>pages.block.call</source>
+        <target>Call to action</target>
+      </segment>
+    </unit>
+    <unit id="pages.block.hero">
+      <segment>
+        <source>pages.block.hero</source>
+        <target>Hero</target>
+      </segment>
+    </unit>
+    <unit id="pages.block.questions">
+      <segment>
+        <source>pages.block.questions</source>
+        <target>Questions</target>
+      </segment>
+    </unit>
+    <unit id="pages.block.text">
+      <segment>
+        <source>pages.block.text</source>
+        <target>Text</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.answer">
+      <segment>
+        <source>pages.field.answer</source>
+        <target>Answer</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.button">
+      <segment>
+        <source>pages.field.button</source>
+        <target>Button label</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.link">
+      <segment>
+        <source>pages.field.link</source>
+        <target>Button address</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.pairs">
+      <segment>
+        <source>pages.field.pairs</source>
+        <target>Questions and answers</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.points">
+      <segment>
+        <source>pages.field.points</source>
+        <target>Points</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.question">
+      <segment>
+        <source>pages.field.question</source>
+        <target>Question</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.text">
+      <segment>
+        <source>pages.field.text</source>
+        <target>Text</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.title">
+      <segment>
+        <source>pages.field.title</source>
+        <target>Title</target>
+      </segment>
+    </unit>
+    <unit id="pages.page.title">
+      <segment>
+        <source>pages.page.title</source>
+        <target>{title}</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.link">
+      <segment>
+        <source>pages.refusal.link</source>
+        <target>{field}: a site path from /, https:// address or #lead</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

@@ -13,6 +13,7 @@ use AdzerCMS\Core\Setting\Images;
 use AdzerCMS\Core\Setting\Keychain;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Setting\Toggle;
+use AdzerCMS\Core\Setting\Values;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -68,12 +69,7 @@ final class SettingForm
             }
 
             if (!$field->type->picture() && Type::Container !== $field->type) {
-                $value = $values[$field->name] ?? null;
-                $this->store($field, match (true) {
-                    \is_string($value) => $value,
-                    Type::Rows === $field->type && \is_array($value) => json_encode(array_values($value), \JSON_THROW_ON_ERROR),
-                    default => null,
-                });
+                $this->store($field, Values::posted($field, $values[$field->name] ?? null));
 
                 continue;
             }

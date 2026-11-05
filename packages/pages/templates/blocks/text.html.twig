@@ -1,0 +1,3 @@
+{% embed '@Theme/_section.html.twig' with {heading: values.title, level: level} %}
+    {% block content %}<div class="prose">{{ values.text|markup }}</div>{% endblock %}
+{% endembed %}

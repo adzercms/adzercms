@@ -1,0 +1,13 @@
+{% extends '@Theme/site.html.twig' %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block meta %}
+    {% include '@Theme/_seo.html.twig' with {title: page.title, description: page.description ?? ''} only %}
+    {% include '@Pages/_schema.html.twig' with {schema: view.schema} only %}
+{% endblock %}
+
+{% block page %}
+    {% if view.heading %}{% include '@Theme/_section.html.twig' with {heading: view.heading, level: 1} only %}{% endif %}
+    {% for block in view.blocks %}{% include block.template with block only %}{% endfor %}
+{% endblock %}

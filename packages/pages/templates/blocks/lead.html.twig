@@ -1,0 +1,6 @@
+{% embed '@Theme/_section.html.twig' with {heading: values.title, level: level, class: 'site-' ~ key} %}
+    {% block content %}
+        {% for line in values.text|split("\n")|filter(line => line) %}<p class="site-lead">{{ line }}</p>{% endfor %}
+        {% include '@Pages/blocks/_button.html.twig' %}
+    {% endblock %}
+{% endembed %}

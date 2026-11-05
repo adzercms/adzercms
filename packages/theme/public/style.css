@@ -1645,3 +1645,30 @@ form[data-steps] [data-step]:not(.current) { display: none; }
     :root.layout-top .nav-item { width: auto; padding: 12px 14px; border-width: 0 0 3px; border-style: solid; border-color: transparent; }
     :root.layout-top .nav-item.active { background: none; border-bottom-color: var(--primary); }
 }
+
+.site-header { position: sticky; top: 0; z-index: 1000; display: flex; justify-content: center; height: var(--header-height); background: var(--surface); border-bottom: 1px solid var(--border-light); }
+.site-header-inner { display: flex; align-items: center; gap: 1.5rem; width: 100%; max-width: var(--page-width); padding: 0 20px; }
+.site-nav { display: flex; flex: 1; flex-wrap: wrap; gap: 0.25rem 1.25rem; }
+.site-nav a { color: var(--text); font-weight: 500; }
+.site-nav a[aria-current] { color: var(--primary); }
+.site-entry { margin-left: auto; }
+.site-section { display: flex; justify-content: center; padding: 3rem 20px; }
+.site-section:nth-child(even) { background: var(--bg-gray); }
+.site-section-inner { width: 100%; max-width: var(--page-width); }
+.site-heading { margin: 0 0 1.25rem; }
+h1.site-heading { font-size: clamp(28px, 5vw, 44px); line-height: 1.15; }
+.site-lead { max-width: 48rem; margin: 0 0 1.5rem; font-size: 18px; color: var(--text-gray); }
+.site-points { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); margin: 0; padding: 0; list-style: none; }
+.site-points h3 { margin: 0 0 0.5rem; }
+.site-points p { margin: 0; color: var(--text-gray); }
+.site-questions { max-width: 48rem; }
+.site-questions details { padding: 1rem 0; border-bottom: 1px solid var(--border-light); }
+.site-questions summary { font-weight: 600; cursor: pointer; }
+.site-questions .prose { margin-top: 0.75rem; }
+
+@media (max-width: 900px) {
+    .site-header { height: auto; min-height: var(--header-height); }
+    .site-header-inner { flex-wrap: wrap; padding: 0.5rem 16px; gap: 0.5rem 1rem; }
+    .site-nav { order: 3; flex-basis: 100%; }
+    .site-section { padding: 2rem 16px; }
+}

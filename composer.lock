@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aa56197595261562506a6694794a6bfb",
+    "content-hash": "4faad9374cf43f166f3d2470f0f81c7a",
     "packages": [
         {
             "name": "adzercms/admin",
@@ -1019,6 +1019,75 @@
                 "opotopo",
                 "seller-api",
                 "symfony"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "adzercms/pages",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/pages",
+                "reference": "7c4d947a245f6da5d893e233f767cfdc649c6a5e"
+            },
+            "require": {
+                "adzercms/contracts": "^1.0",
+                "adzercms/core": "^1.0",
+                "adzercms/theme-implementation": "^1.0",
+                "doctrine/dbal": "^4.5",
+                "doctrine/doctrine-bundle": "^3.3",
+                "doctrine/migrations": "^3.9",
+                "doctrine/orm": "^3.7",
+                "doctrine/persistence": "^4.2",
+                "php": ">=8.4",
+                "symfony/dependency-injection": "7.4.*",
+                "symfony/framework-bundle": "7.4.*",
+                "symfony/http-foundation": "7.4.*",
+                "symfony/routing": "7.4.*",
+                "symfony/translation": "7.4.*",
+                "symfony/translation-contracts": "^3.7"
+            },
+            "require-dev": {
+                "adzercms/admin": "^1.0",
+                "adzercms/cabinet": "^1.0"
+            },
+            "type": "adzercms-module",
+            "extra": {
+                "adzercms": {
+                    "bundle": "AdzerCMS\\Pages\\PagesBundle",
+                    "description": {
+                        "ru": "Страницы сайта: страницы из блоков с живыми блоками модулей, меню шапки, SEO страниц"
+                    },
+                    "categories": [
+                        "content"
+                    ],
+                    "title": {
+                        "en": "Site pages",
+                        "ru": "Страницы сайта"
+                    }
+                },
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AdzerCMS\\Pages\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Site pages: pages of blocks with the live blocks of modules, a header menu, page SEO",
+            "keywords": [
+                "adzercms",
+                "cms",
+                "pages",
+                "symfony",
+                "website"
             ],
             "transport-options": {
                 "symlink": true,
@@ -17085,6 +17154,7 @@
         "adzercms/morphology-ru": 20,
         "adzercms/mts-marketolog": 20,
         "adzercms/opotopo": 20,
+        "adzercms/pages": 20,
         "adzercms/payments": 20,
         "adzercms/realtime": 20,
         "adzercms/sber-id": 20,

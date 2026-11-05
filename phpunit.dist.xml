@@ -75,6 +75,10 @@
             <directory>packages/opotopo/tests</directory>
             <file>packages/core/tests/Schema/MigrationsTest.php</file>
         </testsuite>
+        <testsuite name="Pages">
+            <directory>packages/pages/tests</directory>
+            <file>packages/core/tests/Schema/MigrationsTest.php</file>
+        </testsuite>
         <testsuite name="Payments">
             <directory>packages/payments/tests</directory>
             <file>packages/core/tests/Schema/MigrationsTest.php</file>

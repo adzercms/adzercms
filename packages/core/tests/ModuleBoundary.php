@@ -58,7 +58,7 @@ final readonly class ModuleBoundary
         }
         foreach (array_diff_key($after['routes'], $before['routes']) as $name => $route) {
             foreach ($before['routes'] as $prior => $taken) {
-                if (self::overlaps($route, $taken)) {
+                if (!$taken->getOption('fallback') && self::overlaps($route, $taken)) {
                     $crossed[] = \sprintf('route %s: takes path %s of route %s', $name, $taken->getPath(), $prior);
                 }
             }

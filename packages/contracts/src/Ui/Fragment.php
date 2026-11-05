@@ -9,6 +9,7 @@ interface Fragment
     public const HEAD = 'head';
     public const HEADER = 'header';
     public const TOP = 'top';
+    public const SITE_NAV = 'site.nav';
     public const CABINET_HOME = 'cabinet.home';
     public const CABINET_HOME_ACTIONS = 'cabinet.home.actions';
     public const CABINET_PROFILE = 'cabinet.profile';
