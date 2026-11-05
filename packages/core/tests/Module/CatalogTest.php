@@ -218,10 +218,6 @@ final class CatalogTest extends SchemaTestCase
 
         $field = self::service(SettingCatalog::class)->fields()[Store::NAME];
         $settings = self::service(Settings::class);
-        self::assertSame(
-            self::phrase('core.setting.url', ['field' => self::phrase('core.setting.store')]),
-            self::phrase($settings->save($field, 'ftp://store.acme.test')->reason ?? self::fail('the address is accepted')),
-        );
         $this->stores[$other] = null;
         self::assertNull($settings->save($field, $other));
         $this->em->flush();

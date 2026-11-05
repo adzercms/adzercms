@@ -132,7 +132,7 @@ final class WindowTest extends SchemaTestCase
         yield 'subject refusal' => [[Intake::PHONE => '79990000002', ItemSubject::FIELD => '1'], true, Intake::FORM, ItemSubject::SOLD];
     }
 
-    #[Group('ACMS-LEAD-0012')]
+    #[Group('ACMS-LEAD-0010')]
     #[Group('ACMS-UI-0140')]
     #[Group('ACMS-US-0040')]
     public function testFilledTrapIsAcceptedWithoutLead(): void
@@ -143,7 +143,7 @@ final class WindowTest extends SchemaTestCase
         self::assertSame(0, self::service(LeadRepository::class)->count([]));
     }
 
-    #[Group('ACMS-LEAD-0012')]
+    #[Group('ACMS-LEAD-0010')]
     #[Group('ACMS-UI-0140')]
     #[Group('ACMS-US-0040')]
     public function testLeadsOfAddressBeyondLimitAreRefused(): void

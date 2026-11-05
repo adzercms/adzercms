@@ -22,6 +22,7 @@ final class GoogleAnalyticsTest extends SchemaTestCase
     private const MEASUREMENT = 'G-7Q2X9K4M1B';
 
     #[Group('ACMS-CORE-0974')]
+    #[Group('ACMS-CORE-1144')]
     #[Group('ACMS-US-0037')]
     public function testCounterStartsByItsMeasurementWithAnalyticsConsentOnly(): void
     {

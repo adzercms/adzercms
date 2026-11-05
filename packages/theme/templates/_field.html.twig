@@ -25,6 +25,8 @@
     </select>
 {% elseif field.type == constant(type ~ 'Palette') %}
     {% include '@Theme/_palette.html.twig' with {id: id, name: name, label: field.label, schemes: field.schemes, value: value} only %}
+{% elseif field.type == constant(type ~ 'Url') %}
+    <input {{ named }} type="url" value="{{ value }}">
 {% elseif field.type == constant(type ~ 'Color') %}
     <input {{ named }} type="color" value="{{ value ?: '#000000' }}">
 {% elseif field.type in [constant(type ~ 'Lines'), constant(type ~ 'Markup')] %}

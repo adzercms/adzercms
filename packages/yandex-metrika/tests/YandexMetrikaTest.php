@@ -63,7 +63,7 @@ final class YandexMetrikaTest extends SchemaTestCase
         }
     }
 
-    #[Group('ACMS-CORE-0953')]
+    #[Group('ACMS-CORE-1143')]
     public function testOfflineConversionsGoToTheCounterByItsToken(): void
     {
         $conversions = new YandexMetrikaConversions(self::api());

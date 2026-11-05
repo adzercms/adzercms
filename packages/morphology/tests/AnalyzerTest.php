@@ -7,6 +7,7 @@ namespace AdzerCMS\Morphology\Tests;
 use AdzerCMS\Morphology\Analyzer;
 use AdzerCMS\Morphology\Parse;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
@@ -30,6 +31,8 @@ final class AnalyzerTest extends TestCase
      * @param list<array{string, string, float}> $parses
      */
     #[DataProvider('references')]
+    #[Group('ACMS-MORPH-0002')]
+    #[Group('ACMS-MORPH-0005')]
     public function testParsesAsReference(string $token, array $parses): void
     {
         $actual = array_map(static fn (Parse $parse): array => [$parse->tag, $parse->normalForm, $parse->score], self::analyzer()->parse($token));
@@ -43,6 +46,7 @@ final class AnalyzerTest extends TestCase
     #[TestWith(['1,5'])]
     #[TestWith(["сло\u{301}во"])]
     #[TestWith(["\xff"])]
+    #[Group('ACMS-MORPH-0003')]
     public function testRejectsTokenOutOfScope(string $token): void
     {
         $this->expectException(\InvalidArgumentException::class);

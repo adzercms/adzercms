@@ -5,21 +5,19 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Module;
 
 use AdzerCMS\Contracts\Module\ExtensionType;
-use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Contracts\Setting\Page;
-use AdzerCMS\Contracts\Setting\Rule;
+use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Setting\Settings;
-use AdzerCMS\Core\Ui\WebLink;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 use function Symfony\Component\Translation\t;
 
-final readonly class Store implements Owner, Rule
+final readonly class Store implements Owner
 {
     public const NAME = 'modules.store';
     public const DEFAULT = 'https://adzercms.com/extensions/store.json';
@@ -32,12 +30,7 @@ final readonly class Store implements Owner, Rule
 
     public function settingFields(): array
     {
-        return [new Field(self::NAME, t('core.setting.store'), page: Page::Extensions)];
-    }
-
-    public function check(Field $field, string $value): ?Refusal
-    {
-        return self::NAME === $field->name && !WebLink::valid($value) ? new Refusal(t('core.setting.url', ['field' => $field->label])) : null;
+        return [new Field(self::NAME, t('core.setting.store'), Type::Url, page: Page::Extensions)];
     }
 
     public function url(): string

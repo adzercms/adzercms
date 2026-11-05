@@ -7,6 +7,7 @@ namespace AdzerCMS\Contracts\Setting;
 enum Type
 {
     case Text;
+    case Url;
     case Lines;
     case Markup;
     case Rows;
@@ -29,7 +30,7 @@ enum Type
     public function cell(): bool
     {
         return match ($this) {
-            self::Text, self::Lines, self::Markup, self::Time, self::Toggle, self::Choice, self::Decimal, self::Color => true,
+            self::Text, self::Url, self::Lines, self::Markup, self::Time, self::Toggle, self::Choice, self::Decimal, self::Color => true,
             default => false,
         };
     }

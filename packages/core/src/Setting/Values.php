@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Contracts\Ui\Scheme;
+use AdzerCMS\Core\Ui\WebLink;
 
 use function Symfony\Component\Translation\t;
 
@@ -65,6 +66,7 @@ final class Values
             Type::Time => null === ($minutes = self::minutes($value))
                 ? new Refusal(t('core.setting.time', ['field' => $field->label]))
                 : \sprintf('%02d:%02d', intdiv($minutes, 60), $minutes % 60),
+            Type::Url => WebLink::valid($value) ? $value : new Refusal(t('core.setting.url', ['field' => $field->label])),
             Type::Toggle => null === Toggle::tryFrom($value) ? new Refusal(t('core.setting.toggle', ['field' => $field->label])) : $value,
             Type::Choice => isset($field->choices()[$value]) ? $value : new Refusal(t('core.setting.choice', ['field' => $field->label])),
             Type::Color => self::color($value) ?? new Refusal(t('core.setting.color', ['field' => $field->label])),

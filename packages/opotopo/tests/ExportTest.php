@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Opotopo\Tests;
 
-use AdzerCMS\Core\Setting\Catalog;
-use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\HttpAnswers;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -145,16 +143,6 @@ final class ExportTest extends SchemaTestCase
         yield 'without key' => ['key', 'not configured'];
         yield 'unknown catalog' => ['catalog', 'unknown catalog missing, catalogs: shelf'];
         yield 'marketplace unavailable after retries' => ['down', 'OPOTOPO unavailable: 503'];
-    }
-
-    #[Group('ACMS-OTO-0002')]
-    public function testMarketplaceAddressOutsideWebIsRefused(): void
-    {
-        $field = self::service(Catalog::class)->fields()[OpotopoSettings::URL];
-
-        $refusal = self::service(Settings::class)->save($field, 'ftp://opotopo.example.test');
-
-        self::assertSame(self::phrase('core.setting.url', ['field' => self::phrase('opotopo.setting.url')]), self::phrase($refusal->reason ?? self::fail('the address is accepted')));
     }
 
     private static function shelf(): ShelfCatalog

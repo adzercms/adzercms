@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Core\Entity\Setting;
 use AdzerCMS\Core\Module\Bundles;
+use AdzerCMS\Core\Module\Store;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Notice\QuietHours;
 use AdzerCMS\Core\Setting\Catalog;
@@ -150,6 +151,17 @@ final class SettingCommandTest extends SchemaTestCase
 
         self::assertSame(Command::SUCCESS, self::command('adzercms:setting')->execute(['name' => QuietHours::FROM, 'value' => '7:05']));
         self::assertSame('07:05', self::service(Settings::class)->get(QuietHours::FROM));
+    }
+
+    #[Group('ACMS-CORE-1145')]
+    public function testAddressIsRefusedOutsideWeb(): void
+    {
+        $wrong = self::command('adzercms:setting');
+        self::assertSame(Command::INVALID, $wrong->execute(['name' => Store::NAME, 'value' => 'ftp://store.acme.test']));
+        self::assertStringContainsString(self::phrase('core.setting.url', ['field' => self::phrase('core.setting.store')]), $wrong->getDisplay());
+
+        self::assertSame(Command::SUCCESS, self::command('adzercms:setting')->execute(['name' => Store::NAME, 'value' => 'https://store.acme.test/store.json']));
+        self::assertSame('https://store.acme.test/store.json', self::service(Settings::class)->get(Store::NAME));
     }
 
     #[Group('ACMS-CORE-0057')]

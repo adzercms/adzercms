@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Opotopo;
 
-use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
-use AdzerCMS\Contracts\Setting\Rule;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Setting\Settings;
-use AdzerCMS\Core\Ui\WebLink;
 use Opotopo\SellerApi\ClientConfig;
 
 use function Symfony\Component\Translation\t;
 
-final readonly class OpotopoSettings implements Owner, Rule
+final readonly class OpotopoSettings implements Owner
 {
     public const URL = 'opotopo.url';
     public const KEY = 'opotopo.key';
@@ -32,16 +29,11 @@ final readonly class OpotopoSettings implements Owner, Rule
     public function settingFields(): array
     {
         return [
-            new Field(self::URL, t('opotopo.setting.url')),
+            new Field(self::URL, t('opotopo.setting.url'), Type::Url),
             new Field(self::KEY, t('opotopo.setting.key'), Type::Secret, group: self::KEY),
             new Field(self::ORGANIZATION, t('opotopo.setting.organization')),
             new Field(self::PUBLISH, t('opotopo.setting.publish'), Type::Toggle),
         ];
-    }
-
-    public function check(Field $field, string $value): ?Refusal
-    {
-        return self::URL === $field->name && !WebLink::valid($value) ? new Refusal(t('core.setting.url', ['field' => $field->label])) : null;
     }
 
     public function config(): ?ClientConfig
