@@ -15,9 +15,6 @@
     <div id="{{ table.id }}-data">
         {% if rows is empty %}
             <p class="empty-state">{{ table.empty|trans }}</p>
-            {% if actions|default([]) and table.bare(rows) %}
-                <div class="empty-actions">{% include '@Theme/_actions.html.twig' %}</div>
-            {% endif %}
         {% else %}
             {% block items %}
             {% if table.order %}

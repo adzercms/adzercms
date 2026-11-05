@@ -129,12 +129,6 @@ final class Table
         return $this->values[$name] ?? '';
     }
 
-    /** @param array<mixed> $rows */
-    public function bare(array $rows): bool
-    {
-        return [] === $rows && [] === $this->values;
-    }
-
     public function field(Filter $filter): string
     {
         return self::param($this->id, $filter->name);

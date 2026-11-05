@@ -16,24 +16,24 @@ final class ListCreationTest extends SchemaTestCase
     use Accounts;
     use Browser;
 
-    /** @return iterable<string, array{string, string, string, int, int}> */
+    /** @return iterable<string, array{string, string, string}> */
     public static function sets(): iterable
     {
         foreach (['section' => ['headed', '.section-head'], 'page' => ['paged', '.card-head']] as $place => [$list, $title]) {
-            yield $place.' records' => [$list, $title, '', 1, 0];
-            yield $place.' empty set' => [$list, $title, '?none=1', 1, 1];
-            yield $place.' nothing found' => [$list, $title, '?none=1&q=x', 1, 0];
+            yield $place.' records' => [$list, $title, ''];
+            yield $place.' empty set' => [$list, $title, '?none=1'];
         }
     }
 
     #[Group('ACMS-FLOW-0001')]
     #[DataProvider('sets')]
-    public function testCreationStaysInTheTitleAndRepeatsUnderAnEmptySet(string $list, string $title, string $query, int $heading, int $empty): void
+    public function testCreationStaysOnlyInTheTitle(string $list, string $title, string $query): void
     {
         $this->client->loginUser($this->record('+7 900 000-00-03'));
         $page = $this->client->request('GET', '/fixture/list/'.$list.$query);
         $link = \sprintf('a[href="%s"]', ListController::CREATE);
 
-        self::assertSame([$heading, $empty], [$page->filter($title.' '.$link)->count(), $page->filter('.empty-actions '.$link)->count()]);
+        self::assertSame([1, 1], [$page->filter($title.' '.$link)->count(), $page->filter($link)->count()],
+            'the creation action is in the list title only, an empty set does not repeat it');
     }
 }
