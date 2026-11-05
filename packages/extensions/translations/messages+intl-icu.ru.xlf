@@ -265,6 +265,12 @@
         <target>Ссылка на демо должна начинаться с http:// или https://</target>
       </segment>
     </unit>
+    <unit id="extensions.refusal.images">
+      <segment>
+        <source>extensions.refusal.images</source>
+        <target>У записи — не больше {max} изображений</target>
+      </segment>
+    </unit>
     <unit id="extensions.refusal.key">
       <segment>
         <source>extensions.refusal.key</source>

@@ -63,6 +63,10 @@ class Extension implements Placed
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $demo = null;
 
+    /** @var list<string> */
+    #[ORM\Column(type: Types::JSON)]
+    private array $images = [];
+
     #[ORM\Column]
     private int $position = 0;
 
@@ -132,6 +136,17 @@ class Extension implements Placed
     public function getDemo(): ?string
     {
         return $this->demo;
+    }
+
+    /** @return list<string> */
+    public function getImages(): array
+    {
+        return $this->images;
+    }
+
+    public function getCover(): ?string
+    {
+        return $this->images[0] ?? null;
     }
 
     public function getPosition(): int
@@ -222,6 +237,14 @@ class Extension implements Placed
                 $this->categories->add(new ExtensionCategory($this, $category));
             }
         }
+
+        return $this;
+    }
+
+    /** @param list<string> $images */
+    public function picture(array $images): self
+    {
+        $this->images = $images;
 
         return $this;
     }

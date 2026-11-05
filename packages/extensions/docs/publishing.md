@@ -41,7 +41,7 @@ If a later version drops the key, the entry leaves the catalog.
 
 ## Add the entry
 
-In My extensions, press the + Extension button and fill in the package name, the type and, if you have one, the address of a demo site. The rest comes from the package: the catalog refreshes it once a day and whenever you save the entry.
+In My extensions, press the + Extension button and fill in the package name, the type and, if you have one, the address of a demo site. Add screenshots as JPEG, PNG or WebP images: the first one is the cover of the card, dragging changes the order. The rest comes from the package: the catalog refreshes it once a day and whenever you save the entry.
 
 A new entry waits for the catalog operator. You get a notice when it is published or rejected, and a rejection comes with the reason, which My extensions shows next to the entry as well.
 

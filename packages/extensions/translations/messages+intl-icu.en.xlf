@@ -265,6 +265,12 @@
         <target>The demo link must start with http:// or https://</target>
       </segment>
     </unit>
+    <unit id="extensions.refusal.images">
+      <segment>
+        <source>extensions.refusal.images</source>
+        <target>An entry takes up to {max} images</target>
+      </segment>
+    </unit>
     <unit id="extensions.refusal.key">
       <segment>
         <source>extensions.refusal.key</source>
