@@ -54,6 +54,7 @@ final class LoginTest extends SchemaTestCase
     #[Group('ACMS-CORE-0109')]
     #[Group('ACMS-CORE-0125')]
     #[Group('ACMS-CORE-0173')]
+    #[Group('ACMS-CORE-1097')]
     public function testGuestEntersByTelegramProfileWithPhoneOfRecord(): void
     {
         $user = $this->record('+7 900 111-22-33');

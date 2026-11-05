@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace AdzerCMS\VkId\Tests;
 
 use AdzerCMS\Contracts\Login\Client;
+use AdzerCMS\Core\Entity\ConnectedService;
 use AdzerCMS\Core\Module\Switches;
-use AdzerCMS\Core\Repository\ConnectedServiceRepository;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -35,10 +35,12 @@ final class LoginTest extends SchemaTestCase
 
     #[Group('ACMS-US-0002')]
     #[Group('ACMS-CORE-0104')]
-    #[Group('ACMS-CORE-0173')]
-    public function testGuestEntersByVkIdProfileWithPhoneOfRecord(): void
+    #[Group('ACMS-CORE-1097')]
+    public function testGuestEntersByConnectedVkIdProfileThatVouchesForNoContact(): void
     {
-        $user = $this->record('+7 900 111-22-33');
+        $user = $this->record('+7 900 111-22-33')->setPhone(null);
+        $this->em->persist(new ConnectedService($user, 'vkid', '1234567', null));
+        $this->em->flush();
 
         $query = $this->authorize('vkid', VkIdService::AUTHORIZE);
         self::assertSame(
@@ -69,11 +71,9 @@ final class LoginTest extends SchemaTestCase
         self::assertSame(VkIdService::USER_INFO, $this->sent[1]['url'] ?? null);
         self::assertSame(['client_id' => self::CLIENT, 'access_token' => 'vk2.a.access'], $this->sentForm(1));
 
-        $connected = self::service(ConnectedServiceRepository::class)->findOneBy(['user' => $user->getId(), 'service' => 'vkid']);
-        self::assertSame('1234567', $connected?->getProfile());
         $user = $this->reread($user);
         self::assertTrue($user->isNamed());
-        self::assertSame('ivan@example.org', $user->getEmail());
+        self::assertSame([null, null], [$user->getPhone(), $user->getEmail()], 'VK ID does not vouch for the phone and email of the profile');
     }
 
     #[Group('ACMS-US-0002')]

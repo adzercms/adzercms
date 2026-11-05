@@ -43,14 +43,21 @@ final class ConnectedServices
     {
         $known = $this->connected->profile($service, $profile->id);
         $user = $known?->getUser();
-        foreach (self::contacts($profile) as [, $contact]) {
+        $verified = self::contacts($profile, true);
+        foreach ($verified as [, $contact]) {
             $user ??= $this->users->byLogin($contact);
         }
 
-        if (null === $user && !$this->registration->offered()) {
-            return new Refusal(t('core.login.unknown', ['service' => $this->name($service)]));
+        if (null === $user) {
+            if (!$this->registration->offered() || $this->held(self::contacts($profile, false))) {
+                return new Refusal(t('core.login.unknown', ['service' => $this->name($service)]));
+            }
+            $opened = [];
+            foreach ($verified as [$kind, $contact]) {
+                $opened[$kind->value] = $contact;
+            }
+            $user = $this->registration->open($opened[ContactKind::Phone->value] ?? null, $opened[ContactKind::Email->value] ?? null);
         }
-        $user ??= $this->registration->open(ContactKind::Phone->normalize($profile->phone), ContactKind::Email->normalize($profile->email));
         try {
             $this->checker->checkPostAuth($user);
         } catch (RecordDeleted $deleted) {
@@ -114,7 +121,7 @@ final class ConnectedServices
         if (!$user->isNamed()) {
             $user->setName($profile->lastName, $profile->firstName, null);
         }
-        foreach (self::contacts($profile) as [$kind, $contact]) {
+        foreach (self::contacts($profile, true) as [$kind, $contact]) {
             if (null === $user->getContact($kind) && null === $this->users->byLogin($contact)) {
                 $user->setContact($kind, $contact);
             }
@@ -127,13 +134,25 @@ final class ConnectedServices
         return null;
     }
 
+    /** @param list<array{ContactKind, string}> $contacts */
+    private function held(array $contacts): bool
+    {
+        foreach ($contacts as [, $contact]) {
+            if (null !== $this->users->byLogin($contact)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /** @return list<array{ContactKind, string}> */
-    private static function contacts(Profile $profile): array
+    private static function contacts(Profile $profile, bool $verified): array
     {
         $contacts = [];
-        foreach ([[ContactKind::Phone, $profile->phone], [ContactKind::Email, $profile->email]] as [$kind, $value]) {
+        foreach ([[ContactKind::Phone, $profile->phone, $profile->phoneVerified], [ContactKind::Email, $profile->email, $profile->emailVerified]] as [$kind, $value, $proven]) {
             $contact = $kind->normalize($value);
-            if (null !== $contact) {
+            if (null !== $contact && $proven === $verified) {
                 $contacts[] = [$kind, $contact];
             }
         }

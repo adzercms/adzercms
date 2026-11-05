@@ -49,4 +49,8 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `adzercms-suites --changed <base>` runs only the suites of the packages and modules changed since the base commit and of their consumers by the `composer.json` requirements; a change outside them other than documentation and browser tests, or an unknown base, runs every suite; CI takes it on pushes and pull requests, the weekly run stays full
 - `Photos` keeps the photos of module records: a JPEG, PNG or WebP turned upright by EXIF, scaled down to the side of the module and stored as WebP without metadata under a random name, found and dropped by its names; `ImmutableFileResponse` serves such a file with a public cache for a year and answers a matching ETag with 304, a session of the request keeps the cache
 
+### Security
+
+- Sign-in through a login service finds a user, fills empty contacts and creates a user only by a phone or email the service vouches for: `Profile::$phoneVerified` and `Profile::$emailVerified`, set by the login module from the service's verification claim or its documented guarantee. Before, a profile carrying someone else's unverified phone or email signed in to that person's account. An unvouched contact of another user now turns the sign-in away; the Telegram module vouches for the phone, the Sber ID, VK ID and Yandex ID modules vouch for no contact
+
 [Unreleased]: https://github.com/adzercms/adzercms/commits/main

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\YandexId\Tests;
 
 use AdzerCMS\Contracts\Login\Client;
+use AdzerCMS\Core\Entity\ConnectedService;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Repository\ConnectedServiceRepository;
 use AdzerCMS\Core\Tests\Accounts;
@@ -40,10 +41,12 @@ final class LoginTest extends SchemaTestCase
 
     #[Group('ACMS-US-0002')]
     #[Group('ACMS-CORE-0104')]
-    #[Group('ACMS-CORE-0173')]
-    public function testGuestEntersByYandexIdProfileWithPhoneOfRecord(): void
+    #[Group('ACMS-CORE-1097')]
+    public function testGuestEntersByConnectedYandexIdProfileThatVouchesForNoContact(): void
     {
-        $user = $this->record('+7 903 765-94-18');
+        $user = $this->record('+7 903 765-94-18')->setPhone(null);
+        $this->em->persist(new ConnectedService($user, 'yandexid', '1000034426', null));
+        $this->em->flush();
 
         $query = $this->authorize('yandexid', YandexIdService::AUTHORIZE);
         self::assertSame(
@@ -78,7 +81,7 @@ final class LoginTest extends SchemaTestCase
         self::assertSame(['1000034426', 'ivan'], [$connected?->getProfile(), $connected?->getAccount()]);
         $user = $this->reread($user);
         self::assertTrue($user->isNamed());
-        self::assertSame('test@yandex.ru', $user->getEmail());
+        self::assertSame([null, null], [$user->getPhone(), $user->getEmail()], 'Yandex ID does not vouch for the phone and email of the profile');
     }
 
     #[Group('ACMS-US-0002')]

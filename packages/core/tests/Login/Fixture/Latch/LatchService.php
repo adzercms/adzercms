@@ -54,6 +54,6 @@ final class LatchService implements LoginService
         ]);
         $me = $exchange->get(self::PROFILE, ['Authorization' => 'Bearer '.$token->text('access_token')]);
 
-        return new Profile($me->text('id') ?? '', phone: $me->text('phone'), account: $me->text('login'));
+        return new Profile($me->text('id') ?? '', phone: $me->text('phone'), account: $me->text('login'), phoneVerified: true);
     }
 }

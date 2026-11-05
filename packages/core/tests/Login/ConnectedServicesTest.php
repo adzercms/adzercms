@@ -13,6 +13,7 @@ use AdzerCMS\Core\Login\ConnectedServices;
 use AdzerCMS\Core\Login\ServiceConnected;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Repository\ConnectedServiceRepository;
+use AdzerCMS\Core\Tests\Account\Fixture\OpenPolicy;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Login\Fixture\Latch\LatchService;
@@ -58,7 +59,7 @@ final class ConnectedServicesTest extends SchemaTestCase
         $user = $this->record('+7 900 111-22-33');
         $this->record('+7 900 444-55-66', 'taken@example.com');
 
-        self::assertSame($user, $this->services()->enter(self::LATCH, new Profile('p1', '8 900 111 22 33', 'TAKEN@example.com', 'Ivan', 'Petrov')));
+        self::assertSame($user, $this->services()->enter(self::LATCH, new Profile('p1', '8 900 111 22 33', 'TAKEN@example.com', 'Ivan', 'Petrov', phoneVerified: true, emailVerified: true)));
 
         $user = $this->reread($user);
         self::assertSame('p1', $this->connection($user)?->getProfile());
@@ -68,7 +69,7 @@ final class ConnectedServicesTest extends SchemaTestCase
         $other = $this->record('+7 900 777-88-99');
         $other->setName('Sidorov', null, null);
         $this->em->flush();
-        self::assertNull($this->services()->link($other, self::LATCH, new Profile('p2', email: 'free@example.com', firstName: 'Ignored')));
+        self::assertNull($this->services()->link($other, self::LATCH, new Profile('p2', email: 'free@example.com', firstName: 'Ignored', emailVerified: true)));
         self::assertSame('free@example.com', $this->reread($other)->getEmail());
     }
 
@@ -78,8 +79,32 @@ final class ConnectedServicesTest extends SchemaTestCase
     {
         $user = $this->record('+7 900 111-22-33', 'owner@example.com');
 
-        self::assertSame($user, $this->services()->enter(self::LATCH, new Profile('p1', email: 'Owner@Example.com')));
+        self::assertSame($user, $this->services()->enter(self::LATCH, new Profile('p1', email: 'Owner@Example.com', emailVerified: true)));
         self::assertSame('p1', $this->connection($user)?->getProfile());
+    }
+
+    #[Group('ACMS-US-0002')]
+    #[Group('ACMS-CORE-0173')]
+    #[Group('ACMS-CORE-1098')]
+    public function testUnverifiedContactNeitherEntersNorFillsNorOpensARecord(): void
+    {
+        self::service(OpenPolicy::class)->registration = true;
+        $owner = $this->record('+7 900 111-22-33', 'owner@example.com');
+
+        foreach ([new Profile('p1', '79001112233'), new Profile('p1', email: 'owner@example.com', phone: '79004445566', phoneVerified: true)] as $profile) {
+            self::assertSame('core.login.unknown', self::reason($this->services()->enter(self::LATCH, $profile)),
+                'a contact the service does not vouch for leads neither into its record nor to a second record of the same person');
+        }
+        self::assertNull($this->connection($owner));
+
+        $opened = $this->services()->enter(self::LATCH, new Profile('p2', '79007778899', 'fresh@example.com', emailVerified: true));
+
+        self::assertInstanceOf(User::class, $opened);
+        self::assertSame([null, 'fresh@example.com'], [$opened->getPhone(), $opened->getEmail()], 'a new record takes only vouched contacts');
+
+        $other = $this->record('+7 900 444-55-66');
+        self::assertNull($this->services()->link($other, self::LATCH, new Profile('p3', email: 'stray@example.com')));
+        self::assertNull($this->reread($other)->getEmail(), 'connecting a service fills only vouched contacts');
     }
 
     #[Group('ACMS-US-0002')]
@@ -96,8 +121,8 @@ final class ConnectedServicesTest extends SchemaTestCase
         $this->record('+7 900 444-55-66')->delete();
         $this->em->flush();
 
-        self::assertSame('core.account.stopped', self::reason($this->services()->enter(self::LATCH, new Profile('p1', '79001112233'))));
-        self::assertSame('core.account.deleted', self::reason($this->services()->enter(self::LATCH, new Profile('p2', '79004445566'))));
+        self::assertSame('core.account.stopped', self::reason($this->services()->enter(self::LATCH, new Profile('p1', '79001112233', phoneVerified: true))));
+        self::assertSame('core.account.deleted', self::reason($this->services()->enter(self::LATCH, new Profile('p2', '79004445566', phoneVerified: true))));
     }
 
     #[Group('ACMS-US-0002')]
@@ -112,7 +137,7 @@ final class ConnectedServicesTest extends SchemaTestCase
 
         self::assertSame('core.login.taken', self::reason($this->services()->link($other, self::LATCH, new Profile('p1'))));
         self::assertSame('core.login.other', self::reason($this->services()->link($owner, self::LATCH, new Profile('p2'))));
-        self::assertSame('core.login.other', self::reason($this->services()->enter(self::LATCH, new Profile('p3', '79001112233'))), 'a contact match does not connect a second profile');
+        self::assertSame('core.login.other', self::reason($this->services()->enter(self::LATCH, new Profile('p3', '79001112233', phoneVerified: true))), 'a contact match does not connect a second profile');
         self::assertSame(['p1'], array_map(static fn (ConnectedService $service): string => $service->getProfile(), array_values(self::service(ConnectedServiceRepository::class)->of($owner))));
     }
 

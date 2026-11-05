@@ -13,6 +13,8 @@ final readonly class Profile
         public ?string $firstName = null,
         public ?string $lastName = null,
         public ?string $account = null,
+        public bool $phoneVerified = false,
+        public bool $emailVerified = false,
     ) {
     }
 }
