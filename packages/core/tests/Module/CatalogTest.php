@@ -43,7 +43,7 @@ final class CatalogTest extends SchemaTestCase
     }
 
     /** @param array<string, array<string, mixed>> $pages */
-    #[Group('ACMS-CORE-0934')]
+    #[Group('ACMS-CORE-1119')]
     #[Group('ACMS-CORE-0931')]
     #[DataProvider('listings')]
     public function testJobTakesModulePackagesOfRepositoryListing(bool $search, array $pages): void
@@ -73,6 +73,7 @@ final class CatalogTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-0934')]
     #[Group('ACMS-CORE-0937')]
+    #[Group('ACMS-CORE-1120')]
     public function testUnlistedPackageLeavesCatalogAndUnavailableRepositoryKeepsHeldOnes(): void
     {
         self::mockTime('2026-10-20 12:00');
@@ -124,7 +125,7 @@ final class CatalogTest extends SchemaTestCase
         self::assertSame(['acme/shop', 'acme/till'], array_keys(self::offered()));
     }
 
-    #[Group('ACMS-CORE-0934')]
+    #[Group('ACMS-CORE-1118')]
     #[DataProvider('refusals')]
     public function testTemporaryRefusalIsAskedAgainAtOnce(int $refused, int $outcome): void
     {
@@ -141,7 +142,7 @@ final class CatalogTest extends SchemaTestCase
         yield 'refusals beyond the retries' => [Repositories::RETRIES + 1, Command::FAILURE];
     }
 
-    #[Group('ACMS-CORE-0934')]
+    #[Group('ACMS-CORE-1121')]
     public function testInstalledModuleGoesWithItsVersionBesideOfferedOne(): void
     {
         $this->listed(['adzercms/admin']);
@@ -193,8 +194,7 @@ final class CatalogTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0998')]
-    #[Group('ACMS-CORE-0934')]
-    #[Group('ACMS-CORE-1055')]
+    #[Group('ACMS-CORE-1120')]
     public function testExtensionCatalogIsAskedConditionallyAndUnavailableOneKeepsEntriesOfItsAddress(): void
     {
         $other = 'https://store.acme.test/store.json';
@@ -235,7 +235,7 @@ final class CatalogTest extends SchemaTestCase
         self::assertSame(ExtensionType::App, self::type('acme/shop'));
     }
 
-    #[Group('ACMS-CORE-0936')]
+    #[Group('ACMS-CORE-1122')]
     #[DataProvider('updates')]
     public function testInstalledBranchIsUpdatedByAnotherCommitOfItsBranchOnly(bool $branch, bool $same, bool $updatable): void
     {
@@ -259,7 +259,7 @@ final class CatalogTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0960')]
-    #[Group('ACMS-CORE-0934')]
+    #[Group('ACMS-CORE-1120')]
     public function testMarkGoesToVersionWhoseCommitPassedAndOutlivesUnavailableRegistry(): void
     {
         self::mockTime('2026-10-20 12:00');
@@ -315,7 +315,7 @@ final class CatalogTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0946')]
-    #[Group('ACMS-CORE-0934')]
+    #[Group('ACMS-CORE-1119')]
     public function testZipPackageGoesBeforeRepositoriesWithItsHighestVersion(): void
     {
         $this->listed(['acme/shop']);

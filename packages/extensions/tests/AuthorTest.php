@@ -105,7 +105,7 @@ final class AuthorTest extends CatalogTestCase
         yield 'repository down' => [true, 'extensions.refusal.unavailable'];
     }
 
-    #[Group('ACMS-CORE-0931')]
+    #[Group('ACMS-CORE-1117')]
     #[Group('ACMS-EXT-0003')]
     #[Group('ACMS-US-0044')]
     #[DataProvider('priced')]

@@ -82,7 +82,7 @@ final class SelectionTest extends TestCase
         self::select(['MODULES' => 'Shop', 'TEST_GATEWAY' => 'Card,Cash']);
     }
 
-    #[Group('ACMS-CORE-0151')]
+    #[Group('ACMS-CORE-1135')]
     public function testKeyOfTwoPackagesStopsBuild(): void
     {
         $this->expectExceptionObject(new \LogicException('module key "Card" is taken by packages acme/card and other/card'));

@@ -263,7 +263,6 @@ final class ModuleWebTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0960')]
-    #[Group('ACMS-CORE-0961')]
     #[Group('ACMS-US-0004')]
     public function testVersionWithoutMarkGoesAfterConfirmation(): void
     {
@@ -282,7 +281,6 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertSame([self::phrase('admin.modules.unverified', ['package' => 'acme/shop'])], self::confirmations($page, 'acme/shop'));
     }
 
-    #[Group('ACMS-CORE-0936')]
     #[Group('ACMS-US-0004')]
     #[DataProvider('replacements')]
     public function testInstallingModuleOfSingleKindConfirmsReplacingTheSelectedOneInOneWindow(bool $verified, string $unverified): void
@@ -345,7 +343,7 @@ final class ModuleWebTest extends SchemaTestCase
     }
 
     /** @param array<string, string> $parameters */
-    #[Group('ACMS-CORE-0938')]
+    #[Group('ACMS-CORE-1123')]
     #[Group('ACMS-CORE-0990')]
     #[Group('ACMS-US-0004')]
     #[DataProvider('dirt')]
@@ -480,7 +478,7 @@ final class ModuleWebTest extends SchemaTestCase
         }
     }
 
-    #[Group('ACMS-CORE-0938')]
+    #[Group('ACMS-CORE-1123')]
     #[Group('ACMS-CORE-0944')]
     #[Group('ACMS-CORE-0967')]
     #[Group('ACMS-US-0004')]
@@ -637,7 +635,7 @@ final class ModuleWebTest extends SchemaTestCase
     #[Group('ACMS-CORE-0143')]
     #[Group('ACMS-CORE-0944')]
     #[Group('ACMS-CORE-1051')]
-    #[Group('ACMS-CORE-1055')]
+    #[Group('ACMS-CORE-1120')]
     #[Group('ACMS-US-0004')]
     public function testOwnSourcesShareCredentialsOfTheirHostAndShowUnavailability(): void
     {

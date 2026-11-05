@@ -89,6 +89,7 @@ final class KernelTest extends KernelTestCase
 
     #[Group('ACMS-CORE-0045')]
     #[Group('ACMS-CORE-0970')]
+    #[Group('ACMS-CORE-1128')]
     #[DataProvider('liveSelections')]
     public function testKernelWithoutDebugTakesModulesOfSwitchedBuildNotOfDotenvEdit(string $dotenv, string $cached): void
     {

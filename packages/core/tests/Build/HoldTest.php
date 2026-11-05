@@ -82,6 +82,8 @@ final class HoldTest extends TestCase
     }
 
     #[Group('ACMS-CORE-0965')]
+    #[Group('ACMS-CORE-1126')]
+    #[Group('ACMS-CORE-1127')]
     #[Group('ACMS-CORE-0967')]
     #[DataProvider('holders')]
     public function testHolderServesRequestsUntilEnteredJobsLeaveThenCoversItsStepsClosed(bool $job): void

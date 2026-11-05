@@ -37,6 +37,7 @@ final class BuildsTest extends TestCase
     }
 
     #[Group('ACMS-CORE-0045')]
+    #[Group('ACMS-CORE-0939')]
     public function testRunningProcessKeepsItsBuildWhileFreeOnesAreRemoved(): void
     {
         $builds = new Builds($this->root);
