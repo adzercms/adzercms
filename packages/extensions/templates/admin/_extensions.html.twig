@@ -3,6 +3,7 @@
     {% block row %}
         <tr class="clickable-row" data-record="{{ path('admin_extension', {id: row.id}) }}">
             {% include '@Theme/_row_handle.html.twig' with {id: row.id, group: row.decision.value} %}
+            <td class="{{ table.aside('cover') }}">{% if row.cover %}<img class="table-cover" src="{{ path('extensions_image', {file: row.cover}) }}" alt="" loading="lazy">{% else %}{{ blank() }}{% endif %}</td>
             <td class="{{ table.aside('name') }}"><strong>{{ row.name }}</strong></td>
             <td class="{{ table.aside('type') }}">{{ row.type.label|trans }}</td>
             <td class="{{ table.aside('price') }}">{{ row.price ? amount(row.price, false) : 'extensions.free'|trans }}</td>

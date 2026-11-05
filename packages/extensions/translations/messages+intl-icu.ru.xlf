@@ -25,10 +25,22 @@
         <target>Автор</target>
       </segment>
     </unit>
+    <unit id="extensions.column.cover">
+      <segment>
+        <source>extensions.column.cover</source>
+        <target>Обложка</target>
+      </segment>
+    </unit>
     <unit id="extensions.column.demo">
       <segment>
         <source>extensions.column.demo</source>
         <target>Демо</target>
+      </segment>
+    </unit>
+    <unit id="extensions.column.images">
+      <segment>
+        <source>extensions.column.images</source>
+        <target>Изображения</target>
       </segment>
     </unit>
     <unit id="extensions.column.name">

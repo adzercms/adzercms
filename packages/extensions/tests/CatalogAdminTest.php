@@ -7,6 +7,7 @@ namespace AdzerCMS\Extensions\Tests;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Ui\AdminEntry;
 use AdzerCMS\Core\Account\LoginNames;
+use AdzerCMS\Core\Account\UserRemoval;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Delivery;
 use AdzerCMS\Core\Tests\Queries;
@@ -15,10 +16,12 @@ use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Extensions\Entity\Extension;
 use AdzerCMS\Extensions\ExtensionDecision;
+use AdzerCMS\Extensions\ExtensionImages;
 use AdzerCMS\Extensions\ExtensionState;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final class CatalogAdminTest extends CatalogTestCase
 {
@@ -216,6 +219,53 @@ final class CatalogAdminTest extends CatalogTestCase
         yield 'rejection without a reason' => [ExtensionDecision::Pending, 'rejected', '  ', 'extensions.refusal.reason'];
         yield 'decision the state does not lead to' => [ExtensionDecision::Rejected, 'published', '', 'extensions.refusal.decision'];
         yield 'unknown decision' => [ExtensionDecision::Pending, 'approved', '', 'extensions.refusal.decision'];
+    }
+
+    #[Group('ACMS-EXT-0008')]
+    #[Group('ACMS-EXT-0022')]
+    #[Group('ACMS-US-0035')]
+    public function testEntryImagesKeepTheirOrderAndTheirFilesLeaveWithThem(): void
+    {
+        $fields = ['name' => 'acme/shop', 'type' => 'theme', 'price' => '', 'demo' => ''];
+        $images = self::service(ExtensionImages::class);
+        $this->post(self::LIST.'/new', $fields, [ExtensionImages::ADDED => [$this->picture('front.png'), $this->picture('back.png')]]);
+        $entry = self::extensions()->named('acme/shop') ?? self::fail('the entry is not in the catalog');
+        [$front, $back] = $entry->getImages();
+        $record = self::LIST.'/'.$entry->getId();
+
+        $dialog = $this->client->request('GET', $record)->filter('[data-photos] li');
+        self::assertSame([$front, $back], $dialog->filter('input[type="hidden"]')->each(static fn (Crawler $kept): string => (string) $kept->attr('value')));
+        self::assertSame(self::phrase('extensions.column.cover'), $dialog->first()->attr('data-first'));
+
+        $this->post($record, $fields + [ExtensionImages::KEPT => [$back, $front]]);
+        self::assertSame([$back, $front], $this->reread($entry)->getImages());
+        self::assertStringEndsWith('/'.$back, (string) self::cell($this->fragment(self::LIST), 'acme/shop', self::phrase('extensions.column.cover'))->filter('img')->attr('src'),
+            'the first image is the cover of the row');
+
+        $refused = $this->post($record, $fields + [ExtensionImages::KEPT => [$back, $front]],
+            [ExtensionImages::ADDED => array_map(fn (int $number): UploadedFile => $this->picture($number.'.png'), range(1, ExtensionImages::MAX - 1))]);
+        self::assertSame(self::phrase('extensions.refusal.images', ['max' => ExtensionImages::MAX]), trim($refused->filter('.flash-error')->text()));
+        self::assertSame([$back, $front], $this->reread($entry)->getImages());
+
+        $this->post($record, $fields + [ExtensionImages::KEPT => [$back]]);
+        self::assertNull($images->path($front), 'an image out of the entry takes its file');
+        self::assertNotNull($images->path($back));
+
+        $this->post($record.'/drop');
+        self::assertNull($images->path($back), 'a dropped entry takes its files');
+    }
+
+    #[Group('ACMS-EXT-0022')]
+    #[Group('ACMS-CORE-0072')]
+    public function testRemovedAuthorTakesTheImagesOfItsEntries(): void
+    {
+        $author = $this->author('79990000003');
+        $name = $this->pictured($this->entry('acme/foreign', author: $author), 'cover.png')->getImages()[0];
+
+        self::service(UserRemoval::class)->remove($author->getUser());
+
+        self::assertNull(self::service(ExtensionImages::class)->path($name));
+        self::assertNull(self::extensions()->named('acme/foreign'));
     }
 
     #[Group('ACMS-US-0035')]

@@ -10,6 +10,7 @@ use AdzerCMS\Core\Seo\Indexing;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Queries;
 use AdzerCMS\Core\Ui\Money;
+use AdzerCMS\Extensions\Controller\CatalogController;
 use AdzerCMS\Extensions\ExtensionDecision;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -31,12 +32,16 @@ final class CatalogPageTest extends CatalogTestCase
     #[Group('ACMS-US-0034')]
     public function testVisitorSeesPublishedEntriesInOperatorOrder(): void
     {
-        $this->entry('acme/shop', ExtensionType::Theme, '1500.00', self::package('Shop theme', 'https://shop.example.test', [Category::Commerce, Category::Content], ['ru' => 'Тема магазина'], title: ['en' => 'Shop', 'ru' => 'Магазин']), 'https://demo.example.test');
+        $cover = $this->pictured($this->entry('acme/shop', ExtensionType::Theme, '1500.00', self::package('Shop theme', 'https://shop.example.test', [Category::Commerce, Category::Content], ['ru' => 'Тема магазина'], title: ['en' => 'Shop', 'ru' => 'Магазин']), 'https://demo.example.test'), 'front.png', 'back.png')->getCover();
         $this->entry('acme/draft');
         $this->entry('acme/seo', package: self::package('SEO module'))->place(0);
         $this->em->flush();
 
         $page = $this->arrive(self::PAGE);
+        self::assertSame([null, '/extensions/images/'.$cover], $page->filter('.listing-cover')->each(static fn (Crawler $cover): ?string => $cover->filter('img')->count() > 0 ? $cover->filter('img')->attr('src') : null),
+            'the cover is the first image of the entry, an entry without images has none');
+        $this->client->request('GET', '/extensions/images/'.$cover);
+        self::assertResponseHeaderSame('Content-Type', 'image/webp');
 
         self::assertResponseIsSuccessful();
         self::assertSame(['acme/seo', 'acme/shop'], self::names($page));
@@ -129,16 +134,16 @@ final class CatalogPageTest extends CatalogTestCase
     #[Group('ACMS-EXT-0005')]
     public function testPageDescribesItsEntriesAsCollection(): void
     {
-        $this->entry('acme/shop', ExtensionType::Theme, '1500.00', self::package('Shop theme', 'https://shop.example.test'));
+        $cover = $this->pictured($this->entry('acme/shop', ExtensionType::Theme, '1500.00', self::package('Shop theme', 'https://shop.example.test')), 'front.png')->getCover();
         $this->entry('acme/seo', package: self::package('SEO module'));
 
-        /** @var array{'@type': string, mainEntity: array{itemListElement: list<array{position: int, item: array{name: string, url: string, offers: array{price: string, priceCurrency: string}}}>}} $schema */
+        /** @var array{'@type': string, mainEntity: array{itemListElement: list<array{position: int, item: array{name: string, url: string, image?: string, offers: array{price: string, priceCurrency: string}}}>}} $schema */
         $schema = json_decode($this->arrive(self::PAGE)->filter('script[type="application/ld+json"]')->text(), true, flags: \JSON_THROW_ON_ERROR);
 
         self::assertSame('CollectionPage', $schema['@type']);
         self::assertSame(
-            [[1, 'acme/shop', 'https://shop.example.test', '1500.00'], [2, 'acme/seo', self::SOURCE, '0']],
-            array_map(static fn (array $element): array => [$element['position'], $element['item']['name'], $element['item']['url'], $element['item']['offers']['price']], $schema['mainEntity']['itemListElement']),
+            [[1, 'acme/shop', 'https://shop.example.test', self::image($cover), '1500.00'], [2, 'acme/seo', self::SOURCE, null, '0']],
+            array_map(static fn (array $element): array => [$element['position'], $element['item']['name'], $element['item']['url'], $element['item']['image'] ?? null, $element['item']['offers']['price']], $schema['mainEntity']['itemListElement']),
         );
         self::assertSame([Money::CURRENCY], array_values(array_unique(array_map(static fn (array $element): string => $element['item']['offers']['priceCurrency'], $schema['mainEntity']['itemListElement']))));
     }
@@ -146,7 +151,7 @@ final class CatalogPageTest extends CatalogTestCase
     #[Group('ACMS-EXT-0007')]
     public function testStoreListsPublishedEntriesInOrderUntilChanged(): void
     {
-        $this->entry('acme/shop', ExtensionType::Theme, '1500.00', self::package('Shop theme'), 'https://demo.example.test');
+        $images = $this->pictured($this->entry('acme/shop', ExtensionType::Theme, '1500.00', self::package('Shop theme'), 'https://demo.example.test'), 'front.png', 'back.png')->getImages();
         $this->entry('acme/draft');
         $this->entry('acme/seo', package: self::package('SEO module'))->place(0);
         $this->em->flush();
@@ -156,8 +161,8 @@ final class CatalogPageTest extends CatalogTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSame(['extensions' => [
-            ['name' => 'acme/seo', 'type' => 'module', 'demo' => null],
-            ['name' => 'acme/shop', 'type' => 'theme', 'demo' => 'https://demo.example.test'],
+            ['name' => 'acme/seo', 'type' => 'module', 'demo' => null, 'images' => []],
+            ['name' => 'acme/shop', 'type' => 'theme', 'demo' => 'https://demo.example.test', 'images' => array_map(self::image(...), $images)],
         ]], json_decode((string) $response->getContent(), true, flags: \JSON_THROW_ON_ERROR));
 
         $this->client->request('GET', self::STORE, server: ['HTTP_IF_NONE_MATCH' => $response->getEtag()]);
@@ -240,5 +245,10 @@ final class CatalogPageTest extends CatalogTestCase
     private static function links(Crawler $row): array
     {
         return $row->filter('.listing-links a')->each(static fn (Crawler $link): string => (string) $link->attr('href'));
+    }
+
+    private static function image(?string $name): string
+    {
+        return self::service(UrlGeneratorInterface::class)->generate(CatalogController::IMAGE, ['file' => $name], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

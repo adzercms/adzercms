@@ -15,6 +15,7 @@ use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Extensions\Entity\Extension;
 use AdzerCMS\Extensions\Entity\ExtensionAuthor;
+use AdzerCMS\Extensions\ExtensionImages;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 
 abstract class CatalogTestCase extends SchemaTestCase
@@ -44,6 +45,14 @@ abstract class CatalogTestCase extends SchemaTestCase
         $entry = (new Extension($author))->describe($name, $type, $price, $demo)->know($package);
         $entry->place(\count(self::extensions()->findAll()) + 1);
         $this->em->persist($entry);
+        $this->em->flush();
+
+        return $entry;
+    }
+
+    protected function pictured(Extension $entry, string ...$files): Extension
+    {
+        self::service(ExtensionImages::class)->attach($entry, $entry->getImages(), array_values(array_map($this->picture(...), $files)));
         $this->em->flush();
 
         return $entry;

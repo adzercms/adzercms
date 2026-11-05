@@ -68,7 +68,7 @@ final class AuthorController extends AbstractController
         $refusal = null;
 
         if ($request->isMethod('POST')) {
-            $refusal = $this->catalog->submit($extension, $request->request);
+            $refusal = $this->catalog->submit($extension, $request);
 
             if (null === $refusal) {
                 $this->addFlash('success', ExtensionDecision::Pending === $extension->getDecision()

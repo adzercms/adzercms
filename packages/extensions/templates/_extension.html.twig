@@ -25,6 +25,16 @@
             <label>{{ 'extensions.column.demo'|trans }}
                 <input type="url" name="demo" maxlength="255" value="{{ input.demo ?? extension.demo }}">
             </label>
+            <div class="field field-wide">
+                <label for="extension-images">{{ 'extensions.column.images'|trans }}</label>
+                {% include '@Theme/_photos.html.twig' with {
+                    id: 'extension-images',
+                    name: constant('AdzerCMS\\Extensions\\ExtensionImages::KEPT') ~ '[]',
+                    added: constant('AdzerCMS\\Extensions\\ExtensionImages::ADDED') ~ '[]',
+                    photos: (input is empty ? extension.images : input[constant('AdzerCMS\\Extensions\\ExtensionImages::KEPT')] ?? [])|filter(name => name in extension.images)|map(name => {name: name, src: path('extensions_image', {file: name})}),
+                    first: 'extensions.column.cover',
+                } only %}
+            </div>
         </div>
         <button type="submit">{{ 'core.action.save'|trans }}</button>
     </form>

@@ -27,6 +27,14 @@
             <span class="info-label">{{ 'core.column.status'|trans }}</span>
             <span class="info-value">{{ badge(extension.state) }}{{ caption(extension.reason) }}</span>
         </div>
+        {% if extension.images %}
+            <div class="info-item">
+                <span class="info-label">{{ 'extensions.column.images'|trans }}</span>
+                <span class="info-value covers">
+                    {% for name in extension.images %}<a href="{{ path('extensions_image', {file: name}) }}" target="_blank"><img class="table-cover" src="{{ path('extensions_image', {file: name}) }}" alt=""></a>{% endfor %}
+                </span>
+            </div>
+        {% endif %}
     </div>
 
     {% for decision in extension.decision.next %}

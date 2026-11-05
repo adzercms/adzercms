@@ -15,6 +15,7 @@
                 description: row.description|trans,
                 softwareVersion: row.version,
                 url: row.homepage ?? row.source,
+                image: row.cover ? url('extensions_image', {file: row.cover}),
                 offers: {'@type': 'Offer', price: row.price ?? '0', priceCurrency: constant('AdzerCMS\\Core\\Ui\\Money::CURRENCY')},
             }|filter(value => value is not empty),
         }),

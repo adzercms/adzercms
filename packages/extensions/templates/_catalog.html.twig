@@ -10,7 +10,7 @@
                 {% set title = row.title|trans %}
                 {% set description = row.description|trans %}
                 <article class="listing-row" data-package="{{ row.name }}">
-                    <div class="listing-cover" aria-hidden="true">{{ title|first|upper }}</div>
+                    <div class="listing-cover" aria-hidden="true">{% if row.cover %}<img src="{{ path('extensions_image', {file: row.cover}) }}" alt="" loading="lazy">{% else %}{{ title|first|upper }}{% endif %}</div>
                     <div class="listing-body">
                         <h2 class="listing-title">{{ title }}</h2>
                         {% if description %}<p>{{ description }}</p>{% endif %}

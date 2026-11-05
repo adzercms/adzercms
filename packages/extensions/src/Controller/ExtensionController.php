@@ -101,7 +101,7 @@ final class ExtensionController extends AbstractController
         $refusal = null;
 
         if ($request->isMethod('POST')) {
-            $refusal = $this->catalog->save($extension, $request->request);
+            $refusal = $this->catalog->save($extension, $request);
 
             if (null === $refusal) {
                 $this->addFlash(...ExtensionState::Published === $extension->state()
@@ -130,6 +130,7 @@ final class ExtensionController extends AbstractController
     private function listing(Request $request): array
     {
         $table = Table::of($request, self::LIST, [
+            Column::plain('cover', t('extensions.column.cover')),
             Column::plain('name', t('extensions.column.name')),
             Column::plain('type', t('extensions.column.type')),
             Column::plain('price', t('extensions.column.price')),

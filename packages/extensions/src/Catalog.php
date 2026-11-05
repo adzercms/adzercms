@@ -14,7 +14,8 @@ use AdzerCMS\Extensions\Entity\Extension;
 use AdzerCMS\Extensions\Entity\ExtensionAuthor;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\InputBag;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
 
 use function Symfony\Component\Translation\t;
 
@@ -27,39 +28,39 @@ final readonly class Catalog
         private ExtensionRepository $extensions,
         private Metadata $metadata,
         private Notifier $notifier,
+        private ExtensionImages $images,
     ) {
     }
 
-    /** @param InputBag<string> $input */
-    public function save(Extension $extension, InputBag $input): ?Refusal
+    public function save(Extension $extension, Request $request): ?Refusal
     {
         if (null !== $extension->getAuthor()) {
             throw new \LogicException('an author entry goes by submit');
         }
 
-        $entry = $this->read($extension, $input);
+        $entry = $this->read($extension, $request);
         if ($entry instanceof Refusal) {
             return $entry;
         }
 
-        $price = trim($input->getString('price'));
+        $price = trim($request->request->getString('price'));
         $amount = '' === $price ? null : Money::parse($price);
         if ('' !== $price && (null === $amount || !Money::isPositive($amount) || Money::compare($amount, Extension::PRICE) > 0)) {
             return new Refusal(t('extensions.refusal.price', ['max' => Money::rubles(Extension::PRICE)]));
         }
 
         $extension->describe($entry['name'], $entry['type'], $amount, $entry['demo']);
+        $this->images->attach($extension, ...$entry['images']);
         $this->keep($extension);
         $this->metadata->refresh([$extension]);
 
         return null;
     }
 
-    /** @param InputBag<string> $input */
-    public function submit(Extension $extension, InputBag $input): ?Refusal
+    public function submit(Extension $extension, Request $request): ?Refusal
     {
         $author = $extension->getAuthor() ?? throw new \LogicException('an operator entry goes by save');
-        $entry = $this->read($extension, $input);
+        $entry = $this->read($extension, $request);
         if ($entry instanceof Refusal) {
             return $entry;
         }
@@ -75,6 +76,7 @@ final readonly class Catalog
         }
 
         $extension->describe($entry['name'], $entry['type'], null, $entry['demo'])->know($package)->revise();
+        $this->images->attach($extension, ...$entry['images']);
         $this->keep($extension);
         $this->em->flush();
 
@@ -116,13 +118,10 @@ final readonly class Catalog
         return $author;
     }
 
-    /**
-     * @param InputBag<string> $input
-     *
-     * @return array{name: string, type: ExtensionType, demo: ?string}|Refusal
-     */
-    private function read(Extension $extension, InputBag $input): array|Refusal
+    /** @return array{name: string, type: ExtensionType, demo: ?string, images: array{list<string>, list<UploadedFile>}}|Refusal */
+    private function read(Extension $extension, Request $request): array|Refusal
     {
+        $input = $request->request;
         $name = strtolower(trim($input->getString('name')));
         if (1 !== preg_match(self::PACKAGE, $name)) {
             return new Refusal(t('extensions.refusal.name'));
@@ -143,7 +142,12 @@ final readonly class Catalog
             return new Refusal(t('extensions.refusal.demo'));
         }
 
-        return ['name' => $name, 'type' => $type, 'demo' => '' === $demo ? null : $demo];
+        $images = ExtensionImages::read($extension, $input->all(ExtensionImages::KEPT), $request->files->all(ExtensionImages::ADDED));
+        if ($images instanceof Refusal) {
+            return $images;
+        }
+
+        return ['name' => $name, 'type' => $type, 'demo' => '' === $demo ? null : $demo, 'images' => $images];
     }
 
     private function keep(Extension $extension): void
