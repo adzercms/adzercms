@@ -16,6 +16,30 @@ final class Values
     private const TIME = '/^([01]?\d|2[0-3]):([0-5]\d)$/';
     private const COLOR = '/^#[0-9a-f]{6}$/i';
     private const JSON = \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES;
+    private const BLANK_ROWS = 2;
+
+    /** @return string|list<array<string, string>> */
+    public static function form(Field $field, string $value): string|array
+    {
+        $picked = Type::Palette === $field->type ? self::picked($field, $value) : null;
+
+        return match (true) {
+            Type::Secret === $field->type => '',
+            Type::Toggle === $field->type => (Toggle::tryFrom($value) ?? Toggle::Off)->value,
+            Type::Rows === $field->type => [
+                ...array_values(array_filter(self::entries($field, $value), static fn (array $row): bool => '' !== implode('', $row))),
+                ...array_fill(0, self::BLANK_ROWS, array_fill_keys(array_column($field->fields, 'name'), '')),
+            ],
+            $picked instanceof Scheme => $picked->key,
+            null !== $picked => $picked,
+            default => $value,
+        };
+    }
+
+    public static function picked(Field $field, string $value): Scheme|string
+    {
+        return self::scheme($field, $value) ?? self::color($value) ?? $field->schemes[0] ?? '';
+    }
 
     public static function posted(Field $field, mixed $input): ?string
     {

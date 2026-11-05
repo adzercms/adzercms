@@ -1,0 +1,45 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% import '@Theme/_refusal.html.twig' as refusal %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block heading %}<span class="record-title">{{ page.title }}</span>{% endblock %}
+
+{% block actions %}
+    <a class="button secondary" href="{{ open }}" target="_blank" rel="noopener">{{ 'pages.open'|trans }}</a>
+    <form method="post" action="{{ path('admin_page_drop', {id: page.id}) }}" data-confirm="{{ 'pages.page.drop_confirm'|trans({title: page.title}) }}">
+        {{ csrf_field() }}<button type="submit" class="danger">{{ 'pages.page.drop'|trans }}</button>
+    </form>
+    <a class="button secondary" href="{{ path('admin_pages') }}">{{ 'core.action.to_list'|trans }}</a>
+{% endblock %}
+
+{% block page %}
+<div class="section">
+    <form method="post" action="{{ path('admin_page_save', {id: page.id}) }}">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label>{{ 'pages.field.title'|trans }}
+                <input type="text" name="title" maxlength="{{ constant('AdzerCMS\\Pages\\Entity\\Page::TITLE') }}" value="{{ input.title ?? page.title }}" required>
+                {{ refusal.of(refusals, 'title') }}
+            </label>
+            <label>{{ 'pages.field.path'|trans }}
+                <input type="text" name="path" maxlength="{{ constant('AdzerCMS\\Pages\\Entity\\Page::PATH') }}" value="{{ input.path ?? page.path }}" required>
+                {{ refusal.of(refusals, 'path') }}
+            </label>
+            <label class="field-wide">{{ 'pages.field.description'|trans }}
+                <textarea name="description" rows="3">{{ input.description ?? page.description }}</textarea>
+            </label>
+            {% include '@Theme/_check.html.twig' with {name: 'published', on: input ? (input.published ?? false) : page.published, label: 'pages.field.published'|trans} only %}
+            {% include '@Theme/_check.html.twig' with {name: 'menu', on: input ? (input.menu ?? false) : page.inMenu, label: 'pages.field.menu'|trans} only %}
+            <label data-when="menu=1">{{ 'pages.field.menu_label'|trans }}
+                <input type="text" name="menu_label" maxlength="{{ constant('AdzerCMS\\Pages\\Entity\\Page::MENU') }}" value="{{ input.menu_label ?? page.getMenuLabel() }}" placeholder="{{ page.title }}">
+                {{ refusal.of(refusals, 'menu_label') }}
+            </label>
+        </div>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
+    </form>
+</div>
+
+{% include '@Pages/admin/_blocks.html.twig' with blocks %}
+{% endblock %}

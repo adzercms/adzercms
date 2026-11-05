@@ -1031,7 +1031,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/pages",
-                "reference": "7c4d947a245f6da5d893e233f767cfdc649c6a5e"
+                "reference": "1a448cb92a106dba15082cdc804e88b433dea7fa"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1042,11 +1042,13 @@
                 "doctrine/migrations": "^3.9",
                 "doctrine/orm": "^3.7",
                 "doctrine/persistence": "^4.2",
+                "ext-mbstring": "*",
                 "php": ">=8.4",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/framework-bundle": "7.4.*",
                 "symfony/http-foundation": "7.4.*",
                 "symfony/routing": "7.4.*",
+                "symfony/security-http": "7.4.*",
                 "symfony/translation": "7.4.*",
                 "symfony/translation-contracts": "^3.7"
             },

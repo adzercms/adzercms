@@ -1,0 +1,1 @@
+{% macro of(refusals, name) %}{% if refusals[name] is defined %}<span class="field-refusal">{{ refusals[name].reason|trans }}</span>{% endif %}{% endmacro %}

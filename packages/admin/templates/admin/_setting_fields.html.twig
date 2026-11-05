@@ -7,40 +7,42 @@
         {% for field in block.fields %}
             {% set id = 'setting-' ~ field.name %}
             {% set stored = field.name in block.stored %}
-            {% set rows = field.type == constant(type ~ 'Rows') %}
-            <div class="field{{ rows or field.type == constant(type ~ 'Markup') ? ' field-wide' }}">
-                <label for="{{ rows ? id ~ '-0-' ~ field.fields|first.name : id }}">{{ field.label|trans }}</label>
-                {% if field.type == constant(type ~ 'Image') %}
-                    {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: constant('AdzerCMS\\Core\\Setting\\Images::TYPES')|keys|join(',')} only %}
-                {% elseif field.type == constant(type ~ 'Photo') %}
-                    {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: constant('AdzerCMS\\Core\\Photo\\Photos::TYPES')|join(',')} only %}
-                {% elseif field.type == constant(type ~ 'Container') %}
-                    {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: '.p12,.pfx'} only %}
-                {% else %}
-                    {% include '@Theme/_field.html.twig' with {field: field, id: id, name: 'value[' ~ field.name ~ ']', value: values[field.name]} only %}
-                {% endif %}
+            {% embed '@Theme/_field_row.html.twig' with {name: 'value[' ~ field.name ~ ']', value: values[field.name]} %}
+                {% block control %}
+                    {% if field.type == constant(type ~ 'Image') %}
+                        {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: constant('AdzerCMS\\Core\\Setting\\Images::TYPES')|keys|join(',')} only %}
+                    {% elseif field.type == constant(type ~ 'Photo') %}
+                        {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: constant('AdzerCMS\\Core\\Photo\\Photos::TYPES')|join(',')} only %}
+                    {% elseif field.type == constant(type ~ 'Container') %}
+                        {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: '.p12,.pfx'} only %}
+                    {% else %}
+                        {{ parent() }}
+                    {% endif %}
+                {% endblock %}
 
-                {% if field.type == constant(type ~ 'Container') or stored %}
-                    <div class="field-extra">
-                        {% if field.type == constant(type ~ 'Container') %}
-                            <label>{{ 'admin.setting.container_password'|trans }}
-                                <input type="text" class="secret" name="pass[{{ field.name }}]" autocomplete="off" spellcheck="false">
-                            </label>
-                        {% endif %}
+                {% block extra %}
+                    {% if field.type == constant(type ~ 'Container') or stored %}
+                        <div class="field-extra">
+                            {% if field.type == constant(type ~ 'Container') %}
+                                <label>{{ 'admin.setting.container_password'|trans }}
+                                    <input type="text" class="secret" name="pass[{{ field.name }}]" autocomplete="off" spellcheck="false">
+                                </label>
+                            {% endif %}
 
-                        {% if field.type.picture and stored %}
-                            <span class="brand-preview">
-                                <img src="{{ path('setting_image', {name: field.name}) }}" alt="{{ values[field.name] }}">
-                                {% if field.type == constant(type ~ 'Image') %}<img src="{{ path('setting_image', {name: field.name}) }}" alt="">{% endif %}
-                            </span>
-                        {% endif %}
+                            {% if field.type.picture and stored %}
+                                <span class="brand-preview">
+                                    <img src="{{ path('setting_image', {name: field.name}) }}" alt="{{ values[field.name] }}">
+                                    {% if field.type == constant(type ~ 'Image') %}<img src="{{ path('setting_image', {name: field.name}) }}" alt="">{% endif %}
+                                </span>
+                            {% endif %}
 
-                        {% if stored %}
-                            <button type="submit" class="secondary small" name="drop[{{ field.name }}]" value="1" formnovalidate>{{ (field.type == constant(type ~ 'Palette') ? 'admin.setting.reset' : 'admin.setting.drop')|trans }}</button>
-                        {% endif %}
-                    </div>
-                {% endif %}
-            </div>
+                            {% if stored %}
+                                <button type="submit" class="secondary small" name="drop[{{ field.name }}]" value="1" formnovalidate>{{ (field.type == constant(type ~ 'Palette') ? 'admin.setting.reset' : 'admin.setting.drop')|trans }}</button>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+            {% endembed %}
         {% endfor %}
 
         {% for key, credential in block.credentials %}

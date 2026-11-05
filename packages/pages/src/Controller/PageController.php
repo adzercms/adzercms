@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Pages\Controller;
 
 use AdzerCMS\Contracts\Ui\CabinetEntry;
+use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Ui\Entries;
 use AdzerCMS\Pages\Entity\Page;
 use AdzerCMS\Pages\Repository\PageRepository;
@@ -12,12 +13,16 @@ use AdzerCMS\Pages\Site;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class PageController extends AbstractController
 {
     public const ROOT = 'pages_root';
     public const PAGE = 'pages_page';
+    public const PREVIEW = 'admin_page_preview';
     public const LAST = \PHP_INT_MIN;
+
+    private const UNINDEXED = 'noindex, nofollow';
 
     public function __construct(
         private readonly PageRepository $pages,
@@ -40,6 +45,16 @@ final class PageController extends AbstractController
     public function page(string $path): Response
     {
         return $this->show($this->pages->published('/'.$path) ?? throw $this->createNotFoundException());
+    }
+
+    #[Route('/admin/pages/{id}/preview', name: self::PREVIEW, requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted(Role::ADMIN)]
+    public function preview(Page $page): Response
+    {
+        $response = $this->show($page);
+        $response->headers->set('X-Robots-Tag', self::UNINDEXED);
+
+        return $response;
     }
 
     private function show(Page $page): Response

@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
+    <unit id="pages.add">
+      <segment>
+        <source>pages.add</source>
+        <target>+ Page</target>
+      </segment>
+    </unit>
+    <unit id="pages.block.add">
+      <segment>
+        <source>pages.block.add</source>
+        <target>+ Block</target>
+      </segment>
+    </unit>
     <unit id="pages.block.advantages">
       <segment>
         <source>pages.block.advantages</source>
@@ -13,10 +25,28 @@
         <target>Call to action</target>
       </segment>
     </unit>
+    <unit id="pages.block.drop_confirm">
+      <segment>
+        <source>pages.block.drop_confirm</source>
+        <target>Delete the block {type}?</target>
+      </segment>
+    </unit>
+    <unit id="pages.block.empty">
+      <segment>
+        <source>pages.block.empty</source>
+        <target>No blocks</target>
+      </segment>
+    </unit>
     <unit id="pages.block.hero">
       <segment>
         <source>pages.block.hero</source>
         <target>Hero</target>
+      </segment>
+    </unit>
+    <unit id="pages.block.new">
+      <segment>
+        <source>pages.block.new</source>
+        <target>New block</target>
       </segment>
     </unit>
     <unit id="pages.block.questions">
@@ -31,6 +61,36 @@
         <target>Text</target>
       </segment>
     </unit>
+    <unit id="pages.block.unavailable">
+      <segment>
+        <source>pages.block.unavailable</source>
+        <target>module removed</target>
+      </segment>
+    </unit>
+    <unit id="pages.blocks">
+      <segment>
+        <source>pages.blocks</source>
+        <target>Blocks</target>
+      </segment>
+    </unit>
+    <unit id="pages.column.summary">
+      <segment>
+        <source>pages.column.summary</source>
+        <target>Content</target>
+      </segment>
+    </unit>
+    <unit id="pages.column.type">
+      <segment>
+        <source>pages.column.type</source>
+        <target>Block</target>
+      </segment>
+    </unit>
+    <unit id="pages.empty">
+      <segment>
+        <source>pages.empty</source>
+        <target>No pages</target>
+      </segment>
+    </unit>
     <unit id="pages.field.answer">
       <segment>
         <source>pages.field.answer</source>
@@ -43,10 +103,28 @@
         <target>Button label</target>
       </segment>
     </unit>
+    <unit id="pages.field.description">
+      <segment>
+        <source>pages.field.description</source>
+        <target>Description for search engines</target>
+      </segment>
+    </unit>
     <unit id="pages.field.link">
       <segment>
         <source>pages.field.link</source>
         <target>Button address</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.menu">
+      <segment>
+        <source>pages.field.menu</source>
+        <target>In the menu</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.menu_label">
+      <segment>
+        <source>pages.field.menu_label</source>
+        <target>Menu item label</target>
       </segment>
     </unit>
     <unit id="pages.field.pairs">
@@ -55,10 +133,22 @@
         <target>Questions and answers</target>
       </segment>
     </unit>
+    <unit id="pages.field.path">
+      <segment>
+        <source>pages.field.path</source>
+        <target>Address</target>
+      </segment>
+    </unit>
     <unit id="pages.field.points">
       <segment>
         <source>pages.field.points</source>
         <target>Points</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.published">
+      <segment>
+        <source>pages.field.published</source>
+        <target>Published</target>
       </segment>
     </unit>
     <unit id="pages.field.question">
@@ -79,6 +169,72 @@
         <target>Title</target>
       </segment>
     </unit>
+    <unit id="pages.flash.added">
+      <segment>
+        <source>pages.flash.added</source>
+        <target>Page «{title}» created</target>
+      </segment>
+    </unit>
+    <unit id="pages.flash.block_added">
+      <segment>
+        <source>pages.flash.block_added</source>
+        <target>Block {type} added</target>
+      </segment>
+    </unit>
+    <unit id="pages.flash.block_dropped">
+      <segment>
+        <source>pages.flash.block_dropped</source>
+        <target>Block deleted</target>
+      </segment>
+    </unit>
+    <unit id="pages.flash.block_saved">
+      <segment>
+        <source>pages.flash.block_saved</source>
+        <target>Block {type} saved</target>
+      </segment>
+    </unit>
+    <unit id="pages.flash.dropped">
+      <segment>
+        <source>pages.flash.dropped</source>
+        <target>Page «{title}» deleted</target>
+      </segment>
+    </unit>
+    <unit id="pages.flash.saved">
+      <segment>
+        <source>pages.flash.saved</source>
+        <target>Page «{title}» saved</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu">
+      <segment>
+        <source>pages.menu</source>
+        <target>Site</target>
+      </segment>
+    </unit>
+    <unit id="pages.new">
+      <segment>
+        <source>pages.new</source>
+        <target>New page</target>
+      </segment>
+    </unit>
+    <unit id="pages.open">
+      <segment>
+        <source>pages.open</source>
+        <target>Open</target>
+      </segment>
+    </unit>
+    <unit id="pages.page.drop">
+      <segment>
+        <source>pages.page.drop</source>
+        <target>Delete page</target>
+      </segment>
+    </unit>
+    <unit id="pages.page.drop_confirm">
+      <segment>
+        <source>pages.page.drop_confirm</source>
+        <target>Delete the page «{title}» with its blocks?</target>
+      </segment>
+    </unit>
     <unit id="pages.page.title">
       <segment>
         <source>pages.page.title</source>
@@ -89,6 +245,36 @@
       <segment>
         <source>pages.refusal.link</source>
         <target>{field}: a site path from /, https:// address or #lead</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.menu_label">
+      <segment>
+        <source>pages.refusal.menu_label</source>
+        <target>Menu item label: up to {limit} characters</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.path">
+      <segment>
+        <source>pages.refusal.path</source>
+        <target>Address: / or words of lowercase letters, digits and hyphens joined by /</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.path_page">
+      <segment>
+        <source>pages.refusal.path_page</source>
+        <target>Address {path} belongs to the page «{title}»</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.path_route">
+      <segment>
+        <source>pages.refusal.path_route</source>
+        <target>Address {path} belongs to a section of the site or the cabinet</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.title">
+      <segment>
+        <source>pages.refusal.title</source>
+        <target>Title: 1 to {limit} characters</target>
       </segment>
     </unit>
   </file>

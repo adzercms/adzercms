@@ -22,6 +22,12 @@ class PageRepository extends ServiceEntityRepository
     }
 
     /** @return list<Page> */
+    public function ordered(): array
+    {
+        return $this->createQueryBuilder('p')->orderBy('p.position')->addOrderBy('p.id')->getQuery()->getResult();
+    }
+
+    /** @return list<Page> */
     public function site(bool $menu = false): array
     {
         $query = $this->createQueryBuilder('p')->where('p.published = true')->orderBy('p.position')->addOrderBy('p.id');

@@ -1,6 +1,6 @@
 {% extends '@Theme/panel.html.twig' %}
 
-{% import '@Leads/_fields.html.twig' as fields %}
+{% import '@Theme/_refusal.html.twig' as refusal %}
 
 {% block title %}{{ 'leads.lead.title'|trans({number: lead.id}) }}{% endblock %}
 
@@ -93,7 +93,7 @@
                         <option value="{{ stage.id }}" {{ (input.stage ?? lead.stage.id) == stage.id ? 'selected' }}>{{ stage.label|trans }}</option>
                     {% endfor %}
                 </select>
-                {{ fields.refusal(refusals, 'stage') }}
+                {{ refusal.of(refusals, 'stage') }}
             </label>
             <label>{{ 'leads.field.manager'|trans }}
                 <select name="manager">
@@ -102,22 +102,22 @@
                         <option value="{{ id }}" {{ (input.manager ?? lead.manager.id ?? '') == id ? 'selected' }}>{{ login }}</option>
                     {% endfor %}
                 </select>
-                {{ fields.refusal(refusals, 'manager') }}
+                {{ refusal.of(refusals, 'manager') }}
             </label>
             <label>{{ 'leads.field.due'|trans }}
                 <input type="datetime-local" name="due" value="{{ input.due ?? (lead.due ? lead.due|date(constant('AdzerCMS\\Leads\\Handling::DUE_FORMAT')) : '') }}">
-                {{ fields.refusal(refusals, 'due') }}
+                {{ refusal.of(refusals, 'due') }}
             </label>
             <label>{{ 'leads.field.amount'|trans }}
                 <input type="text" name="amount" inputmode="decimal" value="{{ input.amount ?? (lead.amount is null ? '' : lead.amount|plain) }}">
-                {{ fields.refusal(refusals, 'amount') }}
+                {{ refusal.of(refusals, 'amount') }}
             </label>
             <label class="field-wide" data-when="stage={{ refused|join('|') }}">{{ 'leads.field.reason'|trans }}
                 <input type="text" name="reason" list="lead-reasons" maxlength="{{ constant('AdzerCMS\\Leads\\Entity\\Lead::REASON') }}" value="{{ input.reason ?? lead.reason }}">
                 <datalist id="lead-reasons">
                     {% for reason in reasons %}<option value="{{ reason }}"></option>{% endfor %}
                 </datalist>
-                {{ fields.refusal(refusals, 'reason') }}
+                {{ refusal.of(refusals, 'reason') }}
             </label>
         </div>
         <button type="submit">{{ 'core.action.save'|trans }}</button>

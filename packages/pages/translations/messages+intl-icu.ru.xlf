@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
+    <unit id="pages.add">
+      <segment>
+        <source>pages.add</source>
+        <target>+ Страница</target>
+      </segment>
+    </unit>
+    <unit id="pages.block.add">
+      <segment>
+        <source>pages.block.add</source>
+        <target>+ Блок</target>
+      </segment>
+    </unit>
     <unit id="pages.block.advantages">
       <segment>
         <source>pages.block.advantages</source>
@@ -13,10 +25,28 @@
         <target>Призыв</target>
       </segment>
     </unit>
+    <unit id="pages.block.drop_confirm">
+      <segment>
+        <source>pages.block.drop_confirm</source>
+        <target>Удалить блок {type}?</target>
+      </segment>
+    </unit>
+    <unit id="pages.block.empty">
+      <segment>
+        <source>pages.block.empty</source>
+        <target>Блоков нет</target>
+      </segment>
+    </unit>
     <unit id="pages.block.hero">
       <segment>
         <source>pages.block.hero</source>
         <target>Первый экран</target>
+      </segment>
+    </unit>
+    <unit id="pages.block.new">
+      <segment>
+        <source>pages.block.new</source>
+        <target>Новый блок</target>
       </segment>
     </unit>
     <unit id="pages.block.questions">
@@ -31,6 +61,36 @@
         <target>Текст</target>
       </segment>
     </unit>
+    <unit id="pages.block.unavailable">
+      <segment>
+        <source>pages.block.unavailable</source>
+        <target>модуль снят</target>
+      </segment>
+    </unit>
+    <unit id="pages.blocks">
+      <segment>
+        <source>pages.blocks</source>
+        <target>Блоки</target>
+      </segment>
+    </unit>
+    <unit id="pages.column.summary">
+      <segment>
+        <source>pages.column.summary</source>
+        <target>Содержимое</target>
+      </segment>
+    </unit>
+    <unit id="pages.column.type">
+      <segment>
+        <source>pages.column.type</source>
+        <target>Блок</target>
+      </segment>
+    </unit>
+    <unit id="pages.empty">
+      <segment>
+        <source>pages.empty</source>
+        <target>Страниц нет</target>
+      </segment>
+    </unit>
     <unit id="pages.field.answer">
       <segment>
         <source>pages.field.answer</source>
@@ -43,10 +103,28 @@
         <target>Подпись кнопки</target>
       </segment>
     </unit>
+    <unit id="pages.field.description">
+      <segment>
+        <source>pages.field.description</source>
+        <target>Описание для поисковиков</target>
+      </segment>
+    </unit>
     <unit id="pages.field.link">
       <segment>
         <source>pages.field.link</source>
         <target>Адрес кнопки</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.menu">
+      <segment>
+        <source>pages.field.menu</source>
+        <target>В меню</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.menu_label">
+      <segment>
+        <source>pages.field.menu_label</source>
+        <target>Подпись пункта меню</target>
       </segment>
     </unit>
     <unit id="pages.field.pairs">
@@ -55,10 +133,22 @@
         <target>Вопросы и ответы</target>
       </segment>
     </unit>
+    <unit id="pages.field.path">
+      <segment>
+        <source>pages.field.path</source>
+        <target>Адрес</target>
+      </segment>
+    </unit>
     <unit id="pages.field.points">
       <segment>
         <source>pages.field.points</source>
         <target>Пункты</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.published">
+      <segment>
+        <source>pages.field.published</source>
+        <target>Опубликована</target>
       </segment>
     </unit>
     <unit id="pages.field.question">
@@ -79,6 +169,72 @@
         <target>Заголовок</target>
       </segment>
     </unit>
+    <unit id="pages.flash.added">
+      <segment>
+        <source>pages.flash.added</source>
+        <target>Страница «{title}» заведена</target>
+      </segment>
+    </unit>
+    <unit id="pages.flash.block_added">
+      <segment>
+        <source>pages.flash.block_added</source>
+        <target>Блок {type} добавлен</target>
+      </segment>
+    </unit>
+    <unit id="pages.flash.block_dropped">
+      <segment>
+        <source>pages.flash.block_dropped</source>
+        <target>Блок удалён</target>
+      </segment>
+    </unit>
+    <unit id="pages.flash.block_saved">
+      <segment>
+        <source>pages.flash.block_saved</source>
+        <target>Блок {type} сохранён</target>
+      </segment>
+    </unit>
+    <unit id="pages.flash.dropped">
+      <segment>
+        <source>pages.flash.dropped</source>
+        <target>Страница «{title}» удалена</target>
+      </segment>
+    </unit>
+    <unit id="pages.flash.saved">
+      <segment>
+        <source>pages.flash.saved</source>
+        <target>Страница «{title}» сохранена</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu">
+      <segment>
+        <source>pages.menu</source>
+        <target>Сайт</target>
+      </segment>
+    </unit>
+    <unit id="pages.new">
+      <segment>
+        <source>pages.new</source>
+        <target>Новая страница</target>
+      </segment>
+    </unit>
+    <unit id="pages.open">
+      <segment>
+        <source>pages.open</source>
+        <target>Открыть</target>
+      </segment>
+    </unit>
+    <unit id="pages.page.drop">
+      <segment>
+        <source>pages.page.drop</source>
+        <target>Удалить страницу</target>
+      </segment>
+    </unit>
+    <unit id="pages.page.drop_confirm">
+      <segment>
+        <source>pages.page.drop_confirm</source>
+        <target>Удалить страницу «{title}» вместе с блоками?</target>
+      </segment>
+    </unit>
     <unit id="pages.page.title">
       <segment>
         <source>pages.page.title</source>
@@ -89,6 +245,36 @@
       <segment>
         <source>pages.refusal.link</source>
         <target>{field}: путь сайта от /, адрес https:// либо #lead</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.menu_label">
+      <segment>
+        <source>pages.refusal.menu_label</source>
+        <target>Подпись пункта меню: до {limit} знаков</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.path">
+      <segment>
+        <source>pages.refusal.path</source>
+        <target>Адрес: / либо слова из строчных букв, цифр и дефиса через /</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.path_page">
+      <segment>
+        <source>pages.refusal.path_page</source>
+        <target>Адрес {path} занят страницей «{title}»</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.path_route">
+      <segment>
+        <source>pages.refusal.path_route</source>
+        <target>Адрес {path} занят разделом сайта либо кабинета</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.title">
+      <segment>
+        <source>pages.refusal.title</source>
+        <target>Заголовок: от 1 до {limit} знаков</target>
       </segment>
     </unit>
   </file>

@@ -48,9 +48,15 @@ class Page implements Placed
     ) {
     }
 
-    public static function valid(string $path): bool
+    public static function parse(string $input): ?string
     {
-        return self::ROOT === $path || 1 === preg_match('~^/'.self::SEGMENTS.'$~u', $path);
+        $path = mb_strtolower(trim($input));
+        if ('' === $path) {
+            return null;
+        }
+        $path = self::ROOT.trim($path, '/');
+
+        return mb_strlen($path) <= self::PATH && (self::ROOT === $path || 1 === preg_match('~^/'.self::SEGMENTS.'$~u', $path)) ? $path : null;
     }
 
     public function getId(): ?int

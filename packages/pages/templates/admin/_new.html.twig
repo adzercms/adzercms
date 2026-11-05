@@ -1,0 +1,19 @@
+{% import '@Theme/_refusal.html.twig' as refusal %}
+{% include '@Theme/_modal_header.html.twig' with {title: 'pages.new'|trans} only %}
+
+<div class="modal-body">
+    <form hx-post="{{ path('admin_page_new') }}" hx-target="#record">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label>{{ 'pages.field.title'|trans }}
+                <input type="text" name="title" maxlength="{{ constant('AdzerCMS\\Pages\\Entity\\Page::TITLE') }}" value="{{ input.title ?? '' }}" required>
+                {{ refusal.of(refusals, 'title') }}
+            </label>
+            <label>{{ 'pages.field.path'|trans }}
+                <input type="text" name="path" maxlength="{{ constant('AdzerCMS\\Pages\\Entity\\Page::PATH') }}" value="{{ input.path ?? '' }}" placeholder="/" required>
+                {{ refusal.of(refusals, 'path') }}
+            </label>
+        </div>
+        <button type="submit">{{ 'core.action.create'|trans }}</button>
+    </form>
+</div>

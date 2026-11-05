@@ -1,0 +1,7 @@
+{% set type = 'AdzerCMS\\Contracts\\Setting\\Type::' %}
+{% set rows = field.type == constant(type ~ 'Rows') %}
+<div class="field{{ rows or field.type == constant(type ~ 'Markup') ? ' field-wide' }}">
+    <label for="{{ rows ? id ~ '-0-' ~ field.fields|first.name : id }}">{{ field.label|trans }}</label>
+    {% block control %}{% include '@Theme/_field.html.twig' with {field: field, id: id, name: name, value: value} only %}{% endblock %}
+    {% block extra %}{% endblock %}
+</div>

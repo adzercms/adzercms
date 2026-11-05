@@ -1,0 +1,25 @@
+{% include '@Theme/_modal_header.html.twig' with {title: block ? type.label|trans : 'pages.block.new'|trans} only %}
+
+<div class="modal-body">
+    {% for refusal in refusals %}<p class="flash flash-error">{{ refusal.reason|trans }}</p>{% endfor %}
+    <form hx-post="{{ block ? path('admin_page_block', {id: block.id}) : path('admin_page_block_new', {id: page.id}) }}" hx-target="#record">
+        {{ csrf_field() }}
+        {% if not block %}
+            <div class="fields">
+                <label>{{ 'pages.column.type'|trans }}
+                    <select name="type" hx-get="{{ path('admin_page_block_new', {id: page.id}) }}" hx-trigger="change" hx-target="#record">
+                        {% for key, choice in types %}
+                            <option value="{{ key }}" {{ key == type.key ? 'selected' }}>{{ choice.label|trans }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+        {% endif %}
+        <div class="fields aligned">
+            {% for field in type.fields %}
+                {% include '@Theme/_field_row.html.twig' with {field: field, id: 'block-' ~ field.name, name: 'value[' ~ field.name ~ ']', value: values[field.name]} only %}
+            {% endfor %}
+        </div>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
+    </form>
+</div>

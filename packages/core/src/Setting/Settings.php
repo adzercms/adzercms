@@ -80,9 +80,7 @@ final class Settings implements ResetInterface
 
     public function palette(Field $field): Scheme|string
     {
-        $value = $this->get($field->name);
-
-        return Values::scheme($field, $value) ?? Values::color($value) ?? $field->schemes[0] ?? '';
+        return Values::picked($field, $this->get($field->name));
     }
 
     public function stamp(Field $field, \DateTimeImmutable $moment): void

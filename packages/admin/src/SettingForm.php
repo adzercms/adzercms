@@ -8,11 +8,9 @@ use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Contracts\Ui\Badge;
 use AdzerCMS\Contracts\Ui\Badged;
-use AdzerCMS\Contracts\Ui\Scheme;
 use AdzerCMS\Core\Setting\Images;
 use AdzerCMS\Core\Setting\Keychain;
 use AdzerCMS\Core\Setting\Settings;
-use AdzerCMS\Core\Setting\Toggle;
 use AdzerCMS\Core\Setting\Values;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -24,7 +22,6 @@ use function Symfony\Component\Translation\t;
 final class SettingForm
 {
     private const DROPPED = [Type::Image, Type::Photo, Type::Container, Type::Palette];
-    private const BLANK_ROWS = 2;
 
     /** @var list<TranslatableInterface> */
     private array $faults = [];
@@ -162,15 +159,7 @@ final class SettingForm
     {
         $values = [];
         foreach ($fields as $field) {
-            $picked = Type::Palette === $field->type ? $this->settings->palette($field) : null;
-            $values[$field->name] = match (true) {
-                Type::Secret === $field->type => '',
-                Type::Toggle === $field->type => ($this->settings->on($field->name) ? Toggle::On : Toggle::Off)->value,
-                Type::Rows === $field->type => [...$this->settings->entries($field), ...array_fill(0, self::BLANK_ROWS, array_fill_keys(array_column($field->fields, 'name'), ''))],
-                $picked instanceof Scheme => $picked->key,
-                \is_string($picked) => $picked,
-                default => $this->settings->get($field->name),
-            };
+            $values[$field->name] = Values::form($field, Type::Secret === $field->type ? '' : $this->settings->get($field->name));
         }
 
         return $values;
