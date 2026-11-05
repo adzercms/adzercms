@@ -14,7 +14,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 final class ModuleSuiteTest extends TestCase
 {
-    #[Group('ACMS-TEST-0074')]
+    #[Group('ACMS-TEST-0130')]
     public function testRootSkipsComposerDataOfAnotherRuntimeLoadedFirst(): void
     {
         $root = ModuleSuite::root();
@@ -33,7 +33,7 @@ final class ModuleSuiteTest extends TestCase
     }
 
     #[Group('ACMS-TEST-0009')]
-    #[Group('ACMS-TEST-0011')]
+    #[Group('ACMS-TEST-0129')]
     #[DataProvider('suites')]
     public function testSuiteModulesCoverKindOfTheirRequirements(string $suite, string $chosen, string $features): void
     {
