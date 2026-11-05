@@ -98,7 +98,7 @@ final class ThemeExtension extends AbstractExtension
         );
     }
 
-    public function amount(string|float|int $value, bool $signed = true): string
+    public function amount(string|float|int $value, bool $signed = true, bool $precise = false): string
     {
         $number = (float) $value;
         $class = match (true) {
@@ -107,8 +107,9 @@ final class ThemeExtension extends AbstractExtension
             $number < 0 => ' class="minus"',
             default => '',
         };
+        $sum = $precise ? Money::precise($value) : Money::rubles($value);
 
-        return sprintf('<strong%s>%s</strong>', $class, htmlspecialchars(Money::rubles($value)->trans($this->translator), \ENT_QUOTES));
+        return sprintf('<strong%s>%s</strong>', $class, htmlspecialchars($sum->trans($this->translator), \ENT_QUOTES));
     }
 
     public function badge(Badged $case): string
