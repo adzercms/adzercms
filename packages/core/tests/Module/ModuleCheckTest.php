@@ -12,7 +12,7 @@ use Symfony\Component\Process\Process;
 
 final class ModuleCheckTest extends TestCase
 {
-    #[Group('ACMS-CORE-0956')]
+    #[Group('ACMS-CORE-1111')]
     public function testAuditTakesPackagesTheModuleAloneAddsToInstance(): void
     {
         $added = (new ModuleCheck(ModuleSuite::root(), 'adzercms/opotopo'))->added();

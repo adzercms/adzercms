@@ -12,6 +12,7 @@ use PHPUnit\Framework\Attributes\Group;
 final class ModuleBoundaryTest extends SchemaTestCase
 {
     #[Group('ACMS-CORE-0954')]
+    #[Group('ACMS-CORE-1114')]
     public function testModuleCrossingTheBoundaryIsNamedByEachCrossing(): void
     {
         $registry = Registry::installed();
@@ -33,7 +34,7 @@ final class ModuleBoundaryTest extends SchemaTestCase
         ], array_map(static fn (string $crossing): string => strstr($crossing, ': ', true) ?: $crossing, $crossed), 'the own table of the module stays within the boundary');
     }
 
-    #[Group('ACMS-CORE-0954')]
+    #[Group('ACMS-CORE-1114')]
     public function testModuleRequiredAsKindMigratesOverTheTablesOfModulesRequiringTheKind(): void
     {
         $registry = Registry::installed();

@@ -28,6 +28,7 @@ final class VersionCheckTest extends KernelTestCase
 
     #[Group('ACMS-US-0039')]
     #[Group('ACMS-CORE-0957')]
+    #[Group('ACMS-CORE-1109')]
     public function testPublishedVersionWithoutRecordGoesToCheck(): void
     {
         $this->mark('acme/shop', self::commit('acme/shop', '1.0.0'));
@@ -41,6 +42,7 @@ final class VersionCheckTest extends KernelTestCase
 
     #[Group('ACMS-US-0039')]
     #[Group('ACMS-CORE-0958')]
+    #[Group('ACMS-CORE-1108')]
     public function testOutcomeGoesToRegistryWhileVersionIsPublished(): void
     {
         $this->mark('acme/till', self::commit('acme/till', '1.1.0'));
