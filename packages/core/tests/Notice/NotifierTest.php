@@ -396,7 +396,7 @@ final class NotifierTest extends SchemaTestCase
         self::assertSame('', $this->notices(), 'a released letter goes once');
     }
 
-    #[Group('ACMS-CORE-0131')]
+    #[Group('ACMS-CORE-1077')]
     #[Group('ACMS-CORE-0171')]
     public function testContactKnowsNoQuiet(): void
     {

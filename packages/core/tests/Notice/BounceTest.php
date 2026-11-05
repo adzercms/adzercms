@@ -51,6 +51,8 @@ final class BounceTest extends SchemaTestCase
     #[Group('ACMS-CORE-1007')]
     #[Group('ACMS-CORE-1008')]
     #[Group('ACMS-CORE-1009')]
+    #[Group('ACMS-CORE-1080')]
+    #[Group('ACMS-CORE-1081')]
     #[Group('ACMS-US-0005')]
     public function testBouncedLetterFailsNoticeAndMarksMailUnlessPolicyRefusal(string $report, string $reason, bool $marked): void
     {

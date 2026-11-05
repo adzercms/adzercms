@@ -111,7 +111,7 @@ final class LoginsTest extends SchemaTestCase
         self::assertSame([], $this->logins($user), 'an expired login leaves the list');
     }
 
-    #[Group('ACMS-CORE-0078')]
+    #[Group('ACMS-CORE-1084')]
     public function testSweepRemovesOnlyOutdatedLogins(): void
     {
         $clock = self::mockTime(self::MOMENT);

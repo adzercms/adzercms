@@ -66,6 +66,7 @@ final class BroadcastTest extends SchemaTestCase
     /** @param array<string, string> $query */
     #[DataProvider('scopes')]
     #[Group('ACMS-CORE-0146')]
+    #[Group('ACMS-CORE-1078')]
     #[Group('ACMS-US-0005')]
     public function testRecipientsFollowScopeAndChannel(array $query, int $count): void
     {

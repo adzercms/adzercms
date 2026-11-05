@@ -45,7 +45,7 @@ final class CabinetWebTest extends SchemaTestCase
         self::assertResponseRedirects('/cabinet');
     }
 
-    #[Group('ACMS-CORE-0165')]
+    #[Group('ACMS-CORE-1082')]
     #[Group('ACMS-UI-0068')]
     public function testLoginWithoutInterruptedPageLeadsToCabinetHome(): void
     {
@@ -219,7 +219,7 @@ final class CabinetWebTest extends SchemaTestCase
         self::assertSame('fresh@example.org', $this->reread($user)->getEmail());
     }
 
-    #[Group('ACMS-CORE-0097')]
+    #[Group('ACMS-CORE-1085')]
     #[Group('ACMS-US-0002')]
     public function testMailChangeTakesConsentOfFormerAddressFirst(): void
     {
@@ -251,7 +251,7 @@ final class CabinetWebTest extends SchemaTestCase
         self::assertResponseRedirects('/login', null, 'the consent link works once');
     }
 
-    #[Group('ACMS-CORE-0097')]
+    #[Group('ACMS-CORE-1085')]
     #[Group('ACMS-US-0002')]
     public function testUndeliverableMailIsNotAskedForConsent(): void
     {
@@ -291,7 +291,7 @@ final class CabinetWebTest extends SchemaTestCase
         self::assertCount(0, $this->client->request('GET', '/cabinet')->filter('.flash-error'), 'the home asks no more');
     }
 
-    #[Group('ACMS-CORE-0097')]
+    #[Group('ACMS-CORE-1085')]
     #[Group('ACMS-US-0002')]
     public function testMailChangeIsAgreedByCodeOnThePhoneOfTheRecord(): void
     {
