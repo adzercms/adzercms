@@ -34,6 +34,7 @@ jobs:
           POSTGRES_DB: adzercms_test
           POSTGRES_INITDB_ARGS: --locale-provider=icu --icu-locale=und
         options: >-
+          --tmpfs /var/lib/postgresql
           --health-cmd "pg_isready -U postgres"
           --health-interval 5s
           --health-timeout 5s
@@ -44,6 +45,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: adzercms
           MYSQL_DATABASE: adzercms_test
         options: >-
+          --tmpfs /var/lib/mysql
           --health-cmd "mysqladmin ping -h 127.0.0.1 -padzercms"
           --health-interval 5s
           --health-timeout 5s
@@ -54,6 +56,7 @@ jobs:
           MARIADB_ROOT_PASSWORD: adzercms
           MARIADB_DATABASE: adzercms_test
         options: >-
+          --tmpfs /var/lib/mysql
           --health-cmd "healthcheck.sh --connect --innodb_initialized"
           --health-interval 5s
           --health-timeout 5s

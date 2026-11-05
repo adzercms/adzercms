@@ -70,12 +70,15 @@ jobs:
           - image: mysql:lts
             health: mysqladmin ping -h 127.0.0.1 -padzercms
             url: mysql://root:adzercms@db:3306/adzercms_test?charset=utf8mb4
+            data: /var/lib/mysql
           - image: mariadb:lts
             health: healthcheck.sh --connect --innodb_initialized
             url: mysql://root:adzercms@db:3306/adzercms_test?charset=utf8mb4
+            data: /var/lib/mysql
           - image: postgres:latest
             health: pg_isready -U postgres
             url: postgresql://postgres:adzercms@db:5432/adzercms_test?charset=utf8
+            data: /var/lib/postgresql
     container: *php
     services:
       db:
@@ -89,6 +92,7 @@ jobs:
           POSTGRES_DB: adzercms_test
           POSTGRES_INITDB_ARGS: --locale-provider=icu --icu-locale=und
         options: >-
+          --tmpfs ${{ matrix.db.data }}
           --health-cmd "${{ matrix.db.health }}"
           --health-interval 5s
           --health-timeout 5s
