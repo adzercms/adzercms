@@ -38,6 +38,9 @@ $symbolless = array_filter(
 );
 $suggested = array_keys($manifest['suggest'] ?? []);
 $extensions = array_filter($suggested, static fn (string $suggestion): bool => str_starts_with($suggestion, 'ext-'));
+/** @var array{suggest?: array<string, string>} $core */
+$core = json_decode((string) file_get_contents(InstalledVersions::getInstallPath('adzercms/core').'/composer.json'), true, flags: \JSON_THROW_ON_ERROR);
+$featured = array_filter(array_keys($core['suggest'] ?? []), static fn (string $suggestion): bool => str_starts_with($suggestion, 'ext-'));
 
 return $configuration
     ->disableComposerAutoloadPathScan()
@@ -46,4 +49,5 @@ return $configuration
     ->ignoreErrorsOnPackage($manifest['name'], [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnPackages(array_values(array_diff($suggested, $extensions)), [ErrorType::SHADOW_DEPENDENCY, ErrorType::DEV_DEPENDENCY_IN_PROD])
     ->ignoreErrorsOnExtensions(array_values($extensions), [ErrorType::SHADOW_DEPENDENCY, ErrorType::DEV_DEPENDENCY_IN_PROD])
+    ->ignoreErrorsOnExtensions(array_values($featured), [ErrorType::UNUSED_DEPENDENCY])
     ->ignoreErrorsOnPackages(array_values($symbolless), [ErrorType::UNUSED_DEPENDENCY]);

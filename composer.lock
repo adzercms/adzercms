@@ -315,7 +315,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "6609b57f313e7b37e7c69e43dc756984c5c5a6ce"
+                "reference": "56e054c8677ea9c939a4d5d57d2fe2ce465da3c8"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -383,7 +383,7 @@
                 "zbateson/mail-mime-parser": "^4.0.8"
             },
             "suggest": {
-                "ext-imagick": "photo settings"
+                "ext-imagick": "photos of settings and module records"
             },
             "bin": [
                 "bin/adzercms-affected",
