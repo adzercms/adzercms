@@ -8,8 +8,8 @@
         <div class="fields">
             {% include '@Leads/_fields.html.twig' with {input: input, refusals: refusals, subjects: subjects} only %}
         </div>
-        <input class="trap" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        {{ trap_field() }}
         <button type="submit">{{ 'leads.window.send'|trans }}</button>
-        <p class="hint">{{ 'leads.window.privacy'|trans({policy: legal('privacy', 'leads.window.policy'|trans)})|raw }}</p>
+        {{ privacy_note() }}
     </form>
 </div>

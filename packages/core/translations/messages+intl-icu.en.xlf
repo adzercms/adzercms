@@ -451,6 +451,24 @@
         <target>Search…</target>
       </segment>
     </unit>
+    <unit id="core.form.often">
+      <segment>
+        <source>core.form.often</source>
+        <target>Too many submissions from your address, try again later</target>
+      </segment>
+    </unit>
+    <unit id="core.form.policy">
+      <segment>
+        <source>core.form.policy</source>
+        <target>privacy policy</target>
+      </segment>
+    </unit>
+    <unit id="core.form.privacy">
+      <segment>
+        <source>core.form.privacy</source>
+        <target>Your data is processed under the {policy}</target>
+      </segment>
+    </unit>
     <unit id="core.image.size">
       <segment>
         <source>core.image.size</source>

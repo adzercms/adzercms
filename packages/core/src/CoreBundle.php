@@ -43,6 +43,7 @@ use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Text\TextLoader;
 use AdzerCMS\Core\Text\Texts;
 use AdzerCMS\Core\Ui\Column;
+use AdzerCMS\Core\Ui\PublicForm;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\Migrations\Metadata\Storage\MetadataStorage;
 use Doctrine\Migrations\Version\Comparator;
@@ -134,6 +135,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
             'mailer' => ['dsn' => $test ? self::TEST_MAILER : MailTransport::DSN],
             'asset_mapper' => ['paths' => [self::IMPORTMAP_VENDOR => 'vendor'], 'public_prefix' => '%'.Kernel::ASSETS.'%', 'missing_import_mode' => 'strict', 'importmap_polyfill' => false],
             'lock' => self::LOCKS,
+            'rate_limiter' => [PublicForm::LIMITER => ['policy' => 'fixed_window', 'limit' => PublicForm::LIMIT, 'interval' => PublicForm::INTERVAL]],
         ]);
 
         $builder->prependExtensionConfig('twig', ['globals' => ['brand' => '@'.Brand::class, 'password_min' => Password::MIN_LENGTH], 'paths' => $templates]);

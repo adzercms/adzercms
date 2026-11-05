@@ -315,7 +315,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "9a37865ac9c5c9d60746833fe6ade3f2cec02290"
+                "reference": "3892af871067adb1c1d109878639c44ab7e0fda5"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -370,6 +370,7 @@
                 "symfony/password-hasher": "7.4.*",
                 "symfony/polyfill-php86": "^1.43",
                 "symfony/process": "7.4.*",
+                "symfony/rate-limiter": "7.4.*",
                 "symfony/routing": "7.4.*",
                 "symfony/security-bundle": "7.4.*",
                 "symfony/security-core": "7.4.*",
@@ -619,7 +620,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/leads",
-                "reference": "96fc5d7ac314e3cc253cb7abe6190418ffd8d6ff"
+                "reference": "ae1a0d957bb3fe1c6175d628b48d935e9ad6038d"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -637,7 +638,6 @@
                 "symfony/framework-bundle": "7.4.*",
                 "symfony/http-foundation": "7.4.*",
                 "symfony/polyfill-php86": "^1.43",
-                "symfony/rate-limiter": "7.4.*",
                 "symfony/routing": "7.4.*",
                 "symfony/security-http": "7.4.*",
                 "symfony/translation": "7.4.*",

@@ -9,32 +9,28 @@ use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Notice\Notifier;
 use AdzerCMS\Core\Repository\UserRepository;
 use AdzerCMS\Core\Ui\Once;
+use AdzerCMS\Core\Ui\PublicForm;
 use AdzerCMS\Leads\Entity\Lead;
 use AdzerCMS\Leads\Repository\StageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 
 use function Symfony\Component\Translation\t;
 
 final readonly class Intake
 {
-    public const LIMITER = 'leads';
-    public const LIMIT = 5;
-    public const INTERVAL = '10 minutes';
     public const TOPIC = 'topic';
     public const NAME = 'name';
     public const PHONE = 'phone';
     public const EMAIL = 'email';
     public const MESSAGE = 'message';
-    public const TRAP = 'website';
     public const FORM = 'form';
 
     public function __construct(
         private StageRepository $stages,
         private Subjects $subjects,
         private EntityManagerInterface $em,
-        private RateLimiterFactoryInterface $leadsLimiter,
+        private PublicForm $form,
         private Once $once,
         private Notifier $notifier,
         private UserRepository $users,
@@ -51,7 +47,7 @@ final readonly class Intake
     /** @return array<string, Refusal> */
     public function take(ParameterBag $input, string $page, string $address): array
     {
-        if ('' !== trim($input->getString(self::TRAP))) {
+        if (PublicForm::trapped($input)) {
             return [];
         }
 
@@ -60,8 +56,7 @@ final readonly class Intake
             return $refusals;
         }
 
-        $refusal = $this->subjects->check($input)
-            ?? ($this->leadsLimiter->create($address)->consume()->isAccepted() ? null : new Refusal(t('leads.refusal.often')));
+        $refusal = $this->subjects->check($input) ?? $this->form->often(self::class, $address);
         if (null !== $refusal) {
             return [self::FORM => $refusal];
         }

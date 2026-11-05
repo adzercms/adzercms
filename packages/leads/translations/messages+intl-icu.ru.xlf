@@ -331,12 +331,6 @@
         <target>Заметка — от 1 до {limit} символов</target>
       </segment>
     </unit>
-    <unit id="leads.refusal.often">
-      <segment>
-        <source>leads.refusal.often</source>
-        <target>Слишком много заявок с вашего адреса, повторите позже</target>
-      </segment>
-    </unit>
     <unit id="leads.refusal.phone">
       <segment>
         <source>leads.refusal.phone</source>
@@ -467,18 +461,6 @@
       <segment>
         <source>leads.tab.stages</source>
         <target>Стадии заявок</target>
-      </segment>
-    </unit>
-    <unit id="leads.window.policy">
-      <segment>
-        <source>leads.window.policy</source>
-        <target>политике обработки персональных данных</target>
-      </segment>
-    </unit>
-    <unit id="leads.window.privacy">
-      <segment>
-        <source>leads.window.privacy</source>
-        <target>Данные обрабатываются согласно {policy}</target>
       </segment>
     </unit>
     <unit id="leads.window.send">

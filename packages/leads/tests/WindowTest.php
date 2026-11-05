@@ -16,6 +16,7 @@ use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Delivery;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Ui\Back;
+use AdzerCMS\Core\Ui\PublicForm;
 use AdzerCMS\Leads\Entity\Lead;
 use AdzerCMS\Leads\Intake;
 use AdzerCMS\Leads\LeadsEvent;
@@ -40,7 +41,7 @@ final class WindowTest extends SchemaTestCase
     private const TOPIC = 'Кран КС-45717';
 
     #[Group('ACMS-LEAD-0009')]
-    #[Group('ACMS-LEAD-0011')]
+    #[Group('ACMS-UI-0140')]
     #[Group('ACMS-US-0040')]
     public function testWindowOpensOverAnyPageWithTopicAndSubjectFieldsOfItsOpener(): void
     {
@@ -132,28 +133,30 @@ final class WindowTest extends SchemaTestCase
     }
 
     #[Group('ACMS-LEAD-0012')]
+    #[Group('ACMS-UI-0140')]
     #[Group('ACMS-US-0040')]
     public function testFilledTrapIsAcceptedWithoutLead(): void
     {
-        $this->take([Intake::PHONE => '79990000002', Intake::TRAP => 'https://spam.test']);
+        $this->take([Intake::PHONE => '79990000002', PublicForm::TRAP => 'https://spam.test']);
 
         self::assertResponseHeaderSame('HX-Redirect', self::PAGE);
         self::assertSame(0, self::service(LeadRepository::class)->count([]));
     }
 
     #[Group('ACMS-LEAD-0012')]
+    #[Group('ACMS-UI-0140')]
     #[Group('ACMS-US-0040')]
     public function testLeadsOfAddressBeyondLimitAreRefused(): void
     {
-        for ($lead = 0; $lead < Intake::LIMIT; ++$lead) {
+        for ($lead = 0; $lead < PublicForm::LIMIT; ++$lead) {
             $this->take([Intake::PHONE => '79990000002']);
             self::assertResponseHeaderSame('HX-Redirect', self::PAGE);
         }
 
         $window = $this->take([Intake::PHONE => '79990000002']);
 
-        self::assertSame(self::phrase('leads.refusal.often'), trim($window->filter('.flash-error')->text()));
-        self::assertSame(Intake::LIMIT, self::service(LeadRepository::class)->count([]));
+        self::assertSame(self::phrase('core.form.often'), trim($window->filter('.flash-error')->text()));
+        self::assertSame(PublicForm::LIMIT, self::service(LeadRepository::class)->count([]));
     }
 
     /** @param array<string, string> $fields */

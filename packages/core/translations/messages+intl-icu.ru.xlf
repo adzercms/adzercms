@@ -451,6 +451,24 @@
         <target>Поиск…</target>
       </segment>
     </unit>
+    <unit id="core.form.often">
+      <segment>
+        <source>core.form.often</source>
+        <target>Слишком много отправок с вашего адреса, повторите позже</target>
+      </segment>
+    </unit>
+    <unit id="core.form.policy">
+      <segment>
+        <source>core.form.policy</source>
+        <target>политике обработки персональных данных</target>
+      </segment>
+    </unit>
+    <unit id="core.form.privacy">
+      <segment>
+        <source>core.form.privacy</source>
+        <target>Данные обрабатываются согласно {policy}</target>
+      </segment>
+    </unit>
     <unit id="core.image.size">
       <segment>
         <source>core.image.size</source>

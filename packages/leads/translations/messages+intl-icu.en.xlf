@@ -331,12 +331,6 @@
         <target>Note — from 1 to {limit} characters</target>
       </segment>
     </unit>
-    <unit id="leads.refusal.often">
-      <segment>
-        <source>leads.refusal.often</source>
-        <target>Too many requests from your address, try again later</target>
-      </segment>
-    </unit>
     <unit id="leads.refusal.phone">
       <segment>
         <source>leads.refusal.phone</source>
@@ -467,18 +461,6 @@
       <segment>
         <source>leads.tab.stages</source>
         <target>Lead stages</target>
-      </segment>
-    </unit>
-    <unit id="leads.window.policy">
-      <segment>
-        <source>leads.window.policy</source>
-        <target>privacy policy</target>
-      </segment>
-    </unit>
-    <unit id="leads.window.privacy">
-      <segment>
-        <source>leads.window.privacy</source>
-        <target>Your data is processed under the {policy}</target>
       </segment>
     </unit>
     <unit id="leads.window.send">
