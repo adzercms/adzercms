@@ -50,7 +50,7 @@ final class BankTransferTest extends SchemaTestCase
         }
     }
 
-    #[Group('ACMS-PAY-0044')]
+    #[Group('ACMS-PAY-0052')]
     public function testTransferIsReadyByCardOrPhoneAndKeepsNoCard(): void
     {
         $service = self::service(PaymentService::class);

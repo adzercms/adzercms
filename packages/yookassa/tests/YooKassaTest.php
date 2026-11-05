@@ -125,7 +125,7 @@ final class YooKassaTest extends SchemaTestCase
         self::assertSame(str_repeat('Ж', 128), $this->sent[0]['body']['receipt']['items'][0]['description']);
     }
 
-    #[Group('ACMS-PAY-0035')]
+    #[Group('ACMS-PAY-0053')]
     public function testSbpOrderComesAsCode(): void
     {
         $this->answers = [['id' => 'op-2', 'status' => 'pending', 'confirmation' => ['type' => 'qr', 'confirmation_data' => 'https://qr.nspk.ru/AS1']]];
