@@ -14,7 +14,7 @@ final class ListOrderTest extends SchemaTestCase
 {
     use Browser;
 
-    #[Group('ACMS-UI-0074')]
+    #[Group('ACMS-UI-0119')]
     public function testOrderedListDragsByHandleAndPostsThroughItsForm(): void
     {
         $page = $this->client->request('GET', '/fixture/list?q=a&sort=name&order=desc');

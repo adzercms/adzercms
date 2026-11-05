@@ -177,7 +177,7 @@ final class CatalogPageTest extends CatalogTestCase
         self::assertCount(1, $sitemap->xpath(\sprintf('//s:url[s:loc="%s"]/s:lastmod', self::service(UrlGeneratorInterface::class)->generate('extensions', [], UrlGeneratorInterface::ABSOLUTE_URL))) ?: []);
     }
 
-    #[Group('ACMS-UI-0079')]
+    #[Group('ACMS-UI-0122')]
     public function testHeadCarriesSeoSetWithCanonicalWithoutQuery(): void
     {
         $page = $this->arrive(self::PAGE.'?type=theme');
