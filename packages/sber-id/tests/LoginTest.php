@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace AdzerCMS\SberId\Tests;
 
 use AdzerCMS\Contracts\Login\Client;
-use AdzerCMS\Core\Entity\ConnectedService;
 use AdzerCMS\Core\Module\Switches;
+use AdzerCMS\Core\Repository\ConnectedServiceRepository;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\Configuration;
@@ -56,13 +56,12 @@ final class LoginTest extends SchemaTestCase
     #[Group('ACMS-CORE-0104')]
     #[Group('ACMS-CORE-0105')]
     #[Group('ACMS-CORE-0106')]
-    #[Group('ACMS-CORE-1097')]
-    public function testGuestEntersByConnectedSberIdProfileOverMutualTls(): void
+    #[Group('ACMS-CORE-0173')]
+    #[Group('ACMS-CORE-1099')]
+    public function testGuestEntersBySberIdPhoneOfRecordOverMutualTlsWithoutTakingTheEmail(): void
     {
         $this->keepContainer(self::SETTINGS.SberIdService::CONTAINER);
-        $user = $this->record('+7 903 111-11-11')->setPhone(null);
-        $this->em->persist(new ConnectedService($user, 'sberid', '9f2d5c1a7b3e48d6a0c4e1f7b2d9a5c3e8f1b4d7a2c6e9f0b3d5a8c1e4f7b2d9', null));
-        $this->em->flush();
+        $user = $this->record('+7 903 111-11-11');
 
         $query = $this->authorize('sberid', SberIdService::AUTHORIZE);
         self::assertSame(
@@ -93,9 +92,11 @@ final class LoginTest extends SchemaTestCase
             self::assertStringEndsWith('-key.pem', \is_string($call['local_pk'] ?? null) ? $call['local_pk'] : '');
         }
 
+        $connected = self::service(ConnectedServiceRepository::class)->findOneBy(['user' => $user->getId(), 'service' => 'sberid']);
+        self::assertSame('9f2d5c1a7b3e48d6a0c4e1f7b2d9a5c3e8f1b4d7a2c6e9f0b3d5a8c1e4f7b2d9', $connected?->getProfile());
         $user = $this->reread($user);
         self::assertTrue($user->isNamed());
-        self::assertSame([null, null], [$user->getPhone(), $user->getEmail()], 'Sber ID does not vouch for the phone and email of the profile');
+        self::assertNull($user->getEmail(), 'Sber ID does not vouch for the email of the profile');
     }
 
     /** @return iterable<string, array{string, bool, string}> */

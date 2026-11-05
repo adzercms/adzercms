@@ -24,6 +24,7 @@ final class YandexIdService implements LoginService, Guided
     public const USER_INFO = 'https://login.yandex.ru/info?format=json';
 
     private const SCOPE = 'login:info login:email login:default_phone';
+    private const MAIL_DOMAINS = ['yandex.ru', 'ya.ru', 'yandex.com', 'yandex.by', 'yandex.kz'];
 
     public function __construct(
         private readonly Redirects $redirects,
@@ -63,14 +64,25 @@ final class YandexIdService implements LoginService, Guided
             Client::basic($credentials),
         );
         $user = $exchange->get(self::USER_INFO, ['Authorization' => 'OAuth '.$token->text('access_token')]);
+        $email = $user->text('default_email');
+        $login = $user->text('login');
 
         return new Profile(
             $user->text('id') ?? '',
             phone: $user->text('default_phone', 'number'),
-            email: $user->text('default_email'),
+            email: $email,
             firstName: $user->text('first_name'),
             lastName: $user->text('last_name'),
-            account: $user->text('login'),
+            account: $login,
+            phoneVerified: true,
+            emailVerified: null !== $email && null !== $login && self::mailbox($email, $login),
         );
+    }
+
+    private static function mailbox(string $email, string $login): bool
+    {
+        [$local, $domain] = explode('@', strtolower($email), 2) + ['', ''];
+
+        return \in_array($domain, self::MAIL_DOMAINS, true) && strtr($local, '.', '-') === strtr(strtolower($login), '.', '-');
     }
 }

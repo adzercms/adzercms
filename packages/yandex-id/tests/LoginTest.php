@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AdzerCMS\YandexId\Tests;
 
 use AdzerCMS\Contracts\Login\Client;
-use AdzerCMS\Core\Entity\ConnectedService;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Repository\ConnectedServiceRepository;
 use AdzerCMS\Core\Tests\Accounts;
@@ -13,6 +12,7 @@ use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Tests\ServiceLogin;
 use AdzerCMS\YandexId\YandexIdService;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\HttpClient\Response\JsonMockResponse;
 
@@ -39,14 +39,24 @@ final class LoginTest extends SchemaTestCase
         ]);
     }
 
+    /** @return iterable<string, array{string, string, ?string}> */
+    public static function mailboxes(): iterable
+    {
+        yield 'own mailbox, dot of the login as a hyphen' => ['Ivan.Petrov@yandex.ru', 'ivan-petrov', 'ivan.petrov@yandex.ru'];
+        yield 'own mailbox on another Yandex domain' => ['ivan-petrov@ya.ru', 'ivan-petrov', 'ivan-petrov@ya.ru'];
+        yield 'mailbox of another login' => ['test@yandex.ru', 'ivan-petrov', null];
+        yield 'address outside Yandex mail' => ['ivan-petrov@example.org', 'ivan-petrov', null];
+    }
+
     #[Group('ACMS-US-0002')]
     #[Group('ACMS-CORE-0104')]
-    #[Group('ACMS-CORE-1097')]
-    public function testGuestEntersByConnectedYandexIdProfileThatVouchesForNoContact(): void
+    #[Group('ACMS-CORE-0173')]
+    #[Group('ACMS-CORE-1099')]
+    #[Group('ACMS-CORE-1100')]
+    #[DataProvider('mailboxes')]
+    public function testGuestEntersByYandexIdPhoneOfRecordAndTakesOnlyOwnMailbox(string $email, string $login, ?string $taken): void
     {
-        $user = $this->record('+7 903 765-94-18')->setPhone(null);
-        $this->em->persist(new ConnectedService($user, 'yandexid', '1000034426', null));
-        $this->em->flush();
+        $user = $this->record('+7 903 765-94-18');
 
         $query = $this->authorize('yandexid', YandexIdService::AUTHORIZE);
         self::assertSame(
@@ -60,9 +70,9 @@ final class LoginTest extends SchemaTestCase
                 'refresh_token' => '1:GN686QVt0mmakDd9:A4pYuW9LGk0_UnlrMIWklkAuJkUWbq27loFekJVmSYrdfzdePBy7:A-2dHOmBxiXgajnD-kYOwQ',
             ]),
             new JsonMockResponse([
-                'first_name' => 'Иван', 'last_name' => 'Иванов', 'display_name' => 'ivan', 'emails' => ['test@yandex.ru'], 'default_email' => 'test@yandex.ru',
+                'first_name' => 'Иван', 'last_name' => 'Иванов', 'display_name' => $login, 'emails' => [$email], 'default_email' => $email,
                 'default_phone' => ['id' => 12345678, 'number' => '+79037659418'], 'real_name' => 'Иван Иванов', 'is_avatar_empty' => false,
-                'birthday' => '1987-03-12', 'default_avatar_id' => '131652443', 'login' => 'ivan', 'old_social_login' => 'uid-mmzxrnry', 'sex' => 'male',
+                'birthday' => '1987-03-12', 'default_avatar_id' => '131652443', 'login' => $login, 'old_social_login' => 'uid-mmzxrnry', 'sex' => 'male',
                 'id' => '1000034426', 'client_id' => self::CLIENT, 'psuid' => '1.AAceCw.tbHgw5DtJ9_zeqPrk-Ba2w.qPWSRC5v2t2IaksPJgnge',
             ]),
         ];
@@ -78,10 +88,10 @@ final class LoginTest extends SchemaTestCase
         self::assertSame('OAuth yandex-access-token', $this->sentHeader(1, 'Authorization'));
 
         $connected = self::service(ConnectedServiceRepository::class)->findOneBy(['user' => $user->getId(), 'service' => 'yandexid']);
-        self::assertSame(['1000034426', 'ivan'], [$connected?->getProfile(), $connected?->getAccount()]);
+        self::assertSame(['1000034426', $login], [$connected?->getProfile(), $connected?->getAccount()]);
         $user = $this->reread($user);
         self::assertTrue($user->isNamed());
-        self::assertSame([null, null], [$user->getPhone(), $user->getEmail()], 'Yandex ID does not vouch for the phone and email of the profile');
+        self::assertSame($taken, $user->getEmail(), 'Yandex ID vouches only for the mailbox of its own login on a Yandex mail domain');
     }
 
     #[Group('ACMS-US-0002')]

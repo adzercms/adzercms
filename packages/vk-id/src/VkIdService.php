@@ -78,6 +78,7 @@ final class VkIdService implements LoginService, Guided
             email: $user->text('user', 'email'),
             firstName: $user->text('user', 'first_name'),
             lastName: $user->text('user', 'last_name'),
+            phoneVerified: true,
         );
     }
 }

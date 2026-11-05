@@ -91,6 +91,7 @@ final readonly class SberIdService implements Attesting, Guided
             email: $user->text('email'),
             firstName: $user->text('given_name'),
             lastName: $user->text('family_name'),
+            phoneVerified: true,
         );
     }
 

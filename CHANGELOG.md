@@ -51,6 +51,6 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 
 ### Security
 
-- Sign-in through a login service finds a user, fills empty contacts and creates a user only by a phone or email the service vouches for: `Profile::$phoneVerified` and `Profile::$emailVerified`, set by the login module from the service's verification claim or its documented guarantee. Before, a profile carrying someone else's unverified phone or email signed in to that person's account. An unvouched contact of another user now turns the sign-in away; the Telegram module vouches for the phone, the Sber ID, VK ID and Yandex ID modules vouch for no contact
+- Sign-in through a login service finds a user, fills empty contacts and creates a user only by a phone or email the service vouches for: `Profile::$phoneVerified` and `Profile::$emailVerified`, set by the login module from the service's verification claim or from the service binding the contact only after confirming it. Before, a profile carrying someone else's unverified phone or email signed in to that person's account. An unvouched contact of another user now turns the sign-in away; the Telegram, Sber ID, VK ID and Yandex ID modules vouch for the phone, the Yandex ID module also for the mailbox of its own login on a Yandex mail domain
 
 [Unreleased]: https://github.com/adzercms/adzercms/commits/main
