@@ -170,7 +170,7 @@ final class MessageEditTest extends SupportTestCase
         yield 'unread answer' => [false, "Your password is \nKeep it safe", null];
     }
 
-    #[Group('ACMS-SUP-0021')]
+    #[Group('ACMS-SUP-0025')]
     #[Group('ACMS-US-0008')]
     public function testSidesCannotWriteTheRedactionMark(): void
     {
