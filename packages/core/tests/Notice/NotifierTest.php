@@ -230,7 +230,7 @@ final class NotifierTest extends SchemaTestCase
         $this->configure([Brand::LOGO_TITLE => Toggle::On->value]);
         $this->message($owner, 'Service resumed', 'Balance is above zero.');
         self::assertMatchesRegularExpression(
-            '#<td class="head" style="[^"]+"><img class="logo" src="http://localhost/setting/brand\.logo" alt=""[^>]*> Village network</td>#',
+            '#<td class="head" style="[^"]+">\s*<img class="logo" src="http://localhost/setting/brand\.logo" alt=""[^>]*> Village network</td>#',
             (string) $this->letter()->getHtmlBody(),
             'the title stands beside the logo',
         );
