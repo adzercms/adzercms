@@ -24,7 +24,7 @@ final class SmartCaptchaTest extends SchemaTestCase
     private const SETTINGS = 'captcha.smartcaptcha.';
     private const ORIGIN = 'https://smartcaptcha.yandexcloud.net';
 
-    #[Group('ACMS-CORE-0051')]
+    #[Group('ACMS-CORE-1140')]
     #[Group('ACMS-US-0001')]
     public function testSwitchedOffCaptchaLetsTheFormThrough(): void
     {
@@ -65,7 +65,7 @@ final class SmartCaptchaTest extends SchemaTestCase
         self::assertFalse($captcha->passed($answered));
     }
 
-    #[Group('ACMS-CORE-0051')]
+    #[Group('ACMS-CORE-1140')]
     #[Group('ACMS-US-0001')]
     public function testUnreachableProviderDoesNotLetTheFormThrough(): void
     {
