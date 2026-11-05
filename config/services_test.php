@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use AdzerCMS\Cabinet\Tests\Fixture\Pager;
+use AdzerCMS\Core\Photo\Photos;
 use AdzerCMS\Core\Tests\Account\Fixture\OpenPolicy;
 use AdzerCMS\Core\Tests\HttpAnswers;
 use AdzerCMS\Core\Tests\Login\Fixture\CatchListener;
@@ -50,4 +51,5 @@ return static function (ContainerConfigurator $container): void {
     $services->set(Tick::class)->autoconfigure();
     $services->set(Dormant::class)->autoconfigure();
     $services->set('logger', NullLogger::class);
+    $services->alias('test.'.Photos::class, Photos::class)->public();
 };

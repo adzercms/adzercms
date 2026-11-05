@@ -18,6 +18,7 @@ use function Symfony\Component\Translation\t;
 final readonly class Photos
 {
     private const TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+    private const NAME = '/^[0-9a-f]{32}\.webp$/';
 
     public function __construct(
         #[Autowire('%adzercms.files_dir%')]
@@ -47,5 +48,18 @@ final readonly class Photos
             ->save($this->directory.'/'.$place.'/'.$name);
 
         return $name;
+    }
+
+    public function path(string $place, string $name): ?string
+    {
+        $path = $this->directory.'/'.$place.'/'.$name;
+
+        return 1 === preg_match(self::NAME, $name) && is_file($path) ? $path : null;
+    }
+
+    /** @param list<string> $names */
+    public function drop(string $place, array $names): void
+    {
+        (new Filesystem())->remove(array_filter(array_map(fn (string $name): ?string => $this->path($place, $name), $names)));
     }
 }
