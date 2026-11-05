@@ -31,6 +31,8 @@
     <textarea {{ named }}>{{ value }}</textarea>
 {% elseif field.type == constant(type ~ 'Secret') %}
     <input {{ named }} type="text" class="secret" autocomplete="off" spellcheck="false">
+{% elseif field.type.picture %}
+    {% include '@Theme/_file.html.twig' with {id: id, name: name, accept: (field.type == constant(type ~ 'Image') ? constant('AdzerCMS\\Core\\Setting\\Images::TYPES')|keys : constant('AdzerCMS\\Core\\Photo\\Photos::TYPES'))|join(',')} only %}
 {% else %}
     <input {{ named }} type="text" value="{{ value }}">
 {% endif %}

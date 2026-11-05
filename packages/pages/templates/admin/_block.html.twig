@@ -17,7 +17,16 @@
         {% endif %}
         <div class="fields aligned">
             {% for field in type.fields %}
-                {% include '@Theme/_field_row.html.twig' with {field: field, id: 'block-' ~ field.name, name: 'value[' ~ field.name ~ ']', value: values[field.name]} only %}
+                {% embed '@Theme/_field_row.html.twig' with {field: field, id: 'block-' ~ field.name, name: 'value[' ~ field.name ~ ']', value: values[field.name]} only %}
+                    {% block extra %}
+                        {% if field.type.picture and value %}
+                            <div class="field-extra">
+                                {% include '@Theme/_preview.html.twig' with {src: path('pages_picture', {file: value})} only %}
+                                <button type="submit" class="secondary small" name="drop[{{ field.name }}]" value="1" formnovalidate>{{ 'core.action.drop'|trans }}</button>
+                            </div>
+                        {% endif %}
+                    {% endblock %}
+                {% endembed %}
             {% endfor %}
         </div>
         <button type="submit">{{ 'core.action.save'|trans }}</button>

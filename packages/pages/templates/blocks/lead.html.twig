@@ -2,5 +2,7 @@
     {% block content %}
         {% for line in values.text|split("\n")|filter(line => line) %}<p class="site-lead">{{ line }}</p>{% endfor %}
         {% include '@Pages/blocks/_button.html.twig' %}
+        {% set picture = values.picture ?? null %}
+        {% if picture %}<img class="site-picture" src="{{ picture.src }}" width="{{ picture.width }}" height="{{ picture.height }}" alt=""{% if level == 1 %} fetchpriority="high"{% else %} loading="lazy"{% endif %}>{% endif %}
     {% endblock %}
 {% endembed %}

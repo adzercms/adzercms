@@ -9,12 +9,8 @@
             {% set stored = field.name in block.stored %}
             {% embed '@Theme/_field_row.html.twig' with {name: 'value[' ~ field.name ~ ']', value: values[field.name]} %}
                 {% block control %}
-                    {% if field.type == constant(type ~ 'Image') %}
-                        {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: constant('AdzerCMS\\Core\\Setting\\Images::TYPES')|keys|join(',')} only %}
-                    {% elseif field.type == constant(type ~ 'Photo') %}
-                        {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: constant('AdzerCMS\\Core\\Photo\\Photos::TYPES')|join(',')} only %}
-                    {% elseif field.type == constant(type ~ 'Container') %}
-                        {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: '.p12,.pfx'} only %}
+                    {% if field.type == constant(type ~ 'Container') %}
+                        {% include '@Theme/_file.html.twig' with {id: id, name: name, accept: '.p12,.pfx'} only %}
                     {% else %}
                         {{ parent() }}
                     {% endif %}
@@ -30,10 +26,7 @@
                             {% endif %}
 
                             {% if field.type.picture and stored %}
-                                <span class="brand-preview">
-                                    <img src="{{ path('setting_image', {name: field.name}) }}" alt="{{ values[field.name] }}">
-                                    {% if field.type == constant(type ~ 'Image') %}<img src="{{ path('setting_image', {name: field.name}) }}" alt="">{% endif %}
-                                </span>
+                                {% include '@Theme/_preview.html.twig' with {src: path('setting_image', {name: field.name}), schemes: field.type == constant(type ~ 'Image')} only %}
                             {% endif %}
 
                             {% if stored %}

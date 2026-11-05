@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Pages\Type;
 
-class Hero extends Plain
+use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Type as FieldType;
+
+use function Symfony\Component\Translation\t;
+
+final class Hero extends Call
 {
     public function key(): string
     {
@@ -13,11 +18,6 @@ class Hero extends Plain
 
     public function fields(): array
     {
-        return [self::title(), self::text(), ...Button::fields()];
-    }
-
-    public function template(): string
-    {
-        return '@Pages/blocks/lead.html.twig';
+        return [self::title(), self::text(), new Field('picture', t('pages.field.picture'), FieldType::Photo), ...Button::fields()];
     }
 }

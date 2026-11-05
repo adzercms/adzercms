@@ -47,7 +47,7 @@ final class SettingForm
         $dropped = $request->request->all('drop');
         $values = $request->request->all('value');
         $passwords = $request->request->all('pass');
-        $files = $request->files->all('file');
+        $files = $request->files->all('value');
         $carded = self::carded($fields);
 
         foreach ($fields as $field) {

@@ -11,6 +11,7 @@ use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Pages\Entity\Page;
 use AdzerCMS\Pages\Entity\PageBlock;
+use AdzerCMS\Pages\Pictures;
 use AdzerCMS\Pages\Repository\PageBlockRepository;
 use AdzerCMS\Pages\Repository\PageRepository;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -94,6 +95,47 @@ final class AdminTest extends SchemaTestCase
         self::assertResponseStatusCodeSame(404);
     }
 
+    #[Group('ACMS-PAGE-0012')]
+    #[Group('ACMS-PAGE-0013')]
+    #[Group('ACMS-US-0071')]
+    public function testBlockPictureReachesVisitorAndItsFileLeavesWithIt(): void
+    {
+        $page = new Page('Home', Page::ROOT);
+        $page->edit('Home', Page::ROOT, null, true, false, null);
+        $this->em->persist($page);
+        $this->em->flush();
+        $record = self::LIST.'/'.$page->getId();
+        self::assertCount(0, $this->client->request('GET', $record.'/blocks/new?type=call')->filter('input[type="file"]'), 'a call carries no picture');
+
+        $hero = $this->hero($page, 'Internet');
+        $first = $hero->getValues()['picture'];
+        $this->client->request('GET', (string) $this->client->request('GET', '/')->filter('.site-hero img')->attr('src'));
+        self::assertResponseHeaderSame('Content-Type', 'image/webp');
+        self::assertSame(['Internet'], $this->arrive($record)->filter('tbody tr td:nth-child(3)')->each(static fn (Crawler $cell): string => trim($cell->text())), 'the summary carries no file name');
+
+        $edit = self::LIST.'/blocks/'.$hero->getId();
+        $refused = $this->post($edit, ['value' => ['title' => 'Internet']], ['value' => ['picture' => $this->scratchFile('fake.png', 'not a picture')]]);
+        self::assertSame(self::phrase(t('core.photo.type', ['name' => 'fake.png'])), trim($refused->filter('.flash-error')->text()));
+        self::assertCount(1, $refused->filter('.picture-preview img'), 'a refused file leaves the stored picture');
+
+        $this->post($edit, ['value' => ['title' => 'Internet']], ['value' => ['picture' => $this->picture('next.png')]]);
+        $next = $this->reread($hero)->getValues()['picture'];
+        self::assertNotSame($first, $next);
+        self::assertNull(self::service(Pictures::class)->path($first), 'a replaced picture takes its file');
+
+        $this->post($edit, ['value' => ['title' => 'Internet'], 'drop' => ['picture' => '1']]);
+        self::assertSame(['title' => 'Internet'], $this->reread($hero)->getValues());
+        self::assertNull(self::service(Pictures::class)->path($next), 'a dropped picture takes its file');
+
+        $dropped = $this->hero($page, 'Fiber');
+        $this->post(self::LIST.'/blocks/'.$dropped->getId().'/drop');
+        self::assertNull(self::service(Pictures::class)->path($dropped->getValues()['picture']), 'a dropped block takes its file');
+
+        $kept = $this->hero($page, 'Support')->getValues()['picture'];
+        $this->post($record.'/drop');
+        self::assertNull(self::service(Pictures::class)->path($kept), 'a dropped page takes the files of its blocks');
+    }
+
     #[Group('ACMS-PAGE-0002')]
     #[Group('ACMS-US-0071')]
     #[DataProvider('addresses')]
@@ -143,6 +185,15 @@ final class AdminTest extends SchemaTestCase
         yield 'address of another page' => ['/about', 'pages.refusal.path_page'];
         yield 'address of a module section' => ['/admin/pages', 'pages.refusal.path_route'];
         yield 'address out of the format' => ['/about us', 'pages.refusal.path'];
+    }
+
+    private function hero(Page $page, string $title): PageBlock
+    {
+        $this->post(self::LIST.'/'.$page->getId().'/blocks/new', ['type' => 'hero', 'value' => ['title' => $title]], ['value' => ['picture' => $this->picture($title.'.png')]]);
+        $hero = array_find(self::service(PageBlockRepository::class)->of($page), static fn (PageBlock $block): bool => $title === ($block->getValues()['title'] ?? null)) ?? self::fail('the hero is not added');
+        self::assertNotNull(self::service(Pictures::class)->path($hero->getValues()['picture'] ?? ''), 'the picture is stored');
+
+        return $hero;
     }
 
     /** @return list<string> */

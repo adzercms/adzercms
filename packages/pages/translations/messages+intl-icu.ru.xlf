@@ -145,6 +145,12 @@
         <target>Адрес</target>
       </segment>
     </unit>
+    <unit id="pages.field.picture">
+      <segment>
+        <source>pages.field.picture</source>
+        <target>Картинка</target>
+      </segment>
+    </unit>
     <unit id="pages.field.points">
       <segment>
         <source>pages.field.points</source>

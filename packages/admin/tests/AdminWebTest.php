@@ -611,7 +611,7 @@ final class AdminWebTest extends SchemaTestCase
         $this->client->loginUser($this->admin);
         $brand = self::SETTINGS.Page::Brand->value;
 
-        $this->post($brand, [], ['file' => [Brand::ICON => $this->picture('icon.png')]]);
+        $this->post($brand, [], ['value' => [Brand::ICON => $this->picture('icon.png')]]);
         self::assertResponseRedirects();
 
         $this->client->request('GET', '/setting/'.Brand::ICON);
@@ -624,9 +624,9 @@ final class AdminWebTest extends SchemaTestCase
         $header = $this->client->request('GET', '/admin');
         self::assertSame('Village network', trim($header->filter('.header-logo span')->text()), 'without a logo the title carries the brand');
         self::assertStringEndsWith('/setting/'.Brand::ICON, (string) $header->filter('link[rel="icon"]')->attr('href'));
-        self::assertStringEndsWith('/setting/'.Brand::ICON, (string) $this->client->request('GET', $brand)->filter('.brand-preview img')->attr('src'));
+        self::assertStringEndsWith('/setting/'.Brand::ICON, (string) $this->client->request('GET', $brand)->filter('.picture-preview img')->attr('src'));
 
-        $this->post($brand, [], ['file' => [Brand::LOGO => $this->picture('logo.png')]]);
+        $this->post($brand, [], ['value' => [Brand::LOGO => $this->picture('logo.png')]]);
         $logo = $this->client->request('GET', '/admin')->filter('.header-logo');
         self::assertCount(0, $logo->filter('span'), 'the logo stands in place of the title');
         self::assertSame('Village network', $logo->filter('img')->attr('alt'));
@@ -634,7 +634,7 @@ final class AdminWebTest extends SchemaTestCase
 
         $this->configure([Brand::THEME => Theme::Dark->value]);
         self::assertStringEndsWith('/setting/'.Brand::LOGO, (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'without a dark theme logo the dark theme keeps the logo');
-        $this->post($brand, [], ['file' => [Brand::LOGO_DARK => $this->picture('logo-dark.png')]]);
+        $this->post($brand, [], ['value' => [Brand::LOGO_DARK => $this->picture('logo-dark.png')]]);
         self::assertStringEndsWith('/setting/'.Brand::LOGO_DARK, (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'));
         $this->configure([Brand::THEME => Theme::Light->value]);
         self::assertStringEndsWith('/setting/'.Brand::LOGO, (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'the light theme keeps the logo');

@@ -1031,7 +1031,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/pages",
-                "reference": "1a448cb92a106dba15082cdc804e88b433dea7fa"
+                "reference": "9763e4cbf8805e29bf719ca6b89c1ad345f3c32d"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1042,6 +1042,7 @@
                 "doctrine/migrations": "^3.9",
                 "doctrine/orm": "^3.7",
                 "doctrine/persistence": "^4.2",
+                "ext-imagick": "*",
                 "ext-mbstring": "*",
                 "php": ">=8.4",
                 "symfony/dependency-injection": "7.4.*",

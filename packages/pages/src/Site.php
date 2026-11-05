@@ -19,6 +19,7 @@ final readonly class Site
         private PageBlockRepository $repository,
         private Brand $brand,
         private UrlGeneratorInterface $urls,
+        private Pictures $pictures,
     ) {
     }
 
@@ -36,7 +37,11 @@ final readonly class Site
             $values = [];
             foreach ($type->fields() as $field) {
                 $value = $stored[$field->name] ?? '';
-                $values[$field->name] = Type::Rows === $field->type ? Values::entries($field, $value) : $value;
+                $values[$field->name] = match (true) {
+                    Type::Rows === $field->type => Values::entries($field, $value),
+                    $field->type->picture() => '' === $value ? null : $this->pictures->shown($value),
+                    default => $value,
+                };
             }
             $blocks[] = ['template' => $type->template(), 'key' => $type->key(), 'values' => $values, 'data' => $type->data($stored), 'level' => 2];
             $schema[] = $type->schema($stored);

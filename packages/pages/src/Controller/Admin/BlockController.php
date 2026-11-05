@@ -58,7 +58,7 @@ final class BlockController extends AbstractController
 
         $refusals = [];
         if ($posted) {
-            $outcome = $this->form->add($page, $type, $request->request->all(BlockForm::VALUE));
+            $outcome = $this->form->add($page, $type, $request);
             if ($outcome instanceof PageBlock) {
                 $this->addFlash('success', t('pages.flash.block_added', ['type' => $type->label()]));
 
@@ -77,7 +77,7 @@ final class BlockController extends AbstractController
 
         $refusals = [];
         if ($request->isMethod('POST')) {
-            $refusals = $this->form->fill($block, $type, $request->request->all(BlockForm::VALUE));
+            $refusals = $this->form->fill($block, $type, $request);
             if ([] === $refusals) {
                 $this->addFlash('success', t('pages.flash.block_saved', ['type' => $type->label()]));
 
@@ -85,7 +85,7 @@ final class BlockController extends AbstractController
             }
         }
 
-        return $this->dialog($block->getPage(), $block, $type, [], $refusals, $request->isMethod('POST') ? $request->request->all(BlockForm::VALUE) : $block->getValues());
+        return $this->dialog($block->getPage(), $block, $type, [], $refusals, $request->request->all(BlockForm::VALUE) + $block->getValues());
     }
 
     #[Route('/blocks/{id}/drop', name: 'admin_page_block_drop', requirements: ['id' => '\d+'], methods: ['POST'])]

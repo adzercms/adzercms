@@ -511,9 +511,9 @@ label { display: block; margin-bottom: 0.9rem; font-size: 13px; font-weight: 500
 .field-rows-head { font-size: 13px; color: var(--text-gray); }
 .reveal { margin-top: 0.5rem; }
 .reveal[open] > summary { margin-bottom: 0.6rem; }
-.brand-preview { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem; }
-.brand-preview img { max-width: 100%; max-height: 3rem; padding: 0.4rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color-scheme: light; }
-.brand-preview img + img { color-scheme: dark; }
+.picture-preview { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem; }
+.picture-preview img { max-width: 100%; max-height: 3rem; padding: 0.4rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color-scheme: light; }
+.picture-preview img + img { color-scheme: dark; }
 
 .credential { display: flex; flex-direction: column; margin-bottom: 0.9rem; max-width: 28rem; }
 .credential-label { font-size: 13px; font-weight: 500; }
@@ -1658,6 +1658,7 @@ form[data-steps] [data-step]:not(.current) { display: none; }
 .site-heading { margin: 0 0 1.25rem; }
 h1.site-heading { font-size: clamp(28px, 5vw, 44px); line-height: 1.15; }
 .site-lead { max-width: 48rem; margin: 0 0 1.5rem; font-size: 18px; color: var(--text-gray); }
+.site-picture { display: block; width: 100%; height: auto; max-height: 32rem; margin-top: 2rem; object-fit: cover; border-radius: var(--radius); }
 .site-points { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); margin: 0; padding: 0; list-style: none; }
 .site-points h3 { margin: 0 0 0.5rem; }
 .site-points p { margin: 0; color: var(--text-gray); }

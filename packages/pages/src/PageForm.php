@@ -8,7 +8,9 @@ use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Pages\Controller\PageController;
 use AdzerCMS\Pages\Entity\Page;
+use AdzerCMS\Pages\Entity\PageBlock;
 use AdzerCMS\Pages\Entity\PagePath;
+use AdzerCMS\Pages\Repository\PageBlockRepository;
 use AdzerCMS\Pages\Repository\PagePathRepository;
 use AdzerCMS\Pages\Repository\PageRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,6 +36,8 @@ final readonly class PageForm
     public function __construct(
         private PageRepository $pages,
         private PagePathRepository $paths,
+        private PageBlockRepository $blocks,
+        private Pictures $pictures,
         private RouterInterface $router,
         private EntityManagerInterface $em,
     ) {
@@ -103,8 +107,10 @@ final readonly class PageForm
 
     public function drop(Page $page): void
     {
+        $values = array_merge(...array_map(static fn (PageBlock $block): array => array_values($block->getValues()), $this->blocks->of($page)));
         $this->em->remove($page);
         $this->em->flush();
+        $this->pictures->drop($values);
     }
 
     /** @param list<int> $moved */

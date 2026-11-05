@@ -6,11 +6,14 @@ namespace AdzerCMS\Pages\Controller;
 
 use AdzerCMS\Contracts\Ui\CabinetEntry;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Http\ImmutableFileResponse;
 use AdzerCMS\Core\Ui\Entries;
 use AdzerCMS\Pages\Entity\Page;
+use AdzerCMS\Pages\Pictures;
 use AdzerCMS\Pages\Repository\PageRepository;
 use AdzerCMS\Pages\Site;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -20,6 +23,7 @@ final class PageController extends AbstractController
     public const ROOT = 'pages_root';
     public const PAGE = 'pages_page';
     public const PREVIEW = 'admin_page_preview';
+    public const PICTURE = 'pages_picture';
     public const LAST = \PHP_INT_MIN;
 
     private const UNINDEXED = 'noindex, nofollow';
@@ -27,6 +31,7 @@ final class PageController extends AbstractController
     public function __construct(
         private readonly PageRepository $pages,
         private readonly Site $site,
+        private readonly Pictures $pictures,
     ) {
     }
 
@@ -50,6 +55,12 @@ final class PageController extends AbstractController
         }
 
         return $this->moved('/'.$path) ?? throw $this->createNotFoundException();
+    }
+
+    #[Route('/pages/pictures/{file}', name: self::PICTURE, requirements: ['file' => '[^/]+'], methods: ['GET'], options: ['site' => true])]
+    public function picture(string $file, Request $request): Response
+    {
+        return new ImmutableFileResponse($this->pictures->path($file) ?? throw $this->createNotFoundException(), $request);
     }
 
     #[Route('/admin/pages/{id}/preview', name: self::PREVIEW, requirements: ['id' => '\d+'], methods: ['GET'])]

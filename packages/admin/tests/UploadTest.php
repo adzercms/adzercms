@@ -27,7 +27,7 @@ final class UploadTest extends SchemaTestCase
         $this->em->flush();
         $this->client->loginUser($admin);
 
-        $this->post('/upload', ['field' => \sprintf('file[%s]', Brand::LOGO)], ['file' => $this->picture('mark.png')]);
+        $this->post('/upload', ['field' => \sprintf('value[%s]', Brand::LOGO)], ['file' => $this->picture('mark.png')]);
         self::assertResponseIsSuccessful();
         $key = json_decode((string) $this->client->getResponse()->getContent(), true, flags: \JSON_THROW_ON_ERROR)['key'];
         $form = [Uploads::FIELD => [$key]];
