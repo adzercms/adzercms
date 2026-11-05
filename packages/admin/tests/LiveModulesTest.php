@@ -37,6 +37,7 @@ final class LiveModulesTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-0980')]
     #[Group('ACMS-UI-0062')]
+    #[Group('ACMS-UI-0137')]
     #[Group('ACMS-US-0004')]
     public function testOperationStateReachesStaffChannelOnly(): void
     {

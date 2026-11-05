@@ -92,7 +92,7 @@ final class CentrifugoHubTest extends SchemaTestCase
         self::assertSame([$subject, self::STAFF], [$claims->sub, $claims->channel]);
     }
 
-    #[Group('ACMS-UI-0059')]
+    #[Group('ACMS-UI-0136')]
     #[Group('ACMS-UI-0071')]
     public function testChangeIsBroadcastByTheApiKeyAfterCommit(): void
     {
@@ -111,7 +111,7 @@ final class CentrifugoHubTest extends SchemaTestCase
         ]], $this->published);
     }
 
-    #[Group('ACMS-UI-0059')]
+    #[Group('ACMS-UI-0136')]
     public function testSilentHubDoesNotBreakTheChange(): void
     {
         $user = $this->record('79990000020');

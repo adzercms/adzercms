@@ -57,7 +57,7 @@ final class CabinetWebTest extends SchemaTestCase
         self::assertResponseRedirects('/cabinet');
     }
 
-    #[Group('ACMS-UI-0035')]
+    #[Group('ACMS-UI-0126')]
     #[Group('ACMS-US-0001')]
     public function testLoginServiceButtonTakesColorOfService(): void
     {

@@ -20,7 +20,7 @@ final class UploadTest extends SchemaTestCase
     use Accounts;
     use Browser;
 
-    #[Group('ACMS-UI-0105')]
+    #[Group('ACMS-UI-0124')]
     public function testUploadedFileReachesTheFormOfItsOwnSessionByKey(): void
     {
         $admin = $this->record('79990000001')->setRole(Role::Admin);

@@ -165,7 +165,6 @@ final class SettingCommandTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-1067')]
-    #[Group('ACMS-UI-0031')]
     public function testToggleTakesOnlyOnOrOff(): void
     {
         $enabled = RelayGateway::SETTINGS.Switches::ENABLED;

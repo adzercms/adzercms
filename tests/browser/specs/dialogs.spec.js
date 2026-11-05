@@ -37,7 +37,7 @@ test.beforeEach(async ({ page }) => {
     await page.goto(TEXTS);
 });
 
-test('[ACMS-UI-0076] going back closes the dialogs above its entry and stays on the page', async ({ page }) => {
+test('[ACMS-UI-0076][ACMS-UI-0130] going back closes the dialogs above its entry and stays on the page', async ({ page }) => {
     await page.evaluate(() => history.replaceState({ htmx: true }, ''));
     await open(page);
     await ask(page);
@@ -59,7 +59,7 @@ test('[ACMS-UI-0076] going back closes the dialogs above its entry and stays on 
     await leaves(page);
 });
 
-test('[ACMS-UI-0076] a dialog closed otherwise takes its entry back', async ({ page }) => {
+test('[ACMS-UI-0131] a dialog closed otherwise takes its entry back', async ({ page }) => {
     await open(page);
 
     await record(page).locator('.modal-close').click();
@@ -69,7 +69,7 @@ test('[ACMS-UI-0076] a dialog closed otherwise takes its entry back', async ({ p
     await leaves(page);
 });
 
-test('[ACMS-UI-0076] consent keeps its submission, the page back on the dialog entry returns to the bare one', async ({ page }) => {
+test('[ACMS-UI-0132] consent keeps its submission, the page back on the dialog entry returns to the bare one', async ({ page }) => {
     const list = new URL(TEXTS, page.url()).href;
     await page.route((url) => url.pathname === ASKING, async (route) => route.fulfill({
         response: await route.fetch({ url: list, method: 'GET' }),
@@ -87,7 +87,7 @@ test('[ACMS-UI-0076] consent keeps its submission, the page back on the dialog e
     await leaves(page);
 });
 
-test('[ACMS-UI-0076] leaving from a dialog goes from the bare entry', async ({ page }) => {
+test('[ACMS-UI-0133] leaving from a dialog goes from the bare entry', async ({ page }) => {
     await page.route((url) => url.pathname.startsWith(`${TEXTS}/`), (route) => (route.request().method() === 'POST'
         ? route.fulfill({ status: 204, headers: { 'HX-Redirect': TEXTS } })
         : route.continue()));

@@ -77,7 +77,7 @@ final class LiveBlocksTest extends SchemaTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN, 'the user gets no token of the staff channel');
     }
 
-    #[Group('ACMS-UI-0059')]
+    #[Group('ACMS-UI-0136')]
     #[Group('ACMS-UI-0062')]
     public function testStatusChangeReachesOwnerChannelOnlyAfterCommitAndOtherFieldsDoNot(): void
     {

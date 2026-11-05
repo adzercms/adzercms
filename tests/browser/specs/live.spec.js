@@ -70,7 +70,7 @@ const marked = async (page, ids) => {
     return refreshes;
 };
 
-test('[ACMS-TEST-0016][ACMS-TEST-0018][ACMS-UI-0058][ACMS-UI-0063] a series of hub events refreshes live blocks once and spares the block in editing', async ({ page }) => {
+test('[ACMS-TEST-0016][ACMS-TEST-0018][ACMS-UI-0058][ACMS-UI-0063][ACMS-UI-0072] a series of hub events refreshes live blocks once and spares the block in editing', async ({ page }) => {
     test.setTimeout(900000);
 
     await crawl(page, '/admin', [], { ...WALK, visit: async () => await page.evaluate(pair) !== null });

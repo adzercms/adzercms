@@ -646,6 +646,7 @@ final class AdminWebTest extends SchemaTestCase
     }
 
     #[Group('ACMS-UI-0086')]
+    #[Group('ACMS-UI-0127')]
     #[Group('ACMS-UI-0088')]
     #[Group('ACMS-US-0004')]
     public function testBrandColorIsSchemeOfThemeOrOwnColorResetToTheFirstScheme(): void
