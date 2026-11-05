@@ -191,7 +191,7 @@ final class CatalogPageTest extends CatalogTestCase
         self::assertNotSame('', $meta('meta[name="description"]'));
     }
 
-    #[Group('ACMS-EXT-0011')]
+    #[Group('ACMS-EXT-0021')]
     #[Group('ACMS-US-0044')]
     #[DataProvider('guided')]
     public function testGuideOpensFromCatalogAndMyExtensionsInReaderLanguage(string $entry, bool $signed, string $language, string $file): void

@@ -115,7 +115,7 @@ final class MetadataTest extends CatalogTestCase
         self::assertSame(self::phrase(ExtensionState::Missing->label()), trim(self::cell($page, self::NAME, self::phrase('core.column.status'))->text()));
     }
 
-    #[Group('ACMS-EXT-0003')]
+    #[Group('ACMS-EXT-0017')]
     #[Group('ACMS-US-0035')]
     public function testDailyJobRefreshesEntriesAndKeepsThemWhenRepositoryIsDown(): void
     {
@@ -143,7 +143,7 @@ final class MetadataTest extends CatalogTestCase
         self::assertStringContainsString(self::PAID, $job->getDisplay());
     }
 
-    #[Group('ACMS-EXT-0003')]
+    #[Group('ACMS-EXT-0016')]
     public function testRepositoryOutsideWebIsRefused(): void
     {
         $field = self::service(Catalog::class)->fields()[ExtensionsSettings::REPOSITORIES];

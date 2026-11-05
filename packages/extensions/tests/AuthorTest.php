@@ -66,7 +66,7 @@ final class AuthorTest extends CatalogTestCase
     }
 
     #[Group('ACMS-EXT-0009')]
-    #[Group('ACMS-EXT-0010')]
+    #[Group('ACMS-EXT-0018')]
     #[Group('ACMS-US-0044')]
     public function testSubmittedEntryWithKeyAwaitsDecisionOffSite(): void
     {
@@ -82,7 +82,7 @@ final class AuthorTest extends CatalogTestCase
         self::assertSame([], $this->arrive('/extensions')->filter('.offer-title')->each(static fn (Crawler $title): string => $title->text()));
     }
 
-    #[Group('ACMS-EXT-0010')]
+    #[Group('ACMS-EXT-0018')]
     #[Group('ACMS-US-0044')]
     #[DataProvider('unproven')]
     public function testSubmissionWithoutProvenKeyIsRefused(bool $down, string $reason): void
