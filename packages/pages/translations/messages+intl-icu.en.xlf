@@ -109,6 +109,12 @@
         <target>Description for search engines</target>
       </segment>
     </unit>
+    <unit id="pages.field.former">
+      <segment>
+        <source>pages.field.former</source>
+        <target>Former addresses</target>
+      </segment>
+    </unit>
     <unit id="pages.field.link">
       <segment>
         <source>pages.field.link</source>
@@ -241,6 +247,12 @@
         <target>{title}</target>
       </segment>
     </unit>
+    <unit id="pages.refusal.former">
+      <segment>
+        <source>pages.refusal.former</source>
+        <target>Former address {path}: / or words of lowercase letters, digits and hyphens joined by /</target>
+      </segment>
+    </unit>
     <unit id="pages.refusal.link">
       <segment>
         <source>pages.refusal.link</source>
@@ -257,6 +269,12 @@
       <segment>
         <source>pages.refusal.path</source>
         <target>Address: / or words of lowercase letters, digits and hyphens joined by /</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.path_former">
+      <segment>
+        <source>pages.refusal.path_former</source>
+        <target>Address {path} is a former address of the page «{title}»</target>
       </segment>
     </unit>
     <unit id="pages.refusal.path_page">

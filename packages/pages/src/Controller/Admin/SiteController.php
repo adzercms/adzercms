@@ -123,6 +123,7 @@ final class SiteController extends AbstractController
         return $this->render('@Pages/admin/page.html.twig', [
             'page' => $page,
             'open' => $page->isPublished() ? $this->site->url($page) : $this->generateUrl(PageController::PREVIEW, ['id' => $page->getId()]),
+            'former' => $this->form->lines($page),
             'refusals' => $refusals,
             'input' => $input,
             'blocks' => $this->blocks->listing($page, $request),

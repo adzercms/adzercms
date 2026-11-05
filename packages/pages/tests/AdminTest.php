@@ -109,6 +109,34 @@ final class AdminTest extends SchemaTestCase
         self::assertSame(1, self::service(PageRepository::class)->count());
     }
 
+    #[Group('ACMS-PAGE-0004')]
+    #[Group('ACMS-US-0071')]
+    public function testChangedAddressLeadsToPageAndPassesToPageTakingIt(): void
+    {
+        $tariffs = new Page('Tariffs', '/tariffs');
+        $tariffs->edit('Tariffs', '/tariffs', null, true, false, null);
+        $this->em->persist($tariffs);
+        $this->em->flush();
+        $record = self::LIST.'/'.$tariffs->getId();
+
+        $this->post($record, ['title' => 'Tariffs', 'path' => '/plans', 'former' => "/prices\n/Rates", 'published' => '1']);
+        self::assertResponseRedirects($record);
+        foreach (['/tariffs', '/prices', '/rates'] as $former) {
+            $this->client->request('GET', $former);
+            self::assertResponseRedirects('http://localhost/plans', 301, $former);
+        }
+        self::assertSame("/prices\n/rates\n/tariffs", trim($this->arrive($record)->filter('textarea[name="former"]')->text(null, false)));
+
+        $refused = $this->post($record, ['title' => 'Tariffs', 'path' => '/plans', 'former' => '/admin/pages', 'published' => '1']);
+        self::assertSame(self::phrase(t('pages.refusal.path_route', ['path' => '/admin/pages'])), trim($refused->filter('.field-refusal')->text()));
+
+        $this->post(self::LIST.'/new', ['title' => 'Prices', 'path' => '/prices']);
+        self::assertNotNull(self::service(PageRepository::class)->findOneBy(['path' => '/prices']), 'a former address is free for another page');
+        self::assertSame("/rates\n/tariffs", trim($this->arrive($record)->filter('textarea[name="former"]')->text(null, false)));
+        $this->client->request('GET', '/prices');
+        self::assertResponseStatusCodeSame(404, 'the page taking a former address answers it once published');
+    }
+
     /** @return iterable<string, array{string, string}> */
     public static function addresses(): iterable
     {

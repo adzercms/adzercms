@@ -8,6 +8,8 @@ use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Pages\Controller\PageController;
 use AdzerCMS\Pages\Entity\Page;
+use AdzerCMS\Pages\Entity\PagePath;
+use AdzerCMS\Pages\Repository\PagePathRepository;
 use AdzerCMS\Pages\Repository\PageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\InputBag;
@@ -23,6 +25,7 @@ final readonly class PageForm
 {
     public const TITLE = 'title';
     public const PATH = 'path';
+    public const FORMER = 'former';
     public const DESCRIPTION = 'description';
     public const PUBLISHED = 'published';
     public const MENU = 'menu';
@@ -30,6 +33,7 @@ final readonly class PageForm
 
     public function __construct(
         private PageRepository $pages,
+        private PagePathRepository $paths,
         private RouterInterface $router,
         private EntityManagerInterface $em,
     ) {
@@ -51,6 +55,7 @@ final readonly class PageForm
         $page = new Page($title, $path);
         $page->place($this->pages->count() + 1);
         $this->em->persist($page);
+        $this->release($path);
         $this->em->flush();
 
         return $page;
@@ -65,12 +70,18 @@ final readonly class PageForm
     {
         $title = self::title($input);
         $path = $this->path($input, $page);
+        $former = $path instanceof Refusal ? [] : $this->former($input, $page, $path);
         $label = trim($input->getString(self::MENU_LABEL));
         $long = mb_strlen($label) > Page::MENU ? new Refusal(t('pages.refusal.menu_label', ['limit' => Page::MENU])) : null;
-        if ($title instanceof Refusal || $path instanceof Refusal || null !== $long) {
-            return self::refusals([self::TITLE => $title, self::PATH => $path, self::MENU_LABEL => $long]);
+        if ($title instanceof Refusal || $path instanceof Refusal || $former instanceof Refusal || null !== $long) {
+            return self::refusals([self::TITLE => $title, self::PATH => $path, self::FORMER => $former instanceof Refusal ? $former : null, self::MENU_LABEL => $long]);
         }
 
+        if ($path !== $page->getPath()) {
+            $former = array_values(array_unique([...$former, $page->getPath()]));
+            $this->release($path);
+        }
+        $this->keep($page, $former);
         $description = trim($input->getString(self::DESCRIPTION));
         $page->edit(
             $title,
@@ -83,6 +94,11 @@ final readonly class PageForm
         $this->em->flush();
 
         return [];
+    }
+
+    public function lines(Page $page): string
+    {
+        return implode("\n", array_map(static fn (PagePath $former): string => $former->getPath(), $this->paths->of($page)));
     }
 
     public function drop(Page $page): void
@@ -130,6 +146,63 @@ final readonly class PageForm
         }
 
         return $this->routed($path) ? new Refusal(t('pages.refusal.path_route', ['path' => $path])) : $path;
+    }
+
+    /**
+     * @param InputBag<string> $input
+     *
+     * @return list<string>|Refusal
+     */
+    private function former(InputBag $input, Page $page, string $path): array|Refusal
+    {
+        $former = [];
+        foreach (preg_split('/\R/u', $input->getString(self::FORMER)) ?: [] as $line) {
+            $line = trim($line);
+            $parsed = '' === $line ? $path : Page::parse($line);
+            if (null === $parsed) {
+                return new Refusal(t('pages.refusal.former', ['path' => $line]));
+            }
+            if ($parsed !== $path) {
+                $former[$parsed] = $parsed;
+            }
+        }
+        $former = array_values($former);
+
+        foreach ($this->pages->holding($former) as $holder) {
+            if ($holder !== $page) {
+                return new Refusal(t('pages.refusal.path_page', ['path' => $holder->getPath(), 'title' => $holder->getTitle()]));
+            }
+        }
+        foreach ($this->paths->held($former) as $held) {
+            if ($held->getPage() !== $page) {
+                return new Refusal(t('pages.refusal.path_former', ['path' => $held->getPath(), 'title' => $held->getPage()->getTitle()]));
+            }
+        }
+        $routed = array_find($former, $this->routed(...));
+
+        return null === $routed ? $former : new Refusal(t('pages.refusal.path_route', ['path' => $routed]));
+    }
+
+    /** @param list<string> $paths */
+    private function keep(Page $page, array $paths): void
+    {
+        foreach ($this->paths->of($page) as $kept) {
+            if (\in_array($kept->getPath(), $paths, true)) {
+                $paths = array_values(array_diff($paths, [$kept->getPath()]));
+            } else {
+                $this->em->remove($kept);
+            }
+        }
+        foreach ($paths as $path) {
+            $this->em->persist(new PagePath($page, $path));
+        }
+    }
+
+    private function release(string $path): void
+    {
+        foreach ($this->paths->held([$path]) as $former) {
+            $this->em->remove($former);
+        }
     }
 
     private function routed(string $path): bool

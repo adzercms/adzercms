@@ -27,6 +27,10 @@
                 <input type="text" name="path" maxlength="{{ constant('AdzerCMS\\Pages\\Entity\\Page::PATH') }}" value="{{ input.path ?? page.path }}" required>
                 {{ refusal.of(refusals, 'path') }}
             </label>
+            <label>{{ 'pages.field.former'|trans }}
+                <textarea name="former" rows="3">{{ input.former ?? former }}</textarea>
+                {{ refusal.of(refusals, 'former') }}
+            </label>
             <label class="field-wide">{{ 'pages.field.description'|trans }}
                 <textarea name="description" rows="3">{{ input.description ?? page.description }}</textarea>
             </label>

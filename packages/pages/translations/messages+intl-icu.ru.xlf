@@ -109,6 +109,12 @@
         <target>Описание для поисковиков</target>
       </segment>
     </unit>
+    <unit id="pages.field.former">
+      <segment>
+        <source>pages.field.former</source>
+        <target>Прежние адреса</target>
+      </segment>
+    </unit>
     <unit id="pages.field.link">
       <segment>
         <source>pages.field.link</source>
@@ -241,6 +247,12 @@
         <target>{title}</target>
       </segment>
     </unit>
+    <unit id="pages.refusal.former">
+      <segment>
+        <source>pages.refusal.former</source>
+        <target>Прежний адрес {path}: / либо слова из строчных букв, цифр и дефиса через /</target>
+      </segment>
+    </unit>
     <unit id="pages.refusal.link">
       <segment>
         <source>pages.refusal.link</source>
@@ -257,6 +269,12 @@
       <segment>
         <source>pages.refusal.path</source>
         <target>Адрес: / либо слова из строчных букв, цифр и дефиса через /</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.path_former">
+      <segment>
+        <source>pages.refusal.path_former</source>
+        <target>Адрес {path} — прежний адрес страницы «{title}»</target>
       </segment>
     </unit>
     <unit id="pages.refusal.path_page">

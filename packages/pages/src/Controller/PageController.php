@@ -34,17 +34,22 @@ final class PageController extends AbstractController
     public function root(Entries $entries): Response
     {
         $page = $this->pages->published(Page::ROOT);
-        if (null === $page) {
-            return $this->redirect($entries->url(CabinetEntry::Home) ?? throw $this->createNotFoundException());
+        if (null !== $page) {
+            return $this->show($page);
         }
 
-        return $this->show($page);
+        return $this->moved(Page::ROOT) ?? $this->redirect($entries->url(CabinetEntry::Home) ?? throw $this->createNotFoundException());
     }
 
     #[Route('/{path}', name: self::PAGE, requirements: ['path' => Page::SEGMENTS], methods: ['GET'], options: ['site' => true, 'utf8' => true], priority: self::LAST)]
     public function page(string $path): Response
     {
-        return $this->show($this->pages->published('/'.$path) ?? throw $this->createNotFoundException());
+        $page = $this->pages->published('/'.$path);
+        if (null !== $page) {
+            return $this->show($page);
+        }
+
+        return $this->moved('/'.$path) ?? throw $this->createNotFoundException();
     }
 
     #[Route('/admin/pages/{id}/preview', name: self::PREVIEW, requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -60,5 +65,12 @@ final class PageController extends AbstractController
     private function show(Page $page): Response
     {
         return $this->render('@Pages/page.html.twig', ['page' => $page, 'view' => $this->site->view($page)]);
+    }
+
+    private function moved(string $path): ?Response
+    {
+        $page = $this->pages->moved($path);
+
+        return null === $page ? null : $this->redirect($this->site->url($page), Response::HTTP_MOVED_PERMANENTLY);
     }
 }
