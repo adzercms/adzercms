@@ -174,8 +174,6 @@ a:hover { text-decoration: underline; }
     color: var(--text);
     font-size: 19px;
     font-weight: 700;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
 }
 
 .header-logo:hover { text-decoration: none; }
@@ -1251,8 +1249,6 @@ html:has(dialog[open]:modal) { overflow: hidden; }
     margin-bottom: 1.1rem;
     font-size: 17px;
     font-weight: 700;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
 }
 
 .auth-logo img { max-height: 3.25rem; }

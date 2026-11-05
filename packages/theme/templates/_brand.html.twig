@@ -1,6 +1,7 @@
 {% set logo = brand.logo(brand.theme) %}
 {% if logo %}
-    <img src="{{ logo }}" alt="{{ brand.title }}">
+    <img src="{{ logo }}" alt="{{ brand.titled ? '' : brand.title }}">
+    {% if brand.titled %}<span>{{ brand.title }}</span>{% endif %}
 {% else %}
     <span>{{ brand.title }}</span>
 {% endif %}

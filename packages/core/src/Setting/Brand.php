@@ -24,6 +24,7 @@ final class Brand implements Owner
     public const TITLE = 'brand.title';
     public const LOGO = 'brand.logo';
     public const LOGO_DARK = 'brand.logo_dark';
+    public const LOGO_TITLE = 'brand.logo_title';
     public const ICON = 'brand.icon';
     public const THEME = 'brand.theme';
     public const LAYOUT = 'brand.layout';
@@ -49,6 +50,7 @@ final class Brand implements Owner
             new Field(self::TITLE, t('core.setting.title'), page: Page::Brand),
             self::logoField(),
             self::darkLogoField(),
+            new Field(self::LOGO_TITLE, t('core.setting.logo_title'), Type::Toggle, page: Page::Brand),
             self::iconField(),
             new Field(self::THEME, t('core.setting.theme'), Type::Choice, choices: self::themes(), page: Page::Brand),
             new Field(self::LAYOUT, t('core.setting.layout'), Type::Choice, choices: self::choices(Layout::cases()), page: Page::Brand),
@@ -70,6 +72,11 @@ final class Brand implements Owner
     public function logo(?Theme $theme = null): ?string
     {
         return (Theme::Dark === $theme ? $this->image(self::darkLogoField()) : null) ?? $this->image(self::logoField());
+    }
+
+    public function titled(): bool
+    {
+        return $this->settings->on(self::LOGO_TITLE);
     }
 
     public function icon(): ?string

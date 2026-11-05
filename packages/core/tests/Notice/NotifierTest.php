@@ -16,6 +16,7 @@ use AdzerCMS\Core\Notice\QuietHours;
 use AdzerCMS\Core\Notice\Status;
 use AdzerCMS\Core\Repository\NoticeRepository;
 use AdzerCMS\Core\Setting\Brand;
+use AdzerCMS\Core\Setting\Toggle;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Delivery;
@@ -210,19 +211,28 @@ final class NotifierTest extends SchemaTestCase
     }
 
     #[Group('ACMS-UI-0007')]
+    #[Group('ACMS-UI-0141')]
     #[Group('ACMS-CORE-0172')]
-    public function testLogoReplacesTitleInLetterHead(): void
+    public function testLogoReplacesTitleInLetterHeadOrStandsBesideIt(): void
     {
         $this->configure(self::MAIL);
         $logo = self::parameter('adzercms.files_dir').'/upload/logo';
         (new Filesystem())->dumpFile($logo, (string) base64_decode(self::PNG));
         self::assertSame(Command::SUCCESS, self::command('adzercms:setting')->execute(['name' => Brand::LOGO, 'value' => $logo]));
+        $owner = $this->record('+7 900 111-22-33', 'owner@example.org');
 
-        $this->message($this->record('+7 900 111-22-33', 'owner@example.org'), 'Service suspended', 'Balance is below zero.');
-
+        $this->message($owner, 'Service suspended', 'Balance is below zero.');
         self::assertMatchesRegularExpression(
             '#<td class="head" style="[^"]+"><img class="logo" src="http://localhost/setting/brand\.logo" alt="Village network"[^>]*></td>#',
             (string) $this->letter()->getHtmlBody(),
+        );
+
+        $this->configure([Brand::LOGO_TITLE => Toggle::On->value]);
+        $this->message($owner, 'Service resumed', 'Balance is above zero.');
+        self::assertMatchesRegularExpression(
+            '#<td class="head" style="[^"]+"><img class="logo" src="http://localhost/setting/brand\.logo" alt=""[^>]*> Village network</td>#',
+            (string) $this->letter()->getHtmlBody(),
+            'the title stands beside the logo',
         );
     }
 

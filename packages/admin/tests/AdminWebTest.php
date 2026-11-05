@@ -604,6 +604,7 @@ final class AdminWebTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-0061')]
     #[Group('ACMS-UI-0007')]
+    #[Group('ACMS-UI-0141')]
     #[Group('ACMS-US-0004')]
     public function testBrandImagesAreUploadedServedAndDropped(): void
     {
@@ -631,6 +632,12 @@ final class AdminWebTest extends SchemaTestCase
         self::assertCount(0, $logo->filter('span'), 'the logo stands in place of the title');
         self::assertSame('Village network', $logo->filter('img')->attr('alt'));
         self::assertStringEndsWith('/setting/'.Brand::LOGO, (string) $logo->filter('img')->attr('src'));
+
+        $this->configure([Brand::LOGO_TITLE => Toggle::On->value]);
+        $titled = $this->client->request('GET', '/admin')->filter('.header-logo');
+        self::assertSame('Village network', trim($titled->filter('span')->text()), 'the title stands beside the logo');
+        self::assertSame('', $titled->filter('img')->attr('alt'));
+        $this->configure([Brand::LOGO_TITLE => Toggle::Off->value]);
 
         $this->configure([Brand::THEME => Theme::Dark->value]);
         self::assertStringEndsWith('/setting/'.Brand::LOGO, (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'without a dark theme logo the dark theme keeps the logo');
