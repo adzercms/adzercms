@@ -536,8 +536,22 @@ const arrange = scope => scope.querySelectorAll('tbody[data-order]').forEach(bod
     });
 });
 
-document.addEventListener('DOMContentLoaded', () => arrange(document));
-document.addEventListener('htmx:load', event => arrange(event.target));
+const photos = scope => scope.querySelectorAll('[data-photos]').forEach(list => {
+    if (!Sortable.get(list)) {
+        Sortable.create(list, {animation: ORDER_ANIMATION, filter: '[data-photo-drop]', preventOnFilter: false});
+    }
+});
+
+document.addEventListener('click', event => event.target.closest('[data-photo-drop]')?.closest('[data-photos] > *').remove());
+
+document.addEventListener('DOMContentLoaded', () => {
+    arrange(document);
+    photos(document);
+});
+document.addEventListener('htmx:load', event => {
+    arrange(event.target);
+    photos(event.target);
+});
 
 document.addEventListener('htmx:afterSwap', event => {
     if (event.target.id !== 'record') {

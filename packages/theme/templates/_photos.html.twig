@@ -1,0 +1,12 @@
+<div class="photos">
+    <ul class="photos-kept" data-photos>
+        {% for photo in photos %}
+            <li class="photos-item" title="{{ 'theme.move'|trans }}">
+                <input type="hidden" name="{{ name }}" value="{{ photo.name }}">
+                <img src="{{ photo.src }}" alt="">
+                <button type="button" class="secondary small" data-photo-drop>{{ 'core.action.drop'|trans }}</button>
+            </li>
+        {% endfor %}
+    </ul>
+    {% include '@Theme/_file.html.twig' with {name: added, accept: constant('AdzerCMS\\Core\\Photo\\Photos::TYPES')|join(','), multiple: true} only %}
+</div>
