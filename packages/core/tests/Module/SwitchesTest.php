@@ -37,7 +37,8 @@ final class SwitchesTest extends SchemaTestCase
         );
     }
 
-    #[Group('ACMS-CORE-0004')]
+    #[Group('ACMS-CORE-1102')]
+    #[Group('ACMS-CORE-1034')]
     public function testFirstEnabledWithRequiredCredentialsGoesInInstanceOrder(): void
     {
         $switches = self::service(Switches::class);
