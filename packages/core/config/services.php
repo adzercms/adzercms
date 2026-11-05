@@ -48,6 +48,7 @@ return static function (ContainerConfigurator $container): void {
     $services->alias(Redirects::class, Authorizations::class);
     $services->load('AdzerCMS\\Core\\Notice\\', '../src/Notice/')->exclude('../src/Notice/BotChannel.php');
     $services->set(Bounces::MAILBOX, MailboxInterface::class)->factory([Bounces::class, 'mailbox']);
+    $services->load('AdzerCMS\\Core\\Photo\\', '../src/Photo/');
     $services->load('AdzerCMS\\Core\\Repository\\', '../src/Repository/');
     $services->load('AdzerCMS\\Core\\Security\\', '../src/Security/');
     $services->load('AdzerCMS\\Core\\Seo\\', '../src/Seo/')->exclude('../src/Seo/Head.php');

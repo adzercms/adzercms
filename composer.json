@@ -62,6 +62,7 @@
         "symfony/yaml": "7.4.*"
     },
     "require-dev": {
+        "ext-imagick": "*",
         "adzercms/threadbare": "^1.0@dev",
         "adzercms/trespass": "^1.0@dev",
         "adzercms/underlay": "^1.0@dev",

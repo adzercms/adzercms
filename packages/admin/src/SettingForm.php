@@ -22,7 +22,7 @@ use function Symfony\Component\Translation\t;
 
 final class SettingForm
 {
-    private const DROPPED = [Type::Image, Type::Container, Type::Palette];
+    private const DROPPED = [Type::Image, Type::Photo, Type::Container, Type::Palette];
 
     /** @var list<TranslatableInterface> */
     private array $faults = [];
@@ -58,7 +58,7 @@ final class SettingForm
 
             if (isset($dropped[$field->name])) {
                 match ($field->type) {
-                    Type::Image => $this->images->clear($field),
+                    Type::Image, Type::Photo => $this->images->clear($field),
                     Type::Container => $this->keychain->clear($field),
                     default => $this->settings->clear($field),
                 };
@@ -66,7 +66,7 @@ final class SettingForm
                 continue;
             }
 
-            if (Type::Image !== $field->type && Type::Container !== $field->type) {
+            if (!$field->type->picture() && Type::Container !== $field->type) {
                 $value = $values[$field->name] ?? null;
                 $this->store($field, \is_string($value) ? $value : null);
 
@@ -79,7 +79,7 @@ final class SettingForm
             }
 
             $password = $passwords[$field->name] ?? '';
-            $refusal = Type::Image === $field->type
+            $refusal = $field->type->picture()
                 ? $this->images->store($field, $upload)
                 : $this->keychain->store($field, $upload, \is_string($password) ? $password : '');
             if (null !== $refusal) {

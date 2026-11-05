@@ -135,7 +135,7 @@ final class SettingCommand
 
     private function write(Field $field, string $value, string $password): ?Refusal
     {
-        if (Type::Image !== $field->type && Type::Container !== $field->type) {
+        if (!$field->type->picture() && Type::Container !== $field->type) {
             $refusal = $this->settings->save($field, $value);
             $this->em->flush();
 
@@ -143,7 +143,7 @@ final class SettingCommand
         }
 
         if ('' === $value) {
-            Type::Image === $field->type ? $this->images->clear($field) : $this->keychain->clear($field);
+            $field->type->picture() ? $this->images->clear($field) : $this->keychain->clear($field);
 
             return null;
         }
@@ -152,7 +152,7 @@ final class SettingCommand
             return new Refusal(t('core.setting.no_file', ['path' => $value]));
         }
 
-        return Type::Image === $field->type ? $this->images->store($field, new File($value)) : $this->keychain->store($field, new File($value), $password);
+        return $field->type->picture() ? $this->images->store($field, new File($value)) : $this->keychain->store($field, new File($value), $password);
     }
 
     private function shown(Field $field): string

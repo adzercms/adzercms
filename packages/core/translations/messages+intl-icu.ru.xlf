@@ -1129,6 +1129,12 @@
         <target>За год</target>
       </segment>
     </unit>
+    <unit id="core.photo.type">
+      <segment>
+        <source>core.photo.type</source>
+        <target>{name} — не картинка JPEG, PNG либо WebP</target>
+      </segment>
+    </unit>
     <unit id="core.preview.exit">
       <segment>
         <source>core.preview.exit</source>
