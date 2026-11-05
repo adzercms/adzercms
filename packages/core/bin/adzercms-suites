@@ -1,6 +1,11 @@
 #!/bin/sh
 set -u
 
+if [ "${1:-}" = --changed ]; then
+    # shellcheck disable=SC2046
+    set -- $(bin/php vendor/bin/adzercms-affected "${2:?base commit}")
+    [ $# -gt 0 ] || { echo 'no suite is touched'; exit 0; }
+fi
 # shellcheck disable=SC2046
 [ $# -gt 0 ] || set -- $(grep -o '<testsuite name="[^"]*"' phpunit.dist.xml | cut -d'"' -f2)
 

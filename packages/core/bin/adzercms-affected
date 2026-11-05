@@ -1,0 +1,72 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+const PACKAGE = '#^(?:packages|modules)/([^/]+)/#';
+const UNTESTED = '#(?:\.md$|^docs/|/docs/|^tests/browser/)#';
+
+$base = $argv[1] ?? '';
+if ('' === $base) {
+    fwrite(\STDERR, "usage: adzercms-affected <base commit>\n");
+    exit(2);
+}
+
+$config = new DOMDocument();
+$config->load('phpunit.dist.xml');
+$suites = [];
+foreach ($config->getElementsByTagName('testsuite') as $suite) {
+    foreach ($suite->getElementsByTagName('directory') as $directory) {
+        $suites[$suite->getAttribute('name')][] = trim($directory->textContent, '/').'/';
+    }
+    $suites[$suite->getAttribute('name')] ??= [];
+}
+
+$git = static function (string ...$arguments): ?array {
+    exec('git '.implode(' ', array_map('escapeshellarg', $arguments)).' 2>/dev/null', $lines, $code);
+
+    return 0 === $code ? $lines : null;
+};
+
+$changed = null === $git('rev-parse', '--verify', '--quiet', $base.'^{commit}') ? null : $git('diff', '--name-only', $base);
+$touched = [];
+foreach ($changed ?? [''] as $path) {
+    if (1 === preg_match(PACKAGE, $path, $found)) {
+        $touched[$found[0]] = true;
+    } elseif (1 !== preg_match(UNTESTED, $path)) {
+        echo implode("\n", array_keys($suites)), "\n";
+        exit(0);
+    }
+}
+
+$places = [];
+$needs = [];
+foreach (glob('{packages,modules}/*/composer.json', \GLOB_BRACE) ?: [] as $manifest) {
+    $package = json_decode((string) file_get_contents($manifest), true, flags: \JSON_THROW_ON_ERROR);
+    $place = dirname($manifest).'/';
+    $places[$package['name']] = $place;
+    $needs[$place] = array_keys(($package['require'] ?? []) + ($package['require-dev'] ?? []));
+}
+
+do {
+    $grown = false;
+    foreach ($needs as $place => $required) {
+        foreach ($required as $name) {
+            if (!isset($touched[$place]) && isset($places[$name], $touched[$places[$name]])) {
+                $touched[$place] = $grown = true;
+            }
+        }
+    }
+} while ($grown);
+
+foreach ($suites as $name => $directories) {
+    foreach ($directories as $directory) {
+        foreach (array_keys($touched) as $place) {
+            if (str_starts_with($directory, $place)) {
+                echo $name, "\n";
+
+                continue 3;
+            }
+        }
+    }
+}

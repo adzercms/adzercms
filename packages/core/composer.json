@@ -85,6 +85,7 @@
         }
     },
     "bin": [
+        "bin/adzercms-affected",
         "bin/adzercms-check",
         "bin/adzercms-module-check",
         "bin/adzercms-package-console",
