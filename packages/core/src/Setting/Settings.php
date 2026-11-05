@@ -15,13 +15,9 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Contracts\Service\ResetInterface;
 
-use function Symfony\Component\Translation\t;
-
 final class Settings implements ResetInterface
 {
     private const SECRET = 'secret:';
-    private const TIME = '/^([01]?\d|2[0-3]):([0-5]\d)$/';
-    private const COLOR = '/^#[0-9a-f]{6}$/i';
 
     /** @var array<string, string>|null */
     private ?array $stored = null;
@@ -58,9 +54,15 @@ final class Settings implements ResetInterface
         return '' === $value ? [] : explode("\n", $value);
     }
 
+    /** @return list<array<string, string>> */
+    public function entries(Field $field): array
+    {
+        return Values::entries($field, $this->get($field->name));
+    }
+
     public function minutes(string $name): ?int
     {
-        return self::time($this->get($name));
+        return Values::minutes($this->get($name));
     }
 
     public function on(string $name): bool
@@ -80,7 +82,7 @@ final class Settings implements ResetInterface
     {
         $value = $this->get($field->name);
 
-        return self::scheme($field, $value) ?? (1 === preg_match(self::COLOR, $value) ? $value : $field->schemes[0] ?? '');
+        return Values::scheme($field, $value) ?? Values::color($value) ?? $field->schemes[0] ?? '';
     }
 
     public function stamp(Field $field, \DateTimeImmutable $moment): void
@@ -90,7 +92,11 @@ final class Settings implements ResetInterface
 
     public function save(Field $field, string $value): ?Refusal
     {
-        $value = Type::Lines === $field->type ? self::lined($value) : trim($value);
+        $value = Values::check($field, $value);
+        if ($value instanceof Refusal) {
+            return $value;
+        }
+
         $secret = Type::Secret === $field->type;
         if ('' === $value) {
             if (!$secret) {
@@ -98,36 +104,6 @@ final class Settings implements ResetInterface
             }
 
             return null;
-        }
-
-        if (Type::Time === $field->type) {
-            $minutes = self::time($value);
-            if (null === $minutes) {
-                return new Refusal(t('core.setting.time', ['field' => $field->label]));
-            }
-            $value = \sprintf('%02d:%02d', intdiv($minutes, 60), $minutes % 60);
-        }
-
-        if (Type::Toggle === $field->type && null === Toggle::tryFrom($value)) {
-            return new Refusal(t('core.setting.toggle', ['field' => $field->label]));
-        }
-
-        if (Type::Choice === $field->type && !isset($field->choices()[$value])) {
-            return new Refusal(t('core.setting.choice', ['field' => $field->label]));
-        }
-
-        if (Type::Color === $field->type || (Type::Palette === $field->type && null === self::scheme($field, $value))) {
-            if (1 !== preg_match(self::COLOR, $value)) {
-                return new Refusal(t(Type::Color === $field->type ? 'core.setting.color' : 'core.setting.choice', ['field' => $field->label]));
-            }
-            $value = strtolower($value);
-        }
-
-        if (Type::Decimal === $field->type) {
-            $value = str_replace(',', '.', $value);
-            if (!is_numeric($value)) {
-                return new Refusal(t('core.setting.decimal', ['field' => $field->label]));
-            }
         }
 
         foreach ($this->rules as $rule) {
@@ -206,21 +182,6 @@ final class Settings implements ResetInterface
         }
 
         return true;
-    }
-
-    private static function lined(string $value): string
-    {
-        return implode("\n", array_filter(array_map(trim(...), preg_split('/\R/u', $value) ?: []), static fn (string $line): bool => '' !== $line));
-    }
-
-    private static function time(string $value): ?int
-    {
-        return 1 === preg_match(self::TIME, $value, $time) ? (int) $time[1] * 60 + (int) $time[2] : null;
-    }
-
-    private static function scheme(Field $field, string $key): ?Scheme
-    {
-        return array_find($field->schemes, static fn (Scheme $scheme): bool => $scheme->key === $key);
     }
 
     /** @return array<string, string> */

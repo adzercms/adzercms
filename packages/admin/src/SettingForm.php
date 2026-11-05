@@ -23,6 +23,7 @@ use function Symfony\Component\Translation\t;
 final class SettingForm
 {
     private const DROPPED = [Type::Image, Type::Photo, Type::Container, Type::Palette];
+    private const BLANK_ROWS = 2;
 
     /** @var list<TranslatableInterface> */
     private array $faults = [];
@@ -68,7 +69,11 @@ final class SettingForm
 
             if (!$field->type->picture() && Type::Container !== $field->type) {
                 $value = $values[$field->name] ?? null;
-                $this->store($field, \is_string($value) ? $value : null);
+                $this->store($field, match (true) {
+                    \is_string($value) => $value,
+                    Type::Rows === $field->type && \is_array($value) => json_encode(array_values($value), \JSON_THROW_ON_ERROR),
+                    default => null,
+                });
 
                 continue;
             }
@@ -155,7 +160,7 @@ final class SettingForm
     /**
      * @param list<Field> $fields
      *
-     * @return array<string, string>
+     * @return array<string, string|list<array<string, string>>>
      */
     public function values(array $fields): array
     {
@@ -165,6 +170,7 @@ final class SettingForm
             $values[$field->name] = match (true) {
                 Type::Secret === $field->type => '',
                 Type::Toggle === $field->type => ($this->settings->on($field->name) ? Toggle::On : Toggle::Off)->value,
+                Type::Rows === $field->type => [...$this->settings->entries($field), ...array_fill(0, self::BLANK_ROWS, array_fill_keys(array_column($field->fields, 'name'), ''))],
                 $picked instanceof Scheme => $picked->key,
                 \is_string($picked) => $picked,
                 default => $this->settings->get($field->name),

@@ -315,7 +315,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "56e054c8677ea9c939a4d5d57d2fe2ce465da3c8"
+                "reference": "9a37865ac9c5c9d60746833fe6ade3f2cec02290"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -345,6 +345,7 @@
                 "firebase/php-jwt": "^7.2",
                 "geoip2/geoip2": "^3.4",
                 "intervention/image": "^4.4",
+                "league/commonmark": "^2.10",
                 "matomo/device-detector": "^6.5",
                 "maxmind-db/reader": "^1.14",
                 "php": ">=8.4",

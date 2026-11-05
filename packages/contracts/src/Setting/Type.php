@@ -8,6 +8,8 @@ enum Type
 {
     case Text;
     case Lines;
+    case Markup;
+    case Rows;
     case Secret;
     case Image;
     case Photo;
@@ -22,5 +24,13 @@ enum Type
     public function picture(): bool
     {
         return self::Image === $this || self::Photo === $this;
+    }
+
+    public function cell(): bool
+    {
+        return match ($this) {
+            self::Text, self::Lines, self::Markup, self::Time, self::Toggle, self::Choice, self::Decimal, self::Color => true,
+            default => false,
+        };
     }
 }

@@ -1339,6 +1339,12 @@
         <target>Privacy policy link</target>
       </segment>
     </unit>
+    <unit id="core.setting.rows">
+      <segment>
+        <source>core.setting.rows</source>
+        <target>{field} takes a JSON list of rows keyed by field names</target>
+      </segment>
+    </unit>
     <unit id="core.setting.section.bounces">
       <segment>
         <source>core.setting.section.bounces</source>

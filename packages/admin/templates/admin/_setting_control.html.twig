@@ -1,0 +1,26 @@
+{% set type = 'AdzerCMS\\Contracts\\Setting\\Type::' %}
+{% set named %}id="{{ id }}" name="{{ name }}"{% if label is defined %} aria-label="{{ label|trans }}"{% endif %}{% endset %}
+{% if field.type == constant(type ~ 'Toggle') %}
+    <select {{ named }}>
+        {% for case in enum('AdzerCMS\\Core\\Setting\\Toggle').cases %}
+            <option value="{{ case.value }}" {{ value == case.value ? 'selected' }}>{{ case.label|trans }}</option>
+        {% endfor %}
+    </select>
+{% elseif field.type == constant(type ~ 'Choice') %}
+    <select {{ named }}>
+        {% if value == '' %}<option value="" selected>{{ 'admin.setting.unset'|trans }}</option>{% endif %}
+        {% for choice, caption in field.choices %}
+            <option value="{{ choice }}" {{ value == choice ? 'selected' }}>{{ caption|trans }}</option>
+        {% endfor %}
+    </select>
+{% elseif field.type == constant(type ~ 'Palette') %}
+    {% include '@Theme/_palette.html.twig' with {id: id, name: name, label: field.label, schemes: field.schemes, value: value} only %}
+{% elseif field.type == constant(type ~ 'Color') %}
+    <input {{ named }} type="color" value="{{ value ?: '#000000' }}">
+{% elseif field.type in [constant(type ~ 'Lines'), constant(type ~ 'Markup')] %}
+    <textarea {{ named }}>{{ value }}</textarea>
+{% elseif field.type == constant(type ~ 'Secret') %}
+    <input {{ named }} type="text" class="secret" autocomplete="off" spellcheck="false">
+{% else %}
+    <input {{ named }} type="text" value="{{ value }}">
+{% endif %}

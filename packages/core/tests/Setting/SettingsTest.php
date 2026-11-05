@@ -9,6 +9,7 @@ use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Contracts\Ui\Scheme;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Tests\SchemaTestCase;
+use AdzerCMS\Core\Text\Markup;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Contracts\Service\ResetInterface;
 
@@ -22,6 +23,8 @@ final class SettingsTest extends SchemaTestCase
     private const COLOR = 'fixture.color';
     private const PALETTE = 'fixture.palette';
     private const LINES = 'fixture.lines';
+    private const MARKUP = 'fixture.markup';
+    private const ROWS = 'fixture.rows';
 
     #[Group('ACMS-CORE-0050')]
     #[Group('ACMS-US-0004')]
@@ -89,6 +92,42 @@ final class SettingsTest extends SchemaTestCase
 
         self::assertSame(['Daily backups', 'DDoS protection'], $this->settings()->lines(self::LINES));
         self::assertSame([], $this->settings()->lines(self::TITLE));
+    }
+
+    #[Group('ACMS-CORE-1095')]
+    #[Group('ACMS-US-0004')]
+    public function testMarkupKeepsTextAsEnteredAndShowsItWithoutRawHtmlAndUnsafeLinks(): void
+    {
+        $text = "  # Plans\n\n**Now** <script>alert(1)</script> [pay](javascript:alert(1)) [site](https://example.com)\n\n- one\n";
+        $this->save(new Field(self::MARKUP, t('Markup'), Type::Markup), $text);
+        self::assertSame($text, $this->settings()->get(self::MARKUP));
+
+        $html = Markup::html($text);
+        self::assertStringContainsString('<h1>Plans</h1>', $html);
+        self::assertStringContainsString('<strong>Now</strong>', $html);
+        self::assertStringContainsString('<a href="https://example.com">site</a>', $html);
+        self::assertStringContainsString('<li>one</li>', $html);
+        self::assertStringNotContainsString('<script>', $html);
+        self::assertStringNotContainsString('javascript:', $html);
+    }
+
+    #[Group('ACMS-CORE-1096')]
+    #[Group('ACMS-US-0004')]
+    public function testRowsKeepFilledRowsKeyedByTheirFieldsInEnteredOrder(): void
+    {
+        $rows = new Field(self::ROWS, t('Questions'), Type::Rows, fields: [new Field('question', t('Question')), new Field('pause', t('Pause'), Type::Time)]);
+        $this->save($rows, json_encode([
+            ['question' => ' Is there a trial? ', 'pause' => '', 'extra' => 'dropped'],
+            ['question' => '', 'pause' => ' '],
+            ['pause' => '9:05'],
+        ], \JSON_THROW_ON_ERROR));
+
+        self::assertSame([['question' => 'Is there a trial?', 'pause' => ''], ['question' => '', 'pause' => '09:05']], $this->settings()->entries($rows));
+        self::assertNotNull($this->settings()->save($rows, '[{"pause": "25:00"}]'), 'a cell takes the check of its field');
+        self::assertNotNull($this->settings()->save($rows, '{"question": "Why?"}'), 'the value is a list of rows');
+
+        $this->save($rows, '[{"question": " "}]');
+        self::assertSame([], $this->settings()->entries($rows), 'no filled row removes the setting');
     }
 
     #[Group('ACMS-CORE-1069')]

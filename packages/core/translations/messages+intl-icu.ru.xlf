@@ -1339,6 +1339,12 @@
         <target>Ссылка на политику данных</target>
       </segment>
     </unit>
+    <unit id="core.setting.rows">
+      <segment>
+        <source>core.setting.rows</source>
+        <target>{field}: нужен JSON-список строк с ключами полей</target>
+      </segment>
+    </unit>
     <unit id="core.setting.section.bounces">
       <segment>
         <source>core.setting.section.bounces</source>

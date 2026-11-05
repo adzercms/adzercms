@@ -12,6 +12,7 @@ final readonly class Field
     /**
      * @param array<string, TranslatableInterface>|\Closure(): array<string, TranslatableInterface> $choices
      * @param list<Scheme>                                                                          $schemes
+     * @param list<Field>                                                                           $fields
      */
     public function __construct(
         public string $name,
@@ -23,7 +24,11 @@ final readonly class Field
         public ?TranslatableInterface $section = null,
         public ?Page $page = null,
         public array $schemes = [],
+        public array $fields = [],
     ) {
+        if ((Type::Rows === $type) === ([] === $fields) || [] !== array_filter($fields, static fn (Field $field): bool => !$field->type->cell())) {
+            throw new \LogicException(\sprintf('setting key %s: only a group of rows declares fields, each of a single value type', $name));
+        }
     }
 
     /** @return array<string, TranslatableInterface> */
@@ -44,6 +49,7 @@ final readonly class Field
             $this->section,
             $this->page,
             $this->schemes,
+            $this->fields,
         );
     }
 

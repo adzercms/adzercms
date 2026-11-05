@@ -7,37 +7,27 @@
         {% for field in block.fields %}
             {% set id = 'setting-' ~ field.name %}
             {% set stored = field.name in block.stored %}
-            <div class="field">
-                <label for="{{ id }}">{{ field.label|trans }}</label>
-                {% if field.type == constant(type ~ 'Toggle') %}
-                    <select id="{{ id }}" name="value[{{ field.name }}]">
-                        {% for case in enum('AdzerCMS\\Core\\Setting\\Toggle').cases %}
-                            <option value="{{ case.value }}" {{ values[field.name] == case.value ? 'selected' }}>{{ case.label|trans }}</option>
+            {% set rows = field.type == constant(type ~ 'Rows') %}
+            <div class="field{{ rows or field.type == constant(type ~ 'Markup') ? ' field-wide' }}">
+                <label for="{{ rows ? id ~ '-0-' ~ field.fields|first.name : id }}">{{ field.label|trans }}</label>
+                {% if rows %}
+                    <div class="field-rows" style="--columns: {{ field.fields|length }}">
+                        {% for column in field.fields %}<span class="field-rows-head">{{ column.label|trans }}</span>{% endfor %}
+                        {% for row in values[field.name] %}
+                            {% set at = loop.index0 %}
+                            {% for column in field.fields %}
+                                {% include '@Admin/admin/_setting_control.html.twig' with {field: column, id: id ~ '-' ~ at ~ '-' ~ column.name, name: 'value[' ~ field.name ~ '][' ~ at ~ '][' ~ column.name ~ ']', value: row[column.name], label: column.label} only %}
+                            {% endfor %}
                         {% endfor %}
-                    </select>
+                    </div>
                 {% elseif field.type == constant(type ~ 'Image') %}
                     {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: constant('AdzerCMS\\Core\\Setting\\Images::TYPES')|keys|join(',')} only %}
                 {% elseif field.type == constant(type ~ 'Photo') %}
                     {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: constant('AdzerCMS\\Core\\Photo\\Photos::TYPES')|join(',')} only %}
                 {% elseif field.type == constant(type ~ 'Container') %}
                     {% include '@Theme/_file.html.twig' with {id: id, name: 'file[' ~ field.name ~ ']', accept: '.p12,.pfx'} only %}
-                {% elseif field.type == constant(type ~ 'Choice') %}
-                    <select id="{{ id }}" name="value[{{ field.name }}]">
-                        {% if values[field.name] == '' %}<option value="" selected>{{ 'admin.setting.unset'|trans }}</option>{% endif %}
-                        {% for choice, caption in field.choices %}
-                            <option value="{{ choice }}" {{ values[field.name] == choice ? 'selected' }}>{{ caption|trans }}</option>
-                        {% endfor %}
-                    </select>
-                {% elseif field.type == constant(type ~ 'Palette') %}
-                    {% include '@Theme/_palette.html.twig' with {id: id, name: 'value[' ~ field.name ~ ']', label: field.label, schemes: field.schemes, value: values[field.name]} only %}
-                {% elseif field.type == constant(type ~ 'Color') %}
-                    <input id="{{ id }}" type="color" name="value[{{ field.name }}]" value="{{ values[field.name] ?: '#000000' }}">
-                {% elseif field.type == constant(type ~ 'Lines') %}
-                    <textarea id="{{ id }}" name="value[{{ field.name }}]">{{ values[field.name] }}</textarea>
-                {% elseif field.type == constant(type ~ 'Secret') %}
-                    <input id="{{ id }}" type="text" class="secret" name="value[{{ field.name }}]" autocomplete="off" spellcheck="false">
                 {% else %}
-                    <input id="{{ id }}" type="text" name="value[{{ field.name }}]" value="{{ values[field.name] }}">
+                    {% include '@Admin/admin/_setting_control.html.twig' with {field: field, id: id, name: 'value[' ~ field.name ~ ']', value: values[field.name]} only %}
                 {% endif %}
 
                 {% if field.type == constant(type ~ 'Container') or stored %}

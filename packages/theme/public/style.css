@@ -507,6 +507,8 @@ label { display: block; margin-bottom: 0.9rem; font-size: 13px; font-weight: 500
 .fields.aligned > .field { display: grid; grid-row: span 3; grid-template-rows: subgrid; align-items: start; margin-bottom: 0.9rem; }
 .fields.aligned > .field > :first-child { align-self: end; margin: 0; }
 .field-extra { margin-top: 0.5rem; }
+.field-rows { display: grid; gap: 0.5rem 1rem; grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); align-items: start; }
+.field-rows-head { font-size: 13px; color: var(--text-gray); }
 .reveal { margin-top: 0.5rem; }
 .reveal[open] > summary { margin-bottom: 0.6rem; }
 .brand-preview { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem; }
