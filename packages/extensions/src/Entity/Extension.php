@@ -71,6 +71,13 @@ class Extension implements Placed
     private int $position = 0;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $title = null;
+
+    /** @var array<string, string>|null */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $titleTranslations = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     /** @var array<string, string>|null */
@@ -154,6 +161,11 @@ class Extension implements Placed
         return $this->position;
     }
 
+    public function getTitle(): Localized
+    {
+        return new Localized($this->title ?? $this->name, $this->titleTranslations ?? []);
+    }
+
     public function getDescription(): ?Localized
     {
         return null === $this->description ? null : new Localized($this->description, $this->descriptionTranslations ?? []);
@@ -215,6 +227,9 @@ class Extension implements Placed
 
     public function know(?Package $package): self
     {
+        $title = $package?->title;
+        $this->title = null === $title || '' === $title->source ? null : $title->source;
+        $this->titleTranslations = $title?->translations;
         $this->description = $package?->description->source;
         $this->descriptionTranslations = $package?->description->translations;
         $this->version = self::fit($package?->version, self::VERSION);

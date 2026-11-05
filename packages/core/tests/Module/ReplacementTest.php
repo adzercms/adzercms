@@ -36,6 +36,6 @@ final class ReplacementTest extends TestCase
 
     private static function row(string $name, CoreKind $kind, bool $selected): CatalogRow
     {
-        return new CatalogRow($name, new Package(new Localized('', []), '1.0.0', [], null, null, Registry::TYPE, null, null), $kind, '1.0.0', '1.0.0', null, $selected, false, false, false, null, ExtensionType::Module, null);
+        return new CatalogRow($name, new Package(new Localized('', []), new Localized('', []), '1.0.0', [], null, null, Registry::TYPE, null, null), $kind, '1.0.0', '1.0.0', null, $selected, false, false, false, null, ExtensionType::Module, null);
     }
 }

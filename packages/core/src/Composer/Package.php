@@ -20,6 +20,7 @@ final readonly class Package
 
     /** @param list<Category> $categories */
     public function __construct(
+        public Localized $title,
         public Localized $description,
         public string $version,
         public array $categories,
@@ -101,6 +102,7 @@ final readonly class Package
         $kinds = preg_filter(Registry::IMPLEMENTATION, '$1', array_map(strval(...), array_keys(\is_array($version['provide'] ?? null) ? $version['provide'] : [])));
 
         return new self(
+            Localized::title($version),
             Localized::description($version),
             $label,
             Category::of(\is_array($extra['categories'] ?? null) ? $extra['categories'] : []),

@@ -1,23 +1,32 @@
-{% macro link(url, label, class) %}
-    {% if url %}<a class="button {{ class }}" href="{{ url }}" target="_blank" rel="noreferrer noopener">{{ label|trans }}</a>{% endif %}
+{% macro link(url, label, class = null) %}
+    {% if url %}<a{% if class %} class="{{ class }}"{% endif %} href="{{ url }}" target="_blank" rel="noreferrer noopener">{{ label|trans }}</a>{% endif %}
 {% endmacro %}
 
 {% embed '@Theme/_table.html.twig' %}
     {% block items %}
-        {% import '@Extensions/_catalog.html.twig' as card %}
-        <div class="offer-grid">
+        {% import '@Extensions/_catalog.html.twig' as entry %}
+        <div class="listing">
             {% for row in rows %}
-                <article class="offer-card">
-                    <h2 class="offer-title">{{ row.name }}</h2>
-                    <span class="muted">{{ 'extensions.edition'|trans({type: row.type.label|trans, version: row.version}) }}</span>
-                    <span class="muted">{{ row.categories|map(category => category.label|trans)|join(', ') }}</span>
-                    <div class="offer-price">{{ row.price ? amount(row.price, false) : 'extensions.free'|trans }}</div>
-                    {% set description = row.description|trans %}
-                    {% if description %}<p>{{ description }}</p>{% endif %}
-                    <div class="offer-actions">
-                        {{ card.link(row.demo, 'core.extension.demo', '') }}
-                        {{ card.link(row.homepage, 'extensions.link.homepage', 'secondary') }}
-                        {{ card.link(row.source, 'extensions.link.source', 'secondary') }}
+                {% set title = row.title|trans %}
+                {% set description = row.description|trans %}
+                <article class="listing-row" data-package="{{ row.name }}">
+                    <div class="listing-cover" aria-hidden="true">{{ title|first|upper }}</div>
+                    <div class="listing-body">
+                        <h2 class="listing-title">{{ title }}</h2>
+                        {% if description %}<p>{{ description }}</p>{% endif %}
+                        <dl class="listing-facts">
+                            <dt>{{ 'extensions.fact.section'|trans }}</dt><dd>{{ row.type.label|trans }}</dd>
+                            <dt>{{ 'extensions.fact.category'|trans }}</dt><dd>{{ row.categories|map(category => category.label|trans)|join(', ') }}</dd>
+                            <dt>{{ 'extensions.column.version'|trans }}</dt><dd>{{ row.version }}</dd>
+                        </dl>
+                    </div>
+                    <div class="listing-side">
+                        <div class="listing-price">{{ row.price ? amount(row.price, false) : 'extensions.free'|trans }}</div>
+                        <div class="listing-links">
+                            {{ entry.link(row.demo, 'core.extension.demo', 'button') }}
+                            {{ entry.link(row.homepage, 'extensions.link.homepage') }}
+                            {{ entry.link(row.source, 'extensions.link.source') }}
+                        </div>
                     </div>
                 </article>
             {% endfor %}

@@ -31,7 +31,7 @@ final class CatalogPageTest extends CatalogTestCase
     #[Group('ACMS-US-0034')]
     public function testVisitorSeesPublishedEntriesInOperatorOrder(): void
     {
-        $this->entry('acme/shop', ExtensionType::Theme, '1500.00', self::package('Shop theme', 'https://shop.example.test', [Category::Commerce, Category::Content], ['ru' => 'Тема магазина']), 'https://demo.example.test');
+        $this->entry('acme/shop', ExtensionType::Theme, '1500.00', self::package('Shop theme', 'https://shop.example.test', [Category::Commerce, Category::Content], ['ru' => 'Тема магазина'], title: ['en' => 'Shop', 'ru' => 'Магазин']), 'https://demo.example.test');
         $this->entry('acme/draft');
         $this->entry('acme/seo', package: self::package('SEO module'))->place(0);
         $this->em->flush();
@@ -41,22 +41,26 @@ final class CatalogPageTest extends CatalogTestCase
         self::assertResponseIsSuccessful();
         self::assertSame(['acme/seo', 'acme/shop'], self::names($page));
 
-        $shop = $page->filter('.offer-card')->last();
+        $shop = $page->filter('.listing-row')->last();
         self::assertSame(
-            [self::phrase('extensions.edition', ['type' => self::phrase(ExtensionType::Theme->label()), 'version' => '1.0.0']), self::phrase(Category::Commerce->label()).', '.self::phrase(Category::Content->label())],
-            $shop->filter('.muted')->each(static fn (Crawler $line): string => $line->text()),
+            [
+                [self::phrase('extensions.fact.section'), self::phrase(ExtensionType::Theme->label())],
+                [self::phrase('extensions.fact.category'), self::phrase(Category::Commerce->label()).', '.self::phrase(Category::Content->label())],
+                [self::phrase('extensions.column.version'), '1.0.0'],
+            ],
+            array_map(null, $shop->filter('.listing-facts dt')->each(static fn (Crawler $term): string => $term->text()), $shop->filter('.listing-facts dd')->each(static fn (Crawler $value): string => $value->text())),
         );
-        self::assertSame(self::phrase(Money::rubles('1500.00')), $shop->filter('.offer-price')->text());
-        self::assertSame('Shop theme', $shop->filter('p')->text());
+        self::assertSame(self::phrase(Money::rubles('1500.00')), $shop->filter('.listing-price')->text());
         self::assertSame(['https://demo.example.test', 'https://shop.example.test', self::SOURCE], self::links($shop));
 
-        $seo = $page->filter('.offer-card')->first();
-        self::assertSame(self::phrase('extensions.free'), $seo->filter('.offer-price')->text());
+        $seo = $page->filter('.listing-row')->first();
+        self::assertSame(self::phrase('extensions.free'), $seo->filter('.listing-price')->text());
         self::assertSame([self::SOURCE], self::links($seo));
 
-        $russian = $this->client->request('GET', self::PAGE, server: ['HTTP_ACCEPT_LANGUAGE' => 'ru'])->filter('.offer-card');
-        self::assertSame(['SEO module', 'Тема магазина'], [$russian->first()->filter('p')->text(), $russian->last()->filter('p')->text()],
-            'the description goes in the language of the visitor, without a translation — in the source');
+        $texts = static fn (Crawler $rows): array => $rows->each(static fn (Crawler $row): array => [$row->filter('.listing-title')->text(), $row->filter('p')->text()]);
+        self::assertSame([['acme/seo', 'SEO module'], ['Shop', 'Shop theme']], $texts($page->filter('.listing-row')));
+        self::assertSame([['acme/seo', 'SEO module'], ['Магазин', 'Тема магазина']], $texts($this->client->request('GET', self::PAGE, server: ['HTTP_ACCEPT_LANGUAGE' => 'ru'])->filter('.listing-row')),
+            'the title and description go in the language of the visitor, without a translation — in the source, without a title — the package name');
     }
 
     #[Group('ACMS-EXT-0004')]
@@ -229,12 +233,12 @@ final class CatalogPageTest extends CatalogTestCase
     /** @return list<string> */
     private static function names(Crawler $page): array
     {
-        return $page->filter('.offer-title')->each(static fn (Crawler $title): string => $title->text());
+        return $page->filter('.listing-row')->each(static fn (Crawler $row): string => (string) $row->attr('data-package'));
     }
 
     /** @return list<string> */
-    private static function links(Crawler $card): array
+    private static function links(Crawler $row): array
     {
-        return $card->filter('.offer-actions a')->each(static fn (Crawler $link): string => (string) $link->attr('href'));
+        return $row->filter('.listing-links a')->each(static fn (Crawler $link): string => (string) $link->attr('href'));
     }
 }

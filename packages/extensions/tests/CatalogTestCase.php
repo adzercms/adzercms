@@ -52,10 +52,11 @@ abstract class CatalogTestCase extends SchemaTestCase
     /**
      * @param list<Category>        $categories
      * @param array<string, string> $translations
+     * @param array<string, string> $title
      */
-    protected static function package(string $description, ?string $homepage = null, array $categories = [Category::Other], array $translations = [], ?string $author = null): Package
+    protected static function package(string $description, ?string $homepage = null, array $categories = [Category::Other], array $translations = [], ?string $author = null, array $title = []): Package
     {
-        return new Package(new Localized($description, $translations), '1.0.0', $categories, self::SOURCE, $homepage, Registry::TYPE, null, null, $author);
+        return new Package(Localized::title(['extra' => ['adzercms' => ['title' => $title]]]), new Localized($description, $translations), '1.0.0', $categories, self::SOURCE, $homepage, Registry::TYPE, null, null, $author);
     }
 
     protected static function extensions(): ExtensionRepository

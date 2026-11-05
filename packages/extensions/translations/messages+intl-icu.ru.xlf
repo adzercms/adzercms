@@ -79,12 +79,6 @@
         <target>Снять с сайта</target>
       </segment>
     </unit>
-    <unit id="extensions.edition">
-      <segment>
-        <source>extensions.edition</source>
-        <target>{type}, версия {version}</target>
-      </segment>
-    </unit>
     <unit id="extensions.empty">
       <segment>
         <source>extensions.empty</source>
@@ -95,6 +89,18 @@
       <segment>
         <source>extensions.event.decision</source>
         <target>Решение по расширению</target>
+      </segment>
+    </unit>
+    <unit id="extensions.fact.category">
+      <segment>
+        <source>extensions.fact.category</source>
+        <target>Тип</target>
+      </segment>
+    </unit>
+    <unit id="extensions.fact.section">
+      <segment>
+        <source>extensions.fact.section</source>
+        <target>Раздел</target>
       </segment>
     </unit>
     <unit id="extensions.filter.category">
@@ -172,7 +178,7 @@
     <unit id="extensions.link.source">
       <segment>
         <source>extensions.link.source</source>
-        <target>Код</target>
+        <target>Исходный код</target>
       </segment>
     </unit>
     <unit id="extensions.menu">

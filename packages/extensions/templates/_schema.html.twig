@@ -11,7 +11,7 @@
             position: table.offset + index + 1,
             item: {
                 '@type': 'SoftwareApplication',
-                name: row.name,
+                name: row.title|trans,
                 description: row.description|trans,
                 softwareVersion: row.version,
                 url: row.homepage ?? row.source,

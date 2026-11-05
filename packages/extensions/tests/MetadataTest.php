@@ -33,22 +33,22 @@ final class MetadataTest extends CatalogTestCase
     {
         $this->open[self::NAME] = [
             self::version(self::NAME, '2.0.0-RC1', 'Next shop'),
-            self::version(self::NAME, '1.10.0', 'Shop for AdzerCMS', translations: ['ru' => 'Магазин для AdzerCMS', 'de' => ' ']),
+            self::version(self::NAME, '1.10.0', 'Shop for AdzerCMS', translations: ['ru' => 'Магазин для AdzerCMS', 'de' => ' '], title: ['en' => 'Shop', 'ru' => 'Магазин']),
             self::version(self::NAME, '1.9.3', 'Old shop'),
         ];
 
         $this->post('/admin/extensions/new', ['name' => self::NAME, 'type' => 'module', 'price' => '', 'demo' => '']);
 
         $entry = self::extensions()->named(self::NAME) ?? self::fail('the entry is not in the catalog');
-        self::assertEquals([new Localized('Shop for AdzerCMS', ['ru' => 'Магазин для AdzerCMS']), '1.10.0', 'https://github.com/acme/shop.git', 'https://shop.example.test'],
-            [$entry->getDescription(), $entry->getVersion(), $entry->getSource(), $entry->getHomepage()]);
+        self::assertEquals([new Localized('Shop', ['ru' => 'Магазин']), new Localized('Shop for AdzerCMS', ['ru' => 'Магазин для AdzerCMS']), '1.10.0', 'https://github.com/acme/shop.git', 'https://shop.example.test'],
+            [$entry->getTitle(), $entry->getDescription(), $entry->getVersion(), $entry->getSource(), $entry->getHomepage()]);
         self::assertSame(ExtensionState::Published, $entry->state());
 
         $this->paid[self::NAME] = [self::version(self::NAME, '3.0.0', 'Paid shop')];
         $this->post('/admin/extensions/'.$entry->getId(), ['name' => self::NAME, 'type' => 'module', 'price' => '900', 'demo' => '']);
 
         $entry = $this->reread($entry);
-        self::assertEquals([new Localized('Paid shop', []), '3.0.0'], [$entry->getDescription(), $entry->getVersion()]);
+        self::assertEquals([new Localized(self::NAME, []), new Localized('Paid shop', []), '3.0.0'], [$entry->getTitle(), $entry->getDescription(), $entry->getVersion()]);
     }
 
     /** @param list<Category> $categories */

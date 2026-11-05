@@ -79,7 +79,7 @@ final class AuthorTest extends CatalogTestCase
         $entry = self::extensions()->named(self::NAME) ?? self::fail('the entry is not in the catalog');
         self::assertSame([$this->user->getId(), ExtensionDecision::Pending, ExtensionType::Theme, '1.2.0', 'https://demo.example.test', null],
             [$entry->getAuthor()?->getUser()->getId(), $entry->getDecision(), $entry->getType(), $entry->getVersion(), $entry->getDemo(), $entry->getPrice()]);
-        self::assertSame([], $this->arrive('/extensions')->filter('.offer-title')->each(static fn (Crawler $title): string => $title->text()));
+        self::assertCount(0, $this->arrive('/extensions')->filter('.listing-row'));
     }
 
     #[Group('ACMS-EXT-0018')]

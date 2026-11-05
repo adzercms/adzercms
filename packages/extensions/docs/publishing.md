@@ -6,7 +6,7 @@ The [AdzerCMS extension catalog](https://adzercms.com/extensions) lists modules,
 
 An extension is a Composer package of the `adzercms-module` type in a public git repository. Start it from the module skeleton and describe it in `composer.json` as [Writing a module](https://github.com/adzercms/adzercms/blob/main/docs/module-development.md#package) shows.
 
-The catalog card takes everything else from the package: the description in the reader's language, the categories, the version, the `homepage` link and the source repository. The version is the latest stable one, or the default branch while there is no stable version.
+The catalog row takes everything else from the package: the title and the description in the reader's language, the categories, the version, the `homepage` link and the source repository. The version is the latest stable one, or the default branch while there is no stable version.
 
 ## Check it
 
@@ -23,12 +23,13 @@ The skeleton's CI runs the [module check](https://github.com/adzercms/adzercms/b
 The catalog accepts only a package that carries the author key of the person submitting it.
 
 1. Sign in at [adzercms.com](https://adzercms.com) and open [My extensions](https://adzercms.com/extensions/mine). Your key is there as a line for `composer.json`.
-2. Put the key into `extra.adzercms` next to the bundle and the description:
+2. Put the key into `extra.adzercms` next to the bundle, the title and the description:
 
    ```json
    "extra": {
        "adzercms": {
            "bundle": "Acme\\Pigeon\\PigeonBundle",
+           "title": {"en": "Pigeon SMS", "ru": "SMS голубями"},
            "description": {"ru": "SMS голубиной почтой"},
            "author": "<your key>"
        }
@@ -41,7 +42,7 @@ If a later version drops the key, the entry leaves the catalog.
 
 ## Add the entry
 
-In My extensions, press the + Extension button and fill in the package name, the type and, if you have one, the address of a demo site. Add screenshots as JPEG, PNG or WebP images: the first one is the cover of the card, dragging changes the order. The rest comes from the package: the catalog refreshes it once a day and whenever you save the entry.
+In My extensions, press the + Extension button and fill in the package name, the type and, if you have one, the address of a demo site. Add screenshots as JPEG, PNG or WebP images: the first one is the cover of the row, dragging changes the order. The rest comes from the package: the catalog refreshes it once a day and whenever you save the entry.
 
 A new entry waits for the catalog operator. You get a notice when it is published or rejected, and a rejection comes with the reason, which My extensions shows next to the entry as well.
 
