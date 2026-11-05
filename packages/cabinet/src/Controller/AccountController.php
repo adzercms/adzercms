@@ -27,6 +27,7 @@ use AdzerCMS\Core\Notice\Channel;
 use AdzerCMS\Core\Notice\Channels;
 use AdzerCMS\Core\Notice\Notifier;
 use AdzerCMS\Core\Repository\ConnectedServiceRepository;
+use AdzerCMS\Core\Security\CsrfGuard;
 use AdzerCMS\Core\Session\Logins;
 use AdzerCMS\Core\Setting\Language;
 use AdzerCMS\Core\Ui\Back;
@@ -422,20 +423,22 @@ final class AccountController extends AbstractController
         return $this->redirectToRoute('cabinet_profile', ['tab' => 'notices']);
     }
 
-    #[Route('/profile/theme', name: 'cabinet_profile_theme', methods: ['POST'])]
-    #[IsGranted(Role::USER)]
-    public function theme(#[CurrentUser] User $user, Request $request, EntityManagerInterface $em): Response
+    #[Route('/profile/theme', name: 'cabinet_profile_theme', defaults: [CsrfGuard::OWN => true], methods: ['POST'])]
+    public function theme(#[CurrentUser] ?User $user, Request $request, EntityManagerInterface $em): Response
     {
         $theme = Theme::tryFrom($request->request->getString('theme'));
+        $response = $this->redirect(Back::of($request, $this->generateUrl('cabinet_root')));
 
         if (null === $theme) {
             $this->addFlash('error', t('cabinet.theme.unknown'));
+        } elseif (null === $user) {
+            $response->headers->setCookie($theme->cookie());
         } else {
             $user->setTheme($theme);
             $em->flush();
         }
 
-        return $this->redirect(Back::of($request, $this->generateUrl('cabinet_account')));
+        return $response;
     }
 
     #[Route('/profile/language', name: 'cabinet_profile_language', methods: ['POST'])]

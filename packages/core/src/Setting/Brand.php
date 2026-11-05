@@ -14,6 +14,7 @@ use AdzerCMS\Core\Account\Theme;
 use AdzerCMS\Core\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -38,6 +39,7 @@ final class Brand implements Owner
         private readonly Images $images,
         private readonly UrlGeneratorInterface $urls,
         private readonly Security $security,
+        private readonly RequestStack $requests,
         #[AutowireIterator(Palette::class)]
         iterable $palettes,
     ) {
@@ -88,7 +90,10 @@ final class Brand implements Owner
     {
         $user = $this->security->getUser();
 
-        return ($user instanceof User ? $user->getTheme() : null) ?? Theme::tryFrom($this->settings->get(self::THEME)) ?? Theme::Light;
+        return ($user instanceof User ? $user->getTheme() : null)
+            ?? Theme::tryFrom($this->requests->getMainRequest()?->cookies->getString(Theme::COOKIE) ?? '')
+            ?? Theme::tryFrom($this->settings->get(self::THEME))
+            ?? Theme::Light;
     }
 
     public function layout(): Layout

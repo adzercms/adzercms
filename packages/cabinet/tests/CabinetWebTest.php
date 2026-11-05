@@ -6,6 +6,7 @@ namespace AdzerCMS\Cabinet\Tests;
 
 use AdzerCMS\Cabinet\Tests\Fixture\Pager;
 use AdzerCMS\Core\Account\ContactKind;
+use AdzerCMS\Core\Account\Theme;
 use AdzerCMS\Core\Confirmation\Confirmations;
 use AdzerCMS\Core\Entity\ConnectedService;
 use AdzerCMS\Core\Module\Switches;
@@ -19,10 +20,12 @@ use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelayGateway;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Tests\ServiceLogin;
 use AdzerCMS\Core\Tests\Ui\Fixture\Desk;
+use AdzerCMS\Core\Ui\Back;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\HttpClient\Response\JsonMockResponse;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 use function Symfony\Component\Translation\t;
@@ -175,6 +178,24 @@ final class CabinetWebTest extends SchemaTestCase
         $this->post('/profile/language', ['language' => 'xx']);
         self::assertNotSame('', self::toast($this->client->followRedirect(), 'error'));
         self::assertSame('ru', $this->reread($user)->getLanguage());
+    }
+
+    #[Group('ACMS-UI-0038')]
+    #[Group('ACMS-US-0002')]
+    public function testThemeChoiceIsKeptByRecordOfUserAndCookieOfGuestWithoutSession(): void
+    {
+        $this->client->request('POST', '/profile/theme', ['theme' => Theme::Dark->value, Back::FIELD => '/login']);
+
+        self::assertResponseRedirects('/login');
+        self::assertSame([Theme::COOKIE], array_map(static fn (Cookie $cookie): string => $cookie->getName(), $this->client->getResponse()->headers->getCookies()));
+        self::assertSame(Theme::Dark->value, $this->client->followRedirect()->filter('html')->attr('data-theme'));
+
+        $user = $this->record('79990000010', 'abonent@example.org');
+        $this->client->loginUser($user);
+        $this->client->request('POST', '/profile/theme', ['theme' => Theme::Light->value, Back::FIELD => '/profile']);
+
+        self::assertSame(Theme::Light, $this->reread($user)->getTheme());
+        self::assertSame(Theme::Light->value, $this->client->followRedirect()->filter('html')->attr('data-theme'), 'the record of the user outweighs the cookie');
     }
 
     #[Group('ACMS-US-0002')]

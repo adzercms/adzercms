@@ -2,7 +2,7 @@
 {% if switch %}
 {% set other = brand.theme.other %}
 <form class="theme-switch" method="post" action="{{ switch }}">
-    {{ csrf_field() }}{{ back_field() }}
+    {{ back_field() }}
     <input type="hidden" name="theme" value="{{ other.value }}">
     <button type="submit" title="{{ other.label|trans }}" aria-label="{{ other.label|trans }}">
         {% if other.value == 'dark' %}
