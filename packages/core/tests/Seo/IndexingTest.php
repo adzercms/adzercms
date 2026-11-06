@@ -43,6 +43,7 @@ final class IndexingTest extends SchemaTestCase
         self::assertStringNotContainsString('Disallow: /guide', $robots);
         self::assertStringNotContainsString('Disallow: /shelf/', $robots);
         self::assertStringNotContainsString('Disallow: /setting/', $robots);
+        self::assertStringNotContainsString('Disallow: /brand.png', $robots);
         self::assertStringContainsString("Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&yclid&gclid&fbclid\n\nSitemap: http://localhost/sitemap.xml\n", $robots);
 
         $this->client->request('GET', '/sitemap.xml');

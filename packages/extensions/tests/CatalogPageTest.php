@@ -7,6 +7,7 @@ namespace AdzerCMS\Extensions\Tests;
 use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Seo\Indexing;
+use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Queries;
 use AdzerCMS\Core\Ui\Money;
@@ -15,6 +16,7 @@ use AdzerCMS\Extensions\ExtensionDecision;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class CatalogPageTest extends CatalogTestCase
@@ -189,6 +191,9 @@ final class CatalogPageTest extends CatalogTestCase
     #[Group('ACMS-UI-0122')]
     public function testHeadCarriesSeoSetWithCanonicalWithoutQuery(): void
     {
+        $logo = self::parameter('adzercms.files_dir').'/upload/logo.svg';
+        (new Filesystem())->dumpFile($logo, '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="10"><rect width="40" height="10"/></svg>');
+        self::command('adzercms:setting')->execute(['name' => Brand::LOGO, 'value' => $logo]);
         $page = $this->arrive(self::PAGE.'?type=theme');
         $meta = static fn (string $selector, string $attribute = 'content'): ?string => $page->filter($selector)->attr($attribute);
 
@@ -198,6 +203,7 @@ final class CatalogPageTest extends CatalogTestCase
             [$meta('meta[property="og:url"]'), $meta('meta[property="og:title"]'), $meta('meta[property="og:description"]')],
         );
         self::assertNotSame('', $meta('meta[name="description"]'));
+        self::assertSame('http://localhost/brand.png', $meta('meta[property="og:image"]'));
     }
 
     #[Group('ACMS-EXT-0021')]
