@@ -30,6 +30,7 @@ final class Brand implements Owner
     public const THEME = 'brand.theme';
     public const LAYOUT = 'brand.layout';
     public const COLOR = 'brand.color';
+    public const CARD = 'brand_card';
 
     private readonly ?Palette $palette;
 
@@ -74,6 +75,16 @@ final class Brand implements Owner
     public function logo(?Theme $theme = null): ?string
     {
         return (Theme::Dark === $theme ? $this->image(self::darkLogoField()) : null) ?? $this->image(self::logoField());
+    }
+
+    public function card(): ?string
+    {
+        return null === $this->cardLogo() ? null : $this->urls->generate(self::CARD, [], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    public function cardLogo(): ?string
+    {
+        return \extension_loaded('imagick') ? $this->images->path(self::logoField()) : null;
     }
 
     public function titled(): bool

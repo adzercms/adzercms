@@ -10,6 +10,7 @@ use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Contracts\Setting\Page as SettingPage;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Entity\SourceChange;
+use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Setting\Settings;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -25,7 +26,7 @@ final readonly class Indexing implements Owner
     public const ROBOTS = 'robots';
     public const SITEMAP = 'sitemap';
 
-    private const OPEN = ['setting_image', self::ROBOTS, self::SITEMAP];
+    private const OPEN = ['setting_image', Brand::CARD, self::ROBOTS, self::SITEMAP];
     private const TRACKING = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'yclid', 'gclid', 'fbclid'];
     private const NAMESPACE = 'http://www.sitemaps.org/schemas/sitemap/0.9';
 

@@ -8,5 +8,6 @@
 <meta property="og:title" content="{{ title }}">
 <meta property="og:description" content="{{ description }}">
 <meta property="og:url" content="{{ head.canonical }}">
-{% if brand.logo %}<meta property="og:image" content="{{ brand.logo }}">{% endif %}
+{% set card = brand.card %}
+{% if card %}<meta property="og:image" content="{{ card }}">{% endif %}
 <meta name="twitter:card" content="summary">
