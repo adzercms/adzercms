@@ -8,6 +8,7 @@ use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Tests\Setting\Fixture\Shop;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
@@ -39,13 +40,14 @@ final class ImagesTest extends SchemaTestCase
     }
 
     #[Group('ACMS-UI-0007')]
-    public function testLinkCardIsLogoInMiddleOfWhitePicture(): void
+    #[DataProvider('cards')]
+    public function testLinkCardIsLogoInMiddleOfBackgroundItStandsOutOn(string $fill, string $mark, string $background): void
     {
         self::assertNull(self::service(Brand::class)->card());
         $this->client->request('GET', '/brand.png');
         self::assertResponseStatusCodeSame(404);
 
-        $logo = '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="10"><rect width="40" height="10" fill="#000"/></svg>';
+        $logo = '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="10"><rect width="40" height="10" fill="'.$fill.'"/></svg>';
         self::assertSame(Command::SUCCESS, self::command('adzercms:setting')->execute(['name' => Brand::LOGO, 'value' => $this->upload($logo)]));
         self::assertSame('http://localhost/brand.png', self::service(Brand::class)->card());
 
@@ -55,10 +57,17 @@ final class ImagesTest extends SchemaTestCase
         $card->readImageBlob((string) $this->client->getResponse()->getContent());
         $color = static fn (int $x, int $y): string => $card->getImagePixelColor($x, $y)->getColorAsString();
         self::assertSame(['PNG', 1200, 630], [$card->getImageFormat(), $card->getImageWidth(), $card->getImageHeight()]);
-        self::assertSame(['srgb(255,255,255)', 'srgb(0,0,0)', 'srgb(0,0,0)', 'srgb(255,255,255)'], [$color(119, 315), $color(121, 315), $color(1078, 315), $color(600, 190)]);
+        self::assertSame([$background, $mark, $mark, $background], [$color(119, 315), $color(121, 315), $color(1078, 315), $color(600, 190)]);
 
         $this->client->request('GET', '/brand.png', server: ['HTTP_IF_MODIFIED_SINCE' => $this->client->getResponse()->headers->get('Last-Modified')]);
         self::assertResponseStatusCodeSame(304);
+    }
+
+    /** @return iterable<string, array{string, string, string}> */
+    public static function cards(): iterable
+    {
+        yield 'dark logo on white' => ['#000', 'srgb(0,0,0)', 'srgb(255,255,255)'];
+        yield 'white logo on dark' => ['#fff', 'srgb(255,255,255)', 'srgb(26,26,26)'];
     }
 
     #[Group('ACMS-CORE-0061')]

@@ -21,7 +21,10 @@ final readonly class BrandCardController
     public const HEIGHT = 630;
     public const LOGO_WIDTH = 960;
     public const LOGO_HEIGHT = 420;
-    private const BACKGROUND = 'ffffff';
+    private const LIGHT = 'ffffff';
+    private const DARK = '1a1a1a';
+    private const SAMPLE = 200;
+    private const NEAR = 0.15;
 
     public function __construct(
         private Brand $brand,
@@ -39,11 +42,31 @@ final readonly class BrandCardController
             return $response;
         }
 
-        return $response->setContent((string) ImageManager::usingDriver(Driver::class)->decode(self::picture($logo))
+        $picture = self::picture($logo);
+        $background = self::background($picture);
+
+        return $response->setContent((string) ImageManager::usingDriver(Driver::class)->decode($picture)
             ->scaleDown(self::LOGO_WIDTH, self::LOGO_HEIGHT)
-            ->fillTransparentAreas(self::BACKGROUND)
-            ->containDown(self::WIDTH, self::HEIGHT, self::BACKGROUND)
+            ->fillTransparentAreas($background)
+            ->containDown(self::WIDTH, self::HEIGHT, $background)
             ->encode(new PngEncoder()));
+    }
+
+    private static function background(\Imagick $picture): string
+    {
+        $sample = clone $picture;
+        $sample->scaleImage(self::SAMPLE, 0);
+        $pixels = $sample->exportImagePixels(0, 0, $sample->getImageWidth(), $sample->getImageHeight(), 'RGBA', \Imagick::PIXEL_CHAR);
+        $light = $dark = 0;
+        for ($i = 0, $count = \count($pixels); $i < $count; $i += 4) {
+            if ($pixels[$i + 3] >= 128) {
+                $luminance = (0.2126 * $pixels[$i] + 0.7152 * $pixels[$i + 1] + 0.0722 * $pixels[$i + 2]) / 255;
+                $light += (int) ($luminance > 1 - self::NEAR);
+                $dark += (int) ($luminance < self::NEAR);
+            }
+        }
+
+        return $light > $dark ? self::DARK : self::LIGHT;
     }
 
     private static function picture(string $path): \Imagick

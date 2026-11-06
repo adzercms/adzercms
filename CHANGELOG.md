@@ -51,7 +51,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `adzercms-suites --changed <base>` runs only the suites of the packages and modules changed since the base commit and of their consumers by the `composer.json` requirements; a change outside them other than documentation and browser tests, or an unknown base, runs every suite; CI takes it on pushes and pull requests, the weekly run stays full
 - `Photos` keeps the photos of module records: a JPEG, PNG or WebP turned upright by EXIF, scaled down to the side of the module and stored as WebP without metadata under a random name, found and dropped by its names; `ImmutableFileResponse` serves such a file with a public cache for a year and answers a matching ETag with 304, a session of the request keeps the cache
 - `PublicForm`: a visitor form of a feature module takes the core guard — a hidden trap field `trap_field()` taken without a record, a limit of submissions of the form from one address, and the privacy policy line `privacy_note()` under the send button; the lead window takes it
-- Link card `/brand.png`: the `og:image` of the theme head is the brand logo in the middle of a white PNG of 1200×630, an SVG logo drawn at the card size, so messengers that skip SVG (Telegram among them) show it; without the `imagick` extension the head carries no `og:image`
+- Link card `/brand.png`: the `og:image` of the theme head is the brand logo in the middle of a PNG of 1200×630, white or dark — the one that loses fewer pixels of the logo, an SVG logo drawn at the card size, so messengers that skip SVG (Telegram among them) show it; without the `imagick` extension the head carries no `og:image`
 
 ### Security
 
