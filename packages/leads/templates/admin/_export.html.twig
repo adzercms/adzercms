@@ -1,0 +1,1 @@
+<a class="button secondary" id="leads-export" href="{{ path('admin_leads_export', table.params()) }}" download {{ oob|default(false) ? 'hx-swap-oob="true"' }}>{{ 'leads.export'|trans }}</a>

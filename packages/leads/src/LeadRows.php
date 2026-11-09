@@ -14,6 +14,7 @@ use AdzerCMS\Leads\Entity\Lead;
 use AdzerCMS\Leads\Entity\Stage;
 use AdzerCMS\Leads\Repository\LeadRepository;
 use AdzerCMS\Leads\Repository\StageRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Symfony\Component\Translation\t;
@@ -41,6 +42,36 @@ final readonly class LeadRows
      * @return array<string, mixed>
      */
     public function listing(Request $request, string $route, array $slices, array $sticky = []): array
+    {
+        [$table, $builder, $extra] = $this->selection($request, $route, $slices, $sticky);
+
+        /** @var list<Lead> $rows */
+        $rows = $table->paginate($builder->getQuery());
+
+        $assigned = [];
+        foreach ($rows as $row) {
+            $manager = $row->getManager();
+            if ($manager instanceof User) {
+                $assigned[(int) $manager->getId()] = $manager;
+            }
+        }
+
+        return [
+            'table' => $table,
+            'rows' => $rows,
+            'extra' => $extra,
+            'cells' => $this->modules->cells(LeadSubject::LISTING, array_map(static fn (Lead $lead): int => (int) $lead->getId(), $rows)),
+            'managers' => $this->logins->ofMany(array_values($assigned)),
+        ];
+    }
+
+    /**
+     * @param non-empty-list<Slice> $slices
+     * @param array<string, mixed>  $sticky
+     *
+     * @return array{Table, QueryBuilder, list<Column>}
+     */
+    public function selection(Request $request, string $route, array $slices, array $sticky): array
     {
         $first = $slices[0];
         $labels = [];
@@ -83,23 +114,6 @@ final readonly class LeadRows
         $this->modules->order(LeadSubject::LISTING, $table, $builder, 'l.id');
         $table->apply($builder);
 
-        /** @var list<Lead> $rows */
-        $rows = $table->paginate($builder->addSelect('s', 'm')->addOrderBy('l.id', \SortDirection::Descending)->getQuery());
-
-        $assigned = [];
-        foreach ($rows as $row) {
-            $manager = $row->getManager();
-            if ($manager instanceof User) {
-                $assigned[(int) $manager->getId()] = $manager;
-            }
-        }
-
-        return [
-            'table' => $table,
-            'rows' => $rows,
-            'extra' => $extra,
-            'cells' => $this->modules->cells(LeadSubject::LISTING, array_map(static fn (Lead $lead): int => (int) $lead->getId(), $rows)),
-            'managers' => $this->logins->ofMany(array_values($assigned)),
-        ];
+        return [$table, $builder->addSelect('s', 'm')->addOrderBy('l.id', \SortDirection::Descending), $extra];
     }
 }

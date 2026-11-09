@@ -643,6 +643,10 @@ const pick = input => {
     const files = [...input.files];
 
     field.querySelector('.file-names').textContent = files.map(file => file.name).join(', ');
+    if (!field.dataset.upload) {
+        return;
+    }
+
     input.dataset.name ??= input.name;
     input.removeAttribute('name');
     input.setCustomValidity('');

@@ -1,4 +1,4 @@
 <label{% if class is defined %} class="{{ class }}"{% endif %}>{{ label }}
-    {% include '@Theme/_file.html.twig' with {name: 'files[]', accept: allowance.accept, multiple: true} only %}
+    {% include '@Theme/_file.html.twig' with {name: 'files[]', accept: allowance.accept, multiple: true, direct: direct|default(false)} only %}
     <p class="hint">{{ 'core.attachment.limit'|trans({megabytes: allowance.megabytes}) }}</p>
 </label>

@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Ui\Back;
 use AdzerCMS\Core\Ui\Fragment;
 use AdzerCMS\Leads\Intake;
+use AdzerCMS\Leads\LeadSettings;
 use AdzerCMS\Leads\Subjects;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -21,10 +22,12 @@ use function Symfony\Component\Translation\t;
 final class LeadController extends AbstractController
 {
     private const HOME = '/';
+    private const FILES = 'files';
 
     public function __construct(
         private readonly Intake $intake,
         private readonly Subjects $subjects,
+        private readonly LeadSettings $settings,
     ) {
     }
 
@@ -38,7 +41,7 @@ final class LeadController extends AbstractController
     public function take(Request $request): Response
     {
         $page = Back::of($request, self::HOME);
-        $refusals = $this->intake->take($request->request, (string) parse_url($page, \PHP_URL_PATH), (string) $request->getClientIp());
+        $refusals = $this->intake->take($request->request, $request->files->all(self::FILES), (string) parse_url($page, \PHP_URL_PATH), (string) $request->getClientIp());
 
         if ([] !== $refusals) {
             return $this->form($request->request, $refusals);
@@ -57,6 +60,7 @@ final class LeadController extends AbstractController
             'input' => $input->all(),
             'refusals' => $refusals,
             'subjects' => $this->subjects->fields($input),
+            'allowance' => $this->settings->attachments(),
         ]);
     }
 }

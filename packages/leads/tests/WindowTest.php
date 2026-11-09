@@ -18,7 +18,9 @@ use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Ui\Back;
 use AdzerCMS\Core\Ui\PublicForm;
 use AdzerCMS\Leads\Entity\Lead;
+use AdzerCMS\Leads\Entity\LeadAttachment;
 use AdzerCMS\Leads\Intake;
+use AdzerCMS\Leads\LeadSettings;
 use AdzerCMS\Leads\LeadsEvent;
 use AdzerCMS\Leads\Repository\LeadRepository;
 use AdzerCMS\Leads\Repository\StageRepository;
@@ -27,6 +29,7 @@ use AdzerCMS\Leads\Tests\Fixture\ItemSubject;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Twig\Environment;
 
 final class WindowTest extends SchemaTestCase
@@ -167,13 +170,41 @@ final class WindowTest extends SchemaTestCase
         self::assertSame(PublicForm::LIMIT, self::service(LeadRepository::class)->count([]));
     }
 
-    /** @param array<string, string> $fields */
-    private function take(array $fields): Crawler
+    #[Group('ACMS-LEAD-0020')]
+    #[Group('ACMS-US-0040')]
+    public function testVisitorAttachesFilesOnlyUnderLimitOfSettings(): void
+    {
+        self::assertCount(0, $this->fragment(self::WINDOW, self::PAGE)->filter('input[type="file"]'), 'no limit, no field of files');
+
+        $this->take([Intake::PHONE => '79990000002'], [$this->scratchFile('ignored.pdf', 'pdf')]);
+        self::assertCount(0, self::service(LeadRepository::class)->findOneBy([])?->getAttachments() ?? self::fail('the lead is not filed'));
+
+        $this->configure([LeadSettings::ATTACHMENT_MAX_MB => '1', LeadSettings::ATTACHMENT_TYPES => 'pdf']);
+        $window = $this->fragment(self::WINDOW, self::PAGE);
+        self::assertSame('.pdf', $window->filter('input[type="file"]')->attr('accept'));
+        self::assertSame('multipart/form-data', $window->filter('form[hx-post]')->attr('hx-encoding'));
+        self::assertNull($window->filter('.file-field')->attr('data-upload'), 'a visitor sends files with the form, the upload of the core takes signed-in users');
+
+        $this->take([Intake::PHONE => '79990000003'], [$this->scratchFile('brief.pdf', 'pdf')]);
+        $lead = self::service(LeadRepository::class)->findOneBy(['phone' => '79990000003']) ?? self::fail('the lead with a file is not filed');
+        self::assertSame(['brief.pdf'], $lead->getAttachments()->map(static fn (LeadAttachment $attachment): string => $attachment->getFile()->getName())->toArray());
+
+        $refused = $this->take([Intake::PHONE => '79990000004'], [$this->scratchFile('virus.exe', 'exe')]);
+        self::assertSame(self::phrase('core.attachment.type', ['extension' => 'exe']), trim($refused->filter('.flash-error')->text()));
+        self::assertNull(self::service(LeadRepository::class)->findOneBy(['phone' => '79990000004']));
+    }
+
+    /**
+     * @param array<string, string> $fields
+     * @param list<UploadedFile>    $files
+     */
+    private function take(array $fields, array $files = []): Crawler
     {
         return $this->client->request(
             'POST',
             self::WINDOW,
             $fields + [CsrfGuard::FIELD => $this->formToken(CsrfGuard::TOKEN_ID), Back::FIELD => self::PAGE],
+            ['files' => $files],
             server: ['HTTP_HX-Request' => 'true'],
         );
     }

@@ -1,4 +1,4 @@
-<span class="file-field" data-upload="{{ path('upload') }}" data-failed="{{ 'theme.file.failed'|trans }}">
+<span class="file-field"{% if not direct|default(false) %} data-upload="{{ path('upload') }}" data-failed="{{ 'theme.file.failed'|trans }}"{% endif %}>
     <input{% if id is defined %} id="{{ id }}"{% endif %} type="file" name="{{ name }}" accept="{{ accept }}"{{ multiple|default(false) ? ' multiple' }}{{ required|default(false) ? ' required' }}>
     <span class="button secondary" aria-hidden="true">{{ (multiple|default(false) ? 'theme.file.choose_many' : 'theme.file.choose')|trans }}</span>
     <span class="file-names" aria-hidden="true"></span>

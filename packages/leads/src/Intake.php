@@ -6,11 +6,14 @@ namespace AdzerCMS\Leads;
 
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Account\ContactKind;
+use AdzerCMS\Core\Attachment\Attachments;
+use AdzerCMS\Core\Entity\StoredFile;
 use AdzerCMS\Core\Notice\Notifier;
 use AdzerCMS\Core\Repository\UserRepository;
 use AdzerCMS\Core\Ui\Once;
 use AdzerCMS\Core\Ui\PublicForm;
 use AdzerCMS\Leads\Entity\Lead;
+use AdzerCMS\Leads\Entity\LeadAttachment;
 use AdzerCMS\Leads\Repository\StageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -25,8 +28,11 @@ final readonly class Intake
     public const EMAIL = 'email';
     public const MESSAGE = 'message';
     public const FORM = 'form';
+    public const FILES = 5;
 
     public function __construct(
+        private Attachments $attachments,
+        private LeadSettings $settings,
         private StageRepository $stages,
         private Subjects $subjects,
         private EntityManagerInterface $em,
@@ -44,8 +50,12 @@ final readonly class Intake
         return '' === $topic ? null : $topic;
     }
 
-    /** @return array<string, Refusal> */
-    public function take(ParameterBag $input, string $page, string $address): array
+    /**
+     * @param array<mixed> $files
+     *
+     * @return array<string, Refusal>
+     */
+    public function take(ParameterBag $input, array $files, string $page, string $address): array
     {
         if (PublicForm::trapped($input)) {
             return [];
@@ -61,8 +71,16 @@ final readonly class Intake
             return [self::FORM => $refusal];
         }
 
+        $kept = $this->kept($files);
+        if ($kept instanceof Refusal) {
+            return [self::FORM => $kept];
+        }
+
         $lead = $this->lead($input, mb_substr($page, 0, Lead::PAGE));
         $lead->price($this->subjects->attach($lead, $input));
+        foreach ($kept as $file) {
+            $this->em->persist(new LeadAttachment($lead, $file));
+        }
         $this->em->flush();
         $this->notifier->each($this->users->admins(), LeadsEvent::NewLead, ['lead' => $lead], (string) $lead->getId());
 
@@ -86,6 +104,23 @@ final readonly class Intake
         $this->em->flush();
 
         return $lead;
+    }
+
+    /**
+     * @param array<mixed> $files
+     *
+     * @return list<StoredFile>|Refusal
+     */
+    private function kept(array $files): array|Refusal
+    {
+        $allowance = $this->settings->attachments();
+        if (null === $allowance) {
+            return [];
+        }
+
+        return \count($files) > self::FILES
+            ? new Refusal(t('leads.refusal.files', ['limit' => self::FILES]))
+            : $this->attachments->receive($files, $allowance, LeadAttachment::class);
     }
 
     /** @return array<string, Refusal> */

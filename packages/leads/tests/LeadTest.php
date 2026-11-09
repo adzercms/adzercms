@@ -8,9 +8,12 @@ use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Account\LoginNames;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Account\UserRemoval;
+use AdzerCMS\Core\Attachment\Allowance;
+use AdzerCMS\Core\Attachment\Attachments;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Leads\Entity\Lead;
+use AdzerCMS\Leads\Entity\LeadAttachment;
 use AdzerCMS\Leads\Entity\LeadEntry;
 use AdzerCMS\Leads\Entity\Stage;
 use AdzerCMS\Leads\Handling;
@@ -82,6 +85,30 @@ final class LeadTest extends LeadsTestCase
         self::assertSame(self::phrase('leads.flash.dropped', ['number' => $number]), self::toast($this->arrive(self::LIST), 'success'));
         self::assertNull(self::service(LeadRepository::class)->find($number));
         self::assertSame(0, self::service(LeadEntryRepository::class)->count([]));
+    }
+
+    #[Group('ACMS-LEAD-0020')]
+    #[Group('ACMS-US-0041')]
+    public function testFilesOpenFromLeadPageAndGoAwayWithLead(): void
+    {
+        $lead = $this->lead(StageGroup::Fresh, 'Анна', '79990000002');
+        $files = self::service(Attachments::class);
+        $kept = $files->receive([$this->scratchFile('brief.pdf', 'pdf')], new Allowance(1, ['pdf']), LeadAttachment::class);
+        self::assertIsArray($kept);
+        $attachment = new LeadAttachment($lead, $kept[0]);
+        $this->em->persist($attachment);
+        $this->em->flush();
+        $path = $files->path($attachment);
+
+        $link = $this->arrive(self::LIST.'/'.$lead->getId())->filter('.chat-files a.chat-file');
+        self::assertSame('brief.pdf', trim($link->text()));
+        $this->client->request('GET', (string) $link->attr('href'));
+        self::assertResponseIsSuccessful();
+        self::assertFileExists($path);
+
+        $this->post(self::LIST.'/'.$lead->getId().'/drop');
+
+        self::assertFileDoesNotExist($path);
     }
 
     #[Group('ACMS-LEAD-0014')]

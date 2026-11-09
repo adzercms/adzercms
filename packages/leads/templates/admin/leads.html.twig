@@ -3,6 +3,7 @@
 {% block title %}{{ 'leads.menu'|trans }}{% endblock %}
 
 {% block actions %}
+    {% include '@Leads/admin/_export.html.twig' %}
     <button type="button" hx-get="{{ path('admin_lead_new') }}" hx-target="#record">{{ 'leads.add'|trans }}</button>
 {% endblock %}
 

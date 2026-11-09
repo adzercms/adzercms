@@ -2,11 +2,14 @@
 
 <div class="modal-body">
     {% if refusals.form is defined %}<p class="flash flash-error">{{ refusals.form.reason|trans }}</p>{% endif %}
-    <form hx-post="{{ path('leads_take') }}" hx-target="#lead">
+    <form hx-post="{{ path('leads_take') }}" hx-target="#lead"{% if allowance %} hx-encoding="multipart/form-data"{% endif %}>
         {{ csrf_field() }}{{ back_field() }}
         {% if topic %}<input type="hidden" name="topic" value="{{ topic }}">{% endif %}
         <div class="fields">
             {% include '@Leads/_fields.html.twig' with {input: input, refusals: refusals, subjects: subjects} only %}
+            {% if allowance %}
+                {% include '@Theme/_attachments.html.twig' with {label: 'leads.field.files'|trans, allowance: allowance, class: 'field-wide', direct: true} only %}
+            {% endif %}
         </div>
         {{ trap_field() }}
         <button type="submit">{{ 'leads.window.send'|trans }}</button>

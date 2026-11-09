@@ -475,5 +475,35 @@
         <target>Оставить заявку</target>
       </segment>
     </unit>
+    <unit id="leads.export">
+      <segment>
+        <source>leads.export</source>
+        <target>Выгрузить CSV</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.files">
+      <segment>
+        <source>leads.field.files</source>
+        <target>Файлы</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.files">
+      <segment>
+        <source>leads.refusal.files</source>
+        <target>Не больше {limit, number} файлов</target>
+      </segment>
+    </unit>
+    <unit id="leads.setting.attachment_max_mb">
+      <segment>
+        <source>leads.setting.attachment_max_mb</source>
+        <target>Размер файла заявки до, МБ; пусто — без файлов</target>
+      </segment>
+    </unit>
+    <unit id="leads.setting.attachment_types">
+      <segment>
+        <source>leads.setting.attachment_types</source>
+        <target>Типы файлов заявки, через запятую</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

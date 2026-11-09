@@ -94,6 +94,41 @@ final class ListTest extends LeadsTestCase
         self::assertSame(['Глеб'], self::names($this->fragment(self::LIST.'?'.LeadRows::SLICE.'='.Slice::Work->value.'&'.LeadRows::STAGE.'='.$call->getId())));
     }
 
+    #[Group('ACMS-LEAD-0017')]
+    #[Group('ACMS-US-0041')]
+    public function testExportGivesCsvOfCurrentSelectionInListOrder(): void
+    {
+        $this->lead(StageGroup::Fresh, 'Анна', '79990000002', 'anna@site.test', "Нужен кран;\nна неделю", 'Кран', page: '/krany');
+        $this->lead(StageGroup::Fresh, '=HYPERLINK("x")', topic: 'Кран');
+        $this->lead(StageGroup::Fresh, 'Борис', topic: 'Аренда');
+        $this->lead(StageGroup::Work, 'Вера', topic: 'Кран');
+
+        $link = (string) $this->fragment(self::LIST.'?'.LeadRows::TOPIC.'='.rawurlencode('Кран').'&sort=number&order=asc')->filter('#leads-export[hx-swap-oob]')->attr('href');
+        $this->client->request('GET', $link);
+
+        self::assertResponseIsSuccessful();
+        self::assertResponseHeaderSame('Content-Type', 'text/csv; charset=UTF-8');
+        $file = (string) $this->client->getInternalResponse()->getContent();
+        self::assertStringStartsWith("\xEF\xBB\xBF", $file);
+
+        $stream = fopen('php://memory', 'r+') ?: self::fail('the memory stream did not open');
+        fwrite($stream, substr($file, 3));
+        rewind($stream);
+        $lines = [];
+        while (false !== $line = fgetcsv($stream, null, ';', '"', '')) {
+            $lines[] = $line;
+        }
+        fclose($stream);
+
+        self::assertSame(self::phrase('leads.column.number'), $lines[0][0]);
+        self::assertContains(ItemSubject::LABEL, $lines[0], 'a column of the subject module goes to the file');
+        self::assertSame(
+            [['Анна', 'Кран', '79990000002', 'anna@site.test', "Нужен кран;\nна неделю"], ['\'=HYPERLINK("x")', 'Кран', '', '', '']],
+            array_map(static fn (array $line): array => \array_slice($line, 1, 5), \array_slice($lines, 1)),
+            'only leads of the selection in its order, a formula goes as text',
+        );
+    }
+
     #[Group('ACMS-US-0041')]
     public function testStageColumnSortsByFunnelOrder(): void
     {

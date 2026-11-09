@@ -6,11 +6,14 @@ namespace AdzerCMS\Leads\Controller\Admin;
 
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Attachment\Attachments;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Ui\Fragment;
 use AdzerCMS\Leads\Entity\Lead;
+use AdzerCMS\Leads\Entity\LeadAttachment;
 use AdzerCMS\Leads\Handling;
 use AdzerCMS\Leads\Intake;
+use AdzerCMS\Leads\LeadExport;
 use AdzerCMS\Leads\LeadPage;
 use AdzerCMS\Leads\LeadRows;
 use AdzerCMS\Leads\Slice;
@@ -18,6 +21,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -33,6 +37,8 @@ final class LeadController extends AbstractController
 
     public function __construct(
         private readonly LeadRows $rows,
+        private readonly LeadExport $export,
+        private readonly Attachments $files,
         private readonly Intake $intake,
         private readonly LeadPage $page,
         private readonly Handling $handling,
@@ -46,10 +52,22 @@ final class LeadController extends AbstractController
         $context = $this->rows->listing($request, self::LIST, Slice::FUNNEL);
 
         if ($request->headers->has('HX-Request')) {
-            return $this->render('@Leads/admin/_leads.html.twig', $context);
+            return $this->render('@Leads/admin/_listing.html.twig', $context);
         }
 
         return $this->render('@Leads/admin/leads.html.twig', $context);
+    }
+
+    #[Route('/export', name: 'admin_leads_export', methods: ['GET'])]
+    public function export(Request $request): StreamedResponse
+    {
+        return $this->export->response($request, self::LIST, Slice::FUNNEL);
+    }
+
+    #[Route('/attachment/{id}', name: 'admin_lead_attachment', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function attachment(LeadAttachment $attachment): Response
+    {
+        return $this->files->response($attachment);
     }
 
     #[Route('/new', name: 'admin_lead_new', methods: ['GET', 'POST'])]

@@ -8,6 +8,8 @@ use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Leads\Repository\LeadRepository;
 use AdzerCMS\Leads\Slice;
 use AdzerCMS\Leads\StageGroup;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -59,6 +61,11 @@ class Lead
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $staged;
 
+    /** @var Collection<int, LeadAttachment> */
+    #[ORM\OneToMany(targetEntity: LeadAttachment::class, mappedBy: 'lead', cascade: ['remove'])]
+    #[ORM\OrderBy(['id' => 'ASC'])]
+    private Collection $attachments;
+
     public function __construct(
         Stage $stage,
         #[ORM\Column(length: self::TOPIC, nullable: true)]
@@ -77,6 +84,13 @@ class Lead
         $this->stage = $stage;
         $this->arrived = now();
         $this->staged = $this->arrived;
+        $this->attachments = new ArrayCollection();
+    }
+
+    /** @return Collection<int, LeadAttachment> */
+    public function getAttachments(): Collection
+    {
+        return $this->attachments;
     }
 
     public function getId(): ?int

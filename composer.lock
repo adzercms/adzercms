@@ -621,12 +621,13 @@
             "dist": {
                 "type": "path",
                 "url": "packages/leads",
-                "reference": "ae1a0d957bb3fe1c6175d628b48d935e9ad6038d"
+                "reference": "a3321fb7df05ed007ab0afa3ded692c0ea019a33"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
                 "adzercms/core": "^1.0",
                 "adzercms/theme-implementation": "^1.0",
+                "doctrine/collections": "^3.1",
                 "doctrine/dbal": "^4.5",
                 "doctrine/doctrine-bundle": "^3.3",
                 "doctrine/migrations": "^3.9",

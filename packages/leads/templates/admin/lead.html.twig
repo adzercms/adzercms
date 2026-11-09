@@ -129,14 +129,26 @@
         <h3>{{ 'leads.lead.feed'|trans }}</h3>
     </div>
     <div class="chat" id="live-lead-feed" data-live>
-        {% if lead.message %}
+        {% if lead.message or lead.attachments|length %}
             <div class="chat-message other">
                 <div class="chat-bubble">
                     <div class="chat-head">
                         <span class="chat-author">{{ lead.name ?? 'leads.lead.client'|trans }}</span>
                         <span class="chat-time">{{ 'core.moment.day_time'|trans({at: lead.arrived}) }}</span>
                     </div>
-                    <div class="chat-text">{{ lead.message|nl2br }}</div>
+                    {% if lead.message %}<div class="chat-text">{{ lead.message|nl2br }}</div>{% endif %}
+                    {% if lead.attachments|length %}
+                        <div class="chat-files">
+                            {% for attachment in lead.attachments %}
+                                {% set href = path('admin_lead_attachment', {id: attachment.id}) %}
+                                {% if attachment.file.picture %}
+                                    <a class="chat-picture" href="{{ href }}" target="_blank"><img src="{{ href }}" alt="{{ attachment.file.name }}"></a>
+                                {% else %}
+                                    <a class="chat-file" href="{{ href }}" target="_blank">{{ attachment.file.name }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         {% endif %}

@@ -475,5 +475,35 @@
         <target>Leave a request</target>
       </segment>
     </unit>
+    <unit id="leads.export">
+      <segment>
+        <source>leads.export</source>
+        <target>Export CSV</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.files">
+      <segment>
+        <source>leads.field.files</source>
+        <target>Files</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.files">
+      <segment>
+        <source>leads.refusal.files</source>
+        <target>No more than {limit, number} files</target>
+      </segment>
+    </unit>
+    <unit id="leads.setting.attachment_max_mb">
+      <segment>
+        <source>leads.setting.attachment_max_mb</source>
+        <target>Lead file size up to, MB; empty means no files</target>
+      </segment>
+    </unit>
+    <unit id="leads.setting.attachment_types">
+      <segment>
+        <source>leads.setting.attachment_types</source>
+        <target>Lead file types, comma separated</target>
+      </segment>
+    </unit>
   </file>
 </xliff>
