@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Leads\Entity;
 
+use AdzerCMS\Core\Entity\Origin;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Leads\Repository\LeadRepository;
 use AdzerCMS\Leads\Slice;
@@ -66,6 +67,9 @@ class Lead
     #[ORM\OrderBy(['id' => 'ASC'])]
     private Collection $attachments;
 
+    #[ORM\Embedded(class: Origin::class, columnPrefix: 'origin_')]
+    private Origin $origin;
+
     public function __construct(
         Stage $stage,
         #[ORM\Column(length: self::TOPIC, nullable: true)]
@@ -85,6 +89,12 @@ class Lead
         $this->arrived = now();
         $this->staged = $this->arrived;
         $this->attachments = new ArrayCollection();
+        $this->origin = new Origin();
+    }
+
+    public function getOrigin(): Origin
+    {
+        return $this->origin;
     }
 
     /** @return Collection<int, LeadAttachment> */

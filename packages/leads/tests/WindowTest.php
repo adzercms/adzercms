@@ -73,6 +73,7 @@ final class WindowTest extends SchemaTestCase
     {
         $first = self::service(StageRepository::class)->first(StageGroup::Fresh);
         $this->client->loginUser($this->record('79990000001'));
+        $this->client->request('GET', self::PAGE.'&utm_source=yandex&utm_campaign=708097471&yclid=4504935055255666687');
 
         $this->take([Intake::TOPIC => self::TOPIC, ItemSubject::FIELD => '1', Intake::NAME => 'Анна', Intake::PHONE => '8 (999) 000-00-02', Intake::EMAIL => 'Anna@Site.Test', Intake::MESSAGE => 'Нужен на неделю']);
 
@@ -82,6 +83,7 @@ final class WindowTest extends SchemaTestCase
             [$first->getId(), self::TOPIC, 'Анна', '79990000002', 'anna@site.test', 'Нужен на неделю', '/fixture/frame', ItemSubject::PRICE],
             [$lead->getStage()->getId(), $lead->getTopic(), $lead->getName(), $lead->getPhone(), $lead->getEmail(), $lead->getMessage(), $lead->getPage(), $lead->getAmount()],
         );
+        self::assertSame(['yandex', '708097471', '4504935055255666687'], [$lead->getOrigin()->getSource(), $lead->getOrigin()->getCampaign(), $lead->getOrigin()->getClick()], 'the lead keeps the marks of the visit');
         self::assertSame([$lead->getId()], array_map(static fn (Lead $attached): ?int => $attached->getId(), self::service(ItemSubject::class)->attached));
         self::assertSame(self::phrase('leads.flash.taken'), self::toast($this->arrive(self::PAGE), 'success'));
     }

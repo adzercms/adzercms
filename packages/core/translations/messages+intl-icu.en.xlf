@@ -1273,6 +1273,12 @@
         <target>Title beside the logo</target>
       </segment>
     </unit>
+    <unit id="core.setting.marks_cookie">
+      <segment>
+        <source>core.setting.marks_cookie</source>
+        <target>Site cookie of visit marks</target>
+      </segment>
+    </unit>
     <unit id="core.setting.mail_host">
       <segment>
         <source>core.setting.mail_host</source>
@@ -1367,6 +1373,12 @@
       <segment>
         <source>core.setting.rows</source>
         <target>{field} takes a JSON list of rows keyed by field names</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.section.analytics">
+      <segment>
+        <source>core.setting.section.analytics</source>
+        <target>Analytics</target>
       </segment>
     </unit>
     <unit id="core.setting.section.bounces">

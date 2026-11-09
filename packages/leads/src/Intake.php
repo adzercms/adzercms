@@ -6,6 +6,7 @@ namespace AdzerCMS\Leads;
 
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Account\ContactKind;
+use AdzerCMS\Core\Analytics\Marks;
 use AdzerCMS\Core\Attachment\Attachments;
 use AdzerCMS\Core\Entity\StoredFile;
 use AdzerCMS\Core\Notice\Notifier;
@@ -32,6 +33,7 @@ final readonly class Intake
 
     public function __construct(
         private Attachments $attachments,
+        private Marks $marks,
         private LeadSettings $settings,
         private StageRepository $stages,
         private Subjects $subjects,
@@ -77,6 +79,7 @@ final readonly class Intake
         }
 
         $lead = $this->lead($input, mb_substr($page, 0, Lead::PAGE));
+        $lead->getOrigin()->fill($this->marks->current());
         $lead->price($this->subjects->attach($lead, $input));
         foreach ($kept as $file) {
             $this->em->persist(new LeadAttachment($lead, $file));

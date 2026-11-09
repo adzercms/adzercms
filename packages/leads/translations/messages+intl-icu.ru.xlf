@@ -487,6 +487,12 @@
         <target>Файлы</target>
       </segment>
     </unit>
+    <unit id="leads.field.origin">
+      <segment>
+        <source>leads.field.origin</source>
+        <target>Источник перехода</target>
+      </segment>
+    </unit>
     <unit id="leads.refusal.files">
       <segment>
         <source>leads.refusal.files</source>

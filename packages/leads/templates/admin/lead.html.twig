@@ -52,6 +52,10 @@
             {% endif %}
         </div>
         <div class="info-item">
+            <span class="info-label">{{ 'leads.field.origin'|trans }}</span>
+            <span class="info-value">{{ cell(lead.origin.marks|join(' / ') ?: null) }}</span>
+        </div>
+        <div class="info-item">
             <span class="info-label">{{ 'leads.field.arrived'|trans }}</span>
             <span class="info-value">{{ 'core.moment.day_time'|trans({at: lead.arrived}) }}</span>
         </div>
