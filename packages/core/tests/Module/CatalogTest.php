@@ -16,6 +16,7 @@ use AdzerCMS\Core\Module\Marks;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Module\Store;
+use AdzerCMS\Core\Module\StoreImages;
 use AdzerCMS\Core\Repository\ModuleSourceRepository;
 use AdzerCMS\Core\Setting\Catalog as SettingCatalog;
 use AdzerCMS\Core\Setting\Settings;
@@ -229,6 +230,46 @@ final class CatalogTest extends SchemaTestCase
         self::mockTime('2026-10-22 12:16');
         self::command('adzercms:modules')->execute([]);
         self::assertSame(ExtensionType::App, self::type('acme/shop'));
+    }
+
+    #[Group('ACMS-CORE-1056')]
+    #[Group('ACMS-CORE-1146')]
+    public function testImagesOfEntryAreCopiedOnceAskedAgainWhenMissedAndDroppedOutOfSnapshot(): void
+    {
+        $image = new \Imagick();
+        $image->newImage(1, 1, 'white', 'png');
+        $picture = $image->getImageBlob();
+        $cover = 'https://93.184.216.34/cover.png';
+        $missed = 'https://93.184.216.34/missed.png';
+        $text = 'https://93.184.216.34/text.png';
+        $private = 'https://127.0.0.1/private.png';
+        $stored = self::service(StoreImages::class);
+        self::mockTime('2026-10-20 12:00');
+        $this->listed(['acme/shop']);
+        $this->pictures = [$cover => $picture, $missed => null, $text => 'not an image', $private => $picture];
+        $this->stores[Store::DEFAULT] = [['name' => 'acme/shop', 'images' => [$cover, $missed, $text, $private, 'ftp://93.184.216.34/ftp.png']]];
+
+        self::assertSame(Command::SUCCESS, self::command('adzercms:modules')->execute([]));
+        self::assertSame([$cover, $missed, $text], $this->pictured, 'a private address is not asked');
+        $first = self::service(Catalog::class)->row('acme/shop')->images ?? [];
+        self::assertCount(1, $first, 'only a picture that came and is an image is kept');
+        self::assertNotNull($stored->path($first[0]));
+
+        $this->pictures[$missed] = $picture;
+        $this->pictured = [];
+        self::mockTime('2026-10-21 12:00');
+        self::command('adzercms:modules')->execute([]);
+        self::assertSame([], $this->unchanged, 'a snapshot with a missed copy asks the document again');
+        self::assertSame([$missed, $text], $this->pictured, 'a copy goes once, a missed one is asked again');
+        $second = self::service(Catalog::class)->row('acme/shop')->images ?? [];
+        self::assertCount(2, $second);
+        self::assertSame($first[0], $second[0]);
+
+        $this->stores[Store::DEFAULT] = [['name' => 'acme/shop', 'images' => [$missed]]];
+        self::mockTime('2026-10-22 12:00');
+        self::command('adzercms:modules')->execute([]);
+        self::assertSame([$second[1]], self::service(Catalog::class)->row('acme/shop')->images ?? []);
+        self::assertNull($stored->path($first[0]), 'a copy out of the snapshot is dropped');
     }
 
     #[Group('ACMS-CORE-1122')]

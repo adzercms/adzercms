@@ -33,6 +33,7 @@ final readonly class Catalog
         private Artifacts $artifacts,
         private Marks $marks,
         private Store $store,
+        private StoreImages $images,
         #[Autowire('%kernel.bundles%')]
         private array $bundles,
     ) {
@@ -91,13 +92,14 @@ final readonly class Catalog
         ksort($rows);
         $down = array_values(array_unique([...$down, ...$lookup->down]));
         $url = $this->store->url();
-        $store = $this->store->read($url, $kept['store']);
+        $store = $this->store->read($url, $kept['extensions']);
         if (null === $store) {
             $down[] = $url;
-            $store = $url === $kept['store']?->url ? $kept['store'] : null;
+            $store = $url === $kept['extensions']?->url ? $kept['extensions'] : null;
         }
+        $store = $this->images->copied($store, $kept['extensions']);
         $marked = null === $marks ? $kept['marks'] : array_intersect_key($marks, $rows + array_flip(InstalledVersions::getInstalledPackagesByType(Registry::TYPE)));
-        $this->snapshot->write(self::SNAPSHOT, ['packages' => $rows, 'down' => $down, 'fingerprint' => $fingerprint, 'marks' => $marked, 'store' => $store], self::LIFETIME);
+        $this->snapshot->write(self::SNAPSHOT, ['packages' => $rows, 'down' => $down, 'fingerprint' => $fingerprint, 'marks' => $marked, 'extensions' => $store], self::LIFETIME);
 
         return null === $marks ? [...$down, Marks::REGISTRY] : $down;
     }
@@ -113,11 +115,11 @@ final readonly class Catalog
         }
 
         $marks = $held['marks'];
-        $entries = $held['store']->entries ?? [];
+        $entries = $held['extensions']->entries ?? [];
         $rows = [];
         foreach ($held['packages'] as $name => $row) {
             $kind = self::kind($row['package']->kind, $kinds);
-            $rows[$name] = new CatalogRow($name, $row['package'], $kind, $row['package']->version, null, $row['repository'], false, self::marked($marks, $name, $row['package']->reference), false, false, null, self::type($kind, $entries[$name] ?? null), $entries[$name]->demo ?? null);
+            $rows[$name] = new CatalogRow($name, $row['package'], $kind, $row['package']->version, null, $row['repository'], false, self::marked($marks, $name, $row['package']->reference), false, false, null, self::type($kind, $entries[$name] ?? null), $entries[$name]->demo ?? null, self::copies($entries[$name] ?? null));
         }
         foreach (array_unique(InstalledVersions::getInstalledPackagesByType(Registry::TYPE)) as $name) {
             $installed = (string) InstalledVersions::getPrettyVersion($name);
@@ -140,6 +142,7 @@ final readonly class Catalog
                 $module?->key,
                 self::type($kind, $entries[$name] ?? null),
                 $entries[$name]->demo ?? null,
+                self::copies($entries[$name] ?? null),
             );
         }
         $positions = array_flip(array_keys($entries));
@@ -156,6 +159,12 @@ final readonly class Catalog
             CoreKind::Feature => ExtensionType::Module,
             default => ExtensionType::Integration,
         };
+    }
+
+    /** @return list<string> */
+    private static function copies(?StoreEntry $entry): array
+    {
+        return array_values(array_filter($entry->images ?? []));
     }
 
     private static function newer(Package $offered, string $installed, ?string $reference): bool
@@ -191,7 +200,7 @@ final readonly class Catalog
         return hash('xxh128', serialize([$this->sources->fingerprint(), $installed, $this->store->url()]));
     }
 
-    /** @return array{at: ?\DateTimeImmutable, packages: array<string, array{package: Package, repository: string}>, down: list<string>, fingerprint: ?string, marks: array<string, list<string>>, store: ?StoreDocument} */
+    /** @return array{at: ?\DateTimeImmutable, packages: array<string, array{package: Package, repository: string}>, down: list<string>, fingerprint: ?string, marks: array<string, list<string>>, extensions: ?StoreDocument} */
     private function held(): array
     {
         $held = $this->snapshot->read(self::SNAPSHOT);
@@ -216,7 +225,7 @@ final readonly class Catalog
             'down' => $down,
             'fingerprint' => \is_string($taken['fingerprint'] ?? null) ? $taken['fingerprint'] : null,
             'marks' => $marks,
-            'store' => ($taken['store'] ?? null) instanceof StoreDocument ? $taken['store'] : null,
+            'extensions' => ($taken['extensions'] ?? null) instanceof StoreDocument ? $taken['extensions'] : null,
         ];
     }
 

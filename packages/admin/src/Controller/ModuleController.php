@@ -14,11 +14,13 @@ use AdzerCMS\Contracts\Ui\Badge;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Build\PreviewMark;
 use AdzerCMS\Core\Composer\Artifacts;
+use AdzerCMS\Core\Http\ImmutableFileResponse;
 use AdzerCMS\Core\Module\Catalog;
 use AdzerCMS\Core\Module\CatalogRow;
 use AdzerCMS\Core\Module\ModuleAction;
 use AdzerCMS\Core\Module\Operations;
 use AdzerCMS\Core\Module\OperationState;
+use AdzerCMS\Core\Module\StoreImages;
 use AdzerCMS\Core\Repository\ModuleOperationRepository;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Entries;
@@ -49,6 +51,7 @@ final class ModuleController extends AbstractController
         private readonly Operations $operations,
         private readonly ModuleOperationRepository $filings,
         private readonly PreviewMark $mark,
+        private readonly StoreImages $images,
     ) {
     }
 
@@ -165,6 +168,7 @@ final class ModuleController extends AbstractController
                 'description' => $row->package->description->trans($translator),
                 'link' => $row->package->homepage ?? $row->package->source,
                 'demo' => $row->demo,
+                'images' => $this->imageLinks($row),
                 'card' => null === $module ? null : $this->generateUrl('admin_module', ['key' => $key]),
                 'version' => (string) ($row->installed ?? $row->version),
                 'verified' => (null === $row->installed ? $row->verified : $row->installedVerified) ? Badge::good(t('admin.modules.verified')) : null,
@@ -203,15 +207,30 @@ final class ModuleController extends AbstractController
         return $offers;
     }
 
+    #[Route('/image/{name}', name: 'admin_module_image', methods: ['GET'])]
+    public function image(string $name, Request $request): Response
+    {
+        return new ImmutableFileResponse($this->images->path($name) ?? throw $this->createNotFoundException(), $request);
+    }
+
     #[Route('/{key}', name: 'admin_module', methods: ['GET'])]
     public function module(string $key): Response
     {
         $module = $this->assembled->modules()[$key] ?? throw $this->createNotFoundException();
+        $row = array_find($this->catalog->rows()['rows'], static fn (CatalogRow $row): bool => $module['name'] === $row->key);
 
         return $this->render('@Admin/admin/module.html.twig', [
             'module' => $module,
             'key' => $key,
             'schema' => $this->assembled->schema($module['namespace']),
+            'demo' => $row?->demo,
+            'images' => null === $row ? [] : $this->imageLinks($row),
         ]);
+    }
+
+    /** @return list<string> */
+    private function imageLinks(CatalogRow $row): array
+    {
+        return array_map(fn (string $name): string => $this->generateUrl('admin_module_image', ['name' => $name]), $row->images);
     }
 }

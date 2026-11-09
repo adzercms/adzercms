@@ -47,6 +47,12 @@ trait CatalogAnswers
     /** @var list<string> */
     private array $unchanged = [];
 
+    /** @var array<string, ?string> */
+    private array $pictures = [];
+
+    /** @var list<string> */
+    private array $pictured = [];
+
     private function answerCatalog(): void
     {
         self::service(HttpAnswers::class)->respond(function (string $method, string $url, array $options): MockResponse {
@@ -68,6 +74,7 @@ trait CatalogAnswers
             }
 
             return match (true) {
+                \array_key_exists($url, $this->pictures) => $this->pictureAnswer($url),
                 Marks::REGISTRY === $url => null === $this->registry ? new MockResponse('', ['http_code' => 503]) : new JsonMockResponse($this->registry),
                 \array_key_exists($url, $this->stores) => $this->store($url, $options['normalized_headers']['if-none-match'][0] ?? null),
                 Repositories::PACKAGIST.'/packages.json' === $url => null === $this->root ? new MockResponse('', ['http_code' => 503]) : new JsonMockResponse($this->root),
@@ -76,6 +83,13 @@ trait CatalogAnswers
                 default => self::fail(\sprintf('unexpected request %s', $url)),
             };
         });
+    }
+
+    private function pictureAnswer(string $url): MockResponse
+    {
+        $this->pictured[] = $url;
+
+        return new MockResponse($this->pictures[$url] ?? '', ['http_code' => null === $this->pictures[$url] ? 404 : 200]);
     }
 
     private function store(string $url, ?string $condition): MockResponse

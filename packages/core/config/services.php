@@ -17,6 +17,7 @@ use AdzerCMS\Core\Module\Snapshot;
 use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Module\Staging;
 use AdzerCMS\Core\Module\Store;
+use AdzerCMS\Core\Module\StoreImages;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Module\Tree;
 use AdzerCMS\Core\Notice\Bounces;
@@ -66,6 +67,7 @@ return static function (ContainerConfigurator $container): void {
     $services->set(Snapshot::class);
     $services->set(Marks::class)->arg('$httpClient', new Reference(Repositories::CLIENT));
     $services->set(Store::class)->arg('$httpClient', new Reference(Repositories::CLIENT));
+    $services->set(StoreImages::class)->arg('$httpClient', new Reference(Repositories::CLIENT));
     $services->set(Catalog::class);
     $services->set(Tree::class);
     $services->set(Operations::class);

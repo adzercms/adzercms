@@ -10,6 +10,7 @@ use AdzerCMS\Core\Composer\Package;
 
 final readonly class CatalogRow
 {
+    /** @param list<string> $images */
     public function __construct(
         public string $name,
         public Package $package,
@@ -24,6 +25,7 @@ final readonly class CatalogRow
         public ?string $key,
         public ExtensionType $type,
         public ?string $demo,
+        public array $images = [],
     ) {
     }
 }

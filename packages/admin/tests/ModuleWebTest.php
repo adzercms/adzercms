@@ -51,6 +51,7 @@ final class ModuleWebTest extends SchemaTestCase
     private const SENDER = RelayGateway::SETTINGS.RelayGateway::SENDER;
     private const REPOSITORY = 'https://repo.acme.test';
     private const MODULES = '/admin/modules';
+    private const COVER = 'https://93.184.216.34/cover.png';
     private const SOURCES = '/admin/settings/'.ModuleSources::PAGE->value;
     private const SOURCE = '/admin/settings/sources/';
     private const OPERATIONS = '/admin/modules?tab=operations';
@@ -144,8 +145,10 @@ final class ModuleWebTest extends SchemaTestCase
         $this->offer('acme/till', '1.0.0', provide: ['adzercms/sms-implementation' => '1.0.0']);
         $this->stores[Store::DEFAULT] = [
             ['name' => 'acme/site', 'type' => ExtensionType::Template->value, 'demo' => 'https://site.example.test'],
-            ['name' => 'acme/look', 'type' => ExtensionType::Theme->value, 'demo' => 'https://look.example.test'],
+            ['name' => 'acme/look', 'type' => ExtensionType::Theme->value, 'demo' => 'https://look.example.test', 'images' => [self::COVER]],
+            ['name' => 'adzercms/admin', 'demo' => 'https://admin.example.test', 'images' => [self::COVER]],
         ];
+        $this->pictures = [self::COVER => (string) base64_decode(self::PNG, true)];
         self::command('adzercms:modules')->execute([]);
         $page = $this->client->request('GET', self::MODULES);
         $text = static fn (Crawler $node): string => trim($node->text());
@@ -167,6 +170,14 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertSame(array_values($themes), $cards->filter('article.offer-card')->each(static fn (Crawler $card): string => (string) $card->attr('data-package')));
         $look = $cards->filter('article.offer-card[data-package="acme/look"]');
         self::assertSame('https://look.example.test', $look->filter('a.demo')->attr('href'));
+        $this->client->request('GET', (string) $look->filter('img.offer-cover')->attr('src'));
+        self::assertResponseIsSuccessful('the cover of a theme is its own copy');
+        self::assertResponseHeaderSame('Content-Type', 'image/webp');
+        $card = $this->client->request('GET', '/admin/modules/admin');
+        self::assertCount(1, $card->filter('.extension-images img'), 'the card of a module shows the images of its entry');
+        self::assertSame('https://admin.example.test', $card->filter('a.demo')->attr('href'));
+        $rows = $this->client->request('GET', self::MODULES)->filter('#rows');
+        self::assertGreaterThan(0, $rows->filter('.extension-images img')->count(), 'a row of the list shows the images of its entry');
         self::assertSame([self::phrase(ModuleAction::Install->label())], $look->filter('.offer-actions button')->each($text));
 
         $this->post((string) $look->filter('.offer-actions form')->attr('action'));

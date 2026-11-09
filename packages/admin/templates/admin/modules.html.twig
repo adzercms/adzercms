@@ -27,6 +27,7 @@
                 <div class="offer-grid">
                     {% for row in rows %}
                         <article class="offer-card{{ row.card ? ' clickable-row' }}" data-package="{{ row.name }}"{% if row.card %} data-href="{{ row.card }}"{% endif %}>
+                            {% if row.images %}<img class="offer-cover" src="{{ row.images|first }}" alt="" loading="lazy">{% endif %}
                             <h2 class="offer-title">{{ extension.name(row) }}</h2>
                             {% if row.description %}<p>{{ row.description }}</p>{% endif %}
                             <span class="muted">{{ extension.version(row) }}</span>
@@ -46,6 +47,7 @@
                 <td class="{{ table.aside('name') }}">
                     {{ extension.name(row) }}
                     {% if row.description %}<br><span class="muted">{{ row.description }}</span>{% endif %}
+                    {{ extension.images(row) }}
                     {% if row.demo %}<br>{{ extension.demo(row) }}{% endif %}
                 </td>
                 <td class="{{ table.aside('version') }}">{{ extension.version(row) }}</td>

@@ -2,6 +2,14 @@
     {% if row.link %}<a href="{{ row.link }}" target="_blank" rel="noopener"><strong>{{ clip(row.name, 60) }}</strong></a>{% else %}<strong>{{ clip(row.name, 60) }}</strong>{% endif %}
 {% endmacro %}
 
+{% macro images(row, large = false) %}
+    {% if row.images %}
+        <div class="extension-images{{ large ? ' large' }}">
+            {% for image in row.images %}<a href="{{ image }}" target="_blank" rel="noopener"><img src="{{ image }}" alt="" loading="lazy"></a>{% endfor %}
+        </div>
+    {% endif %}
+{% endmacro %}
+
 {% macro demo(row) %}
     {% if row.demo %}<a class="demo" href="{{ row.demo }}" target="_blank" rel="noopener">{{ 'core.extension.demo'|trans }}</a>{% endif %}
 {% endmacro %}

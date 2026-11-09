@@ -57,6 +57,15 @@ final readonly class Photos
         return 1 === preg_match(self::NAME, $name) && is_file($path) ? $path : null;
     }
 
+    /** @return list<string> */
+    public function names(string $place): array
+    {
+        return array_values(array_filter(
+            array_map(basename(...), glob($this->directory.'/'.$place.'/*') ?: []),
+            static fn (string $name): bool => 1 === preg_match(self::NAME, $name),
+        ));
+    }
+
     /** @param list<string> $names */
     public function drop(string $place, array $names): void
     {

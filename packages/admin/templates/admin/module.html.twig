@@ -14,6 +14,9 @@
 {% block page %}
 {% set description = module.description|trans %}
 {% if description %}<p class="page-lead">{{ description }}</p>{% endif %}
+{% import '@Admin/admin/_extension.html.twig' as extension %}
+{{ extension.images({images: images}, true) }}
+{{ extension.demo({demo: demo}) }}
 <div class="info-grid">
     <div class="info-item">
         <span class="info-label">{{ 'admin.modules.schema'|trans }}</span>

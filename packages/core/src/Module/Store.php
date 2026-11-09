@@ -23,6 +23,7 @@ final readonly class Store implements Owner
     public const DEFAULT = 'https://adzercms.com/extensions/store.json';
 
     private const TIMEOUT = 10.0;
+    private const IMAGES = 8;
 
     public function __construct(private HttpClientInterface $httpClient, private Settings $settings)
     {
@@ -65,10 +66,19 @@ final readonly class Store implements Owner
                 $entries[$name] = new StoreEntry(
                     \is_string($entry['type'] ?? null) ? ExtensionType::tryFrom($entry['type']) : null,
                     Package::link($entry['demo'] ?? null),
+                    self::images($entry['images'] ?? null),
                 );
             }
         }
 
         return new StoreDocument($url, $etag, $entries);
+    }
+
+    /** @return array<string, null> */
+    private static function images(mixed $images): array
+    {
+        $links = array_filter(array_map(Package::link(...), \is_array($images) ? array_values($images) : []));
+
+        return array_fill_keys(\array_slice(array_values(array_unique($links)), 0, self::IMAGES), null);
     }
 }
