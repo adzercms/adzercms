@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace AdzerCMS\Leads\Tests;
 
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Setting\Language;
+use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Queries;
 use AdzerCMS\Leads\Entity\Stage;
 use AdzerCMS\Leads\Intake;
@@ -23,6 +25,7 @@ use function Symfony\Component\Clock\now;
 
 final class ListTest extends LeadsTestCase
 {
+    use Configuration;
     use Queries;
 
     #[Group('ACMS-LEAD-0005')]
@@ -98,6 +101,7 @@ final class ListTest extends LeadsTestCase
     #[Group('ACMS-US-0041')]
     public function testExportGivesCsvOfCurrentSelectionInListOrder(): void
     {
+        $this->configure([Language::NAME => 'ru']);
         $this->lead(StageGroup::Fresh, 'Анна', '79990000002', 'anna@site.test', "Нужен кран;\nна неделю", 'Кран', page: '/krany');
         $this->lead(StageGroup::Fresh, '=HYPERLINK("x")', topic: 'Кран');
         $this->lead(StageGroup::Fresh, 'Борис', topic: 'Аренда');

@@ -36,7 +36,7 @@ final readonly class LeadExport
     /** @param non-empty-list<Slice> $slices */
     public function response(Request $request, string $route, array $slices): StreamedResponse
     {
-        $lines = $this->lines($request, $route, $slices);
+        $lines = $this->lines($request, $route, $slices, $request->getLocale());
 
         return new StreamedResponse(static function () use ($lines): void {
             $output = fopen('php://output', 'w');
@@ -60,13 +60,13 @@ final readonly class LeadExport
      *
      * @return \Generator<list<string>>
      */
-    private function lines(Request $request, string $route, array $slices): \Generator
+    private function lines(Request $request, string $route, array $slices, string $locale): \Generator
     {
         [, $builder] = $this->rows->selection($request, $route, $slices, []);
         $extra = $this->modules->columns(LeadSubject::LISTING);
         $managers = $this->handling->managers();
 
-        yield self::line([
+        yield self::line($locale, [
             t('leads.column.number'),
             t('leads.field.name'),
             t('leads.field.topic'),
@@ -88,12 +88,12 @@ final readonly class LeadExport
             \assert($lead instanceof Lead);
             $batch[] = $lead;
             if (self::BATCH === \count($batch)) {
-                yield from $this->batch($batch, $extra, $managers);
+                yield from $this->batch($batch, $extra, $managers, $locale);
                 $batch = [];
                 $this->em->clear();
             }
         }
-        yield from $this->batch($batch, $extra, $managers);
+        yield from $this->batch($batch, $extra, $managers, $locale);
     }
 
     /**
@@ -103,11 +103,11 @@ final readonly class LeadExport
      *
      * @return list<list<string>>
      */
-    private function batch(array $leads, array $extra, array $managers): array
+    private function batch(array $leads, array $extra, array $managers, string $locale): array
     {
         $cells = $this->modules->cells(LeadSubject::LISTING, array_map(static fn (Lead $lead): int => (int) $lead->getId(), $leads));
 
-        return array_map(static fn (Lead $lead): array => self::line([
+        return array_map(static fn (Lead $lead): array => self::line($locale, [
             $lead->getId(),
             $lead->getName(),
             $lead->getTopic(),
@@ -135,10 +135,10 @@ final readonly class LeadExport
      *
      * @return list<string>
      */
-    private static function line(array $values): array
+    private static function line(string $locale, array $values): array
     {
-        return array_map(static function (mixed $value): string {
-            $text = Column::scalar($value);
+        return array_map(static function (mixed $value) use ($locale): string {
+            $text = Column::scalar($value, $locale);
 
             return 1 === preg_match(self::FORMULA, $text) ? "'".$text : $text;
         }, $values);

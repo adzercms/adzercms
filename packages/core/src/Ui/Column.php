@@ -58,13 +58,13 @@ final class Column
         self::$translator = $translator;
     }
 
-    public static function scalar(mixed $value): string
+    public static function scalar(mixed $value, ?string $locale = null): string
     {
         return match (true) {
             null === $value => '',
-            $value instanceof TranslatableInterface => null === self::$translator ? '' : $value->trans(self::$translator),
+            $value instanceof TranslatableInterface => null === self::$translator ? '' : $value->trans(self::$translator, $locale),
             \is_bool($value) => $value ? '1' : '',
-            $value instanceof \DateTimeInterface => self::scalar(t('core.moment.day_time', ['at' => $value])),
+            $value instanceof \DateTimeInterface => self::scalar(t('core.moment.day_time', ['at' => $value]), $locale),
             \is_scalar($value) => (string) $value,
             default => '',
         };
