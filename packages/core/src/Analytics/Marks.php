@@ -84,7 +84,7 @@ final readonly class Marks implements Owner
      *
      * @return array<string, string>
      */
-    private static function of(array $values): array
+    public static function of(array $values): array
     {
         $marks = [];
 
