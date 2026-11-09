@@ -434,11 +434,12 @@
             "dist": {
                 "type": "path",
                 "url": "packages/dompdf",
-                "reference": "db94d99aa81600e70126eba3e891d6707b14e136"
+                "reference": "b40ce548ad799dd297e7dafc0c3f22ed8ba599a9"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
                 "dompdf/dompdf": "^3.1",
+                "ext-gd": "*",
                 "php": ">=8.4",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/filesystem": "7.4.*"

@@ -12,6 +12,7 @@
     "license": "MIT",
     "require": {
         "php": ">=8.4",
+        "ext-gd": "*",
         "adzercms/contracts": "^1.0",
         "dompdf/dompdf": "^3.1",
         "symfony/dependency-injection": "7.4.*",
