@@ -7,9 +7,11 @@ namespace AdzerCMS\Dompdf;
 use AdzerCMS\Contracts\Ui\Pdf;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 
+#[AsAlias]
 final readonly class DompdfPdf implements Pdf
 {
     private const PAPER = 'a4';
