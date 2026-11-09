@@ -25,6 +25,8 @@ final readonly class BrandCardController
     private const DARK = '1a1a1a';
     private const SAMPLE = 200;
     private const NEAR = 0.15;
+    private const SCHEME_COLOR = '/var\(\s*--[\w-]+\s*,\s*([^()]+?)\s*\)/';
+    private const TEXT_COLOR = '/currentColor/i';
 
     public function __construct(
         private Brand $brand,
@@ -72,14 +74,21 @@ final readonly class BrandCardController
     private static function picture(string $path): \Imagick
     {
         $picture = new \Imagick();
-        if ('svg' === pathinfo($path, \PATHINFO_EXTENSION)) {
-            $picture->pingImage($path);
-            $density = $picture->getImageResolution()['x'] * min(self::LOGO_WIDTH / $picture->getImageWidth(), self::LOGO_HEIGHT / $picture->getImageHeight());
-            $picture = new \Imagick();
-            $picture->setBackgroundColor('transparent');
-            $picture->setResolution($density, $density);
+        if ('svg' !== pathinfo($path, \PATHINFO_EXTENSION)) {
+            $picture->readImage($path);
+
+            return $picture;
         }
-        $picture->readImage($path);
+
+        $source = (string) preg_replace([self::SCHEME_COLOR, self::TEXT_COLOR], ['$1', '#'.self::DARK], (string) file_get_contents($path));
+        $picture->setFormat('svg');
+        $picture->pingImageBlob($source);
+        $density = $picture->getImageResolution()['x'] * min(self::LOGO_WIDTH / $picture->getImageWidth(), self::LOGO_HEIGHT / $picture->getImageHeight());
+        $picture = new \Imagick();
+        $picture->setBackgroundColor('transparent');
+        $picture->setResolution($density, $density);
+        $picture->setFormat('svg');
+        $picture->readImageBlob($source);
 
         return $picture;
     }

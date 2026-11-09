@@ -1417,6 +1417,12 @@
         <target>Site name</target>
       </segment>
     </unit>
+    <unit id="core.setting.title_accent">
+      <segment>
+        <source>core.setting.title_accent</source>
+        <target>Part of the name in the brand color</target>
+      </segment>
+    </unit>
     <unit id="core.setting.toggle">
       <segment>
         <source>core.setting.toggle</source>

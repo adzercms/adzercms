@@ -9,6 +9,7 @@ use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Photo\Photos;
 use Doctrine\ORM\EntityManagerInterface;
+use enshrined\svgSanitize\Sanitizer;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
@@ -27,6 +28,7 @@ final class Images
     private const MAX_BYTES = 512000;
     private const PLACE = 'settings';
     private const SIDE = 1920;
+    private const THEMED = '/currentColor|var\(--/i';
 
     private readonly string $directory;
 
@@ -72,6 +74,21 @@ final class Images
         $name = $this->settings->get($field->name);
 
         return '' !== $name && is_file($this->directory.'/'.$name) ? $this->directory.'/'.$name : null;
+    }
+
+    public function themedSvg(Field $field): ?string
+    {
+        $path = $this->path($field);
+        $source = null !== $path && str_ends_with($path, '.svg') ? (string) file_get_contents($path) : '';
+        if (1 !== preg_match(self::THEMED, $source)) {
+            return null;
+        }
+
+        $sanitizer = new Sanitizer();
+        $sanitizer->removeXMLTag(true);
+        $sanitizer->removeRemoteReferences(true);
+
+        return $sanitizer->sanitize($source) ?: null;
     }
 
     private static function refusal(Field $field, File $file): ?Refusal

@@ -23,6 +23,7 @@ use function Symfony\Component\Translation\t;
 final class Brand implements Owner
 {
     public const TITLE = 'brand.title';
+    public const TITLE_ACCENT = 'brand.title_accent';
     public const LOGO = 'brand.logo';
     public const LOGO_DARK = 'brand.logo_dark';
     public const LOGO_TITLE = 'brand.logo_title';
@@ -51,6 +52,7 @@ final class Brand implements Owner
     {
         return [
             new Field(self::TITLE, t('core.setting.title'), page: Page::Brand),
+            new Field(self::TITLE_ACCENT, t('core.setting.title_accent'), page: Page::Brand),
             self::logoField(),
             self::darkLogoField(),
             new Field(self::LOGO_TITLE, t('core.setting.logo_title'), Type::Toggle, page: Page::Brand),
@@ -70,6 +72,21 @@ final class Brand implements Owner
     public function title(): string
     {
         return $this->settings->get(self::TITLE);
+    }
+
+    /** @return array{string, string, string} */
+    public function titleParts(): array
+    {
+        $title = $this->title();
+        $accent = $this->settings->get(self::TITLE_ACCENT);
+        $at = '' === $accent ? false : mb_strpos($title, $accent);
+
+        return false === $at ? [$title, '', ''] : [mb_substr($title, 0, $at), $accent, mb_substr($title, $at + mb_strlen($accent))];
+    }
+
+    public function mark(?Theme $theme = null): ?string
+    {
+        return $this->images->themedSvg(Theme::Dark === $theme && null !== $this->images->path(self::darkLogoField()) ? self::darkLogoField() : self::logoField());
     }
 
     public function logo(?Theme $theme = null): ?string

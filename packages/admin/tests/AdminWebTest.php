@@ -652,6 +652,34 @@ final class AdminWebTest extends SchemaTestCase
         self::assertResponseStatusCodeSame(404);
     }
 
+    #[Group('ACMS-UI-0144')]
+    #[Group('ACMS-UI-0145')]
+    #[Group('ACMS-US-0004')]
+    public function testThemedLogoGoesCleanIntoThePageAndPartOfTheTitleTakesTheBrandColor(): void
+    {
+        $this->client->loginUser($this->admin);
+        $brand = self::SETTINGS.Page::Brand->value;
+        $this->configure([Brand::TITLE => 'AdzerCMS', Brand::TITLE_ACCENT => 'CMS', Brand::LOGO_TITLE => Toggle::On->value]);
+        $logo = static fn (string $fill): string => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8" onload="alert(1)"><rect width="8" height="8" fill="'.$fill.'"/><script>alert(1)</script></svg>';
+
+        $this->post($brand, [], ['value' => [Brand::LOGO => $this->scratchFile('logo.svg', $logo('var(--primary, #00f)'))]]);
+        $header = $this->client->request('GET', '/admin')->filter('.header-logo');
+        self::assertCount(0, $header->filter('img'), 'a logo of the theme colors goes into the page');
+        self::assertSame('var(--primary, #00f)', $header->filter('.brand-mark svg rect')->attr('fill'));
+        self::assertCount(0, $header->filter('.brand-mark script'));
+        self::assertNull($header->filter('.brand-mark svg')->attr('onload'));
+        self::assertSame('AdzerCMS', trim($header->filter('span:not(.brand-mark)')->text()));
+        self::assertSame('CMS', $header->filter('.brand-accent')->text());
+
+        $this->configure([Brand::TITLE_ACCENT => 'absent']);
+        self::assertCount(0, $this->client->request('GET', '/admin')->filter('.header-logo .brand-accent'), 'a part outside the title colors nothing');
+
+        $this->post($brand, [], ['value' => [Brand::LOGO => $this->scratchFile('logo.svg', $logo('#00f'))]]);
+        $plain = $this->client->request('GET', '/admin')->filter('.header-logo');
+        self::assertCount(0, $plain->filter('.brand-mark'), 'a logo of its own colors stays a picture');
+        self::assertStringEndsWith('/setting/'.Brand::LOGO, (string) $plain->filter('img')->attr('src'));
+    }
+
     #[Group('ACMS-UI-0086')]
     #[Group('ACMS-UI-0127')]
     #[Group('ACMS-UI-0088')]

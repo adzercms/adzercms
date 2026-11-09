@@ -68,6 +68,8 @@ final class ImagesTest extends SchemaTestCase
     {
         yield 'dark logo on white' => ['#000', 'srgb(0,0,0)', 'srgb(255,255,255)'];
         yield 'white logo on dark' => ['#fff', 'srgb(255,255,255)', 'srgb(26,26,26)'];
+        yield 'text color of a logo' => ['currentColor', 'srgb(26,26,26)', 'srgb(255,255,255)'];
+        yield 'scheme color of a logo' => ['var(--primary, #0b5cd5)', 'srgb(11,92,213)', 'srgb(255,255,255)'];
     }
 
     #[Group('ACMS-CORE-0061')]
