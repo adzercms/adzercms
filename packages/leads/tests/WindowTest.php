@@ -27,6 +27,7 @@ use AdzerCMS\Leads\Tests\Fixture\ItemSubject;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
+use Twig\Environment;
 
 final class WindowTest extends SchemaTestCase
 {
@@ -103,6 +104,13 @@ final class WindowTest extends SchemaTestCase
             self::assertStringContainsString($field, $notices[0]->getBody());
         }
         self::assertStringContainsString('/admin/leads/'.$leads[1]->getId(), $notices[1]->getBody());
+
+        $message = self::service(Environment::class)->render(LeadsEvent::NewLead->template().'.txt.twig', ['lead' => $leads[0]]);
+        self::assertStringContainsString(self::TOPIC, $message);
+        self::assertStringContainsString('/admin/leads/'.$leads[0]->getId(), $message);
+        foreach (['Анна', '79990000002', 'Нужен на неделю'] as $personal) {
+            self::assertStringNotContainsString($personal, $message, 'a messenger or phone message carries no personal data of the lead');
+        }
     }
 
     /** @param array<string, string> $fields */

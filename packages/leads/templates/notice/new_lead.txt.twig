@@ -1,1 +1,1 @@
-{{ 'leads.notice.title'|trans({number: lead.id}) }}: {{ [lead.topic, lead.name, lead.phone, lead.email]|filter(value => value is not null)|join(', ') }} {{ url('admin_lead', {id: lead.id}) }}
+{{ 'leads.notice.title'|trans({number: lead.id}) }}{% if lead.topic is not null %}: {{ lead.topic }}{% endif %} {{ url('admin_lead', {id: lead.id}) }}
