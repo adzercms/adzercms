@@ -1,0 +1,43 @@
+{
+    "name": "adzercms/dompdf",
+    "type": "adzercms-module",
+    "description": "PDF documents from HTML markup with Dompdf",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "pdf",
+        "dompdf",
+        "html-to-pdf"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "dompdf/dompdf": "^3.1",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/filesystem": "7.4.*"
+    },
+    "provide": {
+        "adzercms/pdf-implementation": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Dompdf\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Dompdf\\DompdfBundle",
+            "description": {
+                "ru": "Документы PDF из разметки HTML на Dompdf"
+            },
+            "title": {
+                "en": "Dompdf",
+                "ru": "Dompdf"
+            }
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

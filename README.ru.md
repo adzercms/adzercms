@@ -39,6 +39,7 @@
 - `sms-pilot`, `mts-marketolog` — отправка SMS; `telegram-bot`, `max-bot` — боты мессенджеров
 - `smart-captcha`, `turnstile`, `hcaptcha` — капча
 - `tbank`, `yookassa` — приём оплаты; `centrifugo` — сервер для обновлений в реальном времени
+- `dompdf` — документы PDF из HTML
 - `morphology`, `morphology-ru` — словоформы русского языка: анализатор pymorphy3 на PHP и его словарь OpenCorpora
 - в корне — приложение для разработки: подключает все пакеты и запускает тесты и проверки
 

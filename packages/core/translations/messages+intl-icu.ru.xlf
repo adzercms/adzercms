@@ -535,6 +535,12 @@
         <target>Сервис входа</target>
       </segment>
     </unit>
+    <unit id="core.kind.pdf">
+      <segment>
+        <source>core.kind.pdf</source>
+        <target>Документ PDF</target>
+      </segment>
+    </unit>
     <unit id="core.kind.sms">
       <segment>
         <source>core.kind.sms</source>

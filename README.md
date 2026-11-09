@@ -39,6 +39,7 @@ Each `packages/<name>` directory is the `adzercms/<name>` package:
 - `sms-pilot`, `mts-marketolog` — SMS delivery; `telegram-bot`, `max-bot` — messenger bots
 - `smart-captcha`, `turnstile`, `hcaptcha` — captcha
 - `tbank`, `yookassa` — online payments; `centrifugo` — real-time updates server
+- `dompdf` — PDF documents from HTML
 - `morphology`, `morphology-ru` — Russian word forms: the pymorphy3 analyzer in PHP and its OpenCorpora dictionary
 - the root is the development app: it pulls in every package and runs the tests and checks
 
