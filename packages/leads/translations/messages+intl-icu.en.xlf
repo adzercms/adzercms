@@ -61,6 +61,12 @@
         <target>New lead</target>
       </segment>
     </unit>
+    <unit id="leads.export">
+      <segment>
+        <source>leads.export</source>
+        <target>Export CSV</target>
+      </segment>
+    </unit>
     <unit id="leads.field.amount">
       <segment>
         <source>leads.field.amount</source>
@@ -85,6 +91,12 @@
         <target>Email</target>
       </segment>
     </unit>
+    <unit id="leads.field.files">
+      <segment>
+        <source>leads.field.files</source>
+        <target>Files</target>
+      </segment>
+    </unit>
     <unit id="leads.field.manager">
       <segment>
         <source>leads.field.manager</source>
@@ -101,6 +113,12 @@
       <segment>
         <source>leads.field.name</source>
         <target>Name</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.origin">
+      <segment>
+        <source>leads.field.origin</source>
+        <target>Visit source</target>
       </segment>
     </unit>
     <unit id="leads.field.page">
@@ -283,6 +301,36 @@
         <target>New lead {number}</target>
       </segment>
     </unit>
+    <unit id="leads.offer.file">
+      <segment>
+        <source>leads.offer.file</source>
+        <target>Commercial offer {number}.pdf</target>
+      </segment>
+    </unit>
+    <unit id="leads.offer.number">
+      <segment>
+        <source>leads.offer.number</source>
+        <target>No. {number} of {date, date, ::yMMdd}</target>
+      </segment>
+    </unit>
+    <unit id="leads.offer.subject">
+      <segment>
+        <source>leads.offer.subject</source>
+        <target>Subject</target>
+      </segment>
+    </unit>
+    <unit id="leads.offer.title">
+      <segment>
+        <source>leads.offer.title</source>
+        <target>Commercial offer</target>
+      </segment>
+    </unit>
+    <unit id="leads.offer.until">
+      <segment>
+        <source>leads.offer.until</source>
+        <target>The offer is valid until {until, date, ::yMMdd}</target>
+      </segment>
+    </unit>
     <unit id="leads.refusal.amount">
       <segment>
         <source>leads.refusal.amount</source>
@@ -305,6 +353,12 @@
       <segment>
         <source>leads.refusal.email</source>
         <target>The email address is not recognized</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.files">
+      <segment>
+        <source>leads.refusal.files</source>
+        <target>No more than {limit, number} files</target>
       </segment>
     </unit>
     <unit id="leads.refusal.manager">
@@ -371,6 +425,24 @@
       <segment>
         <source>leads.refusal.stage_last</source>
         <target>The last stage of a group stays</target>
+      </segment>
+    </unit>
+    <unit id="leads.setting.attachment_max_mb">
+      <segment>
+        <source>leads.setting.attachment_max_mb</source>
+        <target>Lead file size up to, MB; empty means no files</target>
+      </segment>
+    </unit>
+    <unit id="leads.setting.attachment_types">
+      <segment>
+        <source>leads.setting.attachment_types</source>
+        <target>Lead file types, comma separated</target>
+      </segment>
+    </unit>
+    <unit id="leads.setting.offer_days">
+      <segment>
+        <source>leads.setting.offer_days</source>
+        <target>Commercial offer validity, days</target>
       </segment>
     </unit>
     <unit id="leads.setting.reasons">
@@ -473,42 +545,6 @@
       <segment>
         <source>leads.window.title</source>
         <target>Leave a request</target>
-      </segment>
-    </unit>
-    <unit id="leads.export">
-      <segment>
-        <source>leads.export</source>
-        <target>Export CSV</target>
-      </segment>
-    </unit>
-    <unit id="leads.field.files">
-      <segment>
-        <source>leads.field.files</source>
-        <target>Files</target>
-      </segment>
-    </unit>
-    <unit id="leads.field.origin">
-      <segment>
-        <source>leads.field.origin</source>
-        <target>Visit source</target>
-      </segment>
-    </unit>
-    <unit id="leads.refusal.files">
-      <segment>
-        <source>leads.refusal.files</source>
-        <target>No more than {limit, number} files</target>
-      </segment>
-    </unit>
-    <unit id="leads.setting.attachment_max_mb">
-      <segment>
-        <source>leads.setting.attachment_max_mb</source>
-        <target>Lead file size up to, MB; empty means no files</target>
-      </segment>
-    </unit>
-    <unit id="leads.setting.attachment_types">
-      <segment>
-        <source>leads.setting.attachment_types</source>
-        <target>Lead file types, comma separated</target>
       </segment>
     </unit>
   </file>

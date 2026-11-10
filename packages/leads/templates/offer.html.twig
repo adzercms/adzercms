@@ -1,0 +1,81 @@
+{% extends '@Core/document/page.html.twig' %}
+
+{% block styles %}
+    .offer-head { width: 100%; margin-bottom: 18px; padding-bottom: 8px; border-bottom: 2px solid #000; }
+    .offer-head td { vertical-align: middle; }
+    .offer-logo { max-width: 60mm; max-height: 16mm; }
+    .offer-brand { font-size: 16px; font-weight: bold; }
+    .offer-number { text-align: right; }
+    .offer-title { font-size: 18px; font-weight: bold; }
+    .offer-section { margin-bottom: 14px; }
+    .offer-section h2 { margin: 0 0 4px; font-size: 13px; }
+    .offer-fields { width: 100%; border-collapse: collapse; }
+    .offer-fields td { padding: 2px 0; vertical-align: top; }
+    .offer-label { width: 30%; color: #555; }
+    .offer-amount { font-size: 15px; font-weight: bold; }
+    .offer-until { margin-top: 18px; padding-top: 6px; border-top: 1px solid #ccc; }
+{% endblock %}
+
+{% macro row(label, value) %}
+    {% if value is not same as(null) and value is not same as('') %}
+        <tr><td class="offer-label">{{ label }}</td><td>{{ value }}</td></tr>
+    {% endif %}
+{% endmacro %}
+
+{% block body %}
+{% import _self as offer %}
+<div class="doc">
+<table class="offer-head">
+    <tr>
+        <td>
+            {% if logo %}<img class="offer-logo" src="{{ logo }}" alt="">{% endif %}
+            {% if not logo or titled %}<span class="offer-brand">{{ title }}</span>{% endif %}
+        </td>
+        <td class="offer-number">
+            <div class="offer-title">{{ 'leads.offer.title'|trans }}</div>
+            <div>{{ 'leads.offer.number'|trans({number: lead.id, date: date}) }}</div>
+        </td>
+    </tr>
+</table>
+
+<div class="offer-section">
+    <h2>{{ 'leads.lead.client'|trans }}</h2>
+    <table class="offer-fields">
+        {{ offer.row('leads.field.name'|trans, lead.name) }}
+        {{ offer.row('leads.field.phone'|trans, lead.phone) }}
+        {{ offer.row('leads.field.email'|trans, lead.email) }}
+    </table>
+</div>
+
+<div class="offer-section">
+    <h2>{{ 'leads.offer.subject'|trans }}</h2>
+    <table class="offer-fields">
+        {{ offer.row('leads.field.topic'|trans, lead.topic) }}
+        {% for detail in details %}
+            {{ offer.row(detail.label|trans, detail.value) }}
+        {% endfor %}
+    </table>
+</div>
+
+{% if lead.amount is not null %}
+    <div class="offer-section">
+        <h2>{{ 'leads.field.amount'|trans }}</h2>
+        <div class="offer-amount">{{ lead.amount|money }}</div>
+    </div>
+{% endif %}
+
+{% if lead.manager %}
+    {% set manager = lead.manager %}
+    <div class="offer-section">
+        <h2>{{ 'leads.field.manager'|trans }}</h2>
+        <table class="offer-fields">
+            {{ offer.row('leads.field.name'|trans, [manager.lastName, manager.firstName, manager.middleName]|filter(part => part)|join(' ')) }}
+            {{ offer.row('leads.field.phone'|trans, manager.phone) }}
+            {{ offer.row('leads.field.email'|trans, manager.email) }}
+        </table>
+    </div>
+{% endif %}
+
+<div class="offer-until">{{ 'leads.offer.until'|trans({until: until}) }}</div>
+</div>
+{% endblock %}

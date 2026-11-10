@@ -23,6 +23,7 @@ final readonly class LeadPage
         private StageRepository $stages,
         private LeadSettings $settings,
         private LoginNames $logins,
+        private Offer $offer,
     ) {
     }
 
@@ -53,6 +54,7 @@ final readonly class LeadPage
             'stages' => $this->stages->funnel(),
             'managers' => $this->handling->managers(),
             'reasons' => $this->settings->reasons(),
+            'offer' => $this->offer->available(),
             'refusals' => $refusals,
             'input' => $input,
         ];

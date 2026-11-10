@@ -297,6 +297,10 @@ With the `opotopo` module installed, a feature module offers its catalog for sal
 
 The module lists `adzercms/opotopo` in `suggest` and registers the service only when `AdzerCMS\Opotopo\Catalog` exists, the same way as a live block.
 
+## PDF documents
+
+A module makes a PDF document from a Twig template that extends `@Core/document/page.html.twig`: the page sets the sheet margins, its `styles` block takes the document's own styles and its `body` block the markup. The root element of the document carries the `doc` class, which gives the base font and colors; a page of the admin or the cabinet that shows the same document in place includes `@Core/document/_base.css.twig` for the same look. Resources of the markup, such as images, go as `data:` addresses. `AdzerCMS\Core\Ui\PdfDocuments` turns the template into a file through the selected PDF module, and `PdfDocuments::response()` answers it with the file name and its ASCII fallback, opened in the browser or downloaded. Without a PDF module `available()` is false: a module that can live without documents hides its document action, one that can't requires `adzercms/pdf-implementation`.
+
 ## Contracts
 
 `adzercms/contracts` follows SemVer: a breaking change to a contract ships only in a new major version. The kinds and events of a feature module are contracts of its own package.

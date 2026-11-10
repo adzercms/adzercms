@@ -16,6 +16,7 @@ use AdzerCMS\Leads\Intake;
 use AdzerCMS\Leads\LeadExport;
 use AdzerCMS\Leads\LeadPage;
 use AdzerCMS\Leads\LeadRows;
+use AdzerCMS\Leads\Offer;
 use AdzerCMS\Leads\Slice;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -42,6 +43,7 @@ final class LeadController extends AbstractController
         private readonly Intake $intake,
         private readonly LeadPage $page,
         private readonly Handling $handling,
+        private readonly Offer $offer,
         private readonly EntityManagerInterface $em,
     ) {
     }
@@ -114,6 +116,16 @@ final class LeadController extends AbstractController
         $this->addFlash(...null === $refusal ? ['success', t('leads.flash.noted')] : ['error', $refusal->reason]);
 
         return $this->redirectToRoute(self::LEAD, ['id' => $lead->getId()]);
+    }
+
+    #[Route('/{id}/offer', name: 'admin_lead_offer', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function offer(Lead $lead): Response
+    {
+        if (!$this->offer->available()) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->offer->response($lead);
     }
 
     #[Route('/{id}/drop', name: 'admin_lead_drop', requirements: ['id' => '\d+'], methods: ['POST'])]

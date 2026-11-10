@@ -104,6 +104,11 @@ final class Brand implements Owner
         return \extension_loaded('imagick') ? $this->images->path(self::logoField()) : null;
     }
 
+    public function paperLogo(): ?string
+    {
+        return $this->images->dataUri(self::logoField());
+    }
+
     public function titled(): bool
     {
         return $this->settings->on(self::LOGO_TITLE);

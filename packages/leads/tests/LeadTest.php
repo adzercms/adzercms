@@ -10,8 +10,12 @@ use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Account\UserRemoval;
 use AdzerCMS\Core\Attachment\Allowance;
 use AdzerCMS\Core\Attachment\Attachments;
+use AdzerCMS\Core\Setting\Brand;
+use AdzerCMS\Core\Setting\Catalog;
+use AdzerCMS\Core\Setting\Images;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Ui\Money;
+use AdzerCMS\Core\Ui\PdfDocuments;
 use AdzerCMS\Leads\Entity\Lead;
 use AdzerCMS\Leads\Entity\LeadAttachment;
 use AdzerCMS\Leads\Entity\LeadEntry;
@@ -24,6 +28,7 @@ use AdzerCMS\Leads\Repository\StageRepository;
 use AdzerCMS\Leads\StageGroup;
 use AdzerCMS\Leads\Stages;
 use AdzerCMS\Leads\Tests\Fixture\ItemSubject;
+use AdzerCMS\Leads\Tests\Fixture\RecordedPdf;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
@@ -85,6 +90,43 @@ final class LeadTest extends LeadsTestCase
         self::assertSame(self::phrase('leads.flash.dropped', ['number' => $number]), self::toast($this->arrive(self::LIST), 'success'));
         self::assertNull(self::service(LeadRepository::class)->find($number));
         self::assertSame(0, self::service(LeadEntryRepository::class)->count([]));
+    }
+
+    #[Group('ACMS-LEAD-0018')]
+    #[Group('ACMS-US-0041')]
+    public function testOfferOpensPdfInNewTabWithBrandNumberDateClientSubjectAmountManagerAndValidity(): void
+    {
+        self::mockTime('2026-11-10 15:00');
+        $this->configure([Brand::TITLE => 'Краны Севера', Brand::LOGO_TITLE => '1', LeadSettings::OFFER_DAYS => '10']);
+        self::assertNull(self::service(Images::class)->store(self::service(Catalog::class)->fields()[Brand::LOGO], $this->picture('logo.png')));
+        $this->operator->setName('Петров', 'Иван', null)->setEmail('ivan@site.test');
+        $lead = $this->lead(StageGroup::Work, 'Анна', '79990000002', 'anna@site.test', topic: 'Кран');
+        self::service(ItemSubject::class)->attached[] = $lead;
+        $lead->handle($lead->getStage(), $this->operator, null, '12500.00', null);
+        $this->em->flush();
+
+        $link = $this->arrive(self::LIST.'/'.$lead->getId())->filter('a[target="_blank"][href$="/offer"]');
+        self::assertSame(self::phrase('leads.offer.title'), trim($link->text()));
+        $this->client->request('GET', (string) $link->attr('href'));
+
+        $response = $this->client->getResponse();
+        self::assertSame(PdfDocuments::MIME, $response->headers->get('Content-Type'));
+        self::assertStringStartsWith('inline;', (string) $response->headers->get('Content-Disposition'));
+        self::assertStringStartsWith('%PDF-', (string) $response->getContent());
+        $offer = new Crawler(self::service(RecordedPdf::class)->markup);
+        self::assertStringStartsWith('data:image/png;base64,', (string) $offer->filter('img')->attr('src'));
+        self::assertSame(
+            [
+                'Краны Севера',
+                self::phrase('leads.offer.number', ['number' => $lead->getId(), 'date' => new \DateTimeImmutable('2026-11-10')]),
+                'Анна', '79990000002', 'anna@site.test',
+                'Кран', ItemSubject::PRICE,
+                self::phrase(Money::rubles('12500.00')),
+                'Петров Иван', '79990000001', 'ivan@site.test',
+                self::phrase('leads.offer.until', ['until' => new \DateTimeImmutable('2026-11-20')]),
+            ],
+            $offer->filter('.offer-brand, .offer-number div:last-child, .offer-fields td:last-child, .offer-amount, .offer-until')->each(static fn (Crawler $part): string => trim($part->text())),
+        );
     }
 
     #[Group('ACMS-LEAD-0020')]

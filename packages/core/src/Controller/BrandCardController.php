@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Controller;
 
 use AdzerCMS\Core\Setting\Brand;
+use AdzerCMS\Core\Setting\Images;
 use Intervention\Image\Drivers\Imagick\Driver;
 use Intervention\Image\Encoders\PngEncoder;
 use Intervention\Image\ImageManager;
@@ -22,11 +23,8 @@ final readonly class BrandCardController
     public const LOGO_WIDTH = 960;
     public const LOGO_HEIGHT = 420;
     private const LIGHT = 'ffffff';
-    private const DARK = '1a1a1a';
     private const SAMPLE = 200;
     private const NEAR = 0.15;
-    private const SCHEME_COLOR = '/var\(\s*--[\w-]+\s*,\s*([^()]+?)\s*\)/';
-    private const TEXT_COLOR = '/currentColor/i';
 
     public function __construct(
         private Brand $brand,
@@ -68,7 +66,7 @@ final readonly class BrandCardController
             }
         }
 
-        return $light > $dark ? self::DARK : self::LIGHT;
+        return $light > $dark ? Images::INK : self::LIGHT;
     }
 
     private static function picture(string $path): \Imagick
@@ -80,7 +78,7 @@ final readonly class BrandCardController
             return $picture;
         }
 
-        $source = (string) preg_replace([self::SCHEME_COLOR, self::TEXT_COLOR], ['$1', '#'.self::DARK], (string) file_get_contents($path));
+        $source = Images::fixed((string) file_get_contents($path));
         $picture->setFormat('svg');
         $picture->pingImageBlob($source);
         $density = $picture->getImageResolution()['x'] * min(self::LOGO_WIDTH / $picture->getImageWidth(), self::LOGO_HEIGHT / $picture->getImageHeight());

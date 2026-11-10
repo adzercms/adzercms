@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="{{ app.locale }}">
+<head>
+    <meta charset="utf-8">
+    <style>
+        @page { margin: 12mm; }
+        {% include '@Core/document/_base.css.twig' %}
+        {% block styles %}{% endblock %}
+    </style>
+</head>
+<body>
+{% block body %}{% endblock %}
+</body>
+</html>

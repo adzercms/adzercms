@@ -11,6 +11,9 @@
           data-confirm="{{ 'leads.lead.drop_confirm'|trans({number: lead.id}) }}">
         {{ csrf_field() }}<button type="submit" class="danger">{{ 'leads.lead.drop'|trans }}</button>
     </form>
+    {% if offer %}
+        <a class="button secondary" href="{{ path('admin_lead_offer', {id: lead.id}) }}" target="_blank" rel="noopener">{{ 'leads.offer.title'|trans }}</a>
+    {% endif %}
     <a class="button secondary" href="{{ path('admin_leads') }}">{{ 'core.action.to_list'|trans }}</a>
 {% endblock %}
 

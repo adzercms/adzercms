@@ -677,7 +677,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/leads",
-                "reference": "a3321fb7df05ed007ab0afa3ded692c0ea019a33"
+                "reference": "6bf3f90361209e50e678362177cfe0c227207d70"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -703,9 +703,11 @@
             },
             "require-dev": {
                 "adzercms/admin": "^1.0",
+                "adzercms/dompdf": "^1.0",
                 "adzercms/support": "^1.0"
             },
             "suggest": {
+                "adzercms/dompdf": "commercial offer of a lead as a PDF document",
                 "adzercms/realtime": "leads and their feed as live entities",
                 "adzercms/support": "overdue leads in the staff digest"
             },

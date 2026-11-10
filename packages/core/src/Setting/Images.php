@@ -25,10 +25,13 @@ final class Images
         'image/webp' => 'webp',
         'image/vnd.microsoft.icon' => 'ico',
     ];
+    public const INK = '1a1a1a';
     private const MAX_BYTES = 512000;
     private const PLACE = 'settings';
     private const SIDE = 1920;
     private const THEMED = '/currentColor|var\(--/i';
+    private const SCHEME_COLOR = '/var\(\s*--[\w-]+\s*,\s*([^()]+?)\s*\)/';
+    private const TEXT_COLOR = '/currentColor/i';
 
     private readonly string $directory;
 
@@ -89,6 +92,23 @@ final class Images
         $sanitizer->removeRemoteReferences(true);
 
         return $sanitizer->sanitize($source) ?: null;
+    }
+
+    public function dataUri(Field $field): ?string
+    {
+        $path = $this->path($field);
+        if (null === $path) {
+            return null;
+        }
+        $extension = pathinfo($path, \PATHINFO_EXTENSION);
+        $bytes = (string) file_get_contents($path);
+
+        return \sprintf('data:%s;base64,%s', (string) array_search($extension, self::TYPES, true), base64_encode('svg' === $extension ? self::fixed($bytes) : $bytes));
+    }
+
+    public static function fixed(string $svg): string
+    {
+        return (string) preg_replace([self::SCHEME_COLOR, self::TEXT_COLOR], ['$1', '#'.self::INK], $svg);
     }
 
     private static function refusal(Field $field, File $file): ?Refusal

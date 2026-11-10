@@ -61,6 +61,12 @@
         <target>Новая заявка</target>
       </segment>
     </unit>
+    <unit id="leads.export">
+      <segment>
+        <source>leads.export</source>
+        <target>Выгрузить CSV</target>
+      </segment>
+    </unit>
     <unit id="leads.field.amount">
       <segment>
         <source>leads.field.amount</source>
@@ -85,6 +91,12 @@
         <target>Почта</target>
       </segment>
     </unit>
+    <unit id="leads.field.files">
+      <segment>
+        <source>leads.field.files</source>
+        <target>Файлы</target>
+      </segment>
+    </unit>
     <unit id="leads.field.manager">
       <segment>
         <source>leads.field.manager</source>
@@ -101,6 +113,12 @@
       <segment>
         <source>leads.field.name</source>
         <target>Имя</target>
+      </segment>
+    </unit>
+    <unit id="leads.field.origin">
+      <segment>
+        <source>leads.field.origin</source>
+        <target>Источник перехода</target>
       </segment>
     </unit>
     <unit id="leads.field.page">
@@ -283,6 +301,36 @@
         <target>Новая заявка {number}</target>
       </segment>
     </unit>
+    <unit id="leads.offer.file">
+      <segment>
+        <source>leads.offer.file</source>
+        <target>Коммерческое предложение {number}.pdf</target>
+      </segment>
+    </unit>
+    <unit id="leads.offer.number">
+      <segment>
+        <source>leads.offer.number</source>
+        <target>№ {number} от {date, date, ::yMMdd}</target>
+      </segment>
+    </unit>
+    <unit id="leads.offer.subject">
+      <segment>
+        <source>leads.offer.subject</source>
+        <target>Предмет</target>
+      </segment>
+    </unit>
+    <unit id="leads.offer.title">
+      <segment>
+        <source>leads.offer.title</source>
+        <target>Коммерческое предложение</target>
+      </segment>
+    </unit>
+    <unit id="leads.offer.until">
+      <segment>
+        <source>leads.offer.until</source>
+        <target>Предложение действительно до {until, date, ::yMMdd}</target>
+      </segment>
+    </unit>
     <unit id="leads.refusal.amount">
       <segment>
         <source>leads.refusal.amount</source>
@@ -305,6 +353,12 @@
       <segment>
         <source>leads.refusal.email</source>
         <target>Адрес почты не распознан</target>
+      </segment>
+    </unit>
+    <unit id="leads.refusal.files">
+      <segment>
+        <source>leads.refusal.files</source>
+        <target>Не больше {limit, number} файлов</target>
       </segment>
     </unit>
     <unit id="leads.refusal.manager">
@@ -371,6 +425,24 @@
       <segment>
         <source>leads.refusal.stage_last</source>
         <target>Последняя стадия группы остаётся</target>
+      </segment>
+    </unit>
+    <unit id="leads.setting.attachment_max_mb">
+      <segment>
+        <source>leads.setting.attachment_max_mb</source>
+        <target>Размер файла заявки до, МБ; пусто — без файлов</target>
+      </segment>
+    </unit>
+    <unit id="leads.setting.attachment_types">
+      <segment>
+        <source>leads.setting.attachment_types</source>
+        <target>Типы файлов заявки, через запятую</target>
+      </segment>
+    </unit>
+    <unit id="leads.setting.offer_days">
+      <segment>
+        <source>leads.setting.offer_days</source>
+        <target>Срок действия коммерческого предложения, дней</target>
       </segment>
     </unit>
     <unit id="leads.setting.reasons">
@@ -473,42 +545,6 @@
       <segment>
         <source>leads.window.title</source>
         <target>Оставить заявку</target>
-      </segment>
-    </unit>
-    <unit id="leads.export">
-      <segment>
-        <source>leads.export</source>
-        <target>Выгрузить CSV</target>
-      </segment>
-    </unit>
-    <unit id="leads.field.files">
-      <segment>
-        <source>leads.field.files</source>
-        <target>Файлы</target>
-      </segment>
-    </unit>
-    <unit id="leads.field.origin">
-      <segment>
-        <source>leads.field.origin</source>
-        <target>Источник перехода</target>
-      </segment>
-    </unit>
-    <unit id="leads.refusal.files">
-      <segment>
-        <source>leads.refusal.files</source>
-        <target>Не больше {limit, number} файлов</target>
-      </segment>
-    </unit>
-    <unit id="leads.setting.attachment_max_mb">
-      <segment>
-        <source>leads.setting.attachment_max_mb</source>
-        <target>Размер файла заявки до, МБ; пусто — без файлов</target>
-      </segment>
-    </unit>
-    <unit id="leads.setting.attachment_types">
-      <segment>
-        <source>leads.setting.attachment_types</source>
-        <target>Типы файлов заявки, через запятую</target>
       </segment>
     </unit>
   </file>
