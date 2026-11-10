@@ -1685,7 +1685,8 @@ form[data-steps] [data-step]:not(.current) { display: none; }
 .chart-rx { color: var(--success); stroke: var(--success); }
 .chart-tx { color: var(--error); stroke: var(--error); }
 
-.doc-sheet { padding: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow-x: auto; }
+.doc-sheet { padding: 1.5rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); }
+.doc-sheet > iframe { display: block; width: 100%; border: 0; }
 
 :root.layout-top { --chrome-height: var(--impersonate-height); }
 :root.layout-top .panel-layout { padding-top: var(--impersonate-height); }

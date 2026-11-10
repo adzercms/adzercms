@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <style>
         @page { margin: 12mm; }
-        {% include '@Core/document/_base.css.twig' %}
+        body { margin: 0; }
+        .doc { background: #fff; color: #000; font-family: Arial, 'DejaVu Sans', sans-serif; font-size: 12px; line-height: 1.6; print-color-adjust: exact; }
         {% block styles %}{% endblock %}
     </style>
 </head>

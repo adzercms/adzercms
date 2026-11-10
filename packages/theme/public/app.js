@@ -44,8 +44,9 @@ document.addEventListener('click', event => {
         return;
     }
 
-    if (event.target.closest('[data-print]')) {
-        window.print();
+    const printer = event.target.closest('[data-print]');
+    if (printer) {
+        document.querySelector(printer.dataset.print).contentWindow.print();
         return;
     }
 
@@ -543,6 +544,20 @@ const photos = scope => scope.querySelectorAll('[data-photos]').forEach(list => 
 });
 
 document.addEventListener('click', event => event.target.closest('[data-photo-drop]')?.closest('[data-photos] > *').remove());
+
+const FITTED = 'iframe[data-fit]';
+
+const fit = frame => {
+    const root = frame.contentDocument.documentElement;
+    new frame.contentWindow.ResizeObserver(() => frame.style.height = `${root.offsetHeight}px`).observe(root);
+};
+
+document.addEventListener('load', event => event.target.matches?.(FITTED) && fit(event.target), true);
+document.querySelectorAll(FITTED).forEach(frame => {
+    if (frame.contentDocument?.readyState === 'complete' && frame.contentDocument.URL !== 'about:blank') {
+        fit(frame);
+    }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     arrange(document);

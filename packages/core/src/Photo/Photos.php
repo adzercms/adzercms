@@ -57,6 +57,13 @@ final readonly class Photos
         return 1 === preg_match(self::NAME, $name) && is_file($path) ? $path : null;
     }
 
+    public function dataUri(string $place, string $name): ?string
+    {
+        $path = $this->path($place, $name);
+
+        return null === $path ? null : 'data:image/webp;base64,'.base64_encode((string) file_get_contents($path));
+    }
+
     /** @return list<string> */
     public function names(string $place): array
     {
