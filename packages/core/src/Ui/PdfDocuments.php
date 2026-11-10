@@ -13,7 +13,7 @@ final readonly class PdfDocuments
 {
     public const MIME = 'application/pdf';
 
-    private const ASCII = 'Any-Latin; Latin-ASCII; [^ -~] Remove';
+    private const ASCII = 'Any-Latin; Latin-ASCII; [^\x{20}-\x{7E}] Remove';
     private const UNSAFE = ['%', '/', '\\'];
 
     public function __construct(
