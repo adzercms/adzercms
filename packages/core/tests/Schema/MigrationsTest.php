@@ -114,6 +114,10 @@ final class MigrationsTest extends SchemaTestCase
         $connection = $this->em->getConnection();
         $refused = [];
         foreach ($this->em->getMetadataFactory()->getAllMetadata() as $metadata) {
+            if ($metadata->isMappedSuperclass) {
+                continue;
+            }
+
             $columns = array_values(array_map(static fn (FieldMapping $field): string => $field->columnName,
                 array_filter($metadata->fieldMappings, static fn (FieldMapping $field): bool => null === $field->inherited)));
             foreach ($metadata->associationMappings as $association) {
