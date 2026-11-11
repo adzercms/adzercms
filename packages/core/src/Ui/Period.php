@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Ui;
 
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -39,6 +40,17 @@ final readonly class Period
     public function bounds(): array
     {
         return PeriodScale::All === $this->scale ? [null, null] : [$this->since(), $this->until()];
+    }
+
+    public function narrow(QueryBuilder $builder, string $field): QueryBuilder
+    {
+        if (PeriodScale::All === $this->scale) {
+            return $builder;
+        }
+
+        return $builder->andWhere(\sprintf('%1$s >= :since AND %1$s < :until', $field))
+            ->setParameter('since', $this->since())
+            ->setParameter('until', $this->until());
     }
 
     public function since(): \DateTimeImmutable
