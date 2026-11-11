@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests\Showcase;
 
-use AdzerCMS\Core\Command\ShowcaseFileCommand;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Showcase\Sections;
 use AdzerCMS\Core\Tests\Analytics\Fixture\Tally\TallyCounter;
@@ -14,7 +13,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Console\Command\Command;
 
-final class ShowcaseCommandTest extends SchemaTestCase
+final class ShowcaseTest extends SchemaTestCase
 {
     use Configuration;
 
@@ -37,33 +36,22 @@ final class ShowcaseCommandTest extends SchemaTestCase
     #[DataProvider('settings')]
     #[Group('ACMS-CORE-1012')]
     #[Group('ACMS-CORE-1060')]
-    public function testSectionsGoUnderModuleKeysWithoutEmptyOnes(array $settings, array $showcase): void
+    public function testConsoleAndAddressGiveSectionsUnderModuleKeysWithoutEmptyOnes(array $settings, array $showcase): void
     {
         $this->configure($settings);
 
         $command = self::command('adzercms:showcase');
         self::assertSame(Command::SUCCESS, $command->execute([]));
-
         $display = trim($command->getDisplay());
-        self::assertStringStartsWith('{', $display, 'the showcase is an object even without sections');
-        self::assertSame($showcase, json_decode($display, true, flags: \JSON_THROW_ON_ERROR));
-    }
 
-    #[Group('ACMS-CORE-1073')]
-    public function testFileConsoleReplacesTheFileOfTheInstanceValue(): void
-    {
-        $file = sys_get_temp_dir().'/adzercms-showcase-'.bin2hex(random_bytes(4)).'.json';
-        file_put_contents($file, 'previous');
-        $_SERVER[ShowcaseFileCommand::ENV] = $_ENV[ShowcaseFileCommand::ENV] = $file;
+        $this->client->request('GET', '/showcase.json');
+        self::assertResponseIsSuccessful();
+        self::assertResponseHeaderSame('Content-Type', 'application/json');
+        $served = (string) $this->client->getResponse()->getContent();
 
-        try {
-            $command = self::command('adzercms:showcase:file');
-            self::assertSame(Command::SUCCESS, $command->execute([]));
-            self::assertSame('', $command->getDisplay());
-            self::assertSame([], json_decode((string) file_get_contents($file), true, flags: \JSON_THROW_ON_ERROR));
-        } finally {
-            unset($_SERVER[ShowcaseFileCommand::ENV], $_ENV[ShowcaseFileCommand::ENV]);
-            unlink($file);
+        foreach ([$display, $served] as $json) {
+            self::assertStringStartsWith('{', $json, 'the showcase is an object even without sections');
+            self::assertSame($showcase, json_decode($json, true, flags: \JSON_THROW_ON_ERROR));
         }
     }
 }

@@ -28,7 +28,6 @@ GEOIP_CITY_DB=/usr/share/GeoIP/GeoLite2-City.mmdb
 - `DATABASE_URL` — an empty database. For MySQL and MariaDB add `charset=utf8mb4` and the full server version in `serverVersion`; create a PostgreSQL database with the ICU locale provider and the `und` locale
 - `SESSION_DSN` and `GEOIP_CITY_DB` are optional: without them sessions are stored in files and the sign-in city isn't shown
 - `FILES_DIR` is optional: where the site keeps the files it creates, `var/files/<environment>` by default
-- `SHOWCASE_FILE` is optional: the file the scheduler keeps the [values for the project site](module-development.md#values-for-the-project-site) in
 
 Environment variables decide which modules are enabled: [Modules](modules.md). Tests and static analysis don't read `.env.local`, so repeat module list changes in `.env.test`.
 

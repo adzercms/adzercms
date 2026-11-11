@@ -16,6 +16,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 final readonly class Sections
 {
     public const CORE = 'core';
+    public const ROUTE = 'showcase';
     private const ENTRIES = [CabinetEntry::Home, CabinetEntry::Register, CabinetEntry::Forgot, CabinetEntry::Profile];
 
     /** @param iterable<Showcase> $sections */
