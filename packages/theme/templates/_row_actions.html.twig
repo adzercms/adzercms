@@ -1,5 +1,8 @@
 {% import '@Theme/_icons.html.twig' as icon %}
 <td class="row-actions">
+    {% for action in dialogs|default([]) %}
+        <button type="button" class="small secondary" data-record="{{ action.record }}">{{ action.label|trans }}</button>
+    {% endfor %}
     {% if edit|default(null) %}
         <button type="button" class="icon-act" data-record="{{ edit }}" aria-label="{{ 'core.action.edit'|trans }}" title="{{ 'core.action.edit'|trans }}">{{ icon.edit() }}</button>
     {% endif %}
