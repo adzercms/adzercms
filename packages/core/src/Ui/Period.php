@@ -20,36 +20,38 @@ final readonly class Period
         public int $month,
         public \DateTimeImmutable $from = new DatePoint(),
         public \DateTimeImmutable $to = new DatePoint(),
+        private bool $ledger = false,
+        private bool $chosen = true,
     ) {
     }
 
     public static function of(Request $request, \DateTimeImmutable $now): self
     {
-        $year = (int) ($request->query->get('year') ?? $now->format('Y'));
-        $month = (int) ($request->query->get('month') ?? $now->format('n'));
-        $from = self::day((string) $request->query->get('from')) ?? $now->modify('first day of this month');
-        $to = self::day((string) $request->query->get('to')) ?? $now;
+        return self::read($request, $now, false);
+    }
 
-        return new self(
-            PeriodScale::tryFrom((string) $request->query->get('scale')) ?? PeriodScale::Month,
-            $year > 0 ? $year : (int) $now->format('Y'),
-            $month >= 1 && $month <= 12 ? $month : (int) $now->format('n'),
-            $from->setTime(0, 0),
-            ($to < $from ? $from : $to)->setTime(0, 0),
-        );
+    public static function ledger(Request $request, \DateTimeImmutable $now): self
+    {
+        return self::read($request, $now, true);
+    }
+
+    /** @return array{?\DateTimeImmutable, ?\DateTimeImmutable} */
+    public function bounds(): array
+    {
+        return PeriodScale::All === $this->scale ? [null, null] : [$this->since(), $this->until()];
     }
 
     public function since(): \DateTimeImmutable
     {
-        if (PeriodScale::Custom === $this->scale) {
-            return $this->from;
-        }
-
-        return new \DateTimeImmutable(sprintf(
-            '%d-%02d-01 00:00:00',
-            $this->year,
-            PeriodScale::Year === $this->scale ? 1 : $this->month,
-        ));
+        return match ($this->scale) {
+            PeriodScale::Custom => $this->from,
+            PeriodScale::All => throw new \LogicException('The whole term has no bounds.'),
+            PeriodScale::Month, PeriodScale::Year => new \DateTimeImmutable(\sprintf(
+                '%d-%02d-01 00:00:00',
+                $this->year,
+                PeriodScale::Year === $this->scale ? 1 : $this->month,
+            )),
+        };
     }
 
     public function until(): \DateTimeImmutable
@@ -58,6 +60,7 @@ final readonly class Period
             PeriodScale::Custom => $this->to->modify('+1 day'),
             PeriodScale::Year => $this->since()->modify('+1 year'),
             PeriodScale::Month => $this->since()->modify('+1 month'),
+            PeriodScale::All => throw new \LogicException('The whole term has no bounds.'),
         };
     }
 
@@ -69,13 +72,13 @@ final readonly class Period
     /** @return array<string, string> */
     public function query(): array
     {
-        return [
+        return $this->chosen ? [
             'scale' => $this->scale->value,
             'year' => (string) $this->year,
             'month' => (string) $this->month,
             'from' => $this->from->format(self::DAY),
             'to' => $this->to->format(self::DAY),
-        ];
+        ] : [];
     }
 
     /** @return list<Filter> */
@@ -87,10 +90,11 @@ final readonly class Period
         }
 
         $own = PeriodScale::Custom === $this->scale;
+        $scales = $this->ledger ? PeriodScale::cases() : array_filter(PeriodScale::cases(), static fn (PeriodScale $scale): bool => PeriodScale::All !== $scale);
 
         return [
-            Filter::choice('scale', Labels::of(PeriodScale::cases()), $this->scale->value),
-            Filter::choice('year', $years, (string) $this->year, $own),
+            Filter::choice('scale', Labels::of($scales), $this->scale->value),
+            Filter::choice('year', $years, (string) $this->year, $own || PeriodScale::All === $this->scale),
             Filter::choice('month', self::months(), (string) $this->month, PeriodScale::Month !== $this->scale),
             Filter::date('from', $this->from->format(self::DAY), !$own),
             Filter::date('to', $this->to->format(self::DAY), !$own),
@@ -103,6 +107,28 @@ final readonly class Period
         $last = max($first, $this->year, (int) $now->format('Y'));
 
         return range(min($first, $this->year), $last);
+    }
+
+    private static function read(Request $request, \DateTimeImmutable $now, bool $ledger): self
+    {
+        $year = (int) ($request->query->get('year') ?? $now->format('Y'));
+        $month = (int) ($request->query->get('month') ?? $now->format('n'));
+        $from = self::day((string) $request->query->get('from')) ?? $now->modify('first day of this month');
+        $to = self::day((string) $request->query->get('to')) ?? $now;
+        $scale = PeriodScale::tryFrom((string) $request->query->get('scale'));
+        if (PeriodScale::All === $scale && !$ledger) {
+            $scale = null;
+        }
+
+        return new self(
+            $scale ?? ($ledger ? PeriodScale::All : PeriodScale::Month),
+            $year > 0 ? $year : (int) $now->format('Y'),
+            $month >= 1 && $month <= 12 ? $month : (int) $now->format('n'),
+            $from->setTime(0, 0),
+            ($to < $from ? $from : $to)->setTime(0, 0),
+            $ledger,
+            null !== $scale,
+        );
     }
 
     private static function day(string $value): ?\DateTimeImmutable

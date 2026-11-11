@@ -1135,6 +1135,12 @@
         <target>Password is shorter than {min, plural, one {# character} other {# characters}}</target>
       </segment>
     </unit>
+    <unit id="core.period_scale.all">
+      <segment>
+        <source>core.period_scale.all</source>
+        <target>Whole term</target>
+      </segment>
+    </unit>
     <unit id="core.period_scale.custom">
       <segment>
         <source>core.period_scale.custom</source>

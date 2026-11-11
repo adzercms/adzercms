@@ -1135,6 +1135,12 @@
         <target>Пароль короче {min, plural, one {# знака} few {# знаков} many {# знаков} other {# знака}}</target>
       </segment>
     </unit>
+    <unit id="core.period_scale.all">
+      <segment>
+        <source>core.period_scale.all</source>
+        <target>За весь срок</target>
+      </segment>
+    </unit>
     <unit id="core.period_scale.custom">
       <segment>
         <source>core.period_scale.custom</source>

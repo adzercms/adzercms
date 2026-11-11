@@ -14,6 +14,7 @@ enum PeriodScale: string implements Titled
     case Month = 'month';
     case Year = 'year';
     case Custom = 'custom';
+    case All = 'all';
 
     public function label(): TranslatableInterface
     {
