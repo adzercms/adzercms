@@ -445,6 +445,12 @@
         <target>Key</target>
       </segment>
     </unit>
+    <unit id="admin.translations.setting">
+      <segment>
+        <source>admin.translations.setting</source>
+        <target>Settings › {page} › {field}</target>
+      </segment>
+    </unit>
     <unit id="admin.translations.tab">
       <segment>
         <source>admin.translations.tab</source>
