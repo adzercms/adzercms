@@ -58,6 +58,10 @@ document.addEventListener('click', event => {
 
     const opener = event.target.closest('[data-modal], [data-record]');
     if (opener && (opener.tagName !== 'TR' || !event.target.closest('a, button, input, select, form, [data-order-id]'))) {
+        if (opener.tagName === 'A' && (event.ctrlKey || event.metaKey || event.shiftKey)) {
+            return;
+        }
+        event.preventDefault();
         if (opener.dataset.record) {
             htmx.ajax('GET', opener.dataset.record, {target: '#record'});
         } else {
