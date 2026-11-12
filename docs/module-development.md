@@ -271,6 +271,8 @@ A service implementing `AdzerCMS\Contracts\Setting\Owner` declares setting field
 
 The settings section of the admin has a menu on the left: the System pages, then a page for each enabled module with fields, titled by the module title in title order. A feature module's page goes under Modules, a kind module's page under Integrations in the group of its kind. The module card in the Extensions section and the heading of the module's admin sections link to its page. `section:` puts fields under a heading, and fields without a section open the page without one. A label fits one line of a column: the setting's name, then the unit after a comma.
 
+A field with `page:` goes to that System page instead of the module page, after the core fields there, such as a choice of a theme's look next to the brand colors on Branding.
+
 ## Scheduled jobs
 
 A console command of the module becomes a job of the [scheduler](installation.md#scheduler) with the `AdzerCMS\Contracts\Schedule\Scheduled` attribute next to `AsCommand`: its argument is a cron expression, and the command takes no arguments. A job runs in its own process; the next run skips it while it's still going, so it needs no lock against itself. An invalid expression stops the container build.

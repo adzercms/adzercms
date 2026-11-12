@@ -12,6 +12,7 @@ use AdzerCMS\Admin\Tests\Fixture\Steward;
 use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Build\Preview;
 use AdzerCMS\Core\Kernel;
@@ -186,11 +187,15 @@ final class ModuleWebTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0053')]
+    #[Group('ACMS-CORE-1049')]
     #[Group('ACMS-CORE-1050')]
     #[Group('ACMS-US-0004')]
     public function testModuleSettingsLiveOnItsSettingsPageOnly(): void
     {
         $page = $this->client->request('GET', self::RELAY);
+        $badge = \sprintf('[name="value[%s]"]', RelaySettings::BADGE);
+        self::assertCount(0, $page->filter($badge), 'a module field naming a system page leaves the module page');
+        self::assertCount(1, $this->client->request('GET', '/admin/settings/'.Page::Brand->value)->filter($badge));
         self::assertSame('Relay', trim($page->filter('.subnav-item.active')->text()), 'a module without a title goes by its key');
         $integrations = array_column(array_merge(...array_column(array_filter(self::subnav($page), static fn (array $group): bool => self::phrase('admin.settings.integrations') === $group[0]), 1)), 1, 0);
         self::assertContains('Relay', $integrations[self::phrase(CoreKind::Sms->label())] ?? [], 'a kind module goes to the integrations under its kind');
