@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace AdzerCMS\Admin;
 
 use AdzerCMS\Contracts\Module\CoreKind;
+use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Guided;
 use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Core\Module\Bundles;
 use AdzerCMS\Core\Module\Registry;
+use AdzerCMS\Core\Security\ModuleVoter;
 use AdzerCMS\Core\Setting\Catalog;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -32,16 +35,28 @@ final readonly class SettingPages
         private Bundles $bundles,
         private UrlGeneratorInterface $urls,
         private TranslatorInterface $translator,
+        private AuthorizationCheckerInterface $authorization,
         #[AutowireIterator(Guided::class)]
         private iterable $guides,
     ) {
+    }
+
+    /** @return array<string, non-empty-list<Field>> */
+    public function system(): array
+    {
+        $system = $this->catalog->system();
+        if (!$this->authorization->isGranted(ModuleVoter::MANAGE)) {
+            unset($system[ModuleSources::PAGE->value]);
+        }
+
+        return $system;
     }
 
     /** @return list<Group> */
     public function menu(?Page $page, ?string $module): array
     {
         $system = [];
-        foreach (array_keys($this->catalog->system()) as $key) {
+        foreach (array_keys($this->system()) as $key) {
             $case = Page::from($key);
             $system[] = ['label' => $case->label(), 'href' => $this->urls->generate('admin_settings', ['page' => $key]), 'active' => $case === $page];
         }

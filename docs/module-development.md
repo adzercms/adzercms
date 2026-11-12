@@ -153,6 +153,10 @@ A feature module closes creating users on the instance itself with a service imp
 
 The admin picks the role of a user only when a feature module has a section in the cabinet: its `Menu` service returns items for `Area::Cabinet`. Without such a section the user form has no role field: a user the admin creates is an administrator, and a saved user keeps the role.
 
+## Module management
+
+A feature module closes managing modules in the admin with a service implementing `AdzerCMS\Contracts\Module\ModuleManagement`; it's registered by autoconfiguration. `allowed()` is asked on each request, such as by how the admin signed in: when it returns `false`, the admin has no Extensions section and no Extensions settings page with the catalog address and the module sources, and their addresses send the admin home. Console commands and the instance job apply module operations as before.
+
 ## Notification channel
 
 A feature module can add a notification channel of its own with a service implementing `AdzerCMS\Core\Notice\Channel`; it's registered by autoconfiguration. The channel goes right after the bots and before the phone and email: in the delivery order of every notification, in the cabinet's switches and in the log. When the channel has nowhere to deliver a notification to a user, `missing()` tells them what to do to make it work. The way to connect the channel is rendered as a `Fragment` at `Fragment::CABINET_PROFILE`, which is also where `missing()` leads.

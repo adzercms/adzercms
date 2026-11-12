@@ -10,6 +10,7 @@ use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Composer\Artifacts;
 use AdzerCMS\Core\Entity\ModuleSource;
 use AdzerCMS\Core\Module\Sources;
+use AdzerCMS\Core\Security\ModuleVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -22,6 +23,7 @@ use function Symfony\Component\Translation\t;
 
 #[Route('/admin/settings/sources')]
 #[IsGranted(Role::ADMIN)]
+#[IsGranted(ModuleVoter::MANAGE)]
 final class SourceController extends AbstractController
 {
     public function __construct(private readonly Sources $sources, private readonly Artifacts $artifacts)

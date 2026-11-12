@@ -16,6 +16,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `adzercms/pages`: site pages of blocks in order on the theme site frame — hero, advantages, text, questions with FAQPage, call to action and block types of other modules through the `AdzerCMS\Pages\Block` service, a header menu, the pages in the sitemap
 - Setting field types `Type::Markup` — GitHub-flavoured Markdown shown by the `markup` Twig filter without raw HTML and unsafe links, and `Type::Rows` — rows of the fields it declares
 - `LoginListener`: a feature module that waits for a login takes the profile of the login service instead of the entry
+- `ModuleManagement`: a feature module closes the Extensions section and the Extensions settings page to a request, such as to an admin who signed in by password
 - `UserPlaces` and `UserCreation`: the new user form of the admin creates a user at a place of a feature module, such as a site the instance serves, and a feature module closes creating users on the instance itself
 - `Contacts`: one core check of the phone and email of a user for the admin and modules that create or change users, a malformed contact or one held by another user is refused with the holder named
 - `Roles`: the admin picks the role of a user only when a feature module has a section in the cabinet, otherwise the user form has no role field, a user the admin creates is an administrator and a saved user keeps the role

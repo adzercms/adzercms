@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/admin",
-                "reference": "3cece9a9a941c46dedf821c6b14dfdb67351e668"
+                "reference": "398cbff5a22eebf5bc22fe56a02d1d300fbf1e91"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -28,6 +28,7 @@
                 "symfony/http-foundation": "7.4.*",
                 "symfony/password-hasher": "7.4.*",
                 "symfony/routing": "7.4.*",
+                "symfony/security-core": "7.4.*",
                 "symfony/security-http": "7.4.*",
                 "symfony/translation": "7.4.*",
                 "symfony/translation-contracts": "^3.7"
