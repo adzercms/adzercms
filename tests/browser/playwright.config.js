@@ -12,6 +12,9 @@ module.exports = defineConfig({
     reporter: [['list']],
     use: {
         baseURL,
+        launchOptions: process.env.ADZERCMS_ADDRESS
+            ? { args: [`--host-resolver-rules=MAP ${new URL(baseURL).hostname} ${process.env.ADZERCMS_ADDRESS}`] }
+            : {},
         trace: 'retain-on-failure',
         actionTimeout: 15000,
         navigationTimeout: 30000,
