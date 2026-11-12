@@ -50,7 +50,7 @@ final class TransferController extends AbstractController
         $table = Table::of($request, self::LIST, [
             Column::of('comment', t('bank_transfer.column.comment'), 'CASE WHEN p.payer IS NULL THEN p.description ELSE p.payer END'),
             Column::of('amount', t('bank_transfer.column.amount'), 'p.amount'),
-            Column::of('created', t('bank_transfer.column.created'), 'p.createdAt'),
+            Column::of('created', t('bank_transfer.column.created'), 'p.createdAt')->aside(),
             Column::of('expires', t('bank_transfer.column.expires'), 'p.expiresAt'),
             Column::plain('actions'),
         ], 'created', t('bank_transfer.empty'), false, filters: [

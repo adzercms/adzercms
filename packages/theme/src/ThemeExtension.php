@@ -81,10 +81,14 @@ final class ThemeExtension extends AbstractExtension
         ]);
     }
 
-    public function clip(?string $value, ?int $length = null, string $extra = ''): string
+    public function clip(string|TranslatableInterface|null $value, ?int $length = null, string $extra = ''): string
     {
-        $value = (string) $value;
+        $value = $value instanceof TranslatableInterface ? $value->trans($this->translator) : (string) $value;
         $classes = rtrim('clip '.$extra);
+
+        if ('' === trim($value)) {
+            return self::BLANK;
+        }
 
         if (null === $length || mb_strlen($value) <= $length) {
             return sprintf('<span class="%s">%s</span>', $classes, htmlspecialchars($value, \ENT_QUOTES));

@@ -3,7 +3,7 @@
         {% set contact = row.email ?? row.phone %}
         <tr class="clickable-row" data-href="{{ path('admin_user', {id: row.id}) }}">
             <td class="{{ table.aside('id') }}">{% include '@Theme/_user.html.twig' with {user: row, name: logins[row.id]} only %}</td>
-            <td class="{{ table.aside('contact') }}">{{ contact ? clip(contact, 24) : blank() }}</td>
+            <td class="{{ table.aside('contact') }}">{{ clip(contact, 24) }}</td>
             {% for column in extra %}
                 <td class="{{ table.aside(column.key) }}">{{ cell(cells[row.id][column.key] ?? null) }}</td>
             {% endfor %}

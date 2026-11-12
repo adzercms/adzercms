@@ -697,7 +697,7 @@ button:hover, .button:hover { background: var(--primary-hover); text-decoration:
 .success:hover { background: var(--success); filter: brightness(0.92); }
 .warning { background: var(--warning); }
 .warning:hover { background: var(--warning); filter: brightness(0.92); }
-.small { min-height: var(--control-height-sm); padding: 0 0.6rem; font-size: 13px; }
+.small, .row-actions :is(button, .button):not(.icon-act) { min-height: var(--control-height-sm); padding: 0 0.6rem; font-size: 13px; }
 button:disabled { opacity: 0.5; pointer-events: none; }
 
 .section + .section, .section + form, form + .section { margin-top: 1.5rem; }

@@ -5,7 +5,7 @@
             <td class="{{ table.aside('type') }}">
                 {% if row.type %}<strong>{{ row.type.label|trans }}</strong>{% else %}<strong>{{ row.block.type }}</strong> {{ badge(unavailable) }}{% endif %}
             </td>
-            <td class="{{ table.aside('summary') }}">{{ row.summary ? clip(row.summary, 80) : blank() }}</td>
+            <td class="{{ table.aside('summary') }}">{{ clip(row.summary, 80) }}</td>
             {% include '@Theme/_row_actions.html.twig' with {drop: path('admin_page_block_drop', {id: row.id}), confirm: 'pages.block.drop_confirm'|trans({type: row.type ? row.type.label|trans : row.block.type})} %}
         </tr>
     {% endblock %}

@@ -9,4 +9,4 @@ cd "$(dirname "$(readlink -f "$0")")" || exit 1
 [ -d node_modules ] || npm install --no-audit --no-fund >/dev/null || exit 1
 npx playwright install chromium-headless-shell >/dev/null 2>&1
 
-npx playwright test "$@"
+exec flock . npx playwright test "$@"
