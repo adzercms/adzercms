@@ -44,7 +44,7 @@ final readonly class Catalog
     {
         $pages = array_fill_keys(array_column(Page::cases(), 'value'), []);
         foreach ($this->owned() as [$field, $bundle]) {
-            if (null === $bundle) {
+            if (null === $bundle || null !== $field->page) {
                 $pages[$field->page->value ?? throw new \LogicException(\sprintf('core setting key %s names no page', $field->name))][] = $field;
             }
         }
@@ -57,7 +57,7 @@ final readonly class Catalog
     {
         $modules = [];
         foreach ($this->owned() as [$field, $bundle]) {
-            if (null !== $bundle) {
+            if (null !== $bundle && null === $field->page) {
                 $modules[Registry::lowerKey($bundle)][] = $field;
             }
         }
