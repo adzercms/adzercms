@@ -25,7 +25,7 @@ module.exports = defineConfig({
         {
             name: 'phone',
             dependencies: ['login'],
-            use: { ...devices['Pixel 7'], storageState: '.auth/operator.json' },
+            use: { ...devices['Galaxy S24'], storageState: '.auth/operator.json' },
         },
         {
             name: 'desktop',

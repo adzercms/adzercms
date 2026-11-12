@@ -1,3 +1,4 @@
+{% import '@Theme/_icons.html.twig' as icon %}
 <div id="{{ table.id }}" {% if heading|default(null) %}class="section" {% endif %}{% if live|default(false) %}data-live {% endif %}hx-target="#{{ table.id }}" hx-swap="outerHTML">
     {% if heading|default(null) %}
         <div class="section-head">
@@ -29,7 +30,8 @@
                             {%- set aside = table.aside(column.key) -%}
                             {%- if table.sortable(column) -%}
                                 {%- set url = path(table.route, table.link(column.key)) -%}
-                                <th class="sortable-header {{ table.mark(column.key) }} {{ aside }}"><a href="{{ url }}" hx-get="{{ url }}" hx-select="#{{ table.id }}" hx-push-url="true">{{ column.label|trans }}</a></th>
+                                {%- set mark = table.mark(column.key) -%}
+                                <th class="sortable-header {{ mark }} {{ aside }}"><a href="{{ url }}" hx-get="{{ url }}" hx-select="#{{ table.id }}" hx-push-url="true">{{ column.label|trans }}{{ icon.glyph(mark ?: 'sortable') }}</a></th>
                             {%- else -%}
                                 <th class="{{ aside }}">{{ column.label|trans }}</th>
                             {%- endif -%}

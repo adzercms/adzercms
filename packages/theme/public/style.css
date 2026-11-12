@@ -819,8 +819,8 @@ button.tab { border: 0; cursor: pointer; background: transparent; color: var(--t
 .subnav-item.active { background: var(--tint); color: var(--primary-text); font-weight: 500; }
 .subnav-page > h2 { margin-top: 0; }
 
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 0.6rem 0.5rem; text-align: left; border-bottom: 1px solid var(--border-light); vertical-align: middle; }
+table { --cell-pad: 0.6rem 0.5rem; width: 100%; border-collapse: collapse; }
+th, td { padding: var(--cell-pad); text-align: left; border-bottom: 1px solid var(--border-light); vertical-align: middle; }
 th { font-weight: 600; color: var(--text-gray); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
 thead th { border-bottom: 2px solid var(--border); }
 tbody tr:last-child td { border-bottom: 0; }
@@ -832,25 +832,13 @@ tbody tr:hover { background: var(--row-hover); }
 .table-responsive { overflow-x: auto; margin-bottom: 1rem; }
 .clip { overflow-wrap: anywhere; }
 
-.sortable-header { position: relative; padding: 0; user-select: none; }
-.sortable-header a { display: block; padding: 0.6rem 1rem 0.6rem 0.5rem; color: inherit; }
+.sortable-header { padding: 0; user-select: none; }
+.sortable-header a { display: flex; align-items: center; gap: 0.3em; padding: var(--cell-pad); color: inherit; }
 .sortable-header a:hover { text-decoration: none; }
 .sortable-header:hover { background: var(--tint-faint); }
-
-.sortable-header::after {
-    content: "↕";
-    position: absolute;
-    right: 0.4rem;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0.3;
-    font-size: 14px;
-    pointer-events: none;
-}
-
-.sortable-header:hover::after { opacity: 0.6; }
-.sortable-header.sorted-asc::after { content: "↑"; opacity: 1; }
-.sortable-header.sorted-desc::after { content: "↓"; opacity: 1; }
+.sortable-header svg { flex: none; width: 1.2em; height: 1.2em; opacity: 0.35; }
+.sortable-header:hover svg { opacity: 0.7; }
+.sortable-header:is(.sorted-asc, .sorted-desc) svg { opacity: 1; }
 
 .badge {
     display: inline-block;
@@ -1446,7 +1434,14 @@ fieldset.choices {
     border-radius: var(--radius-lg);
 }
 
-fieldset.choices:has(img) { grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); }
+fieldset.choices:has(img) { grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); gap: 0.75rem; align-items: stretch; }
+fieldset.choices:has(img) label {
+    align-content: start;
+    padding: 0.75rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+}
+fieldset.choices:has(img) label:has(:checked) { border-color: var(--primary); background: var(--picked); }
 
 fieldset.choices legend { grid-column: 1 / -1; padding: 0 0.4rem; font-weight: 600; }
 
@@ -1611,11 +1606,11 @@ form[data-steps] [data-step]:not(.current) { display: none; }
     .subscribe { justify-items: stretch; }
     .subscribe .qr { justify-self: center; }
 
-    th, td { padding: 0.5rem 0.4rem; overflow-wrap: normal; }
+    table { --cell-pad: 0.5rem 0.4rem; }
+    th, td { overflow-wrap: normal; }
     th { font-size: 10px; letter-spacing: 0; white-space: normal; }
     td.row-actions { white-space: normal; }
     .hide-sm { display: none; }
-    .sortable-header a { padding: 0.5rem 0.9rem 0.5rem 0; }
 
     .ticket-layout { flex-direction: column; }
     .ticket-side { width: 100%; }
