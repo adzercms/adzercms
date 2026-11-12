@@ -34,9 +34,16 @@ const measure = () => {
     const lists = [...document.querySelectorAll('.table-responsive')]
         .filter((el) => el.getClientRects().length > 0 && el.scrollWidth > el.clientWidth + 1)
         .map((el) => {
+            const rows = [...el.querySelectorAll('tbody tr')];
             const columns = [...el.querySelectorAll('thead th')]
-                .filter((th) => th.getClientRects().length > 0)
-                .map((th) => `${th.textContent.trim() || th.className.split(' ')[0] || '—'} ${Math.round(th.getBoundingClientRect().width)}`);
+                .map((th, index) => ({ th, index }))
+                .filter(({ th }) => th.getClientRects().length > 0)
+                .map(({ th, index }) => {
+                    const word = rows.flatMap((tr) => (tr.children[index]?.innerText ?? '').split(/\s+/))
+                        .reduce((longest, token) => (token.length > longest.length ? token : longest), '');
+
+                    return `${th.textContent.trim() || th.className.split(' ')[0] || '—'} ${Math.round(th.getBoundingClientRect().width)}${word ? ` «${word.slice(0, 32)}»` : ''}`;
+                });
 
             return `${el.closest('[id]')?.id ?? 'table'} +${el.scrollWidth - el.clientWidth}px [${columns.join(', ')}]`;
         });

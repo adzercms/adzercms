@@ -39,7 +39,7 @@ const WALK = {
 
 const crawl = async (page, seed, faults, { limit, skip, visit = async () => false }) => {
     const wanted = (href) => !skip.some((mark) => href.includes(mark));
-    const queue = [seed];
+    const queue = [[seed, null]];
     const seen = new Map();
     let path = seed;
 
@@ -50,7 +50,8 @@ const crawl = async (page, seed, faults, { limit, skip, visit = async () => fals
 
     try {
         while (queue.length && seen.size < limit) {
-            path = queue.shift();
+            let from;
+            [path, from] = queue.shift();
             const mark = shape(path);
 
             if (seen.has(mark)) {
@@ -65,7 +66,7 @@ const crawl = async (page, seed, faults, { limit, skip, visit = async () => fals
             const status = response?.status() ?? 0;
 
             if (status >= 400) {
-                faults.push(`${path}: status ${status}`);
+                faults.push(`${path}: status ${status}${from ? ` from ${from}` : ''}`);
                 continue;
             }
             if (!(response?.headers()['content-type'] ?? '').startsWith('text/html')) {
@@ -80,7 +81,7 @@ const crawl = async (page, seed, faults, { limit, skip, visit = async () => fals
 
             for (const href of (await page.evaluate(links)).filter(wanted)) {
                 if (!seen.has(shape(href))) {
-                    queue.push(href);
+                    queue.push([href, path]);
                 }
             }
         }
