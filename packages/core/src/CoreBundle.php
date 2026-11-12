@@ -50,8 +50,11 @@ use Facile\DoctrineMySQLComeBack\Doctrine\DBAL\Connection;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\RetryableHttpClient;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -73,6 +76,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
     private const IMPORTMAP_VENDOR = 'assets/vendor';
     private const IMPORTMAP_HTTP = 'asset_mapper.http_client';
     private const HTTP_MOCK = 'http_client.mock_client';
+    private const HTTP_CLIENT = 'http_client';
     private const MIGRATION_MARKS = 'adzercms.migration_marks';
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
@@ -189,9 +193,10 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
             ->setDecoratedService(self::IMPORTMAP_READER)
             ->setArguments([$reader->getArgument(0), $reader->getArgument(1), '%'.self::IMPORTMAPS.'%']);
 
-        if ($container->hasDefinition(self::HTTP_MOCK)) {
-            $container->register(self::IMPORTMAP_HTTP, HttpClientInterface::class)->setFactory([HttpClient::class, 'create']);
-        }
+        $client = $container->hasDefinition(self::HTTP_MOCK)
+            ? (new Definition(HttpClientInterface::class))->setFactory([HttpClient::class, 'create'])
+            : new Reference(self::HTTP_CLIENT);
+        $container->register(self::IMPORTMAP_HTTP, RetryableHttpClient::class)->setArguments([$client]);
     }
 
     public function boot(): void

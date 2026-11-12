@@ -230,7 +230,8 @@ final class KernelTest extends KernelTestCase
     }
 
     #[Group('ACMS-TEST-0128')]
-    public function testImportmapClientOfTestEnvironmentGoesPastAnswersOfTests(): void
+    #[Group('ACMS-UI-0150')]
+    public function testImportmapClientGoesPastAnswersOfTestsAndRetriesTransportFailure(): void
     {
         $asked = [];
         self::service(HttpAnswers::class)->respond(static function (string $method, string $url) use (&$asked): MockResponse {
@@ -239,12 +240,14 @@ final class KernelTest extends KernelTestCase
             return new MockResponse();
         });
 
+        $response = self::service(HttpClientInterface::class, 'asset_mapper.http_client')->request('GET', 'http://127.0.0.1:1/', ['max_retries' => 1]);
         try {
-            self::service(HttpClientInterface::class, 'asset_mapper.http_client')->request('GET', 'http://127.0.0.1:1/')->getStatusCode();
+            $response->getStatusCode();
             self::fail('a closed port answered the importmap client');
         } catch (TransportExceptionInterface) {
         }
 
         self::assertSame([], $asked, 'the importmap client asked the answers of tests');
+        self::assertSame(1, $response->getInfo('retry_count'), 'the importmap client retries a transport failure');
     }
 }
