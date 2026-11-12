@@ -22,6 +22,7 @@ use AdzerCMS\Core\Module\Operations;
 use AdzerCMS\Core\Module\OperationState;
 use AdzerCMS\Core\Module\StoreImages;
 use AdzerCMS\Core\Repository\ModuleOperationRepository;
+use AdzerCMS\Core\Security\ModuleVoter;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Entries;
 use AdzerCMS\Core\Ui\Filter;
@@ -38,6 +39,7 @@ use function Symfony\Component\Translation\t;
 
 #[Route('/admin/modules')]
 #[IsGranted(Role::ADMIN)]
+#[IsGranted(ModuleVoter::MANAGE)]
 final class ModuleController extends AbstractController
 {
     private const ALL = 'all';

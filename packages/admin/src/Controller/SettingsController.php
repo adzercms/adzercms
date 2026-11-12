@@ -39,7 +39,7 @@ final class SettingsController extends AbstractController
     #[Route('/{page?}', name: 'admin_settings', requirements: ['page' => new EnumRequirement(Page::class)], methods: ['GET', 'POST'])]
     public function system(?Page $page, Request $request): Response
     {
-        $system = $this->catalog->system();
+        $system = $this->pages->system();
         $page ??= Page::from((string) array_key_first($system));
         $fields = $system[$page->value] ?? throw $this->createNotFoundException();
 

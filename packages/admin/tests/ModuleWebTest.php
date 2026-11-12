@@ -8,6 +8,7 @@ use AdzerCMS\Admin\AssembledModules;
 use AdzerCMS\Admin\ModuleScope;
 use AdzerCMS\Admin\ModuleSources;
 use AdzerCMS\Admin\ModuleState;
+use AdzerCMS\Admin\Tests\Fixture\Steward;
 use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Refusal;
@@ -210,6 +211,24 @@ final class ModuleWebTest extends SchemaTestCase
         }
 
         $this->client->request('GET', self::SETTINGS.'absent');
+        self::assertResponseStatusCodeSame(404);
+    }
+
+    #[Group('ACMS-CORE-1153')]
+    public function testFeatureModuleClosesModuleManagementToTheRequest(): void
+    {
+        $links = fn (string $path, string $href): int => $this->client->request('GET', $path)->filter(\sprintf('a[href="%s"]', $href))->count();
+        self::assertGreaterThan(0, $links('/admin', self::MODULES));
+        self::assertGreaterThan(0, $links('/admin/settings', self::SOURCES));
+
+        self::service(Steward::class)->open = false;
+        self::assertSame(0, $links('/admin', self::MODULES), 'the menu has no extensions section');
+        self::assertSame(0, $links('/admin/settings', self::SOURCES), 'the settings have no extensions page');
+        foreach ([self::MODULES, '/admin/modules/admin', self::OPERATIONS, self::SOURCE.'new'] as $path) {
+            $this->client->request('GET', $path);
+            self::assertResponseRedirects('/', null, $path);
+        }
+        $this->client->request('GET', self::SOURCES);
         self::assertResponseStatusCodeSame(404);
     }
 
