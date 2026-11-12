@@ -5,14 +5,21 @@ declare(strict_types=1);
 namespace AdzerCMS\Admin\Tests;
 
 use AdzerCMS\Admin\Controller\TranslationsController;
+use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Notice\MailChannel;
+use AdzerCMS\Core\Setting\Brand;
+use AdzerCMS\Core\Setting\Catalog;
 use AdzerCMS\Core\Setting\Language;
+use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Text\Texts;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
+
+use function Symfony\Component\Translation\t;
 
 final class TranslationsWebTest extends SchemaTestCase
 {
@@ -61,6 +68,29 @@ final class TranslationsWebTest extends SchemaTestCase
                 self::service(Texts::class)->save($locale, self::DOMAIN, self::MESSAGE, '');
             }
         }
+    }
+
+    #[Group('ACMS-CORE-1154')]
+    #[Group('ACMS-US-0004')]
+    public function testSiteLanguageFindsTextSettingsLeadingToTheirField(): void
+    {
+        $language = self::service(Language::class);
+        $other = (string) array_key_first(array_diff_key($language->choices(), [$language->instance() => true]));
+        $fields = self::service(Catalog::class)->fields();
+        foreach ([Brand::TITLE => 'Ремонт дизельных двигателей', MailChannel::LOGIN => 'дизельных@example.org'] as $name => $value) {
+            self::service(Settings::class)->save($fields[$name], $value);
+        }
+        $this->em->flush();
+        $found = fn (string $language): array => $this->client->request('GET', '/admin/references?'.http_build_query(['q' => 'дизельных', 'language' => $language]))
+            ->filter('tr.clickable-row')
+            ->each(static fn (Crawler $row): array => [(string) $row->attr('data-href'), ...$row->filter('td')->each(static fn (Crawler $cell): string => trim($cell->text()))]);
+
+        self::assertSame(
+            [['/admin/settings/brand#setting-'.Brand::TITLE, 'Ремонт дизельных двигателей', self::phrase(t('admin.translations.setting', ['page' => Page::Brand->label(), 'field' => $fields[Brand::TITLE]->label]))]],
+            $found(''),
+            'a setting of the credentials dialog is not a text of the site',
+        );
+        self::assertSame([], $found($other), 'settings are texts of the site language');
     }
 
     private static function text(string $locale): string

@@ -12,6 +12,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `adzercms-refresh` reinstalls the installed packages whose patches changed in `patches.lock.json` of cweagans/composer-patches
 - The theme file field sends the picked file to the server at once with progress in the field; the form takes it under the field name as before, a dialog form sent before the upload ends closes at once and goes when the upload ends, its row in the list shows the progress; leaving the page earlier asks first
 - The admin section "Translations": the admin changes any text of the enabled packages in each language of the catalogs without code, the language of the instance first, clearing it brings back the catalog text
+- The "Translations" tab in the language of the instance also finds the text settings of the settings pages, a row names the page and the field and leads to the field
 - `BotListener`: a feature module takes what people send to the bots
 - `adzercms/pages`: site pages of blocks in order on the theme site frame — hero, advantages, text, questions with FAQPage, call to action and block types of other modules through the `AdzerCMS\Pages\Block` service, a header menu, the pages in the sitemap
 - Setting field types `Type::Markup` — GitHub-flavoured Markdown shown by the `markup` Twig filter without raw HTML and unsafe links, and `Type::Rows` — rows of the fields it declares

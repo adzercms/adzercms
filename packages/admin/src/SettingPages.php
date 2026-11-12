@@ -52,21 +52,36 @@ final readonly class SettingPages
         return $system;
     }
 
+    /** @return list<array{label: TranslatableInterface, href: string, fields: list<Field>, page: ?Page, module: ?string}> */
+    public function pages(): array
+    {
+        $pages = [];
+        foreach ($this->system() as $key => $fields) {
+            $pages[] = ['label' => Page::from($key)->label(), 'href' => $this->urls->generate('admin_settings', ['page' => $key]), 'fields' => $fields, 'page' => Page::from($key), 'module' => null];
+        }
+        $assembled = $this->assembled->modules();
+        foreach ($this->catalog->modules() as $key => $fields) {
+            $pages[] = ['label' => $assembled[$key]['title'], 'href' => $this->urls->generate(self::MODULE_ROUTE, ['key' => $key]), 'fields' => $fields, 'page' => null, 'module' => $key];
+        }
+
+        return $pages;
+    }
+
     /** @return list<Group> */
     public function menu(?Page $page, ?string $module): array
     {
-        $system = [];
-        foreach (array_keys($this->system()) as $key) {
-            $case = Page::from($key);
-            $system[] = ['label' => $case->label(), 'href' => $this->urls->generate('admin_settings', ['page' => $key]), 'active' => $case === $page];
-        }
-
         $assembled = $this->assembled->modules();
+        $system = [];
         $features = [];
         $kinds = [];
-        foreach (array_keys($this->catalog->modules()) as $key) {
-            $item = ['label' => $assembled[$key]['title'], 'href' => $this->urls->generate(self::MODULE_ROUTE, ['key' => $key]), 'active' => $key === $module];
-            $kind = $assembled[$key]['kind'];
+        foreach ($this->pages() as $entry) {
+            $item = ['label' => $entry['label'], 'href' => $entry['href'], 'active' => null === $entry['module'] ? $entry['page'] === $page : $entry['module'] === $module];
+            if (null === $entry['module']) {
+                $system[] = $item;
+
+                continue;
+            }
+            $kind = $assembled[$entry['module']]['kind'];
             if (CoreKind::Feature === $kind) {
                 $features[] = $item;
             } else {
