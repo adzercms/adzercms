@@ -1,5 +1,6 @@
 {% import '@Theme/_icons.html.twig' as icon %}
 <td class="row-actions">
+    {% block before %}{% endblock %}
     {% for action in dialogs|default([]) %}
         <button type="button" class="secondary" data-record="{{ action.record }}">{{ action.label|trans }}</button>
     {% endfor %}
