@@ -1608,7 +1608,8 @@ form[data-steps] [data-step]:not(.current) { display: none; }
 
     table { --cell-pad: 0.5rem 0.4rem; }
     th, td { overflow-wrap: normal; }
-    th { font-size: 10px; letter-spacing: 0; white-space: normal; }
+    th { font-size: 10px; letter-spacing: 0; white-space: normal; overflow-wrap: anywhere; hyphens: auto; }
+    td .badge { white-space: normal; }
     td.row-actions { white-space: normal; }
     .hide-sm { display: none; }
 

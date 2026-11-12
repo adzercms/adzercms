@@ -136,4 +136,4 @@ const walk = async (page, faults, visit) => {
         'the walk hits its limit — part of the screens stays unseen').toBeLessThan(WALK.limit);
 };
 
-module.exports = { WALK, crawl, walk };
+module.exports = { WALK, crawl, impersonate, walk };

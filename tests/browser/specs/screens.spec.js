@@ -33,7 +33,13 @@ const measure = () => {
 
     const lists = [...document.querySelectorAll('.table-responsive')]
         .filter((el) => el.getClientRects().length > 0 && el.scrollWidth > el.clientWidth + 1)
-        .map((el) => `${el.closest('[id]')?.id ?? 'table'} +${el.scrollWidth - el.clientWidth}px`);
+        .map((el) => {
+            const columns = [...el.querySelectorAll('thead th')]
+                .filter((th) => th.getClientRects().length > 0)
+                .map((th) => `${th.textContent.trim() || th.className.split(' ')[0] || '—'} ${Math.round(th.getBoundingClientRect().width)}`);
+
+            return `${el.closest('[id]')?.id ?? 'table'} +${el.scrollWidth - el.clientWidth}px [${columns.join(', ')}]`;
+        });
 
     const counted = new Map();
     document.querySelectorAll('[id]').forEach((el) => counted.set(el.id, (counted.get(el.id) ?? 0) + 1));
