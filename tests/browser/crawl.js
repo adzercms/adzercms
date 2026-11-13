@@ -1,6 +1,6 @@
 const { expect } = require('@playwright/test');
 
-const UNSHAPED = /(^|_)(sort|order|page)$|^(year|month|from|to)$/;
+const UNSHAPED = /(^|_)(sort|order|page)$|^(year|month|from|to|path)$/;
 const DOWNLOAD = 'Download is starting';
 
 const links = () => [...document.querySelectorAll('a[href^="/"], [data-href^="/"]')]
