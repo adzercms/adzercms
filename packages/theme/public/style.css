@@ -1610,7 +1610,7 @@ form[data-steps] [data-step]:not(.current) { display: none; }
     th, td { overflow-wrap: normal; }
     th { font-size: 10px; letter-spacing: 0; white-space: normal; overflow-wrap: anywhere; hyphens: auto; }
     td .badge { white-space: normal; }
-    td.row-actions { white-space: normal; }
+    td.row-actions, .row-actions :is(button, .button) { white-space: normal; }
     .hide-sm { display: none; }
 
     .ticket-layout { flex-direction: column; }
