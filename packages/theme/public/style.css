@@ -1744,6 +1744,10 @@ h1.site-heading { font-size: clamp(28px, 5vw, 44px); line-height: 1.15; }
 .site-questions details { padding: 1rem 0; border-bottom: 1px solid var(--border-light); }
 .site-questions summary { font-weight: 600; cursor: pointer; }
 .site-questions .prose { margin-top: 0.75rem; }
+.site-facts-title { margin: 2rem 0 1rem; }
+.site-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.5rem 1.5rem; max-width: 48rem; margin: 0; }
+.site-facts dt { color: var(--text-gray); }
+.site-facts dd { margin: 0; overflow-wrap: anywhere; }
 .site-crumbs { margin: 0 0 1rem; font-size: 14px; color: var(--text-gray); }
 .site-crumbs a { color: var(--primary); }
 .site-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0 0; padding: 0; list-style: none; }

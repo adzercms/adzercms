@@ -14,6 +14,8 @@ enum ContactKind: string implements Titled
     case Phone = 'phone';
     case Email = 'email';
 
+    private const TOLL_FREE = '800';
+
     public static function of(string $contact): self
     {
         return null === self::Phone->normalize($contact) ? self::Email : self::Phone;
@@ -46,6 +48,15 @@ enum ContactKind: string implements Titled
             self::Phone => 'tel:+'.$contact,
             self::Email => 'mailto:'.$contact,
         };
+    }
+
+    public function display(string $contact): string
+    {
+        if (self::Email === $this || 1 !== preg_match('/^7(\d{3})(\d{3})(\d{2})(\d{2})$/', $contact, $parts)) {
+            return $contact;
+        }
+
+        return \sprintf('%s %s %s-%s-%s', self::TOLL_FREE === $parts[1] ? '8' : '+7', $parts[1], $parts[2], $parts[3], $parts[4]);
     }
 
     private static function phone(string $contact): ?string
