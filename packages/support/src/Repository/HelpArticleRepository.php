@@ -44,9 +44,14 @@ class HelpArticleRepository extends ServiceEntityRepository
         return $article instanceof HelpArticle ? $article : null;
     }
 
-    public function anyPublished(): bool
+    public function anyPublished(?string $category = null): bool
     {
-        return [] !== $this->createQueryBuilder('a')->select('a.id')->where('a.published = true')->setMaxResults(1)->getQuery()->getScalarResult();
+        $query = $this->shown()->select('a.id')->setMaxResults(1);
+        if (null !== $category) {
+            $query->andWhere('c.slug = :category')->setParameter('category', $category);
+        }
+
+        return [] !== $query->getQuery()->getScalarResult();
     }
 
     /**

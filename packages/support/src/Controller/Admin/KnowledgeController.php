@@ -10,8 +10,10 @@ use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Fragment;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Core\Ui\Table;
+use AdzerCMS\Support\Controller\KnowledgeBaseController;
 use AdzerCMS\Support\Entity\HelpArticle;
 use AdzerCMS\Support\Entity\HelpCategory;
+use AdzerCMS\Support\Help\KnowledgeBase;
 use AdzerCMS\Support\Help\KnowledgeForm;
 use AdzerCMS\Support\Repository\HelpArticleRepository;
 use AdzerCMS\Support\Repository\HelpCategoryRepository;
@@ -43,6 +45,7 @@ final class KnowledgeController extends AbstractController
         private readonly HelpCategoryRepository $categories,
         private readonly HelpArticleRepository $articles,
         private readonly KnowledgeForm $form,
+        private readonly KnowledgeBase $base,
     ) {
     }
 
@@ -222,6 +225,7 @@ final class KnowledgeController extends AbstractController
     {
         return $this->render('@Support/admin/article.html.twig', [
             'article' => $article,
+            'open' => $article->isPublished() ? $this->base->url($article) : $this->generateUrl(KnowledgeBaseController::PREVIEW, ['id' => $article->getId()]),
             'categories' => $this->categories->ordered(),
             'paths' => $this->form->lines($article),
             'refusals' => $refusals,

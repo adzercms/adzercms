@@ -127,6 +127,12 @@
         <target>Статья базы знаний</target>
       </segment>
     </unit>
+    <unit id="support.help.description">
+      <segment>
+        <source>support.help.description</source>
+        <target>База знаний {brand}: инструкции и ответы на вопросы</target>
+      </segment>
+    </unit>
     <unit id="support.help.nothing">
       <segment>
         <source>support.help.nothing</source>
@@ -139,6 +145,12 @@
         <target>Открыть базу знаний</target>
       </segment>
     </unit>
+    <unit id="support.help.page">
+      <segment>
+        <source>support.help.page</source>
+        <target>{title}</target>
+      </segment>
+    </unit>
     <unit id="support.help.search">
       <segment>
         <source>support.help.search</source>
@@ -149,6 +161,18 @@
       <segment>
         <source>support.help.title</source>
         <target>База знаний</target>
+      </segment>
+    </unit>
+    <unit id="support.help.unhelpful">
+      <segment>
+        <source>support.help.unhelpful</source>
+        <target>Не помогло?</target>
+      </segment>
+    </unit>
+    <unit id="support.help.updated">
+      <segment>
+        <source>support.help.updated</source>
+        <target>Обновлено {date, date, ::yMMdd}</target>
       </segment>
     </unit>
     <unit id="support.help_view.categories">
@@ -215,6 +239,12 @@
       <segment>
         <source>support.knowledge.article.new</source>
         <target>Новая статья</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.open">
+      <segment>
+        <source>support.knowledge.article.open</source>
+        <target>Открыть</target>
       </segment>
     </unit>
     <unit id="support.knowledge.article.saved">

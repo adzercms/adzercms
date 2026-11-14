@@ -139,8 +139,9 @@ final class CatalogPageTest extends CatalogTestCase
         $cover = $this->pictured($this->entry('acme/shop', ExtensionType::Theme, '1500.00', self::package('Shop theme', 'https://shop.example.test')), 'front.png')->getCover();
         $this->entry('acme/seo', package: self::package('SEO module'));
 
-        /** @var array{'@type': string, mainEntity: array{itemListElement: list<array{position: int, item: array{name: string, url: string, image?: string, offers: array{price: string, priceCurrency: string}}}>}} $schema */
-        $schema = json_decode($this->arrive(self::PAGE)->filter('script[type="application/ld+json"]')->text(), true, flags: \JSON_THROW_ON_ERROR);
+        /** @var array{'@graph': list<array{'@type': string, mainEntity: array{itemListElement: list<array{position: int, item: array{name: string, url: string, image?: string, offers: array{price: string, priceCurrency: string}}}>}}>} $graph */
+        $graph = json_decode($this->arrive(self::PAGE)->filter('script[type="application/ld+json"]')->text(), true, flags: \JSON_THROW_ON_ERROR);
+        $schema = $graph['@graph'][0];
 
         self::assertSame('CollectionPage', $schema['@type']);
         self::assertSame(

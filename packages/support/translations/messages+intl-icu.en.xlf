@@ -127,6 +127,12 @@
         <target>Knowledge base article</target>
       </segment>
     </unit>
+    <unit id="support.help.description">
+      <segment>
+        <source>support.help.description</source>
+        <target>{brand} knowledge base: instructions and answers</target>
+      </segment>
+    </unit>
     <unit id="support.help.nothing">
       <segment>
         <source>support.help.nothing</source>
@@ -139,6 +145,12 @@
         <target>Open the knowledge base</target>
       </segment>
     </unit>
+    <unit id="support.help.page">
+      <segment>
+        <source>support.help.page</source>
+        <target>{title}</target>
+      </segment>
+    </unit>
     <unit id="support.help.search">
       <segment>
         <source>support.help.search</source>
@@ -149,6 +161,18 @@
       <segment>
         <source>support.help.title</source>
         <target>Knowledge base</target>
+      </segment>
+    </unit>
+    <unit id="support.help.unhelpful">
+      <segment>
+        <source>support.help.unhelpful</source>
+        <target>Did not help?</target>
+      </segment>
+    </unit>
+    <unit id="support.help.updated">
+      <segment>
+        <source>support.help.updated</source>
+        <target>Updated {date, date, ::yMMdd}</target>
       </segment>
     </unit>
     <unit id="support.help_view.categories">
@@ -215,6 +239,12 @@
       <segment>
         <source>support.knowledge.article.new</source>
         <target>New article</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.open">
+      <segment>
+        <source>support.knowledge.article.open</source>
+        <target>Open</target>
       </segment>
     </unit>
     <unit id="support.knowledge.article.saved">

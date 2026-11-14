@@ -187,6 +187,12 @@
         <target>Кабинет</target>
       </segment>
     </unit>
+    <unit id="theme.site.crumbs">
+      <segment>
+        <source>theme.site.crumbs</source>
+        <target>Хлебные крошки</target>
+      </segment>
+    </unit>
     <unit id="theme.site.login">
       <segment>
         <source>theme.site.login</source>

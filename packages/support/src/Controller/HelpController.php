@@ -17,10 +17,12 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/help')]
+#[Route('/support/help')]
 #[IsGranted(Role::USER)]
 final class HelpController extends AbstractController
 {
+    public const WINDOW = 'support_help_window';
+
     public function __construct(
         private readonly Help $help,
         private readonly SupportSettings $support,
@@ -28,7 +30,7 @@ final class HelpController extends AbstractController
     ) {
     }
 
-    #[Route('/window', name: 'help_window', methods: ['GET'])]
+    #[Route('/window', name: self::WINDOW, methods: ['GET'])]
     public function dialog(): Response
     {
         $this->open();
@@ -36,7 +38,7 @@ final class HelpController extends AbstractController
         return $this->render('@Support/support/_help_window.html.twig');
     }
 
-    #[Route('', name: 'help', methods: ['GET'])]
+    #[Route('', name: 'support_help', methods: ['GET'])]
     public function window(Request $request): Response
     {
         $this->open();
@@ -49,7 +51,7 @@ final class HelpController extends AbstractController
         ]);
     }
 
-    #[Route('/ticket/{id}', name: 'help_ticket', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[Route('/ticket/{id}', name: 'support_help_ticket', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function ticket(#[CurrentUser] User $user, Request $request, int $id): Response
     {
         $this->open();

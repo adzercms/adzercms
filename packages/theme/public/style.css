@@ -1262,6 +1262,12 @@ html:has(dialog[open]:modal) { overflow: hidden; }
 .help-link span { font-size: 13px; color: var(--text-gray); }
 .help-empty { margin: 0 0 0.75rem; color: var(--text-gray); }
 .help-insert { margin-top: 0.8rem; }
+.help-search { width: 100%; max-width: 36rem; }
+.help-contents { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1.5rem 2.5rem; margin-top: 1.5rem; }
+.help-contents h2 { margin: 0 0 0.35rem; font-size: 15px; text-transform: uppercase; letter-spacing: 0.04em; }
+.help-contents p { margin: 0 0 0.6rem; font-size: 13px; color: var(--text-gray); }
+.help-contents ul { margin: 0; padding: 0; list-style: none; }
+.help-contents li + li { margin-top: 0.4rem; }
 
 .auth-page {
     display: flex;
@@ -1725,6 +1731,10 @@ h1.site-heading { font-size: clamp(28px, 5vw, 44px); line-height: 1.15; }
 .site-questions details { padding: 1rem 0; border-bottom: 1px solid var(--border-light); }
 .site-questions summary { font-weight: 600; cursor: pointer; }
 .site-questions .prose { margin-top: 0.75rem; }
+.site-crumbs { margin: 0 0 1rem; font-size: 14px; color: var(--text-gray); }
+.site-crumbs a { color: var(--primary); }
+.site-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0 0; padding: 0; list-style: none; }
+.site-tags li { padding: 0.15rem 0.6rem; border-radius: 999px; background: var(--bg-light); font-size: 13px; color: var(--text-gray); }
 
 @media (max-width: 900px) {
     .site-header { height: auto; min-height: var(--header-height); }

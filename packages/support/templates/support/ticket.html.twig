@@ -103,7 +103,7 @@
                 {% if staff and help %}
                     <div class="help-insert">
                         <input type="search" name="q" aria-label="{{ 'support.help.article'|trans }}" placeholder="{{ 'support.help.article'|trans }}" autocomplete="off"
-                               hx-get="{{ path('help_ticket', {id: ticket.id}) }}" hx-trigger="load, input changed delay:300ms, search"
+                               hx-get="{{ path('support_help_ticket', {id: ticket.id}) }}" hx-trigger="load, input changed delay:300ms, search"
                                hx-target="next .help-results">
                         <div class="help-results"></div>
                     </div>

@@ -4,7 +4,7 @@
 
 {% block meta %}
     {% include '@Theme/_seo.html.twig' with {title: page.title, description: page.description ?? ''} only %}
-    {% include '@Pages/_schema.html.twig' with {schema: view.schema} only %}
+    {% include '@Theme/_schema.html.twig' with {schema: view.schema} only %}
 {% endblock %}
 
 {% block page %}

@@ -1,0 +1,13 @@
+<div id="help-contents" class="help-contents">
+    {% for section in sections %}
+        <section id="{{ section.category.slug }}">
+            <h2>{{ section.category.title }}</h2>
+            {% if section.category.description %}<p>{{ section.category.description }}</p>{% endif %}
+            <ul>
+                {% for article in section.articles %}<li><a href="{{ path('help_article', {category: section.category.slug, article: article.slug}) }}">{{ article.title }}</a></li>{% endfor %}
+            </ul>
+        </section>
+    {% else %}
+        <p class="help-empty">{{ 'support.help.nothing'|trans }} <a href="{{ url('support_ticket_new') }}">{{ 'support.ticket.new'|trans }}</a></p>
+    {% endfor %}
+</div>

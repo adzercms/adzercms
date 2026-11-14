@@ -1,0 +1,5 @@
+<nav class="site-crumbs" aria-label="{{ 'theme.site.crumbs'|trans }}">
+    {%- for link in trail -%}
+        {%- if loop.last %}<span aria-current="page">{{ link.name }}</span>{% else %}<a href="{{ link.url }}">{{ link.name }}</a><span aria-hidden="true"> › </span>{% endif -%}
+    {%- endfor -%}
+</nav>

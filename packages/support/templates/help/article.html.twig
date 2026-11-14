@@ -1,0 +1,21 @@
+{% extends '@Theme/site.html.twig' %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block meta %}
+    {% include '@Theme/_seo.html.twig' with {title: article.title, description: article.description ?? ''} only %}
+    {% include '@Theme/_schema.html.twig' with {schema: schema} only %}
+{% endblock %}
+
+{% block page %}
+{% embed '@Theme/_section.html.twig' %}
+    {% block content %}
+        {% include '@Theme/_crumbs.html.twig' with {trail: trail} only %}
+        <h1 class="site-heading">{{ article.title }}</h1>
+        <div class="prose">{{ article.body|markup }}</div>
+        {% if article.tags %}<ul class="site-tags">{% for tag in article.tags %}<li>{{ tag }}</li>{% endfor %}</ul>{% endif %}
+        <p class="muted">{{ 'support.help.updated'|trans({date: article.updatedAt}) }}</p>
+        <p>{{ 'support.help.unhelpful'|trans }} <a href="{{ url('support_ticket_new') }}">{{ 'support.ticket.new'|trans }}</a></p>
+    {% endblock %}
+{% endembed %}
+{% endblock %}

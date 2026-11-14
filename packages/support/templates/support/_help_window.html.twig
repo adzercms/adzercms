@@ -1,7 +1,7 @@
 {% include '@Theme/_modal_header.html.twig' with {title: 'support.help.title'|trans} only %}
 <div class="modal-body help">
     <input type="search" name="q" aria-label="{{ 'support.help.search'|trans }}" placeholder="{{ 'support.help.search'|trans }}" autocomplete="off"
-           hx-get="{{ path('help') }}" hx-trigger="intersect once, input changed delay:300ms, search"
+           hx-get="{{ path('support_help') }}" hx-trigger="intersect once, input changed delay:300ms, search"
            hx-target="next .help-results">
     <div class="help-results"></div>
 </div>

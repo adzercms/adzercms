@@ -1,5 +1,4 @@
 {% set schema = {
-    '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'extensions.catalog.title'|trans,
     description: 'extensions.catalog.description'|trans,
@@ -21,4 +20,4 @@
         }),
     },
 } %}
-<script type="application/ld+json">{{ schema|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}</script>
+{% include '@Theme/_schema.html.twig' with {schema: [schema]} only %}

@@ -7,6 +7,7 @@
 {% block heading %}<span class="record-title">{{ article.title }}</span>{% endblock %}
 
 {% block actions %}
+    <a class="button secondary" href="{{ open }}" target="_blank" rel="noopener">{{ 'support.knowledge.article.open'|trans }}</a>
     <form method="post" action="{{ path('admin_help_article_drop', {id: article.id}) }}" data-confirm="{{ 'support.knowledge.article.drop_confirm'|trans({title: article.title}) }}">
         {{ csrf_field() }}<button type="submit" class="danger">{{ 'support.knowledge.article.drop'|trans }}</button>
     </form>

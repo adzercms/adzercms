@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Pages;
 
 use AdzerCMS\Contracts\Setting\Type;
+use AdzerCMS\Core\Seo\Breadcrumbs;
 use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Setting\Values;
 use AdzerCMS\Pages\Controller\PageController;
@@ -20,6 +21,7 @@ final readonly class Site
         private Brand $brand,
         private UrlGeneratorInterface $urls,
         private Pictures $pictures,
+        private Breadcrumbs $breadcrumbs,
     ) {
     }
 
@@ -59,16 +61,10 @@ final readonly class Site
     /** @return list<array<string, mixed>> */
     private function page(Page $page): array
     {
-        $root = $this->urls->generate(PageController::ROOT, [], UrlGeneratorInterface::ABSOLUTE_URL);
         if (Page::ROOT !== $page->getPath()) {
-            return [[
-                '@type' => 'BreadcrumbList',
-                'itemListElement' => [
-                    ['@type' => 'ListItem', 'position' => 1, 'name' => $this->brand->title(), 'item' => $root],
-                    ['@type' => 'ListItem', 'position' => 2, 'name' => $page->getTitle(), 'item' => $this->url($page)],
-                ],
-            ]];
+            return [Breadcrumbs::schema($this->breadcrumbs->trail([['name' => $page->getTitle(), 'url' => $this->url($page)]]))];
         }
+        $root = $this->urls->generate(PageController::ROOT, [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         return [
             ['@type' => 'WebSite', 'name' => $this->brand->title(), 'url' => $root],

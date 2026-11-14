@@ -1,0 +1,18 @@
+{% extends '@Theme/site.html.twig' %}
+
+{% block title %}{{ 'support.help.title'|trans }}{% endblock %}
+
+{% block meta %}
+    {% include '@Theme/_seo.html.twig' with {title: block('title'), description: 'support.help.description'|trans({brand: brand.title})} only %}
+    {% include '@Theme/_schema.html.twig' with {schema: schema} only %}
+{% endblock %}
+
+{% block page %}
+{% embed '@Theme/_section.html.twig' with {heading: 'support.help.title'|trans, level: 1} %}
+    {% block content %}
+        <input class="help-search" type="search" name="q" value="{{ query }}" aria-label="{{ 'support.help.search'|trans }}" placeholder="{{ 'support.help.search'|trans }}" autocomplete="off"
+               hx-get="{{ path('help') }}" hx-trigger="input changed delay:300ms, search" hx-target="#help-contents" hx-swap="outerHTML">
+        {% include '@Support/help/_contents.html.twig' %}
+    {% endblock %}
+{% endembed %}
+{% endblock %}
