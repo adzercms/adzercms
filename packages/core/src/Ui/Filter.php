@@ -141,7 +141,7 @@ final class Filter
         return \sprintf('%s LIKE :digits', $field);
     }
 
-    private static function pattern(string $term): string
+    public static function pattern(string $term): string
     {
         return '%'.addcslashes(mb_strtolower(trim($term)), '%_\\').'%';
     }
