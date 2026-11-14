@@ -8,12 +8,17 @@ use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Core\Entity\Origin;
+use AdzerCMS\Core\Session\Logins;
 use AdzerCMS\Core\Setting\Settings;
+use AdzerCMS\Core\Site\Hosts;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
+use function Symfony\Component\Clock\now;
 use function Symfony\Component\Translation\t;
 
 #[AsEventListener]
@@ -33,10 +38,12 @@ final readonly class Marks implements Owner
     private const DIRECT = '(direct)';
     private const SESSION_KEY = 'origin.marks';
     private const SEEN_KEY = 'origin.site';
+    private const PENDING = '_marks';
 
     public function __construct(
         private RequestStack $requests,
         private Settings $settings,
+        private Hosts $hosts,
     ) {
     }
 
@@ -53,10 +60,37 @@ final readonly class Marks implements Owner
         }
 
         $marks = self::of($request->query->all());
-        if ([] !== $marks) {
-            $request->getSession()->set(self::SESSION_KEY, $marks);
-            $request->getSession()->set(self::SEEN_KEY, $this->site($request));
+        if ([] === $marks) {
+            return;
         }
+
+        if (Hosts::SITE === $request->attributes->get(Hosts::ROLE) && '' !== $this->settings->get(self::COOKIE)) {
+            $request->attributes->set(self::PENDING, array_intersect_key($request->query->all(), self::KEYS));
+
+            return;
+        }
+
+        $request->getSession()->set(self::SESSION_KEY, $marks);
+        $request->getSession()->set(self::SEEN_KEY, $this->site($request));
+    }
+
+    #[AsEventListener]
+    public function onResponse(ResponseEvent $event): void
+    {
+        $request = $event->getRequest();
+        $marks = $request->attributes->get(self::PENDING);
+        if (!$event->isMainRequest() || !\is_array($marks)) {
+            return;
+        }
+
+        $event->getResponse()->headers->setCookie(Cookie::create(
+            $this->settings->get(self::COOKIE),
+            json_encode($marks, \JSON_THROW_ON_ERROR),
+            now()->getTimestamp() + Logins::LIFETIME,
+            '/',
+            $this->hosts->cookieDomain(),
+            $request->isSecure(),
+        ));
     }
 
     /** @return array<string, string> */

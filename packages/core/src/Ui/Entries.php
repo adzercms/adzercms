@@ -9,6 +9,7 @@ use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Ui\AdminEntry;
 use AdzerCMS\Contracts\Ui\CabinetEntry;
+use AdzerCMS\Core\Site\Hosts;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
@@ -22,6 +23,7 @@ final readonly class Entries
     /** @param array<string, class-string> $bundles */
     public function __construct(
         private UrlGeneratorInterface $urls,
+        private Hosts $hosts,
         #[Autowire('%kernel.bundles%')]
         array $bundles,
     ) {
@@ -53,7 +55,13 @@ final readonly class Entries
     #[AsTwigFunction('home')]
     public function home(): string
     {
-        return $this->url(CabinetEntry::Home) ?? '/';
+        return $this->url(CabinetEntry::Home) ?? $this->site();
+    }
+
+    #[AsTwigFunction('site_root')]
+    public function site(): string
+    {
+        return $this->hosts->root($this->urls->getContext());
     }
 
     /** @param array<string, mixed> $parameters */

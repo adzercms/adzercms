@@ -23,18 +23,21 @@ final class LanguageTest extends SchemaTestCase
 
     private const INSTANCE = 'ru';
 
-    /** @return iterable<string, array{bool, ?string, string, string}> */
+    /** @return iterable<string, array{bool, ?string, string, string, bool}> */
     public static function requests(): iterable
     {
-        yield 'record speaks its choice' => [true, 'en', 'ru-RU,ru;q=0.9', 'en'];
-        yield 'record without choice speaks the instance language' => [true, null, 'en', self::INSTANCE];
-        yield 'guest speaks the browser language' => [false, null, 'de-DE,en;q=0.8', 'en'];
-        yield 'guest of an unknown language hears the instance one' => [false, null, 'de', self::INSTANCE];
+        yield 'record speaks its choice' => [true, 'en', 'ru-RU,ru;q=0.9', 'en', false];
+        yield 'record without choice speaks the instance language' => [true, null, 'en', self::INSTANCE, false];
+        yield 'guest speaks the browser language' => [false, null, 'de-DE,en;q=0.8', 'en', false];
+        yield 'guest of an unknown language hears the instance one' => [false, null, 'de', self::INSTANCE, false];
+        yield 'site speaks the instance language to a record of its choice' => [true, 'en', 'en', self::INSTANCE, true];
+        yield 'site speaks the instance language to a browser of another' => [false, null, 'en', self::INSTANCE, true];
     }
 
     #[Group('ACMS-CORE-0168')]
+    #[Group('ACMS-CORE-1094')]
     #[DataProvider('requests')]
-    public function testRequestSpeaksLanguageOfRecordElseOfBrowserElseOfInstance(bool $record, ?string $chosen, string $accepted, string $spoken): void
+    public function testRequestSpeaksLanguageOfRecordElseOfBrowserElseOfInstance(bool $record, ?string $chosen, string $accepted, string $spoken, bool $site): void
     {
         $this->configure([Language::NAME => self::INSTANCE]);
         if ($record) {
@@ -43,7 +46,7 @@ final class LanguageTest extends SchemaTestCase
             $this->client->loginUser($user);
         }
 
-        $this->client->request('GET', '/fixture/locale', server: ['HTTP_ACCEPT_LANGUAGE' => $accepted]);
+        $this->client->request('GET', $site ? '/fixture/site/locale' : '/fixture/locale', server: ['HTTP_ACCEPT_LANGUAGE' => $accepted]);
 
         self::assertSame($spoken.' '.$spoken, $this->client->getResponse()->getContent());
     }

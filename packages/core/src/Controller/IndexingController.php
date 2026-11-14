@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Controller;
 
 use AdzerCMS\Core\Http\TextResponse;
 use AdzerCMS\Core\Seo\Indexing;
+use AdzerCMS\Core\Site\Hosts;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -18,13 +19,13 @@ final readonly class IndexingController
     {
     }
 
-    #[Route('/robots.txt', name: Indexing::ROBOTS, methods: ['GET'])]
+    #[Route('/robots.txt', name: Indexing::ROBOTS, defaults: [Hosts::ROLE => Hosts::SHARED], methods: ['GET'])]
     public function robots(): Response
     {
         return new TextResponse($this->indexing->robots());
     }
 
-    #[Route('/sitemap.xml', name: Indexing::SITEMAP, methods: ['GET'])]
+    #[Route('/sitemap.xml', name: Indexing::SITEMAP, defaults: [Hosts::ROLE => Hosts::SHARED], methods: ['GET'])]
     public function sitemap(): Response
     {
         if (!$this->indexing->on()) {

@@ -11,12 +11,15 @@ use AdzerCMS\Core\Build\Preview;
 use AdzerCMS\Core\Module\Installed;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Module\Selection;
+use AdzerCMS\Core\Site\Hosts;
 use Composer\Autoload\ClassLoader;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+use Symfony\Component\Routing\RouteCollection;
 
 use function Symfony\Component\Clock\now;
 
@@ -27,6 +30,7 @@ abstract class Kernel extends BaseKernel
         registerBundles as private configuredBundles;
         configureContainer as private configuredContainer;
         configureRoutes as private configuredRoutes;
+        loadRoutes as private configuredLoadRoutes;
     }
 
     public const ASSETS = 'adzercms.assets';
@@ -213,6 +217,14 @@ abstract class Kernel extends BaseKernel
                 $container->import($bundle->getPath().self::TEST_SERVICES);
             }
         }
+    }
+
+    public function loadRoutes(LoaderInterface $loader): RouteCollection
+    {
+        $routes = $this->configuredLoadRoutes($loader);
+        Hosts::bind($routes);
+
+        return $routes;
     }
 
     private function configureRoutes(RoutingConfigurator $routes): void

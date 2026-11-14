@@ -25,6 +25,7 @@ GEOIP_CITY_DB=/usr/share/GeoIP/GeoLite2-City.mmdb
 
 - `APP_SECRET` — a random string, `openssl rand -hex 32` gives one
 - `DEFAULT_URI` — the site address; links in emails sent by the scheduler start with it
+- `SITE_URI` is optional: the address of the public site when it lives on its own domain, for example `https://example.com` with the cabinet at `DEFAULT_URI=https://my.example.com`. Public pages then open only on the site domain and the cabinet only on its own one, a link to the other domain leads there. Without it both live on one domain
 - `DATABASE_URL` — an empty database. For MySQL and MariaDB add `charset=utf8mb4` and the full server version in `serverVersion`; create a PostgreSQL database with the ICU locale provider and the `und` locale
 - `SESSION_DSN` and `GEOIP_CITY_DB` are optional: without them sessions are stored in files and the sign-in city isn't shown
 - `FILES_DIR` is optional: where the site keeps the files it creates, `var/files/<environment>` by default

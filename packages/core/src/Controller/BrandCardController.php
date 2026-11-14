@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Controller;
 
 use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Setting\Images;
+use AdzerCMS\Core\Site\Hosts;
 use Intervention\Image\Drivers\Imagick\Driver;
 use Intervention\Image\Encoders\PngEncoder;
 use Intervention\Image\ImageManager;
@@ -31,7 +32,7 @@ final readonly class BrandCardController
     ) {
     }
 
-    #[Route('/brand.png', name: Brand::CARD, methods: ['GET'])]
+    #[Route('/brand.png', name: Brand::CARD, defaults: [Hosts::ROLE => Hosts::SHARED], methods: ['GET'])]
     public function __invoke(Request $request): Response
     {
         $logo = $this->brand->cardLogo() ?? throw new NotFoundHttpException();

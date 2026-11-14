@@ -40,6 +40,8 @@ use AdzerCMS\Core\Security\UserChecker;
 use AdzerCMS\Core\Security\UserProvider;
 use AdzerCMS\Core\Session\Logins;
 use AdzerCMS\Core\Setting\Brand;
+use AdzerCMS\Core\Site\Hosts;
+use AdzerCMS\Core\Site\HostUrls;
 use AdzerCMS\Core\Text\TextLoader;
 use AdzerCMS\Core\Text\Texts;
 use AdzerCMS\Core\Ui\Column;
@@ -79,6 +81,8 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
     private const HTTP_MOCK = 'http_client.mock_client';
     private const HTTP_CLIENT = 'http_client';
     private const MIGRATION_MARKS = 'adzercms.migration_marks';
+    private const ROUTER = 'router.default';
+    private const REQUEST_CONTEXT = 'router.request_context';
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
@@ -184,6 +188,12 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
     {
         self::texts($container);
         Schedule::collect($container);
+
+        if ($container->hasDefinition(self::ROUTER)) {
+            $router = $container->getDefinition(self::ROUTER);
+            $router->replaceArgument(2, ['generator_class' => HostUrls::class] + $router->getArgument(2));
+            $container->getDefinition(self::REQUEST_CONTEXT)->addMethodCall('setParameter', [Hosts::PARAMETER, new Reference(Hosts::class)]);
+        }
 
         if (!$container->hasDefinition(self::IMPORTMAP_READER)) {
             return;

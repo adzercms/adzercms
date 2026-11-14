@@ -316,7 +316,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "f58189c4d3f42b85884ae34db7c5bc5081578a21"
+                "reference": "0f97aeefe84d8fbdd5ea6fe80fd59a40db4917ca"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -357,6 +357,7 @@
                 "symfony/asset": "7.4.*",
                 "symfony/asset-mapper": "7.4.*",
                 "symfony/clock": "7.4.*",
+                "symfony/config": "7.4.*",
                 "symfony/console": "7.4.*",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/event-dispatcher": "7.4.*",

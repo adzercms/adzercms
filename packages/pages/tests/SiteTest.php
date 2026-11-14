@@ -6,6 +6,8 @@ namespace AdzerCMS\Pages\Tests;
 
 use AdzerCMS\Core\Seo\Indexing;
 use AdzerCMS\Core\Setting\Brand;
+use AdzerCMS\Core\Site\PublicCache;
+use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Pages\Entity\Page;
@@ -15,6 +17,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 final class SiteTest extends SchemaTestCase
 {
+    use Accounts;
     use Configuration;
 
     private const BRAND = 'Village network';
@@ -67,6 +70,31 @@ final class SiteTest extends SchemaTestCase
         $this->em->flush();
         $this->client->request('GET', '/');
         self::assertResponseRedirects('/cabinet', null, 'without a published home page the root leads to the cabinet');
+    }
+
+    #[Group('ACMS-CORE-1092')]
+    #[Group('ACMS-CORE-1093')]
+    #[Group('ACMS-US-0070')]
+    public function testPageWithoutSessionIsSharedByCachesAndWithSessionIsPrivate(): void
+    {
+        $home = $this->page('Home', Page::ROOT, published: true, menu: false);
+        $this->block($home, 'hero', ['title' => 'Internet for the village', 'button' => 'Plans', 'link' => '#lead']);
+
+        $this->client->request('GET', '/');
+        $headers = $this->client->getResponse()->headers;
+        self::assertSame([], $headers->getCookies(), 'a page without a session cookie opens no session');
+        self::assertTrue($headers->hasCacheControlDirective('public'));
+        self::assertSame(
+            [PublicCache::MAX_AGE, PublicCache::STALE_WHILE_REVALIDATE, PublicCache::STALE_IF_ERROR],
+            array_map(static fn (string $directive): int => (int) $headers->getCacheControlDirective($directive), ['max-age', 'stale-while-revalidate', 'stale-if-error']),
+        );
+
+        $this->client->request('GET', '/missing');
+        self::assertFalse($this->client->getResponse()->headers->hasCacheControlDirective('public'), 'a refusal is not cached');
+
+        $this->client->loginUser($this->record('79990000010'));
+        $this->client->request('GET', '/');
+        self::assertTrue($this->client->getResponse()->headers->hasCacheControlDirective('private'), 'a page that opened the session stays private');
     }
 
     private function page(string $title, string $path, bool $published, bool $menu, ?string $label = null): Page

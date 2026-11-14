@@ -7,6 +7,7 @@ namespace AdzerCMS\Pages\Controller;
 use AdzerCMS\Contracts\Ui\CabinetEntry;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Http\ImmutableFileResponse;
+use AdzerCMS\Core\Site\Hosts;
 use AdzerCMS\Core\Ui\Entries;
 use AdzerCMS\Pages\Entity\Page;
 use AdzerCMS\Pages\Pictures;
@@ -35,7 +36,7 @@ final class PageController extends AbstractController
     ) {
     }
 
-    #[Route('/', name: self::ROOT, methods: ['GET'], options: ['site' => true])]
+    #[Route('/', name: self::ROOT, methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SITE])]
     public function root(Entries $entries): Response
     {
         $page = $this->pages->published(Page::ROOT);
@@ -46,7 +47,7 @@ final class PageController extends AbstractController
         return $this->moved(Page::ROOT) ?? $this->redirect($entries->url(CabinetEntry::Home) ?? throw $this->createNotFoundException());
     }
 
-    #[Route('/{path}', name: self::PAGE, requirements: ['path' => Page::SEGMENTS], methods: ['GET'], options: ['site' => true, 'utf8' => true], priority: self::LAST)]
+    #[Route('/{path}', name: self::PAGE, requirements: ['path' => Page::SEGMENTS], methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SITE], options: ['utf8' => true], priority: self::LAST)]
     public function page(string $path): Response
     {
         $page = $this->pages->published('/'.$path);
@@ -57,7 +58,7 @@ final class PageController extends AbstractController
         return $this->moved('/'.$path) ?? throw $this->createNotFoundException();
     }
 
-    #[Route('/pages/pictures/{file}', name: self::PICTURE, requirements: ['file' => '[^/]+'], methods: ['GET'], options: ['site' => true])]
+    #[Route('/pages/pictures/{file}', name: self::PICTURE, requirements: ['file' => '[^/]+'], methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SHARED])]
     public function picture(string $file, Request $request): Response
     {
         return new ImmutableFileResponse($this->pictures->path($file) ?? throw $this->createNotFoundException(), $request);

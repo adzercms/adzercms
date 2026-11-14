@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Controller;
 
 use AdzerCMS\Core\Setting\Catalog;
 use AdzerCMS\Core\Setting\Images;
+use AdzerCMS\Core\Site\Hosts;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -22,7 +23,7 @@ final class SettingImageController
     ) {
     }
 
-    #[Route('/setting/{name}', name: 'setting_image', requirements: ['name' => '[a-z0-9_.]+'], methods: ['GET'])]
+    #[Route('/setting/{name}', name: 'setting_image', requirements: ['name' => '[a-z0-9_.]+'], defaults: [Hosts::ROLE => Hosts::SHARED], methods: ['GET'])]
     public function __invoke(string $name): BinaryFileResponse
     {
         $field = $this->catalog->fields()[$name] ?? null;

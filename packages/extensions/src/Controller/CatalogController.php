@@ -7,6 +7,8 @@ namespace AdzerCMS\Extensions\Controller;
 use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Http\ImmutableFileResponse;
+use AdzerCMS\Core\Setting\Language;
+use AdzerCMS\Core\Site\Hosts;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\Entity\Extension;
@@ -35,7 +37,7 @@ final class CatalogController extends AbstractController
     ) {
     }
 
-    #[Route('/extensions', name: self::PAGE, methods: ['GET'], options: ['site' => true])]
+    #[Route('/extensions', name: self::PAGE, methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SITE, Language::VISITOR => true])]
     public function index(Request $request): Response
     {
         $table = Table::of($request, self::PAGE, [], '', t('extensions.empty'), filters: [
@@ -52,19 +54,19 @@ final class CatalogController extends AbstractController
         return $this->render('@Extensions/catalog.html.twig', $context);
     }
 
-    #[Route('/extensions/publishing', name: self::GUIDE, methods: ['GET'], options: ['site' => true])]
+    #[Route('/extensions/publishing', name: self::GUIDE, methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SITE, Language::VISITOR => true])]
     public function guide(Request $request): Response
     {
         return $this->render('@Extensions/guide.html.twig', ['guide' => Guide::read($request->getLocale())]);
     }
 
-    #[Route('/extensions/images/{file}', name: self::IMAGE, requirements: ['file' => '[^/]+'], methods: ['GET'], options: ['site' => true])]
+    #[Route('/extensions/images/{file}', name: self::IMAGE, requirements: ['file' => '[^/]+'], methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SHARED])]
     public function image(string $file, Request $request): Response
     {
         return new ImmutableFileResponse($this->images->path($file) ?? throw $this->createNotFoundException(), $request);
     }
 
-    #[Route('/extensions/store.json', name: 'extensions_store', methods: ['GET'], options: ['site' => true])]
+    #[Route('/extensions/store.json', name: 'extensions_store', methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SITE])]
     public function store(Request $request): Response
     {
         $response = new JsonResponse(['extensions' => array_map(fn (Extension $extension): array => [

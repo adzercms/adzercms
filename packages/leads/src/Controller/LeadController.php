@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Leads\Controller;
 
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Core\Site\Hosts;
 use AdzerCMS\Core\Ui\Back;
 use AdzerCMS\Core\Ui\Fragment;
 use AdzerCMS\Leads\Intake;
@@ -18,7 +19,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 use function Symfony\Component\Translation\t;
 
-#[Route('/lead')]
+#[Route('/lead', defaults: [Hosts::ROLE => Hosts::SITE])]
 final class LeadController extends AbstractController
 {
     private const HOME = '/';

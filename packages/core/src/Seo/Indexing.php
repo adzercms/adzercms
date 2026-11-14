@@ -12,6 +12,7 @@ use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Entity\SourceChange;
 use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Setting\Settings;
+use AdzerCMS\Core\Site\Hosts;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -36,6 +37,7 @@ final readonly class Indexing implements Owner
         private Settings $settings,
         private RequestStack $requests,
         private RouterInterface $router,
+        private Hosts $hosts,
     ) {
     }
 
@@ -46,7 +48,7 @@ final readonly class Indexing implements Owner
 
     public function on(): bool
     {
-        return $this->settings->on(self::NAME);
+        return $this->settings->on(self::NAME) && $this->hosts->serves(Hosts::SITE, $this->router->getContext()->getHost());
     }
 
     #[AsTwigFunction('page_head')]
@@ -112,11 +114,13 @@ final readonly class Indexing implements Owner
     {
         $open = [...$this->pages->routes(), ...self::OPEN];
         $paths = array_map($this->pages->path(...), $this->pages->all());
+        $host = $this->router->getContext()->getHost();
 
         $prefixes = [];
         foreach ($this->router->getRouteCollection() as $name => $route) {
             $prefix = explode('{', $route->getPath(), 2)[0];
-            if (!\in_array($name, $open, true) && !array_any($paths, static fn (string $path): bool => str_starts_with($path, $prefix))) {
+            $role = $route->getDefault(Hosts::ROLE);
+            if ($this->hosts->serves(\is_string($role) ? $role : null, $host) && !\in_array($name, $open, true) && !array_any($paths, static fn (string $path): bool => str_starts_with($path, $prefix))) {
                 $prefixes[] = $prefix;
             }
         }

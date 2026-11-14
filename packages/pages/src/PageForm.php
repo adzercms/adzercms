@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Pages;
 
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Core\Site\Hosts;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Pages\Controller\PageController;
 use AdzerCMS\Pages\Entity\Page;
@@ -18,7 +19,6 @@ use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RouterInterface;
 
 use function Symfony\Component\Translation\t;
@@ -39,6 +39,7 @@ final readonly class PageForm
         private PageBlockRepository $blocks,
         private Pictures $pictures,
         private RouterInterface $router,
+        private Hosts $hosts,
         private EntityManagerInterface $em,
     ) {
     }
@@ -217,10 +218,10 @@ final readonly class PageForm
             return false;
         }
 
-        $context = clone $this->router->getContext();
-        $context->setMethod(Request::METHOD_GET);
+        $own = $this->router->getContext();
+        $site = $this->hosts->target(Hosts::SITE, $own) ?? clone $own;
         try {
-            return PageController::PAGE !== (new UrlMatcher($this->router->getRouteCollection(), $context))->match($path)['_route'];
+            return PageController::PAGE !== Hosts::match($this->router, $site->setMethod(Request::METHOD_GET), $path)['_route'];
         } catch (ResourceNotFoundException) {
             return false;
         } catch (MethodNotAllowedException) {

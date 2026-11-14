@@ -10,6 +10,7 @@ use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Account\LanguageName;
 use AdzerCMS\Core\Entity\User;
+use AdzerCMS\Core\Site\Hosts;
 use Doctrine\DBAL\Exception as DatabaseFailure;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Console\ConsoleEvents;
@@ -26,6 +27,7 @@ use function Symfony\Component\Translation\t;
 final class Language implements Owner
 {
     public const NAME = 'brand.language';
+    public const VISITOR = '_visitor_language';
 
     /** @param list<string> $locales */
     public function __construct(
@@ -80,10 +82,13 @@ final class Language implements Owner
         }
 
         $request = $event->getRequest();
-        $user = $request->attributes->getBoolean('_stateless') ? null : $this->security->getUser();
-        $locale = $user instanceof User
-            ? $this->of($user)
-            : (string) $request->getPreferredLanguage([$this->instance(), ...$this->locales]);
+        $site = Hosts::SITE === $request->attributes->get(Hosts::ROLE) && !$request->attributes->getBoolean(self::VISITOR);
+        $user = $site || $request->attributes->getBoolean('_stateless') ? null : $this->security->getUser();
+        $locale = match (true) {
+            $site => $this->instance(),
+            $user instanceof User => $this->of($user),
+            default => (string) $request->getPreferredLanguage([$this->instance(), ...$this->locales]),
+        };
 
         $request->setLocale($locale);
         $this->switcher->setLocale($locale);
