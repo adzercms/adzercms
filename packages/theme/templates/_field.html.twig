@@ -28,6 +28,8 @@
     {% include '@Theme/_palette.html.twig' with {id: id, name: name, label: field.label, schemes: field.schemes, value: value} only %}
 {% elseif field.type == constant(type ~ 'Url') %}
     <input {{ named }} type="url" value="{{ value }}">
+{% elseif field.type == constant(type ~ 'Date') %}
+    <input {{ named }} type="date" value="{{ value }}">
 {% elseif field.type == constant(type ~ 'Color') %}
     <input {{ named }} type="color" value="{{ value ?: '#000000' }}">
 {% elseif field.type == constant(type ~ 'Markup') and not grouped|default(false) %}

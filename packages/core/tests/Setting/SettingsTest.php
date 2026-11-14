@@ -21,6 +21,7 @@ final class SettingsTest extends SchemaTestCase
     private const TOKEN = 'fixture.token';
     private const PAUSE = 'fixture.pause';
     private const COLOR = 'fixture.color';
+    private const DATE = 'fixture.date';
     private const PALETTE = 'fixture.palette';
     private const LINES = 'fixture.lines';
     private const MARKUP = 'fixture.markup';
@@ -82,6 +83,19 @@ final class SettingsTest extends SchemaTestCase
 
         self::assertNotNull($this->settings()->save($color, 'lime'));
         self::assertSame('#c8f031', $this->settings()->get(self::COLOR));
+    }
+
+    #[Group('ACMS-CORE-1163')]
+    #[Group('ACMS-US-0004')]
+    public function testDateIsKeptAsCalendarDay(): void
+    {
+        $date = new Field(self::DATE, t('Date'), Type::Date);
+        $this->save($date, '2026-11-13');
+
+        foreach (['13.11.2026', '2026-02-30'] as $wrong) {
+            self::assertNotNull($this->settings()->save($date, $wrong), $wrong);
+        }
+        self::assertSame('2026-11-13', $this->settings()->get(self::DATE));
     }
 
     #[Group('ACMS-CORE-1070')]

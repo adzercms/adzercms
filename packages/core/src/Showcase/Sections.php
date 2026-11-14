@@ -7,6 +7,7 @@ namespace AdzerCMS\Core\Showcase;
 use AdzerCMS\Contracts\Analytics\Counter;
 use AdzerCMS\Contracts\Showcase\Showcase;
 use AdzerCMS\Contracts\Ui\CabinetEntry;
+use AdzerCMS\Core\Account\Consents;
 use AdzerCMS\Core\Module\Bundles;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Module\Switches;
@@ -26,6 +27,7 @@ final readonly class Sections
         private Bundles $bundles,
         private Entries $entries,
         private Switches $switches,
+        private Consents $consents,
     ) {
     }
 
@@ -83,6 +85,6 @@ final readonly class Sections
             $core[$entry->value] = $this->entries->url($entry, absolute: true);
         }
 
-        return array_filter($core + ['counters' => $counters]);
+        return array_filter($core + ['edition' => $this->consents->edition(), 'counters' => $counters]);
     }
 }

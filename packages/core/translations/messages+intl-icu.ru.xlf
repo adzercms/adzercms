@@ -565,6 +565,18 @@
         <target>Сверху</target>
       </segment>
     </unit>
+    <unit id="core.legal.edition">
+      <segment>
+        <source>core.legal.edition</source>
+        <target>Действующая редакция от {effective, date, long}.</target>
+      </segment>
+    </unit>
+    <unit id="core.legal.upcoming">
+      <segment>
+        <source>core.legal.upcoming</source>
+        <target>Новая редакция опубликована {published, date, long} и вступает в силу {effective, date, long} — ниже её текст.</target>
+      </segment>
+    </unit>
     <unit id="core.login.absent">
       <segment>
         <source>core.login.absent</source>
@@ -1237,6 +1249,12 @@
         <target>Повтор кода не чаще, минут</target>
       </segment>
     </unit>
+    <unit id="core.setting.date">
+      <segment>
+        <source>core.setting.date</source>
+        <target>{field} — дата</target>
+      </segment>
+    </unit>
     <unit id="core.setting.decimal">
       <segment>
         <source>core.setting.decimal</source>
@@ -1267,10 +1285,22 @@
         <target>Расположение меню</target>
       </segment>
     </unit>
-    <unit id="core.setting.legal_revision">
+    <unit id="core.setting.legal_editions">
       <segment>
-        <source>core.setting.legal_revision</source>
-        <target>Редакция документов</target>
+        <source>core.setting.legal_editions</source>
+        <target>Редакции документов</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.legal_effective">
+      <segment>
+        <source>core.setting.legal_effective</source>
+        <target>Вступает в силу</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.legal_published">
+      <segment>
+        <source>core.setting.legal_published</source>
+        <target>Опубликована</target>
       </segment>
     </unit>
     <unit id="core.setting.logo">

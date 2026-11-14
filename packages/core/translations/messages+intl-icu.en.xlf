@@ -565,6 +565,18 @@
         <target>On top</target>
       </segment>
     </unit>
+    <unit id="core.legal.edition">
+      <segment>
+        <source>core.legal.edition</source>
+        <target>Edition in force since {effective, date, long}.</target>
+      </segment>
+    </unit>
+    <unit id="core.legal.upcoming">
+      <segment>
+        <source>core.legal.upcoming</source>
+        <target>A new edition published on {published, date, long} comes into force on {effective, date, long}; its text follows.</target>
+      </segment>
+    </unit>
     <unit id="core.login.absent">
       <segment>
         <source>core.login.absent</source>
@@ -1237,6 +1249,12 @@
         <target>Resend a code after, minutes</target>
       </segment>
     </unit>
+    <unit id="core.setting.date">
+      <segment>
+        <source>core.setting.date</source>
+        <target>{field} takes a date</target>
+      </segment>
+    </unit>
     <unit id="core.setting.decimal">
       <segment>
         <source>core.setting.decimal</source>
@@ -1267,10 +1285,22 @@
         <target>Menu position</target>
       </segment>
     </unit>
-    <unit id="core.setting.legal_revision">
+    <unit id="core.setting.legal_editions">
       <segment>
-        <source>core.setting.legal_revision</source>
-        <target>Document revision</target>
+        <source>core.setting.legal_editions</source>
+        <target>Document editions</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.legal_effective">
+      <segment>
+        <source>core.setting.legal_effective</source>
+        <target>In force from</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.legal_published">
+      <segment>
+        <source>core.setting.legal_published</source>
+        <target>Published</target>
       </segment>
     </unit>
     <unit id="core.setting.logo">

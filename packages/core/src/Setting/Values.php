@@ -14,6 +14,7 @@ use function Symfony\Component\Translation\t;
 
 final class Values
 {
+    public const DATE = 'Y-m-d';
     private const TIME = '/^([01]?\d|2[0-3]):([0-5]\d)$/';
     private const COLOR = '/^#[0-9a-f]{6}$/i';
     private const JSON = \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES;
@@ -66,6 +67,7 @@ final class Values
             Type::Time => null === ($minutes = self::minutes($value))
                 ? new Refusal(t('core.setting.time', ['field' => $field->label]))
                 : \sprintf('%02d:%02d', intdiv($minutes, 60), $minutes % 60),
+            Type::Date => null === self::day($value) ? new Refusal(t('core.setting.date', ['field' => $field->label])) : $value,
             Type::Url => WebLink::valid($value) ? $value : new Refusal(t('core.setting.url', ['field' => $field->label])),
             Type::Toggle => null === Toggle::tryFrom($value) ? new Refusal(t('core.setting.toggle', ['field' => $field->label])) : $value,
             Type::Choice => isset($field->choices()[$value]) ? $value : new Refusal(t('core.setting.choice', ['field' => $field->label])),
@@ -102,6 +104,13 @@ final class Values
     public static function minutes(string $value): ?int
     {
         return 1 === preg_match(self::TIME, $value, $time) ? (int) $time[1] * 60 + (int) $time[2] : null;
+    }
+
+    public static function day(string $value): ?\DateTimeImmutable
+    {
+        $day = \DateTimeImmutable::createFromFormat('!'.self::DATE, $value);
+
+        return false !== $day && $day->format(self::DATE) === $value ? $day : null;
     }
 
     public static function scheme(Field $field, string $key): ?Scheme

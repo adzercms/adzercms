@@ -15,6 +15,7 @@ enum Type
     case Image;
     case Photo;
     case Time;
+    case Date;
     case Toggle;
     case Container;
     case Choice;
@@ -30,7 +31,7 @@ enum Type
     public function cell(): bool
     {
         return match ($this) {
-            self::Text, self::Url, self::Lines, self::Markup, self::Time, self::Toggle, self::Choice, self::Decimal, self::Color => true,
+            self::Text, self::Url, self::Lines, self::Markup, self::Time, self::Date, self::Toggle, self::Choice, self::Decimal, self::Color => true,
             default => false,
         };
     }
