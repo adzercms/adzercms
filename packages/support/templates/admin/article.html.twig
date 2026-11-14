@@ -41,7 +41,9 @@
             </label>
             <label class="field-wide">{{ 'support.knowledge.field.body'|trans }}
                 <textarea name="body" rows="20">{{ input.body ?? article.body }}</textarea>
+                {{ refusal.of(refusals, 'body') }}
             </label>
+            {% include '@Theme/_text_values.html.twig' only %}
             <label class="field-wide">{{ 'support.knowledge.field.paths'|trans }}
                 <textarea name="paths" rows="3">{{ input.paths ?? paths }}</textarea>
                 {{ refusal.of(refusals, 'paths') }}

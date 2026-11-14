@@ -1,0 +1,9 @@
+{% set values = text_values() %}
+{% if values is not empty %}
+    <details class="text-values">
+        <summary>{{ 'theme.text_values'|trans }}</summary>
+        <dl>
+            {% for name, value in values %}<dt><code>{{ '{{' ~ name ~ '}}' }}</code></dt><dd>{{ value }}</dd>{% endfor %}
+        </dl>
+    </details>
+{% endif %}

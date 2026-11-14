@@ -12,15 +12,19 @@ final class Markup
 {
     private static ?GithubFlavoredMarkdownConverter $converter = null;
 
+    public function __construct(private readonly TextValues $values)
+    {
+    }
+
     public static function environment(): EnvironmentInterface
     {
         return self::converter()->getEnvironment();
     }
 
     #[AsTwigFilter('markup', isSafe: ['html'])]
-    public static function html(string $text): string
+    public function html(string $text): string
     {
-        return self::converter()->convert($text)->getContent();
+        return self::converter()->convert($this->values->fill($text))->getContent();
     }
 
     private static function converter(): GithubFlavoredMarkdownConverter

@@ -211,5 +211,11 @@
         <target>Next</target>
       </segment>
     </unit>
+    <unit id="theme.text_values">
+      <segment>
+        <source>theme.text_values</source>
+        <target>Module values</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

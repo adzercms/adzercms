@@ -34,6 +34,7 @@ final class KnowledgeAdminTest extends SchemaTestCase
     #[Group('ACMS-SUP-0027')]
     #[Group('ACMS-SUP-0028')]
     #[Group('ACMS-SUP-0029')]
+    #[Group('ACMS-FLOW-0021')]
     #[Group('ACMS-US-0076')]
     public function testOwnerKeepsCategoriesAndArticlesInManualOrder(): void
     {
@@ -57,6 +58,8 @@ final class KnowledgeAdminTest extends SchemaTestCase
         self::assertSame(['tls', 'certificate'], $saved->getTags());
         self::assertSame('2026-11-02', $saved->getUpdatedAt()->format('Y-m-d'), 'a changed text moves the moment of the article');
         self::assertSame("/hosting\n/", self::service(KnowledgeForm::class)->lines($saved), 'cabinet paths keep one path without the trailing slash');
+        $refused = $this->post(self::LIST.'/articles/'.$ssl->getId(), ['body' => 'Issue it in {{core.nowhere}}'] + $this->fields($hosting, 'SSL', 'ssl'));
+        self::assertStringContainsString('{{core.nowhere}}', $refused->filter('.field-refusal')->text(), 'a text with an unknown value is not saved');
 
         self::mockTime('2026-11-03 10:00');
         $this->post(self::LIST.'/articles/'.$ssl->getId(), $this->fields($hosting, 'SSL', 'ssl', published: false));

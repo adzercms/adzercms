@@ -16,6 +16,10 @@ final class Questions extends Plain
     private const QUESTION = 'question';
     private const ANSWER = 'answer';
 
+    public function __construct(private readonly Markup $markup)
+    {
+    }
+
     public function key(): string
     {
         return 'questions';
@@ -32,10 +36,10 @@ final class Questions extends Plain
 
         return [] === $pairs ? null : [
             '@type' => 'FAQPage',
-            'mainEntity' => array_map(static fn (array $pair): array => [
+            'mainEntity' => array_map(fn (array $pair): array => [
                 '@type' => 'Question',
                 'name' => $pair[self::QUESTION],
-                'acceptedAnswer' => ['@type' => 'Answer', 'text' => trim(strip_tags(Markup::html($pair[self::ANSWER])))],
+                'acceptedAnswer' => ['@type' => 'Answer', 'text' => trim(strip_tags($this->markup->html($pair[self::ANSWER])))],
             ], $pairs),
         ];
     }

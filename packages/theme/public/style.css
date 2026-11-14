@@ -510,6 +510,10 @@ label { display: block; margin-bottom: 0.9rem; font-size: 13px; font-weight: 500
 .field-extra { margin-top: 0.5rem; }
 .field-rows { display: grid; gap: 0.5rem 1rem; grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); align-items: start; }
 .field-rows-head { font-size: 13px; color: var(--text-gray); }
+.text-values { grid-column: 1 / -1; margin-top: 0.5rem; font-size: 13px; }
+.text-values > summary { color: var(--text-gray); }
+.text-values dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.25rem 1rem; margin: 0.5rem 0 0; }
+.text-values dd { margin: 0; overflow-wrap: anywhere; }
 .reveal { margin-top: 0.5rem; }
 .reveal[open] > summary { margin-bottom: 0.6rem; }
 .picture-preview { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem; }

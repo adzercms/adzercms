@@ -102,7 +102,7 @@ final class SettingsTest extends SchemaTestCase
         $this->save(new Field(self::MARKUP, t('Markup'), Type::Markup), $text);
         self::assertSame($text, $this->settings()->get(self::MARKUP));
 
-        $html = Markup::html($text);
+        $html = self::service(Markup::class)->html($text);
         self::assertStringContainsString('<h1>Plans</h1>', $html);
         self::assertStringContainsString('<strong>Now</strong>', $html);
         self::assertStringContainsString('<a href="https://example.com">site</a>', $html);

@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Photo\Photos;
 use AdzerCMS\Core\Setting\Values;
+use AdzerCMS\Core\Text\TextValues;
 use AdzerCMS\Core\Ui\Once;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Pages\Entity\Page;
@@ -32,6 +33,7 @@ final readonly class BlockForm
         private EntityManagerInterface $em,
         private Once $once,
         private Pictures $pictures,
+        private TextValues $values,
     ) {
     }
 
@@ -156,7 +158,7 @@ final readonly class BlockForm
 
             $value = Values::check($field, Values::posted($field, $posted[$field->name] ?? null) ?? '');
             if (\is_string($value) && '' !== $value) {
-                $value = $type->check($field, $value) ?? $value;
+                $value = $type->check($field, $value) ?? $this->values->check($field, $value) ?? $value;
             }
             if ($value instanceof Refusal) {
                 $refusals[] = $value;

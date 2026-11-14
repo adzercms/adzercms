@@ -6,9 +6,10 @@
         {% for row in value %}
             {% set at = loop.index0 %}
             {% for column in field.fields %}
-                {% include '@Theme/_field.html.twig' with {field: column, id: id ~ '-' ~ at ~ '-' ~ column.name, name: name ~ '[' ~ at ~ '][' ~ column.name ~ ']', value: row[column.name], label: column.label} only %}
+                {% include '@Theme/_field.html.twig' with {field: column, id: id ~ '-' ~ at ~ '-' ~ column.name, name: name ~ '[' ~ at ~ '][' ~ column.name ~ ']', value: row[column.name], label: column.label, grouped: true} only %}
             {% endfor %}
         {% endfor %}
+        {% if constant(type ~ 'Markup') in field.fields|map(column => column.type) %}{% include '@Theme/_text_values.html.twig' only %}{% endif %}
     </div>
 {% elseif field.type == constant(type ~ 'Toggle') %}
     <select {{ named }}>
@@ -29,6 +30,8 @@
     <input {{ named }} type="url" value="{{ value }}">
 {% elseif field.type == constant(type ~ 'Color') %}
     <input {{ named }} type="color" value="{{ value ?: '#000000' }}">
+{% elseif field.type == constant(type ~ 'Markup') and not grouped|default(false) %}
+    <div><textarea {{ named }}>{{ value }}</textarea>{% include '@Theme/_text_values.html.twig' only %}</div>
 {% elseif field.type in [constant(type ~ 'Lines'), constant(type ~ 'Markup')] %}
     <textarea {{ named }}>{{ value }}</textarea>
 {% elseif field.type == constant(type ~ 'Secret') %}

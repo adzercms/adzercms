@@ -1285,12 +1285,6 @@
         <target>Title beside the logo</target>
       </segment>
     </unit>
-    <unit id="core.setting.marks_cookie">
-      <segment>
-        <source>core.setting.marks_cookie</source>
-        <target>Site cookie of visit marks</target>
-      </segment>
-    </unit>
     <unit id="core.setting.mail_host">
       <segment>
         <source>core.setting.mail_host</source>
@@ -1319,6 +1313,12 @@
       <segment>
         <source>core.setting.mail_sender</source>
         <target>Sender address</target>
+      </segment>
+    </unit>
+    <unit id="core.setting.marks_cookie">
+      <segment>
+        <source>core.setting.marks_cookie</source>
+        <target>Site cookie of visit marks</target>
       </segment>
     </unit>
     <unit id="core.setting.no_file">
@@ -1523,6 +1523,12 @@
       <segment>
         <source>core.text.broken</source>
         <target>The text is not saved: a placeholder in curly braces is broken</target>
+      </segment>
+    </unit>
+    <unit id="core.text_values.unknown">
+      <segment>
+        <source>core.text_values.unknown</source>
+        <target>{field}: unknown values {values}</target>
       </segment>
     </unit>
     <unit id="core.theme.dark">

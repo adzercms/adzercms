@@ -211,5 +211,11 @@
         <target>Далее</target>
       </segment>
     </unit>
+    <unit id="theme.text_values">
+      <segment>
+        <source>theme.text_values</source>
+        <target>Величины модулей</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

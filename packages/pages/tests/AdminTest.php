@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Pages\Tests;
 
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Showcase\Sections;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -134,6 +135,29 @@ final class AdminTest extends SchemaTestCase
         $kept = $this->hero($page, 'Support')->getValues()['picture'];
         $this->post($record.'/drop');
         self::assertNull(self::service(Pictures::class)->path($kept), 'a dropped page takes the files of its blocks');
+    }
+
+    #[Group('ACMS-CORE-1158')]
+    #[Group('ACMS-FLOW-0021')]
+    #[Group('ACMS-US-0071')]
+    public function testBlockTextCarriesModuleValuesListedAtItsField(): void
+    {
+        $page = new Page('Home', Page::ROOT);
+        $page->edit('Home', Page::ROOT, null, true, false, null);
+        $this->em->persist($page);
+        $this->em->flush();
+        $record = self::LIST.'/'.$page->getId();
+
+        self::assertContains('{{core.home}}', $this->client->request('GET', $record.'/blocks/new?type=text')->filter('.text-values dt')->each(static fn (Crawler $name): string => trim($name->text())));
+        self::assertCount(1, $this->client->request('GET', $record.'/blocks/new?type=questions')->filter('.text-values'), 'a group of rows lists the values once');
+
+        $text = 'Enter [the cabinet]({{core.home}}) {{core.nowhere}}';
+        $refused = $this->post($record.'/blocks/new', ['type' => 'text', 'value' => ['title' => 'Cabinet', 'text' => $text]]);
+        self::assertStringContainsString('{{core.nowhere}}', $refused->filter('.flash-error')->text());
+        self::assertSame($text, $refused->filter('textarea[name="value[text]"]')->text(null, false), 'the entered text stays');
+
+        $this->post($record.'/blocks/new', ['type' => 'text', 'value' => ['title' => 'Cabinet', 'text' => 'Enter [the cabinet]({{core.home}})']]);
+        self::assertSame(self::service(Sections::class)->section(Sections::CORE)['home'], $this->client->request('GET', '/')->filter('.site-main .prose a')->attr('href'));
     }
 
     #[Group('ACMS-PAGE-0002')]

@@ -31,12 +31,43 @@ final readonly class Sections
 
     public function json(): string
     {
-        $showcase = [self::CORE => $this->core()];
-        foreach ($this->sections as $section) {
-            $showcase[Registry::lowerKey($this->bundles->owner($section))] = $section->section();
+        $showcase = [];
+        foreach ($this->keys() as $key) {
+            $showcase[$key] = $this->section($key);
         }
 
         return json_encode((object) array_filter($showcase), \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES);
+    }
+
+    /** @return list<string> */
+    public function keys(): array
+    {
+        $keys = [self::CORE];
+        foreach ($this->sections as $section) {
+            $keys[] = $this->key($section);
+        }
+
+        return $keys;
+    }
+
+    /** @return array<mixed> */
+    public function section(string $key): array
+    {
+        if (self::CORE === $key) {
+            return $this->core();
+        }
+        foreach ($this->sections as $section) {
+            if ($this->key($section) === $key) {
+                return $section->section();
+            }
+        }
+
+        return [];
+    }
+
+    private function key(Showcase $section): string
+    {
+        return Registry::lowerKey($this->bundles->owner($section));
     }
 
     /** @return array<string, mixed> */
