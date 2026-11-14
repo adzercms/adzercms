@@ -8,6 +8,15 @@ use Symfony\Component\Routing\Generator\CompiledUrlGenerator;
 
 final class HostUrls extends CompiledUrlGenerator
 {
+    /**
+     * @param array<mixed> $variables
+     * @param array<mixed> $defaults
+     * @param array<mixed> $requirements
+     * @param array<mixed> $tokens
+     * @param array<mixed> $parameters
+     * @param array<mixed> $hostTokens
+     * @param array<mixed> $requiredSchemes
+     */
     protected function doGenerate(array $variables, array $defaults, array $requirements, array $tokens, array $parameters, string $name, int $referenceType, array $hostTokens, array $requiredSchemes = []): string
     {
         $hosts = $this->context->getParameter(Hosts::PARAMETER);
