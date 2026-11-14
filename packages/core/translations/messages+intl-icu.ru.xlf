@@ -1261,6 +1261,12 @@
         <target>{field}: нужно число</target>
       </segment>
     </unit>
+    <unit id="core.setting.footer">
+      <segment>
+        <source>core.setting.footer</source>
+        <target>Подвал сайта</target>
+      </segment>
+    </unit>
     <unit id="core.setting.icon">
       <segment>
         <source>core.setting.icon</source>

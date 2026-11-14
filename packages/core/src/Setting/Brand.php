@@ -31,6 +31,7 @@ final class Brand implements Owner
     public const THEME = 'brand.theme';
     public const LAYOUT = 'brand.layout';
     public const COLOR = 'brand.color';
+    public const FOOTER = 'brand.footer';
     public const CARD = 'brand_card';
 
     private readonly ?Palette $palette;
@@ -60,6 +61,7 @@ final class Brand implements Owner
             new Field(self::THEME, t('core.setting.theme'), Type::Choice, choices: self::themes(), page: Page::Brand),
             new Field(self::LAYOUT, t('core.setting.layout'), Type::Choice, choices: self::choices(Layout::cases()), page: Page::Brand),
             ...null === $this->palette ? [] : [self::colorField($this->palette)],
+            new Field(self::FOOTER, t('core.setting.footer'), Type::Markup, page: Page::Brand),
         ];
     }
 
@@ -112,6 +114,11 @@ final class Brand implements Owner
     public function titled(): bool
     {
         return $this->settings->on(self::LOGO_TITLE);
+    }
+
+    public function footer(): string
+    {
+        return $this->settings->get(self::FOOTER);
     }
 
     public function icon(): ?string

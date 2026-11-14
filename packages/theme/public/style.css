@@ -1752,6 +1752,10 @@ h1.site-heading { font-size: clamp(28px, 5vw, 44px); line-height: 1.15; }
 .site-crumbs a { color: var(--primary); }
 .site-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0 0; padding: 0; list-style: none; }
 .site-tags li { padding: 0.15rem 0.6rem; border-radius: 999px; background: var(--bg-light); font-size: 13px; color: var(--text-gray); }
+.site-footer { display: flex; justify-content: center; padding: 2rem 20px; border-top: 1px solid var(--border-light); font-size: 14px; color: var(--text-gray); }
+.site-footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 2rem; width: 100%; max-width: var(--page-width); }
+.site-footer p { margin: 0; }
+.site-footer a { color: var(--primary); }
 
 @media (max-width: 900px) {
     .site-header { height: auto; min-height: var(--header-height); }

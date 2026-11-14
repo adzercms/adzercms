@@ -1261,6 +1261,12 @@
         <target>{field}: a number is required</target>
       </segment>
     </unit>
+    <unit id="core.setting.footer">
+      <segment>
+        <source>core.setting.footer</source>
+        <target>Site footer</target>
+      </segment>
+    </unit>
     <unit id="core.setting.icon">
       <segment>
         <source>core.setting.icon</source>

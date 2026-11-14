@@ -12,4 +12,10 @@
     </div>
 </header><!--/noindex-->
 <main class="site-main">{% block page %}{% endblock %}</main>
+<!--noindex--><footer class="site-footer" data-nosnippet>
+    <div class="site-footer-inner">
+        {% if brand.footer %}<div class="prose">{{ brand.footer|markup }}</div>{% endif %}
+        <p>© {{ 'now'|date('Y') }} {{ brand.title }}</p>
+    </div>
+</footer><!--/noindex-->
 {% endblock %}

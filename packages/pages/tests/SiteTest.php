@@ -15,6 +15,8 @@ use AdzerCMS\Pages\Entity\PageBlock;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 
+use function Symfony\Component\Clock\now;
+
 final class SiteTest extends SchemaTestCase
 {
     use Accounts;
@@ -96,6 +98,23 @@ final class SiteTest extends SchemaTestCase
         $this->client->loginUser($this->record('79990000010'));
         $this->client->request('GET', '/');
         self::assertTrue($this->client->getResponse()->headers->hasCacheControlDirective('private'), 'a page that opened the session stays private');
+    }
+
+    #[Group('ACMS-UI-0152')]
+    #[Group('ACMS-US-0070')]
+    #[Group('ACMS-US-0071')]
+    public function testFooterCarriesTheOwnerTextAndTheBrandOfTheYear(): void
+    {
+        $this->configure([Brand::TITLE => self::BRAND]);
+        $this->page('Home', Page::ROOT, published: true, menu: false);
+        $mark = sprintf('© %s %s', now()->format('Y'), self::BRAND);
+
+        self::assertSame($mark, trim($this->client->request('GET', '/')->filter('.site-footer')->text()), 'without the owner text the footer is the brand of the year');
+
+        $this->configure([Brand::FOOTER => '[Legal information](/offer)']);
+        $footer = $this->client->request('GET', '/')->filter('.site-footer');
+        self::assertSame('/offer', $footer->filter('.prose a')->attr('href'));
+        self::assertStringEndsWith($mark, trim($footer->text()));
     }
 
     private function page(string $title, string $path, bool $published, bool $menu, ?string $label = null): Page
