@@ -43,6 +43,24 @@
         <target>Удалить сохранённые данные? Вход по ним перестанет работать.</target>
       </segment>
     </unit>
+    <unit id="theme.error.home">
+      <segment>
+        <source>theme.error.home</source>
+        <target>На главную</target>
+      </segment>
+    </unit>
+    <unit id="theme.error.server">
+      <segment>
+        <source>theme.error.server</source>
+        <target>Сервер не смог ответить, повторите позже</target>
+      </segment>
+    </unit>
+    <unit id="theme.error.title">
+      <segment>
+        <source>theme.error.title</source>
+        <target>{code, plural, =403 {Доступ закрыт} =404 {Страница не найдена} =410 {Страница удалена} =429 {Слишком много запросов, повторите позже} other {Запрос не выполнен}}</target>
+      </segment>
+    </unit>
     <unit id="theme.field.unset">
       <segment>
         <source>theme.field.unset</source>

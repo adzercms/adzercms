@@ -1,0 +1,9 @@
+{% extends status_code < 500 ? '@Theme/site.html.twig' : '@Theme/bare.html.twig' %}
+
+{% block title %}{{ (status_code < 500 ? 'theme.error.title' : 'theme.error.server')|trans({code: status_code}) }}{% endblock %}
+
+{% block page %}
+{% embed '@Theme/_section.html.twig' with {heading: block('title'), level: 1} only %}
+    {% block content %}<p><a class="button" href="{{ site_root() }}">{{ 'theme.error.home'|trans }}</a></p>{% endblock %}
+{% endembed %}
+{% endblock %}

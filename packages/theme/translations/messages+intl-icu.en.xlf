@@ -43,6 +43,24 @@
         <target>Delete the saved data? Access by it will stop working.</target>
       </segment>
     </unit>
+    <unit id="theme.error.home">
+      <segment>
+        <source>theme.error.home</source>
+        <target>Home page</target>
+      </segment>
+    </unit>
+    <unit id="theme.error.server">
+      <segment>
+        <source>theme.error.server</source>
+        <target>The server could not respond, try again later</target>
+      </segment>
+    </unit>
+    <unit id="theme.error.title">
+      <segment>
+        <source>theme.error.title</source>
+        <target>{code, plural, =403 {Access denied} =404 {Page not found} =410 {Page removed} =429 {Too many requests, try again later} other {Request failed}}</target>
+      </segment>
+    </unit>
     <unit id="theme.field.unset">
       <segment>
         <source>theme.field.unset</source>

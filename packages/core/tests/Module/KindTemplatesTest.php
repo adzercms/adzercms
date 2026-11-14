@@ -35,7 +35,7 @@ final class KindTemplatesTest extends TestCase
 
         self::assertSame(
             [$fixture.'/Aurora/templates' => 'Theme'],
-            array_merge(...array_column($builder->getExtensionConfig('twig'), 'paths')),
+            array_diff(array_merge(...array_column($builder->getExtensionConfig('twig'), 'paths')), ['Twig']),
             'a module of a listed kind keeps its own namespace only',
         );
     }

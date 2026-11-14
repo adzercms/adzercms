@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('bundles/theme/style.css') }}">
+</head>
+<body class="site">
+<main class="site-main">{% block page %}{% endblock %}</main>
+</body>
+</html>

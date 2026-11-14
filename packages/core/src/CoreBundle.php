@@ -83,6 +83,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
     private const MIGRATION_MARKS = 'adzercms.migration_marks';
     private const ROUTER = 'router.default';
     private const REQUEST_CONTEXT = 'router.request_context';
+    private const ERROR_TEMPLATES = '/templates/twig';
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
@@ -105,6 +106,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
                 $templates[$path.'/templates'] = ucfirst($kind->key());
             }
         }
+        $templates[$this->getPath().self::ERROR_TEMPLATES] = 'Twig';
 
         $builder->prependExtensionConfig('doctrine', [
             'dbal' => [
