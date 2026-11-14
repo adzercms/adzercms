@@ -51,7 +51,11 @@ final class VerifyTest extends TestCase
 
         self::assertStringContainsString('install --working-dir='.$this->root.'/var/verify --no-scripts', $calls[0]);
         self::assertSame('copy verify '.$this->root.'/var/verify', $calls[1], 'the copy is checked by the check script of its own core');
-        self::assertSame('copy bin/console importmap:install --no-interaction --env=test', $calls[2], 'the copy takes the importmap packages of the test environment');
+        self::assertSame(
+            ['copy bin/console cache:warmup --env=test', 'copy bin/console importmap:install --no-interaction --env=test'],
+            \array_slice($calls, 2, 2),
+            'the copy warms its cache and takes the importmap packages of the test environment',
+        );
         self::assertSame(
             ['./.env.test.local', './bin', './bin/php', './bin/phpunit', './composer.lock', './phpunit.dist.xml', './public', './src', './src/Kernel.php', './var', './var/tests.lock', './vendor', './vendor/bin', './vendor/bin/adzercms-check', './vendor/bin/adzercms-suites', './vendor/bin/adzercms-verify'],
             file($this->root.'/copied', \FILE_IGNORE_NEW_LINES),
