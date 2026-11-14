@@ -65,7 +65,12 @@ final class Filter
 
     public static function search(): self
     {
-        return new self(self::TERM, t('core.filter.search'), [], true, '', false);
+        return self::text(self::TERM, t('core.filter.search'));
+    }
+
+    public static function text(string $name, TranslatableInterface $label): self
+    {
+        return new self($name, $label, [], true, '', false);
     }
 
     /** @param array<array-key, string|TranslatableInterface> $options */
