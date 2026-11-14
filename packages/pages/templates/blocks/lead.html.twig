@@ -1,5 +1,6 @@
 {% embed '@Theme/_section.html.twig' with {heading: values.title, level: level, class: 'site-' ~ key} %}
     {% block content %}
+        {% if data.place is defined %}{% for part in fragments(data.place) %}{% include part.template with part.context only %}{% endfor %}{% endif %}
         {% for line in values.text|split("\n")|filter(line => line) %}<p class="site-lead">{{ line }}</p>{% endfor %}
         {% include '@Pages/blocks/_button.html.twig' %}
         {% set picture = values.picture ?? null %}
