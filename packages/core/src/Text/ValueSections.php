@@ -2,43 +2,29 @@
 
 declare(strict_types=1);
 
-namespace AdzerCMS\Core\Showcase;
+namespace AdzerCMS\Core\Text;
 
-use AdzerCMS\Contracts\Analytics\Counter;
-use AdzerCMS\Contracts\Showcase\Showcase;
+use AdzerCMS\Contracts\Text\ValueSection;
 use AdzerCMS\Contracts\Ui\CabinetEntry;
 use AdzerCMS\Core\Account\Consents;
 use AdzerCMS\Core\Module\Bundles;
 use AdzerCMS\Core\Module\Registry;
-use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Ui\Entries;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
-final readonly class Sections
+final readonly class ValueSections
 {
     public const CORE = 'core';
-    public const ROUTE = 'showcase';
     private const ENTRIES = [CabinetEntry::Home, CabinetEntry::Register, CabinetEntry::Forgot, CabinetEntry::Profile];
 
-    /** @param iterable<Showcase> $sections */
+    /** @param iterable<ValueSection> $sections */
     public function __construct(
-        #[AutowireIterator(Showcase::class)]
+        #[AutowireIterator(ValueSection::class)]
         private iterable $sections,
         private Bundles $bundles,
         private Entries $entries,
-        private Switches $switches,
         private Consents $consents,
     ) {
-    }
-
-    public function json(): string
-    {
-        $showcase = [];
-        foreach ($this->keys() as $key) {
-            $showcase[$key] = $this->section($key);
-        }
-
-        return json_encode((object) array_filter($showcase), \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES);
     }
 
     /** @return list<string> */
@@ -52,7 +38,7 @@ final readonly class Sections
         return $keys;
     }
 
-    /** @return array<mixed> */
+    /** @return array<string, string|int|float|list<string|int|float>> */
     public function section(string $key): array
     {
         if (self::CORE === $key) {
@@ -60,31 +46,26 @@ final readonly class Sections
         }
         foreach ($this->sections as $section) {
             if ($this->key($section) === $key) {
-                return $section->section();
+                return $section->values();
             }
         }
 
         return [];
     }
 
-    private function key(Showcase $section): string
+    private function key(ValueSection $section): string
     {
         return Registry::lowerKey($this->bundles->owner($section));
     }
 
-    /** @return array<string, mixed> */
+    /** @return array<string, string> */
     private function core(): array
     {
-        $counters = [];
-        foreach ($this->switches->enabled(Counter::class) as $key => [$counter, $credentials]) {
-            $counters[$key] = $counter->settings($credentials);
-        }
-
         $core = [];
         foreach (self::ENTRIES as $entry) {
             $core[$entry->value] = $this->entries->url($entry, absolute: true);
         }
 
-        return array_filter($core + ['edition' => $this->consents->edition(), 'counters' => $counters]);
+        return array_filter($core + ['edition' => $this->consents->edition()]);
     }
 }

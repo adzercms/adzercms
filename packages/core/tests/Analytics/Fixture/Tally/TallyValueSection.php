@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests\Analytics\Fixture\Tally;
 
-use AdzerCMS\Contracts\Showcase\Showcase;
+use AdzerCMS\Contracts\Text\ValueSection;
 use AdzerCMS\Core\Setting\Settings;
 
-final readonly class TallyShowcase implements Showcase
+final readonly class TallyValueSection implements ValueSection
 {
     public const SITES = 'sites';
     public const MIRROR = 'mirror';
@@ -16,7 +16,7 @@ final readonly class TallyShowcase implements Showcase
     {
     }
 
-    public function section(): array
+    public function values(): array
     {
         $site = (string) $this->settings->get(TallyCounter::SETTINGS.TallyCounter::SITE);
 

@@ -9,7 +9,6 @@ use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Rule;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Setting\Values;
-use AdzerCMS\Core\Showcase\Sections;
 use Symfony\Contracts\Service\ResetInterface;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Twig\Attribute\AsTwigFunction;
@@ -24,7 +23,7 @@ final class TextValues implements Rule, ResetInterface
     /** @var array<string, array<string, string>> */
     private array $taken = [];
 
-    public function __construct(private readonly Sections $sections)
+    public function __construct(private readonly ValueSections $sections)
     {
     }
 
@@ -99,31 +98,12 @@ final class TextValues implements Rule, ResetInterface
     private function section(string $section): array
     {
         if (!isset($this->taken[$section])) {
-            $this->taken[$section] = [];
-            foreach ($this->sections->section($section) as $key => $value) {
-                $text = self::text($value);
-                if (\is_string($key) && null !== $text) {
-                    $this->taken[$section][$key] = $text;
-                }
-            }
+            $this->taken[$section] = array_map(
+                static fn (string|int|float|array $value): string => \is_array($value) ? implode(self::SEPARATOR, $value) : (string) $value,
+                $this->sections->section($section),
+            );
         }
 
         return $this->taken[$section];
-    }
-
-    private static function text(mixed $value): ?string
-    {
-        if (!\is_array($value)) {
-            return self::scalar($value);
-        }
-
-        $items = array_map(self::scalar(...), $value);
-
-        return array_is_list($value) && !\in_array(null, $items, true) ? implode(self::SEPARATOR, $items) : null;
-    }
-
-    private static function scalar(mixed $value): ?string
-    {
-        return \is_string($value) || \is_int($value) || \is_float($value) ? (string) $value : null;
     }
 }

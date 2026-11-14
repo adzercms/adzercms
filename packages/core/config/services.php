@@ -55,7 +55,6 @@ return static function (ContainerConfigurator $container): void {
     $services->load('AdzerCMS\\Core\\Seo\\', '../src/Seo/')->exclude('../src/Seo/Head.php');
     $services->load('AdzerCMS\\Core\\Session\\', '../src/Session/');
     $services->load('AdzerCMS\\Core\\Setting\\', '../src/Setting/');
-    $services->load('AdzerCMS\\Core\\Showcase\\', '../src/Showcase/');
     $services->load('AdzerCMS\\Core\\Site\\', '../src/Site/')->exclude('../src/Site/HostUrls.php');
     $services->load('AdzerCMS\\Core\\Text\\', '../src/Text/');
     $services->load('AdzerCMS\\Core\\Ui\\', '../src/Ui/');

@@ -28,6 +28,7 @@ final class TextValuesTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-1157')]
+    #[Group('ACMS-CORE-1012')]
     public function testMarkupShowsCurrentValuesOutsideCode(): void
     {
         $html = self::service(Markup::class)->html("Site **{{tally.site}}**, {{ tally.site }}, {{tally.none}} and `{{tally.site}}` of {{tally.sites}}\n\n```\n{{tally.site}}\n```\n");

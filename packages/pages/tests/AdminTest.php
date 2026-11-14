@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace AdzerCMS\Pages\Tests;
 
 use AdzerCMS\Core\Account\Role;
-use AdzerCMS\Core\Showcase\Sections;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
+use AdzerCMS\Core\Text\ValueSections;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Pages\Entity\Page;
 use AdzerCMS\Pages\Entity\PageBlock;
@@ -157,7 +157,7 @@ final class AdminTest extends SchemaTestCase
         self::assertSame($text, $refused->filter('textarea[name="value[text]"]')->text(null, false), 'the entered text stays');
 
         $this->post($record.'/blocks/new', ['type' => 'text', 'value' => ['title' => 'Cabinet', 'text' => 'Enter [the cabinet]({{core.home}})']]);
-        self::assertSame(self::service(Sections::class)->section(Sections::CORE)['home'], $this->client->request('GET', '/')->filter('.site-main .prose a')->attr('href'));
+        self::assertSame(self::service(ValueSections::class)->section(ValueSections::CORE)['home'], $this->client->request('GET', '/')->filter('.site-main .prose a')->attr('href'));
     }
 
     #[Group('ACMS-PAGE-0002')]

@@ -277,9 +277,9 @@ A field with `page:` goes to that System page instead of the module page, after 
 
 A console command of the module becomes a job of the [scheduler](installation.md#scheduler) with the `AdzerCMS\Contracts\Schedule\Scheduled` attribute next to `AsCommand`: its argument is a cron expression, and the command takes no arguments. A job runs in its own process; the next run skips it while it's still going, so it needs no lock against itself. An invalid expression stops the container build.
 
-## Values for the project site
+## Values in texts
 
-The instance gives the project site what it shows from it as one JSON object at the address `/showcase.json`, and `bin/console adzercms:showcase` prints the same object. The site may live on any server: it fetches the address on its own schedule and keeps the last good copy. The `core` section holds the absolute addresses of the cabinet home, registration, password reset and profile and the settings of the enabled analytics counters under their module keys. A module adds its own section with a service implementing `AdzerCMS\Contracts\Showcase\Showcase` in its bundle namespace: `section()` returns public values only, addresses are absolute and only of the pages open with the current settings, sums are decimal strings. The section goes under the module key in lower case, and an empty one is left out.
+A `Type::Markup` text shows the current value of `{{module.key}}` wherever it's written outside code, and a text with an unknown value isn't saved. The `core` section holds the absolute addresses of the cabinet home, registration, password reset and profile and the date of the documents' edition in force. A module adds its own section with a service implementing `AdzerCMS\Contracts\Text\ValueSection` in its bundle namespace: `values()` returns public values only — a string, a number or a list of them, which the text joins with commas; addresses are absolute and only of the pages open with the current settings, sums are decimal strings. The section goes under the module key in lower case.
 
 ## Real-time page updates
 
