@@ -20,6 +20,7 @@ fi
 mkdir -p "$1/var"
 ln -sfn "$(pwd -P)/var/tests.lock" "$1/var/tests.lock"
 cd "$1"
+bin/php bin/console cache:warmup --env=test
 bin/php bin/console importmap:install --no-interaction --env=test
 vendor/bin/adzercms-check
 [ ! -f phpunit.dist.xml ] || vendor/bin/adzercms-suites
