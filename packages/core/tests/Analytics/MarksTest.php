@@ -9,6 +9,7 @@ use AdzerCMS\Core\Tests\Arrivals;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use PHPUnit\Framework\Attributes\Group;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
@@ -55,6 +56,18 @@ final class MarksTest extends SchemaTestCase
 
         $this->land('/register', cookies: self::siteMarks(['utm_source' => '(direct)', 'utm_medium' => '(none)']));
         self::assertSame([], self::marks(), 'the (direct) mark is an arrival without marks');
+    }
+
+    #[Group('ACMS-BILL-0141')]
+    public function testSiteArrivalLeavesMarksInSiteCookieInsteadOfSession(): void
+    {
+        $this->configure([Marks::COOKIE => self::SITE_COOKIE]);
+
+        $this->client->request('GET', '/guide?utm_source=yandex&utm_term=хостинг&yclid='.self::CLICK.'&page=2');
+
+        $cookies = $this->client->getResponse()->headers->getCookies();
+        self::assertSame([self::SITE_COOKIE], array_map(static fn (Cookie $cookie): string => $cookie->getName(), $cookies), 'a site arrival opens no session');
+        self::assertSame(['utm_source' => 'yandex', 'utm_term' => 'хостинг', 'yclid' => self::CLICK], json_decode((string) $cookies[0]->getValue(), true, flags: \JSON_THROW_ON_ERROR));
     }
 
     /** @return array<string, string> */

@@ -84,6 +84,7 @@ final class SiteTest extends SchemaTestCase
         $headers = $this->client->getResponse()->headers;
         self::assertSame([], $headers->getCookies(), 'a page without a session cookie opens no session');
         self::assertTrue($headers->hasCacheControlDirective('public'));
+        self::assertSame(['HX-Request'], $this->client->getResponse()->getVary());
         self::assertSame(
             [PublicCache::MAX_AGE, PublicCache::STALE_WHILE_REVALIDATE, PublicCache::STALE_IF_ERROR],
             array_map(static fn (string $directive): int => (int) $headers->getCacheControlDirective($directive), ['max-age', 'stale-while-revalidate', 'stale-if-error']),
