@@ -1,0 +1,176 @@
+{
+    "adzercms/admin": {
+        "d1da12c598a649ab79c0080ca74a2ba3f6899eca": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/bank-transfer": {
+        "4b587a1266fce7dd58ebca02f8a6b95ed6db72ce": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/cabinet": {
+        "f24e925288e16fcb3213819acaba5af3233fbcc5": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/centrifugo": {
+        "933ab7d08f0b11309117b476ced00216206f028e": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/dompdf": {
+        "947b8c0d3918ef484c0e6759d2e8fb484a474a0f": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/extensions": {
+        "b26c6202128bca610165cfa317ab95ba21ada7d8": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/google-analytics": {
+        "e9d997ef294b7b5a98b5b875164f3398fc29da18": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/hcaptcha": {
+        "3f56fbd129c8aea5d8a884c23cbf8fb5978e5a30": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/leads": {
+        "b088f2f6829bde7c4190153eb09cbbe057294cd6": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/mailing": {
+        "1d764bac18c3ceb60044383a47a4656fbc449ff6": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/max-bot": {
+        "a5f491563f53fe602bebce9524a3124548ec7b8b": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/mts-marketolog": {
+        "2838210447cf76401ba21324cd3d002c98093b4a": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/opotopo": {
+        "145c198020112c07e3d04dead93569dc8a105a7e": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/pages": {
+        "e80498dfac657ac3cc69c677a9cd3bc1f65492c4": {
+            "version": "1.0.x-dev",
+            "outcome": "build"
+        }
+    },
+    "adzercms/payments": {
+        "06b3eb81e13d810fcccc1f3cd96cd1da511c2f39": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/realtime": {
+        "f40d5dcb850f95fe83a6bbb8a77557114a1d5704": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/sber-id": {
+        "62c857c4a3686cd7f740f19ba30a822c8eeffb09": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/smart-captcha": {
+        "244aa28f324b49817996343b62861280fe2019ce": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/sms-pilot": {
+        "0806da2d4697ee425b888c912ae00d2e71f83b00": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/support": {
+        "c86889d711c2bc9510b8e822aebba7b51b9228c9": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/tbank": {
+        "401c46f8c626b394e85f38793f60359fb0c21133": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/telegram": {
+        "e3ae06e21fd696ee9d50d98bfb4f709325c6e504": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/telegram-bot": {
+        "7ca5c0b71b470c071650517b6e9cc40263bfd62d": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/theme": {
+        "bf02dd7ce5438b95b9faddc99df2697f3865f171": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/turnstile": {
+        "f360f279d0cc00805bb0141046a40abf53d292c2": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/vk-id": {
+        "6c6d1f04ea9bb6722ec74cfb990715ce40540813": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/yandex-id": {
+        "7246eb1db72392c7b6d9c39a51903479480b51d0": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/yandex-metrika": {
+        "3822954d7bc3e66f801b2e95e56e772817d47fa7": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    },
+    "adzercms/yookassa": {
+        "93f0015732b5b627007f8b5e6dcb3090903a1858": {
+            "version": "1.0.x-dev",
+            "outcome": "passed"
+        }
+    }
+}
