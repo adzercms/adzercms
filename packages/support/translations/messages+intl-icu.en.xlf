@@ -187,12 +187,6 @@
         <target>Found</target>
       </segment>
     </unit>
-    <unit id="support.help_view.missing">
-      <segment>
-        <source>support.help_view.missing</source>
-        <target>The knowledge base is unavailable</target>
-      </segment>
-    </unit>
     <unit id="support.help_view.page">
       <segment>
         <source>support.help_view.page</source>
@@ -593,12 +587,6 @@
       <segment>
         <source>support.setting.departments</source>
         <target>Departments, comma-separated</target>
-      </segment>
-    </unit>
-    <unit id="support.setting.help_index">
-      <segment>
-        <source>support.setting.help_index</source>
-        <target>Knowledge base index link</target>
       </segment>
     </unit>
     <unit id="support.setting.overdue_hours">

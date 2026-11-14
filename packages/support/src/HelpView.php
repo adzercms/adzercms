@@ -14,7 +14,6 @@ enum HelpView: string implements Titled
     case Found = 'found';
     case Page = 'page';
     case Categories = 'categories';
-    case Missing = 'missing';
 
     public function label(): TranslatableInterface
     {

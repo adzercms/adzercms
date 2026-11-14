@@ -201,7 +201,7 @@ final readonly class KnowledgeForm
     /** @param InputBag<string> $input */
     private function categorySlug(InputBag $input, ?HelpCategory $category): string|Refusal
     {
-        $slug = HelpCategory::slug($input->getString(self::SLUG));
+        $slug = HelpCategory::parse($input->getString(self::SLUG));
         if (null === $slug) {
             return new Refusal(t('support.knowledge.refusal.slug', ['limit' => HelpCategory::SLUG]));
         }
@@ -213,7 +213,7 @@ final readonly class KnowledgeForm
     /** @param InputBag<string> $input */
     private function articleSlug(InputBag $input, HelpCategory $category, ?HelpArticle $article): string|Refusal
     {
-        $slug = HelpCategory::slug($input->getString(self::SLUG));
+        $slug = HelpCategory::parse($input->getString(self::SLUG));
         if (null === $slug) {
             return new Refusal(t('support.knowledge.refusal.slug', ['limit' => HelpCategory::SLUG]));
         }

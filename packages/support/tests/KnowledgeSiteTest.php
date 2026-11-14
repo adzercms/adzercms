@@ -10,8 +10,6 @@ use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\SchemaTestCase;
-use AdzerCMS\Support\Entity\HelpArticle;
-use AdzerCMS\Support\Entity\HelpCategory;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -22,6 +20,7 @@ final class KnowledgeSiteTest extends SchemaTestCase
     use Accounts;
     use Browser;
     use Configuration;
+    use KnowledgeRecords;
 
     private const BRAND = 'Village network';
 
@@ -78,29 +77,6 @@ final class KnowledgeSiteTest extends SchemaTestCase
         self::assertStringContainsString('/help</loc>', $sitemap);
         self::assertStringContainsString('/help/domain/add</loc>', $sitemap);
         self::assertStringNotContainsString('/help/billing/draft', $sitemap);
-    }
-
-    private function category(string $title, string $slug, ?string $description = null): HelpCategory
-    {
-        $category = new HelpCategory($title, $slug);
-        $category->edit($title, $slug, $description);
-        $category->place((int) $this->em->getConnection()->fetchOne('SELECT COUNT(*) FROM help_category') + 1);
-        $this->em->persist($category);
-        $this->em->flush();
-
-        return $category;
-    }
-
-    /** @param list<string> $tags */
-    private function article(HelpCategory $category, string $title, string $slug, bool $published, string $body = '', array $tags = [], ?string $description = null): HelpArticle
-    {
-        $article = new HelpArticle($category, $title, $slug, new \DateTimeImmutable('2026-11-01 10:00'));
-        $article->edit($category, $title, $slug, $description, $tags, $body, $published, new \DateTimeImmutable('2026-11-02 10:00'));
-        $article->place((int) $this->em->getConnection()->fetchOne('SELECT COUNT(*) FROM help_article') + 1);
-        $this->em->persist($article);
-        $this->em->flush();
-
-        return $article;
     }
 
     /** @return array<string, list<string>> */

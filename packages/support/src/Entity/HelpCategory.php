@@ -38,7 +38,7 @@ class HelpCategory implements Placed
     ) {
     }
 
-    public static function slug(string $input): ?string
+    public static function parse(string $input): ?string
     {
         $slug = mb_strtolower(trim($input));
 

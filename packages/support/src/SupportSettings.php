@@ -19,7 +19,6 @@ final readonly class SupportSettings implements Owner
     public const AUTO_CLOSE_DAYS = 'support.auto_close_days';
     public const ATTACHMENT_MAX_MB = 'support.attachment_max_mb';
     public const ATTACHMENT_TYPES = 'support.attachment_types';
-    public const HELP_INDEX = 'support.help_index';
     public const OVERDUE_HOURS = 'support.staff_overdue_hours';
 
     private const DEFAULT_AUTO_CLOSE_DAYS = 7;
@@ -40,19 +39,8 @@ final readonly class SupportSettings implements Owner
             new Field(self::AUTO_CLOSE_DAYS, t('support.setting.auto_close_days')),
             new Field(self::ATTACHMENT_MAX_MB, t('support.setting.attachment_max_mb')),
             new Field(self::ATTACHMENT_TYPES, t('support.setting.attachment_types')),
-            new Field(self::HELP_INDEX, t('support.setting.help_index')),
             new Field(self::OVERDUE_HOURS, t('support.setting.overdue_hours')),
         ];
-    }
-
-    public function helpIndex(): string
-    {
-        return trim($this->settings->get(self::HELP_INDEX));
-    }
-
-    public function helpEnabled(): bool
-    {
-        return '' !== $this->helpIndex();
     }
 
     /** @return list<string> */

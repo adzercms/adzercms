@@ -187,12 +187,6 @@
         <target>Найдено</target>
       </segment>
     </unit>
-    <unit id="support.help_view.missing">
-      <segment>
-        <source>support.help_view.missing</source>
-        <target>База знаний недоступна</target>
-      </segment>
-    </unit>
     <unit id="support.help_view.page">
       <segment>
         <source>support.help_view.page</source>
@@ -593,12 +587,6 @@
       <segment>
         <source>support.setting.departments</source>
         <target>Отделы, через запятую</target>
-      </segment>
-    </unit>
-    <unit id="support.setting.help_index">
-      <segment>
-        <source>support.setting.help_index</source>
-        <target>Ссылка на индекс базы знаний</target>
       </segment>
     </unit>
     <unit id="support.setting.overdue_hours">

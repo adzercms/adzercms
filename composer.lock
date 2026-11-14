@@ -1472,7 +1472,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/support",
-                "reference": "17eb729f5a69104ae04484c638a018dcd0ac2ec0"
+                "reference": "3f25410f1f64577350c36cfc1fc09b23ee8ebb22"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1490,7 +1490,6 @@
                 "symfony/console": "7.4.*",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/framework-bundle": "7.4.*",
-                "symfony/http-client-contracts": "^3.7",
                 "symfony/http-foundation": "7.4.*",
                 "symfony/polyfill-php86": "^1.43",
                 "symfony/routing": "7.4.*",
@@ -1512,7 +1511,7 @@
                 "adzercms": {
                     "bundle": "AdzerCMS\\Support\\SupportBundle",
                     "description": {
-                        "ru": "Поддержка клиентов: обращения с вложениями, сводка сотрудникам и подсказки статей помощи"
+                        "ru": "Поддержка клиентов: обращения с вложениями, сводка сотрудникам и база знаний"
                     },
                     "categories": [
                         "support"
@@ -1534,7 +1533,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "Customer support: tickets with attachments, a digest for staff and help article suggestions",
+            "description": "Customer support: tickets with attachments, a digest for staff and a knowledge base",
             "keywords": [
                 "adzercms",
                 "helpdesk",

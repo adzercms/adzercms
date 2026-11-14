@@ -1,11 +1,5 @@
 {% if answer.links is empty %}
-    <p class="help-empty">
-        {% if answer.missing %}
-            {{ answer.view.label|trans }}
-        {% else %}
-            {{ 'support.help.nothing'|trans }} <a href="{{ path('support_ticket_new') }}">{{ 'support.ticket.new'|trans }}</a>
-        {% endif %}
-    </p>
+    <p class="help-empty">{{ 'support.help.nothing'|trans }} <a href="{{ path('support_ticket_new') }}">{{ 'support.ticket.new'|trans }}</a></p>
 {% else %}
     <h4 class="help-group">{{ answer.view.label|trans }}</h4>
     {% for link in answer.links %}
