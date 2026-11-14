@@ -7,6 +7,7 @@ namespace AdzerCMS\Core\Tests\Showcase;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Showcase\Sections;
 use AdzerCMS\Core\Tests\Analytics\Fixture\Tally\TallyCounter;
+use AdzerCMS\Core\Tests\Analytics\Fixture\Tally\TallyShowcase;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -25,7 +26,7 @@ final class ShowcaseTest extends SchemaTestCase
         yield 'nothing to show' => [[], []];
         yield 'counter switched on' => [
             [TallyCounter::SETTINGS.Switches::ENABLED => '1', TallyCounter::SETTINGS.TallyCounter::SITE => self::SITE],
-            [Sections::CORE => ['counters' => ['tally' => ['site' => self::SITE]]], 'tally' => [TallyCounter::SITE => self::SITE]],
+            [Sections::CORE => ['counters' => ['tally' => ['site' => self::SITE]]], 'tally' => [TallyCounter::SITE => self::SITE, TallyShowcase::SITES => [self::SITE, TallyShowcase::MIRROR]]],
         ];
     }
 

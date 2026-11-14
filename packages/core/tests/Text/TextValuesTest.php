@@ -30,9 +30,9 @@ final class TextValuesTest extends SchemaTestCase
     #[Group('ACMS-CORE-1157')]
     public function testMarkupShowsCurrentValuesOutsideCode(): void
     {
-        $html = self::service(Markup::class)->html("Site **{{tally.site}}**, {{ tally.site }}, {{tally.none}} and `{{tally.site}}`\n\n```\n{{tally.site}}\n```\n");
+        $html = self::service(Markup::class)->html("Site **{{tally.site}}**, {{ tally.site }}, {{tally.none}} and `{{tally.site}}` of {{tally.sites}}\n\n```\n{{tally.site}}\n```\n");
 
-        self::assertStringContainsString('<strong>shop</strong>, shop, {{tally.none}} and <code>{{tally.site}}</code>', $html);
+        self::assertStringContainsString('<strong>shop</strong>, shop, {{tally.none}} and <code>{{tally.site}}</code> of shop, mirror', $html);
         self::assertStringContainsString("<code>{{tally.site}}\n</code>", $html);
     }
 

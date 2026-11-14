@@ -19,6 +19,7 @@ use function Symfony\Component\Translation\t;
 final class TextValues implements Rule, ResetInterface
 {
     private const PATTERN = '/(?<code>^ {0,3}(?<fence>`{3,}|~{3,}).*?^ {0,3}\k<fence>|(?<tick>`+).+?\k<tick>)|\{\{\s*(?<section>\w+)\.(?<key>\w+)\s*\}\}/msu';
+    private const SEPARATOR = ', ';
 
     /** @var array<string, array<string, string>> */
     private array $taken = [];
@@ -100,12 +101,29 @@ final class TextValues implements Rule, ResetInterface
         if (!isset($this->taken[$section])) {
             $this->taken[$section] = [];
             foreach ($this->sections->section($section) as $key => $value) {
-                if (\is_string($key) && (\is_string($value) || \is_int($value) || \is_float($value))) {
-                    $this->taken[$section][$key] = (string) $value;
+                $text = self::text($value);
+                if (\is_string($key) && null !== $text) {
+                    $this->taken[$section][$key] = $text;
                 }
             }
         }
 
         return $this->taken[$section];
+    }
+
+    private static function text(mixed $value): ?string
+    {
+        if (!\is_array($value)) {
+            return self::scalar($value);
+        }
+
+        $items = array_map(self::scalar(...), $value);
+
+        return array_is_list($value) && !\in_array(null, $items, true) ? implode(self::SEPARATOR, $items) : null;
+    }
+
+    private static function scalar(mixed $value): ?string
+    {
+        return \is_string($value) || \is_int($value) || \is_float($value) ? (string) $value : null;
     }
 }

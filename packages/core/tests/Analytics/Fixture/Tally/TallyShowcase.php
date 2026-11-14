@@ -9,12 +9,17 @@ use AdzerCMS\Core\Setting\Settings;
 
 final readonly class TallyShowcase implements Showcase
 {
+    public const SITES = 'sites';
+    public const MIRROR = 'mirror';
+
     public function __construct(private Settings $settings)
     {
     }
 
     public function section(): array
     {
-        return array_filter([TallyCounter::SITE => $this->settings->get(TallyCounter::SETTINGS.TallyCounter::SITE)]);
+        $site = (string) $this->settings->get(TallyCounter::SETTINGS.TallyCounter::SITE);
+
+        return '' === $site ? [] : [TallyCounter::SITE => $site, self::SITES => [$site, self::MIRROR]];
     }
 }
