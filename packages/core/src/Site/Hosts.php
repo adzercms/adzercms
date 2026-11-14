@@ -47,6 +47,11 @@ final readonly class Hosts
         return null === $this->site || self::SHARED === $role || (self::SITE === $role) === ($this->site->getHost() === $host);
     }
 
+    public function isSite(string $host): bool
+    {
+        return null !== $this->site && $this->site->getHost() === $host;
+    }
+
     public function target(?string $role, RequestContext $current): ?RequestContext
     {
         if ($this->serves($role, $current->getHost())) {

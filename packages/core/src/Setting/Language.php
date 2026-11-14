@@ -17,6 +17,8 @@ use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Translation\LocaleSwitcher;
@@ -34,6 +36,7 @@ final class Language implements Owner
         private readonly Settings $settings,
         private readonly LocaleSwitcher $switcher,
         private readonly Security $security,
+        private readonly Hosts $hosts,
         #[Autowire(param: 'kernel.enabled_locales')] private readonly array $locales,
         #[Autowire(param: 'kernel.default_locale')] private readonly string $default,
     ) {
@@ -77,12 +80,30 @@ final class Language implements Owner
     #[AsEventListener(event: KernelEvents::REQUEST, priority: 7)]
     public function onRequest(RequestEvent $event): void
     {
+        if ($event->isMainRequest()) {
+            $this->choose($event->getRequest());
+        }
+    }
+
+    #[AsEventListener(event: KernelEvents::EXCEPTION)]
+    public function onException(ExceptionEvent $event): void
+    {
         if (!$event->isMainRequest()) {
             return;
         }
 
-        $request = $event->getRequest();
-        $site = Hosts::SITE === $request->attributes->get(Hosts::ROLE) && !$request->attributes->getBoolean(self::VISITOR);
+        try {
+            $this->choose($event->getRequest());
+        } catch (DatabaseFailure) {
+            return;
+        }
+    }
+
+    private function choose(Request $request): void
+    {
+        $site = $request->attributes->has('_route')
+            ? Hosts::SITE === $request->attributes->get(Hosts::ROLE) && !$request->attributes->getBoolean(self::VISITOR)
+            : $this->hosts->isSite($request->getHost());
         $user = $site || $request->attributes->getBoolean('_stateless') ? null : $this->security->getUser();
         $locale = match (true) {
             $site => $this->instance(),
