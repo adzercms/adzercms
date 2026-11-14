@@ -1677,10 +1677,10 @@ form[data-steps] [data-step]:not(.current) { display: none; }
 .chart-line { stroke-width: 2; vector-effect: non-scaling-stroke; }
 .chart-line.is-off { display: none; }
 
-.chart-cpu { color: var(--primary-text); stroke: var(--primary); }
-.chart-ram { color: var(--warning); stroke: var(--warning); }
-.chart-rx { color: var(--success); stroke: var(--success); }
-.chart-tx { color: var(--error); stroke: var(--error); }
+.chart-toggle:nth-of-type(4n + 1) .chart-mark, .chart-line:nth-of-type(4n + 1) { color: var(--primary-text); stroke: var(--primary); }
+.chart-toggle:nth-of-type(4n + 2) .chart-mark, .chart-line:nth-of-type(4n + 2) { color: var(--warning); stroke: var(--warning); }
+.chart-toggle:nth-of-type(4n + 3) .chart-mark, .chart-line:nth-of-type(4n + 3) { color: var(--success); stroke: var(--success); }
+.chart-toggle:nth-of-type(4n) .chart-mark, .chart-line:nth-of-type(4n) { color: var(--error); stroke: var(--error); }
 
 .doc-sheet { padding: 1.5rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); }
 .doc-sheet > iframe { display: block; width: 100%; border: 0; }

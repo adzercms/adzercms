@@ -6,7 +6,7 @@
         {% for line in chart.lines %}
             <label class="chart-toggle">
                 <input type="checkbox" checked data-line="{{ id }}-{{ line.key }}">
-                <span class="chart-mark chart-{{ line.key }}"></span>{{ line.label|trans }}
+                <span class="chart-mark"></span>{{ line.label|trans }}
             </label>
         {% endfor %}
         <span class="chart-unit">{{ chart.unit|trans }}</span>
@@ -31,7 +31,7 @@
                       x2="{{ (tick.share * w)|round(1) }}" y2="{{ h }}"/>
             {% endfor %}
             {% for line in chart.lines %}
-                <polyline id="{{ id }}-{{ line.key }}" class="chart-line chart-{{ line.key }}" fill="none"
+                <polyline id="{{ id }}-{{ line.key }}" class="chart-line" fill="none"
                     points="{% for point in line.points %}{{ ((point.0 - chart.from) / chart.span * w)|round(2) }},{{ (h - min(point.1, chart.ceiling) / chart.ceiling * h)|round(2) }} {% endfor %}"/>
             {% endfor %}
         </svg>
