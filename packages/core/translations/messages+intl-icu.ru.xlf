@@ -568,7 +568,7 @@
     <unit id="core.legal.edition">
       <segment>
         <source>core.legal.edition</source>
-        <target>Действующая редакция от {effective, date, long}.</target>
+        <target>Действующая редакция от {effective, date, long}</target>
       </segment>
     </unit>
     <unit id="core.legal.upcoming">
