@@ -1213,6 +1213,12 @@
         <target>{field}: no such value</target>
       </segment>
     </unit>
+    <unit id="core.setting.closed_agents">
+      <segment>
+        <source>core.setting.closed_agents</source>
+        <target>Crawlers denied the site</target>
+      </segment>
+    </unit>
     <unit id="core.setting.color">
       <segment>
         <source>core.setting.color</source>

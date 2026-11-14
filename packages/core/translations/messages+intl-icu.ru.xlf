@@ -1213,6 +1213,12 @@
         <target>{field}: такого значения нет</target>
       </segment>
     </unit>
+    <unit id="core.setting.closed_agents">
+      <segment>
+        <source>core.setting.closed_agents</source>
+        <target>Краулеры без доступа к сайту</target>
+      </segment>
+    </unit>
     <unit id="core.setting.color">
       <segment>
         <source>core.setting.color</source>

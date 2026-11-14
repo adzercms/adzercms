@@ -6,9 +6,12 @@ namespace AdzerCMS\Core\Tests\Seo;
 
 use AdzerCMS\Core\Entity\Text;
 use AdzerCMS\Core\Seo\Indexing;
+use AdzerCMS\Core\Seo\IndexNow;
 use AdzerCMS\Core\Tests\Configuration;
+use AdzerCMS\Core\Tests\HttpAnswers;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use PHPUnit\Framework\Attributes\Group;
+use Symfony\Component\HttpClient\Response\MockResponse;
 
 final class IndexingTest extends SchemaTestCase
 {
@@ -63,6 +66,53 @@ final class IndexingTest extends SchemaTestCase
         self::assertSame('http://localhost/shelf/tales index', $this->client->getResponse()->getContent());
         $this->client->request('GET', '/shelf/other.pdf');
         self::assertSame('http://localhost/shelf/other.pdf index', $this->client->getResponse()->getContent());
+    }
+
+    #[Group('ACMS-SEO-0034')]
+    public function testListedCrawlersAreDeniedTheOpenSite(): void
+    {
+        $this->configure([Indexing::NAME => '1', Indexing::CLOSED => "GPTBot\nClaudeBot"]);
+
+        $this->client->request('GET', '/robots.txt');
+        self::assertStringContainsString("\n\nUser-agent: GPTBot\nUser-agent: ClaudeBot\nDisallow: /\n\nSitemap: ", (string) $this->client->getResponse()->getContent());
+    }
+
+    #[Group('ACMS-SEO-0011')]
+    #[Group('ACMS-SEO-0032')]
+    #[Group('ACMS-SEO-0033')]
+    public function testChangedPagesAreAnnouncedUntilAcceptedWithTheKeyFileOfTheSite(): void
+    {
+        $key = self::service(IndexNow::class)->key();
+        $this->client->request('GET', '/'.$key.'.txt');
+        self::assertResponseStatusCodeSame(404);
+
+        $this->configure([Indexing::NAME => '1']);
+        $this->client->request('GET', '/'.$key.'.txt');
+        self::assertSame($key, $this->client->getResponse()->getContent());
+        $this->client->request('GET', '/'.str_repeat('0', 64).'.txt');
+        self::assertResponseStatusCodeSame(404);
+
+        $sent = [];
+        $answer = static function (int $status) use (&$sent): \Closure {
+            return static function (string $method, string $url, array $options) use (&$sent, $status): MockResponse {
+                $sent[] = [$url, json_decode((string) $options['body'], true)];
+
+                return new MockResponse('', ['http_code' => $status]);
+            };
+        };
+        self::service(HttpAnswers::class)->respond([$answer(429), $answer(202)]);
+        $this->em->persist(new Text('ru', 'messages', 'fixture.guide', 'Справочник'));
+        $this->em->flush();
+        try {
+            self::command('adzercms:indexnow')->execute([]);
+            self::fail('a refused announcement passed');
+        } catch (\RuntimeException) {
+        }
+        self::command('adzercms:indexnow')->execute([]);
+        self::command('adzercms:indexnow')->execute([]);
+
+        $announcement = ['https://api.indexnow.org/indexnow', ['host' => 'localhost', 'key' => $key, 'keyLocation' => 'http://localhost/'.$key.'.txt', 'urlList' => ['http://localhost/guide']]];
+        self::assertSame([$announcement, $announcement], $sent);
     }
 
     /**

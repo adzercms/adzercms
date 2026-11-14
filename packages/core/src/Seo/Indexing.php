@@ -24,10 +24,11 @@ use function Symfony\Component\Translation\t;
 final readonly class Indexing implements Owner
 {
     public const NAME = 'seo.indexing';
+    public const CLOSED = 'seo.closed_agents';
     public const ROBOTS = 'robots';
     public const SITEMAP = 'sitemap';
 
-    private const OPEN = ['setting_image', Brand::CARD, self::ROBOTS, self::SITEMAP];
+    private const OPEN = ['setting_image', Brand::CARD, self::ROBOTS, self::SITEMAP, IndexNow::KEY];
     private const TRACKING = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'yclid', 'gclid', 'fbclid'];
     private const NAMESPACE = 'http://www.sitemaps.org/schemas/sitemap/0.9';
 
@@ -43,12 +44,20 @@ final readonly class Indexing implements Owner
 
     public function settingFields(): array
     {
-        return [new Field(self::NAME, t('core.setting.indexing'), Type::Toggle, page: SettingPage::General)];
+        return [
+            new Field(self::NAME, t('core.setting.indexing'), Type::Toggle, page: SettingPage::General),
+            new Field(self::CLOSED, t('core.setting.closed_agents'), Type::Lines, page: SettingPage::General),
+        ];
+    }
+
+    public function enabled(): bool
+    {
+        return $this->settings->on(self::NAME);
     }
 
     public function on(): bool
     {
-        return $this->settings->on(self::NAME) && $this->hosts->serves(Hosts::SITE, $this->router->getContext()->getHost());
+        return $this->enabled() && $this->hosts->serves(Hosts::SITE, $this->router->getContext()->getHost());
     }
 
     #[AsTwigFunction('page_head')]
@@ -78,6 +87,12 @@ final readonly class Indexing implements Owner
         }
         $lines[] = 'Clean-param: '.implode('&', self::TRACKING);
         $lines[] = '';
+        $closed = $this->settings->lines(self::CLOSED);
+        if ([] !== $closed) {
+            array_push($lines, ...array_map(static fn (string $agent): string => 'User-agent: '.$agent, $closed));
+            $lines[] = 'Disallow: /';
+            $lines[] = '';
+        }
         $lines[] = 'Sitemap: '.$this->router->generate(self::SITEMAP, referenceType: UrlGeneratorInterface::ABSOLUTE_URL);
 
         return implode("\n", $lines)."\n";
