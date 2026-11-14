@@ -9,6 +9,7 @@ use AdzerCMS\Core\Tests\Module\Fixture;
 use Composer\Autoload\ClassLoader;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -54,6 +55,25 @@ final class ModuleSuiteTest extends TestCase
         } finally {
             [$_SERVER, $_ENV] = [$server, $env];
         }
+    }
+
+    /** @param list<string> $paths */
+    #[Group('ACMS-TEST-0140')]
+    #[TestWith([['/app/packages/till/tests/TillTest.php'], 'Till'])]
+    #[TestWith([['/app/packages/shop/tests', '/app/vendor/shared/SchemaTest.php'], 'Shop'])]
+    #[TestWith([['/app/packages/shop/tests/ShopTest.php', '/app/packages/till/tests'], null])]
+    public function testPathsWithoutANamedSuiteTakeTheFirstSuiteHoldingThemAll(array $paths, ?string $suite): void
+    {
+        $suites = [
+            'Shop' => ['/app/packages/shop/tests', '/app/vendor/shared/SchemaTest.php'],
+            'Till' => ['/app/packages/till/tests', '/app/vendor/shared/SchemaTest.php'],
+        ];
+
+        if (null === $suite) {
+            $this->expectException(\LogicException::class);
+        }
+
+        self::assertSame($suite, ModuleSuite::holding($suites, $paths));
     }
 
     /** @return iterable<string, array{string, string, string}> */
