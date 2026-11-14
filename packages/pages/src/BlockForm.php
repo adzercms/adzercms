@@ -57,7 +57,7 @@ final readonly class BlockForm
     /** @return PageBlock|list<Refusal> */
     public function add(Page $page, Block $type, Request $request): PageBlock|array
     {
-        [$values, $uploads, $refusals] = self::checked($type, $request, []);
+        [$values, $uploads, $refusals] = $this->checked($type, $request, []);
         if ([] !== $refusals) {
             return $refusals;
         }
@@ -78,7 +78,7 @@ final readonly class BlockForm
     public function fill(PageBlock $block, Block $type, Request $request): array
     {
         $before = $block->getValues();
-        [$values, $uploads, $refusals] = self::checked($type, $request, $before);
+        [$values, $uploads, $refusals] = $this->checked($type, $request, $before);
         if ([] !== $refusals) {
             return $refusals;
         }
@@ -133,7 +133,7 @@ final readonly class BlockForm
      *
      * @return array{array<string, string>, array<string, UploadedFile>, list<Refusal>}
      */
-    private static function checked(Block $type, Request $request, array $stored): array
+    private function checked(Block $type, Request $request, array $stored): array
     {
         $posted = $request->request->all(self::VALUE);
         $files = $request->files->all(self::VALUE);
