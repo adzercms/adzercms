@@ -1,0 +1,11 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'support.knowledge.menu'|trans }}{% endblock %}
+
+{% block actions %}
+    <button type="button" hx-get="{{ path('admin_help_category_new') }}" hx-target="#record">{{ 'support.knowledge.category.add'|trans }}</button>
+{% endblock %}
+
+{% block page %}
+{% include '@Support/admin/_categories.html.twig' %}
+{% endblock %}

@@ -8,12 +8,15 @@ use AdzerCMS\Contracts\Ui\Area;
 use AdzerCMS\Contracts\Ui\Menu;
 use AdzerCMS\Contracts\Ui\MenuItem;
 use AdzerCMS\Core\Entity\User;
+use AdzerCMS\Support\Controller\Admin\KnowledgeController;
 use Symfony\Bundle\SecurityBundle\Security;
 
 use function Symfony\Component\Translation\t;
 
 final readonly class SupportItems implements Menu
 {
+    private const KNOWLEDGE = 560;
+
     public function __construct(
         private Tickets $tickets,
         private SupportSettings $support,
@@ -29,7 +32,10 @@ final readonly class SupportItems implements Menu
         }
 
         if (Area::Admin === $area) {
-            return [new MenuItem('support_tickets', t('support.menu.tickets'), 300, ['support_'], count: $this->tickets->waiting(null))];
+            return [
+                new MenuItem('support_tickets', t('support.menu.tickets'), 300, ['support_'], count: $this->tickets->waiting(null)),
+                new MenuItem(KnowledgeController::LIST, t('support.knowledge.menu'), self::KNOWLEDGE, [KnowledgeController::LIST]),
+            ];
         }
 
         $group = t('support.menu.group');

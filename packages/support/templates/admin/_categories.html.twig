@@ -1,0 +1,10 @@
+{% embed '@Theme/_table.html.twig' %}
+    {% block row %}
+        <tr class="clickable-row" data-href="{{ path('admin_help_category', {id: row.id}) }}">
+            {% include '@Theme/_row_handle.html.twig' with {id: row.id} %}
+            <td class="{{ table.aside('title') }}"><strong>{{ clip(row.title, 60) }}</strong></td>
+            <td class="{{ table.aside('slug') }}">{{ row.slug }}</td>
+            <td class="{{ table.aside('articles') }}">{{ row.articles }}</td>
+        </tr>
+    {% endblock %}
+{% endembed %}

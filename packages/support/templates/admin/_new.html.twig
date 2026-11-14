@@ -1,0 +1,19 @@
+{% import '@Theme/_refusal.html.twig' as refusal %}
+{% include '@Theme/_modal_header.html.twig' with {title: heading|trans} only %}
+
+<div class="modal-body">
+    <form hx-post="{{ action }}" hx-target="#record">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label>{{ 'support.knowledge.field.title'|trans }}
+                <input type="text" name="title" maxlength="{{ constant('AdzerCMS\\Support\\Entity\\HelpCategory::TITLE') }}" value="{{ input.title ?? '' }}" required>
+                {{ refusal.of(refusals, 'title') }}
+            </label>
+            <label>{{ 'support.knowledge.field.slug'|trans }}
+                <input type="text" name="slug" maxlength="{{ constant('AdzerCMS\\Support\\Entity\\HelpCategory::SLUG') }}" value="{{ input.slug ?? '' }}" required>
+                {{ refusal.of(refusals, 'slug') }}
+            </label>
+        </div>
+        <button type="submit">{{ 'core.action.create'|trans }}</button>
+    </form>
+</div>

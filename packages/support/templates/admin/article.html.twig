@@ -1,0 +1,53 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% import '@Theme/_refusal.html.twig' as refusal %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block heading %}<span class="record-title">{{ article.title }}</span>{% endblock %}
+
+{% block actions %}
+    <form method="post" action="{{ path('admin_help_article_drop', {id: article.id}) }}" data-confirm="{{ 'support.knowledge.article.drop_confirm'|trans({title: article.title}) }}">
+        {{ csrf_field() }}<button type="submit" class="danger">{{ 'support.knowledge.article.drop'|trans }}</button>
+    </form>
+    <a class="button secondary" href="{{ path('admin_help_category', {id: article.category.id}) }}">{{ article.category.title }}</a>
+{% endblock %}
+
+{% block page %}
+<div class="section">
+    <form method="post" action="{{ path('admin_help_article_save', {id: article.id}) }}">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label>{{ 'support.knowledge.field.category'|trans }}
+                {% set chosen = input.category ?? article.category.id %}
+                <select name="category">
+                    {% for category in categories %}<option value="{{ category.id }}"{{ chosen == category.id ? ' selected' }}>{{ category.title }}</option>{% endfor %}
+                </select>
+            </label>
+            <label>{{ 'support.knowledge.field.title'|trans }}
+                <input type="text" name="title" maxlength="{{ constant('AdzerCMS\\Support\\Entity\\HelpCategory::TITLE') }}" value="{{ input.title ?? article.title }}" required>
+                {{ refusal.of(refusals, 'title') }}
+            </label>
+            <label>{{ 'support.knowledge.field.slug'|trans }}
+                <input type="text" name="slug" maxlength="{{ constant('AdzerCMS\\Support\\Entity\\HelpCategory::SLUG') }}" value="{{ input.slug ?? article.slug }}" required>
+                {{ refusal.of(refusals, 'slug') }}
+            </label>
+            <label>{{ 'support.knowledge.field.tags'|trans }}
+                <input type="text" name="tags" value="{{ input.tags ?? article.tags|join(', ') }}">
+            </label>
+            <label class="field-wide">{{ 'support.knowledge.field.description'|trans }}
+                <textarea name="description" rows="2">{{ input.description ?? article.description }}</textarea>
+            </label>
+            <label class="field-wide">{{ 'support.knowledge.field.body'|trans }}
+                <textarea name="body" rows="20">{{ input.body ?? article.body }}</textarea>
+            </label>
+            <label class="field-wide">{{ 'support.knowledge.field.paths'|trans }}
+                <textarea name="paths" rows="3">{{ input.paths ?? paths }}</textarea>
+                {{ refusal.of(refusals, 'paths') }}
+            </label>
+            {% include '@Theme/_check.html.twig' with {name: 'published', on: input ? (input.published ?? false) : article.published, label: 'support.knowledge.field.published'|trans} only %}
+        </div>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
+    </form>
+</div>
+{% endblock %}

@@ -175,6 +175,198 @@
         <target>По этой странице</target>
       </segment>
     </unit>
+    <unit id="support.knowledge.article.add">
+      <segment>
+        <source>support.knowledge.article.add</source>
+        <target>+ Статья</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.added">
+      <segment>
+        <source>support.knowledge.article.added</source>
+        <target>Статья «{title}» заведена</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.drop">
+      <segment>
+        <source>support.knowledge.article.drop</source>
+        <target>Удалить статью</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.drop_confirm">
+      <segment>
+        <source>support.knowledge.article.drop_confirm</source>
+        <target>Удалить статью «{title}»?</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.dropped">
+      <segment>
+        <source>support.knowledge.article.dropped</source>
+        <target>Статья «{title}» удалена</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.empty">
+      <segment>
+        <source>support.knowledge.article.empty</source>
+        <target>Статей нет</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.new">
+      <segment>
+        <source>support.knowledge.article.new</source>
+        <target>Новая статья</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.saved">
+      <segment>
+        <source>support.knowledge.article.saved</source>
+        <target>Статья «{title}» сохранена</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.articles">
+      <segment>
+        <source>support.knowledge.articles</source>
+        <target>Статьи</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.add">
+      <segment>
+        <source>support.knowledge.category.add</source>
+        <target>+ Категория</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.added">
+      <segment>
+        <source>support.knowledge.category.added</source>
+        <target>Категория «{title}» заведена</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.drop">
+      <segment>
+        <source>support.knowledge.category.drop</source>
+        <target>Удалить категорию</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.drop_confirm">
+      <segment>
+        <source>support.knowledge.category.drop_confirm</source>
+        <target>Удалить категорию «{title}» вместе со статьями?</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.dropped">
+      <segment>
+        <source>support.knowledge.category.dropped</source>
+        <target>Категория «{title}» удалена</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.empty">
+      <segment>
+        <source>support.knowledge.category.empty</source>
+        <target>Категорий нет</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.new">
+      <segment>
+        <source>support.knowledge.category.new</source>
+        <target>Новая категория</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.saved">
+      <segment>
+        <source>support.knowledge.category.saved</source>
+        <target>Категория «{title}» сохранена</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.column.articles">
+      <segment>
+        <source>support.knowledge.column.articles</source>
+        <target>Статей</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.body">
+      <segment>
+        <source>support.knowledge.field.body</source>
+        <target>Текст, Markdown</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.category">
+      <segment>
+        <source>support.knowledge.field.category</source>
+        <target>Категория</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.description">
+      <segment>
+        <source>support.knowledge.field.description</source>
+        <target>Описание</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.paths">
+      <segment>
+        <source>support.knowledge.field.paths</source>
+        <target>Страницы кабинета статьи, путь на строку</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.published">
+      <segment>
+        <source>support.knowledge.field.published</source>
+        <target>Опубликована</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.slug">
+      <segment>
+        <source>support.knowledge.field.slug</source>
+        <target>Адрес</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.tags">
+      <segment>
+        <source>support.knowledge.field.tags</source>
+        <target>Теги через запятую</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.title">
+      <segment>
+        <source>support.knowledge.field.title</source>
+        <target>Заголовок</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.menu">
+      <segment>
+        <source>support.knowledge.menu</source>
+        <target>База знаний</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.refusal.path">
+      <segment>
+        <source>support.knowledge.refusal.path</source>
+        <target>Страница кабинета {path}: путь от / без пробелов</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.refusal.slug">
+      <segment>
+        <source>support.knowledge.refusal.slug</source>
+        <target>Адрес: строчные буквы, цифры и дефис, до {limit} знаков</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.refusal.slug_article">
+      <segment>
+        <source>support.knowledge.refusal.slug_article</source>
+        <target>Адрес занят статьёй «{title}» этой категории</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.refusal.slug_category">
+      <segment>
+        <source>support.knowledge.refusal.slug_category</source>
+        <target>Адрес занят категорией «{title}»</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.refusal.title">
+      <segment>
+        <source>support.knowledge.refusal.title</source>
+        <target>Заголовок: от 1 до {limit} знаков</target>
+      </segment>
+    </unit>
     <unit id="support.menu.group">
       <segment>
         <source>support.menu.group</source>

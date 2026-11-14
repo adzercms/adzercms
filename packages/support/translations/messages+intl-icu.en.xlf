@@ -175,6 +175,198 @@
         <target>On this page</target>
       </segment>
     </unit>
+    <unit id="support.knowledge.article.add">
+      <segment>
+        <source>support.knowledge.article.add</source>
+        <target>+ Article</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.added">
+      <segment>
+        <source>support.knowledge.article.added</source>
+        <target>Article «{title}» created</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.drop">
+      <segment>
+        <source>support.knowledge.article.drop</source>
+        <target>Delete article</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.drop_confirm">
+      <segment>
+        <source>support.knowledge.article.drop_confirm</source>
+        <target>Delete the article «{title}»?</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.dropped">
+      <segment>
+        <source>support.knowledge.article.dropped</source>
+        <target>Article «{title}» deleted</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.empty">
+      <segment>
+        <source>support.knowledge.article.empty</source>
+        <target>No articles</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.new">
+      <segment>
+        <source>support.knowledge.article.new</source>
+        <target>New article</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.article.saved">
+      <segment>
+        <source>support.knowledge.article.saved</source>
+        <target>Article «{title}» saved</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.articles">
+      <segment>
+        <source>support.knowledge.articles</source>
+        <target>Articles</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.add">
+      <segment>
+        <source>support.knowledge.category.add</source>
+        <target>+ Category</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.added">
+      <segment>
+        <source>support.knowledge.category.added</source>
+        <target>Category «{title}» created</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.drop">
+      <segment>
+        <source>support.knowledge.category.drop</source>
+        <target>Delete category</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.drop_confirm">
+      <segment>
+        <source>support.knowledge.category.drop_confirm</source>
+        <target>Delete the category «{title}» with its articles?</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.dropped">
+      <segment>
+        <source>support.knowledge.category.dropped</source>
+        <target>Category «{title}» deleted</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.empty">
+      <segment>
+        <source>support.knowledge.category.empty</source>
+        <target>No categories</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.new">
+      <segment>
+        <source>support.knowledge.category.new</source>
+        <target>New category</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.category.saved">
+      <segment>
+        <source>support.knowledge.category.saved</source>
+        <target>Category «{title}» saved</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.column.articles">
+      <segment>
+        <source>support.knowledge.column.articles</source>
+        <target>Articles</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.body">
+      <segment>
+        <source>support.knowledge.field.body</source>
+        <target>Text, Markdown</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.category">
+      <segment>
+        <source>support.knowledge.field.category</source>
+        <target>Category</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.description">
+      <segment>
+        <source>support.knowledge.field.description</source>
+        <target>Description</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.paths">
+      <segment>
+        <source>support.knowledge.field.paths</source>
+        <target>Cabinet pages of the article, a path per line</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.published">
+      <segment>
+        <source>support.knowledge.field.published</source>
+        <target>Published</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.slug">
+      <segment>
+        <source>support.knowledge.field.slug</source>
+        <target>Address</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.tags">
+      <segment>
+        <source>support.knowledge.field.tags</source>
+        <target>Tags, comma separated</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.field.title">
+      <segment>
+        <source>support.knowledge.field.title</source>
+        <target>Title</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.menu">
+      <segment>
+        <source>support.knowledge.menu</source>
+        <target>Knowledge base</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.refusal.path">
+      <segment>
+        <source>support.knowledge.refusal.path</source>
+        <target>Cabinet page {path}: a path from / without spaces</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.refusal.slug">
+      <segment>
+        <source>support.knowledge.refusal.slug</source>
+        <target>Address: lowercase letters, digits and hyphens, up to {limit} characters</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.refusal.slug_article">
+      <segment>
+        <source>support.knowledge.refusal.slug_article</source>
+        <target>The address belongs to the article «{title}» of this category</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.refusal.slug_category">
+      <segment>
+        <source>support.knowledge.refusal.slug_category</source>
+        <target>The address belongs to the category «{title}»</target>
+      </segment>
+    </unit>
+    <unit id="support.knowledge.refusal.title">
+      <segment>
+        <source>support.knowledge.refusal.title</source>
+        <target>Title: 1 to {limit} characters</target>
+      </segment>
+    </unit>
     <unit id="support.menu.group">
       <segment>
         <source>support.menu.group</source>

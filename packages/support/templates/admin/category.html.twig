@@ -1,0 +1,38 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% import '@Theme/_refusal.html.twig' as refusal %}
+
+{% block title %}{{ category.title }}{% endblock %}
+
+{% block heading %}<span class="record-title">{{ category.title }}</span>{% endblock %}
+
+{% block actions %}
+    <form method="post" action="{{ path('admin_help_category_drop', {id: category.id}) }}" data-confirm="{{ 'support.knowledge.category.drop_confirm'|trans({title: category.title}) }}">
+        {{ csrf_field() }}<button type="submit" class="danger">{{ 'support.knowledge.category.drop'|trans }}</button>
+    </form>
+    <a class="button secondary" href="{{ path('admin_help') }}">{{ 'core.action.to_list'|trans }}</a>
+{% endblock %}
+
+{% block page %}
+<div class="section">
+    <form method="post" action="{{ path('admin_help_category_save', {id: category.id}) }}">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label>{{ 'support.knowledge.field.title'|trans }}
+                <input type="text" name="title" maxlength="{{ constant('AdzerCMS\\Support\\Entity\\HelpCategory::TITLE') }}" value="{{ input.title ?? category.title }}" required>
+                {{ refusal.of(refusals, 'title') }}
+            </label>
+            <label>{{ 'support.knowledge.field.slug'|trans }}
+                <input type="text" name="slug" maxlength="{{ constant('AdzerCMS\\Support\\Entity\\HelpCategory::SLUG') }}" value="{{ input.slug ?? category.slug }}" required>
+                {{ refusal.of(refusals, 'slug') }}
+            </label>
+            <label class="field-wide">{{ 'support.knowledge.field.description'|trans }}
+                <textarea name="description" rows="3">{{ input.description ?? category.description }}</textarea>
+            </label>
+        </div>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
+    </form>
+</div>
+
+{% include '@Support/admin/_articles.html.twig' with articles %}
+{% endblock %}
