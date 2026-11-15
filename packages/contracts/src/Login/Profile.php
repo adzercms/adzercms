@@ -15,6 +15,7 @@ final readonly class Profile
         public ?string $account = null,
         public bool $phoneVerified = false,
         public bool $emailVerified = false,
+        public ?string $picture = null,
     ) {
     }
 }

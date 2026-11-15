@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Login\LoginService;
 use AdzerCMS\Contracts\Login\Profile;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Ui\CabinetEntry;
+use AdzerCMS\Core\Account\Avatars;
 use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Account\Registration;
 use AdzerCMS\Core\Entity\ConnectedService;
@@ -36,6 +37,7 @@ final class ConnectedServices
         private readonly EventDispatcherInterface $events,
         private readonly Entries $entries,
         private readonly Registration $registration,
+        private readonly Avatars $avatars,
     ) {
     }
 
@@ -121,6 +123,7 @@ final class ConnectedServices
         if (!$user->isNamed()) {
             $user->setName($profile->lastName, $profile->firstName, null);
         }
+        $this->avatars->fill($user, $profile->picture);
         foreach (self::contacts($profile, true) as [$kind, $contact]) {
             if (null === $user->getContact($kind) && null === $this->users->byLogin($contact)) {
                 $user->setContact($kind, $contact);

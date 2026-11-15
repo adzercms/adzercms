@@ -18,6 +18,7 @@ final readonly class UserRemoval
         #[AutowireIterator(AccountPolicy::class)]
         private iterable $policies,
         private EntityManagerInterface $em,
+        private Avatars $avatars,
     ) {
     }
 
@@ -67,5 +68,6 @@ final readonly class UserRemoval
 
         $this->em->remove($user);
         $this->em->flush();
+        $this->avatars->drop($user);
     }
 }

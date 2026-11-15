@@ -69,6 +69,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     #[ORM\Column(length: 16, nullable: true)]
     private ?string $language = null;
 
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $avatar = null;
+
     /** @var list<string> */
     #[ORM\Column(type: Types::JSON)]
     private array $mutedChannels = [];
@@ -126,6 +129,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     public function getMiddleName(): ?string
     {
         return $this->middleName;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
     }
 
     public function getComment(): ?string

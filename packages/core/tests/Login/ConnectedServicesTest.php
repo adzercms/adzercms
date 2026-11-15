@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Tests\Login;
 
 use AdzerCMS\Contracts\Login\Profile;
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Core\Account\Avatars;
 use AdzerCMS\Core\Account\Status;
 use AdzerCMS\Core\Entity\ConnectedService;
 use AdzerCMS\Core\Entity\User;
@@ -16,17 +17,21 @@ use AdzerCMS\Core\Repository\ConnectedServiceRepository;
 use AdzerCMS\Core\Tests\Account\Fixture\OpenPolicy;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Configuration;
+use AdzerCMS\Core\Tests\HttpAnswers;
 use AdzerCMS\Core\Tests\Login\Fixture\Latch\LatchService;
 use AdzerCMS\Core\Tests\Login\Fixture\Wicket\WicketService;
+use AdzerCMS\Core\Tests\Pictures;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\Translation\TranslatableMessage;
 
 final class ConnectedServicesTest extends SchemaTestCase
 {
     use Accounts;
     use Configuration;
+    use Pictures;
 
     private const LATCH = 'latch';
     private const WICKET = 'wicket';
@@ -71,6 +76,33 @@ final class ConnectedServicesTest extends SchemaTestCase
         $this->em->flush();
         self::assertNull($this->services()->link($other, self::LATCH, new Profile('p2', email: 'free@example.com', firstName: 'Ignored', emailVerified: true)));
         self::assertSame('free@example.com', $this->reread($other)->getEmail());
+    }
+
+    #[Group('ACMS-US-0002')]
+    #[Group('ACMS-CORE-1168')]
+    public function testProfilePictureFillsEmptyAvatar(): void
+    {
+        $asked = [];
+        self::service(HttpAnswers::class)->respond(static function (string $method, string $url) use (&$asked): MockResponse {
+            $asked[] = $url;
+
+            return new MockResponse(self::dot());
+        });
+        $user = $this->record('+7 900 111-22-33');
+        $this->em->persist(new ConnectedService($user, self::LATCH, 'p1', null));
+        $this->em->flush();
+
+        $avatars = [];
+        foreach ([null, 'https://93.184.216.34/first.png', 'https://93.184.216.34/second.png'] as $picture) {
+            $this->services()->enter(self::LATCH, new Profile('p1', picture: $picture));
+            $avatars[] = $this->reread($user)->getAvatar();
+        }
+        [$empty, $avatar, $kept] = $avatars;
+        self::assertNull($empty, 'a profile without a picture leaves the avatar empty');
+        self::assertNotNull($avatar);
+        self::assertNotNull(self::service(Avatars::class)->path($avatar));
+        self::assertSame($avatar, $kept, 'a filled avatar stays');
+        self::assertSame(['https://93.184.216.34/first.png'], $asked);
     }
 
     #[Group('ACMS-US-0002')]

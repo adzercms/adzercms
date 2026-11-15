@@ -37,6 +37,7 @@ final class LoginTest extends SchemaTestCase
     #[Group('ACMS-CORE-0104')]
     #[Group('ACMS-CORE-0173')]
     #[Group('ACMS-CORE-1099')]
+    #[Group('ACMS-CORE-1169')]
     public function testGuestEntersByVkIdPhoneOfRecordWithoutTakingTheEmail(): void
     {
         $user = $this->record('+7 900 111-22-33');
@@ -56,6 +57,7 @@ final class LoginTest extends SchemaTestCase
                 'user_id' => '1234567', 'first_name' => 'Иван', 'last_name' => 'Петров', 'phone' => '79001112233',
                 'avatar' => 'https://sun9-80.userapi.com/s/v1/ig2/avatar.jpg', 'email' => 'ivan@example.org', 'sex' => 2, 'verified' => false, 'birthday' => '01.02.1990',
             ]]),
+            self::pictureAnswer(),
         ];
         $this->client->request('GET', '/login/vkid/callback', ['code' => 'vk2.a.code', 'device_id' => 'device-1', 'state' => $query['state']]);
         self::assertResponseRedirects('/');
@@ -72,6 +74,7 @@ final class LoginTest extends SchemaTestCase
 
         $connected = self::service(ConnectedServiceRepository::class)->findOneBy(['user' => $user->getId(), 'service' => 'vkid']);
         self::assertSame('1234567', $connected?->getProfile());
+        self::assertSame('https://sun9-80.userapi.com/s/v1/ig2/avatar.jpg', $this->connected?->picture);
         $user = $this->reread($user);
         self::assertTrue($user->isNamed());
         self::assertNull($user->getEmail(), 'VK ID does not vouch for the email of the profile');

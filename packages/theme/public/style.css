@@ -231,6 +231,7 @@ summary::-webkit-details-marker { display: none; }
     border-radius: var(--radius);
 }
 .menu > summary::after { content: " ▾"; color: var(--text-gray); }
+.avatar { flex: none; width: 24px; height: 24px; margin-right: 0.4rem; border-radius: 50%; object-fit: cover; vertical-align: middle; }
 .menu > nav {
     position: absolute;
     right: 0;

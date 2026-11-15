@@ -20,6 +20,7 @@ use AdzerCMS\Core\Module\StoreImages;
 use AdzerCMS\Core\Repository\ModuleSourceRepository;
 use AdzerCMS\Core\Setting\Catalog as SettingCatalog;
 use AdzerCMS\Core\Setting\Settings;
+use AdzerCMS\Core\Tests\Pictures;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use Composer\InstalledVersions;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -29,6 +30,7 @@ use Symfony\Component\Console\Command\Command;
 final class CatalogTest extends SchemaTestCase
 {
     use CatalogAnswers;
+    use Pictures;
 
     private const SEARCH = 'https://packagist.example.test/search.json?q=%query%&type=%type%';
     private const PAGE = 'https://packagist.example.test/search.json?q=&type='.Registry::TYPE;
@@ -237,9 +239,7 @@ final class CatalogTest extends SchemaTestCase
     #[Group('ACMS-CORE-1167')]
     public function testImagesOfEntryAreCopiedOnceAskedAgainWhenMissedAndDroppedOutOfSnapshot(): void
     {
-        $image = new \Imagick();
-        $image->newImage(1, 1, 'white', 'png');
-        $picture = $image->getImageBlob();
+        $picture = self::dot();
         $cover = 'https://93.184.216.34/cover.png';
         $missed = 'https://93.184.216.34/missed.png';
         $text = 'https://93.184.216.34/text.png';

@@ -22,8 +22,9 @@ final class YandexIdService implements LoginService, Guided
     public const AUTHORIZE = 'https://oauth.yandex.ru/authorize';
     public const TOKEN = 'https://oauth.yandex.ru/token';
     public const USER_INFO = 'https://login.yandex.ru/info?format=json';
+    public const AVATAR = 'https://avatars.yandex.net/get-yapic/%s/islands-200';
 
-    private const SCOPE = 'login:info login:email login:default_phone';
+    private const SCOPE = 'login:info login:email login:default_phone login:avatar';
     private const MAIL_DOMAINS = ['yandex.ru', 'ya.ru', 'yandex.com', 'yandex.by', 'yandex.kz'];
 
     public function __construct(
@@ -66,6 +67,7 @@ final class YandexIdService implements LoginService, Guided
         $user = $exchange->get(self::USER_INFO, ['Authorization' => 'OAuth '.$token->text('access_token')]);
         $email = $user->text('default_email');
         $login = $user->text('login');
+        $avatar = null === $user->text('is_avatar_empty') ? $user->text('default_avatar_id') : null;
 
         return new Profile(
             $user->text('id') ?? '',
@@ -76,6 +78,7 @@ final class YandexIdService implements LoginService, Guided
             account: $login,
             phoneVerified: true,
             emailVerified: null !== $email && null !== $login && self::mailbox($email, $login),
+            picture: null === $avatar ? null : \sprintf(self::AVATAR, $avatar),
         );
     }
 

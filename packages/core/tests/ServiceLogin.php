@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests;
 
+use AdzerCMS\Contracts\Login\Profile;
+use AdzerCMS\Core\Login\ServiceConnected;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Translation\TranslatableMessage;
@@ -16,6 +19,8 @@ trait ServiceLogin
     /** @var list<MockResponse> */
     private array $answers = [];
 
+    private ?Profile $connected = null;
+
     protected function answerService(): void
     {
         self::service(HttpAnswers::class)->respond(function (string $method, string $url, array $options): MockResponse {
@@ -23,6 +28,14 @@ trait ServiceLogin
 
             return array_shift($this->answers) ?? throw new \LogicException(\sprintf('unexpected request %s %s', $method, $url));
         });
+        self::service(EventDispatcherInterface::class)->addListener(ServiceConnected::class, function (ServiceConnected $event): void {
+            $this->connected = $event->profile;
+        });
+    }
+
+    protected static function pictureAnswer(): MockResponse
+    {
+        return new MockResponse('', ['http_code' => 404]);
     }
 
     /** @return array<string, string> */

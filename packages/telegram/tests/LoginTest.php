@@ -55,6 +55,7 @@ final class LoginTest extends SchemaTestCase
     #[Group('ACMS-CORE-0125')]
     #[Group('ACMS-CORE-0173')]
     #[Group('ACMS-CORE-1099')]
+    #[Group('ACMS-CORE-1169')]
     public function testGuestEntersByTelegramProfileWithPhoneOfRecord(): void
     {
         $user = $this->record('+7 900 111-22-33');
@@ -65,7 +66,7 @@ final class LoginTest extends SchemaTestCase
             array_diff_key($query, array_flip(['state', 'code_challenge'])),
         );
 
-        $this->answers = [$this->token(self::claims()), $this->keys()];
+        $this->answers = [$this->token(self::claims()), $this->keys(), self::pictureAnswer()];
         $this->client->request('GET', '/login/telegram/callback', ['code' => 'tg-code-1', 'state' => $query['state']]);
         self::assertResponseRedirects('/');
 
@@ -81,6 +82,7 @@ final class LoginTest extends SchemaTestCase
 
         $connected = self::service(ConnectedServiceRepository::class)->findOneBy(['user' => $user->getId(), 'service' => 'telegram']);
         self::assertSame(['987654321', '@johndoe'], [$connected?->getProfile(), $connected?->getAccount()]);
+        self::assertSame('https://cdn4.telesco.pe/file/avatar.jpg', $this->connected?->picture);
         self::assertTrue($this->reread($user)->isNamed());
     }
 

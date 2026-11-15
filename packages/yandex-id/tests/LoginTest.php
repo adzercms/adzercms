@@ -26,7 +26,8 @@ final class LoginTest extends SchemaTestCase
     private const CLIENT = '4760187d81bc4b7799476b42b5103713';
     private const SECRET = 'a91f0c3e5b7d4e2f8c6a1b9d0e3f5a7c';
     private const CALLBACK = 'http://localhost/login/yandexid/callback';
-    private const SCOPE = 'login:info login:email login:default_phone';
+    private const SCOPE = 'login:info login:email login:default_phone login:avatar';
+    private const PICTURE = 'https://avatars.yandex.net/get-yapic/131652443/islands-200';
 
     protected function setUp(): void
     {
@@ -39,13 +40,13 @@ final class LoginTest extends SchemaTestCase
         ]);
     }
 
-    /** @return iterable<string, array{string, string, ?string}> */
+    /** @return iterable<string, array{string, string, ?string, bool}> */
     public static function mailboxes(): iterable
     {
-        yield 'own mailbox, dot of the login as a hyphen' => ['Ivan.Petrov@yandex.ru', 'ivan-petrov', 'ivan.petrov@yandex.ru'];
-        yield 'own mailbox on another Yandex domain' => ['ivan-petrov@ya.ru', 'ivan-petrov', 'ivan-petrov@ya.ru'];
-        yield 'mailbox of another login' => ['test@yandex.ru', 'ivan-petrov', null];
-        yield 'address outside Yandex mail' => ['ivan-petrov@example.org', 'ivan-petrov', null];
+        yield 'own mailbox, dot of the login as a hyphen' => ['Ivan.Petrov@yandex.ru', 'ivan-petrov', 'ivan.petrov@yandex.ru', false];
+        yield 'own mailbox on another Yandex domain' => ['ivan-petrov@ya.ru', 'ivan-petrov', 'ivan-petrov@ya.ru', false];
+        yield 'mailbox of another login' => ['test@yandex.ru', 'ivan-petrov', null, false];
+        yield 'address outside Yandex mail, stub portrait' => ['ivan-petrov@example.org', 'ivan-petrov', null, true];
     }
 
     #[Group('ACMS-US-0002')]
@@ -53,8 +54,9 @@ final class LoginTest extends SchemaTestCase
     #[Group('ACMS-CORE-0173')]
     #[Group('ACMS-CORE-1099')]
     #[Group('ACMS-CORE-1100')]
+    #[Group('ACMS-CORE-1169')]
     #[DataProvider('mailboxes')]
-    public function testGuestEntersByYandexIdPhoneOfRecordAndTakesOnlyOwnMailbox(string $email, string $login, ?string $taken): void
+    public function testGuestEntersByYandexIdPhoneOfRecordAndTakesOnlyOwnMailbox(string $email, string $login, ?string $taken, bool $stub): void
     {
         $user = $this->record('+7 903 765-94-18');
 
@@ -71,10 +73,11 @@ final class LoginTest extends SchemaTestCase
             ]),
             new JsonMockResponse([
                 'first_name' => 'Иван', 'last_name' => 'Иванов', 'display_name' => $login, 'emails' => [$email], 'default_email' => $email,
-                'default_phone' => ['id' => 12345678, 'number' => '+79037659418'], 'real_name' => 'Иван Иванов', 'is_avatar_empty' => false,
+                'default_phone' => ['id' => 12345678, 'number' => '+79037659418'], 'real_name' => 'Иван Иванов', 'is_avatar_empty' => $stub,
                 'birthday' => '1987-03-12', 'default_avatar_id' => '131652443', 'login' => $login, 'old_social_login' => 'uid-mmzxrnry', 'sex' => 'male',
                 'id' => '1000034426', 'client_id' => self::CLIENT, 'psuid' => '1.AAceCw.tbHgw5DtJ9_zeqPrk-Ba2w.qPWSRC5v2t2IaksPJgnge',
             ]),
+            self::pictureAnswer(),
         ];
         $this->client->request('GET', '/login/yandexid/callback', ['code' => '5xjs4fnp3lw2kd7q', 'state' => $query['state']]);
         self::assertResponseRedirects('/');
@@ -89,6 +92,7 @@ final class LoginTest extends SchemaTestCase
 
         $connected = self::service(ConnectedServiceRepository::class)->findOneBy(['user' => $user->getId(), 'service' => 'yandexid']);
         self::assertSame(['1000034426', $login], [$connected?->getProfile(), $connected?->getAccount()]);
+        self::assertSame($stub ? null : self::PICTURE, $this->connected?->picture, 'the stub of Yandex ID is no portrait');
         $user = $this->reread($user);
         self::assertTrue($user->isNamed());
         self::assertSame($taken, $user->getEmail(), 'Yandex ID vouches only for the mailbox of its own login on a Yandex mail domain');

@@ -12,6 +12,7 @@ use AdzerCMS\Core\Setting\Layout;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
+use AdzerCMS\Core\Tests\Pictures;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
@@ -24,6 +25,7 @@ final class FrameTest extends SchemaTestCase
 {
     use Accounts;
     use Browser;
+    use Pictures;
 
     private const FRAME = '/fixture/frame';
     private const FONT = '~url\(["\']?([^"\')]+\.woff2)["\']?\)~';
@@ -84,6 +86,20 @@ final class FrameTest extends SchemaTestCase
         self::assertSame([], $page->filter('a')->reduce(static fn (Crawler $link): bool => '' === trim((string) $link->attr('href')))->each(static fn (Crawler $link): string => $link->outerHtml()));
         self::assertCount(0, $page->filter('form.theme-switch'));
         self::assertSame('/', $page->filter('.header-logo')->attr('href'));
+    }
+
+    #[Group('ACMS-US-0002')]
+    #[Group('ACMS-CORE-1168')]
+    public function testHeaderShowsAvatarOfRecordBesideItsLogin(): void
+    {
+        $user = $this->record('+7 900 000-00-03');
+        $avatar = $this->avatar($user);
+        $this->em->flush();
+        $this->client->loginUser($user);
+
+        $page = $this->client->request('GET', self::FRAME);
+
+        self::assertCount(1, $page->filter(\sprintf('.menu > summary > img.avatar[src="/avatars/%s"]', $avatar)));
     }
 
     #[Group('ACMS-UI-0064')]

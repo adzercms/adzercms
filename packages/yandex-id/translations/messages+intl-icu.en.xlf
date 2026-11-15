@@ -4,7 +4,7 @@
     <unit id="yandexid.guide.access">
       <segment>
         <source>yandexid.guide.access</source>
-        <target>In the data access tick the login with the name, the email address and the phone number, press "Continue", then confirm</target>
+        <target>In the data access tick the login with the name, the email address, the phone number and the user portrait, press "Continue", then confirm</target>
       </segment>
     </unit>
     <unit id="yandexid.guide.app">

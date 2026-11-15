@@ -10,6 +10,7 @@ use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Page;
 use AdzerCMS\Contracts\Ui\Scheme;
+use AdzerCMS\Core\Account\Avatars;
 use AdzerCMS\Core\Account\ConsentKind;
 use AdzerCMS\Core\Account\Password;
 use AdzerCMS\Core\Account\Role;
@@ -51,6 +52,7 @@ final class AdminWebTest extends SchemaTestCase
     use Browser;
     use Configuration;
     use Delivery;
+    use Pictures;
     use Queries;
 
     private const SETTINGS = '/admin/settings/';
@@ -427,11 +429,13 @@ final class AdminWebTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0072')]
+    #[Group('ACMS-CORE-1168')]
     #[Group('ACMS-UI-0026')]
     #[Group('ACMS-US-0003')]
     public function testRemovalTakesCoreRecordsAlong(): void
     {
         $user = $this->record('79990000010', 'gone@example.org');
+        $avatar = $this->avatar($user);
         $this->em->persist(new Login($user, null, null, null));
         $this->em->persist(new ConnectedService($user, 'wicket', 'profile-1', null));
         $this->em->persist(new Confirmation($user, 'gone@example.org', Purpose::Contact, Kind::Link, hash('sha256', 'link')));
@@ -440,6 +444,11 @@ final class AdminWebTest extends SchemaTestCase
         $this->em->flush();
         $id = $user->getId();
         $this->client->loginUser($this->admin);
+
+        $shown = $this->client->request('GET', '/admin/users')->filter(\sprintf('img.avatar[src="/avatars/%s"]', $avatar));
+        self::assertCount(1, $shown, 'the list shows the avatar of the user');
+        $this->client->request('GET', '/avatars/'.$avatar);
+        self::assertResponseIsSuccessful();
 
         $page = $this->client->request('GET', \sprintf('/admin/users/%d', $id));
         self::assertNotSame('', (string) $page->filter('form[action$="/drop"]')->attr('data-confirm'), 'the removal asks first');
@@ -452,6 +461,7 @@ final class AdminWebTest extends SchemaTestCase
         foreach (['login', 'connected_service', 'confirmation', 'consent', 'notice'] as $table) {
             self::assertSame(0, (int) $this->em->getConnection()->fetchOne(\sprintf('SELECT COUNT(*) FROM %s WHERE user_id = ?', $table), [$id]), $table);
         }
+        self::assertNull(self::service(Avatars::class)->path($avatar), 'the removal drops the avatar');
     }
 
     #[Group('ACMS-CORE-0071')]

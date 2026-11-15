@@ -80,6 +80,7 @@ final class TelegramService implements LoginService, Guided
             lastName: $user->text('family_name'),
             account: null === $username ? $user->text('name') : '@'.$username,
             phoneVerified: true,
+            picture: $user->text('picture'),
         );
     }
 }
