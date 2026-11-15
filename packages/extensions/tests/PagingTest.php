@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace AdzerCMS\Extensions\Tests;
 
 use AdzerCMS\Contracts\Module\Category;
+use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Ui\Table;
-use AdzerCMS\Extensions\Entity\Extension;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -18,14 +18,14 @@ final class PagingTest extends CatalogTestCase
     #[Group('ACMS-UI-0014')]
     #[Group('ACMS-UI-0093')]
     #[DataProvider('joins')]
-    /** @param \Closure(ExtensionRepository, Table): list<Extension> $listing */
-    public function testListingPagesAndCountsByItsJoins(\Closure $listing, int $statements, bool $distinct): void
+    /** @param \Closure(ExtensionRepository, Table): list<mixed> $listing */
+    public function testListingPagesAndCountsByItsJoins(\Closure $listing, int $size, int $statements, bool $distinct): void
     {
-        foreach (['acme/one', 'acme/two', 'acme/three'] as $name) {
-            $this->entry($name, package: self::package('Kit', categories: [Category::Commerce, Category::Content]));
+        foreach (['acme/one' => ExtensionType::Module, 'acme/two' => ExtensionType::Theme, 'acme/three' => ExtensionType::Theme] as $name => $type) {
+            $this->entry($name, $type, package: self::package('Kit', categories: [Category::Commerce, Category::Content]));
         }
         $this->em->clear();
-        $table = Table::of(new Request(['page' => '2']), 'extensions', [], '', size: 2);
+        $table = Table::of(new Request(['page' => '2']), 'extensions', [], '', size: $size);
         $holder = self::service(DebugDataHolder::class, 'doctrine.debug_data_holder');
         $holder->reset();
 
@@ -41,13 +41,16 @@ final class PagingTest extends CatalogTestCase
         ]);
     }
 
-    /** @return iterable<string, array{\Closure(ExtensionRepository, Table): list<Extension>, int, bool}> */
+    /** @return iterable<string, array{\Closure(ExtensionRepository, Table): list<mixed>, int, int, bool}> */
     public static function joins(): iterable
     {
-        yield 'collection' => [static fn (ExtensionRepository $extensions, Table $table): array => $extensions->published($table), 3, true];
-        yield 'single records' => [static fn (ExtensionRepository $extensions, Table $table): array => $extensions->page($table), 2, false];
+        yield 'collection' => [static fn (ExtensionRepository $extensions, Table $table): array => $extensions->published($table), 2, 3, true];
+        yield 'single records' => [static fn (ExtensionRepository $extensions, Table $table): array => $extensions->page($table), 2, 2, false];
         yield 'grouped by the root' => [static fn (ExtensionRepository $extensions, Table $table): array => $table->paginate(
             $extensions->createQueryBuilder('e')->leftJoin('e.categories', 'c')->groupBy('e.id')->orderBy('e.name')->getQuery(),
-        ), 2, false];
+        ), 2, 2, false];
+        yield 'grouped by a field of several records' => [static fn (ExtensionRepository $extensions, Table $table): array => $table->paginate(
+            $extensions->createQueryBuilder('e')->select('e.type')->groupBy('e.type')->orderBy('e.type')->getQuery(),
+        ), 1, 2, false];
     }
 }

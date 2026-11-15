@@ -6,7 +6,6 @@ namespace AdzerCMS\Core\Ui;
 
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\AST\JoinAssociationDeclaration;
-use Doctrine\ORM\Query\AST\PathExpression;
 use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
@@ -274,9 +273,9 @@ final class Table
         if (!$multiplied) {
             $query->setHint(CountWalker::HINT_DISTINCT, false);
         }
-        $collection = $multiplied && !self::grouped($query);
+        $grouped = self::grouped($query);
 
-        $page = (new OffsetPaginator($collection, $multiplied ? null : false))->paginate($query, new Window($this->offset(), $this->size));
+        $page = (new OffsetPaginator($multiplied && !$grouped, $multiplied || $grouped ? null : false))->paginate($query, new Window($this->offset(), $this->size));
         $this->total = $page->getTotalCount();
 
         return $page->getItems();
@@ -303,25 +302,8 @@ final class Table
     private static function grouped(Query $query): bool
     {
         $statement = $query->getAST();
-        $root = self::root($query);
-        if (null === $root || !$statement instanceof SelectStatement || null === $statement->groupByClause) {
-            return false;
-        }
 
-        [$alias, $class] = $root;
-        $identifier = $query->getEntityManager()->getClassMetadata($class)->getIdentifierFieldNames();
-        $fields = [];
-        foreach ($statement->groupByClause->groupByItems as $item) {
-            if ($alias === $item) {
-                $fields = [...$fields, ...$identifier];
-            } elseif ($item instanceof PathExpression && $alias === $item->identificationVariable) {
-                $fields[] = $item->field;
-            } else {
-                return false;
-            }
-        }
-
-        return [] === array_diff($identifier, $fields);
+        return $statement instanceof SelectStatement && null !== $statement->groupByClause;
     }
 
     /** @param Query<mixed, mixed> $query */
