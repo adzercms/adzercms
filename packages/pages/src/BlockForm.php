@@ -64,16 +64,16 @@ final readonly class BlockForm
             return $refusals;
         }
         $digests = array_map(static fn (UploadedFile $upload): string => (string) hash_file(self::DIGEST, $upload->getPathname()), $uploads);
-        if (!$this->once->fresh(self::ADD, [(int) $page->getId(), $type->key(), strtr(json_encode($values, \JSON_THROW_ON_ERROR), $digests)])) {
-            return [new Refusal(Once::repeat())];
-        }
+        $block = $this->once->act(self::ADD, [(int) $page->getId(), $type->key(), strtr(json_encode($values, \JSON_THROW_ON_ERROR), $digests)], function () use ($page, $type, $values, $uploads): PageBlock {
+            $block = new PageBlock($page, $type->key(), $this->placed($values, $uploads));
+            $block->place(\count($this->blocks->of($page)) + 1);
+            $this->em->persist($block);
+            $this->em->flush();
 
-        $block = new PageBlock($page, $type->key(), $this->placed($values, $uploads));
-        $block->place(\count($this->blocks->of($page)) + 1);
-        $this->em->persist($block);
-        $this->em->flush();
+            return $block;
+        });
 
-        return $block;
+        return $block instanceof Refusal ? [$block] : $block;
     }
 
     /** @return list<Refusal> */

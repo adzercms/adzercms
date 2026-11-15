@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Ui;
 
+use AdzerCMS\Contracts\Refusal;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -25,8 +26,30 @@ final class Once
         return t('core.once.repeat');
     }
 
+    /**
+     * @template T
+     *
+     * @param list<scalar|null> $payload
+     * @param \Closure(): T     $act
+     *
+     * @return T|Refusal
+     */
+    public function act(string $action, array $payload, \Closure $act): mixed
+    {
+        if (!$this->fresh($action, $payload)) {
+            return new Refusal(self::repeat());
+        }
+
+        $done = $act();
+        if ($done instanceof Refusal) {
+            $this->forget($action, $payload);
+        }
+
+        return $done;
+    }
+
     /** @param list<scalar|null> $payload */
-    public function forget(string $action, array $payload): void
+    private function forget(string $action, array $payload): void
     {
         $session = $this->requests->getSession();
         $seen = (array) $session->get(self::BAG, []);
@@ -35,7 +58,7 @@ final class Once
     }
 
     /** @param list<scalar|null> $payload */
-    public function fresh(string $action, array $payload): bool
+    private function fresh(string $action, array $payload): bool
     {
         $session = $this->requests->getSession();
         $key = self::key($action, $payload);

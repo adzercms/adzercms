@@ -99,14 +99,14 @@ final readonly class Intake
         }
 
         $fields = array_map(static fn (string $field): string => trim($input->getString($field)), [self::TOPIC, self::NAME, self::PHONE, self::EMAIL, self::MESSAGE]);
-        if (!$this->once->fresh('leads.add', $fields)) {
-            return [self::FORM => new Refusal(Once::repeat())];
-        }
+        $lead = $this->once->act('leads.add', $fields, function () use ($input): Lead {
+            $lead = $this->lead($input, null);
+            $this->em->flush();
 
-        $lead = $this->lead($input, null);
-        $this->em->flush();
+            return $lead;
+        });
 
-        return $lead;
+        return $lead instanceof Refusal ? [self::FORM => $lead] : $lead;
     }
 
     /**

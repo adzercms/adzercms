@@ -90,15 +90,15 @@ final class TransferController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        if ($once->fresh('bank_transfer.confirm', [$number])) {
+        $refusal = $once->act('bank_transfer.confirm', [$number], function () use ($number): null {
             $this->service->conclude(new PaymentCallback($number, PaymentStatus::Confirmed));
-            $this->addFlash('success', t('bank_transfer.confirm.done', [
-                'comment' => BankTransferService::comment($payment),
-                'amount' => Money::rubles($payment->getAmount()),
-            ]));
-        } else {
-            $this->addFlash('error', Once::repeat());
-        }
+
+            return null;
+        });
+        $this->addFlash(...null === $refusal ? ['success', t('bank_transfer.confirm.done', [
+            'comment' => BankTransferService::comment($payment),
+            'amount' => Money::rubles($payment->getAmount()),
+        ])] : ['error', $refusal->reason]);
 
         return $this->redirect(Back::of($request, $this->generateUrl(self::LIST)));
     }
