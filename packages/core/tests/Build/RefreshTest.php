@@ -129,6 +129,7 @@ final class RefreshTest extends TestCase
             'the copy builds the cache and the static, the live tree migrates and switches on them',
         );
         self::assertDirectoryExists($this->root.'/var/cache/prod_set/'.$build, 'the build of the copy moves into the builds of the live tree');
+        self::assertFileExists($this->root.'/assets/vendor/library.js', 'the libraries of the copy reach a live tree without its own');
         self::assertSame([$changed, $changed], [is_file($this->root.self::INSTALLED), $vendor !== fileinode($this->root.'/vendor')], 'the vendor of the copy replaces the live one only on a changed lock');
         self::assertSame(hash('sha256', self::LOCK)."\n", file_get_contents($this->root.'/var/composer.installed'));
     }

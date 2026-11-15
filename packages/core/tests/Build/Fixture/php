@@ -6,6 +6,7 @@ if [ "$root" = "$here" ]; then call=$*; else call="copy $*"; fi
 printf '%s\n' "$call" >> "$root/calls"
 case $* in
     'bin/console cache:warmup') mkdir -p "var/cache/prod_set/$APP_BUILD" ;;
+    'bin/console importmap:install --no-interaction') mkdir -p assets/vendor && touch assets/vendor/library.js ;;
     'bin/console asset-map:compile --no-interaction') mkdir -p public/assets/set && printf '%s\n' "$APP_BUILD" > public/assets/set/manifest.json ;;
 esac
 for argument; do case $argument in --working-dir=*) copy=${argument#--working-dir=} ;; esac; done
