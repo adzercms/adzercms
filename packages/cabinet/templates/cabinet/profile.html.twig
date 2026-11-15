@@ -191,12 +191,12 @@
                                   class="contact-change"
                                   data-confirm="{{ 'cabinet.notices.bot_unlink_confirm'|trans({bot: bot.label|trans}) }}">
                                 {{ csrf_field() }}
-                                <button class="danger small" type="submit">{{ 'cabinet.services.unlink'|trans }}</button>
+                                <button class="danger small" type="submit">{{ 'core.action.disconnect'|trans }}</button>
                             </form>
                         {% else %}
                             <form method="post" action="{{ path('cabinet_bot_link', {bot: bot.key}) }}" class="contact-change">
                                 {{ csrf_field() }}
-                                <button class="small" type="submit">{{ 'cabinet.services.link'|trans }}</button>
+                                <button class="small" type="submit">{{ 'core.action.connect'|trans }}</button>
                             </form>
                         {% endif %}
                     </div>
@@ -227,11 +227,11 @@
                                   class="contact-change"
                                   data-confirm="{{ 'cabinet.services.unlink_confirm'|trans({service: module.name|trans}) }}">
                                 {{ csrf_field() }}
-                                <button class="danger small" type="submit">{{ 'cabinet.services.unlink'|trans }}</button>
+                                <button class="danger small" type="submit">{{ 'core.action.disconnect'|trans }}</button>
                             </form>
                         {% else %}
                             <div class="contact-change">
-                                <a class="button small" href="{{ path('login_service', {service: service}) }}">{{ 'cabinet.services.link'|trans }}</a>
+                                <a class="button small" href="{{ path('login_service', {service: service}) }}">{{ 'core.action.connect'|trans }}</a>
                             </div>
                         {% endif %}
                     </div>

@@ -199,6 +199,18 @@
         <target>Операции</target>
       </segment>
     </unit>
+    <unit id="admin.opotopo.disconnect_confirm">
+      <segment>
+        <source>admin.opotopo.disconnect_confirm</source>
+        <target>Отключить аккаунт OPOTOPO?</target>
+      </segment>
+    </unit>
+    <unit id="admin.opotopo.disconnected">
+      <segment>
+        <source>admin.opotopo.disconnected</source>
+        <target>OPOTOPO отключён</target>
+      </segment>
+    </unit>
     <unit id="admin.setting.change">
       <segment>
         <source>admin.setting.change</source>

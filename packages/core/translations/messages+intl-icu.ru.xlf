@@ -7,6 +7,12 @@
         <target>Закрыть</target>
       </segment>
     </unit>
+    <unit id="core.action.connect">
+      <segment>
+        <source>core.action.connect</source>
+        <target>Подключить</target>
+      </segment>
+    </unit>
     <unit id="core.action.copied">
       <segment>
         <source>core.action.copied</source>
@@ -23,6 +29,12 @@
       <segment>
         <source>core.action.create</source>
         <target>Завести</target>
+      </segment>
+    </unit>
+    <unit id="core.action.disconnect">
+      <segment>
+        <source>core.action.disconnect</source>
+        <target>Отключить</target>
       </segment>
     </unit>
     <unit id="core.action.drop">

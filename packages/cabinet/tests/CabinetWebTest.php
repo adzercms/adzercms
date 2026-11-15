@@ -91,7 +91,7 @@ final class CabinetWebTest extends SchemaTestCase
         self::assertSame(self::phrase(t('core.login.connected', ['service' => t('Latch')])), self::toast($profile, 'success'));
         self::assertContains('ivan', $profile->filter('.settings-value')->each(static fn (Crawler $value): string => trim($value->text())), 'the connection is named by its account');
 
-        $this->client->submit($profile->selectButton(self::phrase('cabinet.services.unlink'))->form());
+        $this->client->submit($profile->selectButton(self::phrase('core.action.disconnect'))->form());
         self::assertResponseRedirects('/profile');
         self::assertCount(1, $this->client->followRedirect()->filter('a[href="/login/latch"]'), 'the unlinked service is offered again');
         self::assertNull(self::service(ConnectedServiceRepository::class)->findOneBy(['user' => $user->getId(), 'service' => 'latch']));

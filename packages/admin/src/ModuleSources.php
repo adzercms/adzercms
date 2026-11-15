@@ -9,6 +9,7 @@ use AdzerCMS\Contracts\Ui\Badge;
 use AdzerCMS\Contracts\Ui\Fragment;
 use AdzerCMS\Core\Composer\Artifacts;
 use AdzerCMS\Core\Module\Catalog;
+use AdzerCMS\Core\Module\Opotopo;
 use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Module\Store;
 use AdzerCMS\Core\Ui\Column;
@@ -18,7 +19,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use function Symfony\Component\Translation\t;
 
-/** @phpstan-type Origin array{source: string, down: ?Badge, access: bool, credentials: ?int, drop: ?string, hidden: array<string, string>} */
+/**
+ * @phpstan-type Action array{label: string, route: string, params: array<string, int>, post?: true, confirm?: string}
+ * @phpstan-type Origin array{source: string, down: ?Badge, access: bool, actions: list<Action>, drop: ?string, hidden: array<string, string>}
+ */
 final readonly class ModuleSources implements Fragment
 {
     public const PAGE = Page::Extensions;
@@ -29,6 +33,7 @@ final readonly class ModuleSources implements Fragment
         private Sources $sources,
         private Artifacts $artifacts,
         private Store $store,
+        private Opotopo $opotopo,
         private UrlGeneratorInterface $urls,
     ) {
     }
@@ -58,6 +63,10 @@ final readonly class ModuleSources implements Fragment
     private function origins(array $down): array
     {
         $base = array_map(static fn (string $url): array => self::origin($url, \in_array($url, $down, true)), [$this->store->url(), ...Sources::BASE]);
+        $connected = $this->opotopo->connected();
+        $base[] = self::origin(Opotopo::REPOSITORY, access: $connected, actions: [$connected
+            ? ['label' => 'core.action.disconnect', 'route' => 'admin_opotopo_disconnect', 'params' => [], 'post' => true, 'confirm' => 'admin.opotopo.disconnect_confirm']
+            : ['label' => 'core.action.connect', 'route' => 'admin_opotopo_connect', 'params' => [], 'post' => true]]);
         $own = [];
         foreach ($this->artifacts->archives() as $archive) {
             $own[] = self::origin($archive['name'].' '.$archive['version'], drop: $this->urls->generate('admin_source_zip_drop'), hidden: ['package' => $archive['name'], 'version' => $archive['normalized']]);
@@ -67,7 +76,7 @@ final readonly class ModuleSources implements Fragment
                 $source->getUrl(),
                 \in_array($source->getUrl(), $down, true),
                 null !== $source->getTokenCipher(),
-                $source->getId(),
+                [['label' => 'admin.setting.credentials', 'route' => 'admin_source_credentials', 'params' => ['id' => (int) $source->getId()]]],
                 $this->urls->generate('admin_source_drop', ['id' => $source->getId()]),
             );
         }
@@ -76,17 +85,18 @@ final readonly class ModuleSources implements Fragment
     }
 
     /**
+     * @param list<Action>          $actions
      * @param array<string, string> $hidden
      *
      * @return Origin
      */
-    private static function origin(string $source, bool $down = false, bool $access = false, ?int $credentials = null, ?string $drop = null, array $hidden = []): array
+    private static function origin(string $source, bool $down = false, bool $access = false, array $actions = [], ?string $drop = null, array $hidden = []): array
     {
         return [
             'source' => $source,
             'down' => $down ? Badge::bad(t('admin.sources.down')) : null,
             'access' => $access,
-            'credentials' => $credentials,
+            'actions' => $actions,
             'drop' => $drop,
             'hidden' => $hidden,
         ];

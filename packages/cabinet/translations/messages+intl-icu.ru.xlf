@@ -709,22 +709,10 @@
         <target>Отмена смены почты</target>
       </segment>
     </unit>
-    <unit id="cabinet.services.link">
-      <segment>
-        <source>cabinet.services.link</source>
-        <target>Подключить</target>
-      </segment>
-    </unit>
     <unit id="cabinet.services.title">
       <segment>
         <source>cabinet.services.title</source>
         <target>Способы входа</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.services.unlink">
-      <segment>
-        <source>cabinet.services.unlink</source>
-        <target>Отключить</target>
       </segment>
     </unit>
     <unit id="cabinet.services.unlink_confirm">

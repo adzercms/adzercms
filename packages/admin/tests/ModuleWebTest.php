@@ -20,6 +20,7 @@ use AdzerCMS\Core\Module\Catalog as ModuleCatalog;
 use AdzerCMS\Core\Module\CatalogRow;
 use AdzerCMS\Core\Module\ModuleAction;
 use AdzerCMS\Core\Module\OperationState;
+use AdzerCMS\Core\Module\Opotopo;
 use AdzerCMS\Core\Module\Registry;
 use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Module\Store;
@@ -701,8 +702,8 @@ final class ModuleWebTest extends SchemaTestCase
         $page = $this->client->request('GET', self::SOURCES);
         $base = $page->filter('#sources tbody tr');
         self::assertCount(1, $page->filter(\sprintf('form [name="value[%s]"]', Store::NAME)), 'the extension catalog address goes on the page of the sources');
-        self::assertSame([Store::DEFAULT, ...Sources::BASE], $base->filter('td strong')->each(static fn (Crawler $source): string => trim($source->text())));
-        self::assertCount(0, $base->filter('td.row-actions form, td.row-actions a, td.row-actions button'), 'a base source is neither dropped nor edited');
+        self::assertSame([Store::DEFAULT, ...Sources::BASE, Opotopo::REPOSITORY], self::sources($page));
+        self::assertCount(0, $base->reduce(static fn (Crawler $row): bool => !str_contains($row->text(), Opotopo::API))->filter('td.row-actions form, td.row-actions a, td.row-actions button'), 'a base source is neither dropped nor edited');
 
         $this->connect(self::REPOSITORY.'/one');
         self::assertResponseRedirects(self::SOURCES, message: 'a source returns to the page of the sources');
@@ -728,8 +729,8 @@ final class ModuleWebTest extends SchemaTestCase
 
         $this->post(self::SOURCE.$one->getId().'/drop');
         self::assertSame(
-            [Store::DEFAULT, ...Sources::BASE, self::REPOSITORY.'/three', self::REPOSITORY.'/two'],
-            $this->arrive(self::SOURCES)->filter('#sources tbody tr td strong')->each(static fn (Crawler $source): string => trim($source->text())),
+            [Store::DEFAULT, ...Sources::BASE, Opotopo::REPOSITORY, self::REPOSITORY.'/three', self::REPOSITORY.'/two'],
+            self::sources($this->arrive(self::SOURCES)),
         );
     }
 
@@ -757,6 +758,12 @@ final class ModuleWebTest extends SchemaTestCase
         }
 
         return $tree;
+    }
+
+    /** @return list<string> */
+    private static function sources(Crawler $page): array
+    {
+        return $page->filter('#sources tbody tr td strong .clip')->each(static fn (Crawler $source): string => $source->attr('title') ?? trim($source->text()));
     }
 
     /** @return list<string> */

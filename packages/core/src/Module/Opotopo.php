@@ -24,6 +24,7 @@ final readonly class Opotopo
 {
     public const API = 'https://api.opotopo.com';
     public const RESOURCE = self::API.'/rest/v1/order/public/packages';
+    public const REPOSITORY = self::RESOURCE.'/composer';
 
     private const METADATA = self::API.'/.well-known/oauth-authorization-server';
     private const FLIGHT = 'core.opotopo.flight';
