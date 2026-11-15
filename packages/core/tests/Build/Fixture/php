@@ -1,13 +1,12 @@
 #!/bin/sh
 [ "${1:-}" != -r ] || exec "$PHP_BINARY" "$@"
 here=$(pwd -P)
-root=${here%/var/verify}
+root=${here%/var/next}
 if [ "$root" = "$here" ]; then call=$*; else call="copy $*"; fi
 printf '%s\n' "$call" >> "$root/calls"
+case $* in
+    'bin/console cache:warmup') mkdir -p "var/cache/prod_set/$APP_BUILD" ;;
+    'bin/console asset-map:compile --no-interaction') mkdir -p public/assets/set && printf '%s\n' "$APP_BUILD" > public/assets/set/manifest.json ;;
+esac
 for argument; do case $argument in --working-dir=*) copy=${argument#--working-dir=} ;; esac; done
-[ -n "${copy:-}" ] && [ ! -e "$copy/vendor/bin/adzercms-check" ] || exit 0
-fixture=$(dirname "$(readlink -f "$0")")
-mkdir -p "$copy/vendor/bin"
-ln -s "$fixture/check" "$copy/vendor/bin/adzercms-check"
-ln -s "$fixture/verify" "$copy/vendor/bin/adzercms-verify"
-ln -s "$fixture/../../../bin/adzercms-suites" "$copy/vendor/bin/adzercms-suites"
+[ -z "${copy:-}" ] || touch "$copy/vendor/installed"

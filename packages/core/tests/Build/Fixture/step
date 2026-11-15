@@ -1,2 +1,5 @@
 #!/bin/sh
-printf '%s %s %s\n' "${ADZERCMS_ENTRY:-}" "$([ -f left ] && echo left || echo running)" "$(flock -n -s var/lock/serve true && echo open || echo closed)" >> steps
+here=$(pwd -P)
+root=${here%/var/next}
+if [ "$root" = "$here" ]; then place=live; else place=copy; fi
+printf '%s %s %s %s %s\n' "$place" "${2:-}" "${ADZERCMS_ENTRY:-}" "$([ -f "$root/left" ] && echo left || echo running)" "$(flock -n -s "$root/var/lock/serve" true && echo open || echo closed)" >> "$root/steps"

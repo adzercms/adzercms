@@ -2,4 +2,3 @@
 var
 .env.local
 public/assets
-assets/vendor

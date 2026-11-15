@@ -63,9 +63,9 @@ git commit -m 'Site'
 
 - `adzercms.php` — the PHP used by `bin/` scripts and hooks unless the `PHP_BINARY` environment variable sets it; plain `php` if neither is set
 - The `pre-commit` hook blocks PHP with style errors, a migration that breaks the rules, a broken template or translation file, and secrets in `.env`
-- The `post-commit` and `post-merge` hooks run `vendor/bin/adzercms-refresh` after every commit and `git pull`. It brings the site in line with the code: installs dependencies from a changed `composer.lock` and packages with new patches in `patches.lock.json` (cweagans/composer-patches), runs migrations, builds a new cache, importmap libraries and assets, then switches the site to the new build. Without `.env.local` it does nothing
-- A changed `composer.lock` or `patches.lock.json` reaches the site only after the check of a copy of the tree in `var/verify` by the scripts of the copy, so an update brings its own check: the dependencies and patched packages of the copy, its importmap libraries, `vendor/bin/adzercms-check` and every test suite in its own process by `vendor/bin/adzercms-suites`. A refusal leaves the site as it was. The suites need an empty test database in `.env.test.local`: `DATABASE_URL=...`
-- The script holds the site until the switch: new jobs wait for the end while the site serves requests until the running jobs finish; then a request gets 503 with `Retry-After`, and the script starts once the running requests finish. Both entries take the hold check `config/hold.php` before the dependencies
+- The `post-commit` and `post-merge` hooks run `vendor/bin/adzercms-refresh` after every commit and `git pull`. It brings the site in line with the code in a copy of the tree in `var/next`: installs dependencies from a changed `composer.lock` and packages with new patches in `patches.lock.json` (cweagans/composer-patches), builds a new cache, importmap libraries and assets; then moves the dependencies and the build into the site, runs migrations and switches the site to the new build. Without `.env.local` it does nothing
+- A changed `composer.lock` or `patches.lock.json` reaches the site only after the check of the copy by its own scripts, so an update brings its own check: the dependencies and patched packages of the copy, its importmap libraries, `vendor/bin/adzercms-check` and every test suite in its own process by `vendor/bin/adzercms-suites`. A refusal leaves the site as it was. The suites need an empty test database in `.env.test.local`: `DATABASE_URL=...`
+- The script holds the site only for the move, the migrations and the switch: new jobs wait for the end while the site serves requests until the running jobs finish; then a request gets 503 with `Retry-After`, and the move starts once the running requests finish. Both entries take the hold check `config/hold.php` before the dependencies
 - If the site lives in a subdirectory of the repository, set `git config core.hooksPath <subdirectory>/.githooks`
 - The web server document root is `public/`
 
@@ -75,7 +75,7 @@ Create an administrator (the password comes through stdin):
 printf '%s' "$PASSWORD" | bin/console adzercms:admin admin@example.com --stdin
 ```
 
-The engine updates with `composer update --no-install` and a commit of `composer.lock`: the refresh of the hook installs the new dependencies under the hold. A site outside git runs `vendor/bin/adzercms-refresh` right after the update.
+The engine updates with `composer update --no-install` and a commit of `composer.lock`: the refresh of the hook installs the new dependencies in its copy. A site outside git runs `vendor/bin/adzercms-refresh` right after the update.
 
 ## Scheduler
 

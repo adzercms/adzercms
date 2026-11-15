@@ -7,4 +7,4 @@ export APP_BUILD
 bin/php bin/console cache:warmup
 bin/php bin/console importmap:install --no-interaction
 bin/php bin/console asset-map:compile --no-interaction
-bin/php bin/console adzercms:cache "$@"
+[ "${1:-}" != --preview ] || bin/php bin/console adzercms:cache --preview

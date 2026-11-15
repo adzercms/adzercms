@@ -1,0 +1,27 @@
+#!/bin/sh
+set -eu
+
+copy=$(cd "${1:?copy of the instance}" && pwd -P)
+: "${APP_BUILD:?build of the copy}"
+stamp=var/composer.installed
+patched=var/patches.installed
+
+if [ "$(cat "$stamp" 2>/dev/null || true)" != "$(sha256sum "$copy/composer.lock" | cut -d' ' -f1)" ] \
+    || { { [ -f "$copy/patches.lock.json" ] || [ -f "$patched" ]; } && ! cmp -s "$copy/patches.lock.json" "$patched"; }; then
+    mv vendor "$copy/vendor.live"
+    mv "$copy/vendor" vendor
+    sha256sum composer.lock | cut -d' ' -f1 > "$stamp"
+    if [ -f patches.lock.json ]; then cp patches.lock.json "$patched"; else rm -f "$patched"; fi
+fi
+
+for build in "$copy"/var/cache/*/"$APP_BUILD"; do
+    [ -d "$build" ] || continue
+    builds=var/cache/$(basename "$(dirname "$build")")
+    mkdir -p "$builds"
+    mv "$build" "$builds/"
+done
+[ ! -d "$copy/public/assets" ] || rsync -a "$copy/public/assets/" public/assets/
+[ ! -d "$copy/assets/vendor" ] || rsync -a --delete "$copy/assets/vendor/" assets/vendor/
+
+bin/php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+bin/php bin/console adzercms:cache

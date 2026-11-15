@@ -90,7 +90,9 @@
         }
     },
     "bin": [
+        "bin/adzercms-adopt",
         "bin/adzercms-affected",
+        "bin/adzercms-build",
         "bin/adzercms-check",
         "bin/adzercms-module-check",
         "bin/adzercms-package-console",

@@ -81,15 +81,20 @@ final class HoldTest extends TestCase
         self::assertSame([200, false, "entered\n"], $this->get($address));
     }
 
+    #[Group('ACMS-CORE-0964')]
     #[Group('ACMS-CORE-0965')]
     #[Group('ACMS-CORE-1126')]
     #[Group('ACMS-CORE-1127')]
     #[Group('ACMS-CORE-0967')]
+    #[Group('ACMS-CORE-1130')]
     #[DataProvider('holders')]
     public function testHolderServesRequestsUntilEnteredJobsLeaveThenCoversItsStepsClosed(bool $job): void
     {
         $files = new Filesystem();
         $files->symlink(self::STEP, $this->root.'/bin/php');
+        foreach (['adzercms-build', 'adzercms-adopt'] as $script) {
+            $files->symlink(\dirname(__DIR__, 2).'/bin/'.$script, $this->root.'/vendor/bin/'.$script);
+        }
         $files->dumpFile($this->root.'/.env.local', '');
         $files->dumpFile($this->root.'/composer.lock', '{}');
         $files->dumpFile($this->root.'/var/composer.installed', hash('sha256', '{}')."\n");
@@ -104,9 +109,16 @@ final class HoldTest extends TestCase
         }
 
         $steps = file($this->root.'/steps', \FILE_IGNORE_NEW_LINES) ?: [];
+        $covered = preg_grep('/^live (?!doctrine:schema:validate )/', $steps) ?: [];
+        $state = static fn (string $step): string => explode(' ', $step, 3)[2];
         self::assertSame("entered\n", file_get_contents($this->root.'/served'), 'requests are served while the holder awaits an entered job');
-        self::assertNotSame([], $steps);
-        self::assertSame([$this->root.' left closed'], array_values(array_unique($steps)), 'steps go after the entered process left, covered by the hold, requests closed');
+        self::assertNotSame([], $covered);
+        self::assertSame([$this->root.' left closed'], array_values(array_unique(array_map($state, $covered))), 'steps of the live tree go after the entered process left, covered by the hold, requests closed');
+        self::assertSame(
+            $job ? [] : ['open'],
+            array_values(array_unique(array_map(static fn (string $step): string => substr($step, (int) strrpos($step, ' ') + 1), preg_grep('/^copy /', $steps) ?: []))),
+            'the copy builds while requests are served',
+        );
     }
 
     /** @return iterable<string, array{bool}> */

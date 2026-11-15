@@ -5,45 +5,47 @@ set -eu
 
 root=$(pwd -P)
 [ "${ADZERCMS_REFRESHED:-}" != "$root" ] || exit 0
+scripts=$(dirname "$0")
+next=$root/var/next
 stamp=var/composer.installed
 patched=var/patches.installed
-locked=$(sha256sum composer.lock | cut -d' ' -f1)
 
-repatched() {
-    { [ -f patches.lock.json ] || [ -f "$patched" ]; } && ! cmp -s patches.lock.json "$patched"
-}
-
-if [ "${ADZERCMS_ENTRY:-}" != "$root" ]; then
+held=
+if [ "${ADZERCMS_ENTRY:-}" = "$root" ]; then
+    held=1
+else
     mkdir -p var/lock
     exec 9> var/lock/refresh 8> var/lock/entry 7> var/lock/serve 6> var/lock/served
     flock 9
-    if [ "$(cat "$stamp" 2>/dev/null || true)" != "$locked" ] || repatched; then
-        "$(dirname "$0")/adzercms-verify"
-    fi
+fi
+
+rm -rf "$next"
+trap 'rm -rf "$next"' EXIT
+mkdir -p "$next"
+sed 's#^#/#' "$scripts/../config/stage.exclude" | rsync -a --exclude-from=- ./ "$next/"
+cp -p .env.local "$next/"
+
+if [ "$(cat "$stamp" 2>/dev/null || true)" != "$(sha256sum composer.lock | cut -d' ' -f1)" ] \
+    || { { [ -f patches.lock.json ] || [ -f "$patched" ]; } && ! cmp -s patches.lock.json "$patched"; }; then
+    changed=$("$scripts/adzercms-patched")
+    bin/php "$(command -v composer)" install --working-dir="$next" --no-interaction --no-progress --no-scripts
+    # shellcheck disable=SC2086
+    [ -z "$changed" ] || bin/php "$(command -v composer)" reinstall --working-dir="$next" --no-interaction --no-progress $changed
+    [ -n "$held" ] || "$next/vendor/bin/adzercms-verify" "$next"
+fi
+
+APP_BUILD=$(date +%Y%m%d%H%M%S)-$$
+export APP_BUILD
+(cd "$next" && vendor/bin/adzercms-build)
+
+if [ -z "$held" ]; then
     flock 8
     flock 7
     flock 6
     ADZERCMS_ENTRY=$root
     export ADZERCMS_ENTRY
 fi
+"$next/vendor/bin/adzercms-adopt" "$next"
+[ -n "$held" ] || exec 8>&- 7>&- 6>&-
 
-if [ "$(cat "$stamp" 2>/dev/null || true)" != "$locked" ]; then
-    bin/php "$(command -v composer)" install --no-interaction --no-progress --no-scripts
-    printf '%s\n' "$locked" > "$stamp"
-    exec "$0"
-fi
-
-if repatched; then
-    changed=$("$(dirname "$0")/adzercms-patched")
-    # shellcheck disable=SC2086
-    [ -z "$changed" ] || bin/php "$(command -v composer)" reinstall --no-interaction --no-progress $changed
-    if [ -f patches.lock.json ]; then cp patches.lock.json "$patched"; else rm "$patched"; fi
-    exec "$0"
-fi
-
-APP_BUILD=$(date +%Y%m%d%H%M%S)-$$
-export APP_BUILD
-
-bin/php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 bin/php bin/console doctrine:schema:validate || true
-exec "$(dirname "$0")/adzercms-build"

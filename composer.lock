@@ -316,7 +316,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "ef26e819c5eac4b7b003f76d4acf9cb2dc4f5cb8"
+                "reference": "e1a26372f79e6a04f7e6c3a752d21a1bc00da1da"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -392,7 +392,9 @@
                 "ext-imagick": "photos of settings and module records"
             },
             "bin": [
+                "bin/adzercms-adopt",
                 "bin/adzercms-affected",
+                "bin/adzercms-build",
                 "bin/adzercms-check",
                 "bin/adzercms-module-check",
                 "bin/adzercms-package-console",

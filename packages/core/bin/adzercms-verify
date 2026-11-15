@@ -1,25 +1,10 @@
 #!/bin/sh
 set -eu
 
-if [ $# -eq 0 ]; then
-    scripts=$(cd "$(dirname "$0")" && pwd -P)
-    copy=$(pwd -P)/var/verify
-    excluded=$scripts/../config/stage.exclude
-    rm -rf "$copy"
-    trap 'rm -rf "$copy"' EXIT
-    mkdir -p "$copy"
-    sed 's#^#/#' "$excluded" | rsync -a --exclude-from=- ./ "$copy/"
-    bin/php "$(command -v composer)" install --working-dir="$copy" --no-scripts --no-interaction --no-progress
-    changed=$("$scripts/adzercms-patched")
-    # shellcheck disable=SC2086
-    [ -z "$changed" ] || bin/php "$(command -v composer)" reinstall --working-dir="$copy" --no-interaction --no-progress $changed
-    "$copy/vendor/bin/adzercms-verify" "$copy"
-    exit
-fi
-
-mkdir -p "$1/var"
-ln -sfn "$(pwd -P)/var/tests.lock" "$1/var/tests.lock"
-cd "$1"
+copy=${1:?copy of the instance}
+mkdir -p "$copy/var"
+ln -sfn "$(pwd -P)/var/tests.lock" "$copy/var/tests.lock"
+cd "$copy"
 bin/php bin/console cache:warmup --env=test
 bin/php bin/console importmap:install --no-interaction --env=test
 vendor/bin/adzercms-check
