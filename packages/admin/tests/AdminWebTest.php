@@ -37,6 +37,7 @@ use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Delivery;
+use AdzerCMS\Core\Tests\Pictures;
 use AdzerCMS\Core\Tests\Queries;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Tests\Ui\Fixture\Ledger;
