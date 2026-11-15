@@ -8,7 +8,7 @@ use Symfony\Contracts\Translation\TranslatableInterface;
 
 final class LoginFailed extends \RuntimeException
 {
-    public function __construct(public readonly TranslatableInterface $reason, ?\Throwable $previous = null)
+    public function __construct(public readonly TranslatableInterface $reason, ?\Throwable $previous = null, public readonly ?string $error = null)
     {
         parent::__construct('the login service refused to sign in', previous: $previous);
     }

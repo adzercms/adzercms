@@ -30,6 +30,7 @@ final readonly class Sources
         private EntityManagerInterface $em,
         private Secrets $secrets,
         private Artifacts $artifacts,
+        private Opotopo $opotopo,
     ) {
     }
 
@@ -42,7 +43,8 @@ final readonly class Sources
     /** @return list<Source> */
     public function repositories(): array
     {
-        return [
+        $buyer = $this->opotopo->access();
+        $repositories = [
             ...array_map(fn (ModuleSource $source): Source => new Source(
                 $source->getUrl(),
                 $source->getLogin(),
@@ -50,6 +52,11 @@ final readonly class Sources
             ), $this->own()),
             ...array_map(static fn (string $url): Source => new Source($url), self::BASE),
         ];
+
+        return null === $buyer ? $repositories : array_map(
+            static fn (Source $source): Source => Source::origin($source->url) === Source::origin(Opotopo::API) ? new Source($source->url, null, $buyer) : $source,
+            $repositories,
+        );
     }
 
     public function add(string $url): ?Refusal
@@ -126,6 +133,7 @@ final readonly class Sources
         return hash('xxh128', serialize([
             array_map(static fn (ModuleSource $source): array => [$source->getUrl(), $source->getLogin(), $source->getTokenCipher()], $this->own()),
             array_map(static fn (array $archive): array => [$archive['path'], filemtime($archive['path'])], $this->artifacts->archives()),
+            $this->opotopo->connected(),
         ]));
     }
 

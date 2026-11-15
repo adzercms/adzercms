@@ -92,7 +92,7 @@ final readonly class HttpExchange implements Exchange
         if (self::OK !== $status || isset($fields['error'])) {
             $answer = new Answer($fields);
             $error = $answer->text('error_description') ?? $answer->text('error') ?? (string) $status;
-            throw new LoginFailed(t('core.login.declined', ['service' => $this->service, 'error' => $error]));
+            throw new LoginFailed(t('core.login.declined', ['service' => $this->service, 'error' => $error]), error: $answer->text('error'));
         }
 
         return $fields;

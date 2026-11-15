@@ -32,6 +32,7 @@ final readonly class Opotopo
     private const REFRESH = 'modules.opotopo.refresh';
     private const ACCESS = 'modules.opotopo.access';
     private const EXPIRES = 'modules.opotopo.expires';
+    private const LOST = 'invalid_grant';
 
     public function __construct(
         private HttpClientInterface $http,
@@ -99,6 +100,35 @@ final readonly class Opotopo
         return '' !== $this->settings->get(self::REFRESH);
     }
 
+    public function access(): ?string
+    {
+        if (!$this->connected()) {
+            return null;
+        }
+        $expires = $this->settings->moment(self::EXPIRES);
+        if (null !== $expires && now()->modify(\sprintf('+%d seconds', Tree::TIMEOUT)) < $expires) {
+            return $this->settings->get(self::ACCESS);
+        }
+
+        $client = $this->settings->get(self::CLIENT);
+        try {
+            $this->keep($client, $this->exchange()->post($this->endpoint('token_endpoint'), [
+                'grant_type' => 'refresh_token',
+                'refresh_token' => $this->settings->get(self::REFRESH),
+                'client_id' => $client,
+                'resource' => self::RESOURCE,
+            ]));
+        } catch (LoginFailed $failed) {
+            if (self::LOST === $failed->error) {
+                $this->drop();
+            }
+
+            return null;
+        }
+
+        return $this->settings->get(self::ACCESS);
+    }
+
     public function disconnect(): ?Refusal
     {
         $refusal = null;
@@ -111,12 +141,17 @@ final readonly class Opotopo
         } catch (LoginFailed $failed) {
             $refusal = new Refusal($failed->reason);
         }
+        $this->drop();
+
+        return $refusal;
+    }
+
+    private function drop(): void
+    {
         foreach ([self::CLIENT, self::REFRESH, self::ACCESS, self::EXPIRES] as $name) {
             $this->settings->clear(self::field($name));
         }
         $this->em->flush();
-
-        return $refusal;
     }
 
     private function keep(string $client, Answer $tokens): void

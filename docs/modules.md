@@ -65,7 +65,7 @@ The module sources on the Extensions page of the settings take a private Compose
 - A ZIP archive needs `composer.json` at its root or in its only top-level folder, with the package name and a stable version. A new version of the package is a new archive
 - A package from a ZIP wins over the repositories, and your repositories win over Packagist
 - The job writes your sources into the `repositories` of `composer.json` under names starting with `adzercms-` before each Composer run
-- The OPOTOPO row connects your OPOTOPO account: Connect leads to sign-in and consent on OPOTOPO and back, Disconnect revokes the access of the site
+- The OPOTOPO row connects your OPOTOPO account: Connect leads to sign-in and consent on OPOTOPO and back, Disconnect revokes the access of the site. While connected, the catalog and Composer reach the OPOTOPO host with the access of the connection instead of the credentials of its rows, so purchased modules install without a token; the job renews the access before Composer runs
 
 ## Turn on sign-in, SMS, a bot, captcha or a counter
 
