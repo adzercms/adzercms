@@ -42,6 +42,30 @@ final readonly class Pictures
     /** @param array<array-key, string> $values */
     public function drop(array $values): void
     {
-        $this->photos->drop(self::PLACE, array_values($values));
+        $this->photos->drop(self::PLACE, self::names($values));
+    }
+
+    /**
+     * @param array<array-key, string> $values
+     *
+     * @return list<string>
+     */
+    public static function names(array $values): array
+    {
+        $names = [];
+        foreach ($values as $value) {
+            $rows = json_validate($value) ? json_decode($value, true) : null;
+            if (\is_array($rows)) {
+                array_walk_recursive($rows, static function (mixed $cell) use (&$names): void {
+                    if (\is_string($cell)) {
+                        $names[] = $cell;
+                    }
+                });
+            } else {
+                $names[] = $value;
+            }
+        }
+
+        return $names;
     }
 }

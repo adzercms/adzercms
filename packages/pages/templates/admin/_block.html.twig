@@ -17,7 +17,7 @@
         {% endif %}
         <div class="fields aligned">
             {% for field in type.fields %}
-                {% embed '@Theme/_field_row.html.twig' with {field: field, id: 'block-' ~ field.name, name: 'value[' ~ field.name ~ ']', value: values[field.name]} only %}
+                {% embed '@Theme/_field_row.html.twig' with {field: field, id: 'block-' ~ field.name, name: 'value[' ~ field.name ~ ']', value: values[field.name], pictures: {route: 'pages_picture', drop: 'drop[' ~ field.name ~ ']'}} only %}
                     {% block extra %}
                         {% if field.type.picture and value %}
                             <div class="field-extra">

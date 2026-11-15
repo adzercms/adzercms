@@ -92,6 +92,9 @@ final readonly class Catalog
                 if (null !== $bundle && !str_starts_with($field->name, $prefixes[$bundle])) {
                     throw new \LogicException(\sprintf('setting key %s of module %s lacks its prefix %s', $field->name, Registry::key($bundle), $prefixes[$bundle]));
                 }
+                if ([] !== array_filter($field->fields, static fn (Field $cell): bool => $cell->type->picture())) {
+                    throw new \LogicException(\sprintf('setting key %s: a photo cell of a group of rows belongs to page block types', $field->name));
+                }
                 yield [$field, $bundle];
             }
         }

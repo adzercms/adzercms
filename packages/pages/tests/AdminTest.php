@@ -137,6 +137,57 @@ final class AdminTest extends SchemaTestCase
         self::assertNull(self::service(Pictures::class)->path($kept), 'a dropped page takes the files of its blocks');
     }
 
+    #[Group('ACMS-PAGE-0012')]
+    #[Group('ACMS-PAGE-0019')]
+    #[Group('ACMS-US-0070')]
+    #[Group('ACMS-US-0071')]
+    public function testCardPicturesReachVisitorAndTheirFilesLeaveWithTheirCells(): void
+    {
+        $page = new Page('Home', Page::ROOT);
+        $page->edit('Home', Page::ROOT, null, true, false, null);
+        $this->em->persist($page);
+        $this->em->flush();
+        $record = self::LIST.'/'.$page->getId();
+        $other = $this->hero($page, 'Internet')->getValues()['picture'];
+
+        $refused = $this->post($record.'/blocks/new', ['type' => 'cards', 'value' => ['title' => 'Works', 'cards' => [['title' => 'Board', 'link' => 'ftp://board']]]]);
+        self::assertSame(self::phrase(t('pages.refusal.link', ['field' => t('pages.field.link')])), trim($refused->filter('.flash-error')->text()));
+        $this->post($record.'/blocks/new', ['type' => 'cards', 'value' => ['title' => 'Works', 'cards' => [
+            ['title' => 'Board', 'text' => "Ads board\nStack: Java", 'link' => 'https://board.example'],
+            ['title' => 'Plans', 'link' => '/plans'],
+        ]]], ['value' => ['cards' => [['picture' => $this->picture('board.png')]]]]);
+        $cards = array_find(self::service(PageBlockRepository::class)->of($page), static fn (PageBlock $block): bool => 'cards' === $block->getType()) ?? self::fail('the cards are not added');
+        $first = json_decode($cards->getValues()['cards'], true)[0]['picture'];
+        self::assertSame('Works · Board · Plans', trim($this->arrive($record)->filter('tbody tr')->last()->filter('td:nth-child(3)')->text()), 'the summary carries no file name');
+
+        $visit = $this->client->request('GET', '/');
+        $links = $visit->filter('.site-cards a');
+        self::assertSame(['https://board.example', '_blank', 'noopener'], [$links->eq(0)->attr('href'), $links->eq(0)->attr('target'), $links->eq(0)->attr('rel')]);
+        self::assertSame(['/plans', null], [$links->eq(1)->attr('href'), $links->eq(1)->attr('target')], 'an address of the site opens in place');
+        self::assertSame(['Ads board', 'Stack: Java'], $links->eq(0)->filter('p')->each(static fn (Crawler $line): string => $line->text()));
+        $this->client->request('GET', (string) $visit->filter('.site-cards img')->attr('src'));
+        self::assertResponseHeaderSame('Content-Type', 'image/webp');
+
+        $edit = self::LIST.'/blocks/'.$cards->getId();
+        self::assertSame($first, $this->client->request('GET', $edit)->filter('input[type="hidden"][name="value[cards][0][picture]"]')->attr('value'));
+        $rows = [['picture' => $first, 'title' => 'Board'], ['picture' => $other, 'title' => 'Plans']];
+        $this->post($edit, ['value' => ['title' => 'Works', 'cards' => $rows]], ['value' => ['cards' => [['picture' => $this->picture('next.png')]]]]);
+        [$next, $foreign] = array_map(static fn (array $card): ?string => $card['picture'] ?? null, json_decode($this->reread($cards)->getValues()['cards'], true));
+        self::assertNotSame($first, $next);
+        self::assertNull($foreign, 'a name out of the pictures of the field leaves its cell empty');
+        self::assertNull(self::service(Pictures::class)->path($first), 'a replaced picture takes its file');
+        self::assertNotNull(self::service(Pictures::class)->path($other), 'a foreign name keeps its file');
+
+        $this->post($edit, ['value' => ['title' => 'Works', 'cards' => [['picture' => $next, 'title' => 'Board']]], 'drop' => ['cards' => [['picture' => '1']]]]);
+        self::assertEquals(['title' => 'Works', 'cards' => '[{"title":"Board"}]'], $this->reread($cards)->getValues());
+        self::assertNull(self::service(Pictures::class)->path($next), 'a dropped picture takes its file');
+
+        $this->post($edit, ['value' => ['title' => 'Works', 'cards' => [['title' => 'Board']]]], ['value' => ['cards' => [['picture' => $this->picture('last.png')]]]]);
+        $last = json_decode($this->reread($cards)->getValues()['cards'], true)[0]['picture'];
+        $this->post($edit.'/drop');
+        self::assertNull(self::service(Pictures::class)->path($last), 'a dropped block takes the files of its cells');
+    }
+
     #[Group('ACMS-CORE-1158')]
     #[Group('ACMS-FLOW-0021')]
     #[Group('ACMS-US-0071')]

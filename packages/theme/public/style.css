@@ -510,6 +510,8 @@ label { display: block; margin-bottom: 0.9rem; font-size: 13px; font-weight: 500
 .field-extra { margin-top: 0.5rem; }
 .field-rows { display: grid; gap: 0.5rem 1rem; grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); align-items: start; }
 .field-rows-head { font-size: 13px; color: var(--text-gray); }
+.field-cell { display: grid; gap: 0.5rem; justify-items: start; }
+.field-cell .picture-preview { margin: 0; }
 .text-values { grid-column: 1 / -1; margin-top: 0.5rem; font-size: 13px; }
 .text-values > summary { color: var(--text-gray); }
 .text-values dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.25rem 1rem; margin: 0.5rem 0 0; }
@@ -1742,6 +1744,14 @@ h1.site-heading { font-size: clamp(28px, 5vw, 44px); line-height: 1.15; }
 .site-points { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); margin: 0; padding: 0; list-style: none; }
 .site-points h3 { margin: 0 0 0.5rem; }
 .site-points p { margin: 0; color: var(--text-gray); }
+.site-cards { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); margin: 0; padding: 0; list-style: none; }
+.site-cards li { display: flex; flex-direction: column; padding: 1.25rem; border: 1px solid var(--border-light); border-radius: var(--radius); background: var(--surface); }
+.site-cards li:has(> a:hover) { border-color: var(--primary); }
+.site-cards li > a { flex: 1; margin: -1.25rem; padding: 1.25rem; color: inherit; text-decoration: none; }
+.site-cards img { display: block; width: auto; max-width: 100%; height: 3rem; margin-bottom: 1rem; object-fit: contain; }
+.site-cards h3 { margin: 0 0 0.5rem; }
+.site-cards p { margin: 0; color: var(--text-gray); }
+.site-cards p + p { margin-top: 0.5rem; }
 .site-questions { max-width: 48rem; }
 .site-questions details { padding: 1rem 0; border-bottom: 1px solid var(--border-light); }
 .site-questions summary { font-weight: 600; cursor: pointer; }

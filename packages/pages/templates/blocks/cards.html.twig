@@ -1,0 +1,15 @@
+{% embed '@Theme/_section.html.twig' with {heading: values.title, level: level} %}
+    {% block content %}
+        <ul class="site-cards">
+            {% for card in values.cards %}
+                <li>
+                    {% if card.link %}<a href="{{ card.link }}"{% if card.link starts with 'https://' %} target="_blank" rel="noopener"{% endif %}>{% endif %}
+                    {% if card.picture %}<img src="{{ card.picture.src }}" width="{{ card.picture.width }}" height="{{ card.picture.height }}" alt="" loading="lazy">{% endif %}
+                    {% if card.title %}<h{{ level + 1 }}>{{ card.title }}</h{{ level + 1 }}>{% endif %}
+                    {% for line in card.text|split("\n")|filter(line => line) %}<p>{{ line }}</p>{% endfor %}
+                    {% if card.link %}</a>{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endblock %}
+{% endembed %}

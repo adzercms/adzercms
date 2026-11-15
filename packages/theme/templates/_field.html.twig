@@ -6,7 +6,19 @@
         {% for row in value %}
             {% set at = loop.index0 %}
             {% for column in field.fields %}
-                {% include '@Theme/_field.html.twig' with {field: column, id: id ~ '-' ~ at ~ '-' ~ column.name, name: name ~ '[' ~ at ~ '][' ~ column.name ~ ']', value: row[column.name], label: column.label, grouped: true} only %}
+                {% set cell = '[' ~ at ~ '][' ~ column.name ~ ']' %}
+                {% if column.type.picture %}
+                    <div class="field-cell">
+                        {% include '@Theme/_field.html.twig' with {field: column, id: id ~ '-' ~ at ~ '-' ~ column.name, name: name ~ cell, label: column.label} only %}
+                        {% if row[column.name] %}
+                            <input type="hidden" name="{{ name ~ cell }}" value="{{ row[column.name] }}">
+                            {% include '@Theme/_preview.html.twig' with {src: path(pictures.route, {file: row[column.name]})} only %}
+                            <button type="submit" class="secondary small" name="{{ pictures.drop ~ cell }}" value="1" formnovalidate>{{ 'core.action.drop'|trans }}</button>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    {% include '@Theme/_field.html.twig' with {field: column, id: id ~ '-' ~ at ~ '-' ~ column.name, name: name ~ cell, value: row[column.name], label: column.label, grouped: true} only %}
+                {% endif %}
             {% endfor %}
         {% endfor %}
         {% if constant(type ~ 'Markup') in field.fields|map(column => column.type) %}{% include '@Theme/_text_values.html.twig' only %}{% endif %}

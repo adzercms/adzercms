@@ -31,7 +31,7 @@ enum Type
     public function cell(): bool
     {
         return match ($this) {
-            self::Text, self::Url, self::Lines, self::Markup, self::Time, self::Date, self::Toggle, self::Choice, self::Decimal, self::Color => true,
+            self::Text, self::Url, self::Lines, self::Markup, self::Photo, self::Time, self::Date, self::Toggle, self::Choice, self::Decimal, self::Color => true,
             default => false,
         };
     }

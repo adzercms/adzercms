@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Pages;
 
+use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Seo\Breadcrumbs;
 use AdzerCMS\Core\Setting\Brand;
@@ -40,8 +41,8 @@ final readonly class Site
             foreach ($type->fields() as $field) {
                 $value = $stored[$field->name] ?? '';
                 $values[$field->name] = match (true) {
-                    Type::Rows === $field->type => Values::entries($field, $value),
-                    $field->type->picture() => '' === $value ? null : $this->pictures->shown($value),
+                    Type::Rows === $field->type => array_map(fn (array $row): array => $this->shown($field->fields, $row), Values::entries($field, $value)),
+                    $field->type->picture() => $this->picture($value),
                     default => $value,
                 };
             }
@@ -70,6 +71,29 @@ final readonly class Site
             ['@type' => 'WebSite', 'name' => $this->brand->title(), 'url' => $root],
             array_filter(['@type' => 'Organization', 'name' => $this->brand->title(), 'url' => $root, 'logo' => $this->brand->logo()]),
         ];
+    }
+
+    /**
+     * @param list<Field>           $cells
+     * @param array<string, string> $row
+     *
+     * @return array<string, mixed>
+     */
+    private function shown(array $cells, array $row): array
+    {
+        foreach ($cells as $cell) {
+            if ($cell->type->picture()) {
+                $row[$cell->name] = $this->picture($row[$cell->name]);
+            }
+        }
+
+        return $row;
+    }
+
+    /** @return array{src: string, width: int, height: int}|null */
+    private function picture(string $name): ?array
+    {
+        return '' === $name ? null : $this->pictures->shown($name);
     }
 
     public function url(Page $page, int $reference = UrlGeneratorInterface::ABSOLUTE_URL): string

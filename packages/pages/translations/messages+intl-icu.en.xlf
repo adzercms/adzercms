@@ -25,6 +25,12 @@
         <target>Call to action</target>
       </segment>
     </unit>
+    <unit id="pages.block.cards">
+      <segment>
+        <source>pages.block.cards</source>
+        <target>Cards</target>
+      </segment>
+    </unit>
     <unit id="pages.block.drop_confirm">
       <segment>
         <source>pages.block.drop_confirm</source>
@@ -101,6 +107,12 @@
       <segment>
         <source>pages.field.button</source>
         <target>Button label</target>
+      </segment>
+    </unit>
+    <unit id="pages.field.cards">
+      <segment>
+        <source>pages.field.cards</source>
+        <target>Cards</target>
       </segment>
     </unit>
     <unit id="pages.field.description">

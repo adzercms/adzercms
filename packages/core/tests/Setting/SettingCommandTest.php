@@ -6,6 +6,7 @@ namespace AdzerCMS\Core\Tests\Setting;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Owner;
+use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Entity\Setting;
 use AdzerCMS\Core\Module\Bundles;
 use AdzerCMS\Core\Module\Store;
@@ -210,5 +211,20 @@ final class SettingCommandTest extends SchemaTestCase
         $this->expectExceptionObject(new \LogicException('setting key shop.title is declared by two owners'));
 
         (new Catalog([new Shop(), $twin], new Bundles([]), new Fragments([])))->fields();
+    }
+
+    #[Group('ACMS-CORE-1164')]
+    public function testPhotoCellOfSettingStopsCatalog(): void
+    {
+        $gallery = new class implements Owner {
+            public function settingFields(): array
+            {
+                return [new Field('shop.gallery', t('Gallery'), Type::Rows, fields: [new Field('photo', t('Photo'), Type::Photo)])];
+            }
+        };
+
+        $this->expectExceptionObject(new \LogicException('setting key shop.gallery: a photo cell of a group of rows belongs to page block types'));
+
+        (new Catalog([$gallery], new Bundles([]), new Fragments([])))->fields();
     }
 }
