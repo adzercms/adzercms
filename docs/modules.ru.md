@@ -87,14 +87,12 @@ printf '%s' "$PIGEON_TOKEN" | bin/console adzercms:setting sms.pigeon.token --st
 Модуль `opotopo` выгружает каталоги других модулей объявлениями продавца на площадку [OPOTOPO](https://opotopo.com) через её Seller API: новые позиции становятся объявлениями, изменённые обновляются, а объявления позиций, которых больше нет в каталоге, уходят в архив. Модуль предлагает свой каталог, только если `opotopo` установлен.
 
 ```sh
-bin/console adzercms:setting opotopo.url https://api.opotopo.com
 printf '%s' "$OPOTOPO_KEY" | bin/console adzercms:setting opotopo.key --stdin
 bin/console adzercms:setting opotopo.organization "$OPOTOPO_ORGANIZATION_ID"
 bin/console adzercms:setting opotopo.publish 1
 ```
 
-- `opotopo.url` — адрес Seller API
-- `opotopo.key` — ключ из раздела «Разработчикам» аккаунта OPOTOPO; нужные ему разрешения перечислены в [руководстве клиента на PHP](https://opotopo.com/knowledge/developers/klient-na-php)
+- `opotopo.key` — ключ из раздела «Разработчикам» аккаунта OPOTOPO; нужные ему разрешения перечислены в [руководстве клиента на PHP](https://opotopo.com/knowledge/developers/klient-na-php) и в шагах на странице настроек модуля
 - `opotopo.organization` — организация продавца; без неё объявления заводятся от организации ключа, у личного ключа — от его владельца
 - `opotopo.publish` — отправляет объявления на публикацию после каждого изменения; если выключить, новые объявления остаются черновиками
 

@@ -21,15 +21,14 @@ final class ExportTest extends SchemaTestCase
 {
     use Configuration;
 
-    private const PLATFORM = 'https://api.opotopo.example.test';
     private const STORAGE = 'https://storage.opotopo.example.test/';
     private const KEY = 'seller-key';
     private const ORGANIZATION = '0199a000-0000-7000-8000-00000000a001';
     private const CATEGORY = '0199a000-0000-7000-8000-00000000c001';
-    private const SYNC = self::PLATFORM.'/rest/v1/advertisement/seller/ads/sync';
-    private const AD = self::PLATFORM.'/rest/v1/advertisement/seller/ads/';
-    private const INITIATE = self::PLATFORM.'/rest/v1/file/seller/upload/initiate';
-    private const COMPLETE = self::PLATFORM.'/rest/v1/file/seller/upload/complete';
+    private const SYNC = OpotopoSettings::API.'/rest/v1/advertisement/seller/ads/sync';
+    private const AD = OpotopoSettings::API.'/rest/v1/advertisement/seller/ads/';
+    private const INITIATE = OpotopoSettings::API.'/rest/v1/file/seller/upload/initiate';
+    private const COMPLETE = OpotopoSettings::API.'/rest/v1/file/seller/upload/complete';
     private const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
 
     /** @var list<array{key: string, body: array<string, mixed>}> */
@@ -55,7 +54,6 @@ final class ExportTest extends SchemaTestCase
     {
         parent::setUp();
         $this->configure([
-            OpotopoSettings::URL => self::PLATFORM,
             OpotopoSettings::KEY => self::KEY,
             OpotopoSettings::ORGANIZATION => self::ORGANIZATION,
             OpotopoSettings::PUBLISH => '1',

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Opotopo;
 
 use AdzerCMS\Contracts\Setting\Field;
+use AdzerCMS\Contracts\Setting\Guided;
 use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Setting\Settings;
@@ -12,9 +13,9 @@ use Opotopo\SellerApi\ClientConfig;
 
 use function Symfony\Component\Translation\t;
 
-final readonly class OpotopoSettings implements Owner
+final readonly class OpotopoSettings implements Owner, Guided
 {
-    public const URL = 'opotopo.url';
+    public const API = 'https://api.opotopo.com';
     public const KEY = 'opotopo.key';
     public const ORGANIZATION = 'opotopo.organization';
     public const PUBLISH = 'opotopo.publish';
@@ -29,23 +30,26 @@ final readonly class OpotopoSettings implements Owner
     public function settingFields(): array
     {
         return [
-            new Field(self::URL, t('opotopo.setting.url'), Type::Url),
             new Field(self::KEY, t('opotopo.setting.key'), Type::Secret, group: self::KEY),
             new Field(self::ORGANIZATION, t('opotopo.setting.organization')),
             new Field(self::PUBLISH, t('opotopo.setting.publish'), Type::Toggle),
         ];
     }
 
+    public function guide(): array
+    {
+        return [t('opotopo.guide.key')];
+    }
+
     public function config(): ?ClientConfig
     {
-        $url = $this->settings->get(self::URL);
         $key = $this->settings->get(self::KEY);
-        if ('' === $url || '' === $key) {
+        if ('' === $key) {
             return null;
         }
 
         $organization = $this->settings->get(self::ORGANIZATION);
 
-        return new ClientConfig($url, $key, '' === $organization ? null : $organization, $this->settings->on(self::PUBLISH), self::RETRIES, self::RETRY_PAUSE_MS);
+        return new ClientConfig(self::API, $key, '' === $organization ? null : $organization, $this->settings->on(self::PUBLISH), self::RETRIES, self::RETRY_PAUSE_MS);
     }
 }

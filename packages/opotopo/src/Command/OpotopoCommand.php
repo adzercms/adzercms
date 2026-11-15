@@ -35,7 +35,7 @@ final class OpotopoCommand
     ): int {
         $config = $this->settings->config();
         if (null === $config) {
-            $output->writeln(\sprintf('not configured: %s and %s', OpotopoSettings::URL, OpotopoSettings::KEY));
+            $output->writeln(\sprintf('not configured: %s', OpotopoSettings::KEY));
 
             return Command::FAILURE;
         }

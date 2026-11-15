@@ -87,14 +87,12 @@ An enabled counter brings a cookie notice bar to the bottom of the pages: the co
 The `opotopo` module turns the catalogs of other modules into seller listings on the [OPOTOPO](https://opotopo.com) marketplace through its Seller API: new items become listings, changed ones are updated, and the listings of items gone from a catalog are archived. A module offers its catalog only when `opotopo` is installed.
 
 ```sh
-bin/console adzercms:setting opotopo.url https://api.opotopo.com
 printf '%s' "$OPOTOPO_KEY" | bin/console adzercms:setting opotopo.key --stdin
 bin/console adzercms:setting opotopo.organization "$OPOTOPO_ORGANIZATION_ID"
 bin/console adzercms:setting opotopo.publish 1
 ```
 
-- `opotopo.url` — the Seller API address
-- `opotopo.key` — a key from the "For developers" section of your OPOTOPO account; the permissions it needs are listed in the [PHP client guide](https://opotopo.com/en/knowledge/developers/klient-na-php)
+- `opotopo.key` — a key from the "For developers" section of your OPOTOPO account; the permissions it needs are listed in the [PHP client guide](https://opotopo.com/en/knowledge/developers/klient-na-php) and in the steps on the module's settings page
 - `opotopo.organization` — the seller organization; without it the listings go to the organization of the key, or to its owner for a personal key
 - `opotopo.publish` — sends the listings to publication after every change; switched off, new listings stay drafts
 

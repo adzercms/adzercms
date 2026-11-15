@@ -13,6 +13,12 @@
         <target>Позиций отклонено ОПОТОПО: {count}</target>
       </segment>
     </unit>
+    <unit id="opotopo.guide.key">
+      <segment>
+        <source>opotopo.guide.key</source>
+        <target>Откройте https://opotopo.com/profile/developers, создайте ключ с разрешениями записи и снятия объявлений и загрузки файлов и скопируйте его в поле «Ключ Seller API»</target>
+      </segment>
+    </unit>
     <unit id="opotopo.setting.key">
       <segment>
         <source>opotopo.setting.key</source>
@@ -29,12 +35,6 @@
       <segment>
         <source>opotopo.setting.publish</source>
         <target>Публикация объявлений</target>
-      </segment>
-    </unit>
-    <unit id="opotopo.setting.url">
-      <segment>
-        <source>opotopo.setting.url</source>
-        <target>Адрес площадки</target>
       </segment>
     </unit>
   </file>

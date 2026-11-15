@@ -13,6 +13,12 @@
         <target>Items refused by OPOTOPO: {count}</target>
       </segment>
     </unit>
+    <unit id="opotopo.guide.key">
+      <segment>
+        <source>opotopo.guide.key</source>
+        <target>Open https://opotopo.com/profile/developers, create a key with the permissions to write and remove listings and upload files, and copy it into the “Seller API key” field</target>
+      </segment>
+    </unit>
     <unit id="opotopo.setting.key">
       <segment>
         <source>opotopo.setting.key</source>
@@ -29,12 +35,6 @@
       <segment>
         <source>opotopo.setting.publish</source>
         <target>Publish listings</target>
-      </segment>
-    </unit>
-    <unit id="opotopo.setting.url">
-      <segment>
-        <source>opotopo.setting.url</source>
-        <target>Marketplace address</target>
       </segment>
     </unit>
   </file>
