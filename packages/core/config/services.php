@@ -67,7 +67,7 @@ return static function (ContainerConfigurator $container): void {
     $services->set(Snapshot::class);
     $services->set(Marks::class)->arg('$httpClient', new Reference(Repositories::CLIENT));
     $services->set(Store::class)->arg('$httpClient', new Reference(Repositories::CLIENT));
-    $services->set(StoreImages::class)->arg('$httpClient', new Reference(Repositories::CLIENT));
+    $services->set(StoreImages::class);
     $services->set(Catalog::class);
     $services->set(Tree::class);
     $services->set(Operations::class);

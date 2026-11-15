@@ -234,6 +234,7 @@ final class CatalogTest extends SchemaTestCase
 
     #[Group('ACMS-CORE-1056')]
     #[Group('ACMS-CORE-1146')]
+    #[Group('ACMS-CORE-1167')]
     public function testImagesOfEntryAreCopiedOnceAskedAgainWhenMissedAndDroppedOutOfSnapshot(): void
     {
         $image = new \Imagick();
