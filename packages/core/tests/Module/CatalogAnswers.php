@@ -118,10 +118,11 @@ trait CatalogAnswers
      * @param array<string, string> $provide
      * @param list<string>          $categories
      * @param array<string, string> $translations
+     * @param array<string, string> $opotopo
      */
-    private function offer(string $name, string $version, string $type = Registry::TYPE, array $provide = [], array $categories = [], array $translations = []): void
+    private function offer(string $name, string $version, string $type = Registry::TYPE, array $provide = [], array $categories = [], array $translations = [], array $opotopo = []): void
     {
-        $this->packages[$name] = [self::manifest($name, $version, $type, $provide, $categories, $translations)];
+        $this->packages[$name] = [array_replace_recursive(self::manifest($name, $version, $type, $provide, $categories, $translations), ['extra' => ['opotopo' => $opotopo]])];
     }
 
     private function branch(string $name, string $alias, ?string $reference = null): void

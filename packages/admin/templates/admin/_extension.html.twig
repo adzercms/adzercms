@@ -17,6 +17,7 @@
 {% macro version(row) %}
     {{ row.version ?: blank() }}{% if row.verified %} {{ badge(row.verified) }}{% endif %}
     {% if row.update %}<br><span class="muted">{{ 'admin.modules.update'|trans({version: row.update}) }}</span>{% if row.update_verified %} {{ badge(row.update_verified) }}{% endif %}{% endif %}
+    {% if row.price %}<br>{{ amount(row.price, false) }}{% endif %}
 {% endmacro %}
 
 {% macro state(row) %}

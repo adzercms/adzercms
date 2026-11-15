@@ -1,6 +1,6 @@
 {% for action in actions|default([]) %}
     {% if action.href is defined %}
-        <a class="button" href="{{ action.href }}">{{ action.label|trans }}</a>
+        <a class="button" href="{{ action.href }}"{% if action.external|default(false) %} target="_blank" rel="noopener"{% endif %}>{{ action.label|trans }}</a>
     {% elseif action.post|default(false) %}
         <form method="post" action="{{ path(action.route, action.params) }}">
             {{ csrf_field() }}

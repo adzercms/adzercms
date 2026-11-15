@@ -36,6 +36,7 @@ use AdzerCMS\Core\Tests\Notice\Fixture\Relay\RelaySettings;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Ui\Back;
 use AdzerCMS\Core\Ui\Entries;
+use AdzerCMS\Core\Ui\Money;
 use Composer\InstalledVersions;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -54,6 +55,7 @@ final class ModuleWebTest extends SchemaTestCase
     private const REPOSITORY = 'https://repo.acme.test';
     private const MODULES = '/admin/modules';
     private const COVER = 'https://93.184.216.34/cover.png';
+    private const CARD = 'https://opotopo.example.test/ad/';
     private const SOURCES = '/admin/settings/'.ModuleSources::PAGE->value;
     private const SOURCE = '/admin/settings/sources/';
     private const OPERATIONS = '/admin/modules?tab=operations';
@@ -314,6 +316,28 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertSame(['1.2.0 '.self::phrase('admin.modules.verified'), '1.0.0'], [$version('acme/till'), $version('acme/shop')]);
         self::assertSame([null], self::confirmations($page, 'acme/till'));
         self::assertSame([self::phrase('admin.modules.unverified', ['package' => 'acme/shop'])], self::confirmations($page, 'acme/shop'));
+    }
+
+    #[Group('ACMS-CORE-1117')]
+    #[Group('ACMS-US-0004')]
+    public function testPaidModuleNamesItsPriceAndLeadsToPurchaseOnOpotopoUntilInstalled(): void
+    {
+        $this->answerCatalog();
+        $this->listed(['acme/till', 'acme/shop', 'adzercms/admin']);
+        $this->offer('acme/till', '1.2.0', opotopo: ['url' => self::CARD.'1', 'price' => '1500.00']);
+        $this->offer('acme/shop', '1.0.0');
+        $this->offer('adzercms/admin', '9.0.0', opotopo: ['url' => self::CARD.'2', 'price' => '900.00']);
+        self::command('adzercms:modules')->execute([]);
+        $page = $this->client->request('GET', self::MODULES);
+        $purchases = static fn (string $name): array => $page->filter('#rows tbody tr')
+            ->reduce(static fn (Crawler $row): bool => $name === trim($row->filter('td strong')->text()))
+            ->filter('td.row-actions a[target="_blank"]')
+            ->each(static fn (Crawler $link): array => [trim($link->text()), $link->attr('href')]);
+
+        self::assertSame([[self::phrase('admin.modules.buy'), self::CARD.'1']], $purchases('acme/till'));
+        self::assertSame('1.2.0 '.self::phrase(Money::rubles('1500.00')), trim(self::cell($page->filter('#rows'), 'acme/till', self::phrase('admin.modules.version'))->text()));
+        self::assertSame([], $purchases('acme/shop'), 'a free module');
+        self::assertSame([], $purchases('adzercms/admin'), 'an installed module');
     }
 
     #[Group('ACMS-US-0004')]

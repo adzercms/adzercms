@@ -31,6 +31,7 @@ final readonly class Package
         public ?string $reference,
         public ?string $author = null,
         public ?string $price = null,
+        public ?string $card = null,
     ) {
     }
 
@@ -113,6 +114,7 @@ final readonly class Package
             $reference,
             self::text($extra['author'] ?? null),
             self::price($version['extra']['opotopo']['price'] ?? null),
+            self::link($version['extra']['opotopo']['url'] ?? null),
         );
     }
 

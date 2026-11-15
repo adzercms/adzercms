@@ -55,6 +55,12 @@
         <target>Пользователи</target>
       </segment>
     </unit>
+    <unit id="admin.modules.buy">
+      <segment>
+        <source>admin.modules.buy</source>
+        <target>Купить на OPOTOPO</target>
+      </segment>
+    </unit>
     <unit id="admin.modules.category">
       <segment>
         <source>admin.modules.category</source>

@@ -165,6 +165,7 @@ final class ModuleController extends AbstractController
             $module = null === $key ? null : $assembled[$key] ?? null;
             $operation = $opened[$row->name] ?? null;
             $replaced = Operations::replaced($row, $all);
+            $card = null === $row->installed && null !== $row->package->price ? $row->package->card : null;
             $offers[] = [
                 'name' => $row->name,
                 'description' => $row->package->description->trans($translator),
@@ -176,6 +177,7 @@ final class ModuleController extends AbstractController
                 'verified' => (null === $row->installed ? $row->verified : $row->installedVerified) ? Badge::good(t('admin.modules.verified')) : null,
                 'update' => $row->updatable ? $row->version : null,
                 'update_verified' => $row->verified ? Badge::good(t('admin.modules.verified')) : null,
+                'price' => null === $card ? null : $row->package->price,
                 'repository' => match ($row->repository) {
                     null => '',
                     Artifacts::REPOSITORY => $translator->trans('admin.sources.zip'),
@@ -184,6 +186,7 @@ final class ModuleController extends AbstractController
                 'state' => $operation?->getState() ?? ModuleState::of($row),
                 'operation' => $operation?->getAction()->label(),
                 'actions' => [
+                    ...null === $card ? [] : [['label' => t('admin.modules.buy'), 'href' => $card, 'external' => true]],
                     ...null !== $module && $module['settings'] ? [['label' => t('admin.modules.settings'), 'href' => $this->generateUrl(SettingPages::MODULE_ROUTE, ['key' => $key])]] : [],
                     ...null === $operation && $this->operations->previewed($row) ? [['label' => t('admin.modules.preview'), 'route' => 'admin_module_preview', 'params' => ['package' => $row->name], 'post' => true]] : [],
                     ...array_map(static fn (ModuleAction $action): array => [
