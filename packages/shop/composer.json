@@ -1,0 +1,65 @@
+{
+    "name": "adzercms/shop",
+    "type": "adzercms-module",
+    "description": "Online shop for AdzerCMS: products with variants and photos, a cart, orders with pickup or delivery and payment online or on receipt",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "shop",
+        "ecommerce",
+        "cart"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "ext-ctype": "*",
+        "ext-imagick": "*",
+        "ext-mbstring": "*",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
+        "adzercms/theme-implementation": "^1.0",
+        "doctrine/collections": "^3.1",
+        "doctrine/dbal": "^4.5",
+        "doctrine/migrations": "^3.9",
+        "doctrine/orm": "^3.7",
+        "symfony/clock": "7.4.*",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/event-dispatcher": "7.4.*",
+        "symfony/framework-bundle": "7.4.*",
+        "symfony/http-foundation": "7.4.*",
+        "symfony/polyfill-php86": "^1.43",
+        "symfony/routing": "7.4.*",
+        "symfony/security-http": "7.4.*",
+        "symfony/translation": "7.4.*",
+        "symfony/translation-contracts": "^3.7",
+        "twig/twig": "^3.30"
+    },
+    "require-dev": {
+        "adzercms/admin": "^1.0",
+        "adzercms/payments": "^1.0"
+    },
+    "suggest": {
+        "adzercms/payments": "online payment of orders"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Shop\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Shop\\ShopBundle",
+            "description": {
+                "ru": "Интернет-магазин: товары с вариантами и фото, корзина, заказы с самовывозом или доставкой и оплатой онлайн или при получении"
+            },
+            "categories": ["commerce"],
+            "title": {
+                "en": "Online shop",
+                "ru": "Интернет-магазин"
+            }
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

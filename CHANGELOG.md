@@ -15,6 +15,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - The "Translations" tab in the language of the instance also finds the text settings of the settings pages, a row names the page and the field and leads to the field
 - `BotListener`: a feature module takes what people send to the bots
 - `adzercms/pages`: site pages of blocks in order on the theme site frame — hero, advantages, text, questions with FAQPage, call to action and block types of other modules through the `AdzerCMS\Pages\Block` service, a header menu, the pages in the sitemap
+- `adzercms/shop`: an online shop on the theme site frame — products with variants and photos by categories, a cart, orders without sign-up with pickup or delivery and payment online or on receipt, the admin sections "Products" and "Orders" and a notice of a new order to the administrators
 - Setting field types `Type::Markup` — GitHub-flavoured Markdown shown by the `markup` Twig filter without raw HTML and unsafe links, and `Type::Rows` — rows of the fields it declares
 - `LoginListener`: a feature module that waits for a login takes the profile of the login service instead of the entry
 - `ModuleManagement`: a feature module closes the Extensions section and the Extensions settings page to a request, such as to an admin who signed in by password

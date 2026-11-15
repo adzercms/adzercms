@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "40c408ef80dacfca7da98a0d607d2c7a",
+    "content-hash": "dcce0d324b5c201dd143107d6f7c1e62",
     "packages": [
         {
             "name": "adzercms/admin",
@@ -1343,6 +1343,85 @@
                 "openid-connect",
                 "sber-id",
                 "social-login",
+                "symfony"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "adzercms/shop",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/shop",
+                "reference": "3fa2021c1eea761186d09fbb2434cb8f87b3e991"
+            },
+            "require": {
+                "adzercms/contracts": "^1.0",
+                "adzercms/core": "^1.0",
+                "adzercms/theme-implementation": "^1.0",
+                "doctrine/collections": "^3.1",
+                "doctrine/dbal": "^4.5",
+                "doctrine/migrations": "^3.9",
+                "doctrine/orm": "^3.7",
+                "ext-ctype": "*",
+                "ext-imagick": "*",
+                "ext-mbstring": "*",
+                "php": ">=8.4",
+                "symfony/clock": "7.4.*",
+                "symfony/dependency-injection": "7.4.*",
+                "symfony/event-dispatcher": "7.4.*",
+                "symfony/framework-bundle": "7.4.*",
+                "symfony/http-foundation": "7.4.*",
+                "symfony/polyfill-php86": "^1.43",
+                "symfony/routing": "7.4.*",
+                "symfony/security-http": "7.4.*",
+                "symfony/translation": "7.4.*",
+                "symfony/translation-contracts": "^3.7",
+                "twig/twig": "^3.30"
+            },
+            "require-dev": {
+                "adzercms/admin": "^1.0",
+                "adzercms/payments": "^1.0"
+            },
+            "suggest": {
+                "adzercms/payments": "online payment of orders"
+            },
+            "type": "adzercms-module",
+            "extra": {
+                "adzercms": {
+                    "bundle": "AdzerCMS\\Shop\\ShopBundle",
+                    "description": {
+                        "ru": "Интернет-магазин: товары с вариантами и фото, корзина, заказы с самовывозом или доставкой и оплатой онлайн или при получении"
+                    },
+                    "categories": [
+                        "commerce"
+                    ],
+                    "title": {
+                        "en": "Online shop",
+                        "ru": "Интернет-магазин"
+                    }
+                },
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AdzerCMS\\Shop\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Online shop for AdzerCMS: products with variants and photos, a cart, orders with pickup or delivery and payment online or on receipt",
+            "keywords": [
+                "adzercms",
+                "cart",
+                "ecommerce",
+                "shop",
                 "symfony"
             ],
             "transport-options": {
@@ -17758,6 +17837,7 @@
         "adzercms/payments": 20,
         "adzercms/realtime": 20,
         "adzercms/sber-id": 20,
+        "adzercms/shop": 20,
         "adzercms/smart-captcha": 20,
         "adzercms/sms-pilot": 20,
         "adzercms/support": 20,

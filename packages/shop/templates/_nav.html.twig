@@ -1,0 +1,2 @@
+<a href="{{ path('shop') }}"{{ storefront ? ' aria-current="page"' }}>{{ 'shop.storefront.title'|trans }}</a>
+<a href="{{ path('shop_cart') }}"{{ cart ? ' aria-current="page"' }}>{{ 'shop.cart.link'|trans({count: cart_count()}) }}</a>

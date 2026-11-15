@@ -1,4 +1,4 @@
-<section class="site-section{{ class is defined ? ' ' ~ class }}">
+<section class="site-section{{ class is defined ? ' ' ~ class }}"{% if id is defined %} id="{{ id }}"{% endif %}>
     <div class="site-section-inner">
         {% if heading is defined and heading %}<h{{ level }} class="site-heading">{{ heading }}</h{{ level }}>{% endif %}
         {% block content %}{% endblock %}

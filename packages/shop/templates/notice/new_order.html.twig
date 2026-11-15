@@ -1,0 +1,31 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+{% import '@Core/notice/_macros.html.twig' as mail %}
+
+{% block subject %}{{ 'shop.notice.subject'|trans({brand: brand.title, number: order.id}) }}{% endblock %}
+
+{% block fields %}
+{{ 'shop.field.name'|trans }}: {{ order.name }}
+{{ 'shop.field.phone'|trans }}: {{ order.phone|contact }}
+{% if order.email %}{{ 'shop.field.email'|trans }}: {{ order.email }}
+{% endif %}
+{% for item in order.items %}{{ item.name }}{% if item.variant %}, {{ item.variant }}{% endif %} × {{ item.quantity }}: {{ item.sum|precise }}
+{% endfor %}
+{{ order.receipt.label|trans }}: {{ order.pointAddress ?? order.address }}
+{{ 'shop.field.payment'|trans }}: {{ order.payment.label|trans }}{% if order.paid %}, {{ 'shop.order.paid'|trans }}{% endif %}
+
+{{ 'shop.cart.total'|trans }}: {{ order.total|precise }}
+{% if order.comment %}{{ 'shop.field.comment'|trans }}: {{ order.comment }}
+{% endif %}
+{% endblock %}
+
+{% block text %}
+{{ 'shop.notice.title'|trans({number: order.id}) }}
+{{ block('fields') }}
+{{ url('admin_shop_order', {id: order.id}) }}
+{% endblock %}
+
+{% block content %}
+<h2>{{ 'shop.notice.title'|trans({number: order.id}) }}</h2>
+<p class="message">{{ block('fields')|trim }}</p>
+{{ mail.button(url('admin_shop_order', {id: order.id}), 'shop.notice.action'|trans) }}
+{% endblock %}

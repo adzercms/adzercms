@@ -1,0 +1,12 @@
+{% embed '@Theme/_section.html.twig' with {heading: 'shop.order.title'|trans({number: order.id}), level: 1} %}
+    {% block content %}
+        <p>{{ badge(order.status) }}</p>
+        {% include '@Shop/_order_lines.html.twig' %}
+        {% if payable %}
+            <form method="post" action="{{ path('shop_order_pay', {key: order.key}) }}">
+                {{ csrf_field() }}
+                <button type="submit">{{ 'shop.order.pay'|trans }}</button>
+            </form>
+        {% endif %}
+    {% endblock %}
+{% endembed %}

@@ -1,0 +1,12 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'shop.menu.products'|trans }}{% endblock %}
+
+{% block actions %}
+    <button type="button" hx-get="{{ path('admin_shop_product_new') }}" hx-target="#record">{{ 'shop.product.add'|trans }}</button>
+{% endblock %}
+
+{% block page %}
+{% include '@Shop/admin/_tabs.html.twig' %}
+{% include '@Shop/admin/_products.html.twig' %}
+{% endblock %}

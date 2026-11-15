@@ -54,6 +54,7 @@ final class MaxBotTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0028')]
+    #[Group('ACMS-CORE-1174')]
     #[Group('ACMS-CORE-0124')]
     public function testEnabledBotOpensItsOriginToForms(): void
     {

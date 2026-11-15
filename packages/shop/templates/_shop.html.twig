@@ -1,0 +1,39 @@
+{% embed '@Theme/_section.html.twig' with {heading: 'shop.storefront.title'|trans, level: 1} %}
+    {% block content %}
+        {% if groups is empty %}
+            <p class="empty-state">{{ 'shop.storefront.empty'|trans }}</p>
+        {% else %}
+            <nav class="tabs">
+                {% for group in groups %}<a class="tab" href="#category-{{ group.category.id }}">{{ group.category.name }}</a>{% endfor %}
+            </nav>
+        {% endif %}
+    {% endblock %}
+{% endembed %}
+{% for group in groups %}
+    {% embed '@Theme/_section.html.twig' with {heading: group.category.name, level: 2, id: 'category-' ~ group.category.id} %}
+        {% block content %}
+            <div class="offer-grid">
+                {% for product in group.products %}
+                    {% set page = path('shop_product', {id: product.id}) %}
+                    <article class="offer-card clickable-row" id="product-{{ product.id }}" data-href="{{ page }}">
+                        {% if product.photo %}<img class="offer-cover" src="{{ path('shop_photo', {name: product.photo}) }}" alt="{{ product.name }}" loading="lazy">{% endif %}
+                        <h3 class="offer-title"><a href="{{ page }}">{{ product.name }}</a></h3>
+                        <div class="offer-price">{% include '@Shop/_price.html.twig' %}</div>
+                        <div class="offer-actions">
+                            {% if product.variants is empty %}
+                                <form method="post" action="{{ path('shop_cart_add') }}">
+                                    {{ back_field() }}
+                                    <input type="hidden" name="product" value="{{ product.id }}">
+                                    <input type="hidden" name="card" value="1">
+                                    <button type="submit">{{ 'shop.cart.add'|trans }}</button>
+                                </form>
+                            {% else %}
+                                <a class="button" href="{{ page }}">{{ 'shop.cart.choose'|trans }}</a>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% endblock %}
+    {% endembed %}
+{% endfor %}

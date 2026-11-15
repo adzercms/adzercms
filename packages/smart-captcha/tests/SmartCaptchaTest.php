@@ -34,6 +34,7 @@ final class SmartCaptchaTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0028')]
+    #[Group('ACMS-CORE-1174')]
     #[Group('ACMS-CORE-0051')]
     #[Group('ACMS-US-0001')]
     public function testEnabledCaptchaShowsItsWidgetAndOpensOnlyItsOrigin(): void

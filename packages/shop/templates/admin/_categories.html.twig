@@ -1,0 +1,16 @@
+{% embed '@Theme/_table.html.twig' %}
+    {% block row %}
+        {% set category = row.category %}
+        {% set record = path('admin_shop_category', {id: category.id}) %}
+        <tr class="clickable-row" data-record="{{ record }}">
+            {% include '@Theme/_row_handle.html.twig' with {id: category.id} %}
+            <td class="{{ table.aside('name') }}"><strong>{{ category.name }}</strong></td>
+            <td class="{{ table.aside('products') }}">{{ row.products }}</td>
+            {% include '@Theme/_row_actions.html.twig' with {
+                edit: record,
+                drop: path('admin_shop_category_drop', {id: category.id}),
+                confirm: 'shop.category.confirm_drop'|trans({name: category.name}),
+            } %}
+        </tr>
+    {% endblock %}
+{% endembed %}

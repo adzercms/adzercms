@@ -1,0 +1,9 @@
+{% extends '@Theme/site.html.twig' %}
+
+{% block title %}{{ 'shop.order.title'|trans({number: order.id}) }}{% endblock %}
+
+{% block meta %}{% include '@Theme/_seo.html.twig' with {title: block('title'), description: ''} only %}{% endblock %}
+
+{% block page %}
+{% include '@Shop/_order.html.twig' %}
+{% endblock %}

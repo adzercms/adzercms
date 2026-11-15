@@ -1,0 +1,55 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'shop.order.title'|trans({number: order.id}) }}{% endblock %}
+
+{% block heading %}<span class="record-title">{{ 'shop.order.title'|trans({number: order.id}) }} {{ badge(order.status) }}</span>{% endblock %}
+
+{% block actions %}<a class="button secondary" href="{{ path('admin_shop_orders') }}">{{ 'core.action.to_list'|trans }}</a>{% endblock %}
+
+{% block page %}
+<div class="section">
+    <div class="section-head"><h3>{{ 'shop.order.buyer'|trans }}</h3></div>
+    <div class="info-grid">
+        <div class="info-item">
+            <span class="info-label">{{ 'shop.field.name'|trans }}</span>
+            <span class="info-value">{{ order.name }}</span>
+        </div>
+        {% for contact in contacts %}
+            {% set kind = contact[0] %}
+            <div class="info-item">
+                <span class="info-label">{{ kind.label|trans }}</span>
+                <a class="info-value" href="{{ kind.href(contact[1]) }}">{{ kind.display(contact[1]) }}</a>
+            </div>
+        {% endfor %}
+        <div class="info-item">
+            <span class="info-label">{{ 'shop.column.arrived'|trans }}</span>
+            <span class="info-value">{{ 'core.moment.day_time'|trans({at: order.arrived}) }}</span>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-head"><h3>{{ 'shop.order.lines'|trans }}</h3></div>
+    {% include '@Shop/_order_lines.html.twig' %}
+    {% if order.comment %}<p class="page-lead">{{ order.comment|nl2br }}</p>{% endif %}
+</div>
+
+<div class="section">
+    <div class="section-head"><h3>{{ 'core.column.status'|trans }}</h3></div>
+    {% if refusal %}<p class="flash flash-error">{{ refusal.reason|trans }}</p>{% endif %}
+    <form method="post" action="{{ path('admin_shop_order_stage', {id: order.id}) }}">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label>{{ 'core.column.status'|trans }}
+                <select name="{{ constant('AdzerCMS\\Shop\\Controller\\Admin\\OrderController::STATUS') }}" required>
+                    {% if order.status not in statuses %}<option value="" selected disabled>{{ order.status.label|trans }}</option>{% endif %}
+                    {% for status in statuses %}
+                        <option value="{{ status.value }}" {{ order.status == status ? 'selected' }}>{{ status.label|trans }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
+    </form>
+</div>
+{% endblock %}
