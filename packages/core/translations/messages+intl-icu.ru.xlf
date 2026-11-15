@@ -1219,6 +1219,12 @@
         <target>Фирменный цвет</target>
       </segment>
     </unit>
+    <unit id="core.setting.cabinet_url">
+      <segment>
+        <source>core.setting.cabinet_url</source>
+        <target>Кабинет шапки сайта на другом сайте</target>
+      </segment>
+    </unit>
     <unit id="core.setting.choice">
       <segment>
         <source>core.setting.choice</source>

@@ -1219,6 +1219,12 @@
         <target>Brand color</target>
       </segment>
     </unit>
+    <unit id="core.setting.cabinet_url">
+      <segment>
+        <source>core.setting.cabinet_url</source>
+        <target>Cabinet of the site header on another site</target>
+      </segment>
+    </unit>
     <unit id="core.setting.choice">
       <segment>
         <source>core.setting.choice</source>

@@ -32,6 +32,7 @@ final class Brand implements Owner
     public const LAYOUT = 'brand.layout';
     public const COLOR = 'brand.color';
     public const FOOTER = 'brand.footer';
+    public const CABINET_URL = 'brand.cabinet_url';
     public const CARD = 'brand_card';
 
     private readonly ?Palette $palette;
@@ -62,6 +63,7 @@ final class Brand implements Owner
             new Field(self::LAYOUT, t('core.setting.layout'), Type::Choice, choices: self::choices(Layout::cases()), page: Page::Brand),
             ...null === $this->palette ? [] : [self::colorField($this->palette)],
             new Field(self::FOOTER, t('core.setting.footer'), Type::Markup, page: Page::Brand),
+            new Field(self::CABINET_URL, t('core.setting.cabinet_url'), Type::Url, page: Page::Brand),
         ];
     }
 
@@ -119,6 +121,11 @@ final class Brand implements Owner
     public function footer(): string
     {
         return $this->settings->get(self::FOOTER);
+    }
+
+    public function cabinetUrl(): string
+    {
+        return $this->settings->get(self::CABINET_URL);
     }
 
     public function icon(): ?string

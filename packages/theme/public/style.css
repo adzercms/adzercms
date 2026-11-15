@@ -1748,7 +1748,7 @@ h1.site-heading { font-size: clamp(28px, 5vw, 44px); line-height: 1.15; }
 .site-cards li { display: flex; flex-direction: column; padding: 1.25rem; border: 1px solid var(--border-light); border-radius: var(--radius); background: var(--surface); }
 .site-cards li:has(> a:hover) { border-color: var(--primary); }
 .site-cards li > a { flex: 1; margin: -1.25rem; padding: 1.25rem; color: inherit; text-decoration: none; }
-.site-cards img { display: block; width: auto; max-width: 100%; height: 3rem; margin-bottom: 1rem; object-fit: contain; }
+.site-cards img { display: block; align-self: flex-start; width: auto; max-width: 100%; height: 3rem; margin-bottom: 1rem; object-fit: contain; }
 .site-cards h3 { margin: 0 0 0.5rem; }
 .site-cards p { margin: 0; color: var(--text-gray); }
 .site-cards p + p { margin-top: 0.5rem; }

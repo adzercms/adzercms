@@ -117,6 +117,17 @@ final class SiteTest extends SchemaTestCase
         self::assertStringEndsWith($mark, trim($footer->text()));
     }
 
+    #[Group('ACMS-UI-0154')]
+    #[Group('ACMS-US-0070')]
+    public function testHeaderLeadsToCabinetOfAnotherSiteInNewTab(): void
+    {
+        $this->configure([Brand::CABINET_URL => 'https://cabinet.example.test/']);
+        $this->page('Home', Page::ROOT, published: true, menu: false);
+
+        $entry = $this->client->request('GET', '/')->filter('.site-entry');
+        self::assertSame(['https://cabinet.example.test/', '_blank'], [$entry->attr('href'), $entry->attr('target')]);
+    }
+
     private function page(string $title, string $path, bool $published, bool $menu, ?string $label = null): Page
     {
         $page = new Page($title, $path);
