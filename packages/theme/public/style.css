@@ -344,7 +344,7 @@ button.nav-item {
 .bottom-nav { display: none; }
 
 @media (max-width: 900px) {
-    .panel-sidebar { display: none; position: fixed; inset: var(--chrome-height) 0 0; z-index: 999; width: auto; min-width: 0; max-height: none; margin: 0; border: 0; border-radius: 0; background: var(--surface); }
+    .panel-sidebar { display: none; position: fixed; inset: var(--chrome-height) 0 0; z-index: 999; align-self: auto; width: auto; min-width: 0; max-height: none; margin: 0; border: 0; border-radius: 0; background: var(--surface); }
     body:has(.sidebar-toggle:checked) { overflow: hidden; }
     .nav-submenu { display: block; padding: 2px 0 6px 18px; }
     .nav-submenu .subnav { position: static; max-height: none; overflow: visible; }
