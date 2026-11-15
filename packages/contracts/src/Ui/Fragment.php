@@ -14,6 +14,7 @@ interface Fragment
     public const CABINET_HOME = 'cabinet.home';
     public const CABINET_HOME_ACTIONS = 'cabinet.home.actions';
     public const CABINET_PROFILE = 'cabinet.profile';
+    public const CABINET_REGISTER = 'cabinet.register';
     public const ADMIN_DASHBOARD = 'admin.dashboard';
     public const ADMIN_DASHBOARD_ACTIONS = 'admin.dashboard.actions';
     public const ADMIN_USER = 'admin.user';

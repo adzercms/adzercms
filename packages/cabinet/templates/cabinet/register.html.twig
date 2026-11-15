@@ -4,6 +4,7 @@
 
 {% block auth %}
 {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+{% for part in fragments(constant('AdzerCMS\\Contracts\\Ui\\Fragment::CABINET_REGISTER')) %}{% include part.template with part.context only %}{% endfor %}
 
 {% if active is null %}
     <p class="flash">{{ 'cabinet.register.no_channel'|trans }}</p>
