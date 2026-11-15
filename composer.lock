@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a14e45c39abbe8f29f44253f48276fdf",
+    "content-hash": "40c408ef80dacfca7da98a0d607d2c7a",
     "packages": [
         {
             "name": "adzercms/admin",
@@ -2812,20 +2812,20 @@
         },
         {
             "name": "doctrine/deprecations",
-            "version": "1.1.6",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/deprecations.git",
-                "reference": "d4fe3e6fd9bb9e72557a19674f44d8ac7db4c6ca"
+                "reference": "d2e16653a734c8784c1851ad68b02f997b53ca82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/d4fe3e6fd9bb9e72557a19674f44d8ac7db4c6ca",
-                "reference": "d4fe3e6fd9bb9e72557a19674f44d8ac7db4c6ca",
+                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/d2e16653a734c8784c1851ad68b02f997b53ca82",
+                "reference": "d2e16653a734c8784c1851ad68b02f997b53ca82",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1 || ^8.0"
+                "php": "^7.4 || ^8.0"
             },
             "conflict": {
                 "phpunit/phpunit": "<=7.5 || >=14"
@@ -2854,9 +2854,9 @@
             "homepage": "https://www.doctrine-project.org/",
             "support": {
                 "issues": "https://github.com/doctrine/deprecations/issues",
-                "source": "https://github.com/doctrine/deprecations/tree/1.1.6"
+                "source": "https://github.com/doctrine/deprecations/tree/1.2.0"
             },
-            "time": "2026-02-07T07:09:04+00:00"
+            "time": "2026-11-11T10:04:49+00:00"
         },
         {
             "name": "doctrine/doctrine-bundle",
@@ -12179,16 +12179,16 @@
         },
         {
             "name": "amphp/byte-stream",
-            "version": "v2.1.2",
+            "version": "v2.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/byte-stream.git",
-                "reference": "55a6bd071aec26fa2a3e002618c20c35e3df1b46"
+                "reference": "1511cdfdf868a706307358bd48f155c3df2c490f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/byte-stream/zipball/55a6bd071aec26fa2a3e002618c20c35e3df1b46",
-                "reference": "55a6bd071aec26fa2a3e002618c20c35e3df1b46",
+                "url": "https://api.github.com/repos/amphp/byte-stream/zipball/1511cdfdf868a706307358bd48f155c3df2c490f",
+                "reference": "1511cdfdf868a706307358bd48f155c3df2c490f",
                 "shasum": ""
             },
             "require": {
@@ -12204,7 +12204,7 @@
                 "amphp/php-cs-fixer-config": "^2",
                 "amphp/phpunit-util": "^3",
                 "phpunit/phpunit": "^9",
-                "psalm/phar": "5.22.1"
+                "psalm/phar": "6.16.1"
             },
             "type": "library",
             "autoload": {
@@ -12242,7 +12242,7 @@
             ],
             "support": {
                 "issues": "https://github.com/amphp/byte-stream/issues",
-                "source": "https://github.com/amphp/byte-stream/tree/v2.1.2"
+                "source": "https://github.com/amphp/byte-stream/tree/v2.1.3"
             },
             "funding": [
                 {
@@ -12250,7 +12250,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-16T17:10:27+00:00"
+            "time": "2026-10-31T19:10:04+00:00"
         },
         {
             "name": "amphp/cache",
@@ -12319,16 +12319,16 @@
         },
         {
             "name": "amphp/dns",
-            "version": "v2.4.1",
+            "version": "v2.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/dns.git",
-                "reference": "ec5948bfafac808f410406e18bc7b52a2d4629b7"
+                "reference": "2e2b4daa214a18b1528919d6781988ea65a9a47d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/dns/zipball/ec5948bfafac808f410406e18bc7b52a2d4629b7",
-                "reference": "ec5948bfafac808f410406e18bc7b52a2d4629b7",
+                "url": "https://api.github.com/repos/amphp/dns/zipball/2e2b4daa214a18b1528919d6781988ea65a9a47d",
+                "reference": "2e2b4daa214a18b1528919d6781988ea65a9a47d",
                 "shasum": ""
             },
             "require": {
@@ -12396,7 +12396,7 @@
             ],
             "support": {
                 "issues": "https://github.com/amphp/dns/issues",
-                "source": "https://github.com/amphp/dns/tree/v2.4.1"
+                "source": "https://github.com/amphp/dns/tree/v2.4.2"
             },
             "funding": [
                 {
@@ -12404,7 +12404,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-26T17:53:54+00:00"
+            "time": "2026-10-31T19:53:43+00:00"
         },
         {
             "name": "amphp/parallel",
@@ -12621,16 +12621,16 @@
         },
         {
             "name": "amphp/process",
-            "version": "v2.1.0",
+            "version": "v2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/process.git",
-                "reference": "583959df17d00304ad7b0b32285373f985935643"
+                "reference": "acfd64f68df5fa7f2d674c93d1986b2bf5d02770"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/process/zipball/583959df17d00304ad7b0b32285373f985935643",
-                "reference": "583959df17d00304ad7b0b32285373f985935643",
+                "url": "https://api.github.com/repos/amphp/process/zipball/acfd64f68df5fa7f2d674c93d1986b2bf5d02770",
+                "reference": "acfd64f68df5fa7f2d674c93d1986b2bf5d02770",
                 "shasum": ""
             },
             "require": {
@@ -12677,7 +12677,7 @@
             "homepage": "https://amphp.org/process",
             "support": {
                 "issues": "https://github.com/amphp/process/issues",
-                "source": "https://github.com/amphp/process/tree/v2.1.0"
+                "source": "https://github.com/amphp/process/tree/v2.1.2"
             },
             "funding": [
                 {
@@ -12685,7 +12685,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-05-31T15:11:55+00:00"
+            "time": "2026-11-07T16:33:32+00:00"
         },
         {
             "name": "amphp/serialization",
@@ -12756,16 +12756,16 @@
         },
         {
             "name": "amphp/socket",
-            "version": "v2.4.1",
+            "version": "v2.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/socket.git",
-                "reference": "b347be5aff6b2cc025208bb4d896607eb470c018"
+                "reference": "6e881835c73b75a0a4251a7f58441bc90b9f6c8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/socket/zipball/b347be5aff6b2cc025208bb4d896607eb470c018",
-                "reference": "b347be5aff6b2cc025208bb4d896607eb470c018",
+                "url": "https://api.github.com/repos/amphp/socket/zipball/6e881835c73b75a0a4251a7f58441bc90b9f6c8a",
+                "reference": "6e881835c73b75a0a4251a7f58441bc90b9f6c8a",
                 "shasum": ""
             },
             "require": {
@@ -12828,7 +12828,7 @@
             ],
             "support": {
                 "issues": "https://github.com/amphp/socket/issues",
-                "source": "https://github.com/amphp/socket/tree/v2.4.1"
+                "source": "https://github.com/amphp/socket/tree/v2.4.2"
             },
             "funding": [
                 {
@@ -12836,20 +12836,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-22T18:13:20+00:00"
+            "time": "2026-11-11T03:42:20+00:00"
         },
         {
             "name": "amphp/sync",
-            "version": "v2.3.0",
+            "version": "v2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/sync.git",
-                "reference": "217097b785130d77cfcc58ff583cf26cd1770bf1"
+                "reference": "2f711b6651270449d59c770ffb518698655022f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/sync/zipball/217097b785130d77cfcc58ff583cf26cd1770bf1",
-                "reference": "217097b785130d77cfcc58ff583cf26cd1770bf1",
+                "url": "https://api.github.com/repos/amphp/sync/zipball/2f711b6651270449d59c770ffb518698655022f7",
+                "reference": "2f711b6651270449d59c770ffb518698655022f7",
                 "shasum": ""
             },
             "require": {
@@ -12863,7 +12863,7 @@
                 "amphp/php-cs-fixer-config": "^2",
                 "amphp/phpunit-util": "^3",
                 "phpunit/phpunit": "^9",
-                "psalm/phar": "5.23"
+                "psalm/phar": "6.16.1"
             },
             "type": "library",
             "autoload": {
@@ -12903,7 +12903,7 @@
             ],
             "support": {
                 "issues": "https://github.com/amphp/sync/issues",
-                "source": "https://github.com/amphp/sync/tree/v2.3.0"
+                "source": "https://github.com/amphp/sync/tree/v2.3.1"
             },
             "funding": [
                 {
@@ -12911,7 +12911,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-08-03T19:31:26+00:00"
+            "time": "2026-06-14T17:37:39+00:00"
         },
         {
             "name": "clue/ndjson-react",
@@ -13650,21 +13650,21 @@
         },
         {
             "name": "league/uri",
-            "version": "7.9.0",
+            "version": "7.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/uri.git",
-                "reference": "fcc872a3d872aa13f935e0cd1887b9abb06da07f"
+                "reference": "be89e2382e37acdef232259071ade5180821397b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/uri/zipball/fcc872a3d872aa13f935e0cd1887b9abb06da07f",
-                "reference": "fcc872a3d872aa13f935e0cd1887b9abb06da07f",
+                "url": "https://api.github.com/repos/thephpleague/uri/zipball/be89e2382e37acdef232259071ade5180821397b",
+                "reference": "be89e2382e37acdef232259071ade5180821397b",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
-                "league/uri-interfaces": "^7.9.0",
+                "league/uri-interfaces": "^7.10.0",
                 "php": "^8.1",
                 "psr/http-factory": "^1"
             },
@@ -13737,7 +13737,7 @@
                 "docs": "https://uri.thephpleague.com",
                 "forum": "https://thephpleague.slack.com",
                 "issues": "https://github.com/thephpleague/uri-src/issues",
-                "source": "https://github.com/thephpleague/uri/tree/7.9.0"
+                "source": "https://github.com/thephpleague/uri/tree/7.10.0"
             },
             "funding": [
                 {
@@ -13745,20 +13745,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-16T15:19:33+00:00"
+            "time": "2026-11-04T12:45:07+00:00"
         },
         {
             "name": "league/uri-interfaces",
-            "version": "7.9.0",
+            "version": "7.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/uri-interfaces.git",
-                "reference": "eb5f6d24e6a4fe0a8e9c78ded4eb1dfff1404f58"
+                "reference": "ea66240cff4ae9a56ce85d577a04d038b771e51c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/uri-interfaces/zipball/eb5f6d24e6a4fe0a8e9c78ded4eb1dfff1404f58",
-                "reference": "eb5f6d24e6a4fe0a8e9c78ded4eb1dfff1404f58",
+                "url": "https://api.github.com/repos/thephpleague/uri-interfaces/zipball/ea66240cff4ae9a56ce85d577a04d038b771e51c",
+                "reference": "ea66240cff4ae9a56ce85d577a04d038b771e51c",
                 "shasum": ""
             },
             "require": {
@@ -13821,7 +13821,7 @@
                 "docs": "https://uri.thephpleague.com",
                 "forum": "https://thephpleague.slack.com",
                 "issues": "https://github.com/thephpleague/uri-src/issues",
-                "source": "https://github.com/thephpleague/uri-interfaces/tree/7.9.0"
+                "source": "https://github.com/thephpleague/uri-interfaces/tree/7.10.0"
             },
             "funding": [
                 {
@@ -13829,7 +13829,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-16T15:19:33+00:00"
+            "time": "2026-11-04T12:45:07+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -14348,16 +14348,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "2.3.6",
+            "version": "2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "1427af4647235b4a73b13940b1f1258d3584f36e"
+                "reference": "af8e840551031d254cfdb3a18a62c3470a309c10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/1427af4647235b4a73b13940b1f1258d3584f36e",
-                "reference": "1427af4647235b4a73b13940b1f1258d3584f36e",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/af8e840551031d254cfdb3a18a62c3470a309c10",
+                "reference": "af8e840551031d254cfdb3a18a62c3470a309c10",
                 "shasum": ""
             },
             "require": {
@@ -14389,9 +14389,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.3.6"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.4.1"
             },
-            "time": "2026-09-27T20:07:45+00:00"
+            "time": "2026-10-30T19:36:28+00:00"
         },
         {
             "name": "phpstan/phpstan",
@@ -15142,25 +15142,240 @@
             "time": "2026-10-27T04:16:22+00:00"
         },
         {
-            "name": "psalm/plugin-symfony",
-            "version": "v5.3.0",
+            "name": "psalm/plugin-laravel",
+            "version": "v4.21.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/psalm/psalm-plugin-symfony.git",
-                "reference": "df874ff48ae3b1833ea17fba7c21b31a4d682614"
+                "url": "https://github.com/psalm/psalm-plugin-laravel.git",
+                "reference": "8960a5a8d73bb8d4cb0c15fcfa6a960c9fd96d0d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/psalm/psalm-plugin-symfony/zipball/df874ff48ae3b1833ea17fba7c21b31a4d682614",
-                "reference": "df874ff48ae3b1833ea17fba7c21b31a4d682614",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-laravel/zipball/8960a5a8d73bb8d4cb0c15fcfa6a960c9fd96d0d",
+                "reference": "8960a5a8d73bb8d4cb0c15fcfa6a960c9fd96d0d",
                 "shasum": ""
             },
             "require": {
                 "ext-simplexml": "*",
+                "nikic/php-parser": "^5.0",
+                "php": "^8.2",
+                "psalm/psalm-plugin-api": "^0.4.5",
+                "sebastian/diff": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0",
+                "symfony/console": "^6.4 || ^7.0 || ^8.0",
+                "vimeo/psalm": "^7.6.0"
+            },
+            "conflict": {
+                "laravel/framework": "<12.27 || 13.0.0 || >=13.1 <13.20",
+                "orchestra/testbench-core": "<10.0"
+            },
+            "require-dev": {
+                "alies-dev/psalm-tester": "^0.4",
+                "brianium/paratest": "^7.7",
+                "friendsofphp/php-cs-fixer": "^3.94",
+                "laravel/framework": "^12.27 || ^13.20",
+                "orchestra/testbench-core": "^10.0 || ^11.0",
+                "phpunit/phpunit": "^11.5 || ^12.5 || ^13.0",
+                "ramsey/collection": "^1.3",
+                "rector/rector": "^2.8.3",
+                "symfony/http-foundation": "^7.1 || ^8.0",
+                "symfony/process": "^7.1 || ^8.0"
+            },
+            "bin": [
+                "bin/psalm-laravel"
+            ],
+            "type": "psalm-plugin",
+            "extra": {
+                "psalm": {
+                    "pluginClass": "Psalm\\LaravelPlugin\\Plugin"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psalm\\LaravelPlugin\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthew Brown",
+                    "email": "github@muglug.com",
+                    "role": "Original Author"
+                },
+                {
+                    "name": "Alies Lapatsin",
+                    "email": "github@alies.dev",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Psalm plugin for Laravel",
+            "homepage": "https://github.com/psalm/psalm-plugin-laravel",
+            "keywords": [
+                "dev",
+                "laravel",
+                "psalm",
+                "psalm-plugin"
+            ],
+            "support": {
+                "issues": "https://github.com/psalm/psalm-plugin-laravel/issues",
+                "source": "https://github.com/psalm/psalm-plugin-laravel/tree/v4.21.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/alies-dev",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-11-14T21:16:26+00:00"
+        },
+        {
+            "name": "psalm/plugin-mockery",
+            "version": "1.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/psalm/psalm-plugin-mockery.git",
+                "reference": "ddff47dd095dc3c47224a3f6bf137e28570ef022"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-mockery/zipball/ddff47dd095dc3c47224a3f6bf137e28570ef022",
+                "reference": "ddff47dd095dc3c47224a3f6bf137e28570ef022",
+                "shasum": ""
+            },
+            "require": {
+                "composer-runtime-api": "^2.0",
+                "composer/semver": "^1.4 || ^2.0 || ^3.0",
                 "php": ">=8.1",
-                "symfony/expression-language": "^5.0 || ^6.0 || ^7.0 || ^8.0",
-                "symfony/framework-bundle": "^5.0 || ^6.0 || ^7.0 || ^8.0",
-                "vimeo/psalm": "^6 || dev-master"
+                "psalm/psalm-plugin-api": "^0.4",
+                "vimeo/psalm": "^7|dev-master"
+            },
+            "conflict": {
+                "mockery/mockery": "<1.0"
+            },
+            "require-dev": {
+                "codeception/codeception": "^5.0",
+                "mockery/mockery": "^1.0",
+                "phpunit/phpunit": "^10.5 || ^11.5 || ^12.0 || ^13.0",
+                "squizlabs/php_codesniffer": "^3.3.1",
+                "weirdan/codeception-psalm-module": "^0.14.1"
+            },
+            "type": "psalm-plugin",
+            "extra": {
+                "psalm": {
+                    "pluginClass": "Psalm\\MockeryPlugin\\Plugin"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psalm\\MockeryPlugin\\": [
+                        "."
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matt Brown",
+                    "email": "github@muglug.com"
+                }
+            ],
+            "description": "Psalm plugin for Mockery",
+            "support": {
+                "issues": "https://github.com/psalm/psalm-plugin-mockery/issues",
+                "source": "https://github.com/psalm/psalm-plugin-mockery/tree/1.3.2"
+            },
+            "time": "2026-10-28T12:21:43+00:00"
+        },
+        {
+            "name": "psalm/plugin-phpunit",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/psalm/psalm-plugin-phpunit.git",
+                "reference": "9227f2ac5d7ec16d1f4c9904a4326397b90d5566"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-phpunit/zipball/9227f2ac5d7ec16d1f4c9904a4326397b90d5566",
+                "reference": "9227f2ac5d7ec16d1f4c9904a4326397b90d5566",
+                "shasum": ""
+            },
+            "require": {
+                "ext-simplexml": "*",
+                "php": ">=8.2",
+                "psalm/psalm-plugin-api": "^0.4.2",
+                "vimeo/psalm": "^7.2 || dev-master"
+            },
+            "conflict": {
+                "phpspec/prophecy": "<1.20.0",
+                "phpspec/prophecy-phpunit": "<2.3.0",
+                "phpunit/phpunit": "<11.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.88",
+                "phpspec/prophecy-phpunit": "^2.5",
+                "phpunit/phpunit": "^11.0 || ^12.0 || ^13.0"
+            },
+            "type": "psalm-plugin",
+            "extra": {
+                "psalm": {
+                    "pluginClass": "Psalm\\PhpUnitPlugin\\Plugin"
+                },
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psalm\\PhpUnitPlugin\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matt Brown",
+                    "email": "github@muglug.com"
+                }
+            ],
+            "description": "Psalm plugin for PHPUnit",
+            "support": {
+                "issues": "https://github.com/psalm/psalm-plugin-phpunit/issues",
+                "source": "https://github.com/psalm/psalm-plugin-phpunit/tree/1.2.0"
+            },
+            "time": "2026-11-14T00:23:20+00:00"
+        },
+        {
+            "name": "psalm/plugin-symfony",
+            "version": "v5.11.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/psalm/psalm-plugin-symfony.git",
+                "reference": "1fef73d616f0e187ffc05d13dd98f10ade6bc9e0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-symfony/zipball/1fef73d616f0e187ffc05d13dd98f10ade6bc9e0",
+                "reference": "1fef73d616f0e187ffc05d13dd98f10ade6bc9e0",
+                "shasum": ""
+            },
+            "require": {
+                "ext-simplexml": "*",
+                "php": ">=8.2",
+                "psalm/psalm-plugin-api": "^0.4.2",
+                "vimeo/psalm": "^7.0@stable|dev-master"
+            },
+            "conflict": {
+                "fidry/cpu-core-counter": "<1.2",
+                "symfony/expression-language": "<5.0",
+                "symfony/framework-bundle": "<5.0"
             },
             "require-dev": {
                 "doctrine/annotations": "^1.8|^2",
@@ -15168,8 +15383,11 @@
                 "phpunit/phpunit": "~7.5 || ~9.5",
                 "symfony/cache-contracts": "^1.0 || ^2.0 || ^3.0",
                 "symfony/console": "*",
+                "symfony/expression-language": "^5.0 || ^6.0 || ^7.0 || ^8.0",
                 "symfony/form": "^5.0 || ^6.0 || ^7.0 || ^8.0",
+                "symfony/framework-bundle": "^5.0 || ^6.0 || ^7.0 || ^8.0",
                 "symfony/messenger": "^5.0 || ^6.0 || ^7.0 || ^8.0",
+                "symfony/mime": "^5.0 || ^6.0 || ^7.0 || ^8.0",
                 "symfony/security-core": "*",
                 "symfony/serializer": "^5.0 || ^6.0 || ^7.0 || ^8.0",
                 "symfony/validator": "*",
@@ -15203,9 +15421,44 @@
             "description": "Psalm Plugin for Symfony",
             "support": {
                 "issues": "https://github.com/psalm/psalm-plugin-symfony/issues",
-                "source": "https://github.com/psalm/psalm-plugin-symfony/tree/v5.3.0"
+                "source": "https://github.com/psalm/psalm-plugin-symfony/tree/v5.11.0"
             },
-            "time": "2026-02-12T11:24:16+00:00"
+            "time": "2026-11-11T11:34:54+00:00"
+        },
+        {
+            "name": "psalm/psalm-plugin-api",
+            "version": "0.4.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/psalm/psalm-plugin-api.git",
+                "reference": "7c3efea3f371a28efb8ea6287eae8e27b70c054e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/psalm/psalm-plugin-api/zipball/7c3efea3f371a28efb8ea6287eae8e27b70c054e",
+                "reference": "7c3efea3f371a28efb8ea6287eae8e27b70c054e",
+                "shasum": ""
+            },
+            "conflict": {
+                "vimeo/psalm": "<7.0.0-rc3"
+            },
+            "type": "metapackage",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniil Gentili",
+                    "email": "daniil@daniil.it"
+                }
+            ],
+            "description": "Stable, semantically versioned API for Psalm plugins",
+            "support": {
+                "issues": "https://github.com/psalm/psalm-plugin-api/issues",
+                "source": "https://github.com/psalm/psalm-plugin-api/tree/0.4.5"
+            },
+            "time": "2026-11-14T14:03:08+00:00"
         },
         {
             "name": "react/cache",
@@ -17295,22 +17548,22 @@
         },
         {
             "name": "vimeo/psalm",
-            "version": "6.20.1",
+            "version": "7.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "376425b8e67b79773add388e16b4f6be5693dc87"
+                "reference": "4303c7dbbc23efaac3d988707b4acf4d5508a9cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/376425b8e67b79773add388e16b4f6be5693dc87",
-                "reference": "376425b8e67b79773add388e16b4f6be5693dc87",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/4303c7dbbc23efaac3d988707b4acf4d5508a9cc",
+                "reference": "4303c7dbbc23efaac3d988707b4acf4d5508a9cc",
                 "shasum": ""
             },
             "require": {
                 "amphp/amp": "^3",
                 "amphp/byte-stream": "^2",
-                "amphp/parallel": "^2.3",
+                "amphp/parallel": "^2.4.0",
                 "composer-runtime-api": "^2",
                 "composer/semver": "^1.4 || ^2.0 || ^3.0",
                 "composer/xdebug-handler": "^2.0 || ^3.0",
@@ -17324,10 +17577,15 @@
                 "ext-simplexml": "*",
                 "ext-tokenizer": "*",
                 "felixfbecker/language-server-protocol": "^1.5.3",
-                "fidry/cpu-core-counter": "^0.4.1 || ^0.5.1 || ^1.0.0",
+                "fidry/cpu-core-counter": "^1.2",
                 "netresearch/jsonmapper": "^5.0",
-                "nikic/php-parser": "^5.2.0",
-                "php": "~8.1.31 || ~8.2.27 || ~8.3.16 || ~8.4.3 || ~8.5.0",
+                "nikic/php-parser": "^5.9",
+                "php-64bit": "~8.2.27 || ~8.3.16 || ~8.4.3 || ~8.5.0 || ~8.6.0",
+                "psalm/plugin-laravel": "^4.17.4",
+                "psalm/plugin-mockery": "^1.3.2",
+                "psalm/plugin-phpunit": "^0.21 || ^0.22 || ^1.0",
+                "psalm/plugin-symfony": "^5.9.1",
+                "psalm/psalm-plugin-api": "0.4.5",
                 "sebastian/diff": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0",
                 "spatie/array-to-xml": "^2.17.0 || ^3.0",
                 "symfony/console": "^6.0 || ^7.0 || ^8.0",
@@ -17338,9 +17596,8 @@
                 "psalm/psalm": "self.version"
             },
             "require-dev": {
-                "amphp/phpunit-util": "^3",
                 "bamarni/composer-bin-plugin": "^1.4",
-                "brianium/paratest": "^6.9",
+                "brianium/paratest": "^7.3",
                 "danog/class-finder": "^0.4.8",
                 "dg/bypass-finals": "^1.5",
                 "ext-curl": "*",
@@ -17348,16 +17605,15 @@
                 "nunomaduro/mock-final-classes": "^1.1",
                 "php-parallel-lint/php-parallel-lint": "^1.2",
                 "phpstan/phpdoc-parser": "^1.6",
-                "phpunit/phpunit": "^9.6",
-                "psalm/plugin-mockery": "^1.1",
-                "psalm/plugin-phpunit": "^0.19",
+                "phpunit/phpunit": "^10.5 || ^11.5 || ^12.5 || ^13.0",
                 "slevomat/coding-standard": "^8.4",
                 "squizlabs/php_codesniffer": "^3.6",
                 "symfony/process": "^6.0 || ^7.0 || ^8.0"
             },
             "suggest": {
                 "ext-curl": "In order to send data to shepherd",
-                "ext-igbinary": "^2.0.5 is required, used to serialize caching data"
+                "ext-igbinary": "^2.0.5 is required, used to serialize caching data",
+                "ext-zstd": ">=0.15.0 is required, used to compress caching data"
             },
             "bin": [
                 "psalm",
@@ -17409,7 +17665,7 @@
                 "issues": "https://github.com/vimeo/psalm/issues",
                 "source": "https://github.com/vimeo/psalm"
             },
-            "time": "2026-10-20T11:18:42+00:00"
+            "time": "2026-11-14T23:56:08+00:00"
         },
         {
             "name": "webmozart/assert",

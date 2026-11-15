@@ -146,7 +146,11 @@ final readonly class ModuleCheck
         $psalm->setAttribute('findUnusedCode', 'false');
         $psalm->setAttribute('findUnusedBaselineEntry', 'false');
         $psalm->appendChild($config->createElement('projectFiles'))->appendChild($config->createElement('directory'))->setAttribute('name', $this->path().'/src');
-        $psalm->appendChild($config->createElement('plugins'))->appendChild($config->createElement('pluginClass'))->setAttribute('class', self::PSALM_PLUGIN);
+        $plugins = $psalm->appendChild($config->createElement('plugins'));
+        $plugins->appendChild($config->createElement('pluginClass'))->setAttribute('class', SecurityIssues::class);
+        $symfony = $plugins->appendChild($config->createElement('pluginClass'));
+        $symfony->setAttribute('class', self::PSALM_PLUGIN);
+        $symfony->appendChild($config->createElement('twigRootPath', '.'));
         (new Filesystem())->dumpFile($this->root.self::PSALM_CONFIG, (string) $config->saveXML());
 
         return $this->root.self::PSALM_CONFIG;

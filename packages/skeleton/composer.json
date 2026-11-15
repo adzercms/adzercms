@@ -37,11 +37,10 @@
         "phpstan/phpstan-phpunit": "^2.1",
         "phpstan/phpstan-symfony": "^2.1",
         "phpunit/phpunit": "^13.4.5",
-        "psalm/plugin-symfony": "^5.3",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "symfony/browser-kit": "7.4.*",
         "symfony/css-selector": "7.4.*",
-        "vimeo/psalm": "^6.20"
+        "vimeo/psalm": "^7.6"
     },
     "config": {
         "allow-plugins": {
