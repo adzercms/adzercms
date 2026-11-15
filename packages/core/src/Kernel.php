@@ -43,6 +43,10 @@ abstract class Kernel extends BaseKernel
     private const PREVIEW = '.preview';
     private const SECRET = 'APP_SECRET';
     private const DOTENV = 'SYMFONY_DOTENV_VARS';
+    private const PACKAGES = '/composer/installed.json';
+    private const PACKAGES_MARK = '/.packages';
+
+    private static ?string $packages = null;
 
     private ?Selection $modules = null;
     private ?HeldBuild $held = null;
@@ -63,9 +67,31 @@ abstract class Kernel extends BaseKernel
         if (null === $this->cacheDir) {
             $this->held = $this->debug ? null : $this->builds()->hold(Builds::fixed());
             $this->cacheDir = null === $this->held ? $this->buildsRoot() : $this->buildsRoot().'/'.$this->held->name;
+
+            if ($this->debug && null === $this->builds()->current()) {
+                self::dropStale($this->cacheDir);
+            }
         }
 
         return $this->cacheDir;
+    }
+
+    private static function dropStale(string $dir): void
+    {
+        if (null === self::$packages) {
+            $vendor = array_key_first(ClassLoader::getRegisteredLoaders());
+            $file = $vendor.self::PACKAGES;
+            self::$packages = null !== $vendor && is_file($file) ? (string) hash_file('xxh128', $file) : '';
+        }
+
+        $mark = $dir.self::PACKAGES_MARK;
+        if (is_file($mark) && file_get_contents($mark) === self::$packages) {
+            return;
+        }
+
+        $files = new Filesystem();
+        $files->remove($dir);
+        $files->dumpFile($mark, self::$packages);
     }
 
     public function cacheBuild(): ?string

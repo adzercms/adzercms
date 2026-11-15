@@ -41,7 +41,7 @@ final class SettingCommand
         SymfonyStyle $io,
         #[Argument('Setting key; lists all settings without it')] ?string $name = null,
         #[Argument('Value, a file path for an image or a PKCS#12 container; an empty value removes the setting')] ?string $value = null,
-        #[Option('Read the value from stdin, the only way for a secret; a container takes its password from stdin')] bool $stdin = false,
+        #[Option('Read the value from stdin, the only way to set a secret; a container takes its password from stdin')] bool $stdin = false,
         #[Option('Print all stored rows as JSON, secrets encrypted by the instance key')] bool $export = false,
         #[Option('Write stored rows as JSON from stdin over the present ones')] bool $import = false,
     ): int {
@@ -66,7 +66,7 @@ final class SettingCommand
         }
 
         $secret = Type::Secret === $field->type;
-        if ($secret && null !== $value) {
+        if ($secret && '' !== (string) $value) {
             return $this->refuse($io, \sprintf('secret "%s" is accepted only from stdin: --stdin', $name));
         }
 
@@ -135,6 +135,13 @@ final class SettingCommand
 
     private function write(Field $field, string $value, string $password): ?Refusal
     {
+        if (Type::Secret === $field->type && '' === trim($value)) {
+            $this->settings->clear($field);
+            $this->em->flush();
+
+            return null;
+        }
+
         if (!$field->type->picture() && Type::Container !== $field->type) {
             $refusal = $this->settings->save($field, $value);
             $this->em->flush();

@@ -22,6 +22,7 @@ use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Tests\Setting\Fixture\Shop;
 use AdzerCMS\Core\Ui\Fragments;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\Console\Command\Command;
 
 use function Symfony\Component\Translation\t;
@@ -85,6 +86,23 @@ final class SettingCommandTest extends SchemaTestCase
         $listing->execute([]);
         self::assertMatchesRegularExpression('~shop\.token\s+Till token\s+set~', $listing->getDisplay());
         self::assertStringNotContainsString('till-token', $listing->getDisplay().$piped->getDisplay());
+    }
+
+    /** @param array<string, string|bool> $arguments */
+    #[Group('ACMS-CORE-0161')]
+    #[TestWith([['--stdin' => true]], 'empty stdin')]
+    #[TestWith([['value' => '']], 'empty argument')]
+    public function testEmptyValueRemovesSecret(array $arguments): void
+    {
+        $piped = self::command('adzercms:setting');
+        $piped->setInputs(['till-token']);
+        $piped->execute(['name' => Shop::TOKEN, '--stdin' => true]);
+
+        $emptied = self::command('adzercms:setting');
+        $emptied->setInputs(['']);
+
+        self::assertSame(Command::SUCCESS, $emptied->execute(['name' => Shop::TOKEN] + $arguments));
+        self::assertSame('', self::service(Settings::class)->get(Shop::TOKEN));
     }
 
     #[Group('ACMS-CORE-0062')]

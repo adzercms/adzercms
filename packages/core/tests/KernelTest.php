@@ -87,6 +87,40 @@ final class KernelTest extends KernelTestCase
         }
     }
 
+    #[Group('ACMS-CORE-1175')]
+    public function testDebugCacheWithoutBuildPointerIsDroppedOnChangeOfPackages(): void
+    {
+        $cache = sys_get_temp_dir().'/adzercms-kernel-'.bin2hex(random_bytes(4));
+        $_SERVER['APP_CACHE_DIR'] = $cache;
+        $files = new Filesystem();
+        $boot = static function (): string {
+            $dir = self::bootKernel()->getCacheDir();
+            self::ensureKernelShutdown();
+
+            return $dir;
+        };
+
+        try {
+            $dir = $boot();
+            $files->dumpFile($dir.'/stale', '');
+            $boot();
+            self::assertFileExists($dir.'/stale', 'the cache of unchanged packages stays');
+
+            $files->dumpFile($dir.'/.packages', 'other');
+            $boot();
+            self::assertFileDoesNotExist($dir.'/stale', 'a change of packages drops the cache');
+
+            $files->dumpFile($dir.'/stale', '');
+            $files->dumpFile($dir.'/.packages', 'other');
+            (new Builds($dir))->switchTo('b1');
+            $boot();
+            self::assertFileExists($dir.'/stale', 'a cache under a build pointer stays');
+        } finally {
+            unset($_SERVER['APP_CACHE_DIR']);
+            $files->remove($cache);
+        }
+    }
+
     #[Group('ACMS-CORE-0045')]
     #[Group('ACMS-CORE-0970')]
     #[Group('ACMS-CORE-1128')]
