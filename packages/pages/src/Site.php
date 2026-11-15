@@ -81,13 +81,14 @@ final readonly class Site
      */
     private function shown(array $cells, array $row): array
     {
+        $shown = $row;
         foreach ($cells as $cell) {
             if ($cell->type->picture()) {
-                $row[$cell->name] = $this->picture($row[$cell->name]);
+                $shown[$cell->name] = $this->picture($row[$cell->name] ?? '');
             }
         }
 
-        return $row;
+        return $shown;
     }
 
     /** @return array{src: string, width: int, height: int}|null */

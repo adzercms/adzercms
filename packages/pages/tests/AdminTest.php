@@ -148,7 +148,7 @@ final class AdminTest extends SchemaTestCase
         $this->em->persist($page);
         $this->em->flush();
         $record = self::LIST.'/'.$page->getId();
-        $other = $this->hero($page, 'Internet')->getValues()['picture'];
+        $other = $this->hero($page, 'Internet')->getValues()['picture'] ?? self::fail('the hero picture is not stored');
 
         $refused = $this->post($record.'/blocks/new', ['type' => 'cards', 'value' => ['title' => 'Works', 'cards' => [['title' => 'Board', 'link' => 'ftp://board']]]]);
         self::assertSame(self::phrase(t('pages.refusal.link', ['field' => t('pages.field.link')])), trim($refused->filter('.flash-error')->text()));
@@ -157,7 +157,7 @@ final class AdminTest extends SchemaTestCase
             ['title' => 'Plans', 'link' => '/plans'],
         ]]], ['value' => ['cards' => [['picture' => $this->picture('board.png')]]]]);
         $cards = array_find(self::service(PageBlockRepository::class)->of($page), static fn (PageBlock $block): bool => 'cards' === $block->getType()) ?? self::fail('the cards are not added');
-        $first = json_decode($cards->getValues()['cards'], true)[0]['picture'];
+        $first = self::pictures($cards)[0] ?? self::fail('the card picture is not stored');
         self::assertSame('Works · Board · Plans', trim($this->arrive($record)->filter('tbody tr')->last()->filter('td:nth-child(3)')->text()), 'the summary carries no file name');
 
         $visit = $this->client->request('GET', '/');
@@ -172,9 +172,10 @@ final class AdminTest extends SchemaTestCase
         self::assertSame($first, $this->client->request('GET', $edit)->filter('input[type="hidden"][name="value[cards][0][picture]"]')->attr('value'));
         $rows = [['picture' => $first, 'title' => 'Board'], ['picture' => $other, 'title' => 'Plans']];
         $this->post($edit, ['value' => ['title' => 'Works', 'cards' => $rows]], ['value' => ['cards' => [['picture' => $this->picture('next.png')]]]]);
-        [$next, $foreign] = array_map(static fn (array $card): ?string => $card['picture'] ?? null, json_decode($this->reread($cards)->getValues()['cards'], true));
+        $pictures = self::pictures($this->reread($cards));
+        $next = $pictures[0] ?? self::fail('the replacing picture is not stored');
         self::assertNotSame($first, $next);
-        self::assertNull($foreign, 'a name out of the pictures of the field leaves its cell empty');
+        self::assertNull($pictures[1], 'a name out of the pictures of the field leaves its cell empty');
         self::assertNull(self::service(Pictures::class)->path($first), 'a replaced picture takes its file');
         self::assertNotNull(self::service(Pictures::class)->path($other), 'a foreign name keeps its file');
 
@@ -183,7 +184,7 @@ final class AdminTest extends SchemaTestCase
         self::assertNull(self::service(Pictures::class)->path($next), 'a dropped picture takes its file');
 
         $this->post($edit, ['value' => ['title' => 'Works', 'cards' => [['title' => 'Board']]]], ['value' => ['cards' => [['picture' => $this->picture('last.png')]]]]);
-        $last = json_decode($this->reread($cards)->getValues()['cards'], true)[0]['picture'];
+        $last = self::pictures($this->reread($cards))[0] ?? self::fail('the new card picture is not stored');
         $this->post($edit.'/drop');
         self::assertNull(self::service(Pictures::class)->path($last), 'a dropped block takes the files of its cells');
     }
@@ -269,6 +270,12 @@ final class AdminTest extends SchemaTestCase
         self::assertNotNull(self::service(Pictures::class)->path($hero->getValues()['picture'] ?? ''), 'the picture is stored');
 
         return $hero;
+    }
+
+    /** @return list<?string> */
+    private static function pictures(PageBlock $cards): array
+    {
+        return array_values(array_map(static fn (array $card): ?string => $card['picture'] ?? null, json_decode($cards->getValues()['cards'] ?? '[]', true, 3, \JSON_THROW_ON_ERROR)));
     }
 
     /** @return list<string> */
