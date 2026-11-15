@@ -165,7 +165,7 @@ final readonly class PageForm
         $former = [];
         foreach (preg_split('/\R/u', $input->getString(self::FORMER)) ?: [] as $line) {
             $line = trim($line);
-            $parsed = '' === $line ? $path : Page::parse($line);
+            $parsed = '' === $line ? $path : Page::parse($line, Page::FORMER);
             if (null === $parsed) {
                 return new Refusal(t('pages.refusal.former', ['path' => $line]));
             }

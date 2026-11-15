@@ -47,7 +47,7 @@ final class PageController extends AbstractController
         return $this->moved(Page::ROOT) ?? $this->redirect($entries->url(CabinetEntry::Home) ?? throw $this->createNotFoundException());
     }
 
-    #[Route('/{path}', name: self::PAGE, requirements: ['path' => Page::SEGMENTS], methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SITE], options: ['utf8' => true], priority: self::LAST)]
+    #[Route('/{path}', name: self::PAGE, requirements: ['path' => Page::FORMER], methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SITE], options: ['utf8' => true], priority: self::LAST)]
     public function page(string $path): Response
     {
         $page = $this->pages->published('/'.$path);
@@ -55,7 +55,7 @@ final class PageController extends AbstractController
             return $this->show($page);
         }
 
-        return $this->moved('/'.$path) ?? throw $this->createNotFoundException();
+        return $this->moved('/'.mb_strtolower($path)) ?? throw $this->createNotFoundException();
     }
 
     #[Route('/pages/pictures/{file}', name: self::PICTURE, requirements: ['file' => '[^/]+'], methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SHARED])]

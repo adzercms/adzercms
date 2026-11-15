@@ -268,7 +268,7 @@
     <unit id="pages.refusal.former">
       <segment>
         <source>pages.refusal.former</source>
-        <target>Прежний адрес {path}: / либо слова из строчных букв, цифр и дефиса через /</target>
+        <target>Прежний адрес {path}: / либо слова из букв, цифр и знаков - . _ ~ ! $ &amp; '' ( ) * + , ; = : @ через /</target>
       </segment>
     </unit>
     <unit id="pages.refusal.link">

@@ -16,9 +16,11 @@ class Page implements Placed
 {
     public const ROOT = '/';
     public const SEGMENTS = '[\p{Ll}\p{Nd}-]+(?:/[\p{Ll}\p{Nd}-]+)*';
+    public const FORMER = self::FORMER_SEGMENT.'(?:/'.self::FORMER_SEGMENT.')*';
     public const PATH = 190;
     public const TITLE = 190;
     public const MENU = 64;
+    private const FORMER_SEGMENT = '[\p{L}\p{M}\p{N}\-._\~!$&\'()*+,;=:@]+';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -48,7 +50,7 @@ class Page implements Placed
     ) {
     }
 
-    public static function parse(string $input): ?string
+    public static function parse(string $input, string $segments = self::SEGMENTS): ?string
     {
         $path = mb_strtolower(trim($input));
         if ('' === $path) {
@@ -56,7 +58,7 @@ class Page implements Placed
         }
         $path = self::ROOT.trim($path, '/');
 
-        return mb_strlen($path) <= self::PATH && (self::ROOT === $path || 1 === preg_match('~^/'.self::SEGMENTS.'$~u', $path)) ? $path : null;
+        return mb_strlen($path) <= self::PATH && (self::ROOT === $path || 1 === preg_match('~^/'.$segments.'$~u', $path)) ? $path : null;
     }
 
     public function getId(): ?int

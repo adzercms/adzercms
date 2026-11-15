@@ -268,7 +268,7 @@
     <unit id="pages.refusal.former">
       <segment>
         <source>pages.refusal.former</source>
-        <target>Former address {path}: / or words of lowercase letters, digits and hyphens joined by /</target>
+        <target>Former address {path}: / or words of letters, digits and signs - . _ ~ ! $ &amp; '' ( ) * + , ; = : @ joined by /</target>
       </segment>
     </unit>
     <unit id="pages.refusal.link">
