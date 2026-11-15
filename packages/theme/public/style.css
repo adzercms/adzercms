@@ -1664,16 +1664,11 @@ form[data-steps] [data-step]:not(.current) { display: none; }
 .doc-sheet { padding: 1.5rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); }
 .doc-sheet > iframe { display: block; width: 100%; border: 0; }
 
-:root.layout-top { --chrome-height: var(--impersonate-height); }
-:root.layout-top .panel-layout { padding-top: var(--impersonate-height); }
-:root.layout-top .panel-header { position: static; }
-:root.layout-top .panel-content { padding-top: 16px; }
-
-@media (max-width: 900px) {
-    :root.layout-top .panel-main { padding-top: 0; }
-}
-
 @media (min-width: 901px) {
+    :root.layout-top { --chrome-height: var(--impersonate-height); }
+    :root.layout-top .panel-layout { padding-top: var(--impersonate-height); }
+    :root.layout-top .panel-header { position: static; }
+    :root.layout-top .panel-content { padding-top: 16px; }
     :root.layout-top .panel-main { flex-direction: column; padding-left: 0; }
     :root.layout-top .panel-sidebar { position: static; align-self: stretch; width: auto; min-width: 0; max-height: none; margin: 0; background: none; border-right: 0; border-radius: 0; }
     :root.layout-top .sidebar-nav { display: flex; flex-wrap: wrap; padding: 0 20px; }
