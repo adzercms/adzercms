@@ -47,7 +47,7 @@ final class LeadTest extends LeadsTestCase
         $page = $this->arrive((string) $this->fragment(self::LIST)->filter('tbody tr')->attr('data-href'));
 
         self::assertSame(
-            ['Анна', '79990000002', 'anna@site.test', 'Кран', '/catalog/kran', ItemSubject::PRICE],
+            ['Анна', '+7 999 000-00-02', 'anna@site.test', 'Кран', '/catalog/kran', ItemSubject::PRICE],
             array_map(static fn (string $label): string => self::tile($page, $label), [
                 self::phrase('leads.field.name'),
                 self::phrase(ContactKind::Phone->label()),
@@ -119,10 +119,10 @@ final class LeadTest extends LeadsTestCase
             [
                 'Краны Севера',
                 self::phrase('leads.offer.number', ['number' => $lead->getId(), 'date' => new \DateTimeImmutable('2026-11-10')]),
-                'Анна', '79990000002', 'anna@site.test',
+                'Анна', '+7 999 000-00-02', 'anna@site.test',
                 'Кран', ItemSubject::PRICE,
                 self::phrase(Money::rubles('12500.00')),
-                'Петров Иван', '79990000001', 'ivan@site.test',
+                'Петров Иван', '+7 999 000-00-01', 'ivan@site.test',
                 self::phrase('leads.offer.until', ['until' => new \DateTimeImmutable('2026-11-20')]),
             ],
             $offer->filter('.offer-brand, .offer-number div:last-child, .offer-fields td:last-child, .offer-amount, .offer-until')->each(static fn (Crawler $part): string => trim($part->text())),

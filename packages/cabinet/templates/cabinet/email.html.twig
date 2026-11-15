@@ -13,7 +13,7 @@
     {% if awaited %}
         <form method="post" action="{{ path('cabinet_profile_email_code') }}" class="inline-change-form">
             {{ csrf_field() }}
-            <label>{{ 'cabinet.contact.code_label'|trans({contact: phone}) }}
+            <label>{{ 'cabinet.contact.code_label'|trans({contact: phone|contact}) }}
                 <input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" required>
             </label>
             <button type="submit">{{ 'cabinet.contact.confirm'|trans }}</button>
@@ -35,7 +35,7 @@
             {% if phone %}
                 <div class="field">
                     <label>{{ 'cabinet.email.phone'|trans }}</label>
-                    <div class="settings-value">{{ phone }}</div>
+                    <div class="settings-value">{{ phone|contact }}</div>
                     <form method="post" action="{{ path('cabinet_profile_email_ask', {way: 'phone'}) }}" class="contact-change">
                         {{ csrf_field() }}<input type="hidden" name="contact" value="{{ contact }}">
                         <button class="small" type="submit">{{ 'cabinet.email.send'|trans }}</button>

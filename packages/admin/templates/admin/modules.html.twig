@@ -24,7 +24,7 @@
         {% block items %}
             {% if tiles %}
                 {% import '@Admin/admin/_extension.html.twig' as extension %}
-                <div class="offer-grid">
+                <div class="offer-grid fixed">
                     {% for row in rows %}
                         <article class="offer-card{{ row.card ? ' clickable-row' }}" data-package="{{ row.name }}"{% if row.card %} data-href="{{ row.card }}"{% endif %}>
                             {% if row.images %}<img class="offer-cover" src="{{ row.images|first }}" alt="" loading="lazy">{% endif %}

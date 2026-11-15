@@ -3,7 +3,7 @@
         <tr class="clickable-row" data-href="{{ path('admin_lead', {id: row.id}) }}">
             <td class="{{ table.aside('number') }}"><strong>{{ row.id }}</strong>{{ caption(row.name) }}</td>
             <td class="{{ table.aside('topic') }}">{{ cell(row.topic) }}</td>
-            <td class="{{ table.aside('contacts') }}">{{ cell([row.phone, row.email]|filter(contact => contact)) }}</td>
+            <td class="{{ table.aside('contacts') }}">{{ cell([row.phone|contact, row.email]|filter(contact => contact)) }}</td>
             {% for column in extra %}
                 <td class="{{ table.aside(column.key) }}">{{ cell(cells[row.id][column.key] ?? null) }}</td>
             {% endfor %}

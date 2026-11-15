@@ -31,7 +31,7 @@
             {% set kind = contact[0] %}
             <div class="info-item">
                 <span class="info-label">{{ kind.label|trans }}</span>
-                <a class="info-value" href="{{ kind.href(contact[1]) }}">{{ contact[1] }}</a>
+                <a class="info-value" href="{{ kind.href(contact[1]) }}">{{ kind.display(contact[1]) }}</a>
             </div>
         {% endfor %}
     </div>

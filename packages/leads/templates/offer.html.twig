@@ -42,7 +42,7 @@
     <h2>{{ 'leads.lead.client'|trans }}</h2>
     <table class="offer-fields">
         {{ offer.row('leads.field.name'|trans, lead.name) }}
-        {{ offer.row('leads.field.phone'|trans, lead.phone) }}
+        {{ offer.row('leads.field.phone'|trans, lead.phone|contact) }}
         {{ offer.row('leads.field.email'|trans, lead.email) }}
     </table>
 </div>
@@ -70,7 +70,7 @@
         <h2>{{ 'leads.field.manager'|trans }}</h2>
         <table class="offer-fields">
             {{ offer.row('leads.field.name'|trans, [manager.lastName, manager.firstName, manager.middleName]|filter(part => part)|join(' ')) }}
-            {{ offer.row('leads.field.phone'|trans, manager.phone) }}
+            {{ offer.row('leads.field.phone'|trans, manager.phone|contact) }}
             {{ offer.row('leads.field.email'|trans, manager.email) }}
         </table>
     </div>

@@ -105,7 +105,7 @@ final class WindowTest extends SchemaTestCase
         $notices = self::service(NoticeRepository::class)->findBy(['event' => LeadsEvent::NewLead->key()], ['id' => 'ASC']);
         self::assertSame(['admin@site.test', 'admin@site.test'], array_map(static fn (Notice $notice): string => $notice->getRecipient(), $notices), 'each lead reaches the active administrators only');
         self::assertSame($admin->getId(), $notices[0]->getUser()?->getId());
-        foreach ([self::TOPIC, 'Анна', '79990000002', 'Нужен на неделю', 'http://localhost/admin/leads/'.$leads[0]->getId()] as $field) {
+        foreach ([self::TOPIC, 'Анна', '+7 999 000-00-02', 'Нужен на неделю', 'http://localhost/admin/leads/'.$leads[0]->getId()] as $field) {
             self::assertStringContainsString($field, $notices[0]->getBody());
         }
         self::assertStringContainsString('/admin/leads/'.$leads[1]->getId(), $notices[1]->getBody());

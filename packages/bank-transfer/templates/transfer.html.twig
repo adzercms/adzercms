@@ -6,7 +6,7 @@
 <div class="pay">
     {% if note %}<p>{{ note }}</p>{% endif %}
     <div class="info-grid">
-        {% for key, value in {card: [card, card], phone: [phone, phone], comment: [comment, comment], amount: [payment.amount|plain, payment.amount|money]} %}
+        {% for key, value in {card: [card, card], phone: [phone, phone|contact], comment: [comment, comment], amount: [payment.amount|plain, payment.amount|money]} %}
             {% if value[0] %}
                 <div class="info-item">
                     <span class="info-label">{{ ('bank_transfer.page.' ~ key)|trans }}</span>

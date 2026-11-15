@@ -326,6 +326,7 @@ final class AdminWebTest extends SchemaTestCase
     #[Group('ACMS-UI-0015')]
     #[Group('ACMS-UI-0016')]
     #[Group('ACMS-CORE-0076')]
+    #[Group('ACMS-CORE-1160')]
     #[Group('ACMS-US-0003')]
     public function testUserListNamesRecordByLoginAndCarriesModuleColumnsBeforeState(): void
     {
@@ -349,7 +350,7 @@ final class AdminWebTest extends SchemaTestCase
         $name = self::cell($listing, $row, $login)->filter('a');
         self::assertSame($row, trim($name->text()), 'the login of the module names the record');
         self::assertSame(\sprintf('/admin/users/%d', $owing->getId()), $name->attr('href'), 'the login leads to the card');
-        self::assertSame('79990000010', trim(self::cell($listing, $row, $contacts)->text()), 'without mail the contact is the phone');
+        self::assertSame('+7 999 000-00-10', trim(self::cell($listing, $row, $contacts)->text()), 'without mail the contact is the phone');
         self::assertSame('paid@example.org', trim(self::cell($listing, 'u'.$paid->getId(), $contacts)->text()));
         self::assertSame('-150', trim(self::cell($listing, $row, Ledger::LABEL)->filter('.minus')->text()));
         self::assertSame([self::ids($listing)], $ledger->asked, 'the module gives the cells of the page at once');

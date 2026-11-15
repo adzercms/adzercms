@@ -7,6 +7,7 @@ namespace AdzerCMS\Core\Account;
 use AdzerCMS\Contracts\Account\Identifier;
 use AdzerCMS\Core\Entity\User;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use Twig\Attribute\AsTwigFilter;
 use Twig\Attribute\AsTwigFunction;
 
 final readonly class LoginNames
@@ -46,9 +47,20 @@ final readonly class LoginNames
         $names = [];
         foreach ($users as $user) {
             $id = (int) $user->getId();
-            $names[$id] = $found[$id] ?? $user->getEmail() ?? $user->getPhone() ?? '#'.$id;
+            $names[$id] = $found[$id] ?? self::contact($user->getEmail() ?? $user->getPhone()) ?? '#'.$id;
         }
 
         return $names;
+    }
+
+    #[AsTwigFilter('contact')]
+    public static function contact(?string $contact): ?string
+    {
+        if (null === $contact) {
+            return null;
+        }
+        $kind = ContactKind::of($contact);
+
+        return $kind->display($kind->normalize($contact) ?? $contact);
     }
 }

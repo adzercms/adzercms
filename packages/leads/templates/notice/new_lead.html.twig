@@ -4,7 +4,7 @@
 {% block subject %}{{ 'leads.notice.subject'|trans({brand: brand.title, number: lead.id}) }}{% endblock %}
 
 {% block fields %}
-{% for field, value in {topic: lead.topic, name: lead.name, phone: lead.phone, email: lead.email, message: lead.message} %}
+{% for field, value in {topic: lead.topic, name: lead.name, phone: lead.phone|contact, email: lead.email, message: lead.message} %}
 {% if value is not null %}{{ ('leads.field.' ~ field)|trans }}: {{ value }}
 {% endif %}
 {% endfor %}

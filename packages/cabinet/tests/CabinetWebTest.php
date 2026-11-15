@@ -140,7 +140,7 @@ final class CabinetWebTest extends SchemaTestCase
         $this->client->loginUser($user);
 
         $page = $this->client->request('GET', '/profile');
-        foreach ([(string) $user->getId(), '79990000010', 'abonent@example.org'] as $value) {
+        foreach ([(string) $user->getId(), '+7 999 000-00-10', 'abonent@example.org'] as $value) {
             self::assertStringContainsString($value, $page->filter('.panel-content')->text());
         }
 
