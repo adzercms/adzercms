@@ -1,6 +1,6 @@
 {% import '@Theme/_icons.html.twig' as icons %}
 <nav class="bottom-nav">
-    {% for entry in bar('cabinet') %}
+    {% for entry in entries %}
         {% set item = entry.item %}
         <a class="bottom-nav-item {{ entry.active ? 'active' }}" href="{{ path(item.route) }}"
            {% if item.count is not null %}id="live-bar-{{ item.route }}" data-live{% endif %}>

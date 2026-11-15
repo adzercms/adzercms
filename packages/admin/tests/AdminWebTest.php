@@ -67,8 +67,25 @@ final class AdminWebTest extends SchemaTestCase
         $this->em->flush();
     }
 
+    #[Group('ACMS-UI-0156')]
+    #[Group('ACMS-UI-0066')]
+    public function testMenuNestsSubmenuOfSectionUnderItsItemAndOperatorHasNoBottomPanel(): void
+    {
+        $this->client->loginUser($this->admin);
+        $page = $this->client->request('GET', '/admin/settings');
+        $texts = static fn (Crawler $items): array => $items->each(static fn (Crawler $item): string => trim($item->text()));
+
+        self::assertNotSame([], $texts($page->filter('.subnav-layout > .subnav .subnav-item')));
+        self::assertSame(
+            $texts($page->filter('.subnav-layout > .subnav .subnav-item')),
+            $texts($page->filter('.panel-sidebar .nav-item.active + .nav-submenu .subnav-item')),
+            'the submenu of the section goes nested under its menu item',
+        );
+        self::assertCount(0, $page->filter('.bottom-nav'), 'the operator has no bottom panel');
+        self::assertStringNotContainsString('bottom-nav-shown', (string) $page->filter('html')->attr('class'));
+    }
+
     #[Group('ACMS-CORE-0086')]
-    #[Group('ACMS-UI-0003')]
     #[Group('ACMS-UI-0004')]
     #[Group('ACMS-US-0003')]
     public function testOperatorEntersCabinetOfServedRecordOnlyAndComesBack(): void
@@ -87,17 +104,13 @@ final class AdminWebTest extends SchemaTestCase
 
         self::assertStringContainsString((string) $served->getId(), $under->filter('.impersonate-bar')->text());
         self::assertStringContainsString('impersonating', (string) $under->filter('html')->attr('class'));
-        self::assertCount(0, $under->filter('.admin-bar, .nav-section-admin'), 'under another record there are no administrative sections');
+        self::assertCount(0, $under->filter('.nav-section-admin'), 'under another record there are no administrative sections');
 
         $back = $this->arrive('/admin/users');
 
         self::assertSame('/admin/users', $this->client->getRequest()->getPathInfo(), 'the operator returns to the own record and opens the asked page');
         self::assertCount(0, $back->filter('.impersonate-bar'));
-        self::assertSame(
-            $back->filter('.nav-section-admin .nav-item')->each(static fn (Crawler $item): string => trim($item->text())),
-            $back->filter('.admin-bar-link')->each(static fn (Crawler $item): string => trim($item->text())),
-            'the side menu and the bar take the same items',
-        );
+        self::assertNotCount(0, $back->filter('.nav-section-admin .nav-item'), 'the side menu takes the administrative sections');
 
         foreach ([$stopped, $colleague] as $refused) {
             $this->client->request('GET', '/?_switch_user='.$refused->getId());

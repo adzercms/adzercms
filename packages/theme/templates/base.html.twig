@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 {% set accent = brand.color %}
-<html lang="{{ app.request.locale }}" class="layout-{{ brand.layout.value }} {{ app.user and is_granted('ROLE_ADMIN') ? 'admin' }} {{ is_granted('IS_IMPERSONATOR') ? 'impersonating' }}"
+{% set top = brand.layout.value == 'top' ? fragments('top', app.user ? app.user.id : null) : [] %}
+{% set bottom = app.user and top is empty and not is_granted('ROLE_ADMIN') ? bar('cabinet') : [] %}
+<html lang="{{ app.request.locale }}" class="layout-{{ brand.layout.value }} {{ bottom|length > 1 ? 'bottom-nav-shown' }} {{ is_granted('IS_IMPERSONATOR') ? 'impersonating' }}"
       data-theme="{{ brand.theme.value }}"{% if accent %} style="--brand: {{ accent }}"{% endif %}>
 <head>
     <meta charset="utf-8">
@@ -25,7 +27,6 @@
 {% endif %}
 <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle" hidden>
 <div class="panel-layout">
-    {% set top = brand.layout.value == 'top' ? fragments('top', app.user ? app.user.id : null) : [] %}
     {% for part in top %}{% include part.template with part.context only %}{% endfor %}
     {% if top is empty %}
     <!--noindex--><header class="panel-header" data-nosnippet>
@@ -48,7 +49,6 @@
             {% endif %}
         </div>
     </header><!--/noindex-->
-    {% if app.user %}{% include '@Theme/_admin_bar.html.twig' %}{% endif %}
     {% endif %}
 
     <div class="panel-main">
@@ -62,7 +62,7 @@
             {% block body %}{% endblock %}
         </main>
     </div>
-    {% if app.user and top is empty %}{% include '@Theme/_bottom_nav.html.twig' %}{% endif %}
+    {% if bottom|length > 1 %}{% include '@Theme/_bottom_nav.html.twig' with {entries: bottom} only %}{% endif %}
 </div>
 {% endblock %}
 {% include '@Theme/_toasts.html.twig' %}

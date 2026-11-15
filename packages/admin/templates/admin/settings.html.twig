@@ -2,9 +2,11 @@
 
 {% block title %}{{ 'admin.menu.settings'|trans }}{% endblock %}
 
+{% block submenu %}{% include '@Theme/_subnav.html.twig' with {groups: menu} only %}{% endblock %}
+
 {% block page %}
 <div class="subnav-layout">
-    {% include '@Theme/_subnav.html.twig' with {groups: menu} only %}
+    {{ block('submenu') }}
 
     <div class="subnav-page">
         <h2>{{ label|trans }}</h2>

@@ -115,7 +115,7 @@ final class FrameTest extends SchemaTestCase
 
         self::assertStringContainsString('layout-top', (string) $page->filter('html')->attr('class'));
         self::assertSame('span', $page->filter('.panel-layout > *')->first()->nodeName());
-        self::assertCount(0, $page->filter('.panel-header, .admin-bar, .panel-sidebar, .bottom-nav'));
+        self::assertCount(0, $page->filter('.panel-header, .panel-sidebar, .bottom-nav'));
     }
 
     private function frame(): Crawler

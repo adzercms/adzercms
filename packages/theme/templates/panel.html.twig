@@ -11,7 +11,9 @@
     </details>
 {% endblock %}
 
-{% macro items(area, title, class) %}
+{% block submenu %}{% endblock %}
+
+{% macro items(area, title, class, submenu) %}
     {% for group in menu(area) %}
         <div class="nav-section {{ class }}">
             {% if group.group or title %}<div class="nav-section-title">{{ (group.group ?? title)|trans }}</div>{% endif %}
@@ -24,6 +26,7 @@
                        {% if item.count is not null %}id="live-menu-{{ area }}-{{ item.route }}" data-live{% endif %}>
                         {{ item.label|trans }}{% if item.count %} <span class="badge badge-warning">{{ item.count }}</span>{% endif %}
                     </a>
+                    {% if entry.active and submenu is not empty %}<div class="nav-submenu">{{ submenu }}</div>{% endif %}
                 {% endif %}
             {% endfor %}
         </div>
@@ -31,10 +34,11 @@
 {% endmacro %}
 
 {% block nav %}
+    {% set submenu %}{{ block('submenu') }}{% endset %}
     {% if is_granted('ROLE_ADMIN') %}
-        {{ _self.items('admin', 'theme.admin', 'nav-section-admin') }}
+        {{ _self.items('admin', 'theme.admin', 'nav-section-admin', submenu) }}
     {% endif %}
-    {{ _self.items('cabinet', 'theme.main', '') }}
+    {{ _self.items('cabinet', 'theme.main', '', submenu) }}
 {% endblock %}
 
 {% block body %}

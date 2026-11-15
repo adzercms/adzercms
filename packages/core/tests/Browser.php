@@ -132,7 +132,7 @@ trait Browser
     /** @return list<array{string, list<array{?string, list<string>}>}> */
     protected static function subnav(Crawler $page): array
     {
-        return $page->filter('.subnav-group')->each(static function (Crawler $group): array {
+        return $page->filter('.subnav-layout .subnav-group')->each(static function (Crawler $group): array {
             $subgroups = [];
             $label = null;
             $items = [];
