@@ -13,6 +13,7 @@ use AdzerCMS\Core\Module\ComposerRunner;
 use AdzerCMS\Core\Module\Execution;
 use AdzerCMS\Core\Module\Marks;
 use AdzerCMS\Core\Module\Operations;
+use AdzerCMS\Core\Module\Opotopo;
 use AdzerCMS\Core\Module\Snapshot;
 use AdzerCMS\Core\Module\Sources;
 use AdzerCMS\Core\Module\Staging;
@@ -64,6 +65,7 @@ return static function (ContainerConfigurator $container): void {
     $services->set(Repositories::class)->arg('$httpClient', new Reference(Repositories::CLIENT));
     $services->set(Artifacts::class);
     $services->set(Sources::class);
+    $services->set(Opotopo::class);
     $services->set(Snapshot::class);
     $services->set(Marks::class)->arg('$httpClient', new Reference(Repositories::CLIENT));
     $services->set(Store::class)->arg('$httpClient', new Reference(Repositories::CLIENT));

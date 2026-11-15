@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Guided;
 use AdzerCMS\Contracts\Setting\Owner;
 use AdzerCMS\Contracts\Setting\Type;
+use AdzerCMS\Core\Module\Opotopo;
 use AdzerCMS\Core\Setting\Settings;
 use Opotopo\SellerApi\ClientConfig;
 
@@ -15,7 +16,7 @@ use function Symfony\Component\Translation\t;
 
 final readonly class OpotopoSettings implements Owner, Guided
 {
-    public const API = 'https://api.opotopo.com';
+    public const API = Opotopo::API;
     public const KEY = 'opotopo.key';
     public const ORGANIZATION = 'opotopo.organization';
     public const PUBLISH = 'opotopo.publish';

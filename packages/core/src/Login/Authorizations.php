@@ -25,7 +25,6 @@ final class Authorizations implements Redirects
     public const CALLBACK = 'login_service_callback';
 
     private const FLIGHT = 'core.login.flight';
-    private const SECRET_BYTES = 32;
 
     public function __construct(
         private readonly Switches $switches,
@@ -43,23 +42,20 @@ final class Authorizations implements Redirects
         }
         [$module, $credentials] = $enabled;
 
-        $state = self::token();
-        $secret = self::token();
-        $request->getSession()->set(self::FLIGHT, [$service, $state, $secret]);
-
+        $flight = Flight::open($request->getSession(), self::FLIGHT, $service);
         $authorization = $module->authorization($credentials);
         $query = [
             'response_type' => 'code',
             'client_id' => $authorization->client,
             'redirect_uri' => $this->redirect($service),
-            'state' => $state,
+            'state' => $flight->state,
             'scope' => $authorization->scope,
         ];
         if ($authorization->pkce) {
-            $query += ['code_challenge' => self::encode(hash('sha256', $secret, true)), 'code_challenge_method' => 'S256'];
+            $query += ['code_challenge' => $flight->challenge(), 'code_challenge_method' => 'S256'];
         }
         if ($authorization->nonce) {
-            $query['nonce'] = $secret;
+            $query['nonce'] = $flight->secret;
         }
 
         return $authorization->url.'?'.http_build_query($query + $authorization->parameters);
@@ -67,13 +63,13 @@ final class Authorizations implements Redirects
 
     public function state(Request $request): string
     {
-        return self::flight($request->getSession()->get(self::FLIGHT))[1];
+        return Flight::held($request->getSession(), self::FLIGHT)->state ?? '';
     }
 
     public function profile(string $service, Request $request): Profile|Refusal
     {
-        [$kept, $state, $secret] = self::flight($request->getSession()->remove(self::FLIGHT));
-        if ($kept !== $service || '' === $state || !hash_equals($state, $request->query->getString('state'))) {
+        $flight = Flight::land($request->getSession(), self::FLIGHT, $service, $request->query->getString('state'));
+        if (null === $flight) {
             return new Refusal(t('core.login.expired'));
         }
 
@@ -90,7 +86,7 @@ final class Authorizations implements Redirects
         }
 
         try {
-            $profile = $module->profile($credentials, new Callback($code, $state, $secret, $this->redirect($service), $parameters), new HttpExchange($this->http, $module->name(), $this->client($module)));
+            $profile = $module->profile($credentials, new Callback($code, $flight->state, $flight->secret, $this->redirect($service), $parameters), new HttpExchange($this->http, $module->name(), $this->client($module)));
         } catch (LoginFailed $failed) {
             return new Refusal($failed->reason);
         }
@@ -130,26 +126,5 @@ final class Authorizations implements Redirects
     private function redirect(string $service): string
     {
         return $this->urls->generate(self::CALLBACK, ['service' => $service], UrlGeneratorInterface::ABSOLUTE_URL);
-    }
-
-    /** @return array{string, string, string} */
-    private static function flight(mixed $flight): array
-    {
-        if (!\is_array($flight) || 3 !== \count($flight)) {
-            return ['', '', ''];
-        }
-        [$service, $state, $secret] = array_map(strval(...), array_values($flight));
-
-        return [$service, $state, $secret];
-    }
-
-    private static function token(): string
-    {
-        return self::encode(random_bytes(self::SECRET_BYTES));
-    }
-
-    private static function encode(string $raw): string
-    {
-        return rtrim(strtr(base64_encode($raw), '+/', '-_'), '=');
     }
 }

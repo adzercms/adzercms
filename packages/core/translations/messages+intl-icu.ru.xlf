@@ -1141,6 +1141,12 @@
         <target>Это же действие только что выполнено — повтор пропущен</target>
       </segment>
     </unit>
+    <unit id="core.opotopo.name">
+      <segment>
+        <source>core.opotopo.name</source>
+        <target>OPOTOPO</target>
+      </segment>
+    </unit>
     <unit id="core.password.short">
       <segment>
         <source>core.password.short</source>
