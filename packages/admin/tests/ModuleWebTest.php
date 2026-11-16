@@ -413,7 +413,7 @@ final class ModuleWebTest extends SchemaTestCase
         file_put_contents($tree.'/'.$file, $content);
 
         $this->post('/admin/modules/operation/enable?package=adzercms/sms-pilot');
-        $refused = self::service(Tree::class)->refresh('Enable module adzercms/sms-pilot', [], ['SMS_MODULES' => 'SmsPilot'], static fn () => self::fail('a refused operation transfers nothing'));
+        $refused = self::service(Tree::class)->refresh('Enable module adzercms/sms-pilot', [], $tree.'/var/stage', static fn (): array => ['SMS_MODULES' => 'SmsPilot'], static fn () => self::fail('a refused operation transfers nothing'));
 
         self::assertSame(self::phrase($refusal, $parameters), self::toast($this->arrive(self::MODULES), 'error'));
         self::assertNull(self::service(ModuleOperationRepository::class)->findOneBy(['package' => 'adzercms/sms-pilot']));
@@ -539,6 +539,7 @@ final class ModuleWebTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-1123')]
+    #[Group('ACMS-CORE-1124')]
     #[Group('ACMS-CORE-0944')]
     #[Group('ACMS-CORE-0967')]
     #[Group('ACMS-US-0004')]
@@ -561,6 +562,8 @@ final class ModuleWebTest extends SchemaTestCase
         $refreshed = file($tree.'/refreshed.env', \FILE_IGNORE_NEW_LINES) ?: [];
 
         self::assertContains('SMS_MODULES=SmsPilot', $refreshed, 'the refresh builds the new selection');
+        self::assertContains('COPY='.$tree.'/var/stage', $refreshed, 'the site takes the selection built in the copy of the operation');
+        self::assertDirectoryDoesNotExist($tree.'/var/stage');
         self::assertContains('PHP_BINARY='.\PHP_BINARY, $refreshed);
         self::assertContains('ADZERCMS_ENTRY='.$tree, $refreshed, 'the refresh runs under the hold of the job');
         self::assertContains('COMPOSER_AUTH={"bearer":{"repo.acme.test":"secret"}}', $refreshed, 'Composer of the refresh takes credentials of the own sources');
@@ -579,6 +582,7 @@ final class ModuleWebTest extends SchemaTestCase
     /** @param list<string> $locked */
     #[Group('ACMS-CORE-0940')]
     #[Group('ACMS-CORE-0946')]
+    #[Group('ACMS-CORE-1178')]
     #[Group('ACMS-US-0004')]
     #[DataProvider('compositions')]
     public function testComposerOperationRunsInStagedCopyCommittedOnlyOnSuccess(ModuleAction $action, string $package, OperationState $state, array $locked, bool $zipped = false, ?string $check = null): void
@@ -744,7 +748,7 @@ final class ModuleWebTest extends SchemaTestCase
     {
         $this->tree = sys_get_temp_dir().'/adzercms-tree-'.bin2hex(random_bytes(4));
         null === $site ? (new Filesystem())->mkdir($this->tree) : (new Filesystem())->mirror($site, $this->tree);
-        self::getContainer()->set(Tree::class, new Tree($this->tree, __DIR__.'/Fixture/refresh', __DIR__.'/Fixture/selection', __DIR__.'/Fixture/build', __DIR__.'/Fixture/verify'));
+        self::getContainer()->set(Tree::class, new Tree($this->tree, __DIR__.'/Fixture/prepare', __DIR__.'/Fixture/selection', __DIR__.'/Fixture/build', __DIR__.'/Fixture/adopt'));
 
         return $this->tree;
     }

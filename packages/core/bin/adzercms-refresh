@@ -7,8 +7,6 @@ root=$(pwd -P)
 [ "${ADZERCMS_REFRESHED:-}" != "$root" ] || exit 0
 scripts=$(dirname "$0")
 next=$root/var/next
-stamp=var/composer.installed
-patched=var/patches.installed
 
 held=
 if [ "${ADZERCMS_ENTRY:-}" = "$root" ]; then
@@ -23,20 +21,10 @@ rm -rf "$next"
 trap 'rm -rf "$next"' EXIT
 mkdir -p "$next"
 sed 's#^#/#' "$scripts/../config/stage.exclude" | rsync -a --exclude-from=- ./ "$next/"
-cp -p .env.local "$next/"
-
-if [ "$(cat "$stamp" 2>/dev/null || true)" != "$(sha256sum composer.lock | cut -d' ' -f1)" ] \
-    || { { [ -f patches.lock.json ] || [ -f "$patched" ]; } && ! cmp -s patches.lock.json "$patched"; }; then
-    changed=$("$scripts/adzercms-patched")
-    bin/php "$(command -v composer)" install --working-dir="$next" --no-interaction --no-progress --no-scripts
-    # shellcheck disable=SC2086
-    [ -z "$changed" ] || bin/php "$(command -v composer)" reinstall --working-dir="$next" --no-interaction --no-progress $changed
-    [ -n "$held" ] || "$next/vendor/bin/adzercms-verify" "$next"
-fi
 
 APP_BUILD=$(date +%Y%m%d%H%M%S)-$$
 export APP_BUILD
-(cd "$next" && vendor/bin/adzercms-build)
+"$scripts/adzercms-prepare" "$next"
 
 if [ -z "$held" ]; then
     flock 8

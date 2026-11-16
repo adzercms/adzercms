@@ -87,23 +87,26 @@ final class HoldTest extends TestCase
     #[Group('ACMS-CORE-1127')]
     #[Group('ACMS-CORE-0967')]
     #[Group('ACMS-CORE-1130')]
+    #[Group('ACMS-CORE-1178')]
+    #[Group('ACMS-CORE-1179')]
     #[DataProvider('holders')]
     public function testHolderServesRequestsUntilEnteredJobsLeaveThenCoversItsStepsClosed(bool $job): void
     {
+        self::stock($this->root);
         $files = new Filesystem();
-        $files->symlink(self::STEP, $this->root.'/bin/php');
-        foreach (['adzercms-build', 'adzercms-adopt'] as $script) {
-            $files->symlink(\dirname(__DIR__, 2).'/bin/'.$script, $this->root.'/vendor/bin/'.$script);
-        }
         $files->dumpFile($this->root.'/.env.local', '');
-        $files->dumpFile($this->root.'/composer.lock', '{}');
         $files->dumpFile($this->root.'/var/composer.installed', hash('sha256', '{}')."\n");
         $entered = $this->console('leave', $this->serve());
         $entered->start();
         $entered->waitUntil(static fn (string $type, string $output): bool => str_contains($output, 'entered'));
 
         if ($job) {
-            self::assertNull((new Tree($this->root, self::STEP))->refresh('Refresh', []));
+            $copy = $this->root.'/var/stage';
+            self::assertNull((new Tree($this->root))->refresh('Refresh', [], $copy, static function () use ($copy): array {
+                self::stock($copy);
+
+                return [];
+            }, static fn () => null));
         } else {
             (new Process([\dirname(__DIR__, 2).'/bin/adzercms-refresh'], $this->root))->mustRun();
         }
@@ -115,7 +118,7 @@ final class HoldTest extends TestCase
         self::assertNotSame([], $covered);
         self::assertSame([$this->root.' left closed'], array_values(array_unique(array_map($state, $covered))), 'steps of the live tree go after the entered process left, covered by the hold, requests closed');
         self::assertSame(
-            $job ? [] : ['open'],
+            ['open'],
             array_values(array_unique(array_map(static fn (string $step): string => substr($step, (int) strrpos($step, ' ') + 1), preg_grep('/^copy /', $steps) ?: []))),
             'the copy builds while requests are served',
         );
@@ -140,6 +143,16 @@ final class HoldTest extends TestCase
 
         self::assertSame("entered\nentered\n", $parent->getOutput(), 'a child of an entered process enters');
         self::assertSame("entered\n", (new Process([\PHP_BINARY, $this->root.'/bin/console'], env: ['ADZERCMS_ENTRY' => $this->root], timeout: 10))->mustRun()->getOutput());
+    }
+
+    private static function stock(string $tree): void
+    {
+        $files = new Filesystem();
+        $files->symlink(self::STEP, $tree.'/bin/php');
+        foreach (['adzercms-build', 'adzercms-adopt'] as $script) {
+            $files->symlink(\dirname(__DIR__, 2).'/bin/'.$script, $tree.'/vendor/bin/'.$script);
+        }
+        $files->dumpFile($tree.'/composer.lock', '{}');
     }
 
     private function console(string ...$arguments): Process

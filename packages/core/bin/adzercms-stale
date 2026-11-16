@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+
+copy=${1:?copy of the instance}
+[ "$(cat var/composer.installed 2>/dev/null || true)" != "$(sha256sum "$copy/composer.lock" | cut -d' ' -f1)" ] \
+    || { { [ -f "$copy/patches.lock.json" ] || [ -f var/patches.installed ]; } && ! cmp -s "$copy/patches.lock.json" var/patches.installed; }

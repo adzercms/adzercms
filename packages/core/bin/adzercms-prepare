@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+
+copy=$(cd "${1:?copy of the instance}" && pwd -P)
+: "${APP_BUILD:?build of the copy}"
+scripts=$(dirname "$(readlink -f "$0")")
+
+[ ! -f .env.local ] || cp -p .env.local "$copy/"
+if "$scripts/adzercms-stale" "$copy"; then
+    changed=$("$scripts/adzercms-patched" "$copy")
+    bin/php "$(command -v composer)" install --working-dir="$copy" --no-interaction --no-progress --no-scripts
+    # shellcheck disable=SC2086
+    [ -z "$changed" ] || bin/php "$(command -v composer)" reinstall --working-dir="$copy" --no-interaction --no-progress $changed
+    [ "${ADZERCMS_ENTRY:-}" = "$(pwd -P)" ] || "$copy/vendor/bin/adzercms-verify" "$copy"
+fi
+cd "$copy"
+exec vendor/bin/adzercms-build

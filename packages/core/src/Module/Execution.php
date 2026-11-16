@@ -43,7 +43,7 @@ final readonly class Execution
     {
         $selection = Selection::switched($package, $on);
 
-        return \is_string($selection) ? $selection : $this->tree->refresh($subject, $this->sources->environment(), $selection);
+        return \is_string($selection) ? $selection : $this->compose($subject, [], static fn (): array => $selection);
     }
 
     private function preview(string $package): ?string

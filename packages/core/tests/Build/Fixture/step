@@ -1,5 +1,7 @@
 #!/bin/sh
 here=$(pwd -P)
-root=${here%/var/next}
-if [ "$root" = "$here" ]; then place=live; else place=copy; fi
+case $here in
+    */var/next | */var/stage) root=${here%/var/*} place=copy ;;
+    *) root=$here place=live ;;
+esac
 printf '%s %s %s %s %s\n' "$place" "${2:-}" "${ADZERCMS_ENTRY:-}" "$([ -f "$root/left" ] && echo left || echo running)" "$(flock -n -s "$root/var/lock/serve" true && echo open || echo closed)" >> "$root/steps"

@@ -5,28 +5,31 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Module;
 
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Core\Build\Builds;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\Process;
 
+use function Symfony\Component\Clock\now;
 use function Symfony\Component\Translation\t;
 
 final readonly class Tree
 {
     public const TIMEOUT = 1800;
 
-    private const REFRESH = __DIR__.'/../../bin/adzercms-refresh';
+    private const PREPARE = __DIR__.'/../../bin/adzercms-prepare';
     private const SELECTOR = __DIR__.'/../../bin/adzercms-selection';
     private const BUILD = __DIR__.'/../../bin/adzercms-build';
-    private const VERIFY = 'vendor/bin/adzercms-verify';
+    private const ADOPT = 'vendor/bin/adzercms-adopt';
     private const PREVIEW = '--preview';
     private const SHARED = '.env';
     private const LOCAL = '.env.local';
     private const LOADED = 'SYMFONY_DOTENV_VARS';
     private const LOCKS = '/var/lock/';
-    private const LOCKED = ['refresh', 'entry', 'serve', 'served'];
+    private const QUEUE = 'refresh';
+    private const HELD = ['entry', 'serve', 'served'];
     private const ENTERED = 'adzercms.entry';
     private const COVERED = 'ADZERCMS_ENTRY';
     private const REFRESHED = 'ADZERCMS_REFRESHED';
@@ -35,10 +38,10 @@ final readonly class Tree
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
         public string $root,
-        private string $refresh = self::REFRESH,
+        private string $prepare = self::PREPARE,
         private string $selector = self::SELECTOR,
         private string $build = self::BUILD,
-        private string $verify = self::VERIFY,
+        private string $adopt = self::ADOPT,
     ) {
     }
 
@@ -71,28 +74,58 @@ final readonly class Tree
     }
 
     /**
-     * @param array<string, string>   $environment
-     * @param array<string, string>   $selection
-     * @param (\Closure(): void)|null $change
+     * @param array<string, string>                      $environment
+     * @param \Closure(): (array<string, string>|string) $stage
+     * @param \Closure(): void                           $transfer
      */
-    public function refresh(string $subject, array $environment, array $selection = [], ?\Closure $change = null): Refusal|string|null
+    public function refresh(string $subject, array $environment, string $copy, \Closure $stage, \Closure $transfer): Refusal|string|null
     {
         $entered = $GLOBALS[self::ENTERED] ?? null;
         if (\is_resource($entered)) {
             flock($entered, \LOCK_UN);
         }
-        $locks = array_map($this->lock(...), self::LOCKED);
+        $queue = $this->lock(self::QUEUE);
+
+        try {
+            $selection = $stage();
+            if (\is_string($selection)) {
+                return $selection;
+            }
+            $environment = [...$environment, ...$selection, Builds::ENV => now()->format('YmdHis').'-'.getmypid()];
+            $failure = $this->run([$this->prepare, $copy], $environment, false);
+            if (null !== $failure) {
+                return $failure;
+            }
+
+            return $this->held($subject, $environment, $selection, $copy, $transfer);
+        } finally {
+            fclose($queue);
+        }
+    }
+
+    /** @param array<string, string> $selection */
+    public function preview(array $selection): ?string
+    {
+        return $this->run([$this->build, self::PREVIEW], $selection);
+    }
+
+    /**
+     * @param array<string, string> $environment
+     * @param array<string, string> $selection
+     * @param \Closure(): void      $transfer
+     */
+    private function held(string $subject, array $environment, array $selection, string $copy, \Closure $transfer): Refusal|string|null
+    {
+        $locks = array_map($this->lock(...), self::HELD);
 
         try {
             $refusal = $this->refusal(...array_keys($selection));
             if (null !== $refusal) {
                 return $refusal;
             }
-            if (null !== $change) {
-                $change();
-            }
+            $transfer();
             $changed = $this->changed();
-            $failure = $this->run([$this->refresh], [...$environment, ...$selection]);
+            $failure = $this->run([Path::makeAbsolute($this->adopt, $copy), $copy], $environment);
             if (null !== $failure) {
                 return $failure;
             }
@@ -106,29 +139,17 @@ final readonly class Tree
         }
     }
 
-    /** @param array<string, string> $environment */
-    public function verify(string $copy, array $environment): ?string
-    {
-        return $this->run([Path::makeAbsolute($this->verify, $copy), $copy], $environment);
-    }
-
-    /** @param array<string, string> $selection */
-    public function preview(array $selection): ?string
-    {
-        return $this->run([$this->build, self::PREVIEW], $selection);
-    }
-
     /**
      * @param list<string>          $command
      * @param array<string, string> $environment
      */
-    private function run(array $command, array $environment): ?string
+    private function run(array $command, array $environment, bool $covered = true): ?string
     {
         $loaded = array_filter(explode(',', Selection::environment(self::LOADED)));
         $process = new Process(
             $command,
             $this->root,
-            [...array_fill_keys([...$loaded, self::LOADED], false), 'PHP_BINARY' => \PHP_BINARY, self::COVERED => $this->root, ...$environment],
+            [...array_fill_keys([...$loaded, self::LOADED], false), 'PHP_BINARY' => \PHP_BINARY, self::COVERED => $covered ? $this->root : false, ...$environment],
             null,
             self::TIMEOUT,
         );

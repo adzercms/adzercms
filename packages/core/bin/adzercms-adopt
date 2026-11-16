@@ -3,15 +3,12 @@ set -eu
 
 copy=$(cd "${1:?copy of the instance}" && pwd -P)
 : "${APP_BUILD:?build of the copy}"
-stamp=var/composer.installed
-patched=var/patches.installed
 
-if [ "$(cat "$stamp" 2>/dev/null || true)" != "$(sha256sum "$copy/composer.lock" | cut -d' ' -f1)" ] \
-    || { { [ -f "$copy/patches.lock.json" ] || [ -f "$patched" ]; } && ! cmp -s "$copy/patches.lock.json" "$patched"; }; then
+if "$(dirname "$(readlink -f "$0")")/adzercms-stale" "$copy"; then
     mv vendor "$copy/vendor.live"
     mv "$copy/vendor" vendor
-    sha256sum composer.lock | cut -d' ' -f1 > "$stamp"
-    if [ -f patches.lock.json ]; then cp patches.lock.json "$patched"; else rm -f "$patched"; fi
+    sha256sum "$copy/composer.lock" | cut -d' ' -f1 > var/composer.installed
+    if [ -f "$copy/patches.lock.json" ]; then cp "$copy/patches.lock.json" var/patches.installed; else rm -f var/patches.installed; fi
 fi
 
 for build in "$copy"/var/cache/*/"$APP_BUILD"; do

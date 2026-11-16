@@ -21,6 +21,7 @@ final readonly class Staging
 {
     private const STAGE = 'var/stage';
     private const EXCLUDED = __DIR__.'/../../config/stage.exclude';
+    private const ADOPTED = 'vendor';
     private const OPTIONS = ['--no-scripts', '--no-interaction', '--no-progress'];
     private const ENTRY_OPTIONS = ['--no-plugins', '--no-interaction'];
     private const MANIFEST = 'composer.json';
@@ -49,25 +50,27 @@ final readonly class Staging
     {
         $active = $this->paths->create($this->tree->root);
         $stage = $this->paths->create(self::STAGE, $active);
-        $excluded = $this->lists->create(...file(self::EXCLUDED, \FILE_IGNORE_NEW_LINES | \FILE_SKIP_EMPTY_LINES) ?: [], ...Path::isBasePath($this->tree->root, $this->files) ? [Path::makeRelative($this->files, $this->tree->root)] : []);
+        $excluded = [...file(self::EXCLUDED, \FILE_IGNORE_NEW_LINES | \FILE_SKIP_EMPTY_LINES) ?: [], ...Path::isBasePath($this->tree->root, $this->files) ? [Path::makeRelative($this->files, $this->tree->root)] : []];
 
         try {
-            $this->clean($active, $stage);
-            $this->beginner->begin($active, $stage, $excluded, timeout: Tree::TIMEOUT);
-            $this->enter($stage);
-            $this->stager->stage([...$command, ...self::OPTIONS], $active, $stage, timeout: Tree::TIMEOUT);
-            $chosen = $selection($stage->absolute());
-            $refused = \is_string($chosen) ? $chosen : $this->tree->verify($stage->absolute(), [...$environment, ...$chosen]) ?? $this->tree->refresh($subject, $environment, $chosen, function () use ($stage, $active, $excluded): void {
-                $this->committer->commit($stage, $active, $excluded, timeout: Tree::TIMEOUT);
+            $outcome = $this->tree->refresh($subject, $environment, $stage->absolute(), function () use ($active, $stage, $excluded, $command, $selection): array|string {
+                $this->clean($active, $stage);
+                $this->beginner->begin($active, $stage, $this->lists->create(...$excluded), timeout: Tree::TIMEOUT);
+                if ([] !== $command) {
+                    $this->enter($stage);
+                    $this->stager->stage([...$command, ...self::OPTIONS], $active, $stage, timeout: Tree::TIMEOUT);
+                }
+
+                return $selection($stage->absolute());
+            }, function () use ($active, $stage, $excluded): void {
+                $this->committer->commit($stage, $active, $this->lists->create(...[...$excluded, self::ADOPTED]), timeout: Tree::TIMEOUT);
             });
-            $this->clean($active, $stage);
         } catch (ExceptionInterface $failure) {
-            $this->clean($active, $stage);
-
-            return $failure->getMessage();
+            $outcome = $failure->getMessage();
         }
+        $this->clean($active, $stage);
 
-        return $refused;
+        return $outcome;
     }
 
     private function enter(PathInterface $stage): void
