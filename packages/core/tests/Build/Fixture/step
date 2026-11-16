@@ -4,4 +4,4 @@ case $here in
     */var/next | */var/stage) root=${here%/var/*} place=copy ;;
     *) root=$here place=live ;;
 esac
-printf '%s %s %s %s %s\n' "$place" "${2:-}" "${ADZERCMS_ENTRY:-}" "$([ -f "$root/left" ] && echo left || echo running)" "$(flock -n -s "$root/var/lock/serve" true && echo open || echo closed)" >> "$root/steps"
+printf '%s %s %s %s %s\n' "$place" "${2:-}${3:+ $3}" "${ADZERCMS_ENTRY:-}" "$([ -f "$root/left" ] && echo left || echo running)" "$(flock -n -s "$root/var/lock/serve" true && echo open || echo closed)" >> "$root/steps"

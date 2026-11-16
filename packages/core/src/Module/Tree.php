@@ -23,6 +23,7 @@ final readonly class Tree
     private const SELECTOR = __DIR__.'/../../bin/adzercms-selection';
     private const BUILD = __DIR__.'/../../bin/adzercms-build';
     private const ADOPT = 'vendor/bin/adzercms-adopt';
+    private const PRUNE = ['bin/php', 'bin/console', 'adzercms:cache', '--prune'];
     private const PREVIEW = '--preview';
     private const SHARED = '.env';
     private const LOCAL = '.env.local';
@@ -35,6 +36,7 @@ final readonly class Tree
     private const REFRESHED = 'ADZERCMS_REFRESHED';
     private const LITERAL = ':(literal)';
 
+    /** @param list<string> $prune */
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
         public string $root,
@@ -42,6 +44,7 @@ final readonly class Tree
         private string $selector = self::SELECTOR,
         private string $build = self::BUILD,
         private string $adopt = self::ADOPT,
+        private array $prune = self::PRUNE,
     ) {
     }
 
@@ -97,7 +100,7 @@ final readonly class Tree
                 return $failure;
             }
 
-            return $this->held($subject, $environment, $selection, $copy, $transfer);
+            return $this->held($subject, $environment, $selection, $copy, $transfer) ?? $this->run($this->prune, $environment);
         } finally {
             fclose($queue);
         }

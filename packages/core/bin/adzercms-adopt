@@ -29,7 +29,5 @@ take assets/vendor --delete
 [ $# -gt 0 ] || set -- ''
 for assignments; do
     # shellcheck disable=SC2086
-    env $assignments bin/php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
-    # shellcheck disable=SC2086
-    env $assignments bin/php bin/console adzercms:cache
+    env $assignments bin/php bin/console adzercms:cache --migrate
 done

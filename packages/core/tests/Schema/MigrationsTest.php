@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Core\Tests\Schema;
 
+use AdzerCMS\Core\Build\Builds;
+use AdzerCMS\Core\Kernel;
 use AdzerCMS\Core\Schema\MigrationOrder;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use Doctrine\DBAL\Connection;
@@ -21,7 +23,10 @@ use Doctrine\ORM\Mapping\ToOneOwningSideMapping;
 use Doctrine\ORM\Tools\SchemaTool;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Filesystem\Filesystem;
 
 final class MigrationsTest extends SchemaTestCase
 {
@@ -67,6 +72,32 @@ final class MigrationsTest extends SchemaTestCase
         $connection->insert('setting', ['name' => 'елка', 'value' => 'ye']);
 
         self::assertSame(['ye'], $connection->fetchFirstColumn('SELECT value FROM setting WHERE name = ?', ['елка']), 'equality tells «е» from «ё»');
+    }
+
+    #[Group('ACMS-CORE-1183')]
+    public function testSwitchOfBuildMigratesDatabaseInItsOwnProcess(): void
+    {
+        $connection = $this->em->getConnection();
+        $connection->rollBack();
+        $cache = sys_get_temp_dir().'/adzercms-switch-'.bin2hex(random_bytes(4));
+        $_SERVER['APP_CACHE_DIR'] = $cache;
+        $_SERVER[Builds::ENV] = 'b1';
+        try {
+            (new SchemaTool($this->em))->dropDatabase();
+            $kernel = self::createKernel(['debug' => false]);
+            self::assertInstanceOf(Kernel::class, $kernel);
+            $switch = new CommandTester((new Application($kernel))->find('adzercms:cache'));
+            $switch->execute(['--migrate' => true], ['interactive' => false]);
+
+            self::assertSame(Command::SUCCESS, $switch->getStatusCode(), $switch->getDisplay());
+            self::assertTrue($connection->createSchemaManager()->tablesExist(['setting', self::ledger()]), 'the switch migrated the database');
+            self::assertSame('b1', $kernel->builds()->current());
+        } finally {
+            unset($_SERVER['APP_CACHE_DIR'], $_SERVER[Builds::ENV]);
+            (new Filesystem())->remove($cache);
+            self::remigrate();
+        }
+        $connection->beginTransaction();
     }
 
     #[Group('ACMS-CORE-0013')]

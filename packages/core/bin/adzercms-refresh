@@ -61,6 +61,9 @@ fi
 # shellcheck disable=SC2086
 (IFS=$nl && set -f && exec "$next/vendor/bin/adzercms-adopt" "$next" $sets)
 [ $# -eq 0 ] || "$@"
-[ -n "$held" ] || exec 8>&- 7>&- 6>&-
+if [ -z "$held" ]; then
+    exec 8>&- 7>&- 6>&-
+    bin/php bin/console adzercms:cache --prune
+fi
 
 bin/php bin/console doctrine:schema:validate || true

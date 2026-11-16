@@ -746,7 +746,7 @@ final class ModuleWebTest extends SchemaTestCase
     {
         $this->tree = sys_get_temp_dir().'/adzercms-tree-'.bin2hex(random_bytes(4));
         null === $site ? (new Filesystem())->mkdir($this->tree) : (new Filesystem())->mirror($site, $this->tree);
-        self::getContainer()->set(Tree::class, new Tree($this->tree, __DIR__.'/Fixture/prepare', __DIR__.'/Fixture/selection', __DIR__.'/Fixture/build', __DIR__.'/Fixture/adopt'));
+        self::getContainer()->set(Tree::class, new Tree($this->tree, __DIR__.'/Fixture/prepare', __DIR__.'/Fixture/selection', __DIR__.'/Fixture/build', __DIR__.'/Fixture/adopt', ['true']));
 
         return $this->tree;
     }

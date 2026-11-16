@@ -114,6 +114,8 @@ final class RefreshTest extends TestCase
 
     #[Group('ACMS-CORE-1130')]
     #[Group('ACMS-CORE-1177')]
+    #[Group('ACMS-CORE-1183')]
+    #[Group('ACMS-CORE-1184')]
     #[DataProvider('locks')]
     public function testBuildOfCopyMovesIntoLiveTreeBeforeMigrationsAndSwitch(bool $changed): void
     {
@@ -126,9 +128,9 @@ final class RefreshTest extends TestCase
         $build = trim((string) file_get_contents($this->root.'/public/assets/set/manifest.json'));
 
         self::assertSame(
-            ['copy bin/console cache:warmup', 'copy bin/console importmap:install --no-interaction', 'copy bin/console asset-map:compile --no-interaction', 'bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration', 'bin/console adzercms:cache', 'bin/console doctrine:schema:validate'],
+            ['copy bin/console cache:warmup', 'copy bin/console importmap:install --no-interaction', 'copy bin/console asset-map:compile --no-interaction', 'bin/console adzercms:cache --migrate', 'bin/console adzercms:cache --prune', 'bin/console doctrine:schema:validate'],
             array_values(array_filter($calls, static fn (string $call): bool => !str_contains($call, '--env=test') && 1 === preg_match('/^(copy )?bin\/console /', $call))),
-            'the copy builds the cache and the static, the live tree migrates and switches on them',
+            'the copy builds the cache and the static, the live tree migrates and switches on them in one process, then the free builds go',
         );
         self::assertDirectoryExists($this->root.'/var/cache/prod_set/'.$build, 'the build of the copy moves into the builds of the live tree');
         self::assertFileExists($this->root.'/assets/vendor/library.js', 'the libraries of the copy reach a live tree without its own');
@@ -170,7 +172,7 @@ final class RefreshTest extends TestCase
 
         $calls = $this->refresh(null, '--revision', 'revision');
         $copied = file($this->root.'/copied', \FILE_IGNORE_NEW_LINES) ?: [];
-        $steps = ['copy bin/console asset-map:compile --no-interaction', 'merged '.$this->root, 'bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration'];
+        $steps = ['copy bin/console asset-map:compile --no-interaction', 'merged '.$this->root, 'bin/console adzercms:cache --migrate'];
 
         self::assertSame([true, false], [\in_array('./src/Added.php', $copied, true), \in_array('./src/Removed.php', $copied, true)], 'the copy is the tree of the revision');
         self::assertSame('revised', file_get_contents($this->root.'/var/checked-kernel'));
@@ -185,9 +187,8 @@ final class RefreshTest extends TestCase
         $calls = $this->refresh(null, '--set', 'PROBE=one', '--set', 'PROBE=two', '--', 'bin/php', 'bin/console', 'slots');
 
         $set = static fn (string $probe): array => ['copy bin/console cache:warmup PROBE='.$probe, 'copy bin/console importmap:install --no-interaction PROBE='.$probe, 'copy bin/console asset-map:compile --no-interaction PROBE='.$probe];
-        $switch = static fn (string $probe): array => ['bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration PROBE='.$probe, 'bin/console adzercms:cache PROBE='.$probe];
         self::assertSame(
-            [...$set('one'), ...$set('two'), ...$switch('one'), ...$switch('two'), 'bin/console slots', 'bin/console doctrine:schema:validate'],
+            [...$set('one'), ...$set('two'), 'bin/console adzercms:cache --migrate PROBE=one', 'bin/console adzercms:cache --migrate PROBE=two', 'bin/console slots', 'bin/console adzercms:cache --prune', 'bin/console doctrine:schema:validate'],
             array_values(array_filter($calls, static fn (string $call): bool => !str_contains($call, '--env=test') && 1 === preg_match('/^(copy )?bin\/console /', $call))),
             'each set builds in the one copy, then migrates and switches, and the command of the caller follows',
         );

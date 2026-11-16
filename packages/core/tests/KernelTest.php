@@ -87,6 +87,33 @@ final class KernelTest extends KernelTestCase
         }
     }
 
+    #[Group('ACMS-CORE-1184')]
+    public function testPruneRemovesFreeBuildsOfEveryModuleSetKeepingTheirPointers(): void
+    {
+        $cache = sys_get_temp_dir().'/adzercms-kernel-'.bin2hex(random_bytes(4));
+        $_SERVER['APP_CACHE_DIR'] = $cache;
+        $roots = [$cache.'/test', $cache.'/test_0123456789abcdef'];
+
+        try {
+            foreach ($roots as $root) {
+                (new Filesystem())->mkdir([$root.'/b0', $root.'/b1']);
+                (new Builds($root))->switchTo('b1');
+            }
+            $prune = new CommandTester((new Application(self::createKernel(['debug' => false])))->find('adzercms:cache'));
+            $prune->execute(['--prune' => true]);
+
+            self::assertSame(Command::SUCCESS, $prune->getStatusCode());
+            self::assertSame(
+                [['b1'], ['b1']],
+                array_map(static fn (string $root): array => array_values(preg_grep('/^b\d+$/', scandir($root) ?: []) ?: []), $roots),
+                'the free build of each set goes, the build of its pointer stays',
+            );
+        } finally {
+            unset($_SERVER['APP_CACHE_DIR']);
+            (new Filesystem())->remove($cache);
+        }
+    }
+
     #[Group('ACMS-CORE-1175')]
     public function testDebugCacheWithoutBuildPointerIsDroppedOnChangeOfPackages(): void
     {

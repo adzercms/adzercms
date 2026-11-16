@@ -90,6 +90,7 @@ final class HoldTest extends TestCase
     #[Group('ACMS-CORE-1178')]
     #[Group('ACMS-CORE-1179')]
     #[Group('ACMS-CORE-1182')]
+    #[Group('ACMS-CORE-1184')]
     #[DataProvider('holders')]
     public function testHolderServesRequestsUntilEnteredJobsLeaveThenCoversItsStepsClosed(bool $job): void
     {
@@ -113,12 +114,13 @@ final class HoldTest extends TestCase
         }
 
         $steps = file($this->root.'/steps', \FILE_IGNORE_NEW_LINES) ?: [];
-        $covered = preg_grep('/^live (?!doctrine:schema:validate )/', $steps) ?: [];
-        $state = static fn (string $step): string => explode(' ', $step, 3)[2];
+        $covered = preg_grep('/^live (?!doctrine:schema:validate |adzercms:cache --prune )/', $steps) ?: [];
+        $state = static fn (string $step): string => implode(' ', \array_slice(explode(' ', $step), -3));
         self::assertSame("entered\n", file_get_contents($this->root.'/served'), 'requests are served while the holder awaits an entered job');
         self::assertNotSame([], $covered);
         self::assertSame(!$job, [] !== preg_grep('/^live slots /', $covered), 'the command of the caller runs under the hold');
         self::assertSame([$this->root.' left closed'], array_values(array_unique(array_map($state, $covered))), 'steps of the live tree go after the entered process left, covered by the hold, requests closed');
+        self::assertSame([$this->root.' left open'], array_values(array_map($state, preg_grep('/^live adzercms:cache --prune /', $steps) ?: [])), 'builds without processes go once after the hold');
         self::assertSame(
             ['open'],
             array_values(array_unique(array_map(static fn (string $step): string => substr($step, (int) strrpos($step, ' ') + 1), preg_grep('/^copy /', $steps) ?: []))),
