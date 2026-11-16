@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Pages\Tests;
 
-use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -28,8 +27,7 @@ final class SiteHostTest extends SchemaTestCase
     #[Group('ACMS-US-0071')]
     public function testPageTakesAddressOfCabinetSectionOnSiteHost(): void
     {
-        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
-        $this->em->flush();
+        $this->admin();
 
         $refused = $this->post(self::LIST.'/new', ['title' => 'Pictures', 'path' => '/pages/pictures/hero']);
         self::assertSame(self::phrase(t('pages.refusal.path_route', ['path' => '/pages/pictures/hero'])), trim($refused->filter('.field-refusal')->text()));
@@ -59,8 +57,7 @@ final class SiteHostTest extends SchemaTestCase
         self::assertSame('/', $page->filter('.header-logo')->attr('href'));
         self::assertSame(self::CABINET.'/login', $page->filter('.site-entry')->attr('href'));
 
-        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
-        $this->em->flush();
+        $this->admin();
         $preview = $this->client->request('GET', self::LIST.'/'.$home->getId().'/preview');
         self::assertSame(self::SITE.'/', $preview->filter('.header-logo')->attr('href'));
 

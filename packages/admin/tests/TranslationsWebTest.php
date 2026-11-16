@@ -6,7 +6,6 @@ namespace AdzerCMS\Admin\Tests;
 
 use AdzerCMS\Admin\Controller\TranslationsController;
 use AdzerCMS\Contracts\Setting\Page;
-use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Notice\MailChannel;
 use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Setting\Catalog;
@@ -32,8 +31,7 @@ final class TranslationsWebTest extends SchemaTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
-        $this->em->flush();
+        $this->admin();
     }
 
     #[Group('ACMS-CORE-0995')]

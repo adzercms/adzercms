@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Leads\Tests;
 
-use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
@@ -27,9 +26,7 @@ abstract class LeadsTestCase extends SchemaTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->operator = $this->record('79990000001')->setRole(Role::Admin);
-        $this->client->loginUser($this->operator);
-        $this->em->flush();
+        $this->operator = $this->admin();
     }
 
     protected function lead(StageGroup $group, string $name, ?string $phone = null, ?string $email = null, ?string $message = null, ?string $topic = null, ?Stage $stage = null, ?string $page = null): Lead

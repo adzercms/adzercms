@@ -13,7 +13,6 @@ use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Page;
-use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Build\Preview;
 use AdzerCMS\Core\Kernel;
 use AdzerCMS\Core\Module\Catalog as ModuleCatalog;
@@ -68,8 +67,7 @@ final class ModuleWebTest extends SchemaTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
-        $this->em->flush();
+        $this->admin();
     }
 
     protected function tearDown(): void
@@ -289,7 +287,7 @@ final class ModuleWebTest extends SchemaTestCase
         self::assertContains($idle->name, $installed);
         self::assertNotContains('acme/till', $installed);
 
-        $this->client->loginUser($this->record('79990000002')->setRole(Role::Admin)->setLanguage('ru'));
+        $this->admin('79990000002')->setLanguage('ru');
         $this->em->flush();
         $russian = $this->client->request('GET', self::MODULES)->filter('#rows');
         $described = static fn (string $name): string => trim(self::cell($russian, $name, self::phrase('admin.modules.name', locale: 'ru'))->filter('.muted')->text());

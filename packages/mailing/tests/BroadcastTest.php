@@ -6,7 +6,6 @@ namespace AdzerCMS\Mailing\Tests;
 
 use AdzerCMS\Contracts\Notice\BotGateway;
 use AdzerCMS\Core\Account\ContactKind;
-use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Entity\ConnectedService;
 use AdzerCMS\Core\Entity\Notice;
 use AdzerCMS\Core\Entity\User;
@@ -47,9 +46,7 @@ final class BroadcastTest extends SchemaTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->admin = $this->record('79990000001')->setRole(Role::Admin);
-        $this->em->flush();
-        $this->client->loginUser($this->admin);
+        $this->admin = $this->admin();
     }
 
     /** @return iterable<string, array{array<string, string>, int}> */

@@ -8,7 +8,6 @@ use AdzerCMS\Admin\Tests\Fixture\Footfall;
 use AdzerCMS\Contracts\Analytics\Step;
 use AdzerCMS\Contracts\Analytics\Visits;
 use AdzerCMS\Contracts\Refusal;
-use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -28,8 +27,7 @@ final class TrafficWebTest extends SchemaTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
-        $this->em->flush();
+        $this->admin();
     }
 
     #[Group('ACMS-CORE-1027')]

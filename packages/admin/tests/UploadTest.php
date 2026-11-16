@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AdzerCMS\Admin\Tests;
 
 use AdzerCMS\Contracts\Setting\Page;
-use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Security\CsrfGuard;
 use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Setting\Settings;
@@ -23,9 +22,7 @@ final class UploadTest extends SchemaTestCase
     #[Group('ACMS-UI-0124')]
     public function testUploadedFileReachesTheFormOfItsOwnSessionByKey(): void
     {
-        $admin = $this->record('79990000001')->setRole(Role::Admin);
-        $this->em->flush();
-        $this->client->loginUser($admin);
+        $admin = $this->admin();
 
         $this->post('/upload', ['field' => \sprintf('value[%s]', Brand::LOGO)], ['file' => $this->picture('mark.png')]);
         self::assertResponseIsSuccessful();

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Pages\Tests;
 
-use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -31,8 +30,7 @@ final class AdminTest extends SchemaTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
-        $this->em->flush();
+        $this->admin();
     }
 
     #[Group('ACMS-CORE-1096')]

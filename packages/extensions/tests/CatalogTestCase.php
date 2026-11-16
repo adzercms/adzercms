@@ -6,7 +6,6 @@ namespace AdzerCMS\Extensions\Tests;
 
 use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Contracts\Module\ExtensionType;
-use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Composer\Localized;
 use AdzerCMS\Core\Composer\Package;
 use AdzerCMS\Core\Module\Registry;
@@ -27,8 +26,7 @@ abstract class CatalogTestCase extends SchemaTestCase
 
     protected function operate(): void
     {
-        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
-        $this->em->flush();
+        $this->admin();
     }
 
     protected function author(string $phone, ?string $email = null): ExtensionAuthor

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Mailing\Tests;
 
-use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Module\Snapshot;
 use AdzerCMS\Core\Module\Switches;
 use AdzerCMS\Core\Tests\Accounts;
@@ -32,9 +31,7 @@ final class GatewayTest extends SchemaTestCase
             RelayGateway::SETTINGS.Switches::ENABLED => '1',
             RelayGateway::SETTINGS.RelayGateway::TOKEN => 'relay-token',
         ]);
-        $admin = $this->record('79990000001')->setRole(Role::Admin);
-        $this->em->flush();
-        $this->client->loginUser($admin);
+        $this->admin();
         $this->relay = self::service(RelayGateway::class);
         $this->relay->contract = self::CONTRACT;
     }

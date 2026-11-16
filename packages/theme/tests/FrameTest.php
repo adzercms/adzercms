@@ -6,7 +6,6 @@ namespace AdzerCMS\Theme\Tests;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Type;
-use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Setting\Layout;
 use AdzerCMS\Core\Setting\Settings;
@@ -74,10 +73,8 @@ final class FrameTest extends SchemaTestCase
     #[Group('ACMS-UI-0068')]
     public function testFrameWithoutCabinetCarriesNoCabinetLink(): void
     {
-        $admin = $this->record('+7 900 111-22-33')->setRole(Role::Admin);
+        $this->admin('+7 900 111-22-33');
         $user = $this->record('+7 900 000-00-01');
-        $this->em->flush();
-        $this->client->loginUser($admin);
 
         $page = $this->arrive(self::FRAME.'?_switch_user='.$user->getUserIdentifier());
 

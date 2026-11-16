@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AdzerCMS\BankTransfer\Tests;
 
 use AdzerCMS\BankTransfer\BankTransferService;
-use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\Configuration;
@@ -114,8 +113,7 @@ final class BankTransferTest extends SchemaTestCase
         self::mockTime('2026-08-12 10:00');
         self::command('adzercms:payments')->execute([]);
         $awaiting = $this->order('payer-2');
-        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
-        $this->em->flush();
+        $this->admin();
 
         $list = $this->client->request('GET', '/admin/transfers');
         self::assertSame(['payer-2'], self::comments($list));
@@ -174,8 +172,7 @@ final class BankTransferTest extends SchemaTestCase
         $this->order('I-payer');
         $this->order(null);
         $this->order('A-payer');
-        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
-        $this->em->flush();
+        $this->admin();
 
         self::assertSame(['A-payer', 'Hosting', 'I-payer'], self::comments($this->client->request('GET', '/admin/transfers?sort=comment&order=asc')),
             'a transfer without payer sorts by the description shown in its place');
@@ -186,8 +183,7 @@ final class BankTransferTest extends SchemaTestCase
     public function testTransferCommentOfRecordLoginShowsItsUser(): void
     {
         $payer = $this->record('79990000002')->setComment('Village shop');
-        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
-        $this->em->flush();
+        $this->admin();
         $this->order('u'.$payer->getId());
         $this->order('payer-1');
 

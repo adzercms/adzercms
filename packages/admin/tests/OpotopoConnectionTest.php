@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AdzerCMS\Admin\Tests;
 
 use AdzerCMS\Admin\ModuleSources;
-use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Module\Opotopo;
 use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Tests\Accounts;
@@ -37,8 +36,7 @@ final class OpotopoConnectionTest extends SchemaTestCase
     {
         parent::setUp();
         $this->answerService();
-        $this->client->loginUser($this->record('79990000001')->setRole(Role::Admin));
-        $this->em->flush();
+        $this->admin();
     }
 
     #[Group('ACMS-CORE-1171')]
