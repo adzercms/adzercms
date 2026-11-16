@@ -1,7 +1,10 @@
 #!/bin/sh
 set -eu
 
+checked=1
+[ "${1:-}" != --unchecked ] || { checked=; shift; }
 copy=$(cd "${1:?copy of the instance}" && pwd -P)
+shift
 : "${APP_BUILD:?build of the copy}"
 scripts=$(dirname "$(readlink -f "$0")")
 
@@ -11,7 +14,11 @@ if "$scripts/adzercms-stale" "$copy"; then
     bin/php "$(command -v composer)" install --working-dir="$copy" --no-interaction --no-progress --no-scripts
     # shellcheck disable=SC2086
     [ -z "$changed" ] || bin/php "$(command -v composer)" reinstall --working-dir="$copy" --no-interaction --no-progress $changed
-    [ "${ADZERCMS_ENTRY:-}" = "$(pwd -P)" ] || "$copy/vendor/bin/adzercms-verify" "$copy"
+    [ -z "$checked" ] || "$copy/vendor/bin/adzercms-verify" "$copy"
 fi
 cd "$copy"
-exec vendor/bin/adzercms-build
+[ $# -gt 0 ] || set -- ''
+for assignments; do
+    # shellcheck disable=SC2086
+    env $assignments vendor/bin/adzercms-build
+done

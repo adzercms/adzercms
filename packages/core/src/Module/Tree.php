@@ -92,7 +92,7 @@ final readonly class Tree
                 return $selection;
             }
             $environment = [...$environment, ...$selection, Builds::ENV => now()->format('YmdHis').'-'.getmypid()];
-            $failure = $this->run([$this->prepare, $copy], $environment, false);
+            $failure = $this->run([$this->prepare, $copy], $environment);
             if (null !== $failure) {
                 return $failure;
             }
@@ -143,13 +143,13 @@ final readonly class Tree
      * @param list<string>          $command
      * @param array<string, string> $environment
      */
-    private function run(array $command, array $environment, bool $covered = true): ?string
+    private function run(array $command, array $environment): ?string
     {
         $loaded = array_filter(explode(',', Selection::environment(self::LOADED)));
         $process = new Process(
             $command,
             $this->root,
-            [...array_fill_keys([...$loaded, self::LOADED], false), 'PHP_BINARY' => \PHP_BINARY, self::COVERED => $covered ? $this->root : false, ...$environment],
+            [...array_fill_keys([...$loaded, self::LOADED], false), 'PHP_BINARY' => \PHP_BINARY, self::COVERED => $this->root, ...$environment],
             null,
             self::TIMEOUT,
         );

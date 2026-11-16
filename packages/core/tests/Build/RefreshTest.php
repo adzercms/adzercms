@@ -19,14 +19,16 @@ final class RefreshTest extends TestCase
     private const PATCHED = 'acme/widget';
     private const INSTALLED = '/vendor/installed';
 
+    private string $base;
     private string $root;
 
     protected function setUp(): void
     {
-        $root = sys_get_temp_dir().'/adzercms-refresh-'.bin2hex(random_bytes(4));
+        $base = sys_get_temp_dir().'/adzercms-refresh-'.bin2hex(random_bytes(4));
         $files = new Filesystem();
-        $files->mkdir($root.'/var');
-        $this->root = realpath($root) ?: self::fail('the instance root is not made');
+        $files->mkdir($base.'/site/var');
+        $this->base = realpath($base) ?: self::fail('the repository root is not made');
+        $this->root = $this->base.'/site';
         $files->symlink(self::FIXTURE.'php', $this->root.'/bin/php');
         $files->symlink(self::FIXTURE.'phpunit', $this->root.'/bin/phpunit');
         foreach (['adzercms-adopt' => self::SCRIPTS, 'adzercms-build' => self::SCRIPTS, 'adzercms-suites' => self::SCRIPTS, 'adzercms-verify' => self::FIXTURE.'verify', 'adzercms-check' => self::FIXTURE.'check'] as $script => $target) {
@@ -43,7 +45,7 @@ final class RefreshTest extends TestCase
 
     protected function tearDown(): void
     {
-        (new Filesystem())->remove($this->root);
+        (new Filesystem())->remove($this->base);
     }
 
     #[Group('ACMS-CORE-1022')]
@@ -134,6 +136,71 @@ final class RefreshTest extends TestCase
         self::assertSame(hash('sha256', self::LOCK)."\n", file_get_contents($this->root.'/var/composer.installed'));
     }
 
+    #[Group('ACMS-CORE-1178')]
+    public function testUncheckedRefreshTakesChangedLockWithoutCheckOfCopy(): void
+    {
+        $calls = $this->refresh(null, '--unchecked');
+
+        self::assertSame([], preg_grep('/^copy verify /', $calls), 'the caller checked the revision at its source');
+        self::assertFileExists($this->root.self::INSTALLED);
+    }
+
+    #[Group('ACMS-CORE-1180')]
+    #[DataProvider('repositories')]
+    public function testRevisionReachesLiveTreeByFastForwardAfterItsCopyIsBuilt(bool $nested): void
+    {
+        $top = $nested ? $this->base : $this->root;
+        $files = new Filesystem();
+        $files->dumpFile($top.'/.gitignore', "var/\nvendor/\ncalls\ncopied\n");
+        $files->dumpFile($this->root.'/src/Removed.php', '');
+        $files->dumpFile($this->root.'/var/hooks/post-merge', "#!/bin/sh\nprintf 'merged %s\\n' \"\$ADZERCMS_REFRESHED\" >> ".$this->root."/calls\n");
+        $files->chmod($this->root.'/var/hooks/post-merge', 0o755);
+        $git = static fn (string ...$arguments): string => trim((new Process(['git', '-c', 'user.name=Site', '-c', 'user.email=site@acme.test', ...$arguments], $top))->mustRun()->getOutput());
+        $git('init', '--quiet');
+        $git('config', 'core.hooksPath', $this->root.'/var/hooks');
+        $git('add', '--all');
+        $git('commit', '--quiet', '--message', 'Site');
+        $git('checkout', '--quiet', '-b', 'revision');
+        $files->dumpFile($this->root.'/src/Kernel.php', 'revised');
+        $files->dumpFile($this->root.'/src/Added.php', '');
+        $files->remove($this->root.'/src/Removed.php');
+        $git('add', '--all');
+        $git('commit', '--quiet', '--message', 'Revision');
+        $revision = $git('rev-parse', 'HEAD');
+        $git('checkout', '--quiet', '-');
+
+        $calls = $this->refresh(null, '--revision', 'revision');
+        $copied = file($this->root.'/copied', \FILE_IGNORE_NEW_LINES) ?: [];
+        $steps = ['copy bin/console asset-map:compile --no-interaction', 'merged '.$this->root, 'bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration'];
+
+        self::assertSame([true, false], [\in_array('./src/Added.php', $copied, true), \in_array('./src/Removed.php', $copied, true)], 'the copy is the tree of the revision');
+        self::assertSame('revised', file_get_contents($this->root.'/var/checked-kernel'));
+        self::assertSame($steps, array_values(array_intersect($calls, $steps)), 'the live tree fast-forwards after the copy builds, its merge hook sees the refresh done');
+        self::assertSame([$revision, 'revised'], [$git('rev-parse', 'HEAD'), file_get_contents($this->root.'/src/Kernel.php')]);
+    }
+
+    #[Group('ACMS-CORE-1181')]
+    #[Group('ACMS-CORE-1182')]
+    public function testSetsBuildInOneCopyThenSwitchEachBeforeCommandOfCaller(): void
+    {
+        $calls = $this->refresh(null, '--set', 'PROBE=one', '--set', 'PROBE=two', '--', 'bin/php', 'bin/console', 'slots');
+
+        $set = static fn (string $probe): array => ['copy bin/console cache:warmup PROBE='.$probe, 'copy bin/console importmap:install --no-interaction PROBE='.$probe, 'copy bin/console asset-map:compile --no-interaction PROBE='.$probe];
+        $switch = static fn (string $probe): array => ['bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration PROBE='.$probe, 'bin/console adzercms:cache PROBE='.$probe];
+        self::assertSame(
+            [...$set('one'), ...$set('two'), ...$switch('one'), ...$switch('two'), 'bin/console slots', 'bin/console doctrine:schema:validate'],
+            array_values(array_filter($calls, static fn (string $call): bool => !str_contains($call, '--env=test') && 1 === preg_match('/^(copy )?bin\/console /', $call))),
+            'each set builds in the one copy, then migrates and switches, and the command of the caller follows',
+        );
+    }
+
+    /** @return iterable<string, array{bool}> */
+    public static function repositories(): iterable
+    {
+        yield 'instance at the top of the repository' => [false];
+        yield 'instance in a directory of the repository' => [true];
+    }
+
     /** @return iterable<string, array{?string}> */
     public static function checks(): iterable
     {
@@ -149,18 +216,18 @@ final class RefreshTest extends TestCase
     }
 
     /** @return list<string> */
-    private function refresh(?string $refusal): array
+    private function refresh(?string $refusal, string ...$arguments): array
     {
         if (null !== $refusal) {
             file_put_contents($this->root.'/var/refusal', $refusal);
         }
 
-        $refresh = new Process([self::SCRIPTS.'adzercms-refresh'], $this->root, ['PHP_BINARY' => \PHP_BINARY]);
+        $refresh = new Process([self::SCRIPTS.'adzercms-refresh', ...$arguments], $this->root, ['PHP_BINARY' => \PHP_BINARY]);
         $refresh->run();
 
         self::assertSame(null === $refusal, $refresh->isSuccessful(), $refresh->getErrorOutput());
         self::assertStringContainsString($refusal ?? '', $refresh->getOutput());
-        self::assertDirectoryDoesNotExist($this->root.'/var/next');
+        self::assertSame([], glob($this->root.'/var/next*'));
 
         return file($this->root.'/calls', \FILE_IGNORE_NEW_LINES) ?: [];
     }

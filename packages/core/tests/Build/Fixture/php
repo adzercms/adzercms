@@ -3,7 +3,7 @@
 here=$(pwd -P)
 root=${here%/var/next}
 if [ "$root" = "$here" ]; then call=$*; else call="copy $*"; fi
-printf '%s\n' "$call" >> "$root/calls"
+printf '%s%s\n' "$call" "${PROBE:+ PROBE=$PROBE}" >> "$root/calls"
 case $* in
     'bin/console cache:warmup') mkdir -p "var/cache/prod_set/$APP_BUILD" ;;
     'bin/console importmap:install --no-interaction') mkdir -p assets/vendor && touch assets/vendor/library.js ;;

@@ -7,6 +7,24 @@ root=$(pwd -P)
 [ "${ADZERCMS_REFRESHED:-}" != "$root" ] || exit 0
 scripts=$(dirname "$0")
 next=$root/var/next
+nl='
+'
+revision=
+unchecked=
+sets=
+while [ $# -gt 0 ]; do
+    case $1 in
+        --revision)
+            revision=$(git rev-parse --verify --quiet "${2:?revision}^{commit}") || { printf 'revision %s is not a commit\n' "$2" >&2; exit 2; }
+            git merge-base --is-ancestor HEAD "$revision" || { printf 'revision %s does not descend from HEAD\n' "$2" >&2; exit 2; }
+            shift 2
+            ;;
+        --set) sets=$sets${2:?environment of the set}$nl; shift 2 ;;
+        --unchecked) unchecked=--unchecked; shift ;;
+        --) shift; break ;;
+        *) printf 'usage: %s [--revision REVISION] [--set "NAME=VALUE ..."]... [--unchecked] [-- COMMAND...]\n' "$0" >&2; exit 2 ;;
+    esac
+done
 
 held=
 if [ "${ADZERCMS_ENTRY:-}" = "$root" ]; then
@@ -17,14 +35,20 @@ else
     flock 9
 fi
 
-rm -rf "$next"
-trap 'rm -rf "$next"' EXIT
+rm -rf "$next" "$next.index"
+trap 'rm -rf "$next" "$next.index"' EXIT
 mkdir -p "$next"
 sed 's#^#/#' "$scripts/../config/stage.exclude" | rsync -a --exclude-from=- ./ "$next/"
+if [ -n "$revision" ]; then
+    git diff --name-only --no-renames --diff-filter=D --relative -z HEAD "$revision" -- . | (cd "$next" && xargs -0 -r rm -f --)
+    GIT_INDEX_FILE=$next.index git read-tree "$revision:$(git rev-parse --show-prefix)"
+    (cd "$(git rev-parse --show-toplevel)" && GIT_INDEX_FILE=$next.index git checkout-index --all --force --prefix="$next/")
+fi
 
 APP_BUILD=$(date +%Y%m%d%H%M%S)-$$
 export APP_BUILD
-"$scripts/adzercms-prepare" "$next"
+# shellcheck disable=SC2086
+(IFS=$nl && set -f && exec "$scripts/adzercms-prepare" $unchecked "$next" $sets)
 
 if [ -z "$held" ]; then
     flock 8
@@ -33,7 +57,10 @@ if [ -z "$held" ]; then
     ADZERCMS_ENTRY=$root
     export ADZERCMS_ENTRY
 fi
-"$next/vendor/bin/adzercms-adopt" "$next"
+[ -z "$revision" ] || ADZERCMS_REFRESHED=$root git merge --ff-only --quiet "$revision"
+# shellcheck disable=SC2086
+(IFS=$nl && set -f && exec "$next/vendor/bin/adzercms-adopt" "$next" $sets)
+[ $# -eq 0 ] || "$@"
 [ -n "$held" ] || exec 8>&- 7>&- 6>&-
 
 bin/php bin/console doctrine:schema:validate || true

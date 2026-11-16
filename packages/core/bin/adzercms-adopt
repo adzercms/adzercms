@@ -2,6 +2,7 @@
 set -eu
 
 copy=$(cd "${1:?copy of the instance}" && pwd -P)
+shift
 : "${APP_BUILD:?build of the copy}"
 
 if "$(dirname "$(readlink -f "$0")")/adzercms-stale" "$copy"; then
@@ -25,5 +26,10 @@ take() {
 take public/assets
 take assets/vendor --delete
 
-bin/php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
-bin/php bin/console adzercms:cache
+[ $# -gt 0 ] || set -- ''
+for assignments; do
+    # shellcheck disable=SC2086
+    env $assignments bin/php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+    # shellcheck disable=SC2086
+    env $assignments bin/php bin/console adzercms:cache
+done

@@ -1,4 +1,5 @@
 #!/bin/sh
 root=$(cd ../.. && pwd -P)
 find . -mindepth 1 | LC_ALL=C sort > "$root/copied"
+[ ! -f src/Kernel.php ] || cp src/Kernel.php "$root/var/checked-kernel"
 [ ! -f "$root/var/refusal" ] || { cat "$root/var/refusal"; exit 1; }

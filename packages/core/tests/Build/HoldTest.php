@@ -89,6 +89,7 @@ final class HoldTest extends TestCase
     #[Group('ACMS-CORE-1130')]
     #[Group('ACMS-CORE-1178')]
     #[Group('ACMS-CORE-1179')]
+    #[Group('ACMS-CORE-1182')]
     #[DataProvider('holders')]
     public function testHolderServesRequestsUntilEnteredJobsLeaveThenCoversItsStepsClosed(bool $job): void
     {
@@ -108,7 +109,7 @@ final class HoldTest extends TestCase
                 return [];
             }, static fn () => null));
         } else {
-            (new Process([\dirname(__DIR__, 2).'/bin/adzercms-refresh'], $this->root))->mustRun();
+            (new Process([\dirname(__DIR__, 2).'/bin/adzercms-refresh', '--', 'bin/php', 'bin/console', 'slots'], $this->root))->mustRun();
         }
 
         $steps = file($this->root.'/steps', \FILE_IGNORE_NEW_LINES) ?: [];
@@ -116,6 +117,7 @@ final class HoldTest extends TestCase
         $state = static fn (string $step): string => explode(' ', $step, 3)[2];
         self::assertSame("entered\n", file_get_contents($this->root.'/served'), 'requests are served while the holder awaits an entered job');
         self::assertNotSame([], $covered);
+        self::assertSame(!$job, [] !== preg_grep('/^live slots /', $covered), 'the command of the caller runs under the hold');
         self::assertSame([$this->root.' left closed'], array_values(array_unique(array_map($state, $covered))), 'steps of the live tree go after the entered process left, covered by the hold, requests closed');
         self::assertSame(
             ['open'],
