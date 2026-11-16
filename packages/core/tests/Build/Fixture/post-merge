@@ -1,0 +1,2 @@
+#!/bin/sh
+printf 'merged %s\n' "${ADZERCMS_REFRESHED:?}" >> "$ADZERCMS_REFRESHED/calls"

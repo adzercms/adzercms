@@ -153,8 +153,7 @@ final class RefreshTest extends TestCase
         $files = new Filesystem();
         $files->dumpFile($top.'/.gitignore', "var/\nvendor/\ncalls\ncopied\n");
         $files->dumpFile($this->root.'/src/Removed.php', '');
-        $files->dumpFile($this->root.'/var/hooks/post-merge', "#!/bin/sh\nprintf 'merged %s\\n' \"\$ADZERCMS_REFRESHED\" >> ".$this->root."/calls\n");
-        $files->chmod($this->root.'/var/hooks/post-merge', 0o755);
+        $files->symlink(self::FIXTURE.'post-merge', $this->root.'/var/hooks/post-merge');
         $git = static fn (string ...$arguments): string => trim((new Process(['git', '-c', 'user.name=Site', '-c', 'user.email=site@acme.test', ...$arguments], $top))->mustRun()->getOutput());
         $git('init', '--quiet');
         $git('config', 'core.hooksPath', $this->root.'/var/hooks');
