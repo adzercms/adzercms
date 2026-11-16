@@ -1024,7 +1024,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/opotopo",
-                "reference": "8cda5760cd131723f58cfe98427fe7e9e2bdb1b3"
+                "reference": "18f17f45acb26d94d81534f186ce5d2fee12d301"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1042,6 +1042,7 @@
                 "symfony/filesystem": "7.4.*",
                 "symfony/http-client": "7.4.*",
                 "symfony/http-client-contracts": "^3.7",
+                "symfony/http-foundation": "7.4.*",
                 "symfony/lock": "7.4.*",
                 "symfony/mime": "7.4.*",
                 "symfony/service-contracts": "^3.7",

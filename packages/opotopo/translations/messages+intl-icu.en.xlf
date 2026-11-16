@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
+    <unit id="opotopo.digest.git.fetch">
+      <segment>
+        <source>opotopo.digest.git.fetch</source>
+        <target>OPOTOPO could not fetch the repository {repository} of {catalog} {sku}: {error} {details}</target>
+      </segment>
+    </unit>
+    <unit id="opotopo.digest.git.summary">
+      <segment>
+        <source>opotopo.digest.git.summary</source>
+        <target>Repository refusals on OPOTOPO: {count}</target>
+      </segment>
+    </unit>
+    <unit id="opotopo.digest.git.tag">
+      <segment>
+        <source>opotopo.digest.git.tag</source>
+        <target>OPOTOPO refused tag {tag} at {commit} of {catalog} {sku}: {error} {details}</target>
+      </segment>
+    </unit>
     <unit id="opotopo.digest.line">
       <segment>
         <source>opotopo.digest.line</source>
@@ -35,6 +53,36 @@
       <segment>
         <source>opotopo.setting.publish</source>
         <target>Publish listings</target>
+      </segment>
+    </unit>
+    <unit id="opotopo.sources.key">
+      <segment>
+        <source>opotopo.sources.key</source>
+        <target>Deploy key</target>
+      </segment>
+    </unit>
+    <unit id="opotopo.sources.position">
+      <segment>
+        <source>opotopo.sources.position</source>
+        <target>Item</target>
+      </segment>
+    </unit>
+    <unit id="opotopo.sources.repository">
+      <segment>
+        <source>opotopo.sources.repository</source>
+        <target>Repository</target>
+      </segment>
+    </unit>
+    <unit id="opotopo.sources.title">
+      <segment>
+        <source>opotopo.sources.title</source>
+        <target>Items with a package</target>
+      </segment>
+    </unit>
+    <unit id="opotopo.sources.webhook">
+      <segment>
+        <source>opotopo.sources.webhook</source>
+        <target>Webhook URL</target>
       </segment>
     </unit>
   </file>

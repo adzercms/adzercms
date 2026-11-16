@@ -66,6 +66,11 @@ class Item
         return $this->catalog;
     }
 
+    public function getKey(): string
+    {
+        return $this->itemKey;
+    }
+
     public function getSku(): string
     {
         return $this->sku;

@@ -1,0 +1,16 @@
+{% embed '@Theme/_table.html.twig' with {heading: 'opotopo.sources.title'} %}
+    {% block row %}
+        <tr>
+            <td><strong>{{ row.item.sku }}</strong> <span class="muted">{{ row.item.catalog }}</span></td>
+            <td>{{ row.repositoryUrl }}</td>
+            {% for name, value in {key: row.deployKey, webhook: row.webhookUrl} %}
+                <td class="{{ table.aside(name) }}">
+                    <span class="credential-row">
+                        <input type="text" id="source-{{ name }}-{{ row.item.id }}" value="{{ value }}" readonly>
+                        {% include '@Theme/_copy.html.twig' with {target: '#source-' ~ name ~ '-' ~ row.item.id, small: true} only %}
+                    </span>
+                </td>
+            {% endfor %}
+        </tr>
+    {% endblock %}
+{% endembed %}

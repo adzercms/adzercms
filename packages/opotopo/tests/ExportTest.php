@@ -4,20 +4,26 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Opotopo\Tests;
 
+use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\SchemaTestCase;
+use AdzerCMS\Opotopo\GitDigest;
 use AdzerCMS\Opotopo\ItemDigest;
 use AdzerCMS\Opotopo\OpotopoSettings;
 use AdzerCMS\Opotopo\Tests\Fixture\ShelfCatalog;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class ExportTest extends SchemaTestCase
 {
+    use Accounts;
     use Marketplace;
 
     private const CATEGORY = '0199a000-0000-7000-8000-00000000c001';
+    private const REPOSITORY = 'https://git.example.test/acme/shop.git';
+    private const SETTINGS = '/admin/settings/modules/opotopo';
     private const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
 
     protected function setUp(): void
@@ -79,6 +85,43 @@ final class ExportTest extends SchemaTestCase
 
         self::assertCount(2, $this->synced);
         self::assertNotContains($line, self::digest());
+    }
+
+    #[Group('ACMS-US-0038')]
+    #[Group('ACMS-OTO-0008')]
+    #[Group('ACMS-OTO-0009')]
+    public function testItemWithPackageShowsItsRepositoryKeysAndRefusalsUntilItGoesWithoutThePackage(): void
+    {
+        $this->admin();
+        self::shelf()->rows = ['p' => ['sku' => 'P-1', 'title' => 'Shop module', 'price' => '1500.00', 'category' => self::CATEGORY,
+            'manager' => 'COMPOSER', 'package' => 'acme/shop', 'git' => self::REPOSITORY]];
+        $this->gitSources['P-1'] = [
+            'repositoryUrl' => self::REPOSITORY,
+            'deployPublicKey' => 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5 opotopo',
+            'webhookUrl' => 'https://opotopo.example.test/hooks/git/secret',
+            'syncRequested' => false,
+            'failure' => ['code' => 'GIT_UNAVAILABLE', 'details' => ['reason' => 'Permission denied (publickey)']],
+            'tagFailures' => [['tag' => 'v1.0.0', 'commit' => 'abc1234', 'failure' => ['code' => 'VERSION_TAKEN', 'details' => []]]],
+        ];
+
+        self::assertSame(Command::SUCCESS, self::command('adzercms:opotopo')->execute([]));
+
+        $listed = $this->client->request('GET', self::SETTINGS)->filter('#sources input')->each(static fn (Crawler $field): string => (string) $field->attr('value'));
+        self::assertSame([$this->gitSources['P-1']['deployPublicKey'], $this->gitSources['P-1']['webhookUrl']], $listed);
+        $refusals = self::service(GitDigest::class)->lines();
+        self::assertSame([
+            self::phrase('opotopo.digest.git.fetch', ['catalog' => ShelfCatalog::NAME, 'sku' => 'P-1', 'repository' => self::REPOSITORY, 'error' => 'GIT_UNAVAILABLE', 'details' => '{"reason":"Permission denied (publickey)"}']),
+            self::phrase('opotopo.digest.git.tag', ['catalog' => ShelfCatalog::NAME, 'sku' => 'P-1', 'tag' => 'v1.0.0', 'commit' => 'abc1234', 'error' => 'VERSION_TAKEN', 'details' => '[]']),
+        ], $refusals);
+
+        self::assertSame(Command::SUCCESS, self::command('adzercms:opotopo')->execute([]));
+        self::assertSame($refusals, self::service(GitDigest::class)->lines(), 'an unchanged item keeps the last answer');
+
+        unset(self::shelf()->rows['p']['git']);
+        self::assertSame(Command::SUCCESS, self::command('adzercms:opotopo')->execute([]));
+
+        self::assertSame([], self::service(GitDigest::class)->lines());
+        self::assertCount(0, $this->client->request('GET', self::SETTINGS)->filter('#sources'));
     }
 
     #[Group('ACMS-OTO-0002')]

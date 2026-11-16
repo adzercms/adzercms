@@ -38,6 +38,9 @@ trait Marketplace
     /** @var array<string, array{error: string, errorDetails: array<string, string>}> */
     private array $refusals = [];
 
+    /** @var array<string, array<string, mixed>> */
+    private array $gitSources = [];
+
     private bool $down = false;
 
     private int $sequence = 0;
@@ -93,7 +96,8 @@ trait Marketplace
             $sku = \is_string($item['sku'] ?? null) ? $item['sku'] : self::fail('an item without sku');
             $created = !isset($this->ads[$sku]);
             $this->ads[$sku] ??= $this->id();
-            $results[] = ['sku' => $sku, 'advertisementId' => $this->ads[$sku], 'created' => $created] + ($this->refusals[$sku] ?? []);
+            $results[] = ['sku' => $sku, 'advertisementId' => $this->ads[$sku], 'created' => $created] + ($this->refusals[$sku] ?? [])
+                + (isset($item['packageGitSource'], $this->gitSources[$sku]) ? ['packageGitSource' => $this->gitSources[$sku]] : []);
         }
 
         return new JsonMockResponse(['accepted' => \count($results), 'created' => 0, 'updated' => 0, 'failed' => 0, 'results' => $results]);

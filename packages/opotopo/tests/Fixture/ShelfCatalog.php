@@ -29,6 +29,7 @@ final class ShelfCatalog implements Catalog
             'fields' => ['sku' => 'sku', 'title' => 'title', 'price' => 'price'],
             'category' => 'category',
             'images' => ['cover' => 'cover'],
+            'package' => ['manager' => 'manager', 'name' => 'package', 'git' => 'git'],
         ];
     }
 

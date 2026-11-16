@@ -23,10 +23,11 @@ final class OpotopoBundle extends Module
     {
         $container->services()->defaults()->autowire()->autoconfigure()
             ->load('AdzerCMS\\Opotopo\\', '../src/')
-            ->exclude(['../src/Entity/', '../src/OpotopoBundle.php', '../src/Record.php', '../src/LocalFile.php', '../src/ItemDigest.php']);
+            ->exclude(['../src/Entity/', '../src/OpotopoBundle.php', '../src/Record.php', '../src/LocalFile.php', '../src/ItemDigest.php', '../src/GitDigest.php']);
 
         if (interface_exists(DigestSection::class)) {
             $container->services()->set(ItemDigest::class)->autowire()->autoconfigure();
+            $container->services()->set(GitDigest::class)->autowire()->autoconfigure();
         }
     }
 }

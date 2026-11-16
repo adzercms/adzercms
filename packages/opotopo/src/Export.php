@@ -42,8 +42,11 @@ final readonly class Export
             static fn (int $millis) => Clock::get()->sleep($millis / self::MILLIS),
         );
 
-        return (new Synchronizer($client, new FileUploader($client, $this->files, $factory), $this->items, self::BATCH))
+        $report = (new Synchronizer($client, new FileUploader($client, $this->files, $factory), $this->items, self::BATCH))
             ->run($this->named(), $catalog, $full);
+        $this->items->sources($report->gitSources);
+
+        return $report;
     }
 
     /** @return array<string, Catalog> */
