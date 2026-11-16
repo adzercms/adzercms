@@ -41,12 +41,10 @@ final class BroadcastTest extends SchemaTestCase
     private const CHIME = [ChimeGateway::SETTINGS.Switches::ENABLED => '1', ChimeGateway::SETTINGS.BotGateway::TOKEN => 'chime-token'];
     private const QUIET = [QuietHours::FROM => '22:00', QuietHours::TO => '07:00'];
 
-    private User $admin;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->admin = $this->admin();
+        $this->admin();
     }
 
     /** @return iterable<string, array{array<string, string>, int}> */
