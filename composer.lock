@@ -1024,7 +1024,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/opotopo",
-                "reference": "18f17f45acb26d94d81534f186ce5d2fee12d301"
+                "reference": "4b9445a64f6353c2fc2037c809c26a981321f504"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1050,6 +1050,7 @@
                 "symfony/translation-contracts": "^3.7"
             },
             "require-dev": {
+                "adzercms/admin": "^1.0",
                 "adzercms/support": "^1.0"
             },
             "suggest": {
