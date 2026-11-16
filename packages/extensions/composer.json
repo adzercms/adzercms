@@ -33,7 +33,11 @@
         "symfony/translation-contracts": "^3.7"
     },
     "require-dev": {
-        "adzercms/admin": "^1.0"
+        "adzercms/admin": "^1.0",
+        "adzercms/opotopo": "^1.0"
+    },
+    "suggest": {
+        "adzercms/opotopo": "published operator entries go to OPOTOPO as seller listings"
     },
     "autoload": {
         "psr-4": {

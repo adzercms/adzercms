@@ -495,7 +495,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/extensions",
-                "reference": "aa5695dd5408ccdddb4a92e95ba783426c5e62f7"
+                "reference": "cec3878106887a7d1b46bf806c4e75a48a502d8c"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -520,7 +520,11 @@
                 "symfony/translation-contracts": "^3.7"
             },
             "require-dev": {
-                "adzercms/admin": "^1.0"
+                "adzercms/admin": "^1.0",
+                "adzercms/opotopo": "^1.0"
+            },
+            "suggest": {
+                "adzercms/opotopo": "published operator entries go to OPOTOPO as seller listings"
             },
             "type": "adzercms-module",
             "extra": {
@@ -1020,7 +1024,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/opotopo",
-                "reference": "3a37608e0e406bcdb0cd659c198128554787ab45"
+                "reference": "8cda5760cd131723f58cfe98427fe7e9e2bdb1b3"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1029,7 +1033,7 @@
                 "doctrine/migrations": "^3.9",
                 "doctrine/orm": "^3.7",
                 "nyholm/psr7": "^1.8",
-                "opotopo/seller-api": "^1.0",
+                "opotopo/seller-api": "^1.3",
                 "php": ">=8.4",
                 "psr/http-client": "^1.0",
                 "symfony/clock": "7.4.*",
@@ -5781,16 +5785,16 @@
         },
         {
             "name": "opotopo/seller-api",
-            "version": "v1.0.0",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AdzerKI/seller-api-php.git",
-                "reference": "4797172acf0bdf57b6de045850107c9060f73161"
+                "reference": "86483da41410a1877019f0d2bc1407422e9347fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AdzerKI/seller-api-php/zipball/4797172acf0bdf57b6de045850107c9060f73161",
-                "reference": "4797172acf0bdf57b6de045850107c9060f73161",
+                "url": "https://api.github.com/repos/AdzerKI/seller-api-php/zipball/86483da41410a1877019f0d2bc1407422e9347fa",
+                "reference": "86483da41410a1877019f0d2bc1407422e9347fa",
                 "shasum": ""
             },
             "require": {
@@ -5827,7 +5831,7 @@
                 "issues": "https://github.com/AdzerKI/seller-api-php/issues",
                 "source": "https://github.com/AdzerKI/seller-api-php"
             },
-            "time": "2026-10-20T10:10:29+00:00"
+            "time": "2026-10-31T09:42:37+00:00"
         },
         {
             "name": "php-di/invoker",

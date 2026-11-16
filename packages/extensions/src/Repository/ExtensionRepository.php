@@ -58,6 +58,12 @@ class ExtensionRepository extends ServiceEntityRepository
     }
 
     /** @return list<Extension> */
+    public function operated(): array
+    {
+        return self::placed($this->shown()->andWhere('e.author IS NULL'))->getQuery()->getResult();
+    }
+
+    /** @return list<Extension> */
     public function ordered(): array
     {
         return self::placed($this->createQueryBuilder('e'))->getQuery()->getResult();

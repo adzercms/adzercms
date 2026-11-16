@@ -181,6 +181,12 @@
         <target>How to publish</target>
       </segment>
     </unit>
+    <unit id="extensions.license">
+      <segment>
+        <source>extensions.license</source>
+        <target>License</target>
+      </segment>
+    </unit>
     <unit id="extensions.link.homepage">
       <segment>
         <source>extensions.link.homepage</source>

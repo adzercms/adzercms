@@ -181,6 +181,12 @@
         <target>Как разместить</target>
       </segment>
     </unit>
+    <unit id="extensions.license">
+      <segment>
+        <source>extensions.license</source>
+        <target>Лицензия</target>
+      </segment>
+    </unit>
     <unit id="extensions.link.homepage">
       <segment>
         <source>extensions.link.homepage</source>

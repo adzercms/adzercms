@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
  *     attributes?: array<string, string>,
  *     images?: array{cover?: string, gallery?: string, second?: string},
  *     model3d?: array{url?: string, orientation?: string},
+ *     package?: array{manager?: string, name?: string, git?: string},
  *     variants?: list<array{name: string, price: string, files?: string, includes_3d_model?: bool}>,
  * }
  */

@@ -7,6 +7,7 @@ namespace AdzerCMS\Extensions;
 use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Module\Kind;
 use AdzerCMS\Contracts\Module\Module;
+use AdzerCMS\Opotopo\Catalog as OpotopoCatalog;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -22,6 +23,10 @@ final class ExtensionsBundle extends Module
     {
         $container->services()->defaults()->autowire()->autoconfigure()
             ->load('AdzerCMS\\Extensions\\', '../src/')
-            ->exclude(['../src/Entity/', '../src/ExtensionsBundle.php']);
+            ->exclude(['../src/Entity/', '../src/ExtensionsBundle.php', '../src/ExtensionsListings.php']);
+
+        if (interface_exists(OpotopoCatalog::class)) {
+            $container->services()->set(ExtensionsListings::class)->autowire()->autoconfigure();
+        }
     }
 }
