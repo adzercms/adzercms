@@ -97,12 +97,6 @@
         <target>Back</target>
       </segment>
     </unit>
-    <unit id="bank_transfer.page.bank">
-      <segment>
-        <source>bank_transfer.page.bank</source>
-        <target>Recipient bank: {bank}</target>
-      </segment>
-    </unit>
     <unit id="bank_transfer.page.card">
       <segment>
         <source>bank_transfer.page.card</source>
@@ -124,7 +118,13 @@
     <unit id="bank_transfer.page.phone">
       <segment>
         <source>bank_transfer.page.phone</source>
-        <target>SBP phone</target>
+        <target>SBP</target>
+      </segment>
+    </unit>
+    <unit id="bank_transfer.page.phone_bank">
+      <segment>
+        <source>bank_transfer.page.phone_bank</source>
+        <target>SBP ({bank})</target>
       </segment>
     </unit>
     <unit id="bank_transfer.page.title">
