@@ -70,6 +70,17 @@ final class ListingTest extends SupportTestCase
         self::assertSame($id($answered), self::numbers($this->client->request('GET', '/support?q='.$answered->getId())), 'the number finds its ticket');
     }
 
+    #[Group('ACMS-US-0004')]
+    public function testSectionPageAloneLeadsToTheSettingsOfItsModule(): void
+    {
+        $ticket = $this->ticket($this->member(), 'No connection');
+        $settings = '.card-head a[href="/admin/settings/modules/support"]';
+        $this->client->loginUser($this->staff);
+
+        self::assertCount(1, $this->client->request('GET', '/support')->filter($settings));
+        self::assertCount(0, $this->client->request('GET', \sprintf('/support/%d', $ticket->getId()))->filter($settings), 'a record page of the section');
+    }
+
     #[Group('ACMS-UI-0001')]
     #[Group('ACMS-US-0008')]
     public function testMenuCounterShowsWhoIsAwaited(): void

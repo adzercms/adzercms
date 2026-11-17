@@ -598,6 +598,7 @@ select:not([multiple]) {
 
 select:not([multiple])::picker-icon { color: var(--text-gray); transition: rotate 0.15s; }
 select:not([multiple]):open::picker-icon { rotate: 180deg; }
+select[data-submit] { width: auto; margin-top: 0; }
 
 select:not([multiple])::picker(select) {
     max-height: 18rem;

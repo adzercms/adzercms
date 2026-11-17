@@ -468,7 +468,11 @@ document.addEventListener('submit', event => {
             approved = form;
             form.requestSubmit(submitter);
         }, () => {
-            if (toggled) {
+            if (toggled instanceof HTMLSelectElement) {
+                for (const option of toggled.options) {
+                    option.selected = option.defaultSelected;
+                }
+            } else if (toggled) {
                 toggled.checked = !toggled.checked;
             }
         });

@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Ui\AdminEntry;
 use AdzerCMS\Contracts\Ui\Area;
 use AdzerCMS\Core\Ui\Entries;
 use AdzerCMS\Core\Ui\Menus;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Attribute\AsTwigFunction;
 
 final readonly class SectionSettings
@@ -16,15 +17,18 @@ final readonly class SectionSettings
         private Menus $menus,
         private Catalog $catalog,
         private Entries $entries,
+        private RequestStack $requests,
     ) {
     }
 
     #[AsTwigFunction('section_settings')]
     public function url(): ?string
     {
+        $route = $this->requests->getMainRequest()?->attributes->get('_route');
+
         foreach (array_merge(...array_column($this->menus->of(Area::Admin->value), 'items')) as $entry) {
             if ($entry['active']) {
-                return null !== $entry['module'] && isset($this->catalog->modules()[$entry['module']])
+                return $route === $entry['item']->route && null !== $entry['module'] && isset($this->catalog->modules()[$entry['module']])
                     ? $this->entries->url(AdminEntry::ModuleSettings, ['key' => $entry['module']])
                     : null;
             }
