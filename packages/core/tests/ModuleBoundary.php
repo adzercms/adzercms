@@ -136,6 +136,7 @@ final readonly class ModuleBoundary
 
         return $this->build->within($with, $database, static function (Kernel $kernel) use ($apart, $set, $namespace, $database): array {
             $em = ModuleBuild::service($kernel, 'doctrine.orm.entity_manager', EntityManagerInterface::class);
+            ModuleBuild::createDatabase($kernel);
             (new SchemaTool($em))->dropDatabase();
             self::migrate($kernel, static fn (string $version): bool => [] === array_filter($apart, static fn (string $prefix): bool => str_starts_with($version, $prefix)));
             $schemas = $em->getConnection()->createSchemaManager();

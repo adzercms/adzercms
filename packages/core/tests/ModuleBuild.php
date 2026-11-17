@@ -8,6 +8,10 @@ use AdzerCMS\Core\Module\Installed;
 use AdzerCMS\Core\Module\Registry;
 use App\Kernel;
 use Psr\Container\ContainerInterface;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 final readonly class ModuleBuild
 {
@@ -54,5 +58,14 @@ final readonly class ModuleBuild
         $service = $container instanceof ContainerInterface ? $container->get($id) : null;
 
         return $service instanceof $class ? $service : throw new \LogicException(\sprintf('service %s of the test container is not %s', $id, $class));
+    }
+
+    public static function createDatabase(KernelInterface $kernel): void
+    {
+        $create = new CommandTester((new Application($kernel))->find('doctrine:database:create'));
+        $create->execute(['--if-not-exists' => true]);
+        if (Command::SUCCESS !== $create->getStatusCode()) {
+            throw new \LogicException($create->getDisplay());
+        }
     }
 }

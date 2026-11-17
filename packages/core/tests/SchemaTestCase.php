@@ -30,6 +30,7 @@ abstract class SchemaTestCase extends WebTestCase
         $this->em = self::service(EntityManagerInterface::class);
 
         if (!self::$migrated) {
+            ModuleBuild::createDatabase($this->client->getKernel());
             (new SchemaTool($this->em))->dropDatabase();
             $migrate = self::command('doctrine:migrations:migrate');
             $migrate->execute([], ['interactive' => false]);
