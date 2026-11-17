@@ -22,6 +22,7 @@
             {% endif %}
         {% endfor %}
     </div>
+    <p>{{ 'bank_transfer.page.payment_only'|trans }}</p>
     <p class="muted">{{ 'bank_transfer.page.until'|trans({at: payment.expiresAt}) }}</p>
     <p class="muted">{{ 'bank_transfer.page.credit'|trans }}</p>
 

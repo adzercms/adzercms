@@ -115,6 +115,12 @@
         <target>Сумма поступит после проверки перевода</target>
       </segment>
     </unit>
+    <unit id="bank_transfer.page.payment_only">
+      <segment>
+        <source>bank_transfer.page.payment_only</source>
+        <target>Переводите только по платежу из кабинета: так перевод зачислится вам. Перевод напрямую, без платежа, не найти и не понять, от кого он.</target>
+      </segment>
+    </unit>
     <unit id="bank_transfer.page.phone">
       <segment>
         <source>bank_transfer.page.phone</source>

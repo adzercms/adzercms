@@ -115,6 +115,12 @@
         <target>The amount arrives once the transfer is checked</target>
       </segment>
     </unit>
+    <unit id="bank_transfer.page.payment_only">
+      <segment>
+        <source>bank_transfer.page.payment_only</source>
+        <target>Transfer only against a payment created in your account: that is how the transfer is credited to you. A direct transfer without a payment cannot be found or traced to its sender.</target>
+      </segment>
+    </unit>
     <unit id="bank_transfer.page.phone">
       <segment>
         <source>bank_transfer.page.phone</source>
