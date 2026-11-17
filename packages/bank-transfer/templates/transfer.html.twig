@@ -6,15 +6,16 @@
 <div class="pay">
     {% if note %}<p>{{ note }}</p>{% endif %}
     <div class="info-grid">
+        {% set around = 'bank_transfer.page.phone_bank'|trans({bank: '{bank}'})|split('{bank}', 2) %}
         {% for key, value in {
-            phone: [phone, phone|contact, bank ? 'bank_transfer.page.phone_bank'|trans({bank: bank}) : 'bank_transfer.page.phone'|trans],
-            card: [card, card, 'bank_transfer.page.card'|trans],
-            comment: [comment, comment, 'bank_transfer.page.comment'|trans],
-            amount: [payment.amount|plain, payment.amount|money, 'bank_transfer.page.amount'|trans],
+            phone: [phone, phone|contact, bank ? [around[0], bank, around[1]] : ['bank_transfer.page.phone'|trans, '', '']],
+            card: [card, card, ['bank_transfer.page.card'|trans, '', '']],
+            comment: [comment, comment, ['bank_transfer.page.comment'|trans, '', '']],
+            amount: [payment.amount|plain, payment.amount|money, ['bank_transfer.page.amount'|trans, '', '']],
         } %}
             {% if value[0] %}
                 <div class="info-item">
-                    <span class="info-label">{{ value[2] }}</span>
+                    <span class="info-label">{{ value[2][0] }}{% if value[2][1] %}<strong>{{ value[2][1] }}</strong>{% endif %}{{ value[2][2] }}</span>
                     <data class="info-value" id="transfer-{{ key }}" value="{{ value[0] }}">{{ value[1] }}</data>
                     {% include '@Theme/_copy.html.twig' with {target: '#transfer-' ~ key, small: true} only %}
                 </div>
