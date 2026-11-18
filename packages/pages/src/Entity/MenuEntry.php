@@ -44,41 +44,38 @@ class MenuEntry implements Placed
 
     public static function ofPage(Page $page): self
     {
-        $entry = new self();
-        $entry->toPage($page);
-
-        return $entry;
+        return (new self())->toPage($page);
     }
 
     public static function ofSection(string $route): self
     {
-        $entry = new self();
-        $entry->toSection($route);
-
-        return $entry;
+        return (new self())->toSection($route);
     }
 
     public static function ofLink(string $label, string $address): self
     {
-        $entry = new self();
-        $entry->toLink($label, $address);
-
-        return $entry;
+        return (new self())->toLink($label, $address);
     }
 
-    public function toPage(Page $page): void
+    public function toPage(Page $page): self
     {
         [$this->page, $this->section, $this->label, $this->address] = [$page, null, null, null];
+
+        return $this;
     }
 
-    public function toSection(string $route): void
+    public function toSection(string $route): self
     {
         [$this->page, $this->section, $this->label, $this->address] = [null, $route, null, null];
+
+        return $this;
     }
 
-    public function toLink(string $label, string $address): void
+    public function toLink(string $label, string $address): self
     {
         [$this->page, $this->section, $this->label, $this->address] = [null, null, $label, $address];
+
+        return $this;
     }
 
     public function getId(): ?int

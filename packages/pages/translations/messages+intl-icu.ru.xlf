@@ -217,6 +217,18 @@
         <target>Страница «{title}» удалена</target>
       </segment>
     </unit>
+    <unit id="pages.flash.menu_dropped">
+      <segment>
+        <source>pages.flash.menu_dropped</source>
+        <target>Пункт убран из меню</target>
+      </segment>
+    </unit>
+    <unit id="pages.flash.menu_saved">
+      <segment>
+        <source>pages.flash.menu_saved</source>
+        <target>Меню сохранено</target>
+      </segment>
+    </unit>
     <unit id="pages.flash.saved">
       <segment>
         <source>pages.flash.saved</source>
@@ -227,6 +239,72 @@
       <segment>
         <source>pages.menu</source>
         <target>Сайт</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.add">
+      <segment>
+        <source>pages.menu.add</source>
+        <target>+ Пункт</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.address">
+      <segment>
+        <source>pages.menu.address</source>
+        <target>Адрес</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.drop_confirm">
+      <segment>
+        <source>pages.menu.drop_confirm</source>
+        <target>Убрать «{label}» из меню?</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.empty">
+      <segment>
+        <source>pages.menu.empty</source>
+        <target>Пунктов нет</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.entry">
+      <segment>
+        <source>pages.menu.entry</source>
+        <target>Пункт меню</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.label">
+      <segment>
+        <source>pages.menu.label</source>
+        <target>Подпись</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.link">
+      <segment>
+        <source>pages.menu.link</source>
+        <target>Ссылка</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.new">
+      <segment>
+        <source>pages.menu.new</source>
+        <target>Новый пункт меню</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.sections">
+      <segment>
+        <source>pages.menu.sections</source>
+        <target>Разделы</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.shown">
+      <segment>
+        <source>pages.menu.shown</source>
+        <target>Показ</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.target">
+      <segment>
+        <source>pages.menu.target</source>
+        <target>Пункт</target>
       </segment>
     </unit>
     <unit id="pages.new">
@@ -277,6 +355,18 @@
         <target>Подпись пункта меню: до {limit} знаков</target>
       </segment>
     </unit>
+    <unit id="pages.refusal.menu_link_label">
+      <segment>
+        <source>pages.refusal.menu_link_label</source>
+        <target>Подпись: от 1 до {limit} знаков</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.menu_target">
+      <segment>
+        <source>pages.refusal.menu_target</source>
+        <target>Пункт: страница либо раздел вне меню, либо ссылка</target>
+      </segment>
+    </unit>
     <unit id="pages.refusal.path">
       <segment>
         <source>pages.refusal.path</source>
@@ -305,6 +395,18 @@
       <segment>
         <source>pages.refusal.title</source>
         <target>Заголовок: от 1 до {limit} знаков</target>
+      </segment>
+    </unit>
+    <unit id="pages.tab.menu">
+      <segment>
+        <source>pages.tab.menu</source>
+        <target>Меню</target>
+      </segment>
+    </unit>
+    <unit id="pages.tab.pages">
+      <segment>
+        <source>pages.tab.pages</source>
+        <target>Страницы</target>
       </segment>
     </unit>
   </file>

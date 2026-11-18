@@ -1,0 +1,4 @@
+{% include '@Theme/_tabs.html.twig' with {tabs: [
+    {label: 'pages.tab.pages', href: path('admin_pages'), active: app.current_route == 'admin_pages'},
+    {label: 'pages.tab.menu', href: path('admin_pages_menu'), active: app.current_route == 'admin_pages_menu'},
+]} only %}

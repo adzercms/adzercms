@@ -1,0 +1,12 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'pages.menu'|trans }}{% endblock %}
+
+{% block actions %}
+    <button type="button" hx-get="{{ path('admin_pages_menu_new') }}" hx-target="#record">{{ 'pages.menu.add'|trans }}</button>
+{% endblock %}
+
+{% block page %}
+{% include '@Pages/admin/_tabs.html.twig' %}
+{% include '@Pages/admin/_menu.html.twig' %}
+{% endblock %}

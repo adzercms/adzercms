@@ -1,0 +1,32 @@
+{% import '@Theme/_refusal.html.twig' as refusal %}
+{% include '@Theme/_modal_header.html.twig' with {title: (entry ? 'pages.menu.entry' : 'pages.menu.new')|trans} only %}
+
+<div class="modal-body">
+    <form hx-post="{{ entry ? path('admin_pages_menu_entry', {id: entry.id}) : path('admin_pages_menu_new') }}" hx-target="#record">
+        {{ csrf_field() }}{{ back_field() }}
+        <div class="fields">
+            <label class="field-wide">{{ 'pages.menu.target'|trans }}
+                <select name="target" required>
+                    {% for group, options in {'pages.tab.pages': choices.pages, 'pages.menu.sections': choices.sections} %}
+                        {% if options %}
+                            <optgroup label="{{ group|trans }}">
+                                {% for value, label in options %}<option value="{{ value }}" {{ value == target ? 'selected' }}>{{ label }}</option>{% endfor %}
+                            </optgroup>
+                        {% endif %}
+                    {% endfor %}
+                    <option value="link" {{ 'link' == target ? 'selected' }}>{{ 'pages.menu.link'|trans }}</option>
+                </select>
+                {{ refusal.of(refusals, 'target') }}
+            </label>
+            <label data-when="target=link">{{ 'pages.menu.label'|trans }}
+                <input type="text" name="label" maxlength="{{ constant('AdzerCMS\\Pages\\Entity\\Page::MENU') }}" value="{{ label }}" required>
+                {{ refusal.of(refusals, 'label') }}
+            </label>
+            <label data-when="target=link">{{ 'pages.menu.address'|trans }}
+                <input type="text" name="address" maxlength="{{ constant('AdzerCMS\\Pages\\Entity\\MenuEntry::ADDRESS') }}" value="{{ address }}" placeholder="/" required>
+                {{ refusal.of(refusals, 'address') }}
+            </label>
+        </div>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
+    </form>
+</div>

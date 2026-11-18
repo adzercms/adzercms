@@ -9,11 +9,15 @@ use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Text\ValueSections;
 use AdzerCMS\Core\Ui\Order;
+use AdzerCMS\Pages\Entity\MenuEntry;
 use AdzerCMS\Pages\Entity\Page;
 use AdzerCMS\Pages\Entity\PageBlock;
+use AdzerCMS\Pages\MenuForm;
 use AdzerCMS\Pages\Pictures;
+use AdzerCMS\Pages\Repository\MenuEntryRepository;
 use AdzerCMS\Pages\Repository\PageBlockRepository;
 use AdzerCMS\Pages\Repository\PageRepository;
+use AdzerCMS\Pages\Tests\Fixture\Lounge;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
@@ -253,6 +257,53 @@ final class AdminTest extends SchemaTestCase
         self::assertSame("/rates\n/old_site/prices.html\n/tariffs", trim($this->arrive($record)->filter('textarea[name="former"]')->text(null, false)));
         $this->client->request('GET', '/prices');
         self::assertResponseStatusCodeSame(404, 'the page taking a former address answers it once published');
+    }
+
+    #[Group('ACMS-PAGE-0007')]
+    #[Group('ACMS-PAGE-0022')]
+    #[Group('ACMS-US-0071')]
+    public function testOwnerArrangesMenuOfPagesSectionsAndLinks(): void
+    {
+        $tariffs = new Page('Tariffs', '/tariffs');
+        $tariffs->edit('Tariffs', '/tariffs', null, true, 'Plans');
+        $this->em->persist($tariffs);
+        $this->em->persist(new Page('Draft', '/draft'));
+        $this->em->flush();
+        $menu = self::LIST.'/menu';
+        $link = self::phrase(t('pages.menu.link'));
+        $options = fn (): array => $this->client->request('GET', $menu.'/new')->filter('select[name="target"] option')->each(
+            static fn (Crawler $option): array => [trim($option->text()), (string) $option->attr('value')],
+        );
+        $targets = array_column($options(), 1, 0);
+        self::assertSame(['Tariffs', 'Draft', Lounge::LABEL, $link], array_keys($targets), 'the dialog offers every page, every declared section and a link');
+
+        foreach (['Tariffs', Lounge::LABEL, 'Draft'] as $label) {
+            $this->post($menu.'/new', [MenuForm::TARGET => $targets[$label]]);
+            self::assertResponseHeaderSame('HX-Redirect', $menu);
+        }
+        self::assertSame([$link], array_column($options(), 0), 'a page or a section in the menu is offered no more');
+        $refused = $this->post($menu.'/new', [MenuForm::TARGET => $targets['Tariffs']]);
+        self::assertSame(self::phrase(t('pages.refusal.menu_target')), trim($refused->filter('.field-refusal')->text()));
+        $refused = $this->post($menu.'/new', [MenuForm::TARGET => MenuForm::LINK, MenuForm::LABEL => '', MenuForm::ADDRESS => 'ftp://plans']);
+        self::assertCount(2, $refused->filter('.field-refusal'), 'a link needs a label and an address of a button');
+        $this->post($menu.'/new', [MenuForm::TARGET => MenuForm::LINK, MenuForm::LABEL => 'Channel', MenuForm::ADDRESS => 'https://t.me/village']);
+
+        self::assertSame(
+            [['Plans', '/tariffs', '✓', ''], [Lounge::LABEL, '/admin/pages', '✓', ''], ['Draft', '/draft', '✗', ''], ['Channel', 'https://t.me/village', '✓', '']],
+            array_map(fn (int $row): array => self::cells($this->fragment($menu), $row), range(0, 3)),
+            'an item shows its label and address, an unpublished page is not shown to the visitor',
+        );
+
+        $entries = self::service(MenuEntryRepository::class)->ordered();
+        $ids = array_map(static fn (MenuEntry $entry): string => (string) $entry->getId(), $entries);
+        $this->post($menu.'/order', [Order::FIELD => [$ids[3], $ids[0], $ids[1], $ids[2]]]);
+        $this->post($menu.'/'.$ids[1], [MenuForm::TARGET => MenuForm::LINK, MenuForm::LABEL => 'Plans below', MenuForm::ADDRESS => '/#tariffs']);
+        $this->post($menu.'/'.$ids[3].'/drop');
+        self::assertSame(
+            ['Plans below', 'Plans', Lounge::LABEL],
+            $this->client->request('GET', '/tariffs')->filter('.site-nav a')->each(static fn (Crawler $item): string => trim($item->text())),
+            'the visitor sees the menu in the order of the list with the edited and without the removed item',
+        );
     }
 
     /** @return iterable<string, array{string, string}> */

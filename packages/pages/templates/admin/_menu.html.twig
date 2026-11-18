@@ -1,0 +1,16 @@
+{% embed '@Theme/_table.html.twig' %}
+    {% block row %}
+        {% set record = path('admin_pages_menu_entry', {id: row.id}) %}
+        <tr class="clickable-row" data-record="{{ record }}">
+            {% include '@Theme/_row_handle.html.twig' with {id: row.id} %}
+            <td class="{{ table.aside('label') }}"><strong>{{ row.label }}</strong></td>
+            <td class="{{ table.aside('address') }}">{{ clip(row.address, 60) }}</td>
+            <td class="{{ table.aside('shown') }}">{{ flag(row.shown) }}</td>
+            {% include '@Theme/_row_actions.html.twig' with {
+                edit: record,
+                drop: path('admin_pages_menu_drop', {id: row.id}),
+                confirm: 'pages.menu.drop_confirm'|trans({label: row.label}),
+            } %}
+        </tr>
+    {% endblock %}
+{% endembed %}

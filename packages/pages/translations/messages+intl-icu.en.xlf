@@ -217,6 +217,18 @@
         <target>Page «{title}» deleted</target>
       </segment>
     </unit>
+    <unit id="pages.flash.menu_dropped">
+      <segment>
+        <source>pages.flash.menu_dropped</source>
+        <target>The item is removed from the menu</target>
+      </segment>
+    </unit>
+    <unit id="pages.flash.menu_saved">
+      <segment>
+        <source>pages.flash.menu_saved</source>
+        <target>The menu is saved</target>
+      </segment>
+    </unit>
     <unit id="pages.flash.saved">
       <segment>
         <source>pages.flash.saved</source>
@@ -227,6 +239,72 @@
       <segment>
         <source>pages.menu</source>
         <target>Site</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.add">
+      <segment>
+        <source>pages.menu.add</source>
+        <target>+ Item</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.address">
+      <segment>
+        <source>pages.menu.address</source>
+        <target>Address</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.drop_confirm">
+      <segment>
+        <source>pages.menu.drop_confirm</source>
+        <target>Remove «{label}» from the menu?</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.empty">
+      <segment>
+        <source>pages.menu.empty</source>
+        <target>No items</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.entry">
+      <segment>
+        <source>pages.menu.entry</source>
+        <target>Menu item</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.label">
+      <segment>
+        <source>pages.menu.label</source>
+        <target>Label</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.link">
+      <segment>
+        <source>pages.menu.link</source>
+        <target>Link</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.new">
+      <segment>
+        <source>pages.menu.new</source>
+        <target>New menu item</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.sections">
+      <segment>
+        <source>pages.menu.sections</source>
+        <target>Sections</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.shown">
+      <segment>
+        <source>pages.menu.shown</source>
+        <target>Shown</target>
+      </segment>
+    </unit>
+    <unit id="pages.menu.target">
+      <segment>
+        <source>pages.menu.target</source>
+        <target>Item</target>
       </segment>
     </unit>
     <unit id="pages.new">
@@ -277,6 +355,18 @@
         <target>Menu item label: up to {limit} characters</target>
       </segment>
     </unit>
+    <unit id="pages.refusal.menu_link_label">
+      <segment>
+        <source>pages.refusal.menu_link_label</source>
+        <target>Label: 1 to {limit} characters</target>
+      </segment>
+    </unit>
+    <unit id="pages.refusal.menu_target">
+      <segment>
+        <source>pages.refusal.menu_target</source>
+        <target>Item: a page or a section not in the menu yet, or a link</target>
+      </segment>
+    </unit>
     <unit id="pages.refusal.path">
       <segment>
         <source>pages.refusal.path</source>
@@ -305,6 +395,18 @@
       <segment>
         <source>pages.refusal.title</source>
         <target>Title: 1 to {limit} characters</target>
+      </segment>
+    </unit>
+    <unit id="pages.tab.menu">
+      <segment>
+        <source>pages.tab.menu</source>
+        <target>Menu</target>
+      </segment>
+    </unit>
+    <unit id="pages.tab.pages">
+      <segment>
+        <source>pages.tab.pages</source>
+        <target>Pages</target>
       </segment>
     </unit>
   </file>
