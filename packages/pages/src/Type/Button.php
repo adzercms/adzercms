@@ -23,8 +23,16 @@ final class Button
 
     public static function check(Field $field, string $value): ?Refusal
     {
-        $valid = self::LEAD === $value || (str_starts_with($value, '/') && !str_starts_with($value, '//')) || str_starts_with($value, 'https://');
+        return self::LINK === $field->name && !self::valid($value) ? new Refusal(t('pages.refusal.link', ['field' => $field->label])) : null;
+    }
 
-        return self::LINK === $field->name && !$valid ? new Refusal(t('pages.refusal.link', ['field' => $field->label])) : null;
+    public static function valid(string $link): bool
+    {
+        return self::LEAD === $link || (str_starts_with($link, '/') && !str_starts_with($link, '//')) || self::external($link);
+    }
+
+    public static function external(string $link): bool
+    {
+        return str_starts_with($link, 'https://');
     }
 }

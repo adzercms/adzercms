@@ -48,14 +48,9 @@ class PageRepository extends ServiceEntityRepository
     }
 
     /** @return list<Page> */
-    public function site(bool $menu = false): array
+    public function site(): array
     {
-        $query = $this->createQueryBuilder('p')->where('p.published = true')->orderBy('p.position')->addOrderBy('p.id');
-        if ($menu) {
-            $query->andWhere('p.menu = true');
-        }
-
-        return $query->getQuery()->getResult();
+        return $this->createQueryBuilder('p')->where('p.published = true')->orderBy('p.position')->addOrderBy('p.id')->getQuery()->getResult();
     }
 
     /** @return list<Page> */

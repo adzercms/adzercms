@@ -30,7 +30,6 @@ final readonly class PageForm
     public const FORMER = 'former';
     public const DESCRIPTION = 'description';
     public const PUBLISHED = 'published';
-    public const MENU = 'menu';
     public const MENU_LABEL = 'menu_label';
 
     public function __construct(
@@ -93,7 +92,6 @@ final readonly class PageForm
             $path,
             '' === $description ? null : $description,
             $input->getBoolean(self::PUBLISHED),
-            $input->getBoolean(self::MENU),
             '' === $label ? null : $label,
         );
         $this->em->flush();

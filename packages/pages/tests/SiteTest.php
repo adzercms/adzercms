@@ -10,8 +10,10 @@ use AdzerCMS\Core\Site\PublicCache;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\SchemaTestCase;
+use AdzerCMS\Pages\Entity\MenuEntry;
 use AdzerCMS\Pages\Entity\Page;
 use AdzerCMS\Pages\Entity\PageBlock;
+use AdzerCMS\Pages\Tests\Fixture\Lounge;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -26,23 +28,22 @@ final class SiteTest extends SchemaTestCase
 
     #[Group('ACMS-PAGE-0003')]
     #[Group('ACMS-PAGE-0006')]
-    #[Group('ACMS-PAGE-0007')]
     #[Group('ACMS-PAGE-0011')]
     #[Group('ACMS-PAGE-0013')]
     #[Group('ACMS-PAGE-0015')]
     #[Group('ACMS-PAGE-0016')]
     #[Group('ACMS-US-0070')]
-    public function testVisitorSeesPublishedPagesOfBlocksInOrderWithMenuAndSchema(): void
+    public function testVisitorSeesPublishedPagesOfBlocksInOrderWithSchema(): void
     {
         $this->configure([Brand::TITLE => self::BRAND, Indexing::NAME => '1']);
-        $home = $this->page('Home', Page::ROOT, published: true, menu: false);
+        $home = $this->page('Home', Page::ROOT, published: true);
         $this->block($home, 'hero', ['title' => 'Internet for the village', 'text' => "Fast\n**Stable**", 'button' => 'Plans', 'link' => '/tariffs']);
         $this->block($home, 'retired', ['title' => 'Gone module']);
         $this->block($home, 'advantages', ['title' => 'Why us', 'points' => json_encode([['title' => 'Fiber', 'text' => 'To the house']], \JSON_THROW_ON_ERROR)]);
         $this->block($home, 'questions', ['title' => 'Questions', 'pairs' => json_encode([['question' => 'Is there a trial?', 'answer' => 'A **week** free']], \JSON_THROW_ON_ERROR)]);
-        $tariffs = $this->page('Tariffs', '/tariffs', published: true, menu: true, label: 'Plans');
+        $tariffs = $this->page('Tariffs', '/tariffs', published: true);
         $this->block($tariffs, 'text', ['text' => 'All plans are *monthly*']);
-        $this->page('Draft', '/draft', published: false, menu: true);
+        $this->page('Draft', '/draft', published: false);
 
         $page = $this->client->request('GET', '/');
         self::assertResponseIsSuccessful();
@@ -50,14 +51,12 @@ final class SiteTest extends SchemaTestCase
         self::assertSame(['Why us', 'Questions'], $page->filter('h2')->each(static fn (Crawler $node): string => trim($node->text())), 'blocks go in order, a block of a type without its module is not shown');
         self::assertSame('/tariffs', $page->filter('.site-hero a.button')->attr('href'));
         self::assertSame('<strong>Stable</strong>', $page->filter('.site-hero .site-lead strong')->outerHtml(), 'the first screen text is markup');
-        self::assertSame(['Plans'], $page->filter('.site-nav a')->each(static fn (Crawler $node): string => trim($node->text())), 'the menu holds published pages marked for it by their label');
         self::assertCount(1, $page->filter('.site-entry'), 'the header leads into the cabinet');
         self::assertSame('<strong>week</strong>', $page->filter('.site-questions .prose strong')->outerHtml());
         self::assertSame(['WebSite', 'Organization', 'FAQPage'], self::schema($page));
 
         $page = $this->client->request('GET', '/tariffs');
         self::assertSame(['Tariffs'], $page->filter('h1')->each(static fn (Crawler $node): string => trim($node->text())), 'a first block without a title gives H1 to the page title');
-        self::assertSame('page', $page->filter('.site-nav a')->attr('aria-current'));
         self::assertSame(['BreadcrumbList'], self::schema($page));
 
         foreach (['/draft', '/missing'] as $path) {
@@ -69,21 +68,55 @@ final class SiteTest extends SchemaTestCase
         self::assertStringContainsString('/tariffs', $sitemap);
         self::assertStringNotContainsString('/draft', $sitemap);
 
-        $this->em->find(Page::class, $home->getId())?->edit('Home', Page::ROOT, null, false, false, null);
+        $this->em->find(Page::class, $home->getId())?->edit('Home', Page::ROOT, null, false, null);
         $this->em->flush();
         $this->client->request('GET', '/');
         self::assertResponseRedirects('/cabinet', null, 'without a published home page the root leads to the cabinet');
+    }
+
+    #[Group('ACMS-PAGE-0007')]
+    #[Group('ACMS-US-0070')]
+    #[Group('ACMS-US-0071')]
+    public function testMenuHoldsPagesSectionsAndLinksInItsOrder(): void
+    {
+        $this->page('Home', Page::ROOT, published: true);
+        $tariffs = $this->page('Tariffs', '/tariffs', published: true, label: 'Plans');
+        $contacts = $this->page('Contacts', '/contacts', published: true);
+        $draft = $this->page('Draft', '/draft', published: false);
+        $this->menu(
+            MenuEntry::ofLink('Plans below', '/#tariffs'),
+            MenuEntry::ofPage($tariffs),
+            MenuEntry::ofPage($draft),
+            MenuEntry::ofSection(Lounge::ROUTE),
+            MenuEntry::ofSection('retired_section'),
+            MenuEntry::ofPage($contacts),
+            MenuEntry::ofLink('Channel', 'https://t.me/village'),
+        );
+
+        self::assertSame(
+            [
+                ['Plans below', '/#tariffs', null, null],
+                ['Plans', '/tariffs', null, 'page'],
+                [Lounge::LABEL, '/admin/pages', null, null],
+                ['Contacts', '/contacts', null, null],
+                ['Channel', 'https://t.me/village', '_blank', null],
+            ],
+            $this->client->request('GET', '/tariffs')->filter('.site-nav a')->each(
+                static fn (Crawler $link): array => [trim($link->text()), $link->attr('href'), $link->attr('target'), $link->attr('aria-current')],
+            ),
+            'items go in the menu order: a page by its menu label or title, a declared section, a link, an https link in a new tab; an unpublished page and an undeclared section stay hidden',
+        );
     }
 
     #[Group('ACMS-PAGE-0021')]
     #[Group('ACMS-US-0070')]
     public function testPagesOfOneSectionAreTabsUnderTheTitle(): void
     {
-        $offer = $this->page('Public offer', '/offer', published: true, menu: true, label: 'Offer');
-        $this->page('Appendix 1', '/offer/tariffs', published: true, menu: false, label: 'Tariffs');
-        $this->page('Appendix 2', '/offer/rules', published: true, menu: false);
-        $this->page('Draft appendix', '/offer/draft', published: false, menu: false);
-        $this->page('Offers', '/offers', published: true, menu: false);
+        $offer = $this->page('Public offer', '/offer', published: true, label: 'Offer');
+        $this->page('Appendix 1', '/offer/tariffs', published: true, label: 'Tariffs');
+        $this->page('Appendix 2', '/offer/rules', published: true);
+        $this->page('Draft appendix', '/offer/draft', published: false);
+        $this->page('Offers', '/offers', published: true);
         $tabs = fn (string $path): array => $this->client->request('GET', $path)->filter('.site-title .tabs a')->each(
             static fn (Crawler $tab): array => [trim($tab->text()), (string) $tab->attr('href'), str_contains((string) $tab->attr('class'), 'active')],
         );
@@ -95,7 +128,7 @@ final class SiteTest extends SchemaTestCase
         );
         self::assertSame([], $tabs('/offers'), 'a path sharing the start of the section is outside it');
 
-        $this->em->find(Page::class, $offer->getId())?->edit('Public offer', '/offer', null, false, true, 'Offer');
+        $this->em->find(Page::class, $offer->getId())?->edit('Public offer', '/offer', null, false, 'Offer');
         $this->em->flush();
         self::assertSame([], $tabs('/offer/tariffs'), 'without the published section page there are no tabs');
     }
@@ -105,7 +138,7 @@ final class SiteTest extends SchemaTestCase
     #[Group('ACMS-US-0070')]
     public function testPageWithoutSessionIsSharedByCachesAndWithSessionIsPrivate(): void
     {
-        $home = $this->page('Home', Page::ROOT, published: true, menu: false);
+        $home = $this->page('Home', Page::ROOT, published: true);
         $this->block($home, 'hero', ['title' => 'Internet for the village', 'button' => 'Plans', 'link' => '#lead']);
 
         $this->client->request('GET', '/');
@@ -132,7 +165,7 @@ final class SiteTest extends SchemaTestCase
     public function testFooterCarriesTheOwnerTextAndTheBrandOfTheYear(): void
     {
         $this->configure([Brand::TITLE => self::BRAND]);
-        $this->page('Home', Page::ROOT, published: true, menu: false);
+        $this->page('Home', Page::ROOT, published: true);
         $mark = sprintf('© %s %s', now()->format('Y'), self::BRAND);
 
         self::assertSame($mark, trim($this->client->request('GET', '/')->filter('.site-footer')->text()), 'without the owner text the footer is the brand of the year');
@@ -148,20 +181,29 @@ final class SiteTest extends SchemaTestCase
     public function testHeaderLeadsToCabinetOfAnotherSiteInNewTab(): void
     {
         $this->configure([Brand::CABINET_URL => 'https://cabinet.example.test/']);
-        $this->page('Home', Page::ROOT, published: true, menu: false);
+        $this->page('Home', Page::ROOT, published: true);
 
         $entry = $this->client->request('GET', '/')->filter('.site-entry');
         self::assertSame(['https://cabinet.example.test/', '_blank'], [$entry->attr('href'), $entry->attr('target')]);
     }
 
-    private function page(string $title, string $path, bool $published, bool $menu, ?string $label = null): Page
+    private function page(string $title, string $path, bool $published, ?string $label = null): Page
     {
         $page = new Page($title, $path);
-        $page->edit($title, $path, null, $published, $menu, $label);
+        $page->edit($title, $path, null, $published, $label);
         $this->em->persist($page);
         $this->em->flush();
 
         return $page;
+    }
+
+    private function menu(MenuEntry ...$entries): void
+    {
+        foreach ($entries as $position => $entry) {
+            $entry->place($position);
+            $this->em->persist($entry);
+        }
+        $this->em->flush();
     }
 
     /** @param array<string, string> $values */

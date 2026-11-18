@@ -44,7 +44,7 @@ final class AdminTest extends SchemaTestCase
         $page = self::service(PageRepository::class)->findOneBy(['path' => '/tariffs']) ?? self::fail('the page is not created at its address');
         $record = self::LIST.'/'.$page->getId();
         self::assertResponseHeaderSame('HX-Redirect', $record);
-        self::assertSame(['Tariffs', '/tariffs', '✗', '✗'], self::cells($this->fragment(self::LIST), 0));
+        self::assertSame(['Tariffs', '/tariffs', '✗'], self::cells($this->fragment(self::LIST), 0));
 
         $preview = $this->arrive($record)->filter('.card-actions a[target="_blank"]')->attr('href');
         $this->client->request('GET', (string) $preview);
@@ -69,13 +69,12 @@ final class AdminTest extends SchemaTestCase
         $listing = $this->post($record.'/blocks/order', [Order::FIELD => [(string) $blocks[1]->getId(), (string) $blocks[0]->getId()]]);
         self::assertSame(['Internet · Plans · #lead', 'Why us · Fiber · Support'], $listing->filter('tbody tr td:nth-child(3)')->each(static fn (Crawler $cell): string => trim($cell->text())));
 
-        $this->post($record, ['title' => 'Tariffs', 'path' => '/tariffs', 'description' => 'Plans of the network', 'published' => '1', 'menu' => '1', 'menu_label' => 'Plans']);
+        $this->post($record, ['title' => 'Tariffs', 'path' => '/tariffs', 'description' => 'Plans of the network', 'published' => '1']);
         self::assertResponseRedirects($record);
         $visit = $this->client->request('GET', '/tariffs');
         self::assertSame(['Internet'], $visit->filter('.site-main h1')->each(static fn (Crawler $node): string => trim($node->text())));
         self::assertSame(['Why us'], $visit->filter('.site-main h2')->each(static fn (Crawler $node): string => trim($node->text())));
         self::assertStringContainsString('Around the clock', $visit->filter('.site-points')->text());
-        self::assertSame(['Plans'], $visit->filter('.site-nav a')->each(static fn (Crawler $node): string => trim($node->text())));
         self::assertStringEndsWith('/tariffs', (string) $this->arrive($record)->filter('.card-actions a[target="_blank"]')->attr('href'));
 
         $retired = new PageBlock(self::service(PageRepository::class)->find($page->getId()) ?? self::fail('the page is gone'), 'retired', ['title' => 'Gone']);
@@ -100,7 +99,7 @@ final class AdminTest extends SchemaTestCase
     public function testBlockPictureReachesVisitorAndItsFileLeavesWithIt(): void
     {
         $page = new Page('Home', Page::ROOT);
-        $page->edit('Home', Page::ROOT, null, true, false, null);
+        $page->edit('Home', Page::ROOT, null, true, null);
         $this->em->persist($page);
         $this->em->flush();
         $record = self::LIST.'/'.$page->getId();
@@ -142,7 +141,7 @@ final class AdminTest extends SchemaTestCase
     public function testCardPicturesReachVisitorAndTheirFilesLeaveWithTheirCells(): void
     {
         $page = new Page('Home', Page::ROOT);
-        $page->edit('Home', Page::ROOT, null, true, false, null);
+        $page->edit('Home', Page::ROOT, null, true, null);
         $this->em->persist($page);
         $this->em->flush();
         $record = self::LIST.'/'.$page->getId();
@@ -193,7 +192,7 @@ final class AdminTest extends SchemaTestCase
     public function testBlockTextCarriesModuleValuesListedAtItsField(): void
     {
         $page = new Page('Home', Page::ROOT);
-        $page->edit('Home', Page::ROOT, null, true, false, null);
+        $page->edit('Home', Page::ROOT, null, true, null);
         $this->em->persist($page);
         $this->em->flush();
         $record = self::LIST.'/'.$page->getId();
@@ -231,7 +230,7 @@ final class AdminTest extends SchemaTestCase
     public function testChangedAddressLeadsToPageAndPassesToPageTakingIt(): void
     {
         $tariffs = new Page('Tariffs', '/tariffs');
-        $tariffs->edit('Tariffs', '/tariffs', null, true, false, null);
+        $tariffs->edit('Tariffs', '/tariffs', null, true, null);
         $this->em->persist($tariffs);
         $this->em->flush();
         $record = self::LIST.'/'.$tariffs->getId();

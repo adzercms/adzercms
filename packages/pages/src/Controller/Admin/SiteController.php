@@ -108,7 +108,6 @@ final class SiteController extends AbstractController
             Column::plain(PageForm::TITLE, t('pages.field.title')),
             Column::plain(PageForm::PATH, t('pages.field.path')),
             Column::plain(PageForm::PUBLISHED, t('pages.field.published')),
-            Column::plain(PageForm::MENU, t('pages.field.menu')),
         ], PageForm::TITLE, t('pages.empty'), order: Order::of(self::ORDER, 'p.position', 'p.id'));
 
         return ['table' => $table, 'rows' => $table->rows($this->pages->ordered())];

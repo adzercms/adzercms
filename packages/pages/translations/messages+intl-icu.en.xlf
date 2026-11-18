@@ -133,12 +133,6 @@
         <target>Button address</target>
       </segment>
     </unit>
-    <unit id="pages.field.menu">
-      <segment>
-        <source>pages.field.menu</source>
-        <target>In the menu</target>
-      </segment>
-    </unit>
     <unit id="pages.field.menu_label">
       <segment>
         <source>pages.field.menu_label</source>

@@ -36,9 +36,6 @@ class Page implements Placed
     #[ORM\Column]
     private bool $published = false;
 
-    #[ORM\Column]
-    private bool $menu = false;
-
     #[ORM\Column(length: self::MENU, nullable: true)]
     private ?string $menuLabel = null;
 
@@ -86,11 +83,6 @@ class Page implements Placed
         return $this->published;
     }
 
-    public function inMenu(): bool
-    {
-        return $this->menu;
-    }
-
     public function menuLabel(): string
     {
         return $this->menuLabel ?? $this->title;
@@ -111,13 +103,12 @@ class Page implements Placed
         $this->position = $position;
     }
 
-    public function edit(string $title, string $path, ?string $description, bool $published, bool $menu, ?string $menuLabel): void
+    public function edit(string $title, string $path, ?string $description, bool $published, ?string $menuLabel): void
     {
         $this->title = $title;
         $this->path = $path;
         $this->description = $description;
         $this->published = $published;
-        $this->menu = $menu;
         $this->menuLabel = $menuLabel;
     }
 }

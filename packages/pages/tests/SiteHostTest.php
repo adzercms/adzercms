@@ -34,7 +34,7 @@ final class SiteHostTest extends SchemaTestCase
 
         $this->post(self::LIST.'/new', ['title' => 'Profile', 'path' => '/profile']);
         $page = self::service(PageRepository::class)->findOneBy(['path' => '/profile']) ?? self::fail('a section of the cabinet host leaves its address free on the site host');
-        $page->edit('Profile', '/profile', null, true, false, null);
+        $page->edit('Profile', '/profile', null, true, null);
         $this->em->flush();
 
         $visitor = $this->browser('Visitor', '203.0.113.7');
@@ -49,7 +49,7 @@ final class SiteHostTest extends SchemaTestCase
     public function testSiteFrameLeadsToSiteRootAndCabinetOnTheirHosts(): void
     {
         $home = new Page('Home', Page::ROOT);
-        $home->edit('Home', Page::ROOT, null, true, false, null);
+        $home->edit('Home', Page::ROOT, null, true, null);
         $this->em->persist($home);
         $this->em->flush();
 
