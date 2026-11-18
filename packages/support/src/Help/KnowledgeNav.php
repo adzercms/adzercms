@@ -4,32 +4,24 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Support\Help;
 
-use AdzerCMS\Contracts\Ui\Fragment;
-use AdzerCMS\Support\Repository\HelpArticleRepository;
-use Symfony\Component\HttpFoundation\RequestStack;
+use AdzerCMS\Contracts\Ui\MenuItem;
+use AdzerCMS\Contracts\Ui\SiteSections;
+use AdzerCMS\Support\Controller\KnowledgeBaseController;
 
-final readonly class KnowledgeNav implements Fragment
+use function Symfony\Component\Translation\t;
+
+final readonly class KnowledgeNav implements SiteSections
 {
-    private const PATH = '/help';
+    private const WEIGHT = 200;
 
-    public function __construct(
-        private HelpArticleRepository $articles,
-        private RequestStack $requests,
-    ) {
+    public function __construct(private Help $help)
+    {
     }
 
-    public function place(): string
+    public function sections(): array
     {
-        return self::SITE_NAV;
-    }
-
-    public function fragment(?int $subject): ?array
-    {
-        if (!$this->articles->anyPublished()) {
-            return null;
-        }
-        $current = (string) $this->requests->getMainRequest()?->getPathInfo();
-
-        return ['template' => '@Support/help/_nav.html.twig', 'context' => ['current' => self::PATH === $current || str_starts_with($current, self::PATH.'/')]];
+        return $this->help->enabled()
+            ? [new MenuItem(KnowledgeBaseController::CONTENTS, t('support.help.title'), self::WEIGHT, [KnowledgeBaseController::CATEGORY, KnowledgeBaseController::ARTICLE])]
+            : [];
     }
 }

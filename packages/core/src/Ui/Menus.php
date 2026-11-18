@@ -87,7 +87,7 @@ final class Menus implements ResetInterface
     }
 
     /** @param list<MenuItem> $items */
-    private static function current(array $items, string $route): ?MenuItem
+    public static function current(array $items, string $route): ?MenuItem
     {
         $current = null;
         $longest = 0;

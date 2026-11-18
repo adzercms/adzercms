@@ -4,12 +4,12 @@
 
 {% block shell %}
 {% import '@Theme/_icons.html.twig' as icon %}
-{% set nav = fragments(constant('AdzerCMS\\Contracts\\Ui\\Fragment::SITE_NAV')) %}
+{% set nav = site_menu() %}
 {% if nav %}<input type="checkbox" id="site-menu" class="site-menu-toggle" hidden>{% endif %}
 <!--noindex--><header class="site-header" data-nosnippet>
     <div class="site-header-inner">
         <a class="header-logo" href="{{ site_root() }}">{% include '@Theme/_brand.html.twig' %}</a>
-        <nav class="site-nav">{% for part in nav %}{% include part.template with part.context only %}{% endfor %}</nav>
+        <nav class="site-nav">{% for item in nav %}<a href="{{ item.url }}"{{ item.current ? ' aria-current="page"' }}{{ item.external ? ' target="_blank" rel="noopener"' }}>{{ item.label }}</a>{% endfor %}</nav>
         {% if brand.cabinetUrl %}
             <a class="button site-entry" href="{{ brand.cabinetUrl }}" target="_blank" rel="noopener">{{ 'theme.site.cabinet'|trans }}</a>
         {% else %}

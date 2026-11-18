@@ -24,6 +24,8 @@ use AdzerCMS\Contracts\Ui\ContentSource;
 use AdzerCMS\Contracts\Ui\Fragment;
 use AdzerCMS\Contracts\Ui\Menu;
 use AdzerCMS\Contracts\Ui\Palette;
+use AdzerCMS\Contracts\Ui\SiteMenu;
+use AdzerCMS\Contracts\Ui\SiteSections;
 use AdzerCMS\Contracts\Ui\Tabs;
 use AdzerCMS\Core\Account\Password;
 use AdzerCMS\Core\Account\Role;
@@ -190,7 +192,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
         $builder->register(self::MIGRATION_MARKS, \Closure::class)
             ->setFactory([\Closure::class, 'fromCallable'])
             ->setArguments([[MigrationMarks::class, 'of']]);
-        foreach ([Owner::class, Rule::class, Guided::class, Identifier::class, UserPlaces::class, UserCreation::class, Traffic::class, Switchable::class, ModuleManagement::class, ContentSource::class, Fragment::class, Menu::class, Tabs::class, Columns::class, Palette::class, BotListener::class, LoginListener::class, Channel::class, Pages::class, ValueSection::class] as $contract) {
+        foreach ([Owner::class, Rule::class, Guided::class, Identifier::class, UserPlaces::class, UserCreation::class, Traffic::class, Switchable::class, ModuleManagement::class, ContentSource::class, Fragment::class, Menu::class, SiteSections::class, SiteMenu::class, Tabs::class, Columns::class, Palette::class, BotListener::class, LoginListener::class, Channel::class, Pages::class, ValueSection::class] as $contract) {
             $builder->registerForAutoconfiguration($contract)->addTag($contract);
         }
         Schedule::declare($builder);
