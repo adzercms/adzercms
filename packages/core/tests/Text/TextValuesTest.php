@@ -37,6 +37,15 @@ final class TextValuesTest extends SchemaTestCase
         self::assertStringContainsString("<code>{{tally.site}}\n</code>", $html);
     }
 
+    #[Group('ACMS-CORE-1190')]
+    public function testInlineMarkupKeepsBlockMarkersAsText(): void
+    {
+        self::assertSame(
+            '1. Site <strong>shop</strong> of <a href="https://shop.test">shop</a>',
+            self::service(Markup::class)->inline('1. Site **{{tally.site}}** of [{{tally.site}}](https://shop.test)'),
+        );
+    }
+
     /** @return iterable<string, array{string, bool}> */
     public static function texts(): iterable
     {
