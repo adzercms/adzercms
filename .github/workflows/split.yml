@@ -27,6 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ github.ref_type == 'tag' && github.ref || 'main' }}
           persist-credentials: false
       - id: list
         run: echo "names=$(ls packages | jq -Rsc 'split("\n") | map(select(. != ""))')" >> "$GITHUB_OUTPUT"
@@ -53,6 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ github.ref_type == 'tag' && github.ref || 'main' }}
           persist-credentials: false
       - working-directory: packages/${{ matrix.package }}
         env:
