@@ -42,7 +42,8 @@ sed 's#^#/#' "$scripts/../config/stage.exclude" | rsync -a --exclude-from=- ./ "
 if [ -n "$revision" ]; then
     git diff --name-only --no-renames --diff-filter=D --relative -z HEAD "$revision" -- . | (cd "$next" && xargs -0 -r rm -f --)
     GIT_INDEX_FILE=$next.index git read-tree "$revision:$(git rev-parse --show-prefix)"
-    (cd "$(git rev-parse --show-toplevel)" && GIT_INDEX_FILE=$next.index git checkout-index --all --force --prefix="$next/")
+    git diff --name-only --no-renames --diff-filter=d --relative -z HEAD "$revision" -- . \
+        | (cd "$(git rev-parse --show-toplevel)" && GIT_INDEX_FILE=$next.index git checkout-index --force --prefix="$next/" -z --stdin)
 fi
 
 APP_BUILD=$(date +%Y%m%d%H%M%S)-$$

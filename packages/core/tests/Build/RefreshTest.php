@@ -155,6 +155,8 @@ final class RefreshTest extends TestCase
         $files = new Filesystem();
         $files->dumpFile($top.'/.gitignore', "var/\nvendor/\ncalls\ncopied\n");
         $files->dumpFile($this->root.'/src/Removed.php', '');
+        $files->dumpFile($this->root.'/src/Edited.php', '');
+        $files->dumpFile($this->root.'/src/Dropped.php', '');
         $files->symlink(self::FIXTURE.'post-merge', $this->root.'/var/hooks/post-merge');
         $git = static fn (string ...$arguments): string => trim((new Process(['git', '-c', 'user.name=Site', '-c', 'user.email=site@acme.test', ...$arguments], $top))->mustRun()->getOutput());
         $git('init', '--quiet');
@@ -169,13 +171,18 @@ final class RefreshTest extends TestCase
         $git('commit', '--quiet', '--message', 'Revision');
         $revision = $git('rev-parse', 'HEAD');
         $git('checkout', '--quiet', '-');
+        $files->dumpFile($this->root.'/src/Edited.php', 'edited');
+        $files->remove($this->root.'/src/Dropped.php');
 
         $calls = $this->refresh(null, '--revision', 'revision');
         $copied = file($this->root.'/copied', \FILE_IGNORE_NEW_LINES) ?: [];
         $steps = ['copy bin/console asset-map:compile --no-interaction', 'merged '.$this->root, 'bin/console adzercms:cache --migrate'];
 
-        self::assertSame([true, false], [\in_array('./src/Added.php', $copied, true), \in_array('./src/Removed.php', $copied, true)], 'the copy is the tree of the revision');
-        self::assertSame('revised', file_get_contents($this->root.'/var/checked-kernel'));
+        self::assertSame(
+            [true, false, false, 'revised', 'edited'],
+            [\in_array('./src/Added.php', $copied, true), \in_array('./src/Removed.php', $copied, true), \in_array('./src/Dropped.php', $copied, true), file_get_contents($this->root.'/var/checked/Kernel.php'), file_get_contents($this->root.'/var/checked/Edited.php')],
+            'the copy is the live tree after the fast-forward: the revision over the uncommitted edits of the tree',
+        );
         self::assertSame($steps, array_values(array_intersect($calls, $steps)), 'the live tree fast-forwards after the copy builds, its merge hook sees the refresh done');
         self::assertSame([$revision, 'revised'], [$git('rev-parse', 'HEAD'), file_get_contents($this->root.'/src/Kernel.php')]);
     }
