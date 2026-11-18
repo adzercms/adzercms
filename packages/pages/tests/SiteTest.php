@@ -36,7 +36,7 @@ final class SiteTest extends SchemaTestCase
     {
         $this->configure([Brand::TITLE => self::BRAND, Indexing::NAME => '1']);
         $home = $this->page('Home', Page::ROOT, published: true, menu: false);
-        $this->block($home, 'hero', ['title' => 'Internet for the village', 'text' => "Fast\nStable", 'button' => 'Plans', 'link' => '/tariffs']);
+        $this->block($home, 'hero', ['title' => 'Internet for the village', 'text' => "Fast\n**Stable**", 'button' => 'Plans', 'link' => '/tariffs']);
         $this->block($home, 'retired', ['title' => 'Gone module']);
         $this->block($home, 'advantages', ['title' => 'Why us', 'points' => json_encode([['title' => 'Fiber', 'text' => 'To the house']], \JSON_THROW_ON_ERROR)]);
         $this->block($home, 'questions', ['title' => 'Questions', 'pairs' => json_encode([['question' => 'Is there a trial?', 'answer' => 'A **week** free']], \JSON_THROW_ON_ERROR)]);
@@ -49,6 +49,7 @@ final class SiteTest extends SchemaTestCase
         self::assertSame(['Internet for the village'], $page->filter('h1')->each(static fn (Crawler $node): string => trim($node->text())), 'the title of the first block is the only H1');
         self::assertSame(['Why us', 'Questions'], $page->filter('h2')->each(static fn (Crawler $node): string => trim($node->text())), 'blocks go in order, a block of a type without its module is not shown');
         self::assertSame('/tariffs', $page->filter('.site-hero a.button')->attr('href'));
+        self::assertSame('<strong>Stable</strong>', $page->filter('.site-hero .site-lead strong')->outerHtml(), 'the first screen text is markup');
         self::assertSame(['Plans'], $page->filter('.site-nav a')->each(static fn (Crawler $node): string => trim($node->text())), 'the menu holds published pages marked for it by their label');
         self::assertCount(1, $page->filter('.site-entry'), 'the header leads into the cabinet');
         self::assertSame('<strong>week</strong>', $page->filter('.site-questions .prose strong')->outerHtml());
@@ -72,6 +73,31 @@ final class SiteTest extends SchemaTestCase
         $this->em->flush();
         $this->client->request('GET', '/');
         self::assertResponseRedirects('/cabinet', null, 'without a published home page the root leads to the cabinet');
+    }
+
+    #[Group('ACMS-PAGE-0021')]
+    #[Group('ACMS-US-0070')]
+    public function testPagesOfOneSectionAreTabsUnderTheTitle(): void
+    {
+        $offer = $this->page('Public offer', '/offer', published: true, menu: true, label: 'Offer');
+        $this->page('Appendix 1', '/offer/tariffs', published: true, menu: false, label: 'Tariffs');
+        $this->page('Appendix 2', '/offer/rules', published: true, menu: false);
+        $this->page('Draft appendix', '/offer/draft', published: false, menu: false);
+        $this->page('Offers', '/offers', published: true, menu: false);
+        $tabs = fn (string $path): array => $this->client->request('GET', $path)->filter('.site-title .tabs a')->each(
+            static fn (Crawler $tab): array => [trim($tab->text()), (string) $tab->attr('href'), str_contains((string) $tab->attr('class'), 'active')],
+        );
+
+        self::assertSame(
+            [['Offer', '/offer', false], ['Tariffs', '/offer/tariffs', true], ['Appendix 2', '/offer/rules', false]],
+            $tabs('/offer/tariffs'),
+            'the section page and its published pages go in the order of the list by the menu label or the title, the open one is current',
+        );
+        self::assertSame([], $tabs('/offers'), 'a path sharing the start of the section is outside it');
+
+        $this->em->find(Page::class, $offer->getId())?->edit('Public offer', '/offer', null, false, true, 'Offer');
+        $this->em->flush();
+        self::assertSame([], $tabs('/offer/tariffs'), 'without the published section page there are no tabs');
     }
 
     #[Group('ACMS-CORE-1092')]

@@ -57,4 +57,12 @@ class PageRepository extends ServiceEntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    /** @return list<Page> */
+    public function section(string $root): array
+    {
+        return $this->createQueryBuilder('p')->where('p.published = true')->andWhere('p.path = :root OR p.path LIKE :under')
+            ->setParameter('root', $root)->setParameter('under', $root.'/%')
+            ->orderBy('p.position')->addOrderBy('p.id')->getQuery()->getResult();
+    }
 }

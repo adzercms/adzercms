@@ -12,6 +12,7 @@ use AdzerCMS\Core\Setting\Values;
 use AdzerCMS\Pages\Controller\PageController;
 use AdzerCMS\Pages\Entity\Page;
 use AdzerCMS\Pages\Repository\PageBlockRepository;
+use AdzerCMS\Pages\Repository\PageRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final readonly class Site
@@ -19,6 +20,7 @@ final readonly class Site
     public function __construct(
         private Blocks $blocks,
         private PageBlockRepository $repository,
+        private PageRepository $pages,
         private Brand $brand,
         private UrlGeneratorInterface $urls,
         private Pictures $pictures,
@@ -26,7 +28,7 @@ final readonly class Site
     ) {
     }
 
-    /** @return array{heading: ?string, blocks: list<array{template: string, key: string, values: array<string, mixed>, data: array<string, mixed>, level: int}>, schema: list<array<string, mixed>>} */
+    /** @return array{heading: ?string, tabs: list<array{label: string, href: string, active: bool}>, blocks: list<array{template: string, key: string, values: array<string, mixed>, data: array<string, mixed>, level: int}>, schema: list<array<string, mixed>>} */
     public function view(Page $page): array
     {
         $blocks = [];
@@ -56,7 +58,27 @@ final readonly class Site
             $heading = null;
         }
 
-        return ['heading' => $heading, 'blocks' => $blocks, 'schema' => array_values(array_filter($schema))];
+        return ['heading' => $heading, 'tabs' => $this->tabs($page), 'blocks' => $blocks, 'schema' => array_values(array_filter($schema))];
+    }
+
+    /** @return list<array{label: string, href: string, active: bool}> */
+    private function tabs(Page $page): array
+    {
+        if (Page::ROOT === $page->getPath()) {
+            return [];
+        }
+        $root = Page::ROOT.explode('/', substr($page->getPath(), 1), 2)[0];
+        $section = $this->pages->section($root);
+        $paths = array_map(static fn (Page $one): string => $one->getPath(), $section);
+        if (\count($section) < 2 || !\in_array($root, $paths, true) || !\in_array($page, $section, true)) {
+            return [];
+        }
+
+        return array_map(fn (Page $one): array => [
+            'label' => $one->menuLabel(),
+            'href' => $this->url($one, UrlGeneratorInterface::ABSOLUTE_PATH),
+            'active' => $one === $page,
+        ], $section);
     }
 
     /** @return list<array<string, mixed>> */

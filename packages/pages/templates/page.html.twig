@@ -8,6 +8,10 @@
 {% endblock %}
 
 {% block page %}
-    {% if view.heading %}{% include '@Theme/_section.html.twig' with {heading: view.heading, level: 1, class: 'site-title'} only %}{% endif %}
+    {% if view.heading or view.tabs %}
+        {% embed '@Theme/_section.html.twig' with {heading: view.heading, level: 1, class: 'site-title', tabs: view.tabs} only %}
+            {% block content %}{% if tabs %}{% include '@Theme/_tabs.html.twig' with {tabs: tabs} only %}{% endif %}{% endblock %}
+        {% endembed %}
+    {% endif %}
     {% for block in view.blocks %}{% include block.template with block only %}{% endfor %}
 {% endblock %}
