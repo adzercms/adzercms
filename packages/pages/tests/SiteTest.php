@@ -199,7 +199,7 @@ final class SiteTest extends SchemaTestCase
 
     private function menu(MenuEntry ...$entries): void
     {
-        foreach ($entries as $position => $entry) {
+        foreach (array_values($entries) as $position => $entry) {
             $entry->place($position);
             $this->em->persist($entry);
         }
