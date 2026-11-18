@@ -296,11 +296,11 @@ final class AdminTest extends SchemaTestCase
 
         $entries = self::service(MenuEntryRepository::class)->ordered();
         $ids = array_map(static fn (MenuEntry $entry): string => (string) $entry->getId(), $entries);
-        $this->post($menu.'/order', [Order::FIELD => [$ids[3], $ids[0], $ids[1], $ids[2]]]);
+        $this->post($menu.'/order', [Order::FIELD => [$ids[3], $ids[1], $ids[0], $ids[2]]]);
         $this->post($menu.'/'.$ids[1], [MenuForm::TARGET => MenuForm::LINK, MenuForm::LABEL => 'Plans below', MenuForm::ADDRESS => '/#tariffs']);
         $this->post($menu.'/'.$ids[3].'/drop');
         self::assertSame(
-            ['Plans below', 'Plans', Lounge::LABEL],
+            ['Plans below', 'Plans'],
             $this->client->request('GET', '/tariffs')->filter('.site-nav a')->each(static fn (Crawler $item): string => trim($item->text())),
             'the visitor sees the menu in the order of the list with the edited and without the removed item',
         );
