@@ -50,6 +50,7 @@ final class FrameTest extends SchemaTestCase
     }
 
     #[Group('ACMS-UI-0056')]
+    #[Group('ACMS-UI-0171')]
     public function testFontIsPreloadedByAddressItsStylesTake(): void
     {
         $page = $this->frame();

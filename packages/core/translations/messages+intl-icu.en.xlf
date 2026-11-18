@@ -1489,6 +1489,12 @@
         <target>Mail server</target>
       </segment>
     </unit>
+    <unit id="core.setting.since">
+      <segment>
+        <source>core.setting.since</source>
+        <target>First year of the brand in the site footer</target>
+      </segment>
+    </unit>
     <unit id="core.setting.store">
       <segment>
         <source>core.setting.store</source>

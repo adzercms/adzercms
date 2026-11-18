@@ -1489,6 +1489,12 @@
         <target>Почтовый сервер</target>
       </segment>
     </unit>
+    <unit id="core.setting.since">
+      <segment>
+        <source>core.setting.since</source>
+        <target>Год начала работы в подвале сайта</target>
+      </segment>
+    </unit>
     <unit id="core.setting.store">
       <segment>
         <source>core.setting.store</source>

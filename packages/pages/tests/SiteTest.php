@@ -160,20 +160,25 @@ final class SiteTest extends SchemaTestCase
     }
 
     #[Group('ACMS-UI-0152')]
+    #[Group('ACMS-UI-0170')]
     #[Group('ACMS-US-0070')]
     #[Group('ACMS-US-0071')]
-    public function testFooterCarriesTheOwnerTextAndTheBrandOfTheYear(): void
+    public function testFooterCarriesTheOwnerTextAndTheBrandOfItsYears(): void
     {
         $this->configure([Brand::TITLE => self::BRAND]);
         $this->page('Home', Page::ROOT, published: true);
-        $mark = sprintf('© %s %s', now()->format('Y'), self::BRAND);
+        $year = (int) now()->format('Y');
+        $mark = sprintf('© %d %s', $year, self::BRAND);
+        $footer = fn (): Crawler => $this->client->request('GET', '/')->filter('.site-footer');
 
-        self::assertSame($mark, trim($this->client->request('GET', '/')->filter('.site-footer')->text()), 'without the owner text the footer is the brand of the year');
+        self::assertSame($mark, trim($footer()->text()), 'without the owner text and the first year the footer is the brand of the year');
 
-        $this->configure([Brand::FOOTER => '[Legal information](/offer)']);
-        $footer = $this->client->request('GET', '/')->filter('.site-footer');
-        self::assertSame('/offer', $footer->filter('.prose a')->attr('href'));
-        self::assertStringEndsWith($mark, trim($footer->text()));
+        $this->configure([Brand::SINCE => (string) $year]);
+        self::assertSame($mark, trim($footer()->text()), 'the first year of the current one is the year alone');
+
+        $this->configure([Brand::SINCE => (string) ($year - 2), Brand::FOOTER => '[Legal information](/offer)']);
+        self::assertSame('/offer', $footer()->filter('.prose a')->attr('href'));
+        self::assertStringEndsWith(sprintf('© %d–%d %s', $year - 2, $year, self::BRAND), trim($footer()->text()), 'an earlier first year opens the years of the brand');
     }
 
     #[Group('ACMS-UI-0169')]
