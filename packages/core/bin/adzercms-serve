@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+
+exec bin/php -d variables_order=EGPCS -S "${1:?usage: adzercms-serve HOST:PORT}" -t public "$(dirname "$(readlink -f "$0")")/adzercms-serve.php"
