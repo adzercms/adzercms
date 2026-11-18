@@ -108,7 +108,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
                 $migrations[$namespace.'\\Migrations'] = $path.Registry::MIGRATIONS;
             }
             $kind = is_subclass_of($class, Module::class) ? $class::kind() : null;
-            if (null !== $kind && $kind->single() && ucfirst($kind->key()) !== $name && is_dir($path.'/templates')) {
+            if (null !== $kind && $kind->single() && ucfirst($kind->key()).self::BUNDLE_SUFFIX !== $name && is_dir($path.'/templates')) {
                 $templates[$path.'/templates'] = ucfirst($kind->key());
             }
             if (CoreKind::Theme === $kind && is_dir($path.self::SITE_TEMPLATES)) {
@@ -120,7 +120,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
                 }
             }
         }
-        $templates += $site + $overrides;
+        $templates = $overrides + $templates + $site;
         $templates[$this->getPath().self::ERROR_TEMPLATES] = 'Twig';
 
         $builder->prependExtensionConfig('doctrine', [

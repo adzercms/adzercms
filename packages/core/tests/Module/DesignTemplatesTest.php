@@ -24,6 +24,7 @@ final class DesignTemplatesTest extends TestCase
         yield 'site part the design has' => ['@Design/_header.html.twig', 'design header'];
         yield 'module template the design overrides' => ['@Pages/blocks/text.html.twig', 'design text block'];
         yield 'module template the design keeps' => ['@Pages/blocks/hero.html.twig', 'module hero block'];
+        yield 'theme template the design overrides' => ['@Theme/error.html.twig', 'design error page'];
     }
 
     #[Group('ACMS-UI-0162')]
@@ -35,10 +36,10 @@ final class DesignTemplatesTest extends TestCase
         $builder = new ContainerBuilder(new ParameterBag([
             'kernel.environment' => 'test',
             'kernel.build_dir' => sys_get_temp_dir(),
-            'kernel.bundles' => ['Lumen' => LumenBundle::class, 'Vista' => VistaBundle::class],
+            'kernel.bundles' => ['LumenBundle' => LumenBundle::class, 'VistaBundle' => VistaBundle::class],
             'kernel.bundles_metadata' => [
-                'Lumen' => ['path' => $fixture.'/Lumen', 'namespace' => 'AdzerCMS\\Core\\Tests\\Module\\Fixture\\Design\\Lumen'],
-                'Vista' => ['path' => $fixture.'/Vista', 'namespace' => 'AdzerCMS\\Core\\Tests\\Module\\Fixture\\Design\\Vista'],
+                'LumenBundle' => ['path' => $fixture.'/Lumen', 'namespace' => 'AdzerCMS\\Core\\Tests\\Module\\Fixture\\Design\\Lumen'],
+                'VistaBundle' => ['path' => $fixture.'/Vista', 'namespace' => 'AdzerCMS\\Core\\Tests\\Module\\Fixture\\Design\\Vista'],
             ],
         ]));
 
