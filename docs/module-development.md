@@ -60,9 +60,10 @@ Links to admin and cabinet pages are built through entries: the Twig functions `
 
 ## Admin and cabinet pages
 
-A feature module describes its parts of the admin and the cabinet with services implementing the `AdzerCMS\Contracts\Ui` interfaces, and the enabled admin or cabinet module renders them in its frame. Such services are registered by autoconfiguration.
+A feature module describes its parts of the admin, the cabinet and the site menu with services implementing the `AdzerCMS\Contracts\Ui` interfaces, and the enabled admin or cabinet module renders them in its frame. Such services are registered by autoconfiguration.
 
 - `Menu` — `items()` returns the menu items for an `Area`, the admin or the cabinet. A `MenuItem` holds a route, a label, a weight, related routes (the item stays active on them), a group, a counter, a dialog flag and, for the cabinet's bottom bar, an icon from the theme's set with a short label. Items with an equal group label share the group; the cabinet's record group, which the profile and logout items belong to, is labelled by the core key `core.menu.record`.
+- `SiteSections` — `sections()` returns the module's public sections for the site menu as `MenuItem` items with a route, a label, a weight and related routes.
 - `Tabs` — tabs of a page by its key: `Tabs::ADMIN_DASHBOARD`, `Tabs::ADMIN_USER` or `Tabs::CABINET_HOME`. `tabs()` returns `Tab` items with a key, a label, a weight and an optional count, and `tab()` builds the template and context of the active tab only.
 - `Fragment` — a fragment of someone else's page at a given place: `Fragment::HEAD`, `TOP` (the header and navigation of the `top` layout instead of the panel ones), `HEADER`, `CABINET_HOME`, `CABINET_PROFILE` (the profile under the contacts), `ADMIN_DASHBOARD`, `ADMIN_DASHBOARD_ACTIONS`, `ADMIN_USER`, `ADMIN_SETTINGS_MODULE` followed by the module key (blocks of the module's settings page under its fields; a block gives the page to a module without fields), `END` (the end of the page body, for the module's windows over any page). `null` leaves the place empty.
 - `Columns` — the module's columns in someone else's list, `Columns::ADMIN_USERS`. `cells()` returns the `Cell` values for every row of the page in one call: text with its sign, bold, a note in brackets, a warning mark with its text on hover and further parts; and `search()` returns the rows the module finds by its own fields. A `Column` sorts the list by its `order`: a DQL subquery of the column's value from the expression of the row id it receives.
@@ -310,6 +311,8 @@ A module makes a PDF document from a Twig template that extends `@Core/document/
 ## Site design
 
 A site design is a module of the `design` kind: it provides `adzercms/design-implementation`, and its bundle's `kind()` returns `CoreKind::Design`. Its templates answer to `@Design`, and the theme's `templates/site` directory is the last path of that namespace, so a design template replaces the theme's site template of the same name and the rest stay the theme's. The site frame is `@Design/layout.html.twig` with the `title`, `meta` and `page` blocks: public pages of feature modules and the 4xx error page extend it. A design frame of its own puts the importmap and the fragments of `Fragment::HEAD` into the head and the fragments of `Fragment::END` at the end of the body.
+
+The frame draws the site menu with its own markup from the `site_menu()` Twig function: a list of `SiteLink` with `label`, `url`, `current` and `external`, the last one opening the link in a new tab. The sections of the modules are arranged by the instance's only `SiteMenu` service, the Menu tab of the pages module, which mixes them with pages and links; without it the menu is the sections by weight.
 
 A design replaces a template of another module with the file of the same name under its `templates/bundles/<Bundle>/`, such as `templates/bundles/PagesBundle/blocks/hero.html.twig`; the original stays reachable as `@!Pages/blocks/hero.html.twig`. A section of the design's layout that no block type of the feature modules expresses is a block type of the design itself, a service of `AdzerCMS\Pages\Block`.
 
