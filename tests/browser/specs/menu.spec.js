@@ -14,3 +14,24 @@ test('[ACMS-UI-0156] the narrow-screen menu opens as a window under the header w
     await expect(sidebar.locator('.nav-section-title').first()).toBeInViewport({ ratio: 1 });
     await expect(sidebar.locator('.nav-item.active + .nav-submenu')).toBeVisible();
 });
+
+test('[ACMS-UI-0159] the narrow-screen site header keeps the brand, the entry and the menu button in one row, the menu opens as a window under it', async ({ page }, info) => {
+    test.skip(info.project.name !== 'phone', 'the menu window belongs to the narrow screen');
+
+    await page.goto('/site-menu-probe', { waitUntil: 'networkidle' });
+    const toggle = page.locator('.site-header .menu-toggle');
+    test.skip(await toggle.count() === 0, 'the site has no menu pages');
+
+    const header = await page.locator('.site-header').boundingBox();
+    for (const part of await page.locator('.site-header :is(.header-logo, .site-entry, .menu-toggle)').all()) {
+        const box = await part.boundingBox();
+        expect(box.y).toBeGreaterThanOrEqual(header.y);
+        expect(box.y + box.height).toBeLessThanOrEqual(header.y + header.height);
+    }
+
+    const nav = page.locator('.site-nav');
+    await expect(nav).toBeHidden();
+    await toggle.click();
+    await expect(nav).toBeVisible();
+    expect(Math.round((await nav.boundingBox()).y)).toBe(Math.round(header.y + header.height));
+});

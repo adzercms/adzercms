@@ -8,6 +8,6 @@
 {% endblock %}
 
 {% block page %}
-    {% if view.heading %}{% include '@Theme/_section.html.twig' with {heading: view.heading, level: 1} only %}{% endif %}
+    {% if view.heading %}{% include '@Theme/_section.html.twig' with {heading: view.heading, level: 1, class: 'site-title'} only %}{% endif %}
     {% for block in view.blocks %}{% include block.template with block only %}{% endfor %}
 {% endblock %}

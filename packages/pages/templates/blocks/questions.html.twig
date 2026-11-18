@@ -1,4 +1,4 @@
-{% embed '@Theme/_section.html.twig' with {heading: values.title, level: level} %}
+{% embed '@Theme/_section.html.twig' with {heading: values.title, level: level, class: 'site-column'} %}
     {% block content %}
         <div class="site-questions">
             {% for pair in values.pairs %}
