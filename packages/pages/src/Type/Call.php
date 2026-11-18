@@ -13,7 +13,7 @@ class Call extends Plain
 
     public function fields(): array
     {
-        return [self::title(), self::text(), ...Button::fields()];
+        return [self::title(), self::markup(), ...Button::fields()];
     }
 
     public function template(): string

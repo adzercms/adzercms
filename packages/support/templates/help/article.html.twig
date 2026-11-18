@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block page %}
-{% embed '@Theme/_section.html.twig' %}
+{% embed '@Theme/_section.html.twig' with {class: 'site-text'} %}
     {% block content %}
         {% include '@Theme/_crumbs.html.twig' with {trail: trail} only %}
         <h1 class="site-heading">{{ article.title }}</h1>

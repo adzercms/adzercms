@@ -19,7 +19,7 @@ final class Hero extends Call
 
     public function fields(): array
     {
-        return [self::title(), self::text(), new Field('picture', t('pages.field.picture'), FieldType::Photo), ...Button::fields()];
+        return [self::title(), self::markup(), new Field('picture', t('pages.field.picture'), FieldType::Photo), ...Button::fields()];
     }
 
     public function data(array $values): array

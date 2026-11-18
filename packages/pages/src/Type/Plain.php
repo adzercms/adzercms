@@ -53,4 +53,9 @@ abstract class Plain implements Block
     {
         return new Field('text', t('pages.field.text'), FieldType::Lines);
     }
+
+    protected static function markup(): Field
+    {
+        return new Field('text', t('pages.field.text'), FieldType::Markup);
+    }
 }

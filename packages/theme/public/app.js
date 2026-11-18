@@ -2,12 +2,18 @@ import 'adzercms/dialogs';
 import htmx from 'htmx.org';
 import Sortable from 'sortablejs';
 
+const revealTab = tab => {
+    const row = tab.parentElement;
+    row.scrollLeft += tab.getBoundingClientRect().left - row.getBoundingClientRect().left - (row.clientWidth - tab.offsetWidth) / 2;
+};
+
 const openPane = tab => {
     const scope = tab.closest('[data-panes]');
     scope.querySelectorAll('[data-pane]').forEach(button => button.classList.toggle('active', button === tab));
     scope.querySelectorAll('[data-pane-body]').forEach(pane => {
         pane.hidden = !pane.dataset.paneBody.split(' ').includes(tab.dataset.pane);
     });
+    revealTab(tab);
 };
 
 document.addEventListener('click', event => {
@@ -403,6 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hashed) {
         openPane(hashed);
     }
+    document.querySelectorAll('.tabs > .tab.active').forEach(revealTab);
     conditionals(document);
     steppers(document);
     document.querySelector('dialog[data-open]')?.showModal();
