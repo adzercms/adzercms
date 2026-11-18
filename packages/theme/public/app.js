@@ -6,7 +6,7 @@ const openPane = tab => {
     const scope = tab.closest('[data-panes]');
     scope.querySelectorAll('[data-pane]').forEach(button => button.classList.toggle('active', button === tab));
     scope.querySelectorAll('[data-pane-body]').forEach(pane => {
-        pane.classList.toggle('active', pane.dataset.paneBody === tab.dataset.pane);
+        pane.hidden = !pane.dataset.paneBody.split(' ').includes(tab.dataset.pane);
     });
 };
 
