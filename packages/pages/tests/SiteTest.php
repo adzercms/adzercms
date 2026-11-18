@@ -176,6 +176,22 @@ final class SiteTest extends SchemaTestCase
         self::assertStringEndsWith($mark, trim($footer->text()));
     }
 
+    #[Group('ACMS-UI-0169')]
+    #[Group('ACMS-US-0071')]
+    public function testSitePageTitleEndsWithTheEndingOfTheSite(): void
+    {
+        $this->page('Home', Page::ROOT, published: true);
+        $titles = function (): array {
+            $page = $this->client->request('GET', '/');
+
+            return [$page->filter('title')->text(), $page->filter('meta[property="og:title"]')->attr('content')];
+        };
+
+        self::assertSame(['Home', 'Home'], $titles(), 'without the ending the title is the page title');
+        $this->configure([Brand::TITLE_ENDING => '| VILLAGE.NET']);
+        self::assertSame(['Home | VILLAGE.NET', 'Home'], $titles(), 'the ending follows the title after a space, the link card keeps the page title');
+    }
+
     #[Group('ACMS-UI-0154')]
     #[Group('ACMS-US-0070')]
     public function testHeaderLeadsToCabinetOfAnotherSiteInNewTab(): void

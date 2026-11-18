@@ -1519,6 +1519,12 @@
         <target>Part of the name in the brand color</target>
       </segment>
     </unit>
+    <unit id="core.setting.title_ending">
+      <segment>
+        <source>core.setting.title_ending</source>
+        <target>Ending of the site page titles</target>
+      </segment>
+    </unit>
     <unit id="core.setting.toggle">
       <segment>
         <source>core.setting.toggle</source>

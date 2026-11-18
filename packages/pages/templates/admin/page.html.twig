@@ -33,7 +33,9 @@
             </label>
             <label class="field-wide">{{ 'pages.field.description'|trans }}
                 <textarea name="description" rows="3">{{ input.description ?? page.description }}</textarea>
+                {{ refusal.of(refusals, 'description') }}
             </label>
+            {% include '@Theme/_text_values.html.twig' only %}
             {% include '@Theme/_check.html.twig' with {name: 'published', on: input ? (input.published ?? false) : page.published, label: 'pages.field.published'|trans} only %}
             <label>{{ 'pages.field.menu_label'|trans }}
                 <input type="text" name="menu_label" maxlength="{{ constant('AdzerCMS\\Pages\\Entity\\Page::MENU') }}" value="{{ input.menu_label ?? page.getMenuLabel() }}" placeholder="{{ page.title }}">

@@ -34,7 +34,7 @@ final readonly class PageMenu implements SiteMenu
         if (null !== $page) {
             $url = $this->site->url($page, UrlGeneratorInterface::ABSOLUTE_PATH);
 
-            return $page->isPublished() ? new SiteLink($page->menuLabel(), $url, rawurldecode($url) === $this->requests->getMainRequest()?->getPathInfo()) : null;
+            return $page->isPublished() ? new SiteLink($this->site->label($page), $url, rawurldecode($url) === $this->requests->getMainRequest()?->getPathInfo()) : null;
         }
         if (null !== $section) {
             return $sections[$section] ?? null;

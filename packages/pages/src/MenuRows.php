@@ -23,6 +23,7 @@ final readonly class MenuRows
         private MenuEntryRepository $entries,
         private PageMenu $menu,
         private SiteNav $nav,
+        private Site $site,
     ) {
     }
 
@@ -43,7 +44,7 @@ final readonly class MenuRows
 
             return [
                 'id' => $entry->getId(),
-                'label' => $link->label ?? $page?->menuLabel() ?? (string) $entry->getSection(),
+                'label' => $link->label ?? (null === $page ? (string) $entry->getSection() : $this->site->label($page)),
                 'address' => $link->url ?? $page?->getPath() ?? '',
                 'shown' => null !== $link,
             ];

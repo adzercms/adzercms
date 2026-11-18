@@ -213,6 +213,35 @@ final class AdminTest extends SchemaTestCase
         self::assertSame(self::service(ValueSections::class)->section(ValueSections::CORE)['home'], $this->client->request('GET', '/')->filter('.site-main .prose a')->attr('href'));
     }
 
+    #[Group('ACMS-PAGE-0023')]
+    #[Group('ACMS-FLOW-0021')]
+    #[Group('ACMS-US-0071')]
+    public function testPageTitleAndDescriptionCarryModuleValues(): void
+    {
+        $page = new Page('Home', Page::ROOT);
+        $page->edit('Home', Page::ROOT, null, true, null);
+        $this->em->persist($page);
+        $this->em->flush();
+        $record = self::LIST.'/'.$page->getId();
+        self::assertCount(1, $this->arrive($record)->filter('.text-values'), 'the page record lists the values');
+
+        $refused = $this->post($record, ['title' => 'Cabinet {{core.nowhere}}', 'path' => '/', 'description' => 'Enter {{core.elsewhere}}', 'published' => '1']);
+        $refusals = $refused->filter('.field-refusal')->each(static fn (Crawler $refusal): string => $refusal->text());
+        self::assertCount(2, $refusals, 'an unknown value refuses the title and the description');
+        self::assertStringContainsString('{{core.nowhere}}', $refusals[0]);
+        self::assertStringContainsString('{{core.elsewhere}}', $refusals[1]);
+
+        $this->post($record, ['title' => 'Cabinet {{core.home}}', 'path' => '/', 'description' => 'Enter {{core.home}}', 'published' => '1']);
+        $home = self::service(ValueSections::class)->section(ValueSections::CORE)['home'] ?? null;
+        self::assertIsString($home);
+        $visit = $this->client->request('GET', '/');
+        self::assertSame(
+            ['Cabinet '.$home, 'Cabinet '.$home, 'Enter '.$home, 'Cabinet '.$home],
+            [$visit->filter('title')->text(), $visit->filter('meta[property="og:title"]')->attr('content'), $visit->filter('meta[name="description"]')->attr('content'), $visit->filter('.site-main h1')->text()],
+            'the visitor sees the current values in the title, the link card, the description and the heading',
+        );
+    }
+
     #[Group('ACMS-PAGE-0002')]
     #[Group('ACMS-US-0071')]
     #[DataProvider('addresses')]

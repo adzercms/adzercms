@@ -1,9 +1,9 @@
 {% extends '@Design/layout.html.twig' %}
 
-{% block title %}{{ page.title }}{% endblock %}
+{% block title %}{{ view.title }}{% endblock %}
 
 {% block meta %}
-    {% include '@Theme/_seo.html.twig' with {title: page.title, description: page.description ?? ''} only %}
+    {% include '@Theme/_seo.html.twig' with {title: view.title, description: view.description} only %}
     {% include '@Theme/_schema.html.twig' with {schema: view.schema} only %}
 {% endblock %}
 

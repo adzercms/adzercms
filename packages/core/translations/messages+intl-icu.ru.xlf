@@ -1519,6 +1519,12 @@
         <target>Часть названия фирменным цветом</target>
       </segment>
     </unit>
+    <unit id="core.setting.title_ending">
+      <segment>
+        <source>core.setting.title_ending</source>
+        <target>Окончание заголовков страниц сайта</target>
+      </segment>
+    </unit>
     <unit id="core.setting.toggle">
       <segment>
         <source>core.setting.toggle</source>

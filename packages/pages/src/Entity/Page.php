@@ -83,11 +83,6 @@ class Page implements Placed
         return $this->published;
     }
 
-    public function menuLabel(): string
-    {
-        return $this->menuLabel ?? $this->title;
-    }
-
     public function getMenuLabel(): ?string
     {
         return $this->menuLabel;
