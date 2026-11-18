@@ -61,17 +61,28 @@ for package in $(staged -- '*.php' '*/composer.json' | while read -r file; do ho
 done
 
 manifests=$(staged -- '*/composer.json')
-if [ -n "$manifests" ] && [ -f composer.lock ] && git diff --cached --quiet -- composer.lock; then
+if [ -n "$manifests" ] && git cat-file -e :composer.lock 2>/dev/null; then
     # shellcheck disable=SC2016,SC2086
     refuse 'manifest of an installed path package goes with composer.lock: composer update <package>' "$(bin/php -r '
-        $lock = json_decode((string) file_get_contents("composer.lock"), true, flags: JSON_THROW_ON_ERROR);
-        $paths = [];
-        foreach ([...$lock["packages"], ...$lock["packages-dev"]] as $package) {
-            if ("path" === ($package["dist"]["type"] ?? null)) {
-                $paths[] = rtrim($package["dist"]["url"], "/")."/composer.json";
+        $index = static fn (string $path): string => (string) shell_exec("git show ".escapeshellarg(":./".$path)." 2>/dev/null");
+        $options = [];
+        foreach (json_decode($index("composer.json"), true, flags: JSON_THROW_ON_ERROR)["repositories"] ?? [] as $repository) {
+            if ("path" === ($repository["type"] ?? null)) {
+                $own = $repository["options"] ?? [];
+                $own["relative"] ??= !str_starts_with($repository["url"], "/");
+                foreach (glob($repository["url"], GLOB_MARK | GLOB_ONLYDIR | GLOB_BRACE) ?: [] as $dir) {
+                    $options[rtrim($dir, "/")] ??= $own;
+                }
             }
         }
-        echo implode("\n", array_intersect(array_slice($argv, 1), $paths));
+        $lock = json_decode($index("composer.lock"), true, flags: JSON_THROW_ON_ERROR);
+        foreach ([...$lock["packages"] ?? [], ...$lock["packages-dev"] ?? []] as $package) {
+            $manifest = rtrim($package["dist"]["url"] ?? "", "/")."/composer.json";
+            if ("path" === ($package["dist"]["type"] ?? null) && in_array($manifest, $argv, true)
+                && $package["dist"]["reference"] !== hash("sha1", $index($manifest).serialize($options[dirname($manifest)] ?? []))) {
+                echo $manifest, "\n";
+            }
+        }
     ' $manifests)"
 fi
 
@@ -95,7 +106,7 @@ done
 migrations=$(printf '%s\n' "$php" | grep '/migrations/' || true)
 for migration in $migrations; do
     package=${migration%%/migrations/*}
-    entities=$( { git ls-files -- '*/src/Entity/*.php' | grep -v "^$package/"; find vendor -path '*/src/Entity/*.php'; } )
+    entities=$( { git ls-files -- '*/src/Entity/*.php' | grep -v "^$package/" || true; find vendor -path '*/src/Entity/*.php'; } )
     core=$(printf '%s\n' "$entities" | grep -E '^(packages|vendor/adzercms)/core/src/Entity/' | tables)
     modules=$(printf '%s\n' "$entities" | grep -vE '^(packages|vendor/adzercms)/core/src/Entity/' | tables)
     [ -z "$modules" ] || refuse 'migration changes a table of another module, it belongs to the set of the table owner' "$(grep -lizP \
