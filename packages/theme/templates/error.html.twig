@@ -1,4 +1,4 @@
-{% extends status_code < 500 ? '@Theme/site.html.twig' : '@Theme/bare.html.twig' %}
+{% extends status_code < 500 ? '@Design/layout.html.twig' : '@Theme/bare.html.twig' %}
 
 {% block title %}{{ (status_code < 500 ? 'theme.error.title' : 'theme.error.server')|trans({code: status_code}) }}{% endblock %}
 

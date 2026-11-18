@@ -307,6 +307,12 @@ The module lists `adzercms/opotopo` in `suggest` and registers the service only 
 
 A module makes a PDF document from a Twig template that extends `@Core/document/page.html.twig`: the page sets the sheet margins, its `styles` block takes the document's own styles and its `body` block the markup. The root element of the document carries the `doc` class, which gives the base font and colors. A page of the admin or the cabinet shows the same document as the rendered template in the `srcdoc` of an `iframe` inside a `doc-sheet` box, so the styles of the theme do not reach it: `data-fit` on the frame sizes it to the document, and a button with `data-print` set to the frame selector prints the frame. Resources of the markup, such as images, go as `data:` addresses. `AdzerCMS\Core\Ui\PdfDocuments` turns the template into a file through the selected PDF module, and `PdfDocuments::response()` answers it with the file name and its ASCII fallback, opened in the browser or downloaded. Without a PDF module `available()` is false: a module that can live without documents hides its document action, one that can't requires `adzercms/pdf-implementation`.
 
+## Site design
+
+A site design is a module of the `design` kind: it provides `adzercms/design-implementation`, and its bundle's `kind()` returns `CoreKind::Design`. Its templates answer to `@Design`, and the theme's `templates/site` directory is the last path of that namespace, so a design template replaces the theme's site template of the same name and the rest stay the theme's. The site frame is `@Design/layout.html.twig` with the `title`, `meta` and `page` blocks: public pages of feature modules and the 4xx error page extend it. A design frame of its own puts the importmap and the fragments of `Fragment::HEAD` into the head and the fragments of `Fragment::END` at the end of the body.
+
+A design replaces a template of another module with the file of the same name under its `templates/bundles/<Bundle>/`, such as `templates/bundles/PagesBundle/blocks/hero.html.twig`; the original stays reachable as `@!Pages/blocks/hero.html.twig`. A section of the design's layout that no block type of the feature modules expresses is a block type of the design itself, a service of `AdzerCMS\Pages\Block`.
+
 ## Contracts
 
 `adzercms/contracts` follows SemVer: a breaking change to a contract ships only in a new major version. The kinds and events of a feature module are contracts of its own package.

@@ -25,6 +25,8 @@ SMS_MODULES=Pigeon
 | `ADMIN_MODULE` | админку | один |
 | `CABINET_MODULE` | личный кабинет | один |
 | `THEME_MODULE` | тему | один |
+| `DESIGN_MODULE` | дизайн сайта | один |
+| `PDF_MODULE` | документы PDF | один |
 | `LOGIN_MODULES` | вход через сервис | несколько |
 | `SMS_MODULES` | отправку SMS | несколько |
 | `BOT_MODULES` | ботов мессенджеров | несколько |

@@ -9,6 +9,7 @@ use AdzerCMS\Contracts\Account\UserCreation;
 use AdzerCMS\Contracts\Account\UserPlaces;
 use AdzerCMS\Contracts\Analytics\Traffic;
 use AdzerCMS\Contracts\Login\LoginListener;
+use AdzerCMS\Contracts\Module\CoreKind;
 use AdzerCMS\Contracts\Module\Module;
 use AdzerCMS\Contracts\Module\ModuleManagement;
 use AdzerCMS\Contracts\Module\Switchable;
@@ -84,12 +85,17 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
     private const ROUTER = 'router.default';
     private const REQUEST_CONTEXT = 'router.request_context';
     private const ERROR_TEMPLATES = '/templates/twig';
+    private const SITE_TEMPLATES = '/templates/site';
+    private const DESIGN_OVERRIDES = '/templates/bundles/*Bundle';
+    private const BUNDLE_SUFFIX = 'Bundle';
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $mappings = [];
         $migrations = [];
         $templates = [];
+        $site = [];
+        $overrides = [];
         $importmaps = [];
         foreach (self::engineBundles($builder) as $name => ['class' => $class, 'path' => $path, 'namespace' => $namespace]) {
             if (is_dir($path.'/src/Entity')) {
@@ -105,7 +111,16 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
             if (null !== $kind && $kind->single() && ucfirst($kind->key()) !== $name && is_dir($path.'/templates')) {
                 $templates[$path.'/templates'] = ucfirst($kind->key());
             }
+            if (CoreKind::Theme === $kind && is_dir($path.self::SITE_TEMPLATES)) {
+                $site[$path.self::SITE_TEMPLATES] = ucfirst(CoreKind::Design->key());
+            }
+            if (CoreKind::Design === $kind) {
+                foreach (glob($path.self::DESIGN_OVERRIDES, \GLOB_ONLYDIR) ?: [] as $override) {
+                    $overrides[$override] = substr(basename($override), 0, -\strlen(self::BUNDLE_SUFFIX));
+                }
+            }
         }
+        $templates += $site + $overrides;
         $templates[$this->getPath().self::ERROR_TEMPLATES] = 'Twig';
 
         $builder->prependExtensionConfig('doctrine', [

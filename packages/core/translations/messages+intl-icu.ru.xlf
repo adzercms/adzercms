@@ -535,6 +535,12 @@
         <target>Проверка «не робот»</target>
       </segment>
     </unit>
+    <unit id="core.kind.design">
+      <segment>
+        <source>core.kind.design</source>
+        <target>Дизайн сайта</target>
+      </segment>
+    </unit>
     <unit id="core.kind.feature">
       <segment>
         <source>core.kind.feature</source>

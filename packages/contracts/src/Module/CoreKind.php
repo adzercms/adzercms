@@ -21,6 +21,7 @@ enum CoreKind: string implements Kind
     case Analytics = 'ANALYTICS_MODULES';
     case Ads = 'ADS_MODULES';
     case Pdf = 'PDF_MODULE';
+    case Design = 'DESIGN_MODULE';
 
     public function key(): string
     {
@@ -40,7 +41,7 @@ enum CoreKind: string implements Kind
     public function single(): bool
     {
         return match ($this) {
-            self::Admin, self::Cabinet, self::Theme, self::Pdf => true,
+            self::Admin, self::Cabinet, self::Theme, self::Pdf, self::Design => true,
             default => false,
         };
     }

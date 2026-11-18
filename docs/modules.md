@@ -25,6 +25,8 @@ The module name is the bundle class name without `Bundle`: for `ShopBundle` it's
 | `ADMIN_MODULE` | admin panel | one |
 | `CABINET_MODULE` | customer account area | one |
 | `THEME_MODULE` | theme | one |
+| `DESIGN_MODULE` | site design | one |
+| `PDF_MODULE` | PDF documents | one |
 | `LOGIN_MODULES` | sign-in with a service | several |
 | `SMS_MODULES` | SMS delivery | several |
 | `BOT_MODULES` | messenger bots | several |

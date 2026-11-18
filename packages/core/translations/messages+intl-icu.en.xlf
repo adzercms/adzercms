@@ -535,6 +535,12 @@
         <target>Bot check</target>
       </segment>
     </unit>
+    <unit id="core.kind.design">
+      <segment>
+        <source>core.kind.design</source>
+        <target>Site design</target>
+      </segment>
+    </unit>
     <unit id="core.kind.feature">
       <segment>
         <source>core.kind.feature</source>
