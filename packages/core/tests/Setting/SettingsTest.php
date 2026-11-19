@@ -10,6 +10,7 @@ use AdzerCMS\Contracts\Ui\Scheme;
 use AdzerCMS\Core\Setting\Settings;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Text\Markup;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Contracts\Service\ResetInterface;
 
@@ -26,6 +27,8 @@ final class SettingsTest extends SchemaTestCase
     private const LINES = 'fixture.lines';
     private const MARKUP = 'fixture.markup';
     private const ROWS = 'fixture.rows';
+    private const FROM = 'fixture.from';
+    private const TO = 'fixture.to';
 
     #[Group('ACMS-CORE-0050')]
     #[Group('ACMS-US-0004')]
@@ -162,6 +165,28 @@ final class SettingsTest extends SchemaTestCase
         $this->em->getConnection()->update('setting', ['value' => 'dune'], ['name' => self::PALETTE]);
         self::service(ResetInterface::class, 'services_resetter')->reset();
         self::assertSame($sea, $this->settings()->palette($palette), 'a scheme of another theme gives way to the first scheme');
+    }
+
+    /** @return iterable<string, array{string, string, string, bool}> */
+    public static function windows(): iterable
+    {
+        yield 'a day window takes its start' => ['09:00', '22:00', '09:00', true];
+        yield 'a day window ends before its end' => ['09:00', '22:00', '22:00', false];
+        yield 'a night window takes the evening' => ['22:00', '07:00', '23:30', true];
+        yield 'a night window takes the morning before its end' => ['22:00', '07:00', '06:59', true];
+        yield 'a night window leaves the day out' => ['22:00', '07:00', '12:00', false];
+        yield 'equal bounds give no window' => ['09:00', '09:00', '09:00', false];
+        yield 'an unset bound gives no window' => ['', '07:00', '03:00', false];
+    }
+
+    #[DataProvider('windows')]
+    #[Group('ACMS-CORE-1066')]
+    public function testMomentIsWithinTimeWindowAcrossMidnight(string $from, string $to, string $at, bool $within): void
+    {
+        $this->save(new Field(self::FROM, t('From'), Type::Time), $from);
+        $this->save(new Field(self::TO, t('To'), Type::Time), $to);
+
+        self::assertSame($within, $this->settings()->within(self::FROM, self::TO, new \DateTimeImmutable('2026-11-19 '.$at)));
     }
 
     #[Group('ACMS-CORE-0161')]
