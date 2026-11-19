@@ -1,6 +1,7 @@
 import 'adzercms/dialogs';
 import htmx from 'htmx.org';
 import Sortable from 'sortablejs';
+import {showToasts} from 'adzercms/toasts';
 
 const revealTab = tab => {
     const row = tab.parentElement;
@@ -401,9 +402,6 @@ document.addEventListener('change', event => {
     }
 });
 
-const TOAST_LIFE = 6000;
-const TOAST_FADE = 200;
-
 document.addEventListener('DOMContentLoaded', () => {
     const hashed = location.hash.length > 1 && document.querySelector(`[data-pane="${CSS.escape(location.hash.slice(1))}"]`);
     if (hashed) {
@@ -413,14 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
     conditionals(document);
     steppers(document);
     document.querySelector('dialog[data-open]')?.showModal();
-    const toasts = document.querySelector('.toasts');
-    if (toasts?.children.length) {
-        toasts.showPopover?.();
-    }
-    document.querySelectorAll('.toast').forEach(toast => setTimeout(() => {
-        toast.classList.add('leaving');
-        setTimeout(() => toast.remove(), TOAST_FADE);
-    }, TOAST_LIFE));
+    showToasts();
 });
 
 const running = show => {
