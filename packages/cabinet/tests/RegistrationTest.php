@@ -22,6 +22,7 @@ use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Delivery;
 use AdzerCMS\Core\Tests\SchemaTestCase;
+use AdzerCMS\Core\Ui\PublicForm;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -172,6 +173,23 @@ final class RegistrationTest extends SchemaTestCase
 
         self::assertSame(ContactOutcome::Sent, $service->requestRegistration(self::PHONE));
         self::assertCount(3, self::service(NoticeRepository::class)->findAll());
+    }
+
+    #[Group('ACMS-US-0001')]
+    #[Group('ACMS-US-0002')]
+    public function testCodeRequestsOfOneAddressStopAtThePublicFormLimit(): void
+    {
+        self::service(OpenPolicy::class)->registration = true;
+
+        foreach (['/register' => 'contact', '/forgot' => 'login'] as $path => $field) {
+            for ($request = 0; $request <= PublicForm::LIMIT; ++$request) {
+                $form = $this->client->request('GET', $path)->filterXPath(\sprintf('//form[.//input[@name="%s"]]', $field))->form();
+                $page = $this->client->submit($form, [$field => 'human'.$request.'@example.org']);
+            }
+
+            self::assertSame(self::phrase('core.form.often'), trim($page->filter('.flash-error')->text()), $path);
+        }
+        self::assertCount(PublicForm::LIMIT, self::service(NoticeRepository::class)->findBy(['recipient' => array_map(static fn (int $request): string => 'human'.$request.'@example.org', range(0, PublicForm::LIMIT))]));
     }
 
     #[Group('ACMS-CORE-0092')]
