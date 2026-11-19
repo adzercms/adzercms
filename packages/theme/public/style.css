@@ -1725,6 +1725,7 @@ h2.site-heading { font-size: clamp(22px, 2.6vw, 28px); }
 .site-questions summary::after { content: ""; flex: none; width: 0.6rem; height: 0.6rem; border-right: 2px solid var(--primary-text); border-bottom: 2px solid var(--primary-text); transform: translateY(-25%) rotate(45deg); transition: transform 0.2s; }
 .site-questions details[open] summary::after { transform: translateY(25%) rotate(-135deg); }
 .site-questions .prose { padding-bottom: 1.25rem; color: var(--text-gray); }
+@media (scripting: none) { .site-scripted { display: none; } }
 .site-facts-title { margin: 3rem 0 1.25rem; font-size: 20px; font-weight: 600; }
 .site-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.6rem 2rem; margin: 0; padding: 1.75rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
 .site-facts dt { color: var(--text-gray); }
