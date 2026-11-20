@@ -32,15 +32,6 @@ final class QuietHours implements Owner
 
     public function holds(): bool
     {
-        $from = $this->settings->minutes(self::FROM);
-        $to = $this->settings->minutes(self::TO);
-        if (null === $from || null === $to || $from === $to) {
-            return false;
-        }
-
-        $moment = now();
-        $now = (int) $moment->format('G') * 60 + (int) $moment->format('i');
-
-        return $from < $to ? $now >= $from && $now < $to : $now >= $from || $now < $to;
+        return $this->settings->within(self::FROM, self::TO, now());
     }
 }

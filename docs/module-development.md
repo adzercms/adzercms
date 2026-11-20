@@ -268,6 +268,8 @@ An applied migration is remembered by its class name. If the module changes its 
 
 A service implementing `AdzerCMS\Contracts\Setting\Owner` declares setting fields. Keys of a feature module start with its key in lower case and a dot, keys of a kind module with `<kind>.<module>.`; if a key lacks its prefix or two owners declare the same key, the settings catalog won't build. Values are changed with `bin/console adzercms:setting`.
 
+A module reads values through `AdzerCMS\Core\Setting\Settings`. `within()` tells whether a moment falls in the window of two `Type::Time` fields: from the start up to the end, across midnight when the start is later, and no window when a bound is unset or both are equal.
+
 `settingFields()` reads no data: the static checks call it without a database. A `Type::Choice` field whose variants come from data passes `choices:` a closure; the form and the value check call it.
 
 The settings section of the admin has a menu on the left: the System pages, then a page for each enabled module with fields, titled by the module title in title order. A feature module's page goes under Modules, a kind module's page under Integrations in the group of its kind. The module card in the Extensions section and the heading of the module's admin sections link to its page. `section:` puts fields under a heading, and fields without a section open the page without one. A label fits one line of a column: the setting's name, then the unit after a comma.

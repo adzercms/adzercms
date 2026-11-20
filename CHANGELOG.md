@@ -60,6 +60,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - Link card `/brand.png`: the `og:image` of the theme head is the brand logo in the middle of a PNG of 1200×630, white or dark — the one that loses fewer pixels of the logo, an SVG logo drawn at the card size, so messengers that skip SVG (Telegram among them) show it; without the `imagick` extension the head carries no `og:image`
 - PDF documents of modules: the `@Core/document/page.html.twig` page with the `doc` base styles shared with the in-page view, `PdfDocuments` renders a template to a file through the selected PDF module and answers it with an ASCII fallback name; `Brand::paperLogo()` gives the logo as a `data:` address, a theme-colored SVG in the colors of the link card
 - `adzercms/leads`: commercial offer of a lead as a PDF opened in a new tab — brand, number and date, client, subject, sum, manager with contacts and the validity of the `leads.offer_days` setting; without a PDF module the lead page has no offer button
+- `Settings::within()`: whether a moment falls in the window of two time settings, across midnight when the start is later; the quiet hours of notifications use it
 
 ### Security
 

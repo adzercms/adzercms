@@ -65,6 +65,19 @@ final class Settings implements ResetInterface
         return Values::minutes($this->get($name));
     }
 
+    public function within(string $from, string $to, \DateTimeImmutable $moment): bool
+    {
+        $start = $this->minutes($from);
+        $end = $this->minutes($to);
+        if (null === $start || null === $end || $start === $end) {
+            return false;
+        }
+
+        $minute = (int) $moment->format('G') * 60 + (int) $moment->format('i');
+
+        return $start < $end ? $minute >= $start && $minute < $end : $minute >= $start || $minute < $end;
+    }
+
     public function on(string $name): bool
     {
         return Toggle::On === Toggle::tryFrom($this->get($name));
