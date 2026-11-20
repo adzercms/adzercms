@@ -61,6 +61,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - PDF documents of modules: the `@Core/document/page.html.twig` page with the `doc` base styles shared with the in-page view, `PdfDocuments` renders a template to a file through the selected PDF module and answers it with an ASCII fallback name; `Brand::paperLogo()` gives the logo as a `data:` address, a theme-colored SVG in the colors of the link card
 - `adzercms/leads`: commercial offer of a lead as a PDF opened in a new tab — brand, number and date, client, subject, sum, manager with contacts and the validity of the `leads.offer_days` setting; without a PDF module the lead page has no offer button
 - `Settings::within()`: whether a moment falls in the window of two time settings, across midnight when the start is later; the quiet hours of notifications use it
+- `adzercms/pages`: block style — rules for a block or an element of it on the computer, tablet and phone widths from a closed list of properties and their values, checked by `BlockStyle::rules()`; the page puts them into its head as CSS of the block anchor
 
 ### Security
 

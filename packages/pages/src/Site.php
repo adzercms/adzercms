@@ -30,16 +30,18 @@ final readonly class Site
     ) {
     }
 
-    /** @return array{title: string, description: string, heading: ?string, tabs: list<array{label: string, href: string, active: bool}>, blocks: list<array{template: string, key: string, values: array<string, mixed>, data: array<string, mixed>, level: int}>, schema: list<array<string, mixed>>} */
+    /** @return array{title: string, description: string, heading: ?string, tabs: list<array{label: string, href: string, active: bool}>, blocks: list<array{template: string, key: string, id: string, values: array<string, mixed>, data: array<string, mixed>, level: int}>, style: string, schema: list<array<string, mixed>>} */
     public function view(Page $page): array
     {
         $blocks = [];
+        $shown = [];
         $schema = [...self::page($page)];
         foreach ($this->repository->of($page) as $block) {
             $type = $this->blocks->find($block->getType());
             if (null === $type) {
                 continue;
             }
+            $shown[] = $block;
             $stored = $block->getValues();
             $values = [];
             foreach ($type->fields() as $field) {
@@ -50,7 +52,7 @@ final readonly class Site
                     default => $value,
                 };
             }
-            $blocks[] = ['template' => $type->template(), 'key' => $type->key(), 'values' => $values, 'data' => $type->data($stored), 'level' => 2];
+            $blocks[] = ['template' => $type->template(), 'key' => $type->key(), 'id' => BlockStyle::anchor($block), 'values' => $values, 'data' => $type->data($stored), 'level' => 2];
             $schema[] = $type->schema($stored);
         }
 
@@ -61,7 +63,7 @@ final readonly class Site
             $heading = null;
         }
 
-        return ['title' => $title, 'description' => $this->values->fill($page->getDescription() ?? ''), 'heading' => $heading, 'tabs' => $this->tabs($page), 'blocks' => $blocks, 'schema' => array_values(array_filter($schema))];
+        return ['title' => $title, 'description' => $this->values->fill($page->getDescription() ?? ''), 'heading' => $heading, 'tabs' => $this->tabs($page), 'blocks' => $blocks, 'style' => BlockStyle::css($shown), 'schema' => array_values(array_filter($schema))];
     }
 
     /** @return list<array{label: string, href: string, active: bool}> */
