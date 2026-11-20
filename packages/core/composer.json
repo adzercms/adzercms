@@ -39,7 +39,7 @@
         "enshrined/svg-sanitize": "^1.1",
         "facile-it/doctrine-mysql-come-back": "^3.0",
         "firebase/php-jwt": "^7.2",
-        "geoip2/geoip2": "^3.4",
+        "geoip2/geoip2": "^3.5",
         "intervention/image": "^4.4",
         "league/commonmark": "^2.10",
         "matomo/device-detector": "^6.5",

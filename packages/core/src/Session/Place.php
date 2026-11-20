@@ -22,13 +22,13 @@ final class Place
 
     public function of(?string $address): ?string
     {
-        if (null === $address || false === filter_var($address, \FILTER_VALIDATE_IP, \FILTER_FLAG_NO_PRIV_RANGE | \FILTER_FLAG_NO_RES_RANGE) || !is_readable($this->database)) {
+        if (null === $address || '' === $this->database) {
             return null;
         }
 
         try {
             $found = ($this->reader ??= new Reader($this->database))->city($address);
-        } catch (AddressNotFoundException|InvalidDatabaseException) {
+        } catch (AddressNotFoundException|InvalidDatabaseException|\InvalidArgumentException) {
             return null;
         }
 
