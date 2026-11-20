@@ -1,6 +1,6 @@
 {% embed '@Theme/_table.html.twig' %}
     {% block row %}
-        <tr{% if row.type %} data-record="{{ path('admin_page_block', {id: row.id}) }}"{% endif %}>
+        <tr{% if row.type and row.type.fields %} data-record="{{ path('admin_page_block', {id: row.id}) }}"{% endif %}>
             {% include '@Theme/_row_handle.html.twig' with {id: row.id} %}
             <td class="{{ table.aside('type') }}">
                 {% if row.type %}<strong>{{ row.type.label|trans }}</strong>{% else %}<strong>{{ row.block.type }}</strong> {{ badge(unavailable) }}{% endif %}

@@ -74,7 +74,10 @@ final class BlockController extends AbstractController
     #[Route('/blocks/{id}', name: self::EDIT, requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(PageBlock $block, Request $request): Response
     {
-        $type = $this->types->find($block->getType()) ?? throw $this->createNotFoundException();
+        $type = $this->types->find($block->getType());
+        if (null === $type || [] === $type->fields()) {
+            throw $this->createNotFoundException();
+        }
 
         $refusals = [];
         if ($request->isMethod('POST')) {
