@@ -112,7 +112,7 @@ const field = ({property, label, kind, keywords, units, signed}) => ({
 const fill = (component, entry = component.get('block'), at = null) => {
     const first = component ? placed()[0] === component : !container().components().some((one, index) => index < at && one.get('type') === BLOCK);
     editing = {component, entry, at};
-    htmx.ajax('POST', entry.dialog, {target: '#record', values: {[TOKEN]: token(), stored: JSON.stringify(component ? entry.values : {}), first: first ? '1' : ''}});
+    htmx.ajax('POST', entry.dialog ?? entry.draw, {target: '#record', values: {[TOKEN]: token(), stored: JSON.stringify(component ? entry.values : {}), first: first ? '1' : ''}});
 };
 
 const filled = ({values, anchor, html}) => {

@@ -13,6 +13,12 @@
         <target>Применить</target>
       </segment>
     </unit>
+    <unit id="builder.block.free">
+      <segment>
+        <source>builder.block.free</source>
+        <target>Свободный блок</target>
+      </segment>
+    </unit>
     <unit id="builder.blocks">
       <segment>
         <source>builder.blocks</source>
@@ -59,6 +65,24 @@
       <segment>
         <source>builder.refusal.document</source>
         <target>Страница изменилась после открытия редактора: откройте редактор заново</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.element">
+      <segment>
+        <source>builder.refusal.element</source>
+        <target>Свободный блок несёт элемент либо атрибут вне перечня конструктора</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.link">
+      <segment>
+        <source>builder.refusal.link</source>
+        <target>Ссылка {link}: путь сайта от /, адрес http(s)://, mailto: либо tel:</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.picture">
+      <segment>
+        <source>builder.refusal.picture</source>
+        <target>Картинка свободного блока не найдена, загрузите её снова</target>
       </segment>
     </unit>
     <unit id="builder.saved">

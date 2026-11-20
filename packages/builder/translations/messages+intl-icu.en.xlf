@@ -13,6 +13,12 @@
         <target>Apply</target>
       </segment>
     </unit>
+    <unit id="builder.block.free">
+      <segment>
+        <source>builder.block.free</source>
+        <target>Free block</target>
+      </segment>
+    </unit>
     <unit id="builder.blocks">
       <segment>
         <source>builder.blocks</source>
@@ -59,6 +65,24 @@
       <segment>
         <source>builder.refusal.document</source>
         <target>The page changed after the editor opened: open the editor again</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.element">
+      <segment>
+        <source>builder.refusal.element</source>
+        <target>The free block holds an element or attribute the builder does not take</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.link">
+      <segment>
+        <source>builder.refusal.link</source>
+        <target>Link {link}: a site path from /, an http(s):// address, mailto: or tel:</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.picture">
+      <segment>
+        <source>builder.refusal.picture</source>
+        <target>A picture of the free block is not found, upload it again</target>
       </segment>
     </unit>
     <unit id="builder.saved">

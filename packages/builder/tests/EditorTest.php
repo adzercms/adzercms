@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Builder\Tests;
 
+use AdzerCMS\Builder\FreeBlock;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -12,6 +13,7 @@ use AdzerCMS\Pages\Entity\PageBlock;
 use AdzerCMS\Pages\Pictures;
 use AdzerCMS\Pages\Repository\PageBlockRepository;
 use AdzerCMS\Pages\Style\Property;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -203,6 +205,87 @@ final class EditorTest extends SchemaTestCase
         self::assertResponseStatusCodeSame(422);
         self::assertSame(['message' => self::phrase(t('pages.refusal.style'))], json_decode((string) $this->client->getResponse()->getContent(), true), 'saving checks the style against its list');
         self::assertEquals($style, $this->reread($text)->getStyle());
+    }
+
+    #[Group('ACMS-BLD-0004')]
+    #[Group('ACMS-BLD-0005')]
+    #[Group('ACMS-PAGE-0018')]
+    #[Group('ACMS-US-0077')]
+    public function testOwnerBuildsFreeBlockOfElementsTheSiteShowsAsMarkupOfTheServer(): void
+    {
+        $picture = self::service(Pictures::class)->store($this->picture('fiber.png'));
+        [$page, [$text]] = $this->page(['text' => ['title' => 'About us', 'text' => 'We build networks']]);
+        $editor = '/admin/pages/'.$page->getId().'/builder';
+        $builder = $this->client->request('GET', $editor)->filter('[data-builder]');
+        $free = array_column(json_decode((string) $builder->attr('data-types'), true), null, 'type')[FreeBlock::KEY];
+        self::assertNull($free['dialog'], 'a free block takes no dialog of values');
+
+        $this->post($free['draw'], ['first' => '1']);
+        $drawn = json_decode((string) $this->client->getResponse()->getContent(), true);
+        self::assertSame([], $drawn['values']);
+        $empty = new Crawler($drawn['html']);
+        self::assertSame([1, 0], [$empty->filter('#'.$drawn['anchor'].'.site-free')->count(), $empty->filter('.site-section-inner > *')->count()], 'a new free block comes empty');
+
+        $tree = [
+            ['kind' => 'text', 'key' => 'intro', 'paragraphs' => [
+                [['text' => 'Fiber '], ['text' => 'to every flat', 'bold' => true, 'italic' => true]],
+                [['text' => 'Tariffs', 'link' => '/tariffs'], ['text' => ', '], ['text' => 'mail', 'link' => 'mailto:hi@example.com'], ['text' => ', '], ['text' => 'call', 'link' => 'tel:+79001112233']],
+            ]],
+            ['kind' => 'box', 'key' => 'side', 'items' => [
+                ['kind' => 'picture', 'key' => 'photo', 'name' => $picture, 'alt' => 'Fiber'],
+                ['kind' => 'line', 'key' => 'rule'],
+                ['kind' => 'button', 'key' => 'call', 'label' => 'Write', 'link' => 'https://t.me/fiber'],
+            ]],
+        ];
+        $style = ['intro' => ['desktop' => ['color' => '#112233']], 'call' => ['phone' => ['width' => '100%']]];
+        $this->post($editor, ['document' => json_encode(['version' => $builder->attr('data-version'), 'blocks' => [
+            ['id' => null, 'type' => FreeBlock::KEY, 'values' => [FreeBlock::ELEMENTS => json_encode($tree)], 'style' => $style],
+            ['id' => $text->getId(), 'values' => $text->getValues(), 'style' => []],
+        ]])]);
+        self::assertResponseIsSuccessful();
+        [$block] = self::service(PageBlockRepository::class)->findBy(['page' => $page->getId()], ['position' => 'ASC']);
+        self::assertSame([FreeBlock::KEY, $tree, $style], [$block->getType(), json_decode($block->getValues()[FreeBlock::ELEMENTS], true), $block->getStyle()], 'saving keeps the tree of elements and their style');
+
+        $this->client->request('GET', '/admin/pages/blocks/'.$block->getId());
+        self::assertResponseStatusCodeSame(404, 'the page record has no dialog for the tree');
+
+        $site = $this->client->request('GET', '/tariffs');
+        $shown = $site->filter('#block-'.$block->getId());
+        self::assertSame('<p>Fiber <strong><em>to every flat</em></strong></p><p><a href="/tariffs">Tariffs</a>, <a href="mailto:hi@example.com">mail</a>, <a href="tel:+79001112233">call</a></p>', $shown->filter('.prose[data-element="intro"]')->html());
+        self::assertSame(
+            [['img', 'photo', 'Fiber', 'lazy'], ['hr', 'rule', null, null], ['a', 'call', null, null]],
+            $shown->filter('[data-element="side"] > *')->each(static fn (Crawler $element): array => [$element->nodeName(), $element->attr('data-element'), $element->attr('alt'), $element->attr('loading')]),
+            'a box holds its elements in order',
+        );
+        self::assertSame($picture, basename((string) $shown->filter('img')->attr('src')));
+        self::assertSame(['https://t.me/fiber', '_blank', 'Write'], [$shown->filter('a.button')->attr('href'), $shown->filter('a.button')->attr('target'), $shown->filter('a.button')->text()]);
+        self::assertStringContainsString('#block-'.$block->getId().' [data-element=intro]{color:#112233}', $site->filter('head style')->text(), 'an element takes its style by its key');
+    }
+
+    /** @param list<array<string, mixed>> $tree */
+    #[Group('ACMS-BLD-0005')]
+    #[DataProvider('trees')]
+    public function testFreeBlockTakesOnlyElementsAttributesLinksAndPicturesOfItsLists(array $tree, string $reason): void
+    {
+        [$page] = $this->page([]);
+        $editor = '/admin/pages/'.$page->getId().'/builder';
+        $version = (string) $this->client->request('GET', $editor)->filter('[data-builder]')->attr('data-version');
+
+        $this->post($editor, ['document' => json_encode(['version' => $version, 'blocks' => [['id' => null, 'type' => FreeBlock::KEY, 'values' => [FreeBlock::ELEMENTS => json_encode($tree)], 'style' => []]]])]);
+        self::assertResponseStatusCodeSame(422);
+        self::assertSame(['message' => self::phrase(t($reason, ['link' => 'javascript:alert(1)']))], json_decode((string) $this->client->getResponse()->getContent(), true));
+        self::assertSame([], self::service(PageBlockRepository::class)->findBy(['page' => $page->getId()]));
+    }
+
+    /** @return iterable<string, array{list<array<string, mixed>>, string}> */
+    public static function trees(): iterable
+    {
+        yield 'an element out of the list' => [[['kind' => 'video', 'key' => 'clip']], 'builder.refusal.element'];
+        yield 'an attribute out of the list' => [[['kind' => 'button', 'key' => 'call', 'label' => 'Write', 'link' => '/', 'onclick' => 'steal()']], 'builder.refusal.element'];
+        yield 'a key twice' => [[['kind' => 'line', 'key' => 'rule'], ['kind' => 'box', 'key' => 'side', 'items' => [['kind' => 'line', 'key' => 'rule']]]], 'builder.refusal.element'];
+        yield 'a key a style rule does not take' => [[['kind' => 'line', 'key' => 'Rule 1']], 'builder.refusal.element'];
+        yield 'a link of another scheme' => [[['kind' => 'text', 'key' => 'intro', 'paragraphs' => [[['text' => 'Win', 'link' => 'javascript:alert(1)']]]]], 'builder.refusal.link'];
+        yield 'a picture out of the photos' => [[['kind' => 'picture', 'key' => 'photo', 'name' => 'gone.webp']], 'builder.refusal.picture'];
     }
 
     /**

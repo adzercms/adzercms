@@ -137,7 +137,7 @@ final readonly class PageDocument
             return self::kept($block, $this->checked($block, $values), self::sorted($style) === self::sorted($block->getStyle()) ? $block->getStyle() : BlockStyle::rules($style));
         }
         if (null !== $values && \is_array($style) && null !== $type) {
-            return self::kept(new PageBlock($page, $type->key()), $this->form->stored($type, $values), BlockStyle::rules($style));
+            return self::kept(new PageBlock($page, $type->key()), $this->stored($type, $values), BlockStyle::rules($style));
         }
 
         return new Refusal(t('builder.refusal.document'));
@@ -176,7 +176,17 @@ final readonly class PageDocument
     {
         $type = $this->types->find($block->getType());
 
-        return null === $type || self::sorted($values) === self::sorted($block->getValues()) ? $block->getValues() : $this->form->stored($type, $values);
+        return null === $type || self::sorted($values) === self::sorted($block->getValues()) ? $block->getValues() : $this->stored($type, $values);
+    }
+
+    /**
+     * @param array<string, string> $values
+     *
+     * @return array<string, string>|Refusal
+     */
+    private function stored(Block $type, array $values): array|Refusal
+    {
+        return $type instanceof FreeBlock ? $type->stored($values) : $this->form->stored($type, $values);
     }
 
     /** @param iterable<PageBlock> $blocks */
