@@ -8,6 +8,7 @@ use AdzerCMS\Builder\Entity\Project;
 use AdzerCMS\Builder\Entity\ProjectBlock;
 use AdzerCMS\Builder\Entity\ProjectPage;
 use AdzerCMS\Builder\ProjectAlbums;
+use AdzerCMS\Builder\ProjectFile;
 use AdzerCMS\Builder\Projects;
 use AdzerCMS\Builder\Repository\ProjectBlockRepository;
 use AdzerCMS\Builder\Repository\ProjectPageRepository;
@@ -127,6 +128,41 @@ final class ProjectsTest extends SchemaTestCase
         self::assertResponseStatusCodeSame(404, 'a page of another user is not open in the editor');
         $this->client->request('GET', $entry['src']);
         self::assertResponseStatusCodeSame(404, 'the pictures of a project go to its owner only');
+    }
+
+    #[Group('ACMS-BLD-0016')]
+    #[Group('ACMS-US-0078')]
+    public function testOwnerDownloadsFileOfProjectWithItsPagesAndPictures(): void
+    {
+        [$project, $home] = $this->project();
+        $album = self::service(ProjectAlbums::class)->of($project);
+        $held = $album->store($this->picture('held.png'));
+        $album->store($this->picture('stray.png'));
+        $tariffs = new ProjectPage($project, 'Tariffs', '/tariffs');
+        $tariffs->place(2);
+        $hero = new ProjectBlock($home, 'hero', ['title' => 'Fiber', 'picture' => $held]);
+        $hero->restyle(['' => ['desktop' => ['color' => '#112233']]]);
+        $this->em->persist($tariffs);
+        $this->em->persist($hero);
+        $this->em->flush();
+
+        $this->client->request('GET', self::SECTION.'/'.$project->getId().'/file');
+        self::assertResponseIsSuccessful();
+        self::assertResponseHeaderSame('Content-Type', 'application/zip');
+        $file = self::parameter('adzercms.files_dir').'/scratch/project.zip';
+        (new Filesystem())->dumpFile($file, (string) $this->client->getInternalResponse()->getContent());
+        $zip = new \ZipArchive();
+        self::assertTrue($zip->open($file, \ZipArchive::RDONLY));
+        self::assertSame(['format' => ProjectFile::FORMAT, 'pages' => [
+            ['path' => '/', 'title' => 'Fiber', 'blocks' => [['type' => 'hero', 'values' => ['title' => 'Fiber', 'picture' => $held], 'style' => ['' => ['desktop' => ['color' => '#112233']]]]]],
+            ['path' => '/tariffs', 'title' => 'Tariffs', 'blocks' => []],
+        ]], json_decode((string) $zip->getFromName(ProjectFile::DOCUMENT), true), 'the file carries the pages of the document in the order of the menu with the version of its format');
+        self::assertSame([ProjectFile::DOCUMENT, ProjectFile::PICTURES.$held], array_map(static fn (int $at): string => (string) $zip->getNameIndex($at), range(0, $zip->numFiles - 1)), 'the file carries the pictures the document holds');
+        self::assertSame(file_get_contents((string) $album->path($held)), $zip->getFromName(ProjectFile::PICTURES.$held));
+
+        $this->client->loginUser($this->record('79990000003'));
+        $this->client->request('GET', self::SECTION.'/'.$project->getId().'/file');
+        self::assertResponseStatusCodeSame(404, 'a project of another user is not downloaded');
     }
 
     #[Group('ACMS-BLD-0020')]

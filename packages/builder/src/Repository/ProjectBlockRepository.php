@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Builder\Repository;
 
+use AdzerCMS\Builder\Entity\Project;
 use AdzerCMS\Builder\Entity\ProjectBlock;
 use AdzerCMS\Builder\Entity\ProjectPage;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -21,6 +22,12 @@ class ProjectBlockRepository extends ServiceEntityRepository
     public function of(ProjectPage $page): array
     {
         return $this->createQueryBuilder('b')->where('b.page = :page')->setParameter('page', $page)->orderBy('b.position')->addOrderBy('b.id')->getQuery()->getResult();
+    }
+
+    /** @return list<ProjectBlock> */
+    public function ofProject(Project $project): array
+    {
+        return $this->createQueryBuilder('b')->join('b.page', 'p')->where('p.project = :project')->setParameter('project', $project)->orderBy('p.position')->addOrderBy('p.id')->addOrderBy('b.position')->addOrderBy('b.id')->getQuery()->getResult();
     }
 
     /**

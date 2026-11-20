@@ -7,6 +7,7 @@ namespace AdzerCMS\Builder\Controller;
 use AdzerCMS\Builder\Entity\Project;
 use AdzerCMS\Builder\Entity\ProjectPage;
 use AdzerCMS\Builder\ProjectAlbums;
+use AdzerCMS\Builder\ProjectFile;
 use AdzerCMS\Builder\Projects;
 use AdzerCMS\Builder\Repository\ProjectPageRepository;
 use AdzerCMS\Builder\Repository\ProjectRepository;
@@ -20,6 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -37,12 +39,15 @@ final class ProjectController extends AbstractController
     private const NEW = 'builder_project_new';
     private const ORDER = 'builder_project_order';
     private const PAGES = '@Builder/cabinet/_pages.html.twig';
+    private const ZIP = 'application/zip';
+    private const EXTENSION = '.zip';
 
     public function __construct(
         private readonly ProjectRepository $projects,
         private readonly ProjectPageRepository $pages,
         private readonly Projects $work,
         private readonly ProjectAlbums $albums,
+        private readonly ProjectFile $file,
     ) {
     }
 
@@ -122,6 +127,16 @@ final class ProjectController extends AbstractController
     public function picture(#[CurrentUser] User $user, int $id, string $file): Response
     {
         return new BinaryFileResponse($this->albums->of($this->owned($user, $id))->path($file) ?? throw $this->createNotFoundException(), autoEtag: true);
+    }
+
+    #[Route('/{id}/file', name: 'builder_project_file', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function download(#[CurrentUser] User $user, int $id): Response
+    {
+        $project = $this->owned($user, $id);
+        $response = new BinaryFileResponse($this->file->write($project), headers: ['Content-Type' => self::ZIP]);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, strtr($project->getName(), '/\\', '--').self::EXTENSION, 'project-'.$id.self::EXTENSION);
+
+        return $response->deleteFileAfterSend();
     }
 
     #[Route('/{id}/drop', name: 'builder_project_drop', requirements: ['id' => '\d+'], methods: ['POST'])]

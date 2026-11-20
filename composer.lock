@@ -154,7 +154,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/builder",
-                "reference": "dc7ca9fd4c970d15c5e0d7aa00154a3b4c4f8489"
+                "reference": "2e0625e2bba176bfc5ad281894df2b5048616368"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -167,10 +167,12 @@
                 "doctrine/orm": "^3.7",
                 "doctrine/persistence": "^4.2",
                 "ext-mbstring": "*",
+                "ext-zip": "*",
                 "php": ">=8.4",
                 "symfony/clock": "7.4.*",
                 "symfony/console": "7.4.*",
                 "symfony/dependency-injection": "7.4.*",
+                "symfony/filesystem": "7.4.*",
                 "symfony/framework-bundle": "7.4.*",
                 "symfony/http-foundation": "7.4.*",
                 "symfony/http-kernel": "7.4.*",

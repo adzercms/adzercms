@@ -13,6 +13,7 @@
     "require": {
         "php": ">=8.4",
         "ext-mbstring": "*",
+        "ext-zip": "*",
         "adzercms/contracts": "^1.0",
         "adzercms/core": "^1.0",
         "adzercms/pages": "^1.0",
@@ -25,6 +26,7 @@
         "symfony/clock": "7.4.*",
         "symfony/console": "7.4.*",
         "symfony/dependency-injection": "7.4.*",
+        "symfony/filesystem": "7.4.*",
         "symfony/framework-bundle": "7.4.*",
         "symfony/http-foundation": "7.4.*",
         "symfony/http-kernel": "7.4.*",

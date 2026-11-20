@@ -91,6 +91,12 @@
         <target>Картинки</target>
       </segment>
     </unit>
+    <unit id="builder.project.download">
+      <segment>
+        <source>builder.project.download</source>
+        <target>Скачать</target>
+      </segment>
+    </unit>
     <unit id="builder.project.drop">
       <segment>
         <source>builder.project.drop</source>
