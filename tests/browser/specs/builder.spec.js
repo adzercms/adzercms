@@ -20,6 +20,11 @@ const saving = async (page) => {
     return sent;
 };
 
+const hold = (page, line) => expect.poll(
+    () => page.locator('.gjs-placeholder').evaluateAll((nodes, top) => Math.min(...nodes.filter((node) => node.style.display === 'block').map((node) => Math.abs(node.getBoundingClientRect().top - top))), line),
+    'the placeholder shows the place before the release',
+).toBeLessThan(5);
+
 test.beforeEach(async ({ page, isMobile }) => {
     test.skip(isMobile, 'the editor works on a computer screen');
     faults = [];
@@ -103,10 +108,11 @@ test('[ACMS-BLD-0002][ACMS-FLOW-0022] a block moves by dragging its layer', asyn
     await expect(layers).toHaveCount(blocks.length + 1);
 
     const from = await page.locator('[data-layers] [data-toggle-move]').last().boundingBox();
-    const to = await layers.nth(1).boundingBox();
+    const to = await page.locator('[data-layers] .gjs-layer').nth(1).boundingBox();
     await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
     await page.mouse.down();
-    await page.mouse.move(to.x + 10, to.y + 2, { steps: 10 });
+    await page.mouse.move(to.x + to.width / 2, to.y + to.height / 4, { steps: 10 });
+    await hold(page, to.y);
     await page.mouse.up();
 
     const order = blocks.map((block) => block.anchor);
@@ -153,7 +159,8 @@ test('[ACMS-BLD-0003][ACMS-FLOW-0022] a block of the panel takes its place by dr
         const place = await ready.first().boundingBox();
         await page.locator('[data-palette] .gjs-block', { hasText: kind.label }).hover();
         await page.mouse.down();
-        await page.mouse.move(place.x + place.width / 2, place.y + 4, { steps: 10 });
+        await page.mouse.move(place.x + place.width / 2, place.y + place.height / 4, { steps: 10 });
+        await hold(page, place.y);
         await page.mouse.up();
         await expect(dialog, 'a dropped block asks for its values').toBeVisible();
     };
