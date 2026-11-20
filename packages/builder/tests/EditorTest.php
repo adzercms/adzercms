@@ -39,9 +39,12 @@ final class EditorTest extends SchemaTestCase
         self::assertResponseIsSuccessful();
         $builder = $editor->filter('[data-builder]');
         self::assertEquals([
-            ['id' => $text->getId(), 'anchor' => 'block-'.$text->getId(), 'type' => 'text', 'label' => self::phrase(t('pages.block.text')), 'available' => true, 'question' => self::phrase(t('pages.block.drop_confirm', ['type' => self::phrase(t('pages.block.text'))])), 'values' => ['title' => 'About us', 'text' => 'We build networks'], 'dialog' => '/admin/pages/'.$page->getId().'/builder/blocks/'.$text->getId()],
+            ['id' => $text->getId(), 'anchor' => 'block-'.$text->getId(), 'type' => 'text', 'label' => self::phrase(t('pages.block.text')), 'available' => true, 'question' => self::phrase(t('pages.block.drop_confirm', ['type' => self::phrase(t('pages.block.text'))])), 'values' => ['title' => 'About us', 'text' => 'We build networks'], 'dialog' => '/admin/pages/'.$page->getId().'/builder/types/text'],
             ['id' => $retired->getId(), 'anchor' => 'block-'.$retired->getId(), 'type' => 'retired', 'label' => 'retired', 'available' => false, 'question' => self::phrase(t('pages.block.drop_confirm', ['type' => 'retired'])), 'values' => ['title' => 'Gone'], 'dialog' => null],
         ], json_decode((string) $builder->attr('data-blocks'), true), 'the editor takes the blocks of the page in order with their values, a block of a removed module too');
+        $types = array_column(json_decode((string) $builder->attr('data-types'), true), 'dialog', 'type');
+        self::assertSame('/admin/pages/'.$page->getId().'/builder/types/hero', $types['hero'] ?? null, 'the panel of blocks carries the types of the enabled modules');
+        self::assertArrayNotHasKey('retired', $types);
 
         $frame = $this->client->request('GET', (string) $builder->attr('data-frame'));
         self::assertResponseIsSuccessful();
@@ -101,7 +104,7 @@ final class EditorTest extends SchemaTestCase
         $filled = json_decode((string) $this->client->getResponse()->getContent(), true);
         $next = $filled['values']['picture'] ?? self::fail('the picture of the dialog is not stored');
         self::assertSame(['title' => 'Fiber at home', 'picture' => $next], $filled['values']);
-        self::assertSame('Fiber at home', (new Crawler($filled['html']))->filter('#block-'.$hero->getId().' h1')->text(), 'the canvas takes the block the server draws at its place');
+        self::assertSame('Fiber at home', (new Crawler($filled['html']))->filter('#'.$filled['anchor'].' h1')->text(), 'the canvas takes the block the server draws at its place');
         self::assertSame(['title' => 'Internet', 'picture' => $first], $this->reread($hero)->getValues(), 'the dialog writes nothing before saving');
 
         $this->post($editor, ['document' => json_encode(['version' => $builder->attr('data-version'), 'blocks' => [['id' => $hero->getId(), 'values' => $filled['values']]]])]);
@@ -113,6 +116,35 @@ final class EditorTest extends SchemaTestCase
         $this->post($editor, ['document' => json_encode(['version' => $version, 'blocks' => [['id' => $hero->getId(), 'values' => ['title' => 'Fiber at home', 'picture' => 'gone.webp']]]])]);
         self::assertResponseStatusCodeSame(422);
         self::assertSame(['message' => self::phrase(t('pages.refusal.picture', ['field' => self::phrase(t('pages.field.picture'))]))], json_decode((string) $this->client->getResponse()->getContent(), true), 'saving checks the values of the document');
+    }
+
+    #[Group('ACMS-BLD-0003')]
+    #[Group('ACMS-FLOW-0022')]
+    #[Group('ACMS-US-0077')]
+    public function testOwnerPlacesBlockOfPanelAndSavingNumbersIt(): void
+    {
+        [$page, [$text]] = $this->page(['text' => ['title' => 'About us', 'text' => 'We build networks']]);
+        $editor = '/admin/pages/'.$page->getId().'/builder';
+        $version = (string) $this->client->request('GET', $editor)->filter('[data-builder]')->attr('data-version');
+        $call = ['id' => null, 'type' => 'call', 'values' => ['title' => 'Connect today', 'button' => 'Request', 'link' => '#lead']];
+        $kept = ['id' => $text->getId(), 'type' => 'text', 'values' => $text->getValues()];
+
+        $refusals = [
+            self::phrase(t('builder.refusal.document')) => ['type' => 'retired'] + $call,
+            self::phrase(t('pages.refusal.link', ['field' => self::phrase(t('pages.field.link'))])) => ['values' => ['link' => 'ftp://example.com']] + $call,
+        ];
+        foreach ($refusals as $reason => $entry) {
+            $this->post($editor, ['document' => json_encode(['version' => $version, 'blocks' => [$entry, $kept]])]);
+            self::assertResponseStatusCodeSame(422);
+            self::assertSame(['message' => $reason], json_decode((string) $this->client->getResponse()->getContent(), true), 'a new block takes the types of the enabled modules and the check of its values');
+        }
+
+        $this->post($editor, ['document' => json_encode(['version' => $version, 'blocks' => [$call, $kept]])]);
+        self::assertResponseIsSuccessful();
+        $stored = self::service(PageBlockRepository::class)->findBy(['page' => $page->getId()], ['position' => 'ASC']);
+        self::assertSame(['call', 'text'], array_map(static fn (PageBlock $block): string => $block->getType(), $stored), 'a new block takes its place in the document');
+        self::assertEquals($call['values'], $stored[0]->getValues());
+        self::assertSame(array_map(static fn (PageBlock $block): array => ['id' => $block->getId(), 'anchor' => 'block-'.$block->getId()], $stored), json_decode((string) $this->client->getResponse()->getContent(), true)['blocks'], 'saving gives the blocks their numbers');
     }
 
     /**

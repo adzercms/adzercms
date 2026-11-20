@@ -14,10 +14,12 @@ const TOKEN = '_token';
 const DELETE = 'core:component-delete';
 const VALUES = 'builder-values';
 const JSON_TYPE = 'application/json';
+const FRESH = 'block-new-';
 
 const root = document.querySelector('[data-builder]');
 const blocks = JSON.parse(root.dataset.blocks);
 const screens = JSON.parse(root.dataset.screens);
+const kinds = JSON.parse(root.dataset.types);
 const anchors = new Set(blocks.map(block => block.anchor));
 const record = document.getElementById('record');
 let version = root.dataset.version;
@@ -25,6 +27,7 @@ let saved = '';
 let agreed = null;
 let leaving = false;
 let editing = null;
+let fresh = 0;
 
 const page = new DOMParser().parseFromString(await (await fetch(root.dataset.frame)).text(), 'text/html');
 const end = page.querySelector('[data-builder-end]');
@@ -79,26 +82,32 @@ const token = () => root.querySelector(`[name="${TOKEN}"]`).value;
 
 const sorted = values => Object.fromEntries(Object.entries(values).sort(([one], [other]) => (one < other ? -1 : 1)));
 
-const fill = component => {
-    const {dialog, values} = component.get('block');
-    editing = component;
-    htmx.ajax('POST', dialog, {target: '#record', values: {[TOKEN]: token(), stored: JSON.stringify(values), first: placed()[0] === component ? '1' : ''}});
+const fill = (component, entry = component.get('block'), at = null) => {
+    const first = component ? placed()[0] === component : !container().components().some((one, index) => index < at && one.get('type') === BLOCK);
+    editing = {component, entry, at};
+    htmx.ajax('POST', entry.dialog, {target: '#record', values: {[TOKEN]: token(), stored: JSON.stringify(component ? entry.values : {}), first: first ? '1' : ''}});
 };
 
-const filled = ({values, html}) => {
-    const block = editing.get('block');
-    const element = new DOMParser().parseFromString(html, 'text/html').getElementById(block.anchor);
-    editing.set({attributes: attributes(element), content: element.innerHTML, block: {...block, values}});
+const filled = ({values, anchor, html}) => {
+    const {component, entry, at} = editing;
+    const element = new DOMParser().parseFromString(html, 'text/html').getElementById(anchor);
+    const block = component ? {...entry, values} : {...entry, values, id: null, anchor: `${FRESH}${++fresh}`};
+    const shown = {attributes: {...attributes(element), id: block.anchor}, content: element.innerHTML, block};
     editing = null;
     record.close();
+    if (component) {
+        component.set(shown);
+    } else {
+        editor.select(container().append({type: BLOCK, tagName: element.localName, name: block.label, ...shown}, {at})[0]);
+    }
 };
 
 const setup = editor => {
     const types = editor.DomComponents;
     types.addType(PART, {model: {defaults: LOCKED}});
-    types.addType(BLOCKS, {model: {defaults: {...LOCKED, layerable: true, droppable: `[data-gjs-type="${BLOCK}"]`}}});
+    types.addType(BLOCKS, {model: {defaults: {...LOCKED, layerable: true, droppable: source => source.get('type') === BLOCK}}});
     types.addType(BLOCK, {model: {
-        defaults: {draggable: `[data-gjs-type="${BLOCKS}"]`, droppable: false, copyable: false, editable: false, stylable: false},
+        defaults: {draggable: (source, target) => target.get('type') === BLOCKS, droppable: false, copyable: false, editable: false, stylable: false},
         init() {
             if (this.get('block').dialog) {
                 const label = root.querySelector('[data-edit-icon]').innerHTML;
@@ -112,6 +121,17 @@ const setup = editor => {
         ask(component.get('block').question, () => component.remove());
     }});
     editor.Commands.add(VALUES, {run: ed => fill(ed.getSelected())});
+
+    editor.on('block:drag:start', () => editor.UndoManager.stop());
+    editor.on('block:drag:stop', component => {
+        if (component) {
+            const at = component.index();
+            const entry = component.get('block');
+            component.remove();
+            fill(null, entry, at);
+        }
+        editor.UndoManager.start();
+    });
 
     editor.on('canvas:frame:load:body', ({window: frame}) => {
         for (const {name, value} of page.documentElement.attributes) {
@@ -143,14 +163,20 @@ const editor = grapesjs.init({
     deviceManager: {devices: screens.map(({id, media, width}) => ({id, name: id, width: width ? `${width}px` : '', widthMedia: media ? `${media}px` : ''}))},
     mediaCondition: 'max-width',
     layerManager: {appendTo: root.querySelector('[data-layers]'), root: `[data-gjs-type="${BLOCKS}"]`},
+    blockManager: {appendTo: root.querySelector('[data-palette]'), blocks: kinds.map(kind => ({id: kind.type, label: kind.label, content: {type: BLOCK, block: kind}}))},
     selectorManager: {componentFirst: true},
     i18n: {locale: document.documentElement.lang, detectLocale: false, localeFallback: 'en', messages: {ru}},
     plugins: [setup],
     components: [...page.body.childNodes].map(part).filter(Boolean),
 });
 
-const placed = () => editor.getWrapper().findType(BLOCKS)[0].components().filter(component => component.get('type') === BLOCK);
-const documentOf = () => ({version, blocks: placed().map(component => ({id: component.get('block').id, values: sorted(component.get('block').values)}))});
+const container = () => editor.getWrapper().findType(BLOCKS)[0];
+const placed = () => container().components().filter(component => component.get('type') === BLOCK);
+const documentOf = () => ({version, blocks: placed().map(component => {
+    const {id, type, values} = component.get('block');
+
+    return {id, type, values: sorted(values)};
+})});
 const dirty = () => JSON.stringify(documentOf()) !== saved;
 
 const status = (message, failed) => {
@@ -160,6 +186,7 @@ const status = (message, failed) => {
 };
 
 const save = async button => {
+    const sent = placed();
     const body = new FormData();
     body.set(TOKEN, token());
     body.set('document', JSON.stringify(documentOf()));
@@ -170,6 +197,14 @@ const save = async button => {
         status(answer.message, !response.ok);
         if (response.ok) {
             version = answer.version;
+            answer.blocks.forEach(({id, anchor}, at) => {
+                const block = sent[at].get('block');
+                if (block.id === null) {
+                    sent[at].set('block', {...block, id, anchor});
+                    sent[at].addAttributes({id: anchor});
+                }
+            });
+            editor.UndoManager.clear();
             saved = JSON.stringify(documentOf());
         }
     } catch {

@@ -11,8 +11,10 @@ const saving = async (page) => {
     const save = await page.locator('[data-builder]').getAttribute('data-save');
     const sent = [];
     await page.route((url) => url.pathname === save, (route) => {
-        sent.push(JSON.parse(/name="document"\r\n\r\n(.*)\r\n/.exec(route.request().postData())[1]));
-        return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ message: 'saved', version: 'saved' }) });
+        const document = JSON.parse(/name="document"\r\n\r\n(.*)\r\n/.exec(route.request().postData())[1]);
+        const blocks = document.blocks.map((block, at) => ({ id: block.id ?? 900 + at, anchor: `block-${block.id ?? 900 + at}` }));
+        sent.push(document);
+        return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ message: 'saved', version: 'saved', blocks }) });
     });
 
     return sent;
@@ -88,7 +90,7 @@ test('[ACMS-BLD-0002][ACMS-FLOW-0022] a block leaves after a question, the docum
     await page.click('[data-save-document]');
     await expect(page.locator('[data-status]')).toHaveText('saved');
     expect(sent).toHaveLength(1);
-    expect(sent[0], 'the whole document goes: the version it opened and the blocks it keeps in order with their values').toEqual({ version, blocks: blocks.slice(1).map((block) => ({ id: block.id, values: block.values })) });
+    expect(sent[0], 'the whole document goes: the version it opened and the blocks it keeps in order with their values').toEqual({ version, blocks: blocks.slice(1).map((block) => ({ id: block.id, type: block.type, values: block.values })) });
 
     await page.click('[data-exit]');
     await expect(page, 'leaving after saving goes without a question').toHaveURL(/\/admin\/pages\/\d+$/);
@@ -138,4 +140,41 @@ test('[ACMS-BLD-0003][ACMS-FLOW-0022] a ready block takes its values from the di
     await page.click('[data-save-document]');
     await expect(page.locator('[data-status]')).toHaveText('saved');
     expect(sent[0].blocks[at].values.title, 'saving sends the values of the dialog').toBe('Fiber to every flat');
+});
+
+test('[ACMS-BLD-0003][ACMS-FLOW-0022] a block of the panel takes its place by dragging after its dialog, saving numbers it', async ({ page }) => {
+    const root = page.locator('[data-builder]');
+    const blocks = JSON.parse(await root.getAttribute('data-blocks'));
+    const kinds = JSON.parse(await root.getAttribute('data-types'));
+    const kind = kinds.find((one) => one.type === 'text') ?? kinds[0];
+    const dialog = page.locator('#record');
+    const ready = canvas(page).locator(READY);
+    const drag = async () => {
+        const place = await ready.first().boundingBox();
+        await page.locator('[data-palette] .gjs-block', { hasText: kind.label }).hover();
+        await page.mouse.down();
+        await page.mouse.move(place.x + place.width / 2, place.y + 4, { steps: 10 });
+        await page.mouse.up();
+        await expect(dialog, 'a dropped block asks for its values').toBeVisible();
+    };
+
+    await drag();
+    await dialog.locator('.modal-close').click();
+    await expect(ready, 'a closed dialog places no block').toHaveCount(blocks.length);
+
+    await drag();
+    await dialog.locator('input[name="value[title]"]').fill('Fiber to every flat');
+    await dialog.locator('form > button[type="submit"]').click();
+    await expect(dialog).toBeHidden();
+    await expect(ready).toHaveCount(blocks.length + 1);
+    await expect(ready.first().locator('h1, h2').first(), 'the block takes the place it was dropped at').toHaveText('Fiber to every flat');
+
+    const sent = await saving(page);
+    await page.click('[data-save-document]');
+    await expect(page.locator('[data-status]')).toHaveText('saved');
+    expect(sent[0].blocks[0], 'saving sends the new block with its type').toMatchObject({ id: null, type: kind.type, values: { title: 'Fiber to every flat' } });
+    await expect(ready.first(), 'the saved block takes its number').toHaveAttribute('id', 'block-900');
+
+    await page.click('[data-undo]');
+    await expect(ready, 'saving starts the history anew').toHaveCount(blocks.length + 1);
 });

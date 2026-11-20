@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Builder;
 
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Pages\Block;
 use AdzerCMS\Pages\BlockForm;
 use AdzerCMS\Pages\Blocks;
 use AdzerCMS\Pages\BlockStyle;
@@ -22,6 +23,7 @@ final readonly class PageDocument
     public const VERSION = 'version';
     public const BLOCKS = 'blocks';
     public const ID = 'id';
+    public const TYPE = 'type';
     public const VALUES = 'values';
 
     private const DIGEST = 'xxh128';
@@ -41,24 +43,26 @@ final readonly class PageDocument
     {
         $blocks = $this->blocks->of($page);
 
-        return [self::VERSION => self::version($blocks), self::BLOCKS => array_map(function (PageBlock $block): array {
-            $type = $this->types->find($block->getType());
-            $label = null === $type ? $block->getType() : $type->label()->trans($this->translator);
-
-            return [
-                'id' => (int) $block->getId(),
-                'anchor' => BlockStyle::anchor($block),
-                'type' => $block->getType(),
-                'label' => $label,
-                'available' => null !== $type,
-                'question' => $this->translator->trans('pages.block.drop_confirm', ['type' => $label]),
-                'values' => $block->getValues(),
-            ];
-        }, $blocks)];
+        return [self::VERSION => self::version($blocks), self::BLOCKS => array_map(fn (PageBlock $block): array => [
+            self::ID => (int) $block->getId(),
+            'anchor' => BlockStyle::anchor($block),
+            ...$this->entry($block->getType()),
+            self::VALUES => $block->getValues(),
+        ], $blocks)];
     }
 
-    /** @param array<mixed> $document */
-    public function save(Page $page, array $document): string|Refusal
+    /** @return list<array{type: string, label: string, available: bool, question: string}> */
+    public function types(): array
+    {
+        return array_values(array_map(fn (Block $type): array => $this->entry($type->key()), $this->types->all()));
+    }
+
+    /**
+     * @param array<mixed> $document
+     *
+     * @return array{version: string, blocks: list<PageBlock>}|Refusal
+     */
+    public function save(Page $page, array $document): array|Refusal
     {
         $stored = [];
         foreach ($this->blocks->of($page) as $block) {
@@ -70,33 +74,31 @@ final readonly class PageDocument
         }
 
         $kept = [];
+        $seen = [];
         foreach ($entries as $entry) {
-            $id = \is_array($entry) ? $entry[self::ID] ?? null : null;
-            $values = \is_array($entry) ? self::values($entry[self::VALUES] ?? null) : null;
-            if (!\is_int($id) || !isset($stored[$id]) || isset($kept[$id]) || null === $values) {
-                return new Refusal(t('builder.refusal.document'));
+            $one = $this->entered($page, \is_array($entry) ? $entry : [], array_diff_key($stored, $seen));
+            if ($one instanceof Refusal) {
+                return $one;
             }
-            $values = $this->checked($stored[$id], $values);
-            if ($values instanceof Refusal) {
-                return $values;
-            }
-            $kept[$id] = $values;
+            $kept[] = $one;
+            $seen += null === $one[0]->getId() ? [] : [$one[0]->getId() => true];
         }
 
         $before = Pictures::names(array_merge([], ...array_map(static fn (PageBlock $block): array => array_values($block->getValues()), array_values($stored))));
         $placed = [];
-        foreach ($kept as $id => $values) {
-            $placed[] = $block = $stored[$id];
+        foreach ($kept as [$block, $values]) {
+            $placed[] = $block;
             $block->place(\count($placed));
             $block->fill($values);
+            $this->em->persist($block);
         }
-        foreach (array_diff_key($stored, $kept) as $block) {
+        foreach (array_diff_key($stored, $seen) as $block) {
             $this->em->remove($block);
         }
         $this->em->flush();
-        $this->pictures->drop(array_diff($before, Pictures::names(array_merge([], ...array_map(array_values(...), array_values($kept))))));
+        $this->pictures->drop(array_diff($before, Pictures::names(array_merge([], ...array_map(static fn (array $one): array => array_values($one[1]), $kept)))));
 
-        return self::version($placed);
+        return [self::VERSION => self::version($placed), self::BLOCKS => $placed];
     }
 
     /** @return array<string, string>|null */
@@ -112,6 +114,42 @@ final readonly class PageDocument
         }
 
         return $values;
+    }
+
+    /**
+     * @param array<mixed>          $entry
+     * @param array<int, PageBlock> $left
+     *
+     * @return array{PageBlock, array<string, string>}|Refusal
+     */
+    private function entered(Page $page, array $entry, array $left): array|Refusal
+    {
+        $values = self::values($entry[self::VALUES] ?? null);
+        $id = $entry[self::ID] ?? null;
+        $key = $entry[self::TYPE] ?? null;
+        $block = \is_int($id) ? $left[$id] ?? null : null;
+        $type = null === $id && \is_string($key) ? $this->types->find($key) : null;
+        if (null !== $values && null !== $block) {
+            $checked = $this->checked($block, $values);
+
+            return $checked instanceof Refusal ? $checked : [$block, $checked];
+        }
+        if (null !== $values && null !== $type) {
+            $checked = $this->form->stored($type, $values);
+
+            return $checked instanceof Refusal ? $checked : [new PageBlock($page, $type->key()), $checked];
+        }
+
+        return new Refusal(t('builder.refusal.document'));
+    }
+
+    /** @return array{type: string, label: string, available: bool, question: string} */
+    private function entry(string $key): array
+    {
+        $type = $this->types->find($key);
+        $label = null === $type ? $key : $type->label()->trans($this->translator);
+
+        return [self::TYPE => $key, 'label' => $label, 'available' => null !== $type, 'question' => $this->translator->trans('pages.block.drop_confirm', ['type' => $label])];
     }
 
     /**

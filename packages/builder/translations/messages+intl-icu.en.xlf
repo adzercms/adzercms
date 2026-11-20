@@ -13,6 +13,12 @@
         <target>Apply</target>
       </segment>
     </unit>
+    <unit id="builder.blocks">
+      <segment>
+        <source>builder.blocks</source>
+        <target>Blocks</target>
+      </segment>
+    </unit>
     <unit id="builder.exit">
       <segment>
         <source>builder.exit</source>

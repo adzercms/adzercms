@@ -14,7 +14,6 @@ use AdzerCMS\Pages\BlockStyle;
 use AdzerCMS\Pages\Controller\Admin\BlockController;
 use AdzerCMS\Pages\Entity\Page;
 use AdzerCMS\Pages\Entity\PageBlock;
-use AdzerCMS\Pages\Repository\PageBlockRepository;
 use AdzerCMS\Pages\Site;
 use AdzerCMS\Pages\Style\Screen;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,15 +39,15 @@ final class EditorController extends AbstractController
 
     private const FRAME = 'admin_page_builder_frame';
     private const SAVE = 'admin_page_builder_save';
-    private const BLOCK = 'admin_page_builder_block';
-    private const FILL = 'admin_page_builder_block_fill';
+    private const TYPE = 'admin_page_builder_type';
+    private const FILL = 'admin_page_builder_type_fill';
+    private const DRAWN = 'block';
     private const PREVIEW = [Screen::Tablet->value => 768, Screen::Phone->value => 375];
 
     public function __construct(
         private readonly PageDocument $document,
         private readonly Site $site,
         private readonly Blocks $types,
-        private readonly PageBlockRepository $blocks,
         private readonly BlockForm $form,
         private readonly TranslatorInterface $translator,
     ) {
@@ -64,9 +63,8 @@ final class EditorController extends AbstractController
             'frame' => $this->generateUrl(self::FRAME, ['id' => $page->getId()]),
             'save' => $this->generateUrl(self::SAVE, ['id' => $page->getId()]),
             'version' => $document[PageDocument::VERSION],
-            'blocks' => array_map(fn (array $block): array => $block + [
-                'dialog' => $block['available'] ? $this->generateUrl(self::BLOCK, ['id' => $page->getId(), 'block' => $block['id']]) : null,
-            ], $document[PageDocument::BLOCKS]),
+            'blocks' => array_map(fn (array $block): array => $block + ['dialog' => $block['available'] ? $this->opening($page, $block['type']) : null], $document[PageDocument::BLOCKS]),
+            'types' => array_map(fn (array $type): array => $type + ['dialog' => $this->opening($page, $type['type'])], $this->document->types()),
             'screens' => array_map(static fn (Screen $screen): array => [
                 'id' => $screen->value,
                 'media' => $screen->width(),
@@ -84,7 +82,11 @@ final class EditorController extends AbstractController
 
         return $outcome instanceof Refusal
             ? $this->json(['message' => $outcome->reason->trans($this->translator)], Response::HTTP_UNPROCESSABLE_ENTITY)
-            : $this->json(['message' => $this->translator->trans('builder.saved'), PageDocument::VERSION => $outcome]);
+            : $this->json([
+                'message' => $this->translator->trans('builder.saved'),
+                PageDocument::VERSION => $outcome[PageDocument::VERSION],
+                PageDocument::BLOCKS => array_map(static fn (PageBlock $block): array => [PageDocument::ID => $block->getId(), 'anchor' => BlockStyle::anchor($block)], $outcome[PageDocument::BLOCKS]),
+            ]);
     }
 
     #[Route('/frame', name: self::FRAME, methods: ['GET'])]
@@ -93,40 +95,42 @@ final class EditorController extends AbstractController
         return $this->render('@Builder/frame.html.twig', ['page' => $page, 'view' => $this->site->view($page)]);
     }
 
-    #[Route('/blocks/{block}', name: self::BLOCK, requirements: ['block' => '\d+'], methods: ['POST'])]
-    public function block(Page $page, int $block, Request $request): Response
+    #[Route('/types/{type}', name: self::TYPE, methods: ['POST'])]
+    public function type(Page $page, string $type, Request $request): Response
     {
-        [$block, $type, $stored] = $this->edited($page, $block, $request);
+        [$block, $stored] = $this->edited($type, $request);
 
-        return $this->dialog($page, $block, $type, $stored, $stored, [], $request);
+        return $this->dialog($page, $block, $stored, $stored, [], $request);
     }
 
-    #[Route('/blocks/{block}/fill', name: self::FILL, requirements: ['block' => '\d+'], methods: ['POST'])]
-    public function fill(Page $page, int $block, Request $request): Response
+    #[Route('/types/{type}/fill', name: self::FILL, methods: ['POST'])]
+    public function fill(Page $page, string $type, Request $request): Response
     {
-        [$block, $type, $stored] = $this->edited($page, $block, $request);
-        [$values, $refusals] = $this->form->posted($type, $request, $stored);
+        [$block, $stored] = $this->edited($type, $request);
+        [$values, $refusals] = $this->form->posted($block, $request, $stored);
         if ([] !== $refusals) {
-            return $this->dialog($page, $block, $type, $request->request->all(BlockForm::VALUE), $stored, $refusals, $request);
+            return $this->dialog($page, $block, $request->request->all(BlockForm::VALUE), $stored, $refusals, $request);
         }
 
-        $view = $this->site->block($type, $values, BlockStyle::anchor($block), $request->request->getBoolean(self::FIRST));
-        $response = $this->json([PageDocument::VALUES => $values, 'html' => $this->renderView($view['template'], $view)]);
+        $view = $this->site->block($block, $values, self::DRAWN, $request->request->getBoolean(self::FIRST));
+        $response = $this->json([PageDocument::VALUES => $values, 'anchor' => self::DRAWN, 'html' => $this->renderView($view['template'], $view)]);
         $response->headers->set('HX-Reswap', 'none');
 
         return $response;
     }
 
-    /** @return array{PageBlock, Block, array<string, string>} */
-    private function edited(Page $page, int $id, Request $request): array
+    private function opening(Page $page, string $type): string
     {
-        $block = $this->blocks->find($id);
-        $type = $block?->getPage() === $page ? $this->types->find($block->getType()) : null;
-        if (null === $block || null === $type) {
-            throw $this->createNotFoundException();
-        }
+        return $this->generateUrl(self::TYPE, ['id' => $page->getId(), 'type' => $type]);
+    }
 
-        return [$block, $type, PageDocument::values(json_decode($request->request->getString(self::STORED), true)) ?? throw new BadRequestException()];
+    /** @return array{Block, array<string, string>} */
+    private function edited(string $key, Request $request): array
+    {
+        return [
+            $this->types->find($key) ?? throw $this->createNotFoundException(),
+            PageDocument::values(json_decode($request->request->getString(self::STORED), true)) ?? throw new BadRequestException(),
+        ];
     }
 
     /**
@@ -134,11 +138,11 @@ final class EditorController extends AbstractController
      * @param array<string, string> $stored
      * @param list<Refusal>         $refusals
      */
-    private function dialog(Page $page, PageBlock $block, Block $type, array $values, array $stored, array $refusals, Request $request): Response
+    private function dialog(Page $page, Block $type, array $values, array $stored, array $refusals, Request $request): Response
     {
         return $this->render(BlockController::DIALOG, [
             'page' => $page,
-            'action' => $this->generateUrl(self::FILL, ['id' => $page->getId(), 'block' => $block->getId()]),
+            'action' => $this->generateUrl(self::FILL, ['id' => $page->getId(), 'type' => $type->key()]),
             'hidden' => [self::STORED => json_encode($stored, \JSON_THROW_ON_ERROR), self::FIRST => $request->request->getBoolean(self::FIRST) ? '1' : ''],
             'submit' => 'builder.apply',
             'type' => $type,
