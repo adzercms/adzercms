@@ -99,8 +99,9 @@ for added in $(staged --diff-filter=AR -- '*/migrations/*.php'); do
 done
 
 for changed in $(staged --diff-filter=M -- '*/migrations/*.php'); do
+    case " ${ADZERCMS_MIGRATION_EDIT:-} " in *" $changed "*) continue ;; esac
     [ "$(git show "HEAD:./$changed" | bin/php -w)" = "$(git show ":./$changed" | bin/php -w)" ] \
-        || refuse 'committed migration is immutable beyond comments, a schema change goes to a new migration' "$changed"
+        || refuse 'committed migration is immutable beyond comments, a schema change goes to a new migration; an edit keeping its SQL, such as for a library release, names the file in ADZERCMS_MIGRATION_EDIT' "$changed"
 done
 
 migrations=$(printf '%s\n' "$php" | grep '/migrations/' || true)

@@ -1,5 +1,5 @@
 #!/bin/sh
-[ "${1:-}" != -r ] || exec "$PHP_BINARY" "$@"
+case ${1:-} in -r|-w) exec "$PHP_BINARY" "$@" ;; esac
 here=$(pwd -P)
 root=${here%/var/next}
 if [ "$root" = "$here" ]; then call=$*; else call="copy $*"; fi
