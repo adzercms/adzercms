@@ -318,6 +318,10 @@ The frame draws the site menu with its own markup from the `site_menu()` Twig fu
 
 A design replaces a template of another module with the file of the same name under its `templates/bundles/<Bundle>/`, such as `templates/bundles/PagesBundle/blocks/hero.html.twig`; the original stays reachable as `@!Pages/blocks/hero.html.twig`. A section of the design's layout that no block type of the feature modules expresses is a block type of the design itself, a service of `AdzerCMS\Pages\Block`. A block template, its replacement in a design included, puts the `id` of its context on its root element, as `@Theme/_section.html.twig` does: the block style of the page targets the block by it.
 
+## Moderation
+
+What a user hands in for the operator to show, such as an extension catalog entry, is an entity implementing `AdzerCMS\Core\Moderation\Moderated` with a `Decision` column: pending, published, rejected or withdrawn. The operator's decision goes through `AdzerCMS\Core\Moderation\Moderation::decide()`: it takes only the decisions `Decision::next()` of the current one leads to, refuses a rejection and a withdrawal without a reason, saves the entity and sends the author the `DecisionNotice` of the entity's `decisionNotice()`: the user, the module's event, the subject of its idempotency key with the module prefix and the context of the event template, which also gets the `reason`. Which decision a new entity starts with and what an edit of a decided one does are rules of the module.
+
 ## Contracts
 
 `adzercms/contracts` follows SemVer: a breaking change to a contract ships only in a new major version. The kinds and events of a feature module are contracts of its own package.

@@ -63,6 +63,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `adzercms/leads`: commercial offer of a lead as a PDF opened in a new tab — brand, number and date, client, subject, sum, manager with contacts and the validity of the `leads.offer_days` setting; without a PDF module the lead page has no offer button
 - `Settings::within()`: whether a moment falls in the window of two time settings, across midnight when the start is later; the quiet hours of notifications use it
 - `adzercms/pages`: block style — rules for a block or an element of it on the computer, tablet and phone widths from a closed list of properties and their values, checked by `BlockStyle::rules()`; the page puts them into its head as CSS of the block anchor
+- `Moderation`: one core decision on what a user hands in to a module — pending, published, rejected or withdrawn; a rejection and a withdrawal carry a reason, the author gets the decision by the module's event; the extension catalog takes it
 
 ### Security
 

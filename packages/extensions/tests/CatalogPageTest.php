@@ -6,13 +6,13 @@ namespace AdzerCMS\Extensions\Tests;
 
 use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Contracts\Module\ExtensionType;
+use AdzerCMS\Core\Moderation\Decision;
 use AdzerCMS\Core\Seo\Indexing;
 use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Queries;
 use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Extensions\Controller\CatalogController;
-use AdzerCMS\Extensions\ExtensionDecision;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
@@ -77,8 +77,8 @@ final class CatalogPageTest extends CatalogTestCase
     {
         $author = $this->author('79990000002');
         $this->entry('acme/waiting', package: self::package('Waiting', author: $author->getKey()), author: $author);
-        $this->entry('acme/keyed', package: self::package('Keyed', author: $author->getKey()), author: $author)->decide(ExtensionDecision::Published);
-        $this->entry('acme/foreign', package: self::package('Foreign', author: $this->author('79990000003')->getKey()), author: $author)->decide(ExtensionDecision::Published);
+        $this->entry('acme/keyed', package: self::package('Keyed', author: $author->getKey()), author: $author)->decide(Decision::Published);
+        $this->entry('acme/foreign', package: self::package('Foreign', author: $this->author('79990000003')->getKey()), author: $author)->decide(Decision::Published);
         $this->em->flush();
 
         self::assertSame(['acme/keyed'], self::names($this->arrive(self::PAGE)));

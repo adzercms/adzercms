@@ -697,6 +697,42 @@
         <target>Record</target>
       </segment>
     </unit>
+    <unit id="core.moderation.decide.published">
+      <segment>
+        <source>core.moderation.decide.published</source>
+        <target>Publish</target>
+      </segment>
+    </unit>
+    <unit id="core.moderation.decide.rejected">
+      <segment>
+        <source>core.moderation.decide.rejected</source>
+        <target>Reject</target>
+      </segment>
+    </unit>
+    <unit id="core.moderation.decide.withdrawn">
+      <segment>
+        <source>core.moderation.decide.withdrawn</source>
+        <target>Withdraw</target>
+      </segment>
+    </unit>
+    <unit id="core.moderation.reason">
+      <segment>
+        <source>core.moderation.reason</source>
+        <target>Reason</target>
+      </segment>
+    </unit>
+    <unit id="core.moderation.refusal.decision">
+      <segment>
+        <source>core.moderation.refusal.decision</source>
+        <target>This decision does not suit the current state</target>
+      </segment>
+    </unit>
+    <unit id="core.moderation.refusal.reason">
+      <segment>
+        <source>core.moderation.refusal.reason</source>
+        <target>A rejection and a withdrawal carry a reason</target>
+      </segment>
+    </unit>
     <unit id="core.module.action.disable">
       <segment>
         <source>core.module.action.disable</source>

@@ -8,9 +8,12 @@ use AdzerCMS\Contracts\Module\Category;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Composer\Localized;
 use AdzerCMS\Core\Composer\Package;
+use AdzerCMS\Core\Moderation\Decision;
+use AdzerCMS\Core\Moderation\DecisionNotice;
+use AdzerCMS\Core\Moderation\Moderated;
 use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Core\Ui\Placed;
-use AdzerCMS\Extensions\ExtensionDecision;
+use AdzerCMS\Extensions\ExtensionEvent;
 use AdzerCMS\Extensions\ExtensionState;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,7 +27,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_extension_position', columns: ['position'])]
 #[ORM\Index(name: 'idx_extension_decision', columns: ['decision', 'position'])]
 #[ORM\Index(name: 'idx_extension_state', columns: ['state', 'position'])]
-class Extension implements Placed
+class Extension implements Placed, Moderated
 {
     public const PRICE = '99999999.99';
     private const VERSION = 64;
@@ -39,8 +42,8 @@ class Extension implements Placed
     #[ORM\JoinColumn(name: 'author_id', referencedColumnName: 'user_id', onDelete: 'CASCADE')]
     private ?ExtensionAuthor $author;
 
-    #[ORM\Column(length: 16, enumType: ExtensionDecision::class)]
-    private ExtensionDecision $decision;
+    #[ORM\Column(length: 16, enumType: Decision::class)]
+    private Decision $decision;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $reason = null;
@@ -100,7 +103,7 @@ class Extension implements Placed
     public function __construct(?ExtensionAuthor $author = null)
     {
         $this->author = $author;
-        $this->decision = null === $author ? ExtensionDecision::Published : ExtensionDecision::Pending;
+        $this->decision = null === $author ? Decision::Published : Decision::Pending;
         $this->categories = new ArrayCollection();
         $this->state = $this->resolve();
     }
@@ -115,7 +118,7 @@ class Extension implements Placed
         return $this->author;
     }
 
-    public function getDecision(): ExtensionDecision
+    public function getDecision(): Decision
     {
         return $this->decision;
     }
@@ -197,17 +200,24 @@ class Extension implements Placed
         return $this->state;
     }
 
-    public function decide(ExtensionDecision $decision, ?string $reason = null): void
+    public function decide(Decision $decision, ?string $reason = null): void
     {
         $this->decision = $decision;
         $this->reason = $reason;
         $this->state = $this->resolve();
     }
 
+    public function decisionNotice(): DecisionNotice
+    {
+        $author = $this->author ?? throw new \LogicException('an operator entry is published by its creation');
+
+        return new DecisionNotice($author->getUser(), ExtensionEvent::Decision, "extensions\0".$this->id, ['name' => $this->name, 'state' => $this->state->label()]);
+    }
+
     public function revise(): void
     {
-        if (ExtensionDecision::Rejected === $this->decision || ExtensionDecision::Withdrawn === $this->decision) {
-            $this->decide(ExtensionDecision::Pending);
+        if (Decision::Rejected === $this->decision || Decision::Withdrawn === $this->decision) {
+            $this->decide(Decision::Pending);
         }
     }
 
@@ -272,7 +282,9 @@ class Extension implements Placed
     private function resolve(): ExtensionState
     {
         return match (true) {
-            ExtensionDecision::Published !== $this->decision => $this->decision->state(),
+            Decision::Pending === $this->decision => ExtensionState::Pending,
+            Decision::Rejected === $this->decision => ExtensionState::Rejected,
+            Decision::Withdrawn === $this->decision => ExtensionState::Withdrawn,
             null === $this->version => ExtensionState::Missing,
             null !== $this->author && $this->authorKey !== $this->author->getKey() => ExtensionState::Unclaimed,
             default => ExtensionState::Published,

@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Contracts\Ui\AdminEntry;
 use AdzerCMS\Core\Account\LoginNames;
 use AdzerCMS\Core\Account\UserRemoval;
+use AdzerCMS\Core\Moderation\Decision;
 use AdzerCMS\Core\Tests\Configuration;
 use AdzerCMS\Core\Tests\Delivery;
 use AdzerCMS\Core\Tests\Queries;
@@ -15,7 +16,6 @@ use AdzerCMS\Core\Ui\Entries;
 use AdzerCMS\Core\Ui\Money;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Extensions\Entity\Extension;
-use AdzerCMS\Extensions\ExtensionDecision;
 use AdzerCMS\Extensions\ExtensionImages;
 use AdzerCMS\Extensions\ExtensionState;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -135,11 +135,11 @@ final class CatalogAdminTest extends CatalogTestCase
         $this->entry('acme/published', package: self::package('Published'));
         $this->entry('acme/missing');
         $this->entry('vendor/pending', package: self::package('Pending', author: $author->getKey()), author: $author);
-        $this->entry('vendor/keyed', package: self::package('Keyed', author: $author->getKey()), author: $author)->decide(ExtensionDecision::Published);
-        $this->entry('vendor/keyless', package: self::package('Keyless'), author: $author)->decide(ExtensionDecision::Published);
-        $this->entry('vendor/foreign', package: self::package('Foreign', author: $this->author('79990000003')->getKey()), author: $author)->decide(ExtensionDecision::Published);
-        $this->entry('vendor/rejected', author: $author)->decide(ExtensionDecision::Rejected, 'Not a module');
-        $this->entry('vendor/withdrawn', package: self::package('Withdrawn', author: $author->getKey()), author: $author)->decide(ExtensionDecision::Withdrawn, 'Broken demo');
+        $this->entry('vendor/keyed', package: self::package('Keyed', author: $author->getKey()), author: $author)->decide(Decision::Published);
+        $this->entry('vendor/keyless', package: self::package('Keyless'), author: $author)->decide(Decision::Published);
+        $this->entry('vendor/foreign', package: self::package('Foreign', author: $this->author('79990000003')->getKey()), author: $author)->decide(Decision::Published);
+        $this->entry('vendor/rejected', author: $author)->decide(Decision::Rejected, 'Not a module');
+        $this->entry('vendor/withdrawn', package: self::package('Withdrawn', author: $author->getKey()), author: $author)->decide(Decision::Withdrawn, 'Broken demo');
         $this->em->flush();
 
         self::assertSame($expected, self::names($this->fragment(self::LIST.'?state='.$state->value)));
@@ -156,24 +156,25 @@ final class CatalogAdminTest extends CatalogTestCase
         yield 'withdrawn' => [ExtensionState::Withdrawn, ['vendor/withdrawn']];
     }
 
+    #[Group('ACMS-CORE-1198')]
     #[Group('ACMS-EXT-0009')]
     #[Group('ACMS-EXT-0014')]
     #[Group('ACMS-US-0035')]
     #[Group('ACMS-US-0044')]
     #[DataProvider('decisions')]
-    public function testOperatorDecisionOnAuthorEntryReachesTheAuthor(ExtensionDecision $from, ExtensionDecision $decision, string $reason): void
+    public function testOperatorDecisionOnAuthorEntryReachesTheAuthor(Decision $from, Decision $decision, string $reason): void
     {
         $this->configure(self::MAIL);
         $author = $this->author('79990000002', 'author@example.org');
         $entry = $this->entry('vendor/tool', package: self::package('Tool', author: $author->getKey()), author: $author);
-        $entry->decide($from, ExtensionDecision::Pending === $from ? null : 'Earlier');
+        $entry->decide($from, Decision::Pending === $from ? null : 'Earlier');
         $this->em->flush();
         $record = self::LIST.'/'.$entry->getId();
 
         $this->post($record, ['name' => 'vendor/other', 'type' => 'theme', 'demo' => '']);
         $card = $this->client->request('GET', $record);
         self::assertCount(0, $card->filter('input[name="name"]'), 'the operator does not edit fields of an author entry');
-        self::assertSame(array_map(static fn (ExtensionDecision $next): string => $next->value, $from->next()),
+        self::assertSame(array_map(static fn (Decision $next): string => $next->value, $from->next()),
             $card->filter('input[name="decision"]')->each(static fn (Crawler $field): string => (string) $field->attr('value')));
 
         $this->post($record.'/decide', ['decision' => $decision->value, 'reason' => $reason]);
@@ -187,23 +188,24 @@ final class CatalogAdminTest extends CatalogTestCase
         self::assertStringContainsString($reason, $this->letterText());
     }
 
-    /** @return iterable<string, array{ExtensionDecision, ExtensionDecision, string}> */
+    /** @return iterable<string, array{Decision, Decision, string}> */
     public static function decisions(): iterable
     {
-        yield 'publication of a pending entry' => [ExtensionDecision::Pending, ExtensionDecision::Published, ''];
-        yield 'rejection of a pending entry' => [ExtensionDecision::Pending, ExtensionDecision::Rejected, 'No demo'];
-        yield 'withdrawal of a published entry' => [ExtensionDecision::Published, ExtensionDecision::Withdrawn, 'Broken demo'];
+        yield 'publication of a pending entry' => [Decision::Pending, Decision::Published, ''];
+        yield 'rejection of a pending entry' => [Decision::Pending, Decision::Rejected, 'No demo'];
+        yield 'withdrawal of a published entry' => [Decision::Published, Decision::Withdrawn, 'Broken demo'];
     }
 
+    #[Group('ACMS-CORE-1198')]
     #[Group('ACMS-EXT-0009')]
     #[Group('ACMS-US-0035')]
     #[DataProvider('refusedDecisions')]
-    public function testDecisionOutsideItsRuleIsRefused(ExtensionDecision $from, string $decision, string $reason, string $refusal): void
+    public function testDecisionOutsideItsRuleIsRefused(Decision $from, string $decision, string $reason, string $refusal): void
     {
         $this->configure(self::MAIL);
         $author = $this->author('79990000002', 'author@example.org');
         $entry = $this->entry('vendor/tool', author: $author);
-        $entry->decide($from, ExtensionDecision::Pending === $from ? null : 'Earlier');
+        $entry->decide($from, Decision::Pending === $from ? null : 'Earlier');
         $this->em->flush();
 
         $card = $this->post(self::LIST.'/'.$entry->getId().'/decide', ['decision' => $decision, 'reason' => $reason]);
@@ -213,12 +215,12 @@ final class CatalogAdminTest extends CatalogTestCase
         self::assertEmailCount(0);
     }
 
-    /** @return iterable<string, array{ExtensionDecision, string, string, string}> */
+    /** @return iterable<string, array{Decision, string, string, string}> */
     public static function refusedDecisions(): iterable
     {
-        yield 'rejection without a reason' => [ExtensionDecision::Pending, 'rejected', '  ', 'extensions.refusal.reason'];
-        yield 'decision the state does not lead to' => [ExtensionDecision::Rejected, 'published', '', 'extensions.refusal.decision'];
-        yield 'unknown decision' => [ExtensionDecision::Pending, 'approved', '', 'extensions.refusal.decision'];
+        yield 'rejection without a reason' => [Decision::Pending, 'rejected', '  ', 'core.moderation.refusal.reason'];
+        yield 'decision the state does not lead to' => [Decision::Rejected, 'published', '', 'core.moderation.refusal.decision'];
+        yield 'unknown decision' => [Decision::Pending, 'approved', '', 'core.moderation.refusal.decision'];
     }
 
     #[Group('ACMS-EXT-0008')]

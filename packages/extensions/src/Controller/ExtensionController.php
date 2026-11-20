@@ -6,6 +6,8 @@ namespace AdzerCMS\Extensions\Controller;
 
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Moderation\Decision;
+use AdzerCMS\Core\Moderation\Moderation;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Fragment;
@@ -13,7 +15,6 @@ use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\Catalog;
 use AdzerCMS\Extensions\Entity\Extension;
-use AdzerCMS\Extensions\ExtensionDecision;
 use AdzerCMS\Extensions\ExtensionState;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,6 +36,7 @@ final class ExtensionController extends AbstractController
     public function __construct(
         private readonly ExtensionRepository $extensions,
         private readonly Catalog $catalog,
+        private readonly Moderation $moderation,
         private readonly EntityManagerInterface $em,
     ) {
     }
@@ -54,7 +56,7 @@ final class ExtensionController extends AbstractController
     #[Route('/order', name: 'admin_extensions_order', methods: ['POST'])]
     public function order(Request $request): Response
     {
-        Order::place($this->extensions->ordered(), Order::moved($request), static fn (Extension $entry): ExtensionDecision => $entry->getDecision());
+        Order::place($this->extensions->ordered(), Order::moved($request), static fn (Extension $entry): Decision => $entry->getDecision());
         $this->em->flush();
 
         return $this->render('@Extensions/admin/_extensions.html.twig', $this->listing($request));
@@ -75,12 +77,12 @@ final class ExtensionController extends AbstractController
     #[Route('/{id}/decide', name: 'admin_extension_decide', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function decide(Extension $extension, Request $request): Response
     {
-        $refusal = $this->catalog->decide($extension, ExtensionDecision::tryFrom($request->request->getString('decision')), $request->request->getString('reason'));
+        $refusal = $this->moderation->decide($extension, Decision::tryFrom($request->request->getString('decision')), $request->request->getString('reason'));
         if (null !== $refusal) {
             return $this->card($extension, $refusal->reason);
         }
 
-        $this->addFlash(ExtensionDecision::Published === $extension->getDecision() && ExtensionState::Published !== $extension->state() ? 'error' : 'success',
+        $this->addFlash(Decision::Published === $extension->getDecision() && ExtensionState::Published !== $extension->state() ? 'error' : 'success',
             t('extensions.flash.decided', ['name' => $extension->getName(), 'state' => $extension->state()->label()]));
 
         return Fragment::go($this->generateUrl(self::LIST));
