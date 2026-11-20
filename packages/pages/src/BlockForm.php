@@ -19,6 +19,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 
+use function Symfony\Component\Translation\t;
+
 final readonly class BlockForm
 {
     public const TYPE = 'type';
@@ -40,20 +42,60 @@ final readonly class BlockForm
     }
 
     /**
-     * @param array<string, mixed> $values
+     * @param array<string, mixed>  $values
+     * @param array<string, string> $stored
      *
      * @return array<string, string|list<array<string, string>>>
      */
-    public static function shown(Block $type, array $values, ?PageBlock $block): array
+    public static function shown(Block $type, array $values, array $stored): array
     {
         $shown = [];
         foreach ($type->fields() as $field) {
             $shown[$field->name] = $field->type->picture()
-                ? $block?->getValues()[$field->name] ?? ''
+                ? $stored[$field->name] ?? ''
                 : Values::form($field, Values::posted($field, $values[$field->name] ?? null) ?? '');
         }
 
         return $shown;
+    }
+
+    /**
+     * @param array<string, string> $stored
+     *
+     * @return array{array<string, string>, list<Refusal>}
+     */
+    public function posted(Block $type, Request $request, array $stored): array
+    {
+        [$values, $uploads, $refusals] = $this->checked($type, $request, $stored);
+
+        return [[] === $refusals ? $this->placed($values, $uploads) : [], $refusals];
+    }
+
+    /**
+     * @param array<string, string> $values
+     *
+     * @return array<string, string>|Refusal
+     */
+    public function stored(Block $type, array $values): array|Refusal
+    {
+        $stored = [];
+        foreach ($type->fields() as $field) {
+            $value = $values[$field->name] ?? '';
+            $value = $field->type->picture() ? $value : $this->value($type, $field, $value);
+            if ($value instanceof Refusal) {
+                return $value;
+            }
+            foreach (self::named($field, $value) as $name) {
+                if (null === $this->pictures->path($name)) {
+                    return new Refusal(t('pages.refusal.picture', ['field' => $field->label]));
+                }
+            }
+            if ('' !== $value) {
+                $stored[$field->name] = $value;
+            }
+        }
+
+        return $stored;
     }
 
     /** @return PageBlock|list<Refusal> */
@@ -80,12 +122,11 @@ final readonly class BlockForm
     public function fill(PageBlock $block, Block $type, Request $request): array
     {
         $before = $block->getValues();
-        [$values, $uploads, $refusals] = $this->checked($type, $request, $before);
+        [$values, $refusals] = $this->posted($type, $request, $before);
         if ([] !== $refusals) {
             return $refusals;
         }
 
-        $values = $this->placed($values, $uploads);
         $block->fill($values);
         $this->em->flush();
         $this->pictures->drop(array_diff(Pictures::names($before), Pictures::names($values)));
@@ -159,10 +200,7 @@ final readonly class BlockForm
             if (\is_array($input) && [] !== self::pictures($field)) {
                 $input = self::cells($field, $input, $files[$field->name] ?? [], $dropped[$field->name] ?? [], $stored[$field->name] ?? '', $uploads, $refusals);
             }
-            $value = Values::check($field, Values::posted($field, $input) ?? '');
-            if (\is_string($value) && '' !== $value) {
-                $value = $type->check($field, $value) ?? $this->values->check($field, $value) ?? $value;
-            }
+            $value = $this->value($type, $field, Values::posted($field, $input) ?? '');
             if ($value instanceof Refusal) {
                 $refusals[] = $value;
             } elseif ('' !== $value) {
@@ -171,6 +209,28 @@ final readonly class BlockForm
         }
 
         return [$values, $uploads, $refusals];
+    }
+
+    private function value(Block $type, Field $field, string $value): string|Refusal
+    {
+        $value = Values::check($field, $value);
+
+        return \is_string($value) && '' !== $value ? $type->check($field, $value) ?? $this->values->check($field, $value) ?? $value : $value;
+    }
+
+    /** @return list<string> */
+    private static function named(Field $field, string $value): array
+    {
+        if ($field->type->picture()) {
+            return '' === $value ? [] : [$value];
+        }
+        $cells = array_flip(self::pictures($field));
+        $names = [];
+        foreach ([] === $cells ? [] : Values::entries($field, $value) as $row) {
+            array_push($names, ...array_values(array_intersect_key($row, $cells)));
+        }
+
+        return array_values(array_filter($names, static fn (string $name): bool => '' !== $name));
     }
 
     /**

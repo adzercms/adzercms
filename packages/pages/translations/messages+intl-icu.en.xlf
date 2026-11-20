@@ -373,6 +373,12 @@
         <target>Address: / or words of lowercase letters, digits and hyphens joined by /</target>
       </segment>
     </unit>
+    <unit id="pages.refusal.picture">
+      <segment>
+        <source>pages.refusal.picture</source>
+        <target>{field}: the picture is not found, upload it again</target>
+      </segment>
+    </unit>
     <unit id="pages.refusal.path_former">
       <segment>
         <source>pages.refusal.path_former</source>

@@ -28,8 +28,9 @@ final class BlockController extends AbstractController
 {
     public const NEW = 'admin_page_block_new';
     public const ORDER = 'admin_page_blocks_order';
+    public const DIALOG = '@Pages/admin/_block.html.twig';
 
-    private const DIALOG = '@Pages/admin/_block.html.twig';
+    private const EDIT = 'admin_page_block';
 
     public function __construct(
         private readonly Blocks $types,
@@ -70,7 +71,7 @@ final class BlockController extends AbstractController
         return $this->dialog($page, null, $type, $types, $refusals, $posted ? $request->request->all(BlockForm::VALUE) : []);
     }
 
-    #[Route('/blocks/{id}', name: 'admin_page_block', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route('/blocks/{id}', name: self::EDIT, requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(PageBlock $block, Request $request): Response
     {
         $type = $this->types->find($block->getType()) ?? throw $this->createNotFoundException();
@@ -107,10 +108,10 @@ final class BlockController extends AbstractController
     {
         return $this->render(self::DIALOG, [
             'page' => $page,
-            'block' => $block,
+            'action' => null === $block ? $this->generateUrl(self::NEW, ['id' => $page->getId()]) : $this->generateUrl(self::EDIT, ['id' => $block->getId()]),
             'type' => $type,
             'types' => $types,
-            'values' => BlockForm::shown($type, $values, $block),
+            'values' => BlockForm::shown($type, $values, $block?->getValues() ?? []),
             'refusals' => $refusals,
         ]);
     }

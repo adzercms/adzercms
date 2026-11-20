@@ -373,6 +373,12 @@
         <target>Адрес: / либо слова из строчных букв, цифр и дефиса через /</target>
       </segment>
     </unit>
+    <unit id="pages.refusal.picture">
+      <segment>
+        <source>pages.refusal.picture</source>
+        <target>{field}: картинка не найдена, загрузите её снова</target>
+      </segment>
+    </unit>
     <unit id="pages.refusal.path_former">
       <segment>
         <source>pages.refusal.path_former</source>
