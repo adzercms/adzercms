@@ -13,6 +13,7 @@ use AdzerCMS\Core\Confirmation\ConfirmationService;
 use AdzerCMS\Core\Login\Authorizations;
 use AdzerCMS\Core\Notice\Notifier;
 use AdzerCMS\Core\Security\Entry;
+use AdzerCMS\Core\Ui\PublicForm;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,6 +30,7 @@ final class RegistrationController extends AbstractController
         private readonly Captcha $captcha,
         private readonly Entry $entry,
         private readonly Notifier $notifier,
+        private readonly PublicForm $form,
     ) {
     }
 
@@ -42,6 +44,7 @@ final class RegistrationController extends AbstractController
         if ($request->isMethod('POST')) {
             $error = match (true) {
                 !$this->captcha->passed($request) => t('cabinet.register.captcha'),
+                null !== ($often = $this->form->often(self::class, (string) $request->getClientIp())) => $often->reason,
                 default => match ($this->confirmations->requestRegistration($contact)) {
                     ContactOutcome::Sent => null,
                     ContactOutcome::TooOften => t('core.confirmation.too_often'),

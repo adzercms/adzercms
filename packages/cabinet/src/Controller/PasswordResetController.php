@@ -10,6 +10,7 @@ use AdzerCMS\Core\Captcha\Captcha;
 use AdzerCMS\Core\Confirmation\ConfirmationService;
 use AdzerCMS\Core\Confirmation\Purpose;
 use AdzerCMS\Core\Notice\Notifier;
+use AdzerCMS\Core\Ui\PublicForm;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +24,7 @@ final class PasswordResetController extends AbstractController
         private readonly ConfirmationService $resets,
         private readonly Captcha $captcha,
         private readonly Notifier $notifier,
+        private readonly PublicForm $form,
     ) {
     }
 
@@ -36,6 +38,8 @@ final class PasswordResetController extends AbstractController
         if ($request->isMethod('POST')) {
             if (!$this->captcha->passed($request)) {
                 $error = t('cabinet.register.captcha');
+            } elseif (null !== ($often = $this->form->often(self::class, (string) $request->getClientIp()))) {
+                $error = $often->reason;
             } else {
                 $this->resets->request($login);
                 $this->addFlash('success', t($code ? 'cabinet.reset.code_sent' : 'cabinet.reset.link_sent'));
