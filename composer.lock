@@ -1170,7 +1170,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/pages",
-                "reference": "9763e4cbf8805e29bf719ca6b89c1ad345f3c32d"
+                "reference": "eb443190b3e076d26f24af2411bf9b0d8dd8ff33"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -1184,6 +1184,8 @@
                 "ext-imagick": "*",
                 "ext-mbstring": "*",
                 "php": ">=8.4",
+                "symfony/clock": "7.4.*",
+                "symfony/console": "7.4.*",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/framework-bundle": "7.4.*",
                 "symfony/http-foundation": "7.4.*",

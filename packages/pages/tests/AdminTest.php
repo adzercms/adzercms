@@ -134,6 +134,11 @@ final class AdminTest extends SchemaTestCase
         self::assertNull(self::service(Pictures::class)->path($dropped->getValues()['picture']), 'a dropped block takes its file');
 
         $kept = $this->hero($page, 'Support')->getValues()['picture'];
+        $copy = new PageBlock($this->reread($page), 'hero', ['title' => 'Support copy', 'picture' => $kept]);
+        $this->em->persist($copy);
+        $this->em->flush();
+        $this->post(self::LIST.'/blocks/'.$copy->getId().'/drop');
+        self::assertNotNull(self::service(Pictures::class)->path($kept), 'a picture another block holds stays');
         $this->post($record.'/drop');
         self::assertNull(self::service(Pictures::class)->path($kept), 'a dropped page takes the files of its blocks');
     }
