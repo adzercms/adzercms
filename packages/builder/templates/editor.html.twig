@@ -15,6 +15,7 @@
 {% block shell %}
 <div class="builder" data-builder data-title="{{ page.title }}" data-frame="{{ frame }}" data-save="{{ save }}" data-version="{{ version }}" data-blocks="{{ blocks|json_encode }}" data-types="{{ types|json_encode }}" data-style="{{ sectors|json_encode }}"
      data-pictures="{{ pictures|json_encode }}" data-upload="{{ upload }}" data-accept="{{ accept }}"
+     data-free="{{ free }}" data-elements="{{ elements|json_encode }}" data-elements-label="{{ 'builder.elements'|trans }}" data-traits="{{ {link: 'builder.trait.link'|trans, alt: 'builder.trait.alt'|trans}|json_encode }}"
      data-screens="{{ screens|map(screen => {id: screen.id, media: screen.media, width: screen.width})|json_encode }}"
      data-unavailable="{{ 'pages.block.unavailable'|trans }}" data-failed="{{ 'builder.failed'|trans }}" data-leave="{{ 'builder.leave'|trans }}" data-edit="{{ 'core.action.edit'|trans }}">
     <template data-edit-icon>{{ icon.edit() }}</template>
@@ -39,6 +40,8 @@
     </aside>
     <div class="builder-canvas" data-canvas></div>
     <aside class="builder-style">
+        <h2 class="builder-heading">{{ 'builder.traits'|trans }}</h2>
+        <div data-traits-panel></div>
         <h2 class="builder-heading">{{ 'builder.style'|trans }}</h2>
         <div data-style-panel></div>
     </aside>

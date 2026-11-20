@@ -1,3 +1,3 @@
 {% embed '@Theme/_section.html.twig' with {class: 'site-free'} %}
-    {% block content %}{% import '@Builder/blocks/_elements.html.twig' as free %}{{ free.elements(data.elements) }}{% endblock %}
+    {% block content %}{% import '@Builder/blocks/_elements.html.twig' as free %}<div class="site-free-body">{{ free.elements(data.elements) }}</div>{% endblock %}
 {% endembed %}

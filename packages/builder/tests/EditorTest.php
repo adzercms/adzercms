@@ -224,7 +224,7 @@ final class EditorTest extends SchemaTestCase
         $drawn = json_decode((string) $this->client->getResponse()->getContent(), true);
         self::assertSame([], $drawn['values']);
         $empty = new Crawler($drawn['html']);
-        self::assertSame([1, 0], [$empty->filter('#'.$drawn['anchor'].'.site-free')->count(), $empty->filter('.site-section-inner > *')->count()], 'a new free block comes empty');
+        self::assertSame([1, 0], [$empty->filter('#'.$drawn['anchor'].'.site-free')->count(), $empty->filter('.site-free-body > *')->count()], 'a new free block comes empty');
 
         $tree = [
             ['kind' => 'text', 'key' => 'intro', 'paragraphs' => [

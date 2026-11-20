@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Builder\Controller;
 
+use AdzerCMS\Builder\FreeBlock;
 use AdzerCMS\Builder\PageDocument;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Account\Role;
@@ -83,6 +84,8 @@ final class EditorController extends AbstractController
             'pictures' => $this->pictures->listed(),
             'upload' => $this->generateUrl(self::PICTURES, ['id' => $page->getId()]),
             'accept' => implode(',', Photos::TYPES),
+            'free' => FreeBlock::KEY,
+            'elements' => array_map(fn (string $kind): array => ['kind' => $kind, 'label' => $this->translator->trans('builder.element.'.$kind)], FreeBlock::kinds()),
         ]);
     }
 

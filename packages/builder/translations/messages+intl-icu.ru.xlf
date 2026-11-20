@@ -25,6 +25,42 @@
         <target>Блоки</target>
       </segment>
     </unit>
+    <unit id="builder.element.box">
+      <segment>
+        <source>builder.element.box</source>
+        <target>Контейнер</target>
+      </segment>
+    </unit>
+    <unit id="builder.element.button">
+      <segment>
+        <source>builder.element.button</source>
+        <target>Кнопка</target>
+      </segment>
+    </unit>
+    <unit id="builder.element.line">
+      <segment>
+        <source>builder.element.line</source>
+        <target>Разделитель</target>
+      </segment>
+    </unit>
+    <unit id="builder.element.picture">
+      <segment>
+        <source>builder.element.picture</source>
+        <target>Картинка</target>
+      </segment>
+    </unit>
+    <unit id="builder.element.text">
+      <segment>
+        <source>builder.element.text</source>
+        <target>Текст</target>
+      </segment>
+    </unit>
+    <unit id="builder.elements">
+      <segment>
+        <source>builder.elements</source>
+        <target>Элементы</target>
+      </segment>
+    </unit>
     <unit id="builder.exit">
       <segment>
         <source>builder.exit</source>
@@ -119,6 +155,24 @@
       <segment>
         <source>builder.title</source>
         <target>{title} · Конструктор</target>
+      </segment>
+    </unit>
+    <unit id="builder.trait.alt">
+      <segment>
+        <source>builder.trait.alt</source>
+        <target>Описание картинки</target>
+      </segment>
+    </unit>
+    <unit id="builder.trait.link">
+      <segment>
+        <source>builder.trait.link</source>
+        <target>Ссылка</target>
+      </segment>
+    </unit>
+    <unit id="builder.traits">
+      <segment>
+        <source>builder.traits</source>
+        <target>Свойства</target>
       </segment>
     </unit>
     <unit id="builder.undo">

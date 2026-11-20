@@ -107,6 +107,12 @@ final readonly class FreeBlock implements Block
         };
     }
 
+    /** @return list<string> */
+    public static function kinds(): array
+    {
+        return array_keys(self::KINDS);
+    }
+
     public static function link(string $link): bool
     {
         return 1 !== preg_match(self::SPACE, $link) && (

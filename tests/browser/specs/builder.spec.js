@@ -20,6 +20,17 @@ const saving = async (page) => {
     return sent;
 };
 
+const carry = async (page, from, to, below = false) => {
+    await from.hover();
+    await page.mouse.down();
+    const place = await to.boundingBox();
+    const [x, y] = [place.x + place.width / 2, below ? place.y + place.height - 4 : place.y + place.height / 4];
+    await page.mouse.move(x, y, { steps: 10 });
+    await page.mouse.move(x, y + 1);
+
+    return place;
+};
+
 const hold = (page, line) => expect.poll(
     () => page.locator('.gjs-placeholder').evaluateAll((nodes, top) => Math.min(...nodes.filter((node) => node.style.display === 'block').map((node) => Math.abs(node.getBoundingClientRect().top - top))), line),
     'the placeholder shows the place before the release',
@@ -53,7 +64,8 @@ test('[ACMS-BLD-0001][ACMS-US-0077] the editor shows the page on the site frame 
     await expect(canvas(page).locator('html[data-theme]'), 'the canvas takes the theme of the site').toHaveCount(1);
     await expect(canvas(page).locator('.site-header'), 'the canvas carries the site frame').toBeVisible();
     await expect(canvas(page).locator('.site-header'), 'the canvas carries the styles of the site').toHaveCSS('position', 'sticky');
-    await expect(page.locator('[data-layers] .gjs-layer-name'), 'the layers are the page and its blocks').toHaveText([/./, ...blocks.map((block) => block.label)]);
+    await page.locator('[data-layers] .gjs-layer-caret').first().click();
+    await expect(page.locator('[data-layers] .gjs-layer-name:visible'), 'the layers are the page and its blocks').toHaveText([/./, ...blocks.map((block) => block.label)]);
 });
 
 test('[ACMS-BLD-0001][ACMS-FLOW-0022] a screen width of the bar narrows the canvas to it', async ({ page }) => {
@@ -103,15 +115,11 @@ test('[ACMS-BLD-0002][ACMS-FLOW-0022] a block leaves after a question, the docum
 
 test('[ACMS-BLD-0002][ACMS-FLOW-0022] a block moves by dragging its layer', async ({ page }) => {
     const blocks = JSON.parse(await page.locator('[data-builder]').getAttribute('data-blocks'));
-    const layers = page.locator('[data-layers] .gjs-layer-name');
+    const layers = page.locator('[data-layers] .gjs-layer-name:visible');
     await page.locator('[data-layers] .gjs-layer-caret').first().click();
     await expect(layers).toHaveCount(blocks.length + 1);
 
-    const from = await page.locator('[data-layers] [data-toggle-move]').last().boundingBox();
-    const to = await page.locator('[data-layers] .gjs-layer').nth(1).boundingBox();
-    await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
-    await page.mouse.down();
-    await page.mouse.move(to.x + to.width / 2, to.y + to.height / 4, { steps: 10 });
+    const to = await carry(page, page.locator('[data-layers] [data-toggle-move]:visible').last(), page.locator('[data-layers] .gjs-layer').nth(1));
     await hold(page, to.y);
     await page.mouse.up();
 
@@ -198,10 +206,7 @@ test('[ACMS-BLD-0003][ACMS-FLOW-0022] a block of the panel takes its place by dr
     const dialog = page.locator('#record');
     const ready = canvas(page).locator(READY);
     const drag = async () => {
-        const place = await ready.first().boundingBox();
-        await page.locator('[data-palette] .gjs-block', { hasText: kind.label }).hover();
-        await page.mouse.down();
-        await page.mouse.move(place.x + place.width / 2, place.y + place.height / 4, { steps: 10 });
+        const place = await carry(page, page.locator(`[data-palette] [data-type="${kind.type}"]`), ready.first());
         await hold(page, place.y);
         await page.mouse.up();
         await expect(dialog, 'a dropped block asks for its values').toBeVisible();
@@ -275,4 +280,72 @@ test('[ACMS-BLD-0006][ACMS-FLOW-0022] a block takes its style from the panel, th
     if (styled > 0) {
         expect(sent[0].blocks[styled].style, 'saving keeps the style of other blocks').toEqual(blocks[styled].style);
     }
+});
+
+test('[ACMS-BLD-0004][ACMS-FLOW-0022] a free block takes its elements by dragging, its text changes in place, an element takes its link and style, saving sends the tree', async ({ page }) => {
+    const root = page.locator('[data-builder]');
+    const blocks = JSON.parse(await root.getAttribute('data-blocks'));
+    const free = await root.getAttribute('data-free');
+    test.skip(!JSON.parse(await root.getAttribute('data-types')).some((one) => one.type === free), 'the instance has no free block');
+    const labels = Object.fromEntries(JSON.parse(await root.getAttribute('data-elements')).map(({ kind, label }) => [kind, label]));
+    const ready = canvas(page).locator(READY);
+    const body = canvas(page).locator('.site-free-body').first();
+    const property = (name) => page.locator(`[data-style-panel] .gjs-sm-property__${name} input`);
+    const drag = async (from, to, below = false) => {
+        await carry(page, page.locator(`[data-palette] ${from}`), to, below);
+        await expect.poll(() => page.locator('.gjs-placeholder').evaluateAll((nodes) => nodes.some((node) => node.style.display === 'block')), 'the placeholder shows the place before the release').toBe(true);
+        await page.mouse.up();
+    };
+
+    const stored = blocks.findIndex((block) => block.type === free && block.values.elements);
+    if (stored >= 0) {
+        const tree = JSON.parse(blocks[stored].values.elements);
+        await expect(canvas(page).locator(`#${blocks[stored].anchor} [data-element]`), 'the canvas shows the elements of a stored free block').toHaveCount(JSON.stringify(tree).match(/"key":/g).length);
+        const sent = await saving(page);
+        await page.click('[data-save-document]');
+        await expect(page.locator('[data-status]')).toHaveText('saved');
+        expect(JSON.parse(sent[0].blocks[stored].values.elements), 'an untouched free block goes back with its tree').toEqual(tree);
+        expect(sent[0].blocks[stored].style).toEqual(blocks[stored].style);
+    }
+
+    await drag(`[data-type="${free}"]`, ready.first());
+    await expect(ready, 'a free block takes its place without a dialog').toHaveCount(blocks.length + 1);
+    await expect(page.locator('#record')).toBeHidden();
+    await expect(ready.first()).toHaveClass(/site-free/);
+
+    await drag('[data-element-kind="text"]', body);
+    await expect(body.locator('[data-element]')).toHaveCount(1);
+    await drag('[data-element-kind="button"]', body, true);
+    await expect(body.locator('[data-element]'), 'the elements go into the free block').toHaveCount(2);
+
+    const text = body.locator('.prose[data-element]');
+    await text.dblclick();
+    await page.keyboard.press('ControlOrMeta+A');
+    await page.keyboard.type('Fiber to every flat');
+    await page.keyboard.press('ControlOrMeta+A');
+    await page.locator('.gjs-rte-action').first().click();
+    await expect(text.locator('b, strong'), 'the text takes the bold of the editor in place').toHaveText('Fiber to every flat');
+
+    await body.locator('a.button').click();
+    await page.locator('[data-traits-panel] input').first().fill('https://t.me/fiber');
+    await page.locator('[data-traits-panel] input').first().press('Tab');
+    await expect(body.locator('a.button')).toHaveAttribute('href', 'https://t.me/fiber');
+
+    await text.click();
+    if (!(await property('color').isVisible())) {
+        await page.locator('[data-style-panel] .gjs-sm-sector__text .gjs-sm-sector-title').click();
+    }
+    await property('color').fill('#112233');
+    await property('color').press('Enter');
+    await expect(text, 'an element takes the style of the panel').toHaveCSS('color', 'rgb(17, 34, 51)');
+
+    const sent = await saving(page);
+    await page.click('[data-save-document]');
+    await expect(page.locator('[data-status]')).toHaveText('saved');
+    const [placed] = sent[0].blocks;
+    expect(placed, 'saving sends the free block with the style of its elements by their keys').toMatchObject({ id: null, type: free, style: { e1: { desktop: { color: '#112233' } } } });
+    expect(JSON.parse(placed.values.elements), 'saving sends the tree of the elements').toEqual([
+        { kind: 'text', key: 'e1', paragraphs: [[{ text: 'Fiber to every flat', bold: true }]] },
+        { kind: 'button', key: 'e2', label: labels.button, link: 'https://t.me/fiber' },
+    ]);
 });
