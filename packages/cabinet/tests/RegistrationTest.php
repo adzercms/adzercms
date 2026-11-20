@@ -175,6 +175,7 @@ final class RegistrationTest extends SchemaTestCase
         self::assertCount(3, self::service(NoticeRepository::class)->findAll());
     }
 
+    #[Group('ACMS-CORE-1196')]
     #[Group('ACMS-US-0001')]
     #[Group('ACMS-US-0002')]
     public function testCodeRequestsOfOneAddressStopAtThePublicFormLimit(): void

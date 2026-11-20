@@ -180,7 +180,7 @@ final class SettingsTest extends SchemaTestCase
     }
 
     #[DataProvider('windows')]
-    #[Group('ACMS-CORE-1066')]
+    #[Group('ACMS-CORE-1197')]
     public function testMomentIsWithinTimeWindowAcrossMidnight(string $from, string $to, string $at, bool $within): void
     {
         $this->save(new Field(self::FROM, t('From'), Type::Time), $from);
