@@ -56,7 +56,10 @@ jobs:
         with:
           ref: ${{ github.ref_type == 'tag' && github.ref || 'main' }}
           persist-credentials: false
-      - working-directory: packages/${{ matrix.package }}
+      - id: head
+        run: echo "current=$([ "$(git rev-parse HEAD)" = "$GITHUB_SHA" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - if: &current steps.head.outputs.current == 'true'
+        working-directory: packages/${{ matrix.package }}
         env:
           GH_TOKEN: ${{ secrets.SPLIT_TOKEN }}
           PACKAGIST_USERNAME: ${{ vars.PACKAGIST_USERNAME }}
@@ -98,14 +101,16 @@ jobs:
               '{name: "web", events: ["push"], config: {url: $url, content_type: "json", secret: $secret}}' \
               | gh api -X POST "repos/$REPO/hooks" --input - >/dev/null
           fi
-      - working-directory: packages/${{ matrix.package }}
+      - if: *current
+        working-directory: packages/${{ matrix.package }}
         run: |
           if [ "$(jq -r .type composer.json)" = project ]; then exit 0; fi
           jq -r --arg monorepo "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" \
             '"# \(.name)\n\n\(.description)\n\nRead-only package repository: changes go to the monorepository \($monorepo)."' \
             composer.json > README.md
           if [ ! -f LICENSE ] && [ -f ../../LICENSE ]; then cp ../../LICENSE LICENSE; fi
-      - uses: danharrin/monorepo-split-github-action@14e42e2437f674b8987c1f50ca3689116aea1893
+      - if: *current
+        uses: danharrin/monorepo-split-github-action@14e42e2437f674b8987c1f50ca3689116aea1893
         env:
           GITHUB_TOKEN: ${{ secrets.SPLIT_TOKEN }}
         with:
