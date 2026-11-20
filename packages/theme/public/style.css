@@ -1646,15 +1646,38 @@ form[data-steps] [data-step]:not(.current) { display: none; }
     .chart-time:nth-child(even) { display: none; }
 }
 
+.chart-field { position: relative; touch-action: pan-y; }
 .chart-plot { display: block; width: 100%; height: var(--chart-height); background: var(--bg-gray); border-radius: var(--radius); }
 .chart-grid { stroke: var(--border-light); stroke-width: 1; vector-effect: non-scaling-stroke; }
-.chart-line { fill: none; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.chart-line { fill: none; stroke: var(--tone); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .chart-line.is-off { display: none; }
 
-.chart-toggle:nth-of-type(4n + 1) input, .chart-line:nth-of-type(4n + 1) { accent-color: var(--primary); stroke: var(--primary); }
-.chart-toggle:nth-of-type(4n + 2) input, .chart-line:nth-of-type(4n + 2) { accent-color: var(--warning); stroke: var(--warning); }
-.chart-toggle:nth-of-type(4n + 3) input, .chart-line:nth-of-type(4n + 3) { accent-color: var(--success); stroke: var(--success); }
-.chart-toggle:nth-of-type(4n) input, .chart-line:nth-of-type(4n) { accent-color: var(--error); stroke: var(--error); }
+.chart-probe { position: absolute; top: 0; height: var(--chart-height); border-left: 1px solid var(--text-gray); pointer-events: none; }
+.chart-readout {
+    position: absolute;
+    top: 0.3rem;
+    left: 0.5rem;
+    z-index: 1;
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.4rem 0.6rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+.chart-probe.is-flipped .chart-readout { left: auto; right: 0.5rem; }
+.chart-value { display: flex; align-items: center; gap: 0.4rem; color: var(--text-gray); }
+.chart-value::before { content: ''; width: 0.7rem; height: 2px; border-radius: 1px; background: var(--tone); }
+.chart-value output { margin-left: auto; padding-left: 0.6rem; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+
+.chart-toggle input { accent-color: var(--tone); }
+.chart-toggle:nth-of-type(4n + 1), .chart-line:nth-of-type(4n + 1), .chart-value:nth-of-type(4n + 1) { --tone: var(--primary); }
+.chart-toggle:nth-of-type(4n + 2), .chart-line:nth-of-type(4n + 2), .chart-value:nth-of-type(4n + 2) { --tone: var(--warning); }
+.chart-toggle:nth-of-type(4n + 3), .chart-line:nth-of-type(4n + 3), .chart-value:nth-of-type(4n + 3) { --tone: var(--success); }
+.chart-toggle:nth-of-type(4n), .chart-line:nth-of-type(4n), .chart-value:nth-of-type(4n) { --tone: var(--error); }
 
 .doc-sheet { padding: 1.5rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); }
 .doc-sheet > iframe { display: block; width: 100%; border: 0; }

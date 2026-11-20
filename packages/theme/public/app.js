@@ -783,6 +783,53 @@ document.addEventListener('change', event => {
     }
 });
 
+let probed = null;
+
+const unprobe = () => {
+    probed?.querySelector('.chart-probe').setAttribute('hidden', '');
+    probed = null;
+};
+
+const probe = event => {
+    const field = event.target.closest?.('.chart-field');
+    if (!field) {
+        return false;
+    }
+
+    const shares = field.dataset.shares.split(',').map(Number);
+    const box = field.getBoundingClientRect();
+    const share = (event.clientX - box.left) / box.width;
+    const at = shares.reduce((near, value, index) => Math.abs(value - share) < Math.abs(shares[near] - share) ? index : near, 0);
+    const number = new Intl.NumberFormat(document.documentElement.lang, { maximumFractionDigits: Number(field.dataset.digits) });
+    const shown = field.querySelector('.chart-probe');
+
+    shown.querySelector('.chart-moment').textContent = field.dataset.moments.split('|')[at];
+    for (const row of shown.querySelectorAll('.chart-value')) {
+        const line = document.getElementById(row.dataset.of);
+        const value = line.dataset.values.split(',')[at];
+        row.hidden = value === '' || line.classList.contains('is-off');
+        row.querySelector('output').textContent = value === '' ? '' : number.format(Number(value));
+    }
+
+    shown.style.left = `${shares[at] * 100}%`;
+    shown.classList.toggle('is-flipped', shares[at] > 0.5);
+    if (probed !== field) {
+        unprobe();
+        probed = field;
+    }
+    shown.removeAttribute('hidden');
+
+    return true;
+};
+
+document.addEventListener('pointermove', probe);
+document.addEventListener('pointerdown', event => probe(event) || unprobe());
+document.addEventListener('pointerout', event => {
+    if (event.pointerType !== 'touch' && probed?.contains(event.target) && !probed.contains(event.relatedTarget)) {
+        unprobe();
+    }
+});
+
 document.addEventListener('input', event => {
     const palette = event.target.closest('.palette');
     if (!palette) {

@@ -24,20 +24,36 @@
             {% endfor %}
         </div>
 
-        <svg class="chart-plot" viewBox="0 0 {{ w }} {{ h }}" preserveAspectRatio="none" role="img">
-            {% for level in levels %}
-                {% set y = (h * (1 - level / chart.ceiling))|round(1) %}
-                <line class="chart-grid" x1="0" y1="{{ y }}" x2="{{ w }}" y2="{{ y }}"/>
-            {% endfor %}
-            {% for tick in chart.ticks %}
-                <line class="chart-grid" x1="{{ (tick.share * w)|round(1) }}" y1="0"
-                      x2="{{ (tick.share * w)|round(1) }}" y2="{{ h }}"/>
-            {% endfor %}
-            {% for line in chart.lines %}
-                <path id="{{ id }}-{{ line.key }}" class="chart-line"
-                    d="{% for segment in line.segments %}M{% for point in segment %}{{ ((point.0 - chart.from) / chart.span * w)|round(2) }},{{ (h - min(point.1, chart.ceiling) / chart.ceiling * h)|round(2) }} {% endfor %}{{ segment|length == 1 ? 'h0 ' }}{% endfor %}"/>
-            {% endfor %}
-        </svg>
+        <div class="chart-field" data-digits="{{ chart.ceiling < 10 ? 2 : (chart.ceiling < 100 ? 1 : 0) }}"
+             data-moments="{{ chart.moments|map(moment => moment|trans)|join('|') }}"
+             data-shares="{{ chart.shares|map(share => share|round(4))|join(',') }}">
+            <svg class="chart-plot" viewBox="0 0 {{ w }} {{ h }}" preserveAspectRatio="none" role="img">
+                {% for level in levels %}
+                    {% set y = (h * (1 - level / chart.ceiling))|round(1) %}
+                    <line class="chart-grid" x1="0" y1="{{ y }}" x2="{{ w }}" y2="{{ y }}"/>
+                {% endfor %}
+                {% for tick in chart.ticks %}
+                    <line class="chart-grid" x1="{{ (tick.share * w)|round(1) }}" y1="0"
+                          x2="{{ (tick.share * w)|round(1) }}" y2="{{ h }}"/>
+                {% endfor %}
+                {% for line in chart.lines %}
+                    <path id="{{ id }}-{{ line.key }}" class="chart-line"
+                        data-values="{{ line.values|map(value => value is null ? '' : value|round(3))|join(',') }}"
+                        d="{% for segment in line.segments %}M{% for point in segment %}{{ ((point.0 - chart.from) / chart.span * w)|round(2) }},{{ (h - min(point.1, chart.ceiling) / chart.ceiling * h)|round(2) }} {% endfor %}{{ segment|length == 1 ? 'h0 ' }}{% endfor %}"/>
+                {% endfor %}
+            </svg>
+
+            <div class="chart-probe" hidden>
+                <div class="chart-readout">
+                    <strong class="chart-moment"></strong>
+                    {% for line in chart.lines %}
+                        <span class="chart-value" data-of="{{ id }}-{{ line.key }}">
+                            {{- line.label|trans }} <output></output> {{ chart.unit|trans -}}
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
 
         <div class="chart-times">
             {% for tick in chart.ticks %}
