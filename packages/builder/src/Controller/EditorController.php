@@ -133,12 +133,12 @@ final class EditorController extends AbstractController
     public function fill(Page $page, string $type, Request $request): Response
     {
         $block = $this->kind($type);
-        [$values, $refusals] = $this->form->posted($block, $request);
+        [$values, $refusals] = $this->form->posted($block, $request, $this->pictures);
         if ([] !== $refusals) {
             return $this->dialog($page, $block, $request->request->all(BlockForm::VALUE), $refusals, $request);
         }
 
-        $view = $this->site->block($block, $values, self::DRAWN, $request->request->getBoolean(self::FIRST));
+        $view = $this->site->block($block, $values, self::DRAWN, $request->request->getBoolean(self::FIRST), $this->pictures);
         $response = $this->json([PageDocument::VALUES => $values, 'anchor' => self::DRAWN, 'html' => $this->renderView($view['template'], $view)]);
         $response->headers->set('HX-Reswap', 'none');
 

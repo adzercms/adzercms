@@ -28,7 +28,7 @@ interface Block
      *
      * @return array<string, mixed>
      */
-    public function data(array $values): array;
+    public function data(array $values, Album $album): array;
 
     /**
      * @param array<string, string> $values

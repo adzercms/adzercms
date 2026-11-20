@@ -8,9 +8,9 @@ use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Ui\WebLink;
+use AdzerCMS\Pages\Album;
 use AdzerCMS\Pages\Block;
 use AdzerCMS\Pages\BlockStyle;
-use AdzerCMS\Pages\Pictures;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
@@ -39,11 +39,6 @@ final readonly class FreeBlock implements Block
     private const SPACE = '/\s/';
     private const JSON = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES | \JSON_THROW_ON_ERROR;
 
-    public function __construct(
-        private Pictures $pictures,
-    ) {
-    }
-
     public function key(): string
     {
         return self::KEY;
@@ -64,11 +59,11 @@ final readonly class FreeBlock implements Block
         return '@Builder/blocks/free.html.twig';
     }
 
-    public function data(array $values): array
+    public function data(array $values, Album $album): array
     {
-        $tree = $this->tree($values);
+        $tree = self::tree($values);
 
-        return [self::ELEMENTS => \is_array($tree) ? $this->shown($tree) : []];
+        return [self::ELEMENTS => \is_array($tree) ? self::shown($tree, $album) : []];
     }
 
     public function schema(array $values): ?array
@@ -91,14 +86,14 @@ final readonly class FreeBlock implements Block
      *
      * @return array<string, string>|Refusal
      */
-    public function stored(array $values): array|Refusal
+    public function stored(array $values, Album $album): array|Refusal
     {
-        $tree = $this->tree($values);
+        $tree = self::tree($values);
         if ($tree instanceof Refusal) {
             return $tree;
         }
         $keys = [];
-        $refusal = $this->refusal($tree, $keys);
+        $refusal = self::refusal($tree, $keys, $album);
 
         return match (true) {
             null !== $refusal => $refusal,
@@ -128,7 +123,7 @@ final readonly class FreeBlock implements Block
      *
      * @return list<mixed>|Refusal
      */
-    private function tree(array $values): array|Refusal
+    private static function tree(array $values): array|Refusal
     {
         if ([] !== array_diff_key($values, [self::ELEMENTS => true])) {
             return new Refusal(t('builder.refusal.element'));
@@ -146,7 +141,7 @@ final readonly class FreeBlock implements Block
      * @param list<mixed>         $nodes
      * @param array<string, true> $keys
      */
-    private function refusal(array $nodes, array &$keys): ?Refusal
+    private static function refusal(array $nodes, array &$keys, Album $album): ?Refusal
     {
         foreach ($nodes as $node) {
             $kind = \is_array($node) ? $node['kind'] ?? null : null;
@@ -157,11 +152,11 @@ final readonly class FreeBlock implements Block
             }
             $keys[$key] = true;
             $refusal = match ($kind) {
-                self::TEXT => $this->text($node['paragraphs']),
+                self::TEXT => self::text($node['paragraphs']),
                 self::PICTURE => !\is_string($node['name']) || !\is_string($node['alt'] ?? '') ? new Refusal(t('builder.refusal.element'))
-                    : (null === $this->pictures->path($node['name']) ? new Refusal(t('builder.refusal.picture')) : null),
+                    : (null === $album->path($node['name']) ? new Refusal(t('builder.refusal.picture')) : null),
                 self::BUTTON => !\is_string($node['label']) || '' === trim($node['label']) || !\is_string($node['link']) ? new Refusal(t('builder.refusal.element')) : self::linked($node['link']),
-                self::BOX => \is_array($node['items']) && array_is_list($node['items']) ? $this->refusal($node['items'], $keys) : new Refusal(t('builder.refusal.element')),
+                self::BOX => \is_array($node['items']) && array_is_list($node['items']) ? self::refusal($node['items'], $keys, $album) : new Refusal(t('builder.refusal.element')),
                 default => null,
             };
             if (null !== $refusal) {
@@ -172,7 +167,7 @@ final readonly class FreeBlock implements Block
         return null;
     }
 
-    private function text(mixed $paragraphs): ?Refusal
+    private static function text(mixed $paragraphs): ?Refusal
     {
         if (!\is_array($paragraphs) || !array_is_list($paragraphs)) {
             return new Refusal(t('builder.refusal.element'));
@@ -211,7 +206,7 @@ final readonly class FreeBlock implements Block
      *
      * @return list<array<string, mixed>>
      */
-    private function shown(array $nodes): array
+    private static function shown(array $nodes, Album $album): array
     {
         $shown = [];
         foreach ($nodes as $node) {
@@ -219,8 +214,8 @@ final readonly class FreeBlock implements Block
                 continue;
             }
             $shown[] = match ($node['kind'] ?? null) {
-                self::PICTURE => $node + ['picture' => \is_string($node['name'] ?? null) ? $this->pictures->shown($node['name']) : null, 'alt' => ''],
-                self::BOX => ['items' => $this->shown(\is_array($node['items'] ?? null) ? array_values($node['items']) : [])] + $node,
+                self::PICTURE => $node + ['picture' => \is_string($node['name'] ?? null) ? $album->shown($node['name']) : null, 'alt' => ''],
+                self::BOX => ['items' => self::shown(\is_array($node['items'] ?? null) ? array_values($node['items']) : [], $album)] + $node,
                 default => $node,
             };
         }

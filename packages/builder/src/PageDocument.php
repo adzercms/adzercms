@@ -11,6 +11,7 @@ use AdzerCMS\Pages\Blocks;
 use AdzerCMS\Pages\BlockStyle;
 use AdzerCMS\Pages\Entity\Page;
 use AdzerCMS\Pages\Entity\PageBlock;
+use AdzerCMS\Pages\PhotoAlbum;
 use AdzerCMS\Pages\Pictures;
 use AdzerCMS\Pages\Repository\PageBlockRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -86,7 +87,7 @@ final readonly class PageDocument
             $seen += null === $one[0]->getId() ? [] : [$one[0]->getId() => true];
         }
 
-        $before = Pictures::names(array_merge([], ...array_map(static fn (PageBlock $block): array => array_values($block->getValues()), array_values($stored))));
+        $before = PhotoAlbum::names(array_merge([], ...array_map(static fn (PageBlock $block): array => array_values($block->getValues()), array_values($stored))));
         $placed = [];
         foreach ($kept as [$block, $values, $style]) {
             $placed[] = $block;
@@ -99,7 +100,7 @@ final readonly class PageDocument
             $this->em->remove($block);
         }
         $this->em->flush();
-        $this->pictures->drop(array_diff($before, Pictures::names(array_merge([], ...array_map(static fn (array $one): array => array_values($one[1]), $kept)))));
+        $this->pictures->drop(array_diff($before, PhotoAlbum::names(array_merge([], ...array_map(static fn (array $one): array => array_values($one[1]), $kept)))));
 
         return [self::VERSION => self::version($placed), self::BLOCKS => $placed];
     }
@@ -186,7 +187,7 @@ final readonly class PageDocument
      */
     private function stored(Block $type, array $values): array|Refusal
     {
-        return $type instanceof FreeBlock ? $type->stored($values) : $this->form->stored($type, $values);
+        return $type instanceof FreeBlock ? $type->stored($values, $this->pictures) : $this->form->stored($type, $values, $this->pictures);
     }
 
     /** @param iterable<PageBlock> $blocks */

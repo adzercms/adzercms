@@ -7,6 +7,7 @@ namespace AdzerCMS\Pages\Type;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Type as FieldType;
+use AdzerCMS\Pages\Album;
 use AdzerCMS\Pages\Block;
 use Symfony\Contracts\Translation\TranslatableInterface;
 
@@ -24,7 +25,7 @@ abstract class Plain implements Block
         return '@Pages/blocks/'.$this->key().'.html.twig';
     }
 
-    public function data(array $values): array
+    public function data(array $values, Album $album): array
     {
         return [];
     }
