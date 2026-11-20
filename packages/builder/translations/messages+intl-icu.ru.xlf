@@ -7,6 +7,12 @@
         <target>Конструктор</target>
       </segment>
     </unit>
+    <unit id="builder.apply">
+      <segment>
+        <source>builder.apply</source>
+        <target>Применить</target>
+      </segment>
+    </unit>
     <unit id="builder.exit">
       <segment>
         <source>builder.exit</source>

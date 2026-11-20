@@ -1,5 +1,6 @@
 import grapesjs from 'grapesjs';
 import ru from 'grapesjs/locale/ru';
+import htmx from 'htmx.org';
 
 const PART = 'frame-part';
 const BLOCKS = 'page-blocks';
@@ -11,15 +12,19 @@ const LOCKED = {selectable: false, hoverable: false, highlightable: false, dragg
 const UNAVAILABLE = 'builder-unavailable';
 const TOKEN = '_token';
 const DELETE = 'core:component-delete';
+const VALUES = 'builder-values';
+const JSON_TYPE = 'application/json';
 
 const root = document.querySelector('[data-builder]');
 const blocks = JSON.parse(root.dataset.blocks);
 const screens = JSON.parse(root.dataset.screens);
 const anchors = new Set(blocks.map(block => block.anchor));
-let known = blocks.map(block => block.id);
+const record = document.getElementById('record');
+let version = root.dataset.version;
 let saved = '';
 let agreed = null;
 let leaving = false;
+let editing = null;
 
 const page = new DOMParser().parseFromString(await (await fetch(root.dataset.frame)).text(), 'text/html');
 const end = page.querySelector('[data-builder-end]');
@@ -70,16 +75,43 @@ const ask = (question, action) => {
     form.requestSubmit();
 };
 
+const token = () => root.querySelector(`[name="${TOKEN}"]`).value;
+
+const sorted = values => Object.fromEntries(Object.entries(values).sort(([one], [other]) => (one < other ? -1 : 1)));
+
+const fill = component => {
+    const {dialog, values} = component.get('block');
+    editing = component;
+    htmx.ajax('POST', dialog, {target: '#record', values: {[TOKEN]: token(), stored: JSON.stringify(values), first: placed()[0] === component ? '1' : ''}});
+};
+
+const filled = ({values, html}) => {
+    const block = editing.get('block');
+    const element = new DOMParser().parseFromString(html, 'text/html').getElementById(block.anchor);
+    editing.set({attributes: attributes(element), content: element.innerHTML, block: {...block, values}});
+    editing = null;
+    record.close();
+};
+
 const setup = editor => {
     const types = editor.DomComponents;
     types.addType(PART, {model: {defaults: LOCKED}});
     types.addType(BLOCKS, {model: {defaults: {...LOCKED, layerable: true, droppable: `[data-gjs-type="${BLOCK}"]`}}});
-    types.addType(BLOCK, {model: {defaults: {draggable: `[data-gjs-type="${BLOCKS}"]`, droppable: false, copyable: false, editable: false, stylable: false}}});
+    types.addType(BLOCK, {model: {
+        defaults: {draggable: `[data-gjs-type="${BLOCKS}"]`, droppable: false, copyable: false, editable: false, stylable: false},
+        init() {
+            if (this.get('block').dialog) {
+                const label = root.querySelector('[data-edit-icon]').innerHTML;
+                this.set('toolbar', [{label, attributes: {title: root.dataset.edit}, command: VALUES}, ...this.get('toolbar')]);
+            }
+        },
+    }});
 
     editor.Commands.add('tlb-delete', {run: ed => {
         const component = ed.getSelected();
         ask(component.get('block').question, () => component.remove());
     }});
+    editor.Commands.add(VALUES, {run: ed => fill(ed.getSelected())});
 
     editor.on('canvas:frame:load:body', ({window: frame}) => {
         for (const {name, value} of page.documentElement.attributes) {
@@ -118,7 +150,7 @@ const editor = grapesjs.init({
 });
 
 const placed = () => editor.getWrapper().findType(BLOCKS)[0].components().filter(component => component.get('type') === BLOCK);
-const documentOf = () => ({known, blocks: placed().map(component => ({id: component.get('block').id}))});
+const documentOf = () => ({version, blocks: placed().map(component => ({id: component.get('block').id, values: sorted(component.get('block').values)}))});
 const dirty = () => JSON.stringify(documentOf()) !== saved;
 
 const status = (message, failed) => {
@@ -128,17 +160,16 @@ const status = (message, failed) => {
 };
 
 const save = async button => {
-    const document = documentOf();
     const body = new FormData();
-    body.set(TOKEN, root.querySelector(`[name="${TOKEN}"]`).value);
-    body.set('document', JSON.stringify(document));
+    body.set(TOKEN, token());
+    body.set('document', JSON.stringify(documentOf()));
     button.disabled = true;
     try {
         const response = await fetch(root.dataset.save, {method: 'POST', body});
-        const {message} = await response.json();
-        status(message, !response.ok);
+        const answer = await response.json();
+        status(answer.message, !response.ok);
         if (response.ok) {
-            known = document.blocks.map(block => block.id);
+            version = answer.version;
             saved = JSON.stringify(documentOf());
         }
     } catch {
@@ -147,6 +178,12 @@ const save = async button => {
         button.disabled = false;
     }
 };
+
+document.addEventListener('htmx:afterRequest', ({detail: {xhr, successful}}) => {
+    if (editing && successful && xhr.getResponseHeader('Content-Type')?.startsWith(JSON_TYPE)) {
+        filled(JSON.parse(xhr.responseText));
+    }
+});
 
 window.addEventListener('submit', event => {
     if (!event.defaultPrevented && event.target.matches('[data-ask]')) {

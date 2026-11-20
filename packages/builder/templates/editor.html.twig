@@ -1,5 +1,7 @@
 {% extends '@Theme/base.html.twig' %}
 
+{% import '@Theme/_icons.html.twig' as icon %}
+
 {% block title %}{{ 'builder.title'|trans({title: page.title}) }}{% endblock %}
 
 {% block meta %}
@@ -11,9 +13,10 @@
 {% block bodyclass %}builder-page{% endblock %}
 
 {% block shell %}
-<div class="builder" data-builder data-title="{{ page.title }}" data-frame="{{ frame }}" data-save="{{ save }}" data-blocks="{{ blocks|json_encode }}"
+<div class="builder" data-builder data-title="{{ page.title }}" data-frame="{{ frame }}" data-save="{{ save }}" data-version="{{ version }}" data-blocks="{{ blocks|json_encode }}"
      data-screens="{{ screens|map(screen => {id: screen.id, media: screen.media, width: screen.width})|json_encode }}"
-     data-unavailable="{{ 'pages.block.unavailable'|trans }}" data-failed="{{ 'builder.failed'|trans }}" data-leave="{{ 'builder.leave'|trans }}">
+     data-unavailable="{{ 'pages.block.unavailable'|trans }}" data-failed="{{ 'builder.failed'|trans }}" data-leave="{{ 'builder.leave'|trans }}" data-edit="{{ 'core.action.edit'|trans }}">
+    <template data-edit-icon>{{ icon.edit() }}</template>
     <header class="builder-bar">
         <div class="builder-screens">
             {% for screen in screens %}
