@@ -20,6 +20,7 @@ const root = document.querySelector('[data-builder]');
 const blocks = JSON.parse(root.dataset.blocks);
 const screens = JSON.parse(root.dataset.screens);
 const kinds = JSON.parse(root.dataset.types);
+const sectors = JSON.parse(root.dataset.style);
 const anchors = new Set(blocks.map(block => block.anchor));
 const record = document.getElementById('record');
 let version = root.dataset.version;
@@ -82,6 +83,19 @@ const token = () => root.querySelector(`[name="${TOKEN}"]`).value;
 
 const sorted = values => Object.fromEntries(Object.entries(values).sort(([one], [other]) => (one < other ? -1 : 1)));
 
+const media = screen => (screen.media ? `(max-width: ${screen.media}px)` : '');
+
+const field = ({property, label, kind, keywords, units, signed}) => ({
+    property,
+    label,
+    ...{
+        color: {type: 'color', colorPicker: {showAlpha: false}},
+        choice: {type: 'select', options: keywords},
+        fraction: {type: 'slider', min: 0, max: 1, step: 0.01},
+        length: {type: 'number', units, fixedValues: keywords.map(({id}) => id), ...(signed ? {} : {min: 0})},
+    }[kind],
+});
+
 const fill = (component, entry = component.get('block'), at = null) => {
     const first = component ? placed()[0] === component : !container().components().some((one, index) => index < at && one.get('type') === BLOCK);
     editing = {component, entry, at};
@@ -91,7 +105,7 @@ const fill = (component, entry = component.get('block'), at = null) => {
 const filled = ({values, anchor, html}) => {
     const {component, entry, at} = editing;
     const element = new DOMParser().parseFromString(html, 'text/html').getElementById(anchor);
-    const block = component ? {...entry, values} : {...entry, values, id: null, anchor: `${FRESH}${++fresh}`};
+    const block = component ? {...entry, values} : {...entry, values, style: {}, id: null, anchor: `${FRESH}${++fresh}`};
     const shown = {attributes: {...attributes(element), id: block.anchor}, content: element.innerHTML, block};
     editing = null;
     record.close();
@@ -107,7 +121,7 @@ const setup = editor => {
     types.addType(PART, {model: {defaults: LOCKED}});
     types.addType(BLOCKS, {model: {defaults: {...LOCKED, layerable: true, droppable: source => source.get('type') === BLOCK}}});
     types.addType(BLOCK, {model: {
-        defaults: {draggable: (source, target) => target.get('type') === BLOCKS, droppable: false, copyable: false, editable: false, stylable: false},
+        defaults: {draggable: (source, target) => target.get('type') === BLOCKS, droppable: false, copyable: false, editable: false},
         init() {
             if (this.get('block').dialog) {
                 const label = root.querySelector('[data-edit-icon]').innerHTML;
@@ -145,6 +159,14 @@ const setup = editor => {
         wrapper.set({selectable: false, hoverable: false, droppable: false});
         wrapper.addClass([...page.body.classList]);
         editor.Keymaps.remove(DELETE);
+        editor.UndoManager.skip(() => {
+            for (const component of placed()) {
+                const own = component.get('block').style[''] ?? {};
+                for (const screen of screens.filter(one => own[one.id])) {
+                    editor.Css.setIdRule(component.getId(), own[screen.id], {mediaText: media(screen)});
+                }
+            }
+        });
         saved = JSON.stringify(documentOf());
     });
 };
@@ -163,6 +185,7 @@ const editor = grapesjs.init({
     deviceManager: {devices: screens.map(({id, media, width}) => ({id, name: id, width: width ? `${width}px` : '', widthMedia: media ? `${media}px` : ''}))},
     mediaCondition: 'max-width',
     layerManager: {appendTo: root.querySelector('[data-layers]'), root: `[data-gjs-type="${BLOCKS}"]`},
+    styleManager: {appendTo: root.querySelector('[data-style-panel]'), sectors: sectors.map(({id, name, properties}) => ({id, name, open: false, properties: properties.map(field)}))},
     blockManager: {appendTo: root.querySelector('[data-palette]'), blocks: kinds.map(kind => ({id: kind.type, label: kind.label, content: {type: BLOCK, block: kind}}))},
     selectorManager: {componentFirst: true},
     i18n: {locale: document.documentElement.lang, detectLocale: false, localeFallback: 'en', messages: {ru}},
@@ -172,10 +195,19 @@ const editor = grapesjs.init({
 
 const container = () => editor.getWrapper().findType(BLOCKS)[0];
 const placed = () => container().components().filter(component => component.get('type') === BLOCK);
+const styleOf = component => {
+    const own = Object.fromEntries(screens
+        .map(screen => [screen.id, Object.entries(editor.Css.getIdRule(component.getId(), {mediaText: media(screen)})?.getStyle() ?? {}).filter(([, value]) => value !== '')])
+        .filter(([, properties]) => properties.length > 0)
+        .map(([screen, properties]) => [screen, sorted(Object.fromEntries(properties))]));
+    const rest = Object.entries(component.get('block').style).filter(([target]) => target !== '');
+
+    return sorted(Object.fromEntries(Object.keys(own).length > 0 ? [...rest, ['', sorted(own)]] : rest));
+};
 const documentOf = () => ({version, blocks: placed().map(component => {
     const {id, type, values} = component.get('block');
 
-    return {id, type, values: sorted(values)};
+    return {id, type, values: sorted(values), style: styleOf(component)};
 })});
 const dirty = () => JSON.stringify(documentOf()) !== saved;
 

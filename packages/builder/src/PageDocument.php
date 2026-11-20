@@ -25,6 +25,7 @@ final readonly class PageDocument
     public const ID = 'id';
     public const TYPE = 'type';
     public const VALUES = 'values';
+    public const STYLE = 'style';
 
     private const DIGEST = 'xxh128';
 
@@ -38,7 +39,7 @@ final readonly class PageDocument
     ) {
     }
 
-    /** @return array{version: string, blocks: list<array{id: int, anchor: string, type: string, label: string, available: bool, question: string, values: array<string, string>}>} */
+    /** @return array{version: string, blocks: list<array{id: int, anchor: string, type: string, label: string, available: bool, question: string, values: array<string, string>, style: array<string, array<string, array<string, string>>>}>} */
     public function open(Page $page): array
     {
         $blocks = $this->blocks->of($page);
@@ -48,6 +49,7 @@ final readonly class PageDocument
             'anchor' => BlockStyle::anchor($block),
             ...$this->entry($block->getType()),
             self::VALUES => $block->getValues(),
+            self::STYLE => $block->getStyle(),
         ], $blocks)];
     }
 
@@ -86,10 +88,11 @@ final readonly class PageDocument
 
         $before = Pictures::names(array_merge([], ...array_map(static fn (PageBlock $block): array => array_values($block->getValues()), array_values($stored))));
         $placed = [];
-        foreach ($kept as [$block, $values]) {
+        foreach ($kept as [$block, $values, $style]) {
             $placed[] = $block;
             $block->place(\count($placed));
             $block->fill($values);
+            $block->restyle($style);
             $this->em->persist($block);
         }
         foreach (array_diff_key($stored, $seen) as $block) {
@@ -120,27 +123,39 @@ final readonly class PageDocument
      * @param array<mixed>          $entry
      * @param array<int, PageBlock> $left
      *
-     * @return array{PageBlock, array<string, string>}|Refusal
+     * @return array{PageBlock, array<string, string>, array<string, array<string, array<string, string>>>}|Refusal
      */
     private function entered(Page $page, array $entry, array $left): array|Refusal
     {
         $values = self::values($entry[self::VALUES] ?? null);
+        $style = $entry[self::STYLE] ?? null;
         $id = $entry[self::ID] ?? null;
         $key = $entry[self::TYPE] ?? null;
         $block = \is_int($id) ? $left[$id] ?? null : null;
         $type = null === $id && \is_string($key) ? $this->types->find($key) : null;
-        if (null !== $values && null !== $block) {
-            $checked = $this->checked($block, $values);
-
-            return $checked instanceof Refusal ? $checked : [$block, $checked];
+        if (null !== $values && \is_array($style) && null !== $block) {
+            return self::kept($block, $this->checked($block, $values), self::sorted($style) === self::sorted($block->getStyle()) ? $block->getStyle() : BlockStyle::rules($style));
         }
-        if (null !== $values && null !== $type) {
-            $checked = $this->form->stored($type, $values);
-
-            return $checked instanceof Refusal ? $checked : [new PageBlock($page, $type->key()), $checked];
+        if (null !== $values && \is_array($style) && null !== $type) {
+            return self::kept(new PageBlock($page, $type->key()), $this->form->stored($type, $values), BlockStyle::rules($style));
         }
 
         return new Refusal(t('builder.refusal.document'));
+    }
+
+    /**
+     * @param array<string, string>|Refusal                               $values
+     * @param array<string, array<string, array<string, string>>>|Refusal $style
+     *
+     * @return array{PageBlock, array<string, string>, array<string, array<string, array<string, string>>>}|Refusal
+     */
+    private static function kept(PageBlock $block, array|Refusal $values, array|Refusal $style): array|Refusal
+    {
+        return match (true) {
+            $values instanceof Refusal => $values,
+            $style instanceof Refusal => $style,
+            default => [$block, $values, $style],
+        };
     }
 
     /** @return array{type: string, label: string, available: bool, question: string} */

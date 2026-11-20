@@ -15,6 +15,8 @@ use AdzerCMS\Pages\Controller\Admin\BlockController;
 use AdzerCMS\Pages\Entity\Page;
 use AdzerCMS\Pages\Entity\PageBlock;
 use AdzerCMS\Pages\Site;
+use AdzerCMS\Pages\Style\Group;
+use AdzerCMS\Pages\Style\Property;
 use AdzerCMS\Pages\Style\Screen;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -63,7 +65,7 @@ final class EditorController extends AbstractController
             'frame' => $this->generateUrl(self::FRAME, ['id' => $page->getId()]),
             'save' => $this->generateUrl(self::SAVE, ['id' => $page->getId()]),
             'version' => $document[PageDocument::VERSION],
-            'blocks' => array_map(fn (array $block): array => $block + ['dialog' => $block['available'] ? $this->opening($page, $block['type']) : null], $document[PageDocument::BLOCKS]),
+            'blocks' => array_map(fn (array $block): array => [...$block, PageDocument::STYLE => (object) $block[PageDocument::STYLE], 'dialog' => $block['available'] ? $this->opening($page, $block['type']) : null], $document[PageDocument::BLOCKS]),
             'types' => array_map(fn (array $type): array => $type + ['dialog' => $this->opening($page, $type['type'])], $this->document->types()),
             'screens' => array_map(static fn (Screen $screen): array => [
                 'id' => $screen->value,
@@ -71,6 +73,7 @@ final class EditorController extends AbstractController
                 'width' => self::PREVIEW[$screen->value] ?? null,
                 'label' => self::label($screen),
             ], Screen::cases()),
+            'sectors' => $this->sectors(),
         ]);
     }
 
@@ -117,6 +120,24 @@ final class EditorController extends AbstractController
         $response->headers->set('HX-Reswap', 'none');
 
         return $response;
+    }
+
+    /** @return list<array{id: string, name: string, properties: list<array{property: string, label: string, kind: string, keywords: list<array{id: string, label: string}>, units: list<string>, signed: bool}>}> */
+    private function sectors(): array
+    {
+        $properties = [];
+        foreach (Property::cases() as $property) {
+            $properties[$property->group()->value][] = [
+                'property' => $property->value,
+                'label' => $property->label()->trans($this->translator),
+                'kind' => $property->kind()->value,
+                'keywords' => array_map(fn (string $keyword): array => ['id' => $keyword, 'label' => Property::word($keyword)->trans($this->translator)], $property->keywords()),
+                'units' => $property->units(),
+                'signed' => $property->signed(),
+            ];
+        }
+
+        return array_map(fn (Group $group): array => ['id' => $group->value, 'name' => $group->label()->trans($this->translator), 'properties' => $properties[$group->value] ?? []], Group::cases());
     }
 
     private function opening(Page $page, string $type): string

@@ -95,7 +95,7 @@ test('[ACMS-BLD-0002][ACMS-FLOW-0022] a block leaves after a question, the docum
     await page.click('[data-save-document]');
     await expect(page.locator('[data-status]')).toHaveText('saved');
     expect(sent).toHaveLength(1);
-    expect(sent[0], 'the whole document goes: the version it opened and the blocks it keeps in order with their values').toEqual({ version, blocks: blocks.slice(1).map((block) => ({ id: block.id, type: block.type, values: block.values })) });
+    expect(sent[0], 'the whole document goes: the version it opened and the blocks it keeps in order with their values and style').toEqual({ version, blocks: blocks.slice(1).map((block) => ({ id: block.id, type: block.type, values: block.values, style: block.style })) });
 
     await page.click('[data-exit]');
     await expect(page, 'leaving after saving goes without a question').toHaveURL(/\/admin\/pages\/\d+$/);
@@ -184,4 +184,53 @@ test('[ACMS-BLD-0003][ACMS-FLOW-0022] a block of the panel takes its place by dr
 
     await page.click('[data-undo]');
     await expect(ready, 'saving starts the history anew').toHaveCount(blocks.length + 1);
+});
+
+test('[ACMS-BLD-0006][ACMS-FLOW-0022] a block takes its style from the panel, the computer rules go for every width, a phone rule goes over them', async ({ page }) => {
+    const root = page.locator('[data-builder]');
+    const blocks = JSON.parse(await root.getAttribute('data-blocks'));
+    const styled = blocks.findIndex((block) => block.style['']?.desktop);
+    const block = canvas(page).locator(READY).first();
+    const property = (name) => page.locator(`[data-style-panel] .gjs-sm-property__${name} input`);
+    const set = async (sector, name, value) => {
+        if (!(await property(name).isVisible())) {
+            await page.locator(`[data-style-panel] .gjs-sm-sector__${sector} .gjs-sm-sector-title`).click();
+        }
+        await property(name).fill(value);
+        await property(name).press('Enter');
+    };
+
+    if (styled >= 0) {
+        const stored = canvas(page).locator(`#${blocks[styled].anchor}`);
+        const [[name, value]] = Object.entries(blocks[styled].style[''].desktop);
+        const declared = await stored.evaluate((node, [one, given]) => {
+            const probe = node.ownerDocument.createElement(node.localName);
+            probe.style.setProperty(one, given);
+            node.parentElement.append(probe);
+            const shown = getComputedStyle(probe).getPropertyValue(one);
+            probe.remove();
+            return shown;
+        }, [name, value]);
+        await expect(stored, 'the canvas shows the stored style of a block').toHaveCSS(name, declared);
+    }
+
+    await block.click();
+    await set('text', 'color', '#112233');
+    await expect(block, 'the canvas shows the style of the panel').toHaveCSS('color', 'rgb(17, 34, 51)');
+
+    const before = await block.evaluate((node) => getComputedStyle(node).paddingTop);
+    await page.click('[data-screen="phone"]');
+    await set('spacing', 'padding-top', '48');
+    await expect(block, 'a phone rule goes over the computer rules').toHaveCSS('padding-top', '48px');
+    await expect(block).toHaveCSS('color', 'rgb(17, 34, 51)');
+    await page.click('[data-screen="desktop"]');
+    await expect(block, 'a phone rule stays on its width').toHaveCSS('padding-top', before);
+
+    const sent = await saving(page);
+    await page.click('[data-save-document]');
+    await expect(page.locator('[data-status]')).toHaveText('saved');
+    expect(sent[0].blocks[0].style, 'saving sends the rules of every width').toEqual({ ...blocks[0].style, '': { ...blocks[0].style[''], desktop: { ...blocks[0].style['']?.desktop, color: '#112233' }, phone: { ...blocks[0].style['']?.phone, 'padding-top': '48px' } } });
+    if (styled > 0) {
+        expect(sent[0].blocks[styled].style, 'saving keeps the style of other blocks').toEqual(blocks[styled].style);
+    }
 });

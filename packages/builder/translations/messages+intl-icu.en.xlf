@@ -79,6 +79,12 @@
         <target>Tablet</target>
       </segment>
     </unit>
+    <unit id="builder.style">
+      <segment>
+        <source>builder.style</source>
+        <target>Style</target>
+      </segment>
+    </unit>
     <unit id="builder.title">
       <segment>
         <source>builder.title</source>

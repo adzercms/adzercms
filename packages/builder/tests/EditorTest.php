@@ -11,6 +11,7 @@ use AdzerCMS\Pages\Entity\Page;
 use AdzerCMS\Pages\Entity\PageBlock;
 use AdzerCMS\Pages\Pictures;
 use AdzerCMS\Pages\Repository\PageBlockRepository;
+use AdzerCMS\Pages\Style\Property;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -39,8 +40,8 @@ final class EditorTest extends SchemaTestCase
         self::assertResponseIsSuccessful();
         $builder = $editor->filter('[data-builder]');
         self::assertEquals([
-            ['id' => $text->getId(), 'anchor' => 'block-'.$text->getId(), 'type' => 'text', 'label' => self::phrase(t('pages.block.text')), 'available' => true, 'question' => self::phrase(t('pages.block.drop_confirm', ['type' => self::phrase(t('pages.block.text'))])), 'values' => ['title' => 'About us', 'text' => 'We build networks'], 'dialog' => '/admin/pages/'.$page->getId().'/builder/types/text'],
-            ['id' => $retired->getId(), 'anchor' => 'block-'.$retired->getId(), 'type' => 'retired', 'label' => 'retired', 'available' => false, 'question' => self::phrase(t('pages.block.drop_confirm', ['type' => 'retired'])), 'values' => ['title' => 'Gone'], 'dialog' => null],
+            ['id' => $text->getId(), 'anchor' => 'block-'.$text->getId(), 'type' => 'text', 'label' => self::phrase(t('pages.block.text')), 'available' => true, 'question' => self::phrase(t('pages.block.drop_confirm', ['type' => self::phrase(t('pages.block.text'))])), 'values' => ['title' => 'About us', 'text' => 'We build networks'], 'style' => [], 'dialog' => '/admin/pages/'.$page->getId().'/builder/types/text'],
+            ['id' => $retired->getId(), 'anchor' => 'block-'.$retired->getId(), 'type' => 'retired', 'label' => 'retired', 'available' => false, 'question' => self::phrase(t('pages.block.drop_confirm', ['type' => 'retired'])), 'values' => ['title' => 'Gone'], 'style' => [], 'dialog' => null],
         ], json_decode((string) $builder->attr('data-blocks'), true), 'the editor takes the blocks of the page in order with their values, a block of a removed module too');
         $types = array_column(json_decode((string) $builder->attr('data-types'), true), 'dialog', 'type');
         self::assertSame('/admin/pages/'.$page->getId().'/builder/types/hero', $types['hero'] ?? null, 'the panel of blocks carries the types of the enabled modules');
@@ -63,7 +64,7 @@ final class EditorTest extends SchemaTestCase
         $save = '/admin/pages/'.$page->getId().'/builder';
         $opened = (string) $this->client->request('GET', $save)->filter('[data-builder]')->attr('data-version');
 
-        $this->post($save, ['document' => json_encode(['version' => $opened, 'blocks' => [['id' => $retired->getId(), 'values' => $retired->getValues()], ['id' => $text->getId(), 'values' => $text->getValues()]]])]);
+        $this->post($save, ['document' => json_encode(['version' => $opened, 'blocks' => [['id' => $retired->getId(), 'values' => $retired->getValues(), 'style' => []], ['id' => $text->getId(), 'values' => $text->getValues(), 'style' => []]]])]);
         self::assertResponseIsSuccessful();
         $saved = json_decode((string) $this->client->getResponse()->getContent(), true);
         self::assertSame(self::phrase(t('builder.saved')), $saved['message']);
@@ -72,7 +73,7 @@ final class EditorTest extends SchemaTestCase
         self::assertNull($pictures->path($picture), 'a removed block takes its picture');
         self::assertSame($saved['version'], $this->client->request('GET', $save)->filter('[data-builder]')->attr('data-version'), 'the editor goes on from the saved page');
 
-        $this->post($save, ['document' => json_encode(['version' => $opened, 'blocks' => [['id' => $text->getId(), 'values' => $text->getValues()], ['id' => $retired->getId(), 'values' => $retired->getValues()]]])]);
+        $this->post($save, ['document' => json_encode(['version' => $opened, 'blocks' => [['id' => $text->getId(), 'values' => $text->getValues(), 'style' => []], ['id' => $retired->getId(), 'values' => $retired->getValues(), 'style' => []]]])]);
         self::assertResponseStatusCodeSame(422);
         self::assertSame(['message' => self::phrase(t('builder.refusal.document'))], json_decode((string) $this->client->getResponse()->getContent(), true), 'a page changed after the editor opened is not overwritten');
         self::assertSame(['retired', 'text'], array_map(static fn (PageBlock $block): string => $block->getType(), self::service(PageBlockRepository::class)->findBy(['page' => $page->getId()], ['position' => 'ASC'])));
@@ -107,13 +108,13 @@ final class EditorTest extends SchemaTestCase
         self::assertSame('Fiber at home', (new Crawler($filled['html']))->filter('#'.$filled['anchor'].' h1')->text(), 'the canvas takes the block the server draws at its place');
         self::assertSame(['title' => 'Internet', 'picture' => $first], $this->reread($hero)->getValues(), 'the dialog writes nothing before saving');
 
-        $this->post($editor, ['document' => json_encode(['version' => $builder->attr('data-version'), 'blocks' => [['id' => $hero->getId(), 'values' => $filled['values']]]])]);
+        $this->post($editor, ['document' => json_encode(['version' => $builder->attr('data-version'), 'blocks' => [['id' => $hero->getId(), 'values' => $filled['values'], 'style' => []]]])]);
         self::assertResponseIsSuccessful();
         self::assertEquals($filled['values'], $this->reread($hero)->getValues(), 'saving takes the values of the dialog');
         self::assertNull($pictures->path($first), 'a replaced picture takes its file on saving');
 
         $version = json_decode((string) $this->client->getResponse()->getContent(), true)['version'];
-        $this->post($editor, ['document' => json_encode(['version' => $version, 'blocks' => [['id' => $hero->getId(), 'values' => ['title' => 'Fiber at home', 'picture' => 'gone.webp']]]])]);
+        $this->post($editor, ['document' => json_encode(['version' => $version, 'blocks' => [['id' => $hero->getId(), 'values' => ['title' => 'Fiber at home', 'picture' => 'gone.webp'], 'style' => []]]])]);
         self::assertResponseStatusCodeSame(422);
         self::assertSame(['message' => self::phrase(t('pages.refusal.picture', ['field' => self::phrase(t('pages.field.picture'))]))], json_decode((string) $this->client->getResponse()->getContent(), true), 'saving checks the values of the document');
     }
@@ -126,8 +127,8 @@ final class EditorTest extends SchemaTestCase
         [$page, [$text]] = $this->page(['text' => ['title' => 'About us', 'text' => 'We build networks']]);
         $editor = '/admin/pages/'.$page->getId().'/builder';
         $version = (string) $this->client->request('GET', $editor)->filter('[data-builder]')->attr('data-version');
-        $call = ['id' => null, 'type' => 'call', 'values' => ['title' => 'Connect today', 'button' => 'Request', 'link' => '#lead']];
-        $kept = ['id' => $text->getId(), 'type' => 'text', 'values' => $text->getValues()];
+        $call = ['id' => null, 'type' => 'call', 'values' => ['title' => 'Connect today', 'button' => 'Request', 'link' => '#lead'], 'style' => []];
+        $kept = ['id' => $text->getId(), 'type' => 'text', 'values' => $text->getValues(), 'style' => []];
 
         $refusals = [
             self::phrase(t('builder.refusal.document')) => ['type' => 'retired'] + $call,
@@ -145,6 +146,33 @@ final class EditorTest extends SchemaTestCase
         self::assertSame(['call', 'text'], array_map(static fn (PageBlock $block): string => $block->getType(), $stored), 'a new block takes its place in the document');
         self::assertEquals($call['values'], $stored[0]->getValues());
         self::assertSame(array_map(static fn (PageBlock $block): array => ['id' => $block->getId(), 'anchor' => 'block-'.$block->getId()], $stored), json_decode((string) $this->client->getResponse()->getContent(), true)['blocks'], 'saving gives the blocks their numbers');
+    }
+
+    #[Group('ACMS-BLD-0006')]
+    #[Group('ACMS-PAGE-0024')]
+    #[Group('ACMS-FLOW-0022')]
+    #[Group('ACMS-US-0077')]
+    public function testOwnerStylesBlockByScreenWidthAndSavingKeepsItsRules(): void
+    {
+        [$page, [$text]] = $this->page(['text' => ['title' => 'About us', 'text' => 'We build networks']]);
+        $text->restyle(['' => ['desktop' => ['color' => '#112233']]]);
+        $this->em->flush();
+        $editor = '/admin/pages/'.$page->getId().'/builder';
+        $builder = $this->client->request('GET', $editor)->filter('[data-builder]');
+        self::assertSame(['' => ['desktop' => ['color' => '#112233']]], json_decode((string) $builder->attr('data-blocks'), true)[0]['style'], 'the editor takes the style of the block');
+        $panel = array_merge(...array_map(static fn (array $sector): array => array_column($sector['properties'], 'property'), json_decode((string) $builder->attr('data-style'), true)));
+        self::assertEqualsCanonicalizing(array_map(static fn (Property $property): string => $property->value, Property::cases()), $panel, 'the panel of style carries the list of block style once');
+
+        $style = ['' => ['desktop' => ['color' => '#445566'], 'phone' => ['padding-top' => '1rem']]];
+        $this->post($editor, ['document' => json_encode(['version' => $builder->attr('data-version'), 'blocks' => [['id' => $text->getId(), 'values' => $text->getValues(), 'style' => $style]]])]);
+        self::assertResponseIsSuccessful();
+        self::assertEquals($style, $this->reread($text)->getStyle(), 'saving takes the rules of every screen width');
+
+        $version = json_decode((string) $this->client->getResponse()->getContent(), true)['version'];
+        $this->post($editor, ['document' => json_encode(['version' => $version, 'blocks' => [['id' => $text->getId(), 'values' => $text->getValues(), 'style' => ['' => ['desktop' => ['position' => 'fixed']]]]]])]);
+        self::assertResponseStatusCodeSame(422);
+        self::assertSame(['message' => self::phrase(t('pages.refusal.style'))], json_decode((string) $this->client->getResponse()->getContent(), true), 'saving checks the style against its list');
+        self::assertEquals($style, $this->reread($text)->getStyle());
     }
 
     /**

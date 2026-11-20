@@ -79,6 +79,12 @@
         <target>Планшет</target>
       </segment>
     </unit>
+    <unit id="builder.style">
+      <segment>
+        <source>builder.style</source>
+        <target>Стиль</target>
+      </segment>
+    </unit>
     <unit id="builder.title">
       <segment>
         <source>builder.title</source>

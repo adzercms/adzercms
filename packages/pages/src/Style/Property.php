@@ -4,10 +4,18 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Pages\Style;
 
-enum Property: string
+use AdzerCMS\Contracts\Ui\Titled;
+use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function Symfony\Component\Translation\t;
+
+enum Property: string implements Titled
 {
-    private const LENGTH = '(?:0|\d{1,4}(?:\.\d{1,2})?(?:px|rem|em|%|vw|vh))';
-    private const COLOR = '(?:#[0-9a-f]{3,4}|#[0-9a-f]{6}|#[0-9a-f]{8}|transparent)';
+    public const UNITS = ['px', 'rem', 'em', '%', 'vw', 'vh'];
+
+    private const NUMBER = '\d{1,4}(?:\.\d{1,2})?';
+    private const COLOR = '#[0-9a-f]{3,4}|#[0-9a-f]{6}|#[0-9a-f]{8}';
+    private const FRACTION = '0|1|0?\.\d{1,2}';
 
     case Color = 'color';
     case Background = 'background-color';
@@ -36,6 +44,68 @@ enum Property: string
     case MinHeight = 'min-height';
     case Opacity = 'opacity';
 
+    public function label(): TranslatableInterface
+    {
+        return t('pages.style.'.$this->value);
+    }
+
+    public static function word(string $keyword): TranslatableInterface
+    {
+        return t('pages.style.value.'.$keyword);
+    }
+
+    public function kind(): Kind
+    {
+        return match ($this) {
+            self::Color, self::Background, self::BorderColor => Kind::Color,
+            self::FontWeight, self::FontStyle, self::TextAlign, self::TextTransform, self::TextDecoration, self::BorderStyle => Kind::Choice,
+            self::Opacity => Kind::Fraction,
+            default => Kind::Length,
+        };
+    }
+
+    public function group(): Group
+    {
+        return match ($this) {
+            self::Color, self::FontSize, self::FontWeight, self::FontStyle, self::LineHeight, self::LetterSpacing, self::TextAlign, self::TextTransform, self::TextDecoration => Group::Text,
+            self::Background, self::BorderColor, self::BorderWidth, self::BorderStyle, self::BorderRadius, self::Opacity => Group::Decoration,
+            self::PaddingTop, self::PaddingRight, self::PaddingBottom, self::PaddingLeft, self::MarginTop, self::MarginRight, self::MarginBottom, self::MarginLeft => Group::Spacing,
+            self::Width, self::MaxWidth, self::MinHeight => Group::Size,
+        };
+    }
+
+    /** @return list<string> */
+    public function keywords(): array
+    {
+        return match ($this) {
+            self::Color, self::Background, self::BorderColor => ['transparent'],
+            self::FontWeight => ['normal', 'bold', '100', '200', '300', '400', '500', '600', '700', '800', '900'],
+            self::FontStyle => ['normal', 'italic'],
+            self::TextAlign => ['left', 'center', 'right', 'justify'],
+            self::TextTransform => ['none', 'uppercase', 'lowercase', 'capitalize'],
+            self::TextDecoration => ['none', 'underline', 'line-through'],
+            self::BorderStyle => ['none', 'solid', 'dashed', 'dotted'],
+            self::MarginTop, self::MarginRight, self::MarginBottom, self::MarginLeft, self::Width => ['auto'],
+            self::MaxWidth => ['none'],
+            default => [],
+        };
+    }
+
+    /** @return list<string> */
+    public function units(): array
+    {
+        return match (true) {
+            self::LineHeight === $this => ['', ...self::UNITS],
+            Kind::Length === $this->kind() => self::UNITS,
+            default => [],
+        };
+    }
+
+    public function signed(): bool
+    {
+        return \in_array($this, [self::LetterSpacing, self::MarginTop, self::MarginRight, self::MarginBottom, self::MarginLeft], true);
+    }
+
     public function accepts(string $value): bool
     {
         return 1 === preg_match('/^(?:'.$this->form().')$/i', $value);
@@ -43,21 +113,14 @@ enum Property: string
 
     private function form(): string
     {
-        return match ($this) {
-            self::Color, self::Background, self::BorderColor => self::COLOR,
-            self::FontSize, self::PaddingTop, self::PaddingRight, self::PaddingBottom, self::PaddingLeft, self::BorderWidth, self::BorderRadius, self::MinHeight => self::LENGTH,
-            self::LetterSpacing => '-?'.self::LENGTH,
-            self::MarginTop, self::MarginRight, self::MarginBottom, self::MarginLeft => '-?'.self::LENGTH.'|auto',
-            self::Width => self::LENGTH.'|auto',
-            self::MaxWidth => self::LENGTH.'|none',
-            self::LineHeight => '\d(?:\.\d{1,2})?|'.self::LENGTH,
-            self::FontWeight => 'normal|bold|[1-9]00',
-            self::FontStyle => 'normal|italic',
-            self::TextAlign => 'left|center|right|justify',
-            self::TextTransform => 'none|uppercase|lowercase|capitalize',
-            self::TextDecoration => 'none|underline|line-through',
-            self::BorderStyle => 'none|solid|dashed|dotted',
-            self::Opacity => '0|1|0?\.\d{1,2}',
+        $quoted = static fn (string $word): string => preg_quote($word, '/');
+        $own = match ($this->kind()) {
+            Kind::Color => [self::COLOR],
+            Kind::Choice => [],
+            Kind::Fraction => [self::FRACTION],
+            Kind::Length => [($this->signed() ? '-?' : '').'(?:0|'.self::NUMBER.'(?:'.implode('|', array_map($quoted, $this->units())).'))'],
         };
+
+        return implode('|', [...$own, ...array_map($quoted, $this->keywords())]);
     }
 }
