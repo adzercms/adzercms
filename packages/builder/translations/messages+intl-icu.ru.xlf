@@ -13,16 +13,40 @@
         <target>Выйти</target>
       </segment>
     </unit>
+    <unit id="builder.failed">
+      <segment>
+        <source>builder.failed</source>
+        <target>Страница не сохранена: проверьте связь и сохраните снова</target>
+      </segment>
+    </unit>
     <unit id="builder.layers">
       <segment>
         <source>builder.layers</source>
         <target>Слои</target>
       </segment>
     </unit>
+    <unit id="builder.leave">
+      <segment>
+        <source>builder.leave</source>
+        <target>Выйти из редактора? Несохранённые правки пропадут</target>
+      </segment>
+    </unit>
     <unit id="builder.redo">
       <segment>
         <source>builder.redo</source>
         <target>Повторить</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.document">
+      <segment>
+        <source>builder.refusal.document</source>
+        <target>Страница изменилась после открытия редактора: откройте редактор заново</target>
+      </segment>
+    </unit>
+    <unit id="builder.saved">
+      <segment>
+        <source>builder.saved</source>
+        <target>Страница сохранена</target>
       </segment>
     </unit>
     <unit id="builder.screen.desktop">

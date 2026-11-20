@@ -9,11 +9,17 @@ const SHEETS = 'link[rel="stylesheet"]';
 const HEAD = 'link[rel="preload"], style';
 const LOCKED = {selectable: false, hoverable: false, highlightable: false, draggable: false, droppable: false, removable: false, copyable: false, layerable: false, editable: false, stylable: false, badgable: false};
 const UNAVAILABLE = 'builder-unavailable';
+const TOKEN = '_token';
+const DELETE = 'core:component-delete';
 
 const root = document.querySelector('[data-builder]');
 const blocks = JSON.parse(root.dataset.blocks);
 const screens = JSON.parse(root.dataset.screens);
 const anchors = new Set(blocks.map(block => block.anchor));
+let known = blocks.map(block => block.id);
+let saved = '';
+let agreed = null;
+let leaving = false;
 
 const page = new DOMParser().parseFromString(await (await fetch(root.dataset.frame)).text(), 'text/html');
 const end = page.querySelector('[data-builder-end]');
@@ -57,11 +63,23 @@ const part = node => {
         : {...own, type: PART, content: node.innerHTML};
 };
 
+const ask = (question, action) => {
+    const form = root.querySelector('[data-ask]');
+    agreed = action;
+    form.dataset.confirm = question;
+    form.requestSubmit();
+};
+
 const setup = editor => {
     const types = editor.DomComponents;
     types.addType(PART, {model: {defaults: LOCKED}});
-    types.addType(BLOCKS, {model: {defaults: {...LOCKED, layerable: true}}});
-    types.addType(BLOCK, {model: {defaults: {draggable: false, droppable: false, removable: false, copyable: false, editable: false, stylable: false, toolbar: []}}});
+    types.addType(BLOCKS, {model: {defaults: {...LOCKED, layerable: true, droppable: `[data-gjs-type="${BLOCK}"]`}}});
+    types.addType(BLOCK, {model: {defaults: {draggable: `[data-gjs-type="${BLOCKS}"]`, droppable: false, copyable: false, editable: false, stylable: false}}});
+
+    editor.Commands.add('tlb-delete', {run: ed => {
+        const component = ed.getSelected();
+        ask(component.get('block').question, () => component.remove());
+    }});
 
     editor.on('canvas:frame:load:body', ({window: frame}) => {
         for (const {name, value} of page.documentElement.attributes) {
@@ -74,6 +92,8 @@ const setup = editor => {
         const wrapper = editor.getWrapper();
         wrapper.set({selectable: false, hoverable: false, droppable: false});
         wrapper.addClass([...page.body.classList]);
+        editor.Keymaps.remove(DELETE);
+        saved = JSON.stringify(documentOf());
     });
 };
 
@@ -97,7 +117,65 @@ const editor = grapesjs.init({
     components: [...page.body.childNodes].map(part).filter(Boolean),
 });
 
+const placed = () => editor.getWrapper().findType(BLOCKS)[0].components().filter(component => component.get('type') === BLOCK);
+const documentOf = () => ({known, blocks: placed().map(component => ({id: component.get('block').id}))});
+const dirty = () => JSON.stringify(documentOf()) !== saved;
+
+const status = (message, failed) => {
+    const line = root.querySelector('[data-status]');
+    line.textContent = message;
+    line.className = `builder-status flash ${failed ? 'flash-error' : 'flash-success'}`;
+};
+
+const save = async button => {
+    const document = documentOf();
+    const body = new FormData();
+    body.set(TOKEN, root.querySelector(`[name="${TOKEN}"]`).value);
+    body.set('document', JSON.stringify(document));
+    button.disabled = true;
+    try {
+        const response = await fetch(root.dataset.save, {method: 'POST', body});
+        const {message} = await response.json();
+        status(message, !response.ok);
+        if (response.ok) {
+            known = document.blocks.map(block => block.id);
+            saved = JSON.stringify(documentOf());
+        }
+    } catch {
+        status(root.dataset.failed, true);
+    } finally {
+        button.disabled = false;
+    }
+};
+
+window.addEventListener('submit', event => {
+    if (!event.defaultPrevented && event.target.matches('[data-ask]')) {
+        agreed?.();
+        agreed = null;
+    }
+});
+
+window.addEventListener('beforeunload', event => {
+    if (!leaving && dirty()) {
+        event.preventDefault();
+    }
+});
+
 root.addEventListener('click', event => {
+    const exit = event.target.closest('[data-exit]');
+    if (exit && dirty()) {
+        event.preventDefault();
+        ask(root.dataset.leave, () => {
+            leaving = true;
+            location.assign(exit.href);
+        });
+    } else if (exit) {
+        leaving = true;
+    }
+    const saving = event.target.closest('[data-save-document]');
+    if (saving) {
+        save(saving);
+    }
     const screen = event.target.closest('[data-screen]');
     if (screen) {
         editor.setDevice(screen.dataset.screen);

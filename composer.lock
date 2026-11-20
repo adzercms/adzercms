@@ -154,13 +154,14 @@
             "dist": {
                 "type": "path",
                 "url": "packages/builder",
-                "reference": "1999c5670d0cf1f7d1d830a3ea1c9d847364c2e7"
+                "reference": "e004293b1959cb7959c70a3e8ba4808f7af43708"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
                 "adzercms/core": "^1.0",
                 "adzercms/pages": "^1.0",
                 "adzercms/theme-implementation": "^1.0",
+                "doctrine/orm": "^3.7",
                 "php": ">=8.4",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/framework-bundle": "7.4.*",

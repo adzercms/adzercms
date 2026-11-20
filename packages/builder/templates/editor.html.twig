@@ -11,18 +11,21 @@
 {% block bodyclass %}builder-page{% endblock %}
 
 {% block shell %}
-<div class="builder" data-builder data-title="{{ page.title }}" data-frame="{{ frame }}" data-blocks="{{ blocks|json_encode }}"
+<div class="builder" data-builder data-title="{{ page.title }}" data-frame="{{ frame }}" data-save="{{ save }}" data-blocks="{{ blocks|json_encode }}"
      data-screens="{{ screens|map(screen => {id: screen.id, media: screen.media, width: screen.width})|json_encode }}"
-     data-unavailable="{{ 'pages.block.unavailable'|trans }}">
+     data-unavailable="{{ 'pages.block.unavailable'|trans }}" data-failed="{{ 'builder.failed'|trans }}" data-leave="{{ 'builder.leave'|trans }}">
     <header class="builder-bar">
         <div class="builder-screens">
             {% for screen in screens %}
                 <button type="button" class="secondary small" data-screen="{{ screen.id }}" aria-pressed="{{ loop.first ? 'true' : 'false' }}">{{ screen.label|trans }}</button>
             {% endfor %}
         </div>
+        <p class="builder-status" role="status" data-status></p>
         <button type="button" class="secondary small" data-undo>{{ 'builder.undo'|trans }}</button>
         <button type="button" class="secondary small" data-redo>{{ 'builder.redo'|trans }}</button>
-        <a class="button secondary small" href="{{ path('admin_page', {id: page.id}) }}">{{ 'builder.exit'|trans }}</a>
+        <button type="button" class="small" data-save-document>{{ 'core.action.save'|trans }}</button>
+        <a class="button secondary small" href="{{ path('admin_page', {id: page.id}) }}" data-exit>{{ 'builder.exit'|trans }}</a>
+        <form method="dialog" data-ask hidden>{{ csrf_field() }}</form>
     </header>
     <aside class="builder-side">
         <h2 class="builder-heading">{{ 'builder.layers'|trans }}</h2>

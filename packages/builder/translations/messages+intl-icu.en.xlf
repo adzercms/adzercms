@@ -13,16 +13,40 @@
         <target>Exit</target>
       </segment>
     </unit>
+    <unit id="builder.failed">
+      <segment>
+        <source>builder.failed</source>
+        <target>The page is not saved: check the connection and save again</target>
+      </segment>
+    </unit>
     <unit id="builder.layers">
       <segment>
         <source>builder.layers</source>
         <target>Layers</target>
       </segment>
     </unit>
+    <unit id="builder.leave">
+      <segment>
+        <source>builder.leave</source>
+        <target>Leave the editor? The unsaved changes will be lost</target>
+      </segment>
+    </unit>
     <unit id="builder.redo">
       <segment>
         <source>builder.redo</source>
         <target>Redo</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.document">
+      <segment>
+        <source>builder.refusal.document</source>
+        <target>The page changed after the editor opened: open the editor again</target>
+      </segment>
+    </unit>
+    <unit id="builder.saved">
+      <segment>
+        <source>builder.saved</source>
+        <target>The page is saved</target>
       </segment>
     </unit>
     <unit id="builder.screen.desktop">

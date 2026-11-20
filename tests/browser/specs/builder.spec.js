@@ -49,3 +49,57 @@ test('[ACMS-BLD-0001][ACMS-FLOW-0022] a screen width of the bar narrows the canv
     await page.click('[data-screen="desktop"]');
     await expect.poll(async () => (await frame.boundingBox()).width).toBe(wide);
 });
+
+test('[ACMS-BLD-0002][ACMS-FLOW-0022] a block leaves after a question, the document goes whole on saving, leaving with unsaved changes asks', async ({ page }) => {
+    const root = page.locator('[data-builder]');
+    const blocks = JSON.parse(await root.getAttribute('data-blocks'));
+    const save = await root.getAttribute('data-save');
+    const question = page.locator('#confirm');
+    const drop = async (answer) => {
+        await canvas(page).locator(READY).first().click();
+        await page.locator('.gjs-toolbar-item').last().click();
+        await expect(question).toBeVisible();
+        await expect(question.locator('[data-confirm-text]')).toHaveText(blocks[0].question);
+        await question.locator(answer).click();
+    };
+
+    await drop('button.secondary');
+    await expect(canvas(page).locator(READY), 'a declined question keeps the block').toHaveCount(blocks.length);
+    await drop('button.danger');
+    await expect(canvas(page).locator(READY)).toHaveCount(blocks.length - 1);
+
+    await page.click('[data-exit]');
+    await expect(question, 'leaving with unsaved changes asks').toBeVisible();
+    await question.locator('button.secondary').click();
+    await expect(page).toHaveURL(/\/builder$/);
+
+    const sent = [];
+    await page.route((url) => url.pathname === save, (route) => {
+        sent.push(new URLSearchParams(route.request().postData() ?? '').get('document') ?? route.request().postData());
+        return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ message: 'saved' }) });
+    });
+    await page.click('[data-save-document]');
+    await expect(page.locator('[data-status]')).toHaveText('saved');
+    expect(sent).toHaveLength(1);
+    expect(sent[0], 'the whole document goes: the blocks it knew and the blocks it keeps in order').toContain(JSON.stringify({ known: blocks.map((block) => block.id), blocks: blocks.slice(1).map((block) => ({ id: block.id })) }));
+
+    await page.click('[data-exit]');
+    await expect(page, 'leaving after saving goes without a question').toHaveURL(/\/admin\/pages\/\d+$/);
+});
+
+test('[ACMS-BLD-0002][ACMS-FLOW-0022] a block moves by dragging its layer', async ({ page }) => {
+    const blocks = JSON.parse(await page.locator('[data-builder]').getAttribute('data-blocks'));
+    const layers = page.locator('[data-layers] .gjs-layer-name');
+    await page.locator('[data-layers] .gjs-layer-caret').first().click();
+    await expect(layers).toHaveCount(blocks.length + 1);
+
+    const from = await page.locator('[data-layers] [data-toggle-move]').last().boundingBox();
+    const to = await layers.nth(1).boundingBox();
+    await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(to.x + 10, to.y + 2, { steps: 10 });
+    await page.mouse.up();
+
+    const order = blocks.map((block) => block.anchor);
+    await expect.poll(() => canvas(page).locator(READY).evaluateAll((nodes) => nodes.map((node) => node.id))).toEqual([order.at(-1), ...order.slice(0, -1)]);
+});
