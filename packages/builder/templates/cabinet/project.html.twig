@@ -1,0 +1,17 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block heading %}<span class="record-title">{{ project.name }}</span>{% endblock %}
+
+{% block actions %}
+    <button type="button" hx-get="{{ path('builder_project_page_new', {id: project.id}) }}" hx-target="#record">{{ 'pages.new'|trans }}</button>
+    <form method="post" action="{{ path('builder_project_drop', {id: project.id}) }}" data-confirm="{{ 'builder.project.drop_confirm'|trans({name: project.name}) }}">
+        {{ csrf_field() }}<button type="submit" class="danger">{{ 'builder.project.drop'|trans }}</button>
+    </form>
+    <a class="button secondary" href="{{ path('builder_projects') }}">{{ 'core.action.to_list'|trans }}</a>
+{% endblock %}
+
+{% block page %}
+{% include '@Builder/cabinet/_pages.html.twig' %}
+{% endblock %}

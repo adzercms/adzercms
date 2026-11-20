@@ -91,6 +91,54 @@
         <target>Картинки</target>
       </segment>
     </unit>
+    <unit id="builder.project.drop">
+      <segment>
+        <source>builder.project.drop</source>
+        <target>Удалить проект</target>
+      </segment>
+    </unit>
+    <unit id="builder.project.drop_confirm">
+      <segment>
+        <source>builder.project.drop_confirm</source>
+        <target>Удалить проект «{name}» вместе со страницами?</target>
+      </segment>
+    </unit>
+    <unit id="builder.project.dropped">
+      <segment>
+        <source>builder.project.dropped</source>
+        <target>Проект «{name}» удалён</target>
+      </segment>
+    </unit>
+    <unit id="builder.project.edited">
+      <segment>
+        <source>builder.project.edited</source>
+        <target>Изменён</target>
+      </segment>
+    </unit>
+    <unit id="builder.project.name">
+      <segment>
+        <source>builder.project.name</source>
+        <target>Название</target>
+      </segment>
+    </unit>
+    <unit id="builder.project.new">
+      <segment>
+        <source>builder.project.new</source>
+        <target>Новый проект</target>
+      </segment>
+    </unit>
+    <unit id="builder.projects.empty">
+      <segment>
+        <source>builder.projects.empty</source>
+        <target>Проектов нет</target>
+      </segment>
+    </unit>
+    <unit id="builder.projects.menu">
+      <segment>
+        <source>builder.projects.menu</source>
+        <target>Проекты</target>
+      </segment>
+    </unit>
     <unit id="builder.redo">
       <segment>
         <source>builder.redo</source>
@@ -115,10 +163,28 @@
         <target>Ссылка {link}: путь сайта от /, адрес http(s)://, mailto: либо tel:</target>
       </segment>
     </unit>
+    <unit id="builder.refusal.name">
+      <segment>
+        <source>builder.refusal.name</source>
+        <target>Название: от 1 до {limit} знаков</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.pages">
+      <segment>
+        <source>builder.refusal.pages</source>
+        <target>В проекте не больше {limit, plural, one {# страницы} other {# страниц}}</target>
+      </segment>
+    </unit>
     <unit id="builder.refusal.picture">
       <segment>
         <source>builder.refusal.picture</source>
         <target>Картинка свободного блока не найдена, загрузите её снова</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.projects">
+      <segment>
+        <source>builder.refusal.projects</source>
+        <target>Не больше {limit, plural, one {# проекта} other {# проектов}}: удалите один, чтобы начать новый</target>
       </segment>
     </unit>
     <unit id="builder.saved">

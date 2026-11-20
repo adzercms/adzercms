@@ -1,0 +1,11 @@
+{% extends '@Theme/panel.html.twig' %}
+
+{% block title %}{{ 'builder.projects.menu'|trans }}{% endblock %}
+
+{% block actions %}
+    <button type="button" hx-get="{{ path('builder_project_new') }}" hx-target="#record">{{ 'builder.project.new'|trans }}</button>
+{% endblock %}
+
+{% block page %}
+{% include '@Builder/cabinet/_projects.html.twig' %}
+{% endblock %}

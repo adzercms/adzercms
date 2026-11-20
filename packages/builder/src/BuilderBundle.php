@@ -22,6 +22,6 @@ final class BuilderBundle extends Module
     {
         $container->services()->defaults()->autowire()->autoconfigure()
             ->load('AdzerCMS\\Builder\\', '../src/')
-            ->exclude(['../src/BuilderBundle.php']);
+            ->exclude(['../src/Entity/', '../src/BuilderBundle.php']);
     }
 }

@@ -1,0 +1,15 @@
+{% import '@Theme/_refusal.html.twig' as refusal %}
+{% include '@Theme/_modal_header.html.twig' with {title: 'builder.project.new'|trans} only %}
+
+<div class="modal-body">
+    <form hx-post="{{ path('builder_project_new') }}" hx-target="#record">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label>{{ 'builder.project.name'|trans }}
+                <input type="text" name="name" maxlength="{{ constant('AdzerCMS\\Builder\\Entity\\Project::NAME') }}" value="{{ input.name ?? '' }}" required>
+                {{ refusal.of(refusals, 'name') }}
+            </label>
+        </div>
+        <button type="submit">{{ 'core.action.create'|trans }}</button>
+    </form>
+</div>
