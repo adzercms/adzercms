@@ -42,6 +42,9 @@
         <testsuite name="BankTransfer">
             <directory>packages/bank-transfer/tests</directory>
         </testsuite>
+        <testsuite name="Builder">
+            <directory>packages/builder/tests</directory>
+        </testsuite>
         <testsuite name="Cabinet">
             <directory>packages/cabinet/tests</directory>
         </testsuite>

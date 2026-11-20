@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="builder.action">
+      <segment>
+        <source>builder.action</source>
+        <target>Конструктор</target>
+      </segment>
+    </unit>
+    <unit id="builder.exit">
+      <segment>
+        <source>builder.exit</source>
+        <target>Выйти</target>
+      </segment>
+    </unit>
+    <unit id="builder.layers">
+      <segment>
+        <source>builder.layers</source>
+        <target>Слои</target>
+      </segment>
+    </unit>
+    <unit id="builder.redo">
+      <segment>
+        <source>builder.redo</source>
+        <target>Повторить</target>
+      </segment>
+    </unit>
+    <unit id="builder.screen.desktop">
+      <segment>
+        <source>builder.screen.desktop</source>
+        <target>Компьютер</target>
+      </segment>
+    </unit>
+    <unit id="builder.screen.phone">
+      <segment>
+        <source>builder.screen.phone</source>
+        <target>Телефон</target>
+      </segment>
+    </unit>
+    <unit id="builder.screen.tablet">
+      <segment>
+        <source>builder.screen.tablet</source>
+        <target>Планшет</target>
+      </segment>
+    </unit>
+    <unit id="builder.title">
+      <segment>
+        <source>builder.title</source>
+        <target>{title} · Конструктор</target>
+      </segment>
+    </unit>
+    <unit id="builder.undo">
+      <segment>
+        <source>builder.undo</source>
+        <target>Отменить</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

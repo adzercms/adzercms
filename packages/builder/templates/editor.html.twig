@@ -1,0 +1,33 @@
+{% extends '@Theme/base.html.twig' %}
+
+{% block title %}{{ 'builder.title'|trans({title: page.title}) }}{% endblock %}
+
+{% block meta %}
+    <link rel="stylesheet" href="{{ asset('vendor/grapesjs/dist/css/grapes.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/builder/editor.css') }}">
+    <script type="module" src="{{ asset('bundles/builder/editor.js') }}"></script>
+{% endblock %}
+
+{% block bodyclass %}builder-page{% endblock %}
+
+{% block shell %}
+<div class="builder" data-builder data-title="{{ page.title }}" data-frame="{{ frame }}" data-blocks="{{ blocks|json_encode }}"
+     data-screens="{{ screens|map(screen => {id: screen.id, media: screen.media, width: screen.width})|json_encode }}"
+     data-unavailable="{{ 'pages.block.unavailable'|trans }}">
+    <header class="builder-bar">
+        <div class="builder-screens">
+            {% for screen in screens %}
+                <button type="button" class="secondary small" data-screen="{{ screen.id }}" aria-pressed="{{ loop.first ? 'true' : 'false' }}">{{ screen.label|trans }}</button>
+            {% endfor %}
+        </div>
+        <button type="button" class="secondary small" data-undo>{{ 'builder.undo'|trans }}</button>
+        <button type="button" class="secondary small" data-redo>{{ 'builder.redo'|trans }}</button>
+        <a class="button secondary small" href="{{ path('admin_page', {id: page.id}) }}">{{ 'builder.exit'|trans }}</a>
+    </header>
+    <aside class="builder-side">
+        <h2 class="builder-heading">{{ 'builder.layers'|trans }}</h2>
+        <div data-layers></div>
+    </aside>
+    <div class="builder-canvas" data-canvas></div>
+</div>
+{% endblock %}

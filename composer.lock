@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dcce0d324b5c201dd143107d6f7c1e62",
+    "content-hash": "bed7c33b1fd1ee955719639ed97df55f",
     "packages": [
         {
             "name": "adzercms/admin",
@@ -142,6 +142,72 @@
                 "payments",
                 "sbp",
                 "symfony"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "adzercms/builder",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/builder",
+                "reference": "1999c5670d0cf1f7d1d830a3ea1c9d847364c2e7"
+            },
+            "require": {
+                "adzercms/contracts": "^1.0",
+                "adzercms/core": "^1.0",
+                "adzercms/pages": "^1.0",
+                "adzercms/theme-implementation": "^1.0",
+                "php": ">=8.4",
+                "symfony/dependency-injection": "7.4.*",
+                "symfony/framework-bundle": "7.4.*",
+                "symfony/http-foundation": "7.4.*",
+                "symfony/routing": "7.4.*",
+                "symfony/security-http": "7.4.*",
+                "symfony/translation": "7.4.*",
+                "symfony/translation-contracts": "^3.7"
+            },
+            "require-dev": {
+                "adzercms/admin": "^1.0",
+                "adzercms/cabinet": "^1.0"
+            },
+            "type": "adzercms-module",
+            "extra": {
+                "adzercms": {
+                    "bundle": "AdzerCMS\\Builder\\BuilderBundle",
+                    "description": {
+                        "ru": "Визуальный конструктор страниц: страницы сайта в редакторе с блоками, стилем и ширинами экрана"
+                    },
+                    "categories": [
+                        "content"
+                    ],
+                    "title": {
+                        "en": "Page builder",
+                        "ru": "Конструктор"
+                    }
+                },
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AdzerCMS\\Builder\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Visual page builder: the site pages in an editor with blocks, style and screen widths",
+            "keywords": [
+                "adzercms",
+                "grapesjs",
+                "page builder",
+                "symfony",
+                "website"
             ],
             "transport-options": {
                 "symlink": true,
@@ -17828,6 +17894,7 @@
     "stability-flags": {
         "adzercms/admin": 20,
         "adzercms/bank-transfer": 20,
+        "adzercms/builder": 20,
         "adzercms/cabinet": 20,
         "adzercms/centrifugo": 20,
         "adzercms/contracts": 20,
