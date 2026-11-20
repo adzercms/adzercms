@@ -24,7 +24,6 @@ final class ExportTest extends SchemaTestCase
     private const CATEGORY = '0199a000-0000-7000-8000-00000000c001';
     private const REPOSITORY = 'https://git.example.test/acme/shop.git';
     private const SETTINGS = '/admin/settings/modules/opotopo';
-    private const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
 
     protected function setUp(): void
     {
@@ -38,7 +37,7 @@ final class ExportTest extends SchemaTestCase
     #[Group('ACMS-OTO-0006')]
     public function testNewChangedAndDroppedItemsReachMarketplaceByScheduledJob(): void
     {
-        (new Filesystem())->dumpFile(self::parameter('adzercms.files_dir').'/shelf/a.png', (string) base64_decode(self::PNG, true));
+        (new Filesystem())->dumpFile(self::parameter('adzercms.files_dir').'/shelf/a.png', self::dot());
         self::shelf()->rows = [
             'a' => ['sku' => 'A-1', 'title' => 'Shop module', 'price' => '1500.00', 'category' => self::CATEGORY, 'cover' => 'shelf/a.png'],
             'b' => ['sku' => 'B-2', 'title' => 'Blog module', 'price' => '900.00', 'category' => self::CATEGORY],
@@ -53,7 +52,7 @@ final class ExportTest extends SchemaTestCase
         $sent = $this->synced[0]['body'];
         self::assertSame([self::ORGANIZATION, true], [$sent['organizationId'] ?? null, $sent['publish'] ?? null]);
         self::assertSame(['A-1', 'B-2', 'C-3'], array_column(self::items($sent), 'sku'));
-        self::assertSame([1500, 'image/png', base64_decode(self::PNG, true)], [self::items($sent)[0]['price'], $this->uploads[0]['type'], $this->uploads[0]['content']]);
+        self::assertSame([1500, 'image/png', self::dot()], [self::items($sent)[0]['price'], $this->uploads[0]['type'], $this->uploads[0]['content']]);
         self::assertSame([$this->uploads[0]['request']['fileId']], self::items($sent)[0]['imageFileIds']);
 
         unset(self::shelf()->rows['a']);
