@@ -1586,12 +1586,10 @@ form[data-steps] [data-step]:not(.current) { display: none; }
     .card { margin-bottom: 0; padding: 12px; border-left: 0; border-right: 0; border-radius: 0; }
     .card-head { margin: -12px -12px 1rem; padding: 0.8rem 12px; }
 
-    .chart-node { grid-template-columns: 1fr; }
-
     .offer-grid { grid-template-columns: 1fr; }
 }
 
-.chart-windows { display: flex; gap: 0.4rem; margin: 1.2rem 0 0.6rem; }
+.chart-windows { display: flex; gap: 0.4rem; margin: 1.2rem 0 1.2rem; }
 .chart-window {
     padding: 0.3rem 0.8rem;
     border: 1px solid var(--border);
@@ -1601,17 +1599,25 @@ form[data-steps] [data-step]:not(.current) { display: none; }
 }
 .chart-window.is-active { border-color: var(--primary); color: var(--primary-text); }
 
-.chart-node { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.2rem; }
-.chart-node h3 { grid-column: 1 / -1; margin: 0; font-size: 1rem; }
+.chart-node {
+    --chart-gap: 1.5rem;
+    --chart-min: 18rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, max((100% - var(--charts) * var(--chart-gap)) / var(--charts), (var(--charts) * var(--chart-min) - 100%) * 999)), 1fr));
+    column-gap: var(--chart-gap);
+    margin-bottom: 0.6rem;
+}
+.chart-node h3 { grid-column: 1 / -1; margin: 0 0 0.8rem; font-size: 1rem; }
 
-.chart { margin: 0; }
-.chart-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.8rem; font-size: 0.85rem; color: var(--text-gray); }
+.chart, .chart-slot { grid-row: span 3; min-width: 0; }
+.chart { --chart-height: 8.5rem; display: grid; grid-template-rows: subgrid; row-gap: 0.4rem; margin: 0 0 1.4rem; }
+.chart-head { display: flex; align-items: baseline; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; }
+.chart-unit { font-size: 0.8rem; font-weight: 400; color: var(--text-gray); }
+.chart-legend { display: flex; flex-wrap: wrap; align-content: start; gap: 0.2rem 0.9rem; font-size: 0.8rem; color: var(--text-gray); }
 .chart-toggle { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; }
-.chart-unit { margin-left: auto; }
-.chart-mark { width: 12px; height: 3px; border-radius: 2px; background: currentColor; }
 
-.chart-area { position: relative; padding: 0 1.4rem 1.1rem 2.4rem; }
-.chart-axis { position: absolute; top: 0; left: 0; width: 2.2rem; height: 120px; }
+.chart-area { --chart-axis: 2.4rem; position: relative; padding: 0 0.9rem 0 var(--chart-axis); container-type: inline-size; }
+.chart-axis { position: absolute; top: 0; left: 0; width: calc(var(--chart-axis) - 0.4rem); height: var(--chart-height); }
 
 .chart-level {
     position: absolute;
@@ -1623,11 +1629,11 @@ form[data-steps] [data-step]:not(.current) { display: none; }
     font-variant-numeric: tabular-nums;
 }
 
-.chart-times { position: relative; height: 1.1rem; }
+.chart-times { position: relative; height: 1.3rem; }
 
 .chart-time {
     position: absolute;
-    top: 0.15rem;
+    top: 0.35rem;
     transform: translateX(-50%);
     font-size: 11px;
     line-height: 1;
@@ -1636,15 +1642,19 @@ form[data-steps] [data-step]:not(.current) { display: none; }
     font-variant-numeric: tabular-nums;
 }
 
-.chart-plot { display: block; width: 100%; height: 120px; background: var(--bg-gray); border-radius: var(--radius); }
-.chart-grid { stroke: var(--border); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
-.chart-line { stroke-width: 2; vector-effect: non-scaling-stroke; }
+@container (width < 32rem) {
+    .chart-time:nth-child(even) { display: none; }
+}
+
+.chart-plot { display: block; width: 100%; height: var(--chart-height); background: var(--bg-gray); border-radius: var(--radius); }
+.chart-grid { stroke: var(--border-light); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.chart-line { fill: none; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .chart-line.is-off { display: none; }
 
-.chart-toggle:nth-of-type(4n + 1) .chart-mark, .chart-line:nth-of-type(4n + 1) { color: var(--primary-text); stroke: var(--primary); }
-.chart-toggle:nth-of-type(4n + 2) .chart-mark, .chart-line:nth-of-type(4n + 2) { color: var(--warning); stroke: var(--warning); }
-.chart-toggle:nth-of-type(4n + 3) .chart-mark, .chart-line:nth-of-type(4n + 3) { color: var(--success); stroke: var(--success); }
-.chart-toggle:nth-of-type(4n) .chart-mark, .chart-line:nth-of-type(4n) { color: var(--error); stroke: var(--error); }
+.chart-toggle:nth-of-type(4n + 1) input, .chart-line:nth-of-type(4n + 1) { accent-color: var(--primary); stroke: var(--primary); }
+.chart-toggle:nth-of-type(4n + 2) input, .chart-line:nth-of-type(4n + 2) { accent-color: var(--warning); stroke: var(--warning); }
+.chart-toggle:nth-of-type(4n + 3) input, .chart-line:nth-of-type(4n + 3) { accent-color: var(--success); stroke: var(--success); }
+.chart-toggle:nth-of-type(4n) input, .chart-line:nth-of-type(4n) { accent-color: var(--error); stroke: var(--error); }
 
 .doc-sheet { padding: 1.5rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); }
 .doc-sheet > iframe { display: block; width: 100%; border: 0; }

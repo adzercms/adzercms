@@ -2,14 +2,17 @@
 {%- set h = 120 -%}
 {%- set levels = chart.levels|reverse -%}
 <figure class="chart">
+    <figcaption class="chart-head">
+        <span class="chart-title">{{ chart.title|trans }}</span>
+        <span class="chart-unit">{{ chart.unit|trans }}</span>
+    </figcaption>
+
     <div class="chart-legend">
         {% for line in chart.lines %}
             <label class="chart-toggle">
-                <input type="checkbox" checked data-line="{{ id }}-{{ line.key }}">
-                <span class="chart-mark"></span>{{ line.label|trans }}
+                <input type="checkbox" checked data-line="{{ id }}-{{ line.key }}">{{ line.label|trans }}
             </label>
         {% endfor %}
-        <span class="chart-unit">{{ chart.unit|trans }}</span>
     </div>
 
     <div class="chart-area">
@@ -31,8 +34,8 @@
                       x2="{{ (tick.share * w)|round(1) }}" y2="{{ h }}"/>
             {% endfor %}
             {% for line in chart.lines %}
-                <polyline id="{{ id }}-{{ line.key }}" class="chart-line" fill="none"
-                    points="{% for point in line.points %}{{ ((point.0 - chart.from) / chart.span * w)|round(2) }},{{ (h - min(point.1, chart.ceiling) / chart.ceiling * h)|round(2) }} {% endfor %}"/>
+                <path id="{{ id }}-{{ line.key }}" class="chart-line"
+                    d="{% for segment in line.segments %}M{% for point in segment %}{{ ((point.0 - chart.from) / chart.span * w)|round(2) }},{{ (h - min(point.1, chart.ceiling) / chart.ceiling * h)|round(2) }} {% endfor %}{{ segment|length == 1 ? 'h0 ' }}{% endfor %}"/>
             {% endfor %}
         </svg>
 
