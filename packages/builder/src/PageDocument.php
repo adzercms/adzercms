@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace AdzerCMS\Builder;
 
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Pages\Album;
 use AdzerCMS\Pages\Block;
 use AdzerCMS\Pages\BlockForm;
 use AdzerCMS\Pages\Blocks;
 use AdzerCMS\Pages\BlockStyle;
-use AdzerCMS\Pages\Entity\Page;
-use AdzerCMS\Pages\Entity\PageBlock;
+use AdzerCMS\Pages\Entity\BlockRecord;
 use AdzerCMS\Pages\PhotoAlbum;
-use AdzerCMS\Pages\Pictures;
-use AdzerCMS\Pages\Repository\PageBlockRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -31,21 +29,19 @@ final readonly class PageDocument
     private const DIGEST = 'xxh128';
 
     public function __construct(
-        private PageBlockRepository $blocks,
         private Blocks $types,
         private BlockForm $form,
         private TranslatorInterface $translator,
         private EntityManagerInterface $em,
-        private Pictures $pictures,
     ) {
     }
 
     /** @return array{version: string, blocks: list<array{id: int, anchor: string, type: string, label: string, available: bool, question: string, values: array<string, string>, style: array<string, array<string, array<string, string>>>}>} */
-    public function open(Page $page): array
+    public function open(Document $document): array
     {
-        $blocks = $this->blocks->of($page);
+        $blocks = $document->blocks();
 
-        return [self::VERSION => self::version($blocks), self::BLOCKS => array_map(fn (PageBlock $block): array => [
+        return [self::VERSION => self::version($blocks), self::BLOCKS => array_map(fn (BlockRecord $block): array => [
             self::ID => (int) $block->getId(),
             'anchor' => BlockStyle::anchor($block),
             ...$this->entry($block->getType()),
@@ -61,33 +57,37 @@ final readonly class PageDocument
     }
 
     /**
-     * @param array<mixed> $document
+     * @param array<mixed> $sent
      *
-     * @return array{version: string, blocks: list<PageBlock>}|Refusal
+     * @return array{version: string, blocks: list<BlockRecord>}|Refusal
      */
-    public function save(Page $page, array $document): array|Refusal
+    public function save(Document $document, array $sent): array|Refusal
     {
         $stored = [];
-        foreach ($this->blocks->of($page) as $block) {
+        foreach ($document->blocks() as $block) {
             $stored[(int) $block->getId()] = $block;
         }
-        $entries = $document[self::BLOCKS] ?? null;
-        if (!\is_array($entries) || ($document[self::VERSION] ?? null) !== self::version($stored)) {
+        $entries = $sent[self::BLOCKS] ?? null;
+        if (!\is_array($entries) || ($sent[self::VERSION] ?? null) !== self::version($stored)) {
             return new Refusal(t('builder.refusal.document'));
         }
 
         $kept = [];
         $seen = [];
         foreach ($entries as $entry) {
-            $one = $this->entered($page, \is_array($entry) ? $entry : [], array_diff_key($stored, $seen));
+            $one = $this->entered($document, \is_array($entry) ? $entry : [], array_diff_key($stored, $seen));
             if ($one instanceof Refusal) {
                 return $one;
             }
             $kept[] = $one;
             $seen += null === $one[0]->getId() ? [] : [$one[0]->getId() => true];
         }
+        $refusal = $document->sizeRefusal(array_map(static fn (array $one): array => [$one[1], $one[2]], $kept));
+        if (null !== $refusal) {
+            return $refusal;
+        }
 
-        $before = PhotoAlbum::names(array_merge([], ...array_map(static fn (PageBlock $block): array => array_values($block->getValues()), array_values($stored))));
+        $before = PhotoAlbum::names(array_merge([], ...array_map(static fn (BlockRecord $block): array => array_values($block->getValues()), array_values($stored))));
         $placed = [];
         foreach ($kept as [$block, $values, $style]) {
             $placed[] = $block;
@@ -99,8 +99,9 @@ final readonly class PageDocument
         foreach (array_diff_key($stored, $seen) as $block) {
             $this->em->remove($block);
         }
+        $document->touch();
         $this->em->flush();
-        $this->pictures->drop(array_diff($before, PhotoAlbum::names(array_merge([], ...array_map(static fn (array $one): array => array_values($one[1]), $kept)))));
+        $document->album()->drop(array_diff($before, PhotoAlbum::names(array_merge([], ...array_map(static fn (array $one): array => array_values($one[1]), $kept)))));
 
         return [self::VERSION => self::version($placed), self::BLOCKS => $placed];
     }
@@ -121,12 +122,12 @@ final readonly class PageDocument
     }
 
     /**
-     * @param array<mixed>          $entry
-     * @param array<int, PageBlock> $left
+     * @param array<mixed>            $entry
+     * @param array<int, BlockRecord> $left
      *
-     * @return array{PageBlock, array<string, string>, array<string, array<string, array<string, string>>>}|Refusal
+     * @return array{BlockRecord, array<string, string>, array<string, array<string, array<string, string>>>}|Refusal
      */
-    private function entered(Page $page, array $entry, array $left): array|Refusal
+    private function entered(Document $document, array $entry, array $left): array|Refusal
     {
         $values = self::values($entry[self::VALUES] ?? null);
         $style = $entry[self::STYLE] ?? null;
@@ -135,10 +136,10 @@ final readonly class PageDocument
         $block = \is_int($id) ? $left[$id] ?? null : null;
         $type = null === $id && \is_string($key) ? $this->types->find($key) : null;
         if (null !== $values && \is_array($style) && null !== $block) {
-            return self::kept($block, $this->checked($block, $values), self::sorted($style) === self::sorted($block->getStyle()) ? $block->getStyle() : BlockStyle::rules($style));
+            return self::kept($block, $this->checked($block, $values, $document->album()), self::sorted($style) === self::sorted($block->getStyle()) ? $block->getStyle() : BlockStyle::rules($style));
         }
         if (null !== $values && \is_array($style) && null !== $type) {
-            return self::kept(new PageBlock($page, $type->key()), $this->stored($type, $values), BlockStyle::rules($style));
+            return self::kept($document->block($type->key()), $this->stored($type, $values, $document->album()), BlockStyle::rules($style));
         }
 
         return new Refusal(t('builder.refusal.document'));
@@ -148,9 +149,9 @@ final readonly class PageDocument
      * @param array<string, string>|Refusal                               $values
      * @param array<string, array<string, array<string, string>>>|Refusal $style
      *
-     * @return array{PageBlock, array<string, string>, array<string, array<string, array<string, string>>>}|Refusal
+     * @return array{BlockRecord, array<string, string>, array<string, array<string, array<string, string>>>}|Refusal
      */
-    private static function kept(PageBlock $block, array|Refusal $values, array|Refusal $style): array|Refusal
+    private static function kept(BlockRecord $block, array|Refusal $values, array|Refusal $style): array|Refusal
     {
         return match (true) {
             $values instanceof Refusal => $values,
@@ -173,11 +174,11 @@ final readonly class PageDocument
      *
      * @return array<string, string>|Refusal
      */
-    private function checked(PageBlock $block, array $values): array|Refusal
+    private function checked(BlockRecord $block, array $values, Album $album): array|Refusal
     {
         $type = $this->types->find($block->getType());
 
-        return null === $type || self::sorted($values) === self::sorted($block->getValues()) ? $block->getValues() : $this->stored($type, $values);
+        return null === $type || self::sorted($values) === self::sorted($block->getValues()) ? $block->getValues() : $this->stored($type, $values, $album);
     }
 
     /**
@@ -185,12 +186,12 @@ final readonly class PageDocument
      *
      * @return array<string, string>|Refusal
      */
-    private function stored(Block $type, array $values): array|Refusal
+    private function stored(Block $type, array $values, Album $album): array|Refusal
     {
-        return $type instanceof FreeBlock ? $type->stored($values, $this->pictures) : $this->form->stored($type, $values, $this->pictures);
+        return $type instanceof FreeBlock ? $type->stored($values, $album) : $this->form->stored($type, $values, $album);
     }
 
-    /** @param iterable<PageBlock> $blocks */
+    /** @param iterable<BlockRecord> $blocks */
     private static function version(iterable $blocks): string
     {
         $state = [];

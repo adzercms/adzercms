@@ -154,7 +154,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/builder",
-                "reference": "fd05bcb0108388a7b958673c443a6e3d34d294a7"
+                "reference": "dc7ca9fd4c970d15c5e0d7aa00154a3b4c4f8489"
             },
             "require": {
                 "adzercms/contracts": "^1.0",
@@ -169,10 +169,14 @@
                 "ext-mbstring": "*",
                 "php": ">=8.4",
                 "symfony/clock": "7.4.*",
+                "symfony/console": "7.4.*",
                 "symfony/dependency-injection": "7.4.*",
                 "symfony/framework-bundle": "7.4.*",
                 "symfony/http-foundation": "7.4.*",
+                "symfony/http-kernel": "7.4.*",
                 "symfony/routing": "7.4.*",
+                "symfony/security-bundle": "7.4.*",
+                "symfony/security-core": "7.4.*",
                 "symfony/security-http": "7.4.*",
                 "symfony/translation": "7.4.*",
                 "symfony/translation-contracts": "^3.7"

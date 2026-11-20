@@ -59,6 +59,11 @@ final readonly class PhotoAlbum implements Album
         $this->photos->drop($this->place, array_values(array_diff(self::names($values), ($this->held)())));
     }
 
+    public function clear(): void
+    {
+        $this->photos->clear($this->place);
+    }
+
     public function sweep(int $before): int
     {
         $stale = array_values(array_filter(array_diff($this->photos->names($this->place), ($this->held)()), fn (string $name): bool => filemtime((string) $this->path($name)) < $before));

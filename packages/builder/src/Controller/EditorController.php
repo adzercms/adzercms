@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Builder\Controller;
 
+use AdzerCMS\Builder\Document;
+use AdzerCMS\Builder\Documents;
 use AdzerCMS\Builder\FreeBlock;
 use AdzerCMS\Builder\PageDocument;
 use AdzerCMS\Contracts\Refusal;
@@ -14,9 +16,7 @@ use AdzerCMS\Pages\BlockForm;
 use AdzerCMS\Pages\Blocks;
 use AdzerCMS\Pages\BlockStyle;
 use AdzerCMS\Pages\Controller\Admin\BlockController;
-use AdzerCMS\Pages\Entity\Page;
-use AdzerCMS\Pages\Entity\PageBlock;
-use AdzerCMS\Pages\Pictures;
+use AdzerCMS\Pages\Entity\BlockRecord;
 use AdzerCMS\Pages\Site;
 use AdzerCMS\Pages\Style\Group;
 use AdzerCMS\Pages\Style\Property;
@@ -34,20 +34,25 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function Symfony\Component\Translation\t;
 
-#[Route('/admin/pages/{id}/builder', requirements: ['id' => '\d+'])]
-#[IsGranted(Role::ADMIN)]
+#[IsGranted(Role::USER)]
 final class EditorController extends AbstractController
 {
     public const EDITOR = 'admin_page_builder';
+    public const PROJECT = 'builder_project_editor';
     public const DOCUMENT = 'document';
     public const STORED = 'stored';
     public const FIRST = 'first';
 
-    private const FRAME = 'admin_page_builder_frame';
-    private const SAVE = 'admin_page_builder_save';
-    private const TYPE = 'admin_page_builder_type';
-    private const FILL = 'admin_page_builder_type_fill';
-    private const PICTURES = 'admin_page_builder_pictures';
+    private const ON_SITE = '/admin/pages/{id}/builder';
+    private const IN_PROJECT = '/builder/projects/{project}/pages/{id}/editor';
+    private const NUMBERS = ['id' => '\d+', 'project' => '\d+'];
+    private const SITE = [Documents::KIND => Documents::SITE];
+    private const OF_PROJECT = [Documents::KIND => Documents::PROJECT];
+    private const FRAME = '_frame';
+    private const SAVE = '_save';
+    private const TYPE = '_type';
+    private const FILL = '_type_fill';
+    private const PICTURES = '_pictures';
     private const FILES = 'files';
     private const DRAWN = 'block';
     private const PREVIEW = [Screen::Tablet->value => 768, Screen::Phone->value => 375];
@@ -57,23 +62,25 @@ final class EditorController extends AbstractController
         private readonly Site $site,
         private readonly Blocks $types,
         private readonly BlockForm $form,
-        private readonly Pictures $pictures,
         private readonly TranslatorInterface $translator,
     ) {
     }
 
-    #[Route('', name: self::EDITOR, methods: ['GET'])]
-    public function editor(Page $page): Response
+    #[Route(self::ON_SITE, name: self::EDITOR, requirements: self::NUMBERS, defaults: self::SITE, methods: ['GET'])]
+    #[Route(self::IN_PROJECT, name: self::PROJECT, requirements: self::NUMBERS, defaults: self::OF_PROJECT, methods: ['GET'])]
+    public function editor(Document $document): Response
     {
-        $document = $this->document->open($page);
+        $opened = $this->document->open($document);
+        [$exit, $parameters] = $document->exit();
 
         return $this->render('@Builder/editor.html.twig', [
-            'page' => $page,
-            'frame' => $this->generateUrl(self::FRAME, ['id' => $page->getId()]),
-            'save' => $this->generateUrl(self::SAVE, ['id' => $page->getId()]),
-            'version' => $document[PageDocument::VERSION],
-            'blocks' => array_map(fn (array $block): array => [...$block, PageDocument::STYLE => (object) $block[PageDocument::STYLE], 'dialog' => $block['available'] ? $this->opening($page, $block['type']) : null], $document[PageDocument::BLOCKS]),
-            'types' => array_map(fn (array $type): array => $type + ['dialog' => $this->opening($page, $type['type']), 'draw' => $this->drawing($page, $type['type'])], $this->document->types()),
+            'title' => $document->title(),
+            'exit' => $this->generateUrl($exit, $parameters),
+            'frame' => $this->url($document, self::FRAME),
+            'save' => $this->url($document, self::SAVE),
+            'version' => $opened[PageDocument::VERSION],
+            'blocks' => array_map(fn (array $block): array => [...$block, PageDocument::STYLE => (object) $block[PageDocument::STYLE], 'dialog' => $block['available'] ? $this->opening($document, $block['type']) : null], $opened[PageDocument::BLOCKS]),
+            'types' => array_map(fn (array $type): array => $type + ['dialog' => $this->opening($document, $type['type']), 'draw' => $this->drawing($document, $type['type'])], $this->document->types()),
             'screens' => array_map(static fn (Screen $screen): array => [
                 'id' => $screen->value,
                 'media' => $screen->width(),
@@ -81,64 +88,70 @@ final class EditorController extends AbstractController
                 'label' => self::label($screen),
             ], Screen::cases()),
             'sectors' => $this->sectors(),
-            'pictures' => $this->pictures->listed(),
-            'upload' => $this->generateUrl(self::PICTURES, ['id' => $page->getId()]),
+            'pictures' => $document->album()->listed(),
+            'upload' => $this->url($document, self::PICTURES),
             'accept' => implode(',', Photos::TYPES),
             'free' => FreeBlock::KEY,
             'elements' => array_map(fn (string $kind): array => ['kind' => $kind, 'label' => $this->translator->trans('builder.element.'.$kind)], FreeBlock::kinds()),
         ]);
     }
 
-    #[Route('/pictures', name: self::PICTURES, methods: ['POST'])]
-    public function upload(Request $request): JsonResponse
+    #[Route(self::ON_SITE.'/pictures', name: self::EDITOR.self::PICTURES, requirements: self::NUMBERS, defaults: self::SITE, methods: ['POST'])]
+    #[Route(self::IN_PROJECT.'/pictures', name: self::PROJECT.self::PICTURES, requirements: self::NUMBERS, defaults: self::OF_PROJECT, methods: ['POST'])]
+    public function upload(Document $document, Request $request): JsonResponse
     {
         $files = array_values(array_filter($request->files->all(self::FILES), static fn (mixed $file): bool => $file instanceof UploadedFile));
-        $refusal = Photos::refusal($files);
+        $refusal = Photos::refusal($files) ?? $document->picturesRefusal(\count($files));
+        $album = $document->album();
 
         return null === $refusal
-            ? $this->json(['data' => array_map(fn (UploadedFile $file): array => $this->pictures->entry($this->pictures->store($file)), $files)])
+            ? $this->json(['data' => array_map(static fn (UploadedFile $file): array => $album->entry($album->store($file)), $files)])
             : $this->json(['message' => $refusal->reason->trans($this->translator)], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    #[Route('', name: self::SAVE, methods: ['POST'])]
-    public function save(Page $page, Request $request): JsonResponse
+    #[Route(self::ON_SITE, name: self::EDITOR.self::SAVE, requirements: self::NUMBERS, defaults: self::SITE, methods: ['POST'])]
+    #[Route(self::IN_PROJECT, name: self::PROJECT.self::SAVE, requirements: self::NUMBERS, defaults: self::OF_PROJECT, methods: ['POST'])]
+    public function save(Document $document, Request $request): JsonResponse
     {
-        $document = json_decode($request->request->getString(self::DOCUMENT), true);
-        $outcome = \is_array($document) ? $this->document->save($page, $document) : new Refusal(t('builder.refusal.document'));
+        $sent = json_decode($request->request->getString(self::DOCUMENT), true);
+        $outcome = \is_array($sent) ? $this->document->save($document, $sent) : new Refusal(t('builder.refusal.document'));
 
         return $outcome instanceof Refusal
             ? $this->json(['message' => $outcome->reason->trans($this->translator)], Response::HTTP_UNPROCESSABLE_ENTITY)
             : $this->json([
                 'message' => $this->translator->trans('builder.saved'),
                 PageDocument::VERSION => $outcome[PageDocument::VERSION],
-                PageDocument::BLOCKS => array_map(static fn (PageBlock $block): array => [PageDocument::ID => $block->getId(), 'anchor' => BlockStyle::anchor($block)], $outcome[PageDocument::BLOCKS]),
+                PageDocument::BLOCKS => array_map(static fn (BlockRecord $block): array => [PageDocument::ID => $block->getId(), 'anchor' => BlockStyle::anchor($block)], $outcome[PageDocument::BLOCKS]),
             ]);
     }
 
-    #[Route('/frame', name: self::FRAME, methods: ['GET'])]
-    public function frame(Page $page): Response
+    #[Route(self::ON_SITE.'/frame', name: self::EDITOR.self::FRAME, requirements: self::NUMBERS, defaults: self::SITE, methods: ['GET'])]
+    #[Route(self::IN_PROJECT.'/frame', name: self::PROJECT.self::FRAME, requirements: self::NUMBERS, defaults: self::OF_PROJECT, methods: ['GET'])]
+    public function frame(Document $document): Response
     {
-        return $this->render('@Builder/frame.html.twig', ['page' => $page, 'view' => $this->site->view($page)]);
+        return $this->render('@Builder/frame.html.twig', ['view' => $document->view()]);
     }
 
-    #[Route('/types/{type}', name: self::TYPE, methods: ['POST'])]
-    public function type(Page $page, string $type, Request $request): Response
+    #[Route(self::ON_SITE.'/types/{type}', name: self::EDITOR.self::TYPE, requirements: self::NUMBERS, defaults: self::SITE, methods: ['POST'])]
+    #[Route(self::IN_PROJECT.'/types/{type}', name: self::PROJECT.self::TYPE, requirements: self::NUMBERS, defaults: self::OF_PROJECT, methods: ['POST'])]
+    public function type(Document $document, string $type, Request $request): Response
     {
         $stored = PageDocument::values(json_decode($request->request->getString(self::STORED), true)) ?? throw new BadRequestException();
 
-        return $this->dialog($page, $this->kind($type), $stored, [], $request);
+        return $this->dialog($document, $this->kind($type), $stored, [], $request);
     }
 
-    #[Route('/types/{type}/fill', name: self::FILL, methods: ['POST'])]
-    public function fill(Page $page, string $type, Request $request): Response
+    #[Route(self::ON_SITE.'/types/{type}/fill', name: self::EDITOR.self::FILL, requirements: self::NUMBERS, defaults: self::SITE, methods: ['POST'])]
+    #[Route(self::IN_PROJECT.'/types/{type}/fill', name: self::PROJECT.self::FILL, requirements: self::NUMBERS, defaults: self::OF_PROJECT, methods: ['POST'])]
+    public function fill(Document $document, string $type, Request $request): Response
     {
         $block = $this->kind($type);
-        [$values, $refusals] = $this->form->posted($block, $request, $this->pictures);
+        [$values, $refusals] = $this->form->posted($block, $request, $document->album());
         if ([] !== $refusals) {
-            return $this->dialog($page, $block, $request->request->all(BlockForm::VALUE), $refusals, $request);
+            return $this->dialog($document, $block, $request->request->all(BlockForm::VALUE), $refusals, $request);
         }
 
-        $view = $this->site->block($block, $values, self::DRAWN, $request->request->getBoolean(self::FIRST), $this->pictures);
+        $view = $this->site->block($block, $values, self::DRAWN, $request->request->getBoolean(self::FIRST), $document->album());
         $response = $this->json([PageDocument::VALUES => $values, 'anchor' => self::DRAWN, 'html' => $this->renderView($view['template'], $view)]);
         $response->headers->set('HX-Reswap', 'none');
 
@@ -163,14 +176,22 @@ final class EditorController extends AbstractController
         return array_map(fn (Group $group): array => ['id' => $group->value, 'name' => $group->label()->trans($this->translator), 'properties' => $properties[$group->value] ?? []], Group::cases());
     }
 
-    private function opening(Page $page, string $type): ?string
+    /** @param array<string, string> $more */
+    private function url(Document $document, string $action, array $more = []): string
     {
-        return [] === $this->kind($type)->fields() ? null : $this->generateUrl(self::TYPE, ['id' => $page->getId(), 'type' => $type]);
+        [$route, $parameters] = $document->route();
+
+        return $this->generateUrl($route.$action, $parameters + $more);
     }
 
-    private function drawing(Page $page, string $type): ?string
+    private function opening(Document $document, string $type): ?string
     {
-        return [] === $this->kind($type)->fields() ? $this->generateUrl(self::FILL, ['id' => $page->getId(), 'type' => $type]) : null;
+        return [] === $this->kind($type)->fields() ? null : $this->url($document, self::TYPE, ['type' => $type]);
+    }
+
+    private function drawing(Document $document, string $type): ?string
+    {
+        return [] === $this->kind($type)->fields() ? $this->url($document, self::FILL, ['type' => $type]) : null;
     }
 
     private function kind(string $key): Block
@@ -182,11 +203,12 @@ final class EditorController extends AbstractController
      * @param array<string, mixed> $values
      * @param list<Refusal>        $refusals
      */
-    private function dialog(Page $page, Block $type, array $values, array $refusals, Request $request): Response
+    private function dialog(Document $document, Block $type, array $values, array $refusals, Request $request): Response
     {
+        [$route, $parameters] = $document->picture();
+
         return $this->render(BlockController::DIALOG, [
-            'page' => $page,
-            'action' => $this->generateUrl(self::FILL, ['id' => $page->getId(), 'type' => $type->key()]),
+            'action' => $this->url($document, self::FILL, ['type' => $type->key()]),
             'hidden' => [self::FIRST => $request->request->getBoolean(self::FIRST) ? '1' : ''],
             'submit' => 'builder.apply',
             'type' => $type,
@@ -194,6 +216,7 @@ final class EditorController extends AbstractController
             'values' => BlockForm::shown($type, $values),
             'refusals' => $refusals,
             'pick' => true,
+            'album' => ['route' => $route, 'params' => $parameters],
         ]);
     }
 

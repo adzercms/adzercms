@@ -8,7 +8,7 @@
             {% for column in field.fields %}
                 {% set cell = '[' ~ at ~ '][' ~ column.name ~ ']' %}
                 {% if column.type.picture %}
-                    {% include '@Theme/_picture.html.twig' with {field: column, id: id ~ '-' ~ at ~ '-' ~ column.name, name: name ~ cell, value: row[column.name]|default(''), route: pictures.route, drop: pictures.drop ~ cell, pick: pictures.pick|default(false)} only %}
+                    {% include '@Theme/_picture.html.twig' with {field: column, id: id ~ '-' ~ at ~ '-' ~ column.name, name: name ~ cell, value: row[column.name]|default(''), route: pictures.route, params: pictures.params|default({}), drop: pictures.drop ~ cell, pick: pictures.pick|default(false)} only %}
                 {% else %}
                     {% include '@Theme/_field.html.twig' with {field: column, id: id ~ '-' ~ at ~ '-' ~ column.name, name: name ~ cell, value: row[column.name], label: column.label, grouped: true} only %}
                 {% endif %}
@@ -44,7 +44,7 @@
 {% elseif field.type == constant(type ~ 'Secret') %}
     <input {{ named }} type="text" class="secret" autocomplete="off" spellcheck="false">
 {% elseif field.type.picture and pictures|default(null) %}
-    {% include '@Theme/_picture.html.twig' with {field: field, id: id, name: name, value: value, route: pictures.route, drop: pictures.drop, pick: pictures.pick|default(false)} only %}
+    {% include '@Theme/_picture.html.twig' with {field: field, id: id, name: name, value: value, route: pictures.route, params: pictures.params|default({}), drop: pictures.drop, pick: pictures.pick|default(false)} only %}
 {% elseif field.type.picture %}
     {% include '@Theme/_file.html.twig' with {id: id, name: name, accept: (field.type == constant(type ~ 'Image') ? constant('AdzerCMS\\Core\\Setting\\Images::TYPES')|keys : constant('AdzerCMS\\Core\\Photo\\Photos::TYPES'))|join(',')} only %}
 {% else %}

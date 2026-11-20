@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Pages;
 
 use AdzerCMS\Contracts\Refusal;
-use AdzerCMS\Pages\Entity\PageBlock;
+use AdzerCMS\Pages\Entity\BlockRecord;
 use AdzerCMS\Pages\Style\Property;
 use AdzerCMS\Pages\Style\Screen;
 
@@ -48,12 +48,12 @@ final class BlockStyle
         return $style;
     }
 
-    public static function anchor(PageBlock $block): string
+    public static function anchor(BlockRecord $block): string
     {
         return self::ANCHOR.$block->getId();
     }
 
-    /** @param iterable<PageBlock> $blocks */
+    /** @param iterable<BlockRecord> $blocks */
     public static function css(iterable $blocks): string
     {
         $sheets = [];

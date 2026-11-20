@@ -6,6 +6,7 @@ namespace AdzerCMS\Builder\Controller;
 
 use AdzerCMS\Builder\Entity\Project;
 use AdzerCMS\Builder\Entity\ProjectPage;
+use AdzerCMS\Builder\ProjectAlbums;
 use AdzerCMS\Builder\Projects;
 use AdzerCMS\Builder\Repository\ProjectPageRepository;
 use AdzerCMS\Builder\Repository\ProjectRepository;
@@ -16,6 +17,7 @@ use AdzerCMS\Core\Ui\Fragment;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Core\Ui\Table;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -30,6 +32,7 @@ final class ProjectController extends AbstractController
 {
     public const LIST = 'builder_projects';
     public const PROJECT = 'builder_project';
+    public const PICTURE = 'builder_project_picture';
 
     private const NEW = 'builder_project_new';
     private const ORDER = 'builder_project_order';
@@ -39,6 +42,7 @@ final class ProjectController extends AbstractController
         private readonly ProjectRepository $projects,
         private readonly ProjectPageRepository $pages,
         private readonly Projects $work,
+        private readonly ProjectAlbums $albums,
     ) {
     }
 
@@ -60,8 +64,8 @@ final class ProjectController extends AbstractController
         $refusals = [];
         if ($request->isMethod('POST')) {
             $outcome = $this->work->create($user, $request->request);
-            if ($outcome instanceof Project) {
-                return Fragment::go($this->generateUrl(self::PROJECT, ['id' => $outcome->getId()]));
+            if ($outcome instanceof ProjectPage) {
+                return Fragment::go($this->generateUrl(EditorController::PROJECT, ['project' => $outcome->getProject()->getId(), 'id' => $outcome->getId()]));
             }
             $refusals = $outcome;
         }
@@ -112,6 +116,12 @@ final class ProjectController extends AbstractController
         $this->addFlash('success', t('pages.flash.dropped', ['title' => $one->getTitle()]));
 
         return $this->redirectToRoute(self::PROJECT, ['id' => $id]);
+    }
+
+    #[Route('/{id}/pictures/{file}', name: self::PICTURE, requirements: ['id' => '\d+', 'file' => '[^/]+'], methods: ['GET'])]
+    public function picture(#[CurrentUser] User $user, int $id, string $file): Response
+    {
+        return new BinaryFileResponse($this->albums->of($this->owned($user, $id))->path($file) ?? throw $this->createNotFoundException(), autoEtag: true);
     }
 
     #[Route('/{id}/drop', name: 'builder_project_drop', requirements: ['id' => '\d+'], methods: ['POST'])]

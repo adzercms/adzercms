@@ -181,10 +181,22 @@
         <target>Картинка свободного блока не найдена, загрузите её снова</target>
       </segment>
     </unit>
+    <unit id="builder.refusal.pictures">
+      <segment>
+        <source>builder.refusal.pictures</source>
+        <target>В проекте не больше {limit, plural, one {# картинки} other {# картинок}}</target>
+      </segment>
+    </unit>
     <unit id="builder.refusal.projects">
       <segment>
         <source>builder.refusal.projects</source>
         <target>Не больше {limit, plural, one {# проекта} other {# проектов}}: удалите один, чтобы начать новый</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.size">
+      <segment>
+        <source>builder.refusal.size</source>
+        <target>Страницы проекта занимают не больше {megabytes} МБ: уберите часть блоков</target>
       </segment>
     </unit>
     <unit id="builder.saved">

@@ -27,6 +27,12 @@ class ProjectRepository extends ServiceEntityRepository
         return $table->paginate($builder->addOrderBy('p.id')->getQuery());
     }
 
+    /** @return list<int> */
+    public function ids(): array
+    {
+        return array_map(intval(...), array_column($this->createQueryBuilder('p')->select('p.id')->orderBy('p.id')->getQuery()->getScalarResult(), 'id'));
+    }
+
     public function counted(User $owner): int
     {
         return $this->count(['owner' => $owner]);

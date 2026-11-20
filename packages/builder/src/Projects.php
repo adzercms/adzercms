@@ -21,6 +21,8 @@ final readonly class Projects
 {
     public const PROJECTS = 20;
     public const PAGES = 50;
+    public const PICTURES = 200;
+    public const SIZE = 2;
     public const NAME = 'name';
     public const TITLE = 'title';
     public const PATH = 'path';
@@ -29,15 +31,16 @@ final readonly class Projects
         private ProjectRepository $projects,
         private ProjectPageRepository $pages,
         private EntityManagerInterface $em,
+        private ProjectAlbums $albums,
     ) {
     }
 
     /**
      * @param InputBag<string> $input
      *
-     * @return Project|array<string, Refusal>
+     * @return ProjectPage|array<string, Refusal>
      */
-    public function create(User $owner, InputBag $input): Project|array
+    public function create(User $owner, InputBag $input): ProjectPage|array
     {
         $name = trim($input->getString(self::NAME));
         $refusal = match (true) {
@@ -56,7 +59,7 @@ final readonly class Projects
         $this->em->persist($root);
         $this->em->flush();
 
-        return $project;
+        return $root;
     }
 
     /**
@@ -112,7 +115,9 @@ final readonly class Projects
 
     public function remove(Project $project): void
     {
+        $album = $this->albums->of($project);
         $this->em->remove($project);
         $this->em->flush();
+        $album->clear();
     }
 }

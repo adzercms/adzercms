@@ -11,6 +11,7 @@ use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Setting\Values;
 use AdzerCMS\Core\Text\TextValues;
 use AdzerCMS\Pages\Controller\PageController;
+use AdzerCMS\Pages\Entity\BlockRecord;
 use AdzerCMS\Pages\Entity\Page;
 use AdzerCMS\Pages\Repository\PageBlockRepository;
 use AdzerCMS\Pages\Repository\PageRepository;
@@ -33,22 +34,32 @@ final readonly class Site
     /** @return array{title: string, description: string, heading: ?string, tabs: list<array{label: string, href: string, active: bool}>, blocks: list<array{template: string, key: string, id: string, values: array<string, mixed>, data: array<string, mixed>, level: int}>, style: string, schema: list<array<string, mixed>>} */
     public function view(Page $page): array
     {
+        $view = $this->sheet($this->title($page), $this->repository->of($page), $this->pictures);
+
+        return ['description' => $this->values->fill($page->getDescription() ?? ''), 'tabs' => $this->tabs($page), 'schema' => array_values(array_filter([...$this->page($page), ...$view['schema']]))] + $view;
+    }
+
+    /**
+     * @param iterable<BlockRecord> $records
+     *
+     * @return array{title: string, description: string, heading: ?string, tabs: list<array{label: string, href: string, active: bool}>, blocks: list<array{template: string, key: string, id: string, values: array<string, mixed>, data: array<string, mixed>, level: int}>, style: string, schema: list<array<string, mixed>>}
+     */
+    public function sheet(string $title, iterable $records, Album $album): array
+    {
         $blocks = [];
         $shown = [];
-        $schema = [...self::page($page)];
-        foreach ($this->repository->of($page) as $block) {
-            $type = $this->blocks->find($block->getType());
+        $schema = [];
+        foreach ($records as $record) {
+            $type = $this->blocks->find($record->getType());
             if (null === $type) {
                 continue;
             }
-            $shown[] = $block;
-            $blocks[] = $this->block($type, $block->getValues(), BlockStyle::anchor($block), [] === $blocks, $this->pictures);
-            $schema[] = $type->schema($block->getValues());
+            $shown[] = $record;
+            $blocks[] = $this->block($type, $record->getValues(), BlockStyle::anchor($record), [] === $blocks, $album);
+            $schema[] = $type->schema($record->getValues());
         }
 
-        $title = $this->title($page);
-
-        return ['title' => $title, 'description' => $this->values->fill($page->getDescription() ?? ''), 'heading' => 1 === ($blocks[0]['level'] ?? null) ? null : $title, 'tabs' => $this->tabs($page), 'blocks' => $blocks, 'style' => BlockStyle::css($shown), 'schema' => array_values(array_filter($schema))];
+        return ['title' => $title, 'description' => '', 'heading' => 1 === ($blocks[0]['level'] ?? null) ? null : $title, 'tabs' => [], 'blocks' => $blocks, 'style' => BlockStyle::css($shown), 'schema' => array_values(array_filter($schema))];
     }
 
     /**

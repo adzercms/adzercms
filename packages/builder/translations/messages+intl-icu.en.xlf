@@ -181,10 +181,22 @@
         <target>A picture of the free block is not found, upload it again</target>
       </segment>
     </unit>
+    <unit id="builder.refusal.pictures">
+      <segment>
+        <source>builder.refusal.pictures</source>
+        <target>A project holds up to {limit, plural, one {# picture} other {# pictures}}</target>
+      </segment>
+    </unit>
     <unit id="builder.refusal.projects">
       <segment>
         <source>builder.refusal.projects</source>
         <target>Up to {limit, plural, one {# project} other {# projects}}: delete one to start another</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.size">
+      <segment>
+        <source>builder.refusal.size</source>
+        <target>The pages of a project take up to {megabytes} MB: remove some blocks</target>
       </segment>
     </unit>
     <unit id="builder.saved">
