@@ -133,6 +133,12 @@
         <target>Own color</target>
       </segment>
     </unit>
+    <unit id="theme.picture.choose">
+      <segment>
+        <source>theme.picture.choose</source>
+        <target>Choose a picture</target>
+      </segment>
+    </unit>
     <unit id="theme.profile">
       <segment>
         <source>theme.profile</source>

@@ -148,6 +148,48 @@ test('[ACMS-BLD-0003][ACMS-FLOW-0022] a ready block takes its values from the di
     expect(sent[0].blocks[at].values.title, 'saving sends the values of the dialog').toBe('Fiber to every flat');
 });
 
+test('[ACMS-BLD-0008][ACMS-FLOW-0022] the picture of a block comes from the panel of pictures: an upload goes first, a click puts it into the field', async ({ page }) => {
+    const root = page.locator('[data-builder]');
+    const blocks = JSON.parse(await root.getAttribute('data-blocks'));
+    const at = blocks.findIndex((block) => block.type === 'hero');
+    test.skip(at < 0, 'the page has no hero block');
+    const target = blocks[at];
+    const dialog = page.locator('#record');
+    const panel = page.locator('[data-pictures-panel]');
+    const refusal = panel.locator('[data-pictures-refusal]');
+    const assets = panel.locator('.gjs-am-asset');
+    const upload = (name, buffer) => panel.locator('input[type="file"]').setInputFiles({ name, mimeType: 'image/png', buffer });
+
+    await canvas(page).locator(`#${target.anchor}`).click();
+    await page.locator(`.gjs-toolbar-item[title="${await root.getAttribute('data-edit')}"]`).click();
+    await expect(dialog).toBeVisible();
+    await dialog.locator('[data-picture-pick]').click();
+    await expect(panel, 'the panel opens over the dialog').toBeVisible();
+    const listed = await assets.count();
+
+    await upload('fake.png', Buffer.from('not a picture'));
+    await expect(refusal, 'a file other than a photo is refused with its reason').toBeVisible();
+    faults = faults.filter((fault) => !/status of 422|^\{"message":/.test(fault));
+    await upload('fiber.png', Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64'));
+    await expect(assets, 'the upload goes first').toHaveCount(listed + 1);
+    await expect(refusal).toBeHidden();
+
+    await assets.first().click();
+    await expect(panel).toBeHidden();
+    await expect(dialog, 'the choice goes back to the dialog').toBeVisible();
+    const name = await dialog.locator('input[type="hidden"][name="value[picture]"]').inputValue();
+    expect(name).toMatch(/^[0-9a-f]{32}\.webp$/);
+    await expect(dialog.locator('[data-picture] .picture-preview img')).toBeVisible();
+    await dialog.locator('form > button[type="submit"]').click();
+    await expect(dialog).toBeHidden();
+    await expect(canvas(page).locator(`#${target.anchor} img`), 'the canvas shows the chosen picture').toHaveAttribute('src', new RegExp(`${name}$`));
+
+    const sent = await saving(page);
+    await page.click('[data-save-document]');
+    await expect(page.locator('[data-status]')).toHaveText('saved');
+    expect(sent[0].blocks[at].values.picture, 'saving sends the name of the chosen picture').toBe(name);
+});
+
 test('[ACMS-BLD-0003][ACMS-FLOW-0022] a block of the panel takes its place by dragging after its dialog, saving numbers it', async ({ page }) => {
     const root = page.locator('[data-builder]');
     const blocks = JSON.parse(await root.getAttribute('data-blocks'));

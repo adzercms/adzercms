@@ -43,6 +43,12 @@
         <target>Выйти из редактора? Несохранённые правки пропадут</target>
       </segment>
     </unit>
+    <unit id="builder.pictures">
+      <segment>
+        <source>builder.pictures</source>
+        <target>Картинки</target>
+      </segment>
+    </unit>
     <unit id="builder.redo">
       <segment>
         <source>builder.redo</source>

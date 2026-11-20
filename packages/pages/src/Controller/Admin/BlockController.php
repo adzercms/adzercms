@@ -111,7 +111,7 @@ final class BlockController extends AbstractController
             'action' => null === $block ? $this->generateUrl(self::NEW, ['id' => $page->getId()]) : $this->generateUrl(self::EDIT, ['id' => $block->getId()]),
             'type' => $type,
             'types' => $types,
-            'values' => BlockForm::shown($type, $values, $block?->getValues() ?? []),
+            'values' => BlockForm::shown($type, $values),
             'refusals' => $refusals,
         ]);
     }

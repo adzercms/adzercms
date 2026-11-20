@@ -7,6 +7,7 @@ namespace AdzerCMS\Builder\Controller;
 use AdzerCMS\Builder\PageDocument;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Photo\Photos;
 use AdzerCMS\Pages\Block;
 use AdzerCMS\Pages\BlockForm;
 use AdzerCMS\Pages\Blocks;
@@ -14,12 +15,14 @@ use AdzerCMS\Pages\BlockStyle;
 use AdzerCMS\Pages\Controller\Admin\BlockController;
 use AdzerCMS\Pages\Entity\Page;
 use AdzerCMS\Pages\Entity\PageBlock;
+use AdzerCMS\Pages\Pictures;
 use AdzerCMS\Pages\Site;
 use AdzerCMS\Pages\Style\Group;
 use AdzerCMS\Pages\Style\Property;
 use AdzerCMS\Pages\Style\Screen;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,6 +46,8 @@ final class EditorController extends AbstractController
     private const SAVE = 'admin_page_builder_save';
     private const TYPE = 'admin_page_builder_type';
     private const FILL = 'admin_page_builder_type_fill';
+    private const PICTURES = 'admin_page_builder_pictures';
+    private const FILES = 'files';
     private const DRAWN = 'block';
     private const PREVIEW = [Screen::Tablet->value => 768, Screen::Phone->value => 375];
 
@@ -51,6 +56,7 @@ final class EditorController extends AbstractController
         private readonly Site $site,
         private readonly Blocks $types,
         private readonly BlockForm $form,
+        private readonly Pictures $pictures,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -74,7 +80,21 @@ final class EditorController extends AbstractController
                 'label' => self::label($screen),
             ], Screen::cases()),
             'sectors' => $this->sectors(),
+            'pictures' => $this->pictures->listed(),
+            'upload' => $this->generateUrl(self::PICTURES, ['id' => $page->getId()]),
+            'accept' => implode(',', Photos::TYPES),
         ]);
+    }
+
+    #[Route('/pictures', name: self::PICTURES, methods: ['POST'])]
+    public function upload(Request $request): JsonResponse
+    {
+        $files = array_values(array_filter($request->files->all(self::FILES), static fn (mixed $file): bool => $file instanceof UploadedFile));
+        $refusal = Photos::refusal($files);
+
+        return null === $refusal
+            ? $this->json(['data' => array_map(fn (UploadedFile $file): array => $this->pictures->entry($this->pictures->store($file)), $files)])
+            : $this->json(['message' => $refusal->reason->trans($this->translator)], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     #[Route('', name: self::SAVE, methods: ['POST'])]
@@ -101,18 +121,18 @@ final class EditorController extends AbstractController
     #[Route('/types/{type}', name: self::TYPE, methods: ['POST'])]
     public function type(Page $page, string $type, Request $request): Response
     {
-        [$block, $stored] = $this->edited($type, $request);
+        $stored = PageDocument::values(json_decode($request->request->getString(self::STORED), true)) ?? throw new BadRequestException();
 
-        return $this->dialog($page, $block, $stored, $stored, [], $request);
+        return $this->dialog($page, $this->kind($type), $stored, [], $request);
     }
 
     #[Route('/types/{type}/fill', name: self::FILL, methods: ['POST'])]
     public function fill(Page $page, string $type, Request $request): Response
     {
-        [$block, $stored] = $this->edited($type, $request);
-        [$values, $refusals] = $this->form->posted($block, $request, $stored);
+        $block = $this->kind($type);
+        [$values, $refusals] = $this->form->posted($block, $request);
         if ([] !== $refusals) {
-            return $this->dialog($page, $block, $request->request->all(BlockForm::VALUE), $stored, $refusals, $request);
+            return $this->dialog($page, $block, $request->request->all(BlockForm::VALUE), $refusals, $request);
         }
 
         $view = $this->site->block($block, $values, self::DRAWN, $request->request->getBoolean(self::FIRST));
@@ -145,31 +165,27 @@ final class EditorController extends AbstractController
         return $this->generateUrl(self::TYPE, ['id' => $page->getId(), 'type' => $type]);
     }
 
-    /** @return array{Block, array<string, string>} */
-    private function edited(string $key, Request $request): array
+    private function kind(string $key): Block
     {
-        return [
-            $this->types->find($key) ?? throw $this->createNotFoundException(),
-            PageDocument::values(json_decode($request->request->getString(self::STORED), true)) ?? throw new BadRequestException(),
-        ];
+        return $this->types->find($key) ?? throw $this->createNotFoundException();
     }
 
     /**
-     * @param array<string, mixed>  $values
-     * @param array<string, string> $stored
-     * @param list<Refusal>         $refusals
+     * @param array<string, mixed> $values
+     * @param list<Refusal>        $refusals
      */
-    private function dialog(Page $page, Block $type, array $values, array $stored, array $refusals, Request $request): Response
+    private function dialog(Page $page, Block $type, array $values, array $refusals, Request $request): Response
     {
         return $this->render(BlockController::DIALOG, [
             'page' => $page,
             'action' => $this->generateUrl(self::FILL, ['id' => $page->getId(), 'type' => $type->key()]),
-            'hidden' => [self::STORED => json_encode($stored, \JSON_THROW_ON_ERROR), self::FIRST => $request->request->getBoolean(self::FIRST) ? '1' : ''],
+            'hidden' => [self::FIRST => $request->request->getBoolean(self::FIRST) ? '1' : ''],
             'submit' => 'builder.apply',
             'type' => $type,
             'types' => [],
-            'values' => BlockForm::shown($type, $values, $stored),
+            'values' => BlockForm::shown($type, $values),
             'refusals' => $refusals,
+            'pick' => true,
         ]);
     }
 

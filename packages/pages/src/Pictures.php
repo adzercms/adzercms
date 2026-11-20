@@ -41,7 +41,23 @@ final readonly class Pictures
         $path = $this->path($name);
         $size = null === $path ? false : getimagesize($path);
 
-        return false === $size ? null : ['src' => $this->urls->generate(PageController::PICTURE, ['file' => $name]), 'width' => $size[0], 'height' => $size[1]];
+        return false === $size ? null : ['src' => $this->src($name), 'width' => $size[0], 'height' => $size[1]];
+    }
+
+    /** @return list<array{src: string, name: string}> */
+    public function listed(): array
+    {
+        $names = $this->photos->names(self::PLACE);
+        $times = array_map(fn (string $name): int => (int) filemtime((string) $this->path($name)), $names);
+        array_multisort($times, \SORT_DESC, $names);
+
+        return array_map($this->entry(...), $names);
+    }
+
+    /** @return array{src: string, name: string} */
+    public function entry(string $name): array
+    {
+        return ['src' => $this->src($name), 'name' => $name];
     }
 
     /** @param array<array-key, string> $values */
@@ -81,6 +97,11 @@ final readonly class Pictures
         }
 
         return $names;
+    }
+
+    private function src(string $name): string
+    {
+        return $this->urls->generate(PageController::PICTURE, ['file' => $name]);
     }
 
     /** @return list<string> */

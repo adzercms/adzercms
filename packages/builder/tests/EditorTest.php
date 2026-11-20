@@ -86,7 +86,7 @@ final class EditorTest extends SchemaTestCase
     public function testOwnerFillsBlockInDialogAndPageTakesItsValuesOnSaving(): void
     {
         $pictures = self::service(Pictures::class);
-        $first = $pictures->store($this->picture('hero.png'));
+        [$first, $next] = array_map(fn (string $name): string => $pictures->store($this->picture($name)), ['hero.png', 'next.png']);
         [$page, [$hero]] = $this->page(['hero' => ['title' => 'Internet', 'picture' => $first]]);
         $editor = '/admin/pages/'.$page->getId().'/builder';
         $builder = $this->client->request('GET', $editor)->filter('[data-builder]');
@@ -94,16 +94,16 @@ final class EditorTest extends SchemaTestCase
 
         $dialog = $this->post($block['dialog'], ['stored' => json_encode(['title' => 'Internet at home', 'picture' => $first]), 'first' => '1']);
         self::assertSame('Internet at home', $dialog->filter('input[name="value[title]"]')->attr('value'), 'the dialog shows the values the editor holds');
+        self::assertSame($first, $dialog->filter('input[name="value[picture]"]')->attr('value'));
         $fill = (string) $dialog->filter('form[hx-post]')->attr('hx-post');
-        $fields = ['stored' => $dialog->filter('input[name="stored"]')->attr('value'), 'first' => $dialog->filter('input[name="first"]')->attr('value'), 'value' => ['title' => 'Internet at home']];
+        $fields = ['first' => $dialog->filter('input[name="first"]')->attr('value'), 'value' => ['title' => 'Internet at home', 'picture' => $first]];
 
         $refused = $this->post($fill, array_replace_recursive($fields, ['value' => ['button' => 'Order', 'link' => 'ftp://example.com']]));
         self::assertSame(self::phrase(t('pages.refusal.link', ['field' => self::phrase(t('pages.field.link'))])), $refused->filter('.flash-error')->text(), 'a refused value stays in the dialog');
 
-        $this->post($fill, array_replace_recursive($fields, ['value' => ['title' => 'Fiber at home']]), ['value' => ['picture' => $this->picture('next.png')]]);
+        $this->post($fill, array_replace_recursive($fields, ['value' => ['title' => 'Fiber at home', 'picture' => $next]]));
         self::assertResponseHeaderSame('HX-Reswap', 'none');
         $filled = json_decode((string) $this->client->getResponse()->getContent(), true);
-        $next = $filled['values']['picture'] ?? self::fail('the picture of the dialog is not stored');
         self::assertSame(['title' => 'Fiber at home', 'picture' => $next], $filled['values']);
         self::assertSame('Fiber at home', (new Crawler($filled['html']))->filter('#'.$filled['anchor'].' h1')->text(), 'the canvas takes the block the server draws at its place');
         self::assertSame(['title' => 'Internet', 'picture' => $first], $this->reread($hero)->getValues(), 'the dialog writes nothing before saving');
@@ -117,6 +117,36 @@ final class EditorTest extends SchemaTestCase
         $this->post($editor, ['document' => json_encode(['version' => $version, 'blocks' => [['id' => $hero->getId(), 'values' => ['title' => 'Fiber at home', 'picture' => 'gone.webp'], 'style' => []]]])]);
         self::assertResponseStatusCodeSame(422);
         self::assertSame(['message' => self::phrase(t('pages.refusal.picture', ['field' => self::phrase(t('pages.field.picture'))]))], json_decode((string) $this->client->getResponse()->getContent(), true), 'saving checks the values of the document');
+    }
+
+    #[Group('ACMS-BLD-0008')]
+    #[Group('ACMS-FLOW-0022')]
+    #[Group('ACMS-US-0077')]
+    public function testOwnerUploadsPictureToPanelWhereDialogTakesIt(): void
+    {
+        $pictures = self::service(Pictures::class);
+        $older = $pictures->store($this->picture('older.png'));
+        touch((string) $pictures->path($older), (int) strtotime('-1 hour'));
+        $held = $pictures->store($this->picture('held.png'));
+        [$page] = $this->page(['hero' => ['title' => 'Internet', 'picture' => $held]]);
+        $builder = $this->client->request('GET', '/admin/pages/'.$page->getId().'/builder')->filter('[data-builder]');
+        self::assertSame([$held, $older], array_column(json_decode((string) $builder->attr('data-pictures'), true), 'name'), 'the panel lists the photos of the owner, new ones first');
+
+        $upload = (string) $builder->attr('data-upload');
+        $this->post($upload, [], ['files' => [$this->scratchFile('fake.png', 'not a picture')]]);
+        self::assertResponseStatusCodeSame(422);
+        self::assertSame(['message' => self::phrase(t('core.photo.type', ['name' => 'fake.png']))], json_decode((string) $this->client->getResponse()->getContent(), true));
+
+        $this->post($upload, [], ['files' => [$this->picture('next.png')]]);
+        self::assertResponseIsSuccessful();
+        [$entry] = json_decode((string) $this->client->getResponse()->getContent(), true)['data'];
+        self::assertNotNull($pictures->path($entry['name']), 'an upload goes to the photos of the owner at once');
+        $this->client->request('GET', $entry['src']);
+        self::assertResponseHeaderSame('Content-Type', 'image/webp');
+
+        $block = json_decode((string) $builder->attr('data-blocks'), true)[0];
+        $dialog = $this->post($block['dialog'], ['stored' => json_encode($block['values'])]);
+        self::assertSame([0, 1], [$dialog->filter('input[type="file"]')->count(), $dialog->filter('[data-picture-pick]')->count()], 'the picture of the dialog comes from the panel');
     }
 
     #[Group('ACMS-BLD-0003')]

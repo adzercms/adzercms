@@ -43,6 +43,12 @@
         <target>Leave the editor? The unsaved changes will be lost</target>
       </segment>
     </unit>
+    <unit id="builder.pictures">
+      <segment>
+        <source>builder.pictures</source>
+        <target>Pictures</target>
+      </segment>
+    </unit>
     <unit id="builder.redo">
       <segment>
         <source>builder.redo</source>

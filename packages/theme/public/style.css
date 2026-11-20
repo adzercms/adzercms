@@ -455,8 +455,8 @@ label { display: block; margin-bottom: 0.9rem; font-size: 13px; font-weight: 500
 .field-extra { margin-top: 0.5rem; }
 .field-rows { display: grid; gap: 0.5rem 1rem; grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); align-items: start; }
 .field-rows-head { font-size: 13px; color: var(--text-gray); }
-.field-cell { display: grid; gap: 0.5rem; justify-items: start; }
-.field-cell .picture-preview { margin: 0; }
+.field-picture { display: grid; gap: 0.5rem; justify-items: start; }
+.field-picture .picture-preview { margin: 0; }
 .text-values { grid-column: 1 / -1; margin-top: 0.5rem; font-size: 13px; }
 .text-values > summary { color: var(--text-gray); }
 .text-values dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.25rem 1rem; margin: 0.5rem 0 0; }

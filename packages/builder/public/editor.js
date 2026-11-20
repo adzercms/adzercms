@@ -15,6 +15,8 @@ const DELETE = 'core:component-delete';
 const VALUES = 'builder-values';
 const JSON_TYPE = 'application/json';
 const FRESH = 'block-new-';
+const PICTURE = 'image';
+const FILES = 'files';
 
 const root = document.querySelector('[data-builder]');
 const blocks = JSON.parse(root.dataset.blocks);
@@ -23,11 +25,14 @@ const kinds = JSON.parse(root.dataset.types);
 const sectors = JSON.parse(root.dataset.style);
 const anchors = new Set(blocks.map(block => block.anchor));
 const record = document.getElementById('record');
+const panel = root.querySelector('[data-pictures-panel]');
+const refusal = panel.querySelector('[data-pictures-refusal]');
 let version = root.dataset.version;
 let saved = '';
 let agreed = null;
 let leaving = false;
 let editing = null;
+let picking = null;
 let fresh = 0;
 
 const page = new DOMParser().parseFromString(await (await fetch(root.dataset.frame)).text(), 'text/html');
@@ -85,6 +90,14 @@ const sorted = values => Object.fromEntries(Object.entries(values).sort(([one], 
 
 const media = screen => (screen.media ? `(max-width: ${screen.media}px)` : '');
 
+const reason = error => {
+    try {
+        return JSON.parse(error).message ?? root.dataset.failed;
+    } catch {
+        return root.dataset.failed;
+    }
+};
+
 const field = ({property, label, kind, keywords, units, signed}) => ({
     property,
     label,
@@ -135,6 +148,26 @@ const setup = editor => {
         ask(component.get('block').question, () => component.remove());
     }});
     editor.Commands.add(VALUES, {run: ed => fill(ed.getSelected())});
+
+    editor.AssetManager.addType(PICTURE, {view: {template() {
+        return `<div class="${this.pfx}preview-cont">${this.getPreview()}</div>`;
+    }}});
+    editor.on('modal', ({open, content}) => {
+        if (!open) {
+            panel.close();
+        } else if (!panel.open) {
+            panel.querySelector('[data-pictures-body]').replaceChildren(content);
+            refusal.hidden = true;
+            panel.showModal();
+        }
+    });
+    editor.on('asset:upload:start', () => {
+        refusal.hidden = true;
+    });
+    editor.on('asset:upload:error', error => {
+        refusal.textContent = reason(error);
+        refusal.hidden = false;
+    });
 
     editor.on('block:drag:start', () => editor.UndoManager.stop());
     editor.on('block:drag:stop', component => {
@@ -187,6 +220,8 @@ const editor = grapesjs.init({
     layerManager: {appendTo: root.querySelector('[data-layers]'), root: `[data-gjs-type="${BLOCKS}"]`},
     styleManager: {appendTo: root.querySelector('[data-style-panel]'), sectors: sectors.map(({id, name, properties}) => ({id, name, open: false, properties: properties.map(field)}))},
     blockManager: {appendTo: root.querySelector('[data-palette]'), blocks: kinds.map(kind => ({id: kind.type, label: kind.label, content: {type: BLOCK, block: kind}}))},
+    assetManager: {assets: JSON.parse(root.dataset.pictures), upload: root.dataset.upload, uploadName: FILES, params: {[TOKEN]: token()}, showUrlInput: false},
+    modal: {custom: true},
     selectorManager: {componentFirst: true},
     i18n: {locale: document.documentElement.lang, detectLocale: false, localeFallback: 'en', messages: {ru}},
     plugins: [setup],
@@ -245,6 +280,24 @@ const save = async button => {
         button.disabled = false;
     }
 };
+
+const chosen = asset => {
+    picking.querySelector('input[type="hidden"]').value = asset.get('name');
+    const preview = picking.querySelector('.picture-preview');
+    preview.querySelector('img').src = asset.getSrc();
+    preview.hidden = false;
+    editor.AssetManager.close();
+};
+
+document.addEventListener('click', event => {
+    const pick = event.target.closest('[data-picture-pick]');
+    if (pick) {
+        picking = pick.closest('[data-picture]');
+        editor.AssetManager.open({accept: root.dataset.accept, select: chosen});
+    }
+});
+
+panel.addEventListener('close', () => editor.Modal.isOpen() && editor.Modal.close());
 
 document.addEventListener('htmx:afterRequest', ({detail: {xhr, successful}}) => {
     if (editing && successful && xhr.getResponseHeader('Content-Type')?.startsWith(JSON_TYPE)) {
