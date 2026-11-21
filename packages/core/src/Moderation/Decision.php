@@ -36,6 +36,11 @@ enum Decision: string implements Badged
         return t('core.moderation.decide.'.$this->value);
     }
 
+    public function reason(): TranslatableInterface
+    {
+        return t('core.moderation.reason.'.$this->value);
+    }
+
     /** @return list<self> */
     public function next(): array
     {

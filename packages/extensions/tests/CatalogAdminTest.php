@@ -175,7 +175,7 @@ final class CatalogAdminTest extends CatalogTestCase
         $card = $this->client->request('GET', $record);
         self::assertCount(0, $card->filter('input[name="name"]'), 'the operator does not edit fields of an author entry');
         self::assertSame(array_map(static fn (Decision $next): string => $next->value, $from->next()),
-            $card->filter('input[name="decision"]')->each(static fn (Crawler $field): string => (string) $field->attr('value')));
+            $card->filter('form button[name="decision"]')->each(static fn (Crawler $button): string => (string) $button->attr('value')), 'the buttons of one form carry the decisions');
 
         $this->post($record.'/decide', ['decision' => $decision->value, 'reason' => $reason]);
 

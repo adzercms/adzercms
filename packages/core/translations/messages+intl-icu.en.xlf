@@ -730,7 +730,7 @@
     <unit id="core.moderation.decision.published">
       <segment>
         <source>core.moderation.decision.published</source>
-        <target>Approved</target>
+        <target>Published</target>
       </segment>
     </unit>
     <unit id="core.moderation.decision.rejected">
@@ -749,6 +749,18 @@
       <segment>
         <source>core.moderation.reason</source>
         <target>Reason</target>
+      </segment>
+    </unit>
+    <unit id="core.moderation.reason.rejected">
+      <segment>
+        <source>core.moderation.reason.rejected</source>
+        <target>Reason of the rejection</target>
+      </segment>
+    </unit>
+    <unit id="core.moderation.reason.withdrawn">
+      <segment>
+        <source>core.moderation.reason.withdrawn</source>
+        <target>Reason of the withdrawal</target>
       </segment>
     </unit>
     <unit id="core.moderation.refusal.decision">
