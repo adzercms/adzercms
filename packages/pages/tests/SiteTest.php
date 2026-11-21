@@ -161,6 +161,21 @@ final class SiteTest extends SchemaTestCase
         self::assertTrue($this->client->getResponse()->headers->hasCacheControlDirective('private'), 'a page that opened the session stays private');
     }
 
+    #[Group('ACMS-CORE-1203')]
+    #[Group('ACMS-US-0070')]
+    public function testSitePageRegistersTheWorkerOfTheWholeSite(): void
+    {
+        $this->page('Home', Page::ROOT, published: true);
+
+        $worker = $this->client->request('GET', '/')->filter('script[data-worker]')->attr('data-worker');
+        self::assertSame('/worker.js', $worker, 'the worker at the root of the site holds every page of it');
+        $this->client->request('GET', $worker);
+        self::assertResponseHeaderSame('Content-Type', 'text/javascript; charset=UTF-8');
+
+        $this->client->request('GET', '/login');
+        self::assertCount(0, $this->client->getCrawler()->filter('script[data-worker]'), 'a page off the site registers no worker');
+    }
+
     #[Group('ACMS-UI-0152')]
     #[Group('ACMS-UI-0170')]
     #[Group('ACMS-US-0070')]

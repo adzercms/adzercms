@@ -21,7 +21,7 @@ final class ContentPolicyTest extends TestCase
         yield 'nothing declared' => [[], ["img-src 'self' data:", "media-src 'self'"]];
         yield 'images and workers declared' => [
             [ContentSource::IMG => ['https://tiles.example'], ContentSource::WORKER => ['https://engine.example']],
-            ["img-src 'self' data: https://tiles.example", "media-src 'self'", 'worker-src https://engine.example'],
+            ["img-src 'self' data: https://tiles.example", "media-src 'self'", "worker-src 'self' https://engine.example"],
         ];
     }
 
