@@ -163,6 +163,18 @@
         <target>Свободный блок несёт элемент либо атрибут вне перечня конструктора</target>
       </segment>
     </unit>
+    <unit id="builder.refusal.file">
+      <segment>
+        <source>builder.refusal.file</source>
+        <target>Файл — не файл проекта конструктора</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.format">
+      <segment>
+        <source>builder.refusal.format</source>
+        <target>Конструктор этого сайта не знает формат {format} файла проекта</target>
+      </segment>
+    </unit>
     <unit id="builder.refusal.link">
       <segment>
         <source>builder.refusal.link</source>
@@ -203,6 +215,12 @@
       <segment>
         <source>builder.refusal.size</source>
         <target>Страницы проекта занимают не больше {megabytes} МБ: уберите часть блоков</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.taken">
+      <segment>
+        <source>builder.refusal.taken</source>
+        <target>Адреса {paths} заняты страницами либо разделами сайта</target>
       </segment>
     </unit>
     <unit id="builder.saved">
@@ -263,6 +281,24 @@
       <segment>
         <source>builder.undo</source>
         <target>Отменить</target>
+      </segment>
+    </unit>
+    <unit id="builder.upload">
+      <segment>
+        <source>builder.upload</source>
+        <target>Загрузить проект</target>
+      </segment>
+    </unit>
+    <unit id="builder.upload_file">
+      <segment>
+        <source>builder.upload_file</source>
+        <target>Файл проекта</target>
+      </segment>
+    </unit>
+    <unit id="builder.uploaded">
+      <segment>
+        <source>builder.uploaded</source>
+        <target>{count, plural, one {Загружена # страница} few {Загружены # страницы} many {Загружено # страниц} other {Загружено # страницы}} без публикации</target>
       </segment>
     </unit>
   </file>

@@ -1,0 +1,11 @@
+{% include '@Theme/_modal_header.html.twig' with {title: 'builder.upload'|trans} only %}
+
+<form class="modal-body" method="post" enctype="multipart/form-data" action="{{ path('builder_site_upload') }}">
+    {{ csrf_field() }}
+    <label>{{ 'builder.upload_file'|trans }}
+        {% include '@Theme/_file.html.twig' with {name: constant('AdzerCMS\\Builder\\Controller\\UploadController::FILE'), accept: '.zip,application/zip', required: true} only %}
+    </label>
+    <div class="button-row">
+        <button type="submit">{{ 'builder.upload'|trans }}</button>
+    </div>
+</form>

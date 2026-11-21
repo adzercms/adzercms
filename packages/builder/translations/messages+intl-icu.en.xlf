@@ -163,6 +163,18 @@
         <target>The free block holds an element or attribute the builder does not take</target>
       </segment>
     </unit>
+    <unit id="builder.refusal.file">
+      <segment>
+        <source>builder.refusal.file</source>
+        <target>The file is not a project file of the builder</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.format">
+      <segment>
+        <source>builder.refusal.format</source>
+        <target>The builder of this site does not know the format {format} of the project file</target>
+      </segment>
+    </unit>
     <unit id="builder.refusal.link">
       <segment>
         <source>builder.refusal.link</source>
@@ -203,6 +215,12 @@
       <segment>
         <source>builder.refusal.size</source>
         <target>The pages of a project take up to {megabytes} MB: remove some blocks</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.taken">
+      <segment>
+        <source>builder.refusal.taken</source>
+        <target>Pages or sections of the site take the paths {paths}</target>
       </segment>
     </unit>
     <unit id="builder.saved">
@@ -263,6 +281,24 @@
       <segment>
         <source>builder.undo</source>
         <target>Undo</target>
+      </segment>
+    </unit>
+    <unit id="builder.upload">
+      <segment>
+        <source>builder.upload</source>
+        <target>Upload project</target>
+      </segment>
+    </unit>
+    <unit id="builder.upload_file">
+      <segment>
+        <source>builder.upload_file</source>
+        <target>Project file</target>
+      </segment>
+    </unit>
+    <unit id="builder.uploaded">
+      <segment>
+        <source>builder.uploaded</source>
+        <target>{count, plural, one {# page is} other {# pages are}} uploaded unpublished</target>
       </segment>
     </unit>
   </file>
