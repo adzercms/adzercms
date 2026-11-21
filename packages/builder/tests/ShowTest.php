@@ -7,11 +7,9 @@ namespace AdzerCMS\Builder\Tests;
 use AdzerCMS\Builder\Entity\Project;
 use AdzerCMS\Builder\Entity\ProjectBlock;
 use AdzerCMS\Builder\Entity\ProjectPage;
-use AdzerCMS\Builder\Entity\ProjectVersion;
 use AdzerCMS\Builder\ProjectAccess;
 use AdzerCMS\Builder\ProjectAlbums;
 use AdzerCMS\Builder\Repository\ProjectBlockRepository;
-use AdzerCMS\Builder\Versions;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Moderation\Decision;
 use AdzerCMS\Core\Tests\Accounts;
@@ -25,6 +23,7 @@ final class ShowTest extends SchemaTestCase
 {
     use Accounts;
     use Browser;
+    use Templates;
 
     private User $author;
     private Project $project;
@@ -34,14 +33,10 @@ final class ShowTest extends SchemaTestCase
     {
         parent::setUp();
         $this->author = $this->record('79990000002', 'author@example.org');
-        $this->project = new Project($this->author, 'Fiber');
-        $this->project->setAccess(ProjectAccess::Link);
-        $this->home = new ProjectPage($this->project, 'Fiber', '/');
-        $this->home->place(1);
+        $this->home = $this->home($this->author, 'Fiber', ProjectAccess::Link);
+        $this->project = $this->home->getProject();
         $about = new ProjectPage($this->project, 'About', '/about');
         $about->place(2);
-        $this->em->persist($this->project);
-        $this->em->persist($this->home);
         $this->em->persist($about);
         $this->em->flush();
         $picture = self::service(ProjectAlbums::class)->of($this->project)->store($this->picture('hero.png'));
@@ -57,7 +52,7 @@ final class ShowTest extends SchemaTestCase
     #[Group('ACMS-US-0078')]
     public function testVisitorSeesApprovedVersionByLinkAsSiteWithItsMenu(): void
     {
-        $this->version(Decision::Published);
+        $this->version($this->project, Decision::Published);
         $show = '/templates/'.$this->project->getToken();
 
         $page = $this->client->request('GET', $show);
@@ -75,7 +70,7 @@ final class ShowTest extends SchemaTestCase
         [$hero] = self::service(ProjectBlockRepository::class)->of($this->home);
         $hero->fill(['title' => 'Fiber shop'] + $hero->getValues());
         $this->em->flush();
-        $this->version(Decision::Pending);
+        $this->version($this->project, Decision::Pending);
         self::assertSame('Fiber', trim($this->client->request('GET', $show)->filter('.site-main h1')->text()), 'editing the project and a new version leave the approved one in the show');
 
         $this->client->loginUser($this->author);
@@ -89,8 +84,8 @@ final class ShowTest extends SchemaTestCase
     #[DataProvider('hidden')]
     public function testShowGoesOnlyWithApprovedVersionOfProjectBeyondOwner(Decision $last, ProjectAccess $access): void
     {
-        $this->version(Decision::Published);
-        $version = $this->version($last);
+        $this->version($this->project, Decision::Published);
+        $version = $this->version($this->project, $last);
         $this->project->setAccess($access);
         $this->em->flush();
 
@@ -105,16 +100,5 @@ final class ShowTest extends SchemaTestCase
     {
         yield 'the operator withdrew the latest approved version' => [Decision::Withdrawn, ProjectAccess::Open];
         yield 'the project went back to its owner alone' => [Decision::Published, ProjectAccess::Personal];
-    }
-
-    private function version(Decision $decision): ProjectVersion
-    {
-        $this->project = $this->reread($this->project);
-        $version = self::service(Versions::class)->submit($this->project, 'Fiber', $this->picture('cover.png'));
-        self::assertInstanceOf(ProjectVersion::class, $version);
-        $version->decide($decision);
-        $this->em->flush();
-
-        return $version;
     }
 }

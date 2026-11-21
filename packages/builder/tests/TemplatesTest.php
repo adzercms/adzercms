@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Builder\Tests;
 
-use AdzerCMS\Builder\Entity\Project;
-use AdzerCMS\Builder\Entity\ProjectPage;
-use AdzerCMS\Builder\Entity\ProjectVersion;
 use AdzerCMS\Builder\ProjectAccess;
-use AdzerCMS\Builder\Versions;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Moderation\Decision;
 use AdzerCMS\Core\Moderation\Moderation;
@@ -26,6 +22,7 @@ final class TemplatesTest extends SchemaTestCase
     use Browser;
     use Configuration;
     use Delivery;
+    use Templates;
 
     private const SECTION = '/admin/builder/templates';
 
@@ -46,11 +43,9 @@ final class TemplatesTest extends SchemaTestCase
     public function testOperatorDecidesVersionsWaitingFirstAndAuthorLearnsDecision(): void
     {
         self::mockTime('2026-11-21 10:00');
-        $decided = $this->version('Bakery');
-        $decided->decide(Decision::Published);
-        $this->em->flush();
+        $this->version($this->home($this->author, 'Bakery', ProjectAccess::Link)->getProject(), Decision::Published);
         self::mockTime('2026-11-21 09:00');
-        $waiting = $this->version('Fiber');
+        $waiting = $this->version($this->home($this->author, 'Fiber', ProjectAccess::Link)->getProject(), Decision::Pending);
         $this->client->loginUser($this->admin());
 
         $listing = $this->client->request('GET', self::SECTION);
@@ -78,20 +73,5 @@ final class TemplatesTest extends SchemaTestCase
 
         $this->client->loginUser($this->author);
         self::assertStringContainsString('No contacts', $this->client->request('GET', '/builder/projects/'.$waiting->getProject()->getId())->filter('[data-version]')->text(), 'the project shows the reason of the decision');
-    }
-
-    private function version(string $name): ProjectVersion
-    {
-        $project = new Project($this->author, $name);
-        $project->setAccess(ProjectAccess::Link);
-        $home = new ProjectPage($project, $name, '/');
-        $home->place(1);
-        $this->em->persist($project);
-        $this->em->persist($home);
-        $this->em->flush();
-        $version = self::service(Versions::class)->submit($project, $name, $this->picture('cover.png'));
-        self::assertInstanceOf(ProjectVersion::class, $version);
-
-        return $version;
     }
 }

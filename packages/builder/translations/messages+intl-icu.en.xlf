@@ -67,6 +67,30 @@
         <target>Blocks</target>
       </segment>
     </unit>
+    <unit id="builder.catalog.description">
+      <segment>
+        <source>builder.catalog.description</source>
+        <target>Site templates from the builder of {brand}</target>
+      </segment>
+    </unit>
+    <unit id="builder.catalog.empty">
+      <segment>
+        <source>builder.catalog.empty</source>
+        <target>No templates yet</target>
+      </segment>
+    </unit>
+    <unit id="builder.catalog.menu">
+      <segment>
+        <source>builder.catalog.menu</source>
+        <target>Templates</target>
+      </segment>
+    </unit>
+    <unit id="builder.catalog.title">
+      <segment>
+        <source>builder.catalog.title</source>
+        <target>Site templates</target>
+      </segment>
+    </unit>
     <unit id="builder.element.box">
       <segment>
         <source>builder.element.box</source>
