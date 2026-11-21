@@ -60,11 +60,11 @@ final readonly class BlockForm
     }
 
     /** @return array{array<string, string>, list<Refusal>} */
-    public function posted(Block $type, Request $request): array
+    public function posted(Block $type, Request $request, Album $album): array
     {
-        [$values, $uploads, $refusals] = $this->checked($type, $request);
+        [$values, $uploads, $refusals] = $this->checked($type, $request, $album);
 
-        return [[] === $refusals ? $this->placed($values, $uploads) : [], $refusals];
+        return [[] === $refusals ? self::placed($values, $uploads, $album) : [], $refusals];
     }
 
     /**
@@ -72,7 +72,7 @@ final readonly class BlockForm
      *
      * @return array<string, string>|Refusal
      */
-    public function stored(Block $type, array $values): array|Refusal
+    public function stored(Block $type, array $values, Album $album): array|Refusal
     {
         $stored = [];
         foreach ($type->fields() as $field) {
@@ -82,7 +82,7 @@ final readonly class BlockForm
                 return $value;
             }
             foreach (self::named($field, $value) as $name) {
-                if (null === $this->pictures->path($name)) {
+                if (null === $album->path($name)) {
                     return new Refusal(t('pages.refusal.picture', ['field' => $field->label]));
                 }
             }
@@ -97,13 +97,13 @@ final readonly class BlockForm
     /** @return PageBlock|list<Refusal> */
     public function add(Page $page, Block $type, Request $request): PageBlock|array
     {
-        [$values, $uploads, $refusals] = $this->checked($type, $request);
+        [$values, $uploads, $refusals] = $this->checked($type, $request, $this->pictures);
         if ([] !== $refusals) {
             return $refusals;
         }
         $digests = array_map(static fn (UploadedFile $upload): string => (string) hash_file(self::DIGEST, $upload->getPathname()), $uploads);
         $block = $this->once->act(self::ADD, [(int) $page->getId(), $type->key(), strtr(json_encode($values, \JSON_THROW_ON_ERROR), $digests)], function () use ($page, $type, $values, $uploads): PageBlock {
-            $block = new PageBlock($page, $type->key(), $this->placed($values, $uploads));
+            $block = new PageBlock($page, $type->key(), self::placed($values, $uploads, $this->pictures));
             $block->place(\count($this->blocks->of($page)) + 1);
             $this->em->persist($block);
             $this->em->flush();
@@ -118,14 +118,14 @@ final readonly class BlockForm
     public function fill(PageBlock $block, Block $type, Request $request): array
     {
         $before = $block->getValues();
-        [$values, $refusals] = $this->posted($type, $request);
+        [$values, $refusals] = $this->posted($type, $request, $this->pictures);
         if ([] !== $refusals) {
             return $refusals;
         }
 
         $block->fill($values);
         $this->em->flush();
-        $this->pictures->drop(array_diff(Pictures::names($before), Pictures::names($values)));
+        $this->pictures->drop(array_diff(PhotoAlbum::names($before), PhotoAlbum::names($values)));
 
         return [];
     }
@@ -169,7 +169,7 @@ final readonly class BlockForm
     }
 
     /** @return array{array<string, string>, array<string, UploadedFile>, list<Refusal>} */
-    private function checked(Block $type, Request $request): array
+    private function checked(Block $type, Request $request, Album $album): array
     {
         $posted = $request->request->all(self::VALUE);
         $files = $request->files->all(self::VALUE);
@@ -179,7 +179,7 @@ final readonly class BlockForm
         $refusals = [];
         foreach ($type->fields() as $field) {
             if ($field->type->picture()) {
-                $kept = isset($dropped[$field->name]) ? '' : $this->kept($posted[$field->name] ?? null);
+                $kept = isset($dropped[$field->name]) ? '' : self::kept($posted[$field->name] ?? null, $album);
                 $value = self::picture($files[$field->name] ?? null, $kept, $uploads, $refusals);
                 if ('' !== $value) {
                     $values[$field->name] = $value;
@@ -190,7 +190,7 @@ final readonly class BlockForm
 
             $input = $posted[$field->name] ?? null;
             if (\is_array($input) && [] !== self::pictures($field)) {
-                $input = $this->cells($field, $input, $files[$field->name] ?? [], $dropped[$field->name] ?? [], $uploads, $refusals);
+                $input = self::cells($field, $input, $files[$field->name] ?? [], $dropped[$field->name] ?? [], $uploads, $refusals, $album);
             }
             $value = $this->value($type, $field, Values::posted($field, $input) ?? '');
             if ($value instanceof Refusal) {
@@ -231,16 +231,16 @@ final readonly class BlockForm
      *
      * @return array<string, string>
      */
-    private function placed(array $values, array $uploads): array
+    private static function placed(array $values, array $uploads, Album $album): array
     {
-        $names = array_map($this->pictures->store(...), $uploads);
+        $names = array_map($album->store(...), $uploads);
 
         return array_map(static fn (string $value): string => strtr($value, $names), $values);
     }
 
-    private function kept(mixed $name): string
+    private static function kept(mixed $name, Album $album): string
     {
-        return \is_string($name) && null !== $this->pictures->path($name) ? $name : '';
+        return \is_string($name) && null !== $album->path($name) ? $name : '';
     }
 
     /** @return list<string> */
@@ -279,14 +279,14 @@ final readonly class BlockForm
      *
      * @return array<array-key, mixed>
      */
-    private function cells(Field $field, array $rows, array $files, array $dropped, array &$uploads, array &$refusals): array
+    private static function cells(Field $field, array $rows, array $files, array $dropped, array &$uploads, array &$refusals, Album $album): array
     {
         foreach ($rows as $at => $row) {
             if (!\is_array($row)) {
                 continue;
             }
             foreach (self::pictures($field) as $cell) {
-                $kept = isset($dropped[$at][$cell]) ? '' : $this->kept($row[$cell] ?? null);
+                $kept = isset($dropped[$at][$cell]) ? '' : self::kept($row[$cell] ?? null, $album);
                 $rows[$at][$cell] = self::picture(\is_array($files[$at] ?? null) ? $files[$at][$cell] ?? null : null, $kept, $uploads, $refusals);
             }
         }

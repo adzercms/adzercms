@@ -116,4 +116,9 @@ final readonly class Photos
     {
         (new Filesystem())->remove(array_filter(array_map(fn (string $name): ?string => $this->path($place, $name), $names)));
     }
+
+    public function clear(string $place): void
+    {
+        (new Filesystem())->remove($this->directory.'/'.$place);
+    }
 }

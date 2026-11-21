@@ -2,7 +2,7 @@
 
 {% import '@Theme/_icons.html.twig' as icon %}
 
-{% block title %}{{ 'builder.title'|trans({title: page.title}) }}{% endblock %}
+{% block title %}{{ 'builder.title'|trans({title: title}) }}{% endblock %}
 
 {% block meta %}
     <link rel="stylesheet" href="{{ asset('vendor/grapesjs/dist/css/grapes.min.css') }}">
@@ -13,7 +13,7 @@
 {% block bodyclass %}builder-page{% endblock %}
 
 {% block shell %}
-<div class="builder" data-builder data-title="{{ page.title }}" data-frame="{{ frame }}" data-save="{{ save }}" data-version="{{ version }}" data-blocks="{{ blocks|json_encode }}" data-types="{{ types|json_encode }}" data-style="{{ sectors|json_encode }}"
+<div class="builder" data-builder data-title="{{ title }}" data-frame="{{ frame }}" data-save="{{ save }}" data-version="{{ version }}" data-blocks="{{ blocks|json_encode }}" data-types="{{ types|json_encode }}" data-style="{{ sectors|json_encode }}"
      data-pictures="{{ pictures|json_encode }}" data-upload="{{ upload }}" data-accept="{{ accept }}"
      data-free="{{ free }}" data-elements="{{ elements|json_encode }}" data-elements-label="{{ 'builder.elements'|trans }}" data-traits="{{ {link: 'builder.trait.link'|trans, alt: 'builder.trait.alt'|trans}|json_encode }}"
      data-screens="{{ screens|map(screen => {id: screen.id, media: screen.media, width: screen.width})|json_encode }}"
@@ -29,7 +29,7 @@
         <button type="button" class="secondary small" data-undo>{{ 'builder.undo'|trans }}</button>
         <button type="button" class="secondary small" data-redo>{{ 'builder.redo'|trans }}</button>
         <button type="button" class="small" data-save-document>{{ 'core.action.save'|trans }}</button>
-        <a class="button secondary small" href="{{ path('admin_page', {id: page.id}) }}" data-exit>{{ 'builder.exit'|trans }}</a>
+        <a class="button secondary small" href="{{ exit }}" data-exit>{{ 'builder.exit'|trans }}</a>
         <form method="dialog" data-ask hidden>{{ csrf_field() }}</form>
     </header>
     <aside class="builder-side">

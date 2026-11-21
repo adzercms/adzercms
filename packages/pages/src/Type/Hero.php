@@ -7,6 +7,7 @@ namespace AdzerCMS\Pages\Type;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Type as FieldType;
 use AdzerCMS\Contracts\Ui\Fragment;
+use AdzerCMS\Pages\Album;
 
 use function Symfony\Component\Translation\t;
 
@@ -22,7 +23,7 @@ final class Hero extends Call
         return [self::title(), self::markup(), new Field('picture', t('pages.field.picture'), FieldType::Photo), ...Button::fields()];
     }
 
-    public function data(array $values): array
+    public function data(array $values, Album $album): array
     {
         return ['place' => Fragment::SITE_HERO];
     }

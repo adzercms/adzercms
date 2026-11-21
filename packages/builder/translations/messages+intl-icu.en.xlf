@@ -91,6 +91,60 @@
         <target>Pictures</target>
       </segment>
     </unit>
+    <unit id="builder.project.download">
+      <segment>
+        <source>builder.project.download</source>
+        <target>Download</target>
+      </segment>
+    </unit>
+    <unit id="builder.project.drop">
+      <segment>
+        <source>builder.project.drop</source>
+        <target>Delete project</target>
+      </segment>
+    </unit>
+    <unit id="builder.project.drop_confirm">
+      <segment>
+        <source>builder.project.drop_confirm</source>
+        <target>Delete the project «{name}» with its pages?</target>
+      </segment>
+    </unit>
+    <unit id="builder.project.dropped">
+      <segment>
+        <source>builder.project.dropped</source>
+        <target>Project «{name}» deleted</target>
+      </segment>
+    </unit>
+    <unit id="builder.project.edited">
+      <segment>
+        <source>builder.project.edited</source>
+        <target>Edited</target>
+      </segment>
+    </unit>
+    <unit id="builder.project.name">
+      <segment>
+        <source>builder.project.name</source>
+        <target>Name</target>
+      </segment>
+    </unit>
+    <unit id="builder.project.new">
+      <segment>
+        <source>builder.project.new</source>
+        <target>New project</target>
+      </segment>
+    </unit>
+    <unit id="builder.projects.empty">
+      <segment>
+        <source>builder.projects.empty</source>
+        <target>No projects</target>
+      </segment>
+    </unit>
+    <unit id="builder.projects.menu">
+      <segment>
+        <source>builder.projects.menu</source>
+        <target>Projects</target>
+      </segment>
+    </unit>
     <unit id="builder.redo">
       <segment>
         <source>builder.redo</source>
@@ -115,10 +169,40 @@
         <target>Link {link}: a site path from /, an http(s):// address, mailto: or tel:</target>
       </segment>
     </unit>
+    <unit id="builder.refusal.name">
+      <segment>
+        <source>builder.refusal.name</source>
+        <target>Name: 1 to {limit} characters</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.pages">
+      <segment>
+        <source>builder.refusal.pages</source>
+        <target>A project holds up to {limit, plural, one {# page} other {# pages}}</target>
+      </segment>
+    </unit>
     <unit id="builder.refusal.picture">
       <segment>
         <source>builder.refusal.picture</source>
         <target>A picture of the free block is not found, upload it again</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.pictures">
+      <segment>
+        <source>builder.refusal.pictures</source>
+        <target>A project holds up to {limit, plural, one {# picture} other {# pictures}}</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.projects">
+      <segment>
+        <source>builder.refusal.projects</source>
+        <target>Up to {limit, plural, one {# project} other {# projects}}: delete one to start another</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.size">
+      <segment>
+        <source>builder.refusal.size</source>
+        <target>The pages of a project take up to {megabytes} MB: remove some blocks</target>
       </segment>
     </unit>
     <unit id="builder.saved">
