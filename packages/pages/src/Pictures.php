@@ -7,7 +7,7 @@ namespace AdzerCMS\Pages;
 use AdzerCMS\Core\Photo\Photos;
 use AdzerCMS\Pages\Controller\PageController;
 use AdzerCMS\Pages\Repository\PageBlockRepository;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use function Symfony\Component\Clock\now;
@@ -34,7 +34,7 @@ final readonly class Pictures implements Album
         );
     }
 
-    public function store(UploadedFile $picture): string
+    public function store(File $picture): string
     {
         return $this->album->store($picture);
     }

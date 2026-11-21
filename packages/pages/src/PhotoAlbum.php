@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Pages;
 
 use AdzerCMS\Core\Photo\Photos;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 
 final readonly class PhotoAlbum implements Album
 {
@@ -22,7 +22,7 @@ final readonly class PhotoAlbum implements Album
     ) {
     }
 
-    public function store(UploadedFile $picture): string
+    public function store(File $picture): string
     {
         return $this->photos->store($picture, $this->place, $this->side);
     }

@@ -400,4 +400,22 @@ test.describe('a page of a project', () => {
         await expect(page, 'the editor leaves to the pages of the project').toHaveURL(/\/builder\/projects\/\d+$/);
         await expect(page.locator('tr[data-href]'), 'a page of the project opens in the editor').toHaveAttribute('data-href', editor);
     });
+
+    test('[ACMS-BLD-0019][ACMS-US-0077] the file of the project goes to the section "Site", the home path the site takes refuses it', async ({ page }) => {
+        const project = /^\/builder\/projects\/\d+/.exec(new URL(page.url()).pathname)[0];
+        const file = await page.request.get(`${project}/file`);
+        expect(file.ok(), 'the owner downloads the file of the project').toBe(true);
+        await page.goto(PAGES);
+        const rows = await page.locator('tr[data-href]').count();
+        test.skip(await page.locator('tr[data-href] td').filter({ hasText: /^\s*\/\s*$/ }).count() === 0, 'the site has no home page');
+
+        await page.locator(`button[hx-get$="${PAGES}/upload"]`).click();
+        const field = page.locator('#record .file-field');
+        await field.locator('input[type="file"]').setInputFiles({ name: 'fiber.zip', mimeType: 'application/zip', buffer: await file.body() });
+        await expect(field.locator('input[name="_uploads[]"]'), 'the file goes to the server at once').toHaveCount(1);
+        await page.locator('#record button[type="submit"]').click();
+        await expect(page, 'the upload returns to the pages of the site').toHaveURL(new RegExp(`${PAGES}$`));
+        await expect(page.locator('.toast-error'), 'the refusal names the path the site takes').toContainText('/');
+        await expect(page.locator('tr[data-href]'), 'the refused file adds no page').toHaveCount(rows);
+    });
 });

@@ -19,7 +19,7 @@ use function Symfony\Component\Translation\t;
 
 final readonly class ProjectDocument implements Document
 {
-    private const MEGABYTE = 1048576;
+    public const MEGABYTE = 1048576;
 
     public function __construct(
         private ProjectPage $page,
@@ -91,7 +91,7 @@ final readonly class ProjectDocument implements Document
      * @param array<string, string>                               $values
      * @param array<string, array<string, array<string, string>>> $style
      */
-    private static function size(array $values, array $style): int
+    public static function size(array $values, array $style): int
     {
         return \strlen(json_encode($values, \JSON_THROW_ON_ERROR)) + \strlen(json_encode($style, \JSON_THROW_ON_ERROR));
     }

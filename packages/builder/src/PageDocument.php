@@ -186,7 +186,7 @@ final readonly class PageDocument
      *
      * @return array<string, string>|Refusal
      */
-    private function stored(Block $type, array $values, Album $album): array|Refusal
+    public function stored(Block $type, array $values, Album $album): array|Refusal
     {
         return $type instanceof FreeBlock ? $type->stored($values, $album) : $this->form->stored($type, $values, $album);
     }
