@@ -147,9 +147,11 @@ final class SiteTest extends SchemaTestCase
         self::assertTrue($headers->hasCacheControlDirective('public'));
         self::assertSame(['HX-Request'], $this->client->getResponse()->getVary());
         self::assertSame(
-            [PublicCache::MAX_AGE, PublicCache::STALE_WHILE_REVALIDATE, PublicCache::STALE_IF_ERROR],
-            array_map(static fn (string $directive): int => (int) $headers->getCacheControlDirective($directive), ['max-age', 'stale-while-revalidate', 'stale-if-error']),
+            [0, PublicCache::SHARED_MAX_AGE, PublicCache::STALE_IF_ERROR],
+            array_map(static fn (string $directive): int => (int) $headers->getCacheControlDirective($directive), ['max-age', 's-maxage', 'stale-if-error']),
+            'a browser revalidates the page of a guest, shared caches keep it',
         );
+        self::assertFalse($headers->hasCacheControlDirective('stale-while-revalidate'), 'a browser serves no stale page of a guest on a navigation');
 
         $this->client->request('GET', '/missing');
         self::assertFalse($this->client->getResponse()->headers->hasCacheControlDirective('public'), 'a refusal is not cached');
