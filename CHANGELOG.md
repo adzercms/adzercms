@@ -67,6 +67,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `Moderation`: one core decision on what a user hands in to a module — pending, published, rejected or withdrawn; a rejection and a withdrawal carry a reason, the author gets the decision by the module's event; the extension catalog takes it; the decision is a badge with its label, its form is the core template `@Core/moderation/_decide.html.twig`
 - `Unindexed::ROUTE`: a route with this default answers with `X-Robots-Tag: noindex, nofollow` on any site frame; the previews of a page and of a help article take it
 - `SiteNav::replace()`: a controller gives the page of its request its own site menu instead of the menu of the site, on any site frame
+- Saved site pages: a service worker at `/worker.js` of the site host, registered by a page of a site route, keeps the pages a guest opened and shows the saved page when the application fails or answers 5xx; `worker-src` of the content security policy keeps the own origin beside the declared sources
 
 ### Security
 

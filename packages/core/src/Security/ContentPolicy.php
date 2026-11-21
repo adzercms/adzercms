@@ -52,7 +52,7 @@ final readonly class ContentPolicy
             $line(ContentSource::SCRIPT, "'self'"),
             $line(ContentSource::CONNECT, "'self'"),
             [] === $declared[ContentSource::FRAME] ? "frame-src 'none'" : $line(ContentSource::FRAME, ''),
-            [] === $declared[ContentSource::WORKER] ? null : $line(ContentSource::WORKER, ''),
+            [] === $declared[ContentSource::WORKER] ? null : $line(ContentSource::WORKER, "'self'"),
         ])));
     }
 }
