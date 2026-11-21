@@ -411,6 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
     conditionals(document);
     steppers(document);
     document.querySelector('dialog[data-open]')?.showModal();
+    document.querySelector('form[data-autosubmit]')?.requestSubmit();
     showToasts();
 });
 

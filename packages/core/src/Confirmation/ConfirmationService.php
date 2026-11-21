@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Ui\CabinetEntry;
 use AdzerCMS\Core\Account\ContactConfirmed;
 use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Account\ContactOutcome;
+use AdzerCMS\Core\Account\Password;
 use AdzerCMS\Core\Account\Registration;
 use AdzerCMS\Core\Account\Status;
 use AdzerCMS\Core\Entity\Confirmation;
@@ -85,15 +86,18 @@ final readonly class ConfirmationService
             return ContactOutcome::Unavailable;
         }
 
-        $code = $this->secrets->code(Purpose::Registration, null, $contact);
-        if (null === $code) {
+        $token = $this->secrets->link(Purpose::Registration, null, $contact);
+        if (null === $token) {
             return ContactOutcome::TooOften;
         }
 
         $known = $this->byContact($kind, $contact);
 
         return self::outcome(null === $known
-            ? $this->notifier->contact($contact, CoreEvent::Registration, ['code' => $code, 'minutes' => Kind::Code->minutes()])
+            ? $this->notifier->contact($contact, CoreEvent::Registration, [
+                'url' => $this->url(CabinetEntry::RegisterConfirm, ['token' => $token]),
+                'minutes' => Kind::Link->minutes(),
+            ])
             : $this->notifier->contact($contact, CoreEvent::RegistrationKnown, [
                 'contact' => $contact,
                 'url' => $this->url(CabinetEntry::Forgot, ['login' => $contact]),
@@ -304,16 +308,11 @@ final readonly class ConfirmationService
         }
     }
 
-    public function completeRegistration(string $contact, string $code, string $password): ?User
+    public function completeRegistration(Confirmation $confirmation): ?User
     {
+        $contact = (string) $confirmation->getContact();
         $kind = ContactKind::of($contact);
-        $contact = $kind->normalize($contact);
-        if (null === $contact || null !== $this->byContact($kind, $contact)) {
-            return null;
-        }
-
-        $confirmation = $this->secrets->matching(Purpose::Registration, $contact, $code);
-        if (null === $confirmation) {
+        if (null !== $this->byContact($kind, $contact)) {
             return null;
         }
 
@@ -321,10 +320,12 @@ final readonly class ConfirmationService
             ContactKind::Phone === $kind ? $contact : null,
             ContactKind::Email === $kind ? $contact : null,
         );
+        $password = Password::issue();
         $user->setPassword($this->hasher->hashPassword($user, $password));
         $confirmation->use();
         $this->em->flush();
         $this->events->dispatch(new ContactConfirmed($user, $kind, $contact));
+        $this->notifier->contact($contact, CoreEvent::Registered, ['password' => $password], $user);
 
         return $user;
     }

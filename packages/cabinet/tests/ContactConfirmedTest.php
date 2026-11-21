@@ -36,8 +36,8 @@ final class ContactConfirmedTest extends SchemaTestCase
         $confirmations = self::service(Confirmations::class);
         $service = self::service(ConfirmationService::class);
 
-        $code = $confirmations->code(Purpose::Registration, null, self::REGISTERED) ?? self::fail('the registration code is not issued');
-        $user = $service->completeRegistration(self::REGISTERED, $code, 'secret-password') ?? self::fail('the record is not opened');
+        $token = $confirmations->link(Purpose::Registration, null, self::REGISTERED) ?? self::fail('the registration link is not issued');
+        $user = $service->completeRegistration($service->pending(Purpose::Registration, $token) ?? self::fail('the link is not pending')) ?? self::fail('the record is not opened');
         $code = $confirmations->code(Purpose::Contact, $user, self::CHANGED) ?? self::fail('the contact code is not issued');
         self::assertTrue($service->completeContactCode($user, $code));
 

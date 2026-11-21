@@ -54,9 +54,9 @@ final class ConfirmationsTest extends SchemaTestCase
         }
         self::assertNull($confirmations->matching(Purpose::Password, $user, $code), 'spent attempts close the code');
 
-        $code = $confirmations->code(Purpose::Registration, null, self::PHONE) ?? self::fail('the registration code is not issued');
+        $code = $confirmations->code(Purpose::Contact, $user, self::PHONE) ?? self::fail('the contact code is not issued');
         $clock->sleep(Kind::Code->minutes() * self::MINUTE + 1);
-        self::assertNull($confirmations->matching(Purpose::Registration, self::PHONE, $code), 'an expired code does not match');
+        self::assertNull($confirmations->matching(Purpose::Contact, $user, $code), 'an expired code does not match');
     }
 
     #[Group('ACMS-CORE-0091')]
@@ -88,7 +88,7 @@ final class ConfirmationsTest extends SchemaTestCase
         self::assertNull($confirmations->code(Purpose::Password, $user), 'a repeat within the pause is not issued');
         self::assertNotNull($confirmations->link(Purpose::Password, $user), 'another kind goes');
         self::assertNotNull($confirmations->code(Purpose::Contact, $user, self::PHONE), 'another purpose goes');
-        self::assertNotNull($confirmations->code(Purpose::Registration, null, self::PHONE), 'a contact without a record is its own addressee');
+        self::assertNotNull($confirmations->link(Purpose::Registration, null, self::PHONE), 'a contact without a record is its own addressee');
         $this->use($confirmations->matching(Purpose::Password, $user, $code));
 
         $clock->sleep(self::MINUTE);

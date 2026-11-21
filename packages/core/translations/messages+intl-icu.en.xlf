@@ -373,10 +373,16 @@
         <target>Password recovery</target>
       </segment>
     </unit>
+    <unit id="core.event.registered">
+      <segment>
+        <source>core.event.registered</source>
+        <target>Sign-up login and password</target>
+      </segment>
+    </unit>
     <unit id="core.event.registration">
       <segment>
         <source>core.event.registration</source>
-        <target>Sign-up code</target>
+        <target>Sign-up link</target>
       </segment>
     </unit>
     <unit id="core.event.registration_known">
@@ -1009,12 +1015,6 @@
         <target>The link is valid for {minutes, plural, one {# minute} other {# minutes}}.</target>
       </segment>
     </unit>
-    <unit id="core.notice.lifetime_code">
-      <segment>
-        <source>core.notice.lifetime_code</source>
-        <target>Enter it in the cabinet — the code is valid for {minutes, plural, one {# minute} other {# minutes}}.</target>
-      </segment>
-    </unit>
     <unit id="core.notice.mail_changed.action">
       <segment>
         <source>core.notice.mail_changed.action</source>
@@ -1153,10 +1153,46 @@
         <target>Password change</target>
       </segment>
     </unit>
-    <unit id="core.notice.registration.code">
+    <unit id="core.notice.registered.body">
       <segment>
-        <source>core.notice.registration.code</source>
-        <target>Sign-up code: {code}, valid for {minutes, plural, one {# minute} other {# minutes}}</target>
+        <source>core.notice.registered.body</source>
+        <target>Your account is open. Sign in with:</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registered.short">
+      <segment>
+        <source>core.notice.registered.short</source>
+        <target>{brand}: your account is open. Login {login}, password {password}</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registered.subject">
+      <segment>
+        <source>core.notice.registered.subject</source>
+        <target>{brand}: your login and password</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registered.title">
+      <segment>
+        <source>core.notice.registered.title</source>
+        <target>Your account is open</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration.action">
+      <segment>
+        <source>core.notice.registration.action</source>
+        <target>Sign in</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration.body">
+      <segment>
+        <source>core.notice.registration.body</source>
+        <target>Follow the link and your account at {brand} opens right away.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration.link">
+      <segment>
+        <source>core.notice.registration.link</source>
+        <target>{brand}: sign in at {url} The link is valid for {minutes, plural, one {# minute} other {# minutes}}.</target>
       </segment>
     </unit>
     <unit id="core.notice.registration.note">
@@ -1168,13 +1204,13 @@
     <unit id="core.notice.registration.subject">
       <segment>
         <source>core.notice.registration.subject</source>
-        <target>{brand}: sign-up code</target>
+        <target>{brand}: sign in to your account</target>
       </segment>
     </unit>
     <unit id="core.notice.registration.title">
       <segment>
         <source>core.notice.registration.title</source>
-        <target>Sign-up code</target>
+        <target>Sign in to your account</target>
       </segment>
     </unit>
     <unit id="core.notice.registration_known.action">
