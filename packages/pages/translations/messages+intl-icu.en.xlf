@@ -391,6 +391,12 @@
         <target>Address {path} belongs to a section of the site or the cabinet</target>
       </segment>
     </unit>
+    <unit id="pages.refusal.style">
+      <segment>
+        <source>pages.refusal.style</source>
+        <target>The style holds a rule outside the allowed properties and their values</target>
+      </segment>
+    </unit>
     <unit id="pages.refusal.title">
       <segment>
         <source>pages.refusal.title</source>

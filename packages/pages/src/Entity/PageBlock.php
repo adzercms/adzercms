@@ -23,6 +23,10 @@ class PageBlock implements Placed
     #[ORM\Column]
     private int $position = 0;
 
+    /** @var array<string, array<string, array<string, string>>> */
+    #[ORM\Column(type: 'json')]
+    private array $style = [];
+
     /**
      * @param array<string, string> $values
      */
@@ -62,6 +66,18 @@ class PageBlock implements Placed
     public function fill(array $values): void
     {
         $this->values = $values;
+    }
+
+    /** @return array<string, array<string, array<string, string>>> */
+    public function getStyle(): array
+    {
+        return $this->style;
+    }
+
+    /** @param array<string, array<string, array<string, string>>> $style */
+    public function restyle(array $style): void
+    {
+        $this->style = $style;
     }
 
     public function getPosition(): int

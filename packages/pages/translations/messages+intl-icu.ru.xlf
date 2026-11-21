@@ -391,6 +391,12 @@
         <target>Адрес {path} занят разделом сайта либо кабинета</target>
       </segment>
     </unit>
+    <unit id="pages.refusal.style">
+      <segment>
+        <source>pages.refusal.style</source>
+        <target>В стиле есть правило вне разрешённых свойств и их значений</target>
+      </segment>
+    </unit>
     <unit id="pages.refusal.title">
       <segment>
         <source>pages.refusal.title</source>
