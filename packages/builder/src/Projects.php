@@ -129,9 +129,11 @@ final readonly class Projects
 
     public function remove(Project $project): void
     {
-        $album = $this->albums->of($project);
+        $albums = $this->albums->all($project);
         $this->em->remove($project);
         $this->em->flush();
-        $album->clear();
+        foreach ($albums as $album) {
+            $album->clear();
+        }
     }
 }

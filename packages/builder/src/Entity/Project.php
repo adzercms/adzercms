@@ -30,6 +30,9 @@ class Project
     #[ORM\Column(length: 16, enumType: ProjectAccess::class, options: ['default' => 'personal'])]
     private ProjectAccess $access = ProjectAccess::Personal;
 
+    #[ORM\Column(length: ProjectVersion::COVER, nullable: true)]
+    private ?string $cover = null;
+
     public function __construct(
         #[ORM\ManyToOne]
         #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
@@ -53,6 +56,18 @@ class Project
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getCover(): ?string
+    {
+        return $this->cover;
+    }
+
+    public function present(string $name, string $cover): void
+    {
+        $this->name = $name;
+        $this->cover = $cover;
+        $this->touch();
     }
 
     public function getEdited(): \DateTimeImmutable

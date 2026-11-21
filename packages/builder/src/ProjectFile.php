@@ -38,24 +38,44 @@ final readonly class ProjectFile
     ) {
     }
 
-    public function write(Project $project): string
+    /** @return list<array{path: string, title: string, blocks: list<array{type: string, values: array<string, string>, style: array<string, array<string, array<string, string>>>}>}> */
+    public function document(Project $project): array
     {
         $held = [];
         foreach ($this->blocks->ofProject($project) as $block) {
             $held[(int) $block->getPage()->getId()][] = $block;
         }
-        $pages = array_map(static fn (ProjectPage $page): array => [
+
+        return array_map(static fn (ProjectPage $page): array => [
             'path' => $page->getPath(),
             'title' => $page->getTitle(),
-            'blocks' => array_map(static fn (ProjectBlock $block): array => ['type' => $block->getType(), 'values' => (object) $block->getValues(), 'style' => (object) $block->getStyle()], $held[(int) $page->getId()] ?? []),
+            'blocks' => array_map(static fn (ProjectBlock $block): array => ['type' => $block->getType(), 'values' => $block->getValues(), 'style' => $block->getStyle()], $held[(int) $page->getId()] ?? []),
         ], $this->pages->of($project));
+    }
 
+    /**
+     * @param list<array{blocks: list<array{values: array<string, string>}>}> $pages
+     *
+     * @return list<string>
+     */
+    public static function names(array $pages): array
+    {
+        return array_values(array_unique(PhotoAlbum::names(array_merge([], ...array_map(static fn (array $page): array => array_merge([], ...array_map(static fn (array $block): array => array_values($block['values']), $page['blocks'])), $pages)))));
+    }
+
+    public function write(Project $project): string
+    {
+        $pages = $this->document($project);
         $path = (new Filesystem())->tempnam(sys_get_temp_dir(), 'project');
         $zip = new \ZipArchive();
         $zip->open($path, \ZipArchive::OVERWRITE);
-        $zip->addFromString(self::DOCUMENT, json_encode(['format' => self::FORMAT, 'pages' => $pages], \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES));
+        $zip->addFromString(self::DOCUMENT, json_encode(['format' => self::FORMAT, 'pages' => array_map(static fn (array $page): array => [
+            'path' => $page['path'],
+            'title' => $page['title'],
+            'blocks' => array_map(static fn (array $block): array => ['type' => $block['type'], 'values' => (object) $block['values'], 'style' => (object) $block['style']], $page['blocks']),
+        ], $pages)], \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES));
         $album = $this->albums->of($project);
-        foreach (array_unique(PhotoAlbum::names(array_merge([], ...array_map(static fn (ProjectBlock $block): array => array_values($block->getValues()), array_merge([], ...array_values($held)))))) as $name) {
+        foreach (self::names($pages) as $name) {
             $file = $album->path($name);
             if (null !== $file) {
                 $zip->addFile($file, self::PICTURES.$name);

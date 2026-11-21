@@ -235,6 +235,12 @@
         <target>Redo</target>
       </segment>
     </unit>
+    <unit id="builder.refusal.cover">
+      <segment>
+        <source>builder.refusal.cover</source>
+        <target>Give the cover of the project</target>
+      </segment>
+    </unit>
     <unit id="builder.refusal.document">
       <segment>
         <source>builder.refusal.document</source>
@@ -479,6 +485,60 @@
       <segment>
         <source>builder.uploaded</source>
         <target>{count, plural, one {# page is} other {# pages are}} uploaded unpublished</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.action">
+      <segment>
+        <source>builder.version.action</source>
+        <target>Submit for approval</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.column">
+      <segment>
+        <source>builder.version.column</source>
+        <target>Version</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.cover">
+      <segment>
+        <source>builder.version.cover</source>
+        <target>Cover</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.current">
+      <segment>
+        <source>builder.version.current</source>
+        <target>The version «{name}»: {decision}</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.pending">
+      <segment>
+        <source>builder.version.pending</source>
+        <target>Waits for approval</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.published">
+      <segment>
+        <source>builder.version.published</source>
+        <target>Approved</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.rejected">
+      <segment>
+        <source>builder.version.rejected</source>
+        <target>Rejected</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.submitted">
+      <segment>
+        <source>builder.version.submitted</source>
+        <target>The version «{name}» waits for approval</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.withdrawn">
+      <segment>
+        <source>builder.version.withdrawn</source>
+        <target>Withdrawn</target>
       </segment>
     </unit>
   </file>

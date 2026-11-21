@@ -235,6 +235,12 @@
         <target>Повторить</target>
       </segment>
     </unit>
+    <unit id="builder.refusal.cover">
+      <segment>
+        <source>builder.refusal.cover</source>
+        <target>Нужна обложка проекта</target>
+      </segment>
+    </unit>
     <unit id="builder.refusal.document">
       <segment>
         <source>builder.refusal.document</source>
@@ -479,6 +485,60 @@
       <segment>
         <source>builder.uploaded</source>
         <target>{count, plural, one {Загружена # страница} few {Загружены # страницы} many {Загружено # страниц} other {Загружено # страницы}} без публикации</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.action">
+      <segment>
+        <source>builder.version.action</source>
+        <target>Отправить на одобрение</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.column">
+      <segment>
+        <source>builder.version.column</source>
+        <target>Версия</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.cover">
+      <segment>
+        <source>builder.version.cover</source>
+        <target>Обложка</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.current">
+      <segment>
+        <source>builder.version.current</source>
+        <target>Версия «{name}»: {decision}</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.pending">
+      <segment>
+        <source>builder.version.pending</source>
+        <target>Ждёт одобрения</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.published">
+      <segment>
+        <source>builder.version.published</source>
+        <target>Одобрена</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.rejected">
+      <segment>
+        <source>builder.version.rejected</source>
+        <target>Отклонена</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.submitted">
+      <segment>
+        <source>builder.version.submitted</source>
+        <target>Версия «{name}» ждёт одобрения</target>
+      </segment>
+    </unit>
+    <unit id="builder.version.withdrawn">
+      <segment>
+        <source>builder.version.withdrawn</source>
+        <target>Снята</target>
       </segment>
     </unit>
   </file>

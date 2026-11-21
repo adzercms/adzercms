@@ -6,6 +6,7 @@ namespace AdzerCMS\Builder\Controller;
 
 use AdzerCMS\Builder\Entity\Project;
 use AdzerCMS\Builder\Entity\ProjectPage;
+use AdzerCMS\Builder\Entity\ProjectVersion;
 use AdzerCMS\Builder\ProjectAccess;
 use AdzerCMS\Builder\ProjectAlbums;
 use AdzerCMS\Builder\ProjectFile;
@@ -13,7 +14,9 @@ use AdzerCMS\Builder\Projects;
 use AdzerCMS\Builder\Repository\ProjectPageRepository;
 use AdzerCMS\Builder\Repository\ProjectRepository;
 use AdzerCMS\Builder\Repository\ProjectTransferRepository;
+use AdzerCMS\Builder\Repository\ProjectVersionRepository;
 use AdzerCMS\Builder\Transfers;
+use AdzerCMS\Builder\Versions;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Ui\Column;
@@ -22,6 +25,7 @@ use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Core\Ui\Table;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -54,6 +58,8 @@ final class ProjectController extends AbstractController
         private readonly ProjectFile $file,
         private readonly ProjectTransferRepository $transfers,
         private readonly Transfers $handing,
+        private readonly ProjectVersionRepository $versions,
+        private readonly Versions $versioning,
     ) {
     }
 
@@ -63,9 +69,11 @@ final class ProjectController extends AbstractController
         $table = Table::of($request, self::LIST, [
             Column::of(Projects::NAME, t('builder.project.name'), 'p.name'),
             Column::of(Projects::ACCESS, t('builder.access.column'), 'p.access'),
+            Column::of('version', t('builder.version.column'), ProjectRepository::DECISION),
             Column::of('edited', t('builder.project.edited'), 'p.edited'),
         ], 'edited', t('builder.projects.empty'), ascending: false);
-        $context = ['table' => $table, 'rows' => $this->projects->owned($user, $table)];
+        $rows = $this->projects->owned($user, $table);
+        $context = ['table' => $table, 'rows' => $rows, 'versions' => $this->versions->latest($rows)];
 
         return $request->headers->has('HX-Request')
             ? $this->render('@Builder/cabinet/_projects.html.twig', $context)
@@ -94,7 +102,7 @@ final class ProjectController extends AbstractController
 
         return $request->headers->has('HX-Request')
             ? $this->render(self::PAGES, $this->listing($project, $request))
-            : $this->render('@Builder/cabinet/project.html.twig', $this->listing($project, $request) + ['transfer' => $this->transfers->pending($project)]);
+            : $this->render('@Builder/cabinet/project.html.twig', $this->listing($project, $request) + ['transfer' => $this->transfers->pending($project), 'version' => $this->versions->latest([$project])[$id] ?? null]);
     }
 
     #[Route('/{id}/access', name: 'builder_project_access', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
@@ -109,6 +117,28 @@ final class ProjectController extends AbstractController
         }
 
         return $this->render('@Builder/cabinet/_access.html.twig', ['project' => $project, 'accesses' => ProjectAccess::cases()]);
+    }
+
+    #[Route('/{id}/version', name: 'builder_project_version', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function submit(#[CurrentUser] User $user, int $id, Request $request): Response
+    {
+        $project = $this->owned($user, $id);
+        if (ProjectAccess::Personal === $project->getAccess()) {
+            throw $this->createNotFoundException();
+        }
+        $refusals = [];
+        if ($request->isMethod('POST')) {
+            $cover = $request->files->get(Versions::COVER);
+            $outcome = $this->versioning->submit($project, $request->request->getString(Versions::NAME), $cover instanceof UploadedFile ? $cover : null);
+            if ($outcome instanceof ProjectVersion) {
+                $this->addFlash('success', t('builder.version.submitted', ['name' => $outcome->getName()]));
+
+                return Fragment::go($this->generateUrl(self::PROJECT, ['id' => $id]));
+            }
+            $refusals = $outcome;
+        }
+
+        return $this->render('@Builder/cabinet/_version.html.twig', ['project' => $project, 'input' => $request->request->all(), 'refusals' => $refusals]);
     }
 
     #[Route('/{id}/transfer', name: 'builder_project_transfer', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
