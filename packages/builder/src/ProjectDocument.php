@@ -9,11 +9,14 @@ use AdzerCMS\Builder\Controller\ProjectController;
 use AdzerCMS\Builder\Entity\ProjectBlock;
 use AdzerCMS\Builder\Entity\ProjectPage;
 use AdzerCMS\Builder\Repository\ProjectBlockRepository;
+use AdzerCMS\Builder\Repository\ProjectPageRepository;
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Contracts\Ui\SiteLink;
 use AdzerCMS\Pages\Album;
 use AdzerCMS\Pages\Entity\BlockRecord;
 use AdzerCMS\Pages\PhotoAlbum;
 use AdzerCMS\Pages\Site;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use function Symfony\Component\Translation\t;
 
@@ -24,8 +27,10 @@ final readonly class ProjectDocument implements Document
     public function __construct(
         private ProjectPage $page,
         private ProjectBlockRepository $blocks,
+        private ProjectPageRepository $pages,
         private PhotoAlbum $album,
         private Site $site,
+        private UrlGeneratorInterface $urls,
     ) {
     }
 
@@ -70,6 +75,15 @@ final readonly class ProjectDocument implements Document
     public function view(): array
     {
         return $this->site->sheet($this->page->getTitle(), $this->blocks(), $this->album);
+    }
+
+    public function menu(): array
+    {
+        return array_map(fn (ProjectPage $page): SiteLink => new SiteLink(
+            $page->getTitle(),
+            $this->urls->generate(EditorController::PROJECT, ['project' => (int) $page->getProject()->getId(), 'id' => (int) $page->getId()]),
+            $page === $this->page,
+        ), $this->pages->of($this->page->getProject()));
     }
 
     public function route(): array

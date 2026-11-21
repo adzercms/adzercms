@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 final readonly class Documents implements ValueResolverInterface
@@ -34,6 +35,7 @@ final readonly class Documents implements ValueResolverInterface
         private ProjectAlbums $albums,
         private Site $site,
         private Security $security,
+        private UrlGeneratorInterface $urls,
     ) {
     }
 
@@ -66,6 +68,6 @@ final readonly class Documents implements ValueResolverInterface
         $user = $this->security->getUser();
         $page = $user instanceof User ? $this->projectPages->owned($user, $project, $id) : throw new AccessDeniedException();
 
-        return new ProjectDocument($page ?? throw new NotFoundHttpException(), $this->projectBlocks, $this->albums->of($page->getProject()), $this->site);
+        return new ProjectDocument($page ?? throw new NotFoundHttpException(), $this->projectBlocks, $this->projectPages, $this->albums->of($page->getProject()), $this->site, $this->urls);
     }
 }

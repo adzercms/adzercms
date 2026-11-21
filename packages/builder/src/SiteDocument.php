@@ -65,6 +65,11 @@ final readonly class SiteDocument implements Document
         return $this->site->view($this->page);
     }
 
+    public function menu(): ?array
+    {
+        return null;
+    }
+
     public function route(): array
     {
         return [EditorController::EDITOR, ['id' => (int) $this->page->getId()]];

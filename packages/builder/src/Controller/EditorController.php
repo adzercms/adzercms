@@ -11,6 +11,7 @@ use AdzerCMS\Builder\PageDocument;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Photo\Photos;
+use AdzerCMS\Core\Ui\SiteNav;
 use AdzerCMS\Pages\Block;
 use AdzerCMS\Pages\BlockForm;
 use AdzerCMS\Pages\Blocks;
@@ -127,8 +128,13 @@ final class EditorController extends AbstractController
 
     #[Route(self::ON_SITE.'/frame', name: self::EDITOR.self::FRAME, requirements: self::NUMBERS, defaults: self::SITE, methods: ['GET'])]
     #[Route(self::IN_PROJECT.'/frame', name: self::PROJECT.self::FRAME, requirements: self::NUMBERS, defaults: self::OF_PROJECT, methods: ['GET'])]
-    public function frame(Document $document): Response
+    public function frame(Document $document, Request $request): Response
     {
+        $menu = $document->menu();
+        if (null !== $menu) {
+            SiteNav::replace($request, $menu);
+        }
+
         return $this->render('@Builder/frame.html.twig', ['view' => $document->view()]);
     }
 
