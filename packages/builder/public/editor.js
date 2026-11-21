@@ -289,7 +289,7 @@ const setup = editor => {
     types.addType(PART, {model: {defaults: LOCKED}});
     types.addType(BLOCKS, {model: {defaults: {...LOCKED, layerable: true, droppable: source => source.get('type') === BLOCK}}});
     types.addType(BLOCK, {model: {
-        defaults: {draggable: (source, target) => target.get('type') === BLOCKS, droppable: false, copyable: false, editable: false},
+        defaults: {draggable: (source, target) => target.get('type') === BLOCKS, droppable: false, copyable: false, editable: false, traits: []},
         init() {
             if (this.get('block').dialog) {
                 const label = root.querySelector('[data-edit-icon]').innerHTML;
@@ -299,11 +299,11 @@ const setup = editor => {
     }});
     types.addType(BODY, {model: {defaults: {...LOCKED, highlightable: true, droppable: holding}}});
     types.addType('link', {model: {defaults: {traits: [{name: 'href', label: traits.link}]}}});
-    types.addType(TEXT, {extend: 'text', isComponent: never, model: {defaults: {...placing, tagName: 'div', droppable: false}}});
+    types.addType(TEXT, {extend: 'text', isComponent: never, model: {defaults: {...placing, tagName: 'div', droppable: false, traits: []}}});
     types.addType(PICTURE, {extend: 'image', isComponent: never, model: {defaults: {...placing, traits: [{name: 'alt', label: traits.alt}]}}});
     types.addType(BUTTON, {extend: 'link', isComponent: never, model: {defaults: {...placing, droppable: false, traits: [{name: 'href', label: traits.link}]}}});
-    types.addType(LINE, {isComponent: never, model: {defaults: {...placing, tagName: 'hr', void: true, droppable: false}}});
-    types.addType(BOX, {isComponent: never, model: {defaults: {...placing, tagName: 'div', droppable: holding}}});
+    types.addType(LINE, {isComponent: never, model: {defaults: {...placing, tagName: 'hr', void: true, droppable: false, traits: []}}});
+    types.addType(BOX, {isComponent: never, model: {defaults: {...placing, tagName: 'div', droppable: holding, traits: []}}});
 
     editor.Commands.add('tlb-delete', {run: ed => {
         const component = ed.getSelected();
@@ -339,6 +339,11 @@ const setup = editor => {
         if (ELEMENTS.has(component.get('type'))) {
             keyed(component);
         }
+    });
+
+    const properties = root.querySelector('[data-properties]');
+    editor.on('component:toggled', () => {
+        properties.hidden = !editor.getSelected()?.getTraits().length;
     });
 
     editor.on('block:drag:start', block => {
