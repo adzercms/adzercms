@@ -73,24 +73,6 @@
         <target>Убрать {name} из каталога?</target>
       </segment>
     </unit>
-    <unit id="extensions.decide.published">
-      <segment>
-        <source>extensions.decide.published</source>
-        <target>Опубликовать</target>
-      </segment>
-    </unit>
-    <unit id="extensions.decide.rejected">
-      <segment>
-        <source>extensions.decide.rejected</source>
-        <target>Отклонить</target>
-      </segment>
-    </unit>
-    <unit id="extensions.decide.withdrawn">
-      <segment>
-        <source>extensions.decide.withdrawn</source>
-        <target>Снять с сайта</target>
-      </segment>
-    </unit>
     <unit id="extensions.empty">
       <segment>
         <source>extensions.empty</source>
@@ -271,18 +253,6 @@
         <target>Платно</target>
       </segment>
     </unit>
-    <unit id="extensions.reason">
-      <segment>
-        <source>extensions.reason</source>
-        <target>Причина</target>
-      </segment>
-    </unit>
-    <unit id="extensions.refusal.decision">
-      <segment>
-        <source>extensions.refusal.decision</source>
-        <target>Это решение не подходит текущему состоянию {name}</target>
-      </segment>
-    </unit>
     <unit id="extensions.refusal.demo">
       <segment>
         <source>extensions.refusal.demo</source>
@@ -311,12 +281,6 @@
       <segment>
         <source>extensions.refusal.price</source>
         <target>Укажите цену больше нуля и не выше {max}; у бесплатного расширения цены нет</target>
-      </segment>
-    </unit>
-    <unit id="extensions.refusal.reason">
-      <segment>
-        <source>extensions.refusal.reason</source>
-        <target>Отказ и снятие — с причиной</target>
       </segment>
     </unit>
     <unit id="extensions.refusal.repository">

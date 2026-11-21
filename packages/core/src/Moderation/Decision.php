@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace AdzerCMS\Extensions;
+namespace AdzerCMS\Core\Moderation;
 
 use Symfony\Contracts\Translation\TranslatableInterface;
 
 use function Symfony\Component\Translation\t;
 
-enum ExtensionDecision: string
+enum Decision: string
 {
     case Pending = 'pending';
     case Published = 'published';
@@ -17,7 +17,7 @@ enum ExtensionDecision: string
 
     public function action(): TranslatableInterface
     {
-        return t('extensions.decide.'.$this->value);
+        return t('core.moderation.decide.'.$this->value);
     }
 
     /** @return list<self> */
@@ -27,16 +27,6 @@ enum ExtensionDecision: string
             self::Pending => [self::Published, self::Rejected],
             self::Published => [self::Withdrawn],
             self::Rejected, self::Withdrawn => [],
-        };
-    }
-
-    public function state(): ExtensionState
-    {
-        return match ($this) {
-            self::Pending => ExtensionState::Pending,
-            self::Published => ExtensionState::Published,
-            self::Rejected => ExtensionState::Rejected,
-            self::Withdrawn => ExtensionState::Withdrawn,
         };
     }
 }

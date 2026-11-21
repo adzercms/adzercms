@@ -6,8 +6,8 @@ namespace AdzerCMS\Extensions\Tests;
 
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Entity\User;
+use AdzerCMS\Core\Moderation\Decision;
 use AdzerCMS\Extensions\Entity\ExtensionAuthor;
-use AdzerCMS\Extensions\ExtensionDecision;
 use AdzerCMS\Extensions\ExtensionState;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -38,7 +38,7 @@ final class AuthorTest extends CatalogTestCase
         $key = $this->key();
         self::assertSame('"extra": {"adzercms": {"author": "'.$key.'"}}', $page->filter('#author-key')->attr('value'));
 
-        $this->entry('acme/mine', author: $this->mine())->decide(ExtensionDecision::Rejected, 'No demo site');
+        $this->entry('acme/mine', author: $this->mine())->decide(Decision::Rejected, 'No demo site');
         $this->entry('acme/foreign', author: $this->author('79990000003'));
         $this->em->flush();
 
@@ -55,7 +55,7 @@ final class AuthorTest extends CatalogTestCase
     {
         $this->arrive(self::SECTION);
         $mine = $this->mine();
-        $this->entry('acme/alpha', author: $mine)->decide(ExtensionDecision::Rejected, 'No demo site');
+        $this->entry('acme/alpha', author: $mine)->decide(Decision::Rejected, 'No demo site');
         $this->entry('acme/zeta', author: $mine);
         $this->em->flush();
         $sorted = fn (string $order): array => $this->arrive(self::SECTION.'?sort=state&order='.$order)
@@ -77,7 +77,7 @@ final class AuthorTest extends CatalogTestCase
 
         self::assertResponseHeaderSame('HX-Redirect', self::SECTION);
         $entry = self::extensions()->named(self::NAME) ?? self::fail('the entry is not in the catalog');
-        self::assertSame([$this->user->getId(), ExtensionDecision::Pending, ExtensionType::Theme, '1.2.0', 'https://demo.example.test', null],
+        self::assertSame([$this->user->getId(), Decision::Pending, ExtensionType::Theme, '1.2.0', 'https://demo.example.test', null],
             [$entry->getAuthor()?->getUser()->getId(), $entry->getDecision(), $entry->getType(), $entry->getVersion(), $entry->getDemo(), $entry->getPrice()]);
         self::assertCount(0, $this->arrive('/extensions')->filter('.listing-row'));
     }
@@ -136,9 +136,9 @@ final class AuthorTest extends CatalogTestCase
         $this->open['acme/rejected'] = [self::version('acme/rejected', '1.0.0', 'Rejected', author: $author->getKey())];
         $this->open['acme/published'] = [self::version('acme/published', '1.0.0', 'Published', author: $author->getKey())];
         $rejected = $this->entry('acme/rejected', author: $author);
-        $rejected->decide(ExtensionDecision::Rejected, 'No demo site');
+        $rejected->decide(Decision::Rejected, 'No demo site');
         $published = $this->entry('acme/published', author: $author);
-        $published->decide(ExtensionDecision::Published);
+        $published->decide(Decision::Published);
         $this->em->flush();
 
         $this->post(self::SECTION.'/'.$rejected->getId(), ['name' => 'acme/rejected', 'type' => 'module', 'demo' => 'https://demo.example.test']);
@@ -146,8 +146,8 @@ final class AuthorTest extends CatalogTestCase
 
         $rejected = $this->reread($rejected);
         $published = $this->reread($published);
-        self::assertSame([ExtensionDecision::Pending, null, 'https://demo.example.test'], [$rejected->getDecision(), $rejected->getReason(), $rejected->getDemo()]);
-        self::assertSame([ExtensionDecision::Published, ExtensionType::Theme], [$published->getDecision(), $published->getType()]);
+        self::assertSame([Decision::Pending, null, 'https://demo.example.test'], [$rejected->getDecision(), $rejected->getReason(), $rejected->getDemo()]);
+        self::assertSame([Decision::Published, ExtensionType::Theme], [$published->getDecision(), $published->getType()]);
     }
 
     #[Group('ACMS-US-0044')]

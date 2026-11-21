@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Extensions\Tests;
 
-use AdzerCMS\Extensions\ExtensionDecision;
+use AdzerCMS\Core\Moderation\Decision;
 use AdzerCMS\Opotopo\Tests\Marketplace;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Console\Command\Command;
@@ -25,7 +25,7 @@ final class ListingsTest extends CatalogTestCase
         $this->entry('acme/blog', package: self::package('Blog posts'));
         $this->entry('acme/draft');
         $author = $this->author('+79990000001');
-        $this->entry('acme/theirs', package: self::package('Their module', author: $author->getKey()), author: $author)->decide(ExtensionDecision::Published);
+        $this->entry('acme/theirs', package: self::package('Their module', author: $author->getKey()), author: $author)->decide(Decision::Published);
         $this->em->flush();
 
         $job = self::command('adzercms:opotopo');

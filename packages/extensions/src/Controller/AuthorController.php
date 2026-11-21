@@ -7,13 +7,13 @@ namespace AdzerCMS\Extensions\Controller;
 use AdzerCMS\Contracts\Module\ExtensionType;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Entity\User;
+use AdzerCMS\Core\Moderation\Decision;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Fragment;
 use AdzerCMS\Core\Ui\Table;
 use AdzerCMS\Extensions\Catalog;
 use AdzerCMS\Extensions\Entity\Extension;
 use AdzerCMS\Extensions\Entity\ExtensionAuthor;
-use AdzerCMS\Extensions\ExtensionDecision;
 use AdzerCMS\Extensions\Repository\ExtensionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -71,7 +71,7 @@ final class AuthorController extends AbstractController
             $refusal = $this->catalog->submit($extension, $request);
 
             if (null === $refusal) {
-                $this->addFlash('success', ExtensionDecision::Pending === $extension->getDecision()
+                $this->addFlash('success', Decision::Pending === $extension->getDecision()
                     ? t('extensions.flash.submitted', ['name' => $extension->getName()])
                     : t('extensions.flash.saved', ['name' => $extension->getName()]));
 
