@@ -36,6 +36,9 @@ final readonly class Transfers
 
     public function offer(Project $project, string $email): ?Refusal
     {
+        if (ProjectAccess::Personal !== $project->getAccess()) {
+            return new Refusal(t('builder.refusal.personal'));
+        }
         $address = ContactKind::Email->normalize($email);
         $recipient = null === $address ? null : $this->users->findOneBy(['email' => $address, 'deletedAt' => null]);
         if (null === $recipient) {

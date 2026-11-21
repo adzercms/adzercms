@@ -6,12 +6,13 @@
 
 {% block actions %}
     <button type="button" hx-get="{{ path('builder_project_page_new', {id: project.id}) }}" hx-target="#record">{{ 'pages.new'|trans }}</button>
+    <button type="button" class="secondary" hx-get="{{ path('builder_project_access', {id: project.id}) }}" hx-target="#record">{{ 'builder.access.current'|trans({access: project.access.label|trans}) }}</button>
     <a class="button secondary" href="{{ path('builder_project_file', {id: project.id}) }}" download>{{ 'builder.project.download'|trans }}</a>
     {% if transfer %}
         <form method="post" action="{{ path('builder_project_transfer_cancel', {id: project.id}) }}">
             {{ csrf_field() }}<button type="submit" class="secondary">{{ 'builder.transfer.cancel'|trans }}</button>
         </form>
-    {% else %}
+    {% elseif project.access == constant('AdzerCMS\\Builder\\ProjectAccess::Personal') %}
         <button type="button" class="secondary" hx-get="{{ path('builder_project_transfer', {id: project.id}) }}" hx-target="#record">{{ 'builder.transfer.action'|trans }}</button>
     {% endif %}
     <form method="post" action="{{ path('builder_project_drop', {id: project.id}) }}" data-confirm="{{ 'builder.project.drop_confirm'|trans({name: project.name}) }}">

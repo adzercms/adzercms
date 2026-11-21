@@ -6,6 +6,7 @@ namespace AdzerCMS\Builder\Controller;
 
 use AdzerCMS\Builder\Entity\Project;
 use AdzerCMS\Builder\Entity\ProjectPage;
+use AdzerCMS\Builder\ProjectAccess;
 use AdzerCMS\Builder\ProjectAlbums;
 use AdzerCMS\Builder\ProjectFile;
 use AdzerCMS\Builder\Projects;
@@ -24,6 +25,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -60,6 +62,7 @@ final class ProjectController extends AbstractController
     {
         $table = Table::of($request, self::LIST, [
             Column::of(Projects::NAME, t('builder.project.name'), 'p.name'),
+            Column::of(Projects::ACCESS, t('builder.access.column'), 'p.access'),
             Column::of('edited', t('builder.project.edited'), 'p.edited'),
         ], 'edited', t('builder.projects.empty'), ascending: false);
         $context = ['table' => $table, 'rows' => $this->projects->owned($user, $table)];
@@ -92,6 +95,20 @@ final class ProjectController extends AbstractController
         return $request->headers->has('HX-Request')
             ? $this->render(self::PAGES, $this->listing($project, $request))
             : $this->render('@Builder/cabinet/project.html.twig', $this->listing($project, $request) + ['transfer' => $this->transfers->pending($project)]);
+    }
+
+    #[Route('/{id}/access', name: 'builder_project_access', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function access(#[CurrentUser] User $user, int $id, Request $request): Response
+    {
+        $project = $this->owned($user, $id);
+        if ($request->isMethod('POST')) {
+            $this->work->grant($project, ProjectAccess::tryFrom($request->request->getString(Projects::ACCESS)) ?? throw new BadRequestHttpException());
+            $this->addFlash('success', t('builder.access.granted', ['name' => $project->getName(), 'access' => $project->getAccess()->label()]));
+
+            return Fragment::go($this->generateUrl(self::PROJECT, ['id' => $id]));
+        }
+
+        return $this->render('@Builder/cabinet/_access.html.twig', ['project' => $project, 'accesses' => ProjectAccess::cases()]);
     }
 
     #[Route('/{id}/transfer', name: 'builder_project_transfer', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

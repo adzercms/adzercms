@@ -1,6 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
+    <unit id="builder.access.action">
+      <segment>
+        <source>builder.access.action</source>
+        <target>Доступ к проекту</target>
+      </segment>
+    </unit>
+    <unit id="builder.access.column">
+      <segment>
+        <source>builder.access.column</source>
+        <target>Доступ</target>
+      </segment>
+    </unit>
+    <unit id="builder.access.current">
+      <segment>
+        <source>builder.access.current</source>
+        <target>Доступ: {access}</target>
+      </segment>
+    </unit>
+    <unit id="builder.access.granted">
+      <segment>
+        <source>builder.access.granted</source>
+        <target>Доступ к проекту «{name}»: {access}</target>
+      </segment>
+    </unit>
+    <unit id="builder.access.link">
+      <segment>
+        <source>builder.access.link</source>
+        <target>По ссылке</target>
+      </segment>
+    </unit>
+    <unit id="builder.access.open">
+      <segment>
+        <source>builder.access.open</source>
+        <target>По ссылке и в каталоге шаблонов</target>
+      </segment>
+    </unit>
+    <unit id="builder.access.personal">
+      <segment>
+        <source>builder.access.personal</source>
+        <target>Только мне</target>
+      </segment>
+    </unit>
     <unit id="builder.action">
       <segment>
         <source>builder.action</source>
@@ -233,6 +275,12 @@
       <segment>
         <source>builder.refusal.pages</source>
         <target>В проекте не больше {limit, plural, one {# страницы} other {# страниц}}</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.personal">
+      <segment>
+        <source>builder.refusal.personal</source>
+        <target>Передаётся только проект с доступом «Только мне»</target>
       </segment>
     </unit>
     <unit id="builder.refusal.picture">

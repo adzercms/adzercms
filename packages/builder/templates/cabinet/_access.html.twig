@@ -1,0 +1,13 @@
+{% include '@Theme/_modal_header.html.twig' with {title: 'builder.access.action'|trans} only %}
+
+<div class="modal-body">
+    <form hx-post="{{ path('builder_project_access', {id: project.id}) }}" hx-target="#record">
+        {{ csrf_field() }}
+        <fieldset class="choices">
+            {% for access in accesses %}
+                <label><input type="radio" name="{{ constant('AdzerCMS\\Builder\\Projects::ACCESS') }}" value="{{ access.value }}" {{ access == project.access ? 'checked' }}> <span>{{ access.label|trans }}</span></label>
+            {% endfor %}
+        </fieldset>
+        <button type="submit">{{ 'core.action.save'|trans }}</button>
+    </form>
+</div>

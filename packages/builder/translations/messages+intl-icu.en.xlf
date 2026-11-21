@@ -1,6 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
+    <unit id="builder.access.action">
+      <segment>
+        <source>builder.access.action</source>
+        <target>Access to the project</target>
+      </segment>
+    </unit>
+    <unit id="builder.access.column">
+      <segment>
+        <source>builder.access.column</source>
+        <target>Access</target>
+      </segment>
+    </unit>
+    <unit id="builder.access.current">
+      <segment>
+        <source>builder.access.current</source>
+        <target>Access: {access}</target>
+      </segment>
+    </unit>
+    <unit id="builder.access.granted">
+      <segment>
+        <source>builder.access.granted</source>
+        <target>Access to the project «{name}»: {access}</target>
+      </segment>
+    </unit>
+    <unit id="builder.access.link">
+      <segment>
+        <source>builder.access.link</source>
+        <target>By link</target>
+      </segment>
+    </unit>
+    <unit id="builder.access.open">
+      <segment>
+        <source>builder.access.open</source>
+        <target>By link and in the template catalog</target>
+      </segment>
+    </unit>
+    <unit id="builder.access.personal">
+      <segment>
+        <source>builder.access.personal</source>
+        <target>Only me</target>
+      </segment>
+    </unit>
     <unit id="builder.action">
       <segment>
         <source>builder.action</source>
@@ -233,6 +275,12 @@
       <segment>
         <source>builder.refusal.pages</source>
         <target>A project holds up to {limit, plural, one {# page} other {# pages}}</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.personal">
+      <segment>
+        <source>builder.refusal.personal</source>
+        <target>Only a project with the access «Only me» is handed over</target>
       </segment>
     </unit>
     <unit id="builder.refusal.picture">
