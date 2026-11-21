@@ -238,7 +238,7 @@
     <unit id="theme.text_values">
       <segment>
         <source>theme.text_values</source>
-        <target>Величины модулей</target>
+        <target>Значения для вставки в текст</target>
       </segment>
     </unit>
   </file>
