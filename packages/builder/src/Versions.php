@@ -61,11 +61,7 @@ final readonly class Versions
 
         $pages = $this->file->document($project);
         $copied = $this->albums->copy($album, $this->albums->ofVersion($version), [...ProjectFile::names($pages), (string) $project->getCover()]);
-        $version->snapshot(array_map(static fn (array $page): array => [
-            'path' => $page['path'],
-            'title' => $page['title'],
-            'blocks' => array_map(static fn (array $block): array => ['type' => $block['type'], 'values' => array_map(static fn (string $value): string => strtr($value, $copied), $block['values']), 'style' => $block['style']], $page['blocks']),
-        ], $pages), $copied[(string) $project->getCover()] ?? '');
+        $version->snapshot(ProjectFile::renamed($pages, $copied), $copied[(string) $project->getCover()] ?? '');
         $this->em->flush();
 
         return $version;

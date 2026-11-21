@@ -223,6 +223,12 @@
         <target>Pictures</target>
       </segment>
     </unit>
+    <unit id="builder.project.copied">
+      <segment>
+        <source>builder.project.copied</source>
+        <target>Project «{name}» created from the template</target>
+      </segment>
+    </unit>
     <unit id="builder.project.download">
       <segment>
         <source>builder.project.download</source>
@@ -401,6 +407,12 @@
       <segment>
         <source>builder.screen.tablet</source>
         <target>Tablet</target>
+      </segment>
+    </unit>
+    <unit id="builder.show.copy">
+      <segment>
+        <source>builder.show.copy</source>
+        <target>Create your own project</target>
       </segment>
     </unit>
     <unit id="builder.show.open">

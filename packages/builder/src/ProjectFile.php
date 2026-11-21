@@ -63,6 +63,21 @@ final readonly class ProjectFile
         return array_values(array_unique(PhotoAlbum::names(array_merge([], ...array_map(static fn (array $page): array => array_merge([], ...array_map(static fn (array $block): array => array_values($block['values']), $page['blocks'])), $pages)))));
     }
 
+    /**
+     * @param list<array{path: string, title: string, blocks: list<array{type: string, values: array<string, string>, style: array<string, array<string, array<string, string>>>}>}> $pages
+     * @param array<string, string>                                                                                                                                                  $names
+     *
+     * @return list<array{path: string, title: string, blocks: list<array{type: string, values: array<string, string>, style: array<string, array<string, array<string, string>>>}>}>
+     */
+    public static function renamed(array $pages, array $names): array
+    {
+        return array_map(static fn (array $page): array => [
+            'path' => $page['path'],
+            'title' => $page['title'],
+            'blocks' => array_map(static fn (array $block): array => ['type' => $block['type'], 'values' => array_map(static fn (string $value): string => strtr($value, $names), $block['values']), 'style' => $block['style']], $page['blocks']),
+        ], $pages);
+    }
+
     public function write(Project $project): string
     {
         $pages = $this->document($project);
