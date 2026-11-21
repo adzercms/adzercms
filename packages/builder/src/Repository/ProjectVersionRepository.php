@@ -7,6 +7,8 @@ namespace AdzerCMS\Builder\Repository;
 use AdzerCMS\Builder\Entity\Project;
 use AdzerCMS\Builder\Entity\ProjectVersion;
 use AdzerCMS\Core\Moderation\Decision;
+use AdzerCMS\Core\Ui\Filter;
+use AdzerCMS\Core\Ui\Table;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,6 +18,19 @@ class ProjectVersionRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ProjectVersion::class);
+    }
+
+    /** @return list<ProjectVersion> */
+    public function page(Table $table): array
+    {
+        $builder = $this->createQueryBuilder('v')->join('v.project', 'p')->join('p.owner', 'u')->addSelect('p', 'u')
+            ->addSelect(\sprintf("CASE WHEN v.decision = '%s' THEN 0 ELSE 1 END AS HIDDEN waiting", Decision::Pending->value))->orderBy('waiting');
+        if ('' !== $table->term()) {
+            $builder->andWhere(Filter::matching($builder, $table->term(), ['v.name']));
+        }
+        $table->apply($builder);
+
+        return $table->paginate($builder->addOrderBy('v.id')->getQuery());
     }
 
     public function pending(Project $project): ?ProjectVersion

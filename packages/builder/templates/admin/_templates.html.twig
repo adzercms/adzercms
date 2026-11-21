@@ -1,0 +1,13 @@
+{% set names = logins(rows|map(row => row.project.owner)) %}
+{% embed '@Theme/_table.html.twig' %}
+    {% block row %}
+        <tr class="clickable-row" data-record="{{ path('admin_builder_template', {id: row.id}) }}">
+            <td class="{{ table.aside('cover') }}"><img class="table-cover" src="{{ path('builder_version_picture', {id: row.id, file: row.cover}) }}" alt="" loading="lazy"></td>
+            <td class="{{ table.aside('name') }}"><strong>{{ row.name }}</strong></td>
+            <td class="{{ table.aside('access') }}">{{ row.project.access.label|trans }}</td>
+            <td class="{{ table.aside('author') }}">{% include '@Theme/_user.html.twig' with {user: row.project.owner, name: names[row.project.owner.id]} only %}</td>
+            <td class="{{ table.aside('submitted') }}">{{ moment(row.submitted) }}</td>
+            <td class="{{ table.aside('decision') }}">{{ badge(row.decision) }}</td>
+        </tr>
+    {% endblock %}
+{% endembed %}

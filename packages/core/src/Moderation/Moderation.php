@@ -12,6 +12,9 @@ use function Symfony\Component\Translation\t;
 
 final readonly class Moderation
 {
+    public const DECISION = 'decision';
+    public const REASON = 'reason';
+
     public function __construct(
         private EntityManagerInterface $em,
         private Notifier $notifier,

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Builder\Entity;
 
+use AdzerCMS\Builder\BuilderEvent;
 use AdzerCMS\Builder\Repository\ProjectVersionRepository;
 use AdzerCMS\Core\Moderation\Decision;
+use AdzerCMS\Core\Moderation\DecisionNotice;
+use AdzerCMS\Core\Moderation\Moderated;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,7 +17,7 @@ use function Symfony\Component\Clock\now;
 #[ORM\Entity(repositoryClass: ProjectVersionRepository::class)]
 #[ORM\Table(name: 'builder_project_versions')]
 #[ORM\Index(name: 'idx_builder_project_versions_project', columns: ['project_id', 'decision'])]
-class ProjectVersion
+class ProjectVersion implements Moderated
 {
     public const COVER = 64;
 
@@ -95,5 +98,16 @@ class ProjectVersion
     public function getReason(): ?string
     {
         return $this->reason;
+    }
+
+    public function decide(Decision $decision, ?string $reason = null): void
+    {
+        $this->decision = $decision;
+        $this->reason = $reason;
+    }
+
+    public function decisionNotice(): DecisionNotice
+    {
+        return new DecisionNotice($this->project->getOwner(), BuilderEvent::Decision, "builder\0".$this->id, ['name' => $this->name, 'decision' => $this->decision->label()]);
     }
 }

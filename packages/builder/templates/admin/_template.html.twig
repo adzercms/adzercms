@@ -1,0 +1,29 @@
+{% include '@Theme/_modal_header.html.twig' with {title: version.name} only %}
+
+<div class="modal-body">
+    {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
+    <div class="info-grid">
+        <div class="info-item">
+            <span class="info-label">{{ 'builder.version.cover'|trans }}</span>
+            <span class="info-value"><img class="table-cover" src="{{ path('builder_version_picture', {id: version.id, file: version.cover}) }}" alt=""></span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'builder.access.column'|trans }}</span>
+            <span class="info-value">{{ version.project.access.label|trans }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'builder.templates.author'|trans }}</span>
+            <span class="info-value">{% include '@Theme/_user.html.twig' with {user: version.project.owner} only %}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'builder.templates.submitted'|trans }}</span>
+            <span class="info-value">{{ moment(version.submitted) }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">{{ 'core.column.status'|trans }}</span>
+            <span class="info-value">{{ badge(version.decision) }}{{ caption(version.reason) }}</span>
+        </div>
+    </div>
+
+    {% include '@Core/moderation/_decide.html.twig' with {subject: version, action: path('admin_builder_template_decide', {id: version.id})} only %}
+</div>

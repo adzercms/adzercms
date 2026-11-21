@@ -77,7 +77,7 @@ final class ExtensionController extends AbstractController
     #[Route('/{id}/decide', name: 'admin_extension_decide', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function decide(Extension $extension, Request $request): Response
     {
-        $refusal = $this->moderation->decide($extension, Decision::tryFrom($request->request->getString('decision')), $request->request->getString('reason'));
+        $refusal = $this->moderation->decide($extension, Decision::tryFrom($request->request->getString(Moderation::DECISION)), $request->request->getString(Moderation::REASON));
         if (null !== $refusal) {
             return $this->card($extension, $refusal->reason);
         }

@@ -37,19 +37,5 @@
         {% endif %}
     </div>
 
-    {% for decision in extension.decision.next %}
-        {% set publish = decision == constant('AdzerCMS\\Core\\Moderation\\Decision::Published') %}
-        <form hx-post="{{ path('admin_extension_decide', {id: extension.id}) }}" hx-target="#record">
-            {{ csrf_field() }}
-            <input type="hidden" name="decision" value="{{ decision.value }}">
-            {% if not publish %}
-                <div class="fields">
-                    <label class="field-wide">{{ 'core.moderation.reason'|trans }}
-                        <textarea name="reason" required></textarea>
-                    </label>
-                </div>
-            {% endif %}
-            <button type="submit" class="{{ publish ? '' : 'secondary' }}">{{ decision.action|trans }}</button>
-        </form>
-    {% endfor %}
+    {% include '@Core/moderation/_decide.html.twig' with {subject: extension, action: path('admin_extension_decide', {id: extension.id})} only %}
 </div>
