@@ -9,20 +9,6 @@
 
 {% block page %}
 {% embed '@Theme/_section.html.twig' with {heading: 'builder.catalog.title'|trans, level: 1} %}
-    {% block content %}
-        {% embed '@Theme/_table.html.twig' %}
-            {% block items %}
-                <div class="offer-grid">
-                    {% for row in rows %}
-                        {% set show = path('builder_show', {token: row.project.token}) %}
-                        <article class="offer-card clickable-row" data-href="{{ show }}" data-template>
-                            <img class="offer-cover" src="{{ path('builder_version_picture', {id: row.id, file: row.cover}) }}" alt="{{ row.name }}" loading="lazy">
-                            <h2 class="offer-title"><a href="{{ show }}">{{ row.name }}</a></h2>
-                        </article>
-                    {% endfor %}
-                </div>
-            {% endblock %}
-        {% endembed %}
-    {% endblock %}
+    {% block content %}{% include '@Builder/_catalog.html.twig' %}{% endblock %}
 {% endembed %}
 {% endblock %}
