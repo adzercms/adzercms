@@ -94,6 +94,7 @@ final class ProjectsTest extends SchemaTestCase
         self::assertNull($album->path($picture), 'a deleted project takes its pictures');
     }
 
+    #[Group('ACMS-BLD-0001')]
     #[Group('ACMS-BLD-0002')]
     #[Group('ACMS-BLD-0008')]
     #[Group('ACMS-BLD-0023')]
@@ -101,6 +102,10 @@ final class ProjectsTest extends SchemaTestCase
     public function testOwnerBuildsPageOfProjectInEditorWithPicturesOfProject(): void
     {
         [$project, $home] = $this->project();
+        $about = new ProjectPage($project, 'About', '/about');
+        $about->place(2);
+        $this->em->persist($about);
+        $this->em->flush();
         $base = self::SECTION.'/'.$project->getId();
         $editor = $base.'/pages/'.$home->getId().'/editor';
         $builder = $this->client->request('GET', $editor)->filter('[data-builder]');
@@ -125,6 +130,7 @@ final class ProjectsTest extends SchemaTestCase
 
         $frame = $this->client->request('GET', (string) $builder->attr('data-frame'));
         self::assertSame(['Fiber', $entry['src']], [trim($frame->filter('.site-main #block-'.$block->getId().' h1')->text()), $frame->filter('#block-'.$block->getId().' img')->attr('src')], 'the canvas draws the page of the project with its pictures on the site frame');
+        self::assertSame([['Fiber', $editor], ['About', $base.'/pages/'.$about->getId().'/editor']], $frame->filter('.site-nav a')->each(static fn (Crawler $link): array => [$link->text(), $link->attr('href')]), 'the menu of the canvas is the pages of the project');
 
         $this->client->loginUser($this->record('79990000003'));
         $this->client->request('GET', $editor);

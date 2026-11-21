@@ -9,6 +9,7 @@ use AdzerCMS\Contracts\Ui\SiteLink;
 use AdzerCMS\Contracts\Ui\SiteMenu;
 use AdzerCMS\Contracts\Ui\SiteSections;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -16,6 +17,8 @@ use Twig\Attribute\AsTwigFunction;
 
 final readonly class SiteNav
 {
+    private const MENU = '_site_menu';
+
     private ?SiteMenu $menu;
 
     /**
@@ -34,10 +37,20 @@ final readonly class SiteNav
         $this->menu = [...$menus][0] ?? null;
     }
 
+    /** @param list<SiteLink> $links */
+    public static function replace(Request $request, array $links): void
+    {
+        $request->attributes->set(self::MENU, $links);
+    }
+
     /** @return list<SiteLink> */
     #[AsTwigFunction('site_menu')]
     public function items(): array
     {
+        $replaced = $this->requests->getMainRequest()?->attributes->get(self::MENU);
+        if (\is_array($replaced)) {
+            return array_values(array_filter($replaced, static fn (mixed $link): bool => $link instanceof SiteLink));
+        }
         $sections = $this->sections();
 
         return $this->menu?->arrange($sections) ?? array_values($sections);

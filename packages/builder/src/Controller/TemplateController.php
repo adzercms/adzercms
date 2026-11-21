@@ -6,13 +6,16 @@ namespace AdzerCMS\Builder\Controller;
 
 use AdzerCMS\Builder\Entity\ProjectVersion;
 use AdzerCMS\Builder\Repository\ProjectVersionRepository;
+use AdzerCMS\Builder\VersionShow;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Moderation\Decision;
 use AdzerCMS\Core\Moderation\Moderation;
+use AdzerCMS\Core\Seo\Unindexed;
 use AdzerCMS\Core\Ui\Column;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Fragment;
 use AdzerCMS\Core\Ui\Table;
+use AdzerCMS\Pages\Entity\Page;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,10 +31,12 @@ final class TemplateController extends AbstractController
 {
     public const LIST = 'admin_builder_templates';
     public const RECORD = 'admin_builder_template';
+    public const PAGES = 'admin_builder_template_pages';
 
     public function __construct(
         private readonly ProjectVersionRepository $versions,
         private readonly Moderation $moderation,
+        private readonly VersionShow $show,
     ) {
     }
 
@@ -60,6 +65,12 @@ final class TemplateController extends AbstractController
     public function show(ProjectVersion $version): Response
     {
         return $this->card($version);
+    }
+
+    #[Route('/{id}/pages/{path}', name: self::PAGES, requirements: ['id' => '\d+', VersionShow::PATH => Page::SEGMENTS], defaults: [VersionShow::PATH => '', Unindexed::ROUTE => true], methods: ['GET'], options: ['utf8' => true])]
+    public function pages(ProjectVersion $version, string $path, Request $request): Response
+    {
+        return $this->render(VersionShow::TEMPLATE, ['view' => $this->show->view($request, $version, $path, self::PAGES, ['id' => (int) $version->getId()])]);
     }
 
     #[Route('/{id}/decide', name: 'admin_builder_template_decide', requirements: ['id' => '\d+'], methods: ['POST'])]

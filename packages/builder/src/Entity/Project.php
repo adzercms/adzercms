@@ -15,9 +15,11 @@ use function Symfony\Component\Clock\now;
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 #[ORM\Table(name: 'builder_projects')]
 #[ORM\Index(name: 'idx_builder_projects_owner', columns: ['owner_id', 'edited'])]
+#[ORM\UniqueConstraint(name: 'uniq_builder_projects_token', columns: ['token'])]
 class Project
 {
     public const NAME = 120;
+    public const TOKEN = 32;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -33,6 +35,9 @@ class Project
     #[ORM\Column(length: ProjectVersion::COVER, nullable: true)]
     private ?string $cover = null;
 
+    #[ORM\Column(length: self::TOKEN)]
+    private string $token;
+
     public function __construct(
         #[ORM\ManyToOne]
         #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
@@ -41,6 +46,7 @@ class Project
         private string $name,
     ) {
         $this->edited = now();
+        $this->token = bin2hex(random_bytes(self::TOKEN / 2));
     }
 
     public function getId(): ?int
@@ -61,6 +67,11 @@ class Project
     public function getCover(): ?string
     {
         return $this->cover;
+    }
+
+    public function getToken(): string
+    {
+        return $this->token;
     }
 
     public function present(string $name, string $cover): void

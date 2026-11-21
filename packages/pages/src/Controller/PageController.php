@@ -7,6 +7,7 @@ namespace AdzerCMS\Pages\Controller;
 use AdzerCMS\Contracts\Ui\CabinetEntry;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Http\ImmutableFileResponse;
+use AdzerCMS\Core\Seo\Unindexed;
 use AdzerCMS\Core\Site\Hosts;
 use AdzerCMS\Core\Ui\Entries;
 use AdzerCMS\Pages\Entity\Page;
@@ -26,8 +27,6 @@ final class PageController extends AbstractController
     public const PREVIEW = 'admin_page_preview';
     public const PICTURE = 'pages_picture';
     public const LAST = \PHP_INT_MIN;
-
-    private const UNINDEXED = 'noindex, nofollow';
 
     public function __construct(
         private readonly PageRepository $pages,
@@ -64,14 +63,11 @@ final class PageController extends AbstractController
         return new ImmutableFileResponse($this->pictures->path($file) ?? throw $this->createNotFoundException(), $request);
     }
 
-    #[Route('/admin/pages/{id}/preview', name: self::PREVIEW, requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[Route('/admin/pages/{id}/preview', name: self::PREVIEW, requirements: ['id' => '\d+'], methods: ['GET'], defaults: [Unindexed::ROUTE => true])]
     #[IsGranted(Role::ADMIN)]
     public function preview(Page $page): Response
     {
-        $response = $this->show($page);
-        $response->headers->set('X-Robots-Tag', self::UNINDEXED);
-
-        return $response;
+        return $this->show($page);
     }
 
     private function show(Page $page): Response

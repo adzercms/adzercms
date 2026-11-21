@@ -8,6 +8,7 @@ use AdzerCMS\Builder\Entity\ProjectVersion;
 use AdzerCMS\Builder\ProjectAlbums;
 use AdzerCMS\Builder\Repository\ProjectVersionRepository;
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Site\Hosts;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +25,7 @@ final class VersionController extends AbstractController
     ) {
     }
 
-    #[Route('/{id}/pictures/{file}', name: self::PICTURE, requirements: ['id' => '\d+', 'file' => '[^/]+'], methods: ['GET'])]
+    #[Route('/{id}/pictures/{file}', name: self::PICTURE, requirements: ['id' => '\d+', 'file' => '[^/]+'], methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SHARED])]
     public function picture(int $id, string $file): Response
     {
         return new BinaryFileResponse($this->albums->ofVersion($this->seen($id))->path($file) ?? throw $this->createNotFoundException(), autoEtag: true);
@@ -33,7 +34,7 @@ final class VersionController extends AbstractController
     private function seen(int $id): ProjectVersion
     {
         $version = $this->versions->find($id);
-        if (null === $version || ($version->getProject()->getOwner() !== $this->getUser() && !$this->isGranted(Role::ADMIN))) {
+        if (null === $version || ($version->getProject()->getOwner() !== $this->getUser() && !$this->isGranted(Role::ADMIN) && $this->versions->shown($version->getProject()) !== $version)) {
             throw $this->createNotFoundException();
         }
 

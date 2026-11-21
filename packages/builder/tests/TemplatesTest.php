@@ -41,6 +41,7 @@ final class TemplatesTest extends SchemaTestCase
 
     #[Group('ACMS-BLD-0022')]
     #[Group('ACMS-BLD-0013')]
+    #[Group('ACMS-BLD-0014')]
     #[Group('ACMS-US-0080')]
     public function testOperatorDecidesVersionsWaitingFirstAndAuthorLearnsDecision(): void
     {
@@ -58,7 +59,10 @@ final class TemplatesTest extends SchemaTestCase
         self::assertSame(['Bakery'], $this->client->request('GET', self::SECTION.'?decision=published')->filter('tbody tr td:nth-child(2)')->each(static fn (Crawler $name): string => $name->text()), 'the section filters the versions by decision');
 
         $record = self::SECTION.'/'.$waiting->getId();
-        $this->client->request('GET', $record);
+        $pages = (string) $this->client->request('GET', $record)->filter('[data-pages]')->attr('href');
+        $page = $this->client->request('GET', $pages);
+        self::assertResponseHeaderSame('X-Robots-Tag', 'noindex, nofollow');
+        self::assertSame([['Fiber', $pages]], $page->filter('.site-nav a')->each(static fn (Crawler $link): array => [$link->text(), $link->attr('href')]), 'the operator sees the pages of a version waiting for a decision');
         $this->post($record.'/decide', [Moderation::DECISION => Decision::Rejected->value, Moderation::REASON => '']);
         self::assertSelectorTextContains('.modal-body', self::phrase('core.moderation.refusal.reason'), 'a rejection takes a reason');
 

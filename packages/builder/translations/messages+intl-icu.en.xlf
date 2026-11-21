@@ -379,6 +379,12 @@
         <target>Tablet</target>
       </segment>
     </unit>
+    <unit id="builder.show.open">
+      <segment>
+        <source>builder.show.open</source>
+        <target>Open by link</target>
+      </segment>
+    </unit>
     <unit id="builder.style">
       <segment>
         <source>builder.style</source>
@@ -401,6 +407,12 @@
       <segment>
         <source>builder.templates.menu</source>
         <target>Templates</target>
+      </segment>
+    </unit>
+    <unit id="builder.templates.pages">
+      <segment>
+        <source>builder.templates.pages</source>
+        <target>Pages of the version</target>
       </segment>
     </unit>
     <unit id="builder.templates.submitted">

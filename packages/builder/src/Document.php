@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Builder;
 
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Contracts\Ui\SiteLink;
 use AdzerCMS\Pages\Album;
 use AdzerCMS\Pages\Entity\BlockRecord;
 
@@ -28,6 +29,9 @@ interface Document
 
     /** @return array{title: string, description: string, heading: ?string, tabs: list<array{label: string, href: string, active: bool}>, blocks: list<array<string, mixed>>, style: string, schema: list<array<string, mixed>>} */
     public function view(): array;
+
+    /** @return list<SiteLink>|null */
+    public function menu(): ?array;
 
     /** @return array{string, array<string, int>} */
     public function route(): array;

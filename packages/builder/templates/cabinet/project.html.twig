@@ -10,6 +10,7 @@
     {% if project.access != constant('AdzerCMS\\Builder\\ProjectAccess::Personal') %}
         <button type="button" class="secondary" hx-get="{{ path('builder_project_version', {id: project.id}) }}" hx-target="#record">{{ 'builder.version.action'|trans }}</button>
     {% endif %}
+    {% if shown %}<a class="button secondary" href="{{ path('builder_show', {token: project.token}) }}" target="_blank" rel="noopener" data-show>{{ 'builder.show.open'|trans }}</a>{% endif %}
     <a class="button secondary" href="{{ path('builder_project_file', {id: project.id}) }}" download>{{ 'builder.project.download'|trans }}</a>
     {% if transfer %}
         <form method="post" action="{{ path('builder_project_transfer_cancel', {id: project.id}) }}">
