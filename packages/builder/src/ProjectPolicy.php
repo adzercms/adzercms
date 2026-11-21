@@ -52,7 +52,9 @@ final readonly class ProjectPolicy implements AccountPolicy
     public function removing(User $user): void
     {
         foreach ($this->projects->findBy(['owner' => $user]) as $project) {
-            $this->albums->of($project)->clear();
+            foreach ($this->albums->all($project) as $album) {
+                $album->clear();
+            }
         }
     }
 }

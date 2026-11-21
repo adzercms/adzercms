@@ -7,6 +7,9 @@
 {% block actions %}
     <button type="button" hx-get="{{ path('builder_project_page_new', {id: project.id}) }}" hx-target="#record">{{ 'pages.new'|trans }}</button>
     <button type="button" class="secondary" hx-get="{{ path('builder_project_access', {id: project.id}) }}" hx-target="#record">{{ 'builder.access.current'|trans({access: project.access.label|trans}) }}</button>
+    {% if project.access != constant('AdzerCMS\\Builder\\ProjectAccess::Personal') %}
+        <button type="button" class="secondary" hx-get="{{ path('builder_project_version', {id: project.id}) }}" hx-target="#record">{{ 'builder.version.action'|trans }}</button>
+    {% endif %}
     <a class="button secondary" href="{{ path('builder_project_file', {id: project.id}) }}" download>{{ 'builder.project.download'|trans }}</a>
     {% if transfer %}
         <form method="post" action="{{ path('builder_project_transfer_cancel', {id: project.id}) }}">
@@ -22,6 +25,13 @@
 {% endblock %}
 
 {% block page %}
+{% if version %}
+<div class="section" data-version>
+    <img class="table-cover" src="{{ path('builder_version_picture', {id: version.id, file: version.cover}) }}" alt="">
+    <p>{{ 'builder.version.current'|trans({name: version.name, decision: version.decision.label|trans}) }}</p>
+    {% if version.reason %}<p>{{ 'core.moderation.reason'|trans }}: {{ version.reason }}</p>{% endif %}
+</div>
+{% endif %}
 {% if transfer %}
 <div class="section">
     <p data-transfer>{{ 'builder.transfer.pending'|trans({recipient: login(transfer.recipient), expires: transfer.expires}) }}</p>

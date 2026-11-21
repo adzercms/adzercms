@@ -715,6 +715,30 @@
         <target>Снять</target>
       </segment>
     </unit>
+    <unit id="core.moderation.decision.pending">
+      <segment>
+        <source>core.moderation.decision.pending</source>
+        <target>Ждёт решения</target>
+      </segment>
+    </unit>
+    <unit id="core.moderation.decision.published">
+      <segment>
+        <source>core.moderation.decision.published</source>
+        <target>Одобрено</target>
+      </segment>
+    </unit>
+    <unit id="core.moderation.decision.rejected">
+      <segment>
+        <source>core.moderation.decision.rejected</source>
+        <target>Отклонено</target>
+      </segment>
+    </unit>
+    <unit id="core.moderation.decision.withdrawn">
+      <segment>
+        <source>core.moderation.decision.withdrawn</source>
+        <target>Снято</target>
+      </segment>
+    </unit>
     <unit id="core.moderation.reason">
       <segment>
         <source>core.moderation.reason</source>

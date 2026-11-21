@@ -1,0 +1,21 @@
+{% import '@Theme/_refusal.html.twig' as refusal %}
+{% include '@Theme/_modal_header.html.twig' with {title: 'builder.version.action'|trans} only %}
+
+<div class="modal-body">
+    <form hx-post="{{ path('builder_project_version', {id: project.id}) }}" hx-target="#record">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label>{{ 'builder.project.name'|trans }}
+                <input type="text" name="{{ constant('AdzerCMS\\Builder\\Versions::NAME') }}" maxlength="{{ constant('AdzerCMS\\Builder\\Entity\\Project::NAME') }}" value="{{ input.name ?? project.name }}" required>
+                {{ refusal.of(refusals, constant('AdzerCMS\\Builder\\Versions::NAME')) }}
+            </label>
+            <div class="field">
+                <label for="version-cover">{{ 'builder.version.cover'|trans }}</label>
+                {% if project.cover %}<img class="table-cover" src="{{ path('builder_project_picture', {id: project.id, file: project.cover}) }}" alt="">{% endif %}
+                {% include '@Theme/_file.html.twig' with {id: 'version-cover', name: constant('AdzerCMS\\Builder\\Versions::COVER'), accept: constant('AdzerCMS\\Core\\Photo\\Photos::TYPES')|join(','), required: not project.cover} only %}
+                {{ refusal.of(refusals, constant('AdzerCMS\\Builder\\Versions::COVER')) }}
+            </div>
+        </div>
+        <button type="submit">{{ 'builder.version.action'|trans }}</button>
+    </form>
+</div>
