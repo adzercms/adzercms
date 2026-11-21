@@ -25,5 +25,7 @@
         </div>
     </div>
 
+    <p><a class="button secondary" href="{{ path('admin_builder_template_pages', {id: version.id}) }}" target="_blank" rel="noopener" data-pages>{{ 'builder.templates.pages'|trans }}</a></p>
+
     {% include '@Core/moderation/_decide.html.twig' with {subject: version, action: path('admin_builder_template_decide', {id: version.id})} only %}
 </div>

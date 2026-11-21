@@ -6,6 +6,7 @@ namespace AdzerCMS\Builder\Repository;
 
 use AdzerCMS\Builder\Entity\Project;
 use AdzerCMS\Builder\Entity\ProjectVersion;
+use AdzerCMS\Builder\ProjectAccess;
 use AdzerCMS\Core\Moderation\Decision;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
@@ -36,6 +37,18 @@ class ProjectVersionRepository extends ServiceEntityRepository
     public function pending(Project $project): ?ProjectVersion
     {
         return $this->findOneBy(['project' => $project, 'decision' => Decision::Pending]);
+    }
+
+    public function shown(Project $project): ?ProjectVersion
+    {
+        if (ProjectAccess::Personal === $project->getAccess()) {
+            return null;
+        }
+        $last = $this->createQueryBuilder('v')->where('v.project = :project')->andWhere('v.decision IN (:decided)')
+            ->setParameter('project', $project)->setParameter('decided', [Decision::Published->value, Decision::Withdrawn->value])
+            ->orderBy('v.id', 'DESC')->setMaxResults(1)->getQuery()->getOneOrNullResult();
+
+        return $last instanceof ProjectVersion && Decision::Published === $last->getDecision() ? $last : null;
     }
 
     /**

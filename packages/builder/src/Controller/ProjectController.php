@@ -102,7 +102,7 @@ final class ProjectController extends AbstractController
 
         return $request->headers->has('HX-Request')
             ? $this->render(self::PAGES, $this->listing($project, $request))
-            : $this->render('@Builder/cabinet/project.html.twig', $this->listing($project, $request) + ['transfer' => $this->transfers->pending($project), 'version' => $this->versions->latest([$project])[$id] ?? null]);
+            : $this->render('@Builder/cabinet/project.html.twig', $this->listing($project, $request) + ['transfer' => $this->transfers->pending($project), 'version' => $this->versions->latest([$project])[$id] ?? null, 'shown' => null !== $this->versions->shown($project)]);
     }
 
     #[Route('/{id}/access', name: 'builder_project_access', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
