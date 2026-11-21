@@ -3,7 +3,7 @@
         <tr class="clickable-row" data-href="{{ path('builder_project', {id: row.id}) }}">
             <td class="{{ table.aside('name') }}"><strong>{{ row.name }}</strong></td>
             <td class="{{ table.aside('access') }}">{{ row.access.label|trans }}</td>
-            <td class="{{ table.aside('version') }}">{% if versions[row.id] is defined %}{{ ('builder.version.' ~ versions[row.id].decision.value)|trans }}{% endif %}</td>
+            <td class="{{ table.aside('version') }}">{% if versions[row.id] is defined %}{{ badge(versions[row.id].decision) }}{% endif %}</td>
             <td class="{{ table.aside('edited') }}">{{ moment(row.edited) }}</td>
         </tr>
     {% endblock %}

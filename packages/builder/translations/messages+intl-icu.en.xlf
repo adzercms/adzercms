@@ -511,34 +511,10 @@
         <target>The version «{name}»: {decision}</target>
       </segment>
     </unit>
-    <unit id="builder.version.pending">
-      <segment>
-        <source>builder.version.pending</source>
-        <target>Waits for approval</target>
-      </segment>
-    </unit>
-    <unit id="builder.version.published">
-      <segment>
-        <source>builder.version.published</source>
-        <target>Approved</target>
-      </segment>
-    </unit>
-    <unit id="builder.version.rejected">
-      <segment>
-        <source>builder.version.rejected</source>
-        <target>Rejected</target>
-      </segment>
-    </unit>
     <unit id="builder.version.submitted">
       <segment>
         <source>builder.version.submitted</source>
         <target>The version «{name}» waits for approval</target>
-      </segment>
-    </unit>
-    <unit id="builder.version.withdrawn">
-      <segment>
-        <source>builder.version.withdrawn</source>
-        <target>Withdrawn</target>
       </segment>
     </unit>
   </file>

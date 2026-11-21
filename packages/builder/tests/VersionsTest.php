@@ -68,8 +68,8 @@ final class VersionsTest extends SchemaTestCase
         self::assertNotNull($album->path($picture), 'the version keeps its own copy of the pictures');
         self::assertNotNull($album->path($version->getCover()));
         $shown = $this->client->request('GET', $base)->filter('[data-version]');
-        self::assertStringContainsString(self::phrase(t('builder.version.pending')), $shown->text());
-        self::assertStringContainsString(self::phrase(t('builder.version.pending')), $this->client->request('GET', self::SECTION)->filter('tbody tr')->text(), 'the section shows the decision on the version');
+        self::assertStringContainsString(self::phrase(Decision::Pending->label()), $shown->text());
+        self::assertStringContainsString(self::phrase(Decision::Pending->label()), $this->client->request('GET', self::SECTION)->filter('tbody tr')->text(), 'the section shows the decision on the version');
         $cover = (string) $shown->filter('img')->attr('src');
         $this->client->request('GET', $cover);
         self::assertResponseHeaderSame('Content-Type', 'image/webp');

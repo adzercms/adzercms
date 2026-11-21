@@ -715,6 +715,30 @@
         <target>Withdraw</target>
       </segment>
     </unit>
+    <unit id="core.moderation.decision.pending">
+      <segment>
+        <source>core.moderation.decision.pending</source>
+        <target>Waits for a decision</target>
+      </segment>
+    </unit>
+    <unit id="core.moderation.decision.published">
+      <segment>
+        <source>core.moderation.decision.published</source>
+        <target>Approved</target>
+      </segment>
+    </unit>
+    <unit id="core.moderation.decision.rejected">
+      <segment>
+        <source>core.moderation.decision.rejected</source>
+        <target>Rejected</target>
+      </segment>
+    </unit>
+    <unit id="core.moderation.decision.withdrawn">
+      <segment>
+        <source>core.moderation.decision.withdrawn</source>
+        <target>Withdrawn</target>
+      </segment>
+    </unit>
     <unit id="core.moderation.reason">
       <segment>
         <source>core.moderation.reason</source>

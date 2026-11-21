@@ -511,34 +511,10 @@
         <target>Версия «{name}»: {decision}</target>
       </segment>
     </unit>
-    <unit id="builder.version.pending">
-      <segment>
-        <source>builder.version.pending</source>
-        <target>Ждёт одобрения</target>
-      </segment>
-    </unit>
-    <unit id="builder.version.published">
-      <segment>
-        <source>builder.version.published</source>
-        <target>Одобрена</target>
-      </segment>
-    </unit>
-    <unit id="builder.version.rejected">
-      <segment>
-        <source>builder.version.rejected</source>
-        <target>Отклонена</target>
-      </segment>
-    </unit>
     <unit id="builder.version.submitted">
       <segment>
         <source>builder.version.submitted</source>
         <target>Версия «{name}» ждёт одобрения</target>
-      </segment>
-    </unit>
-    <unit id="builder.version.withdrawn">
-      <segment>
-        <source>builder.version.withdrawn</source>
-        <target>Снята</target>
       </segment>
     </unit>
   </file>
