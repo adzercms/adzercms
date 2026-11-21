@@ -141,6 +141,7 @@ test.describe('a page of the site', () => {
         const dialog = page.locator('#record');
 
         await canvas(page).locator(`#${target.anchor}`).click();
+        await expect(page.locator('[data-traits-panel]'), 'a ready block has no properties besides its values').toBeHidden();
         await page.locator(`.gjs-toolbar-item[title="${await root.getAttribute('data-edit')}"]`).click();
         await expect(dialog).toBeVisible();
         await expect(dialog.locator('input[name="value[title]"]'), 'the dialog shows the values of the block').toHaveValue(target.values.title);
