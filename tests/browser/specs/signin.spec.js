@@ -51,6 +51,7 @@ test('[ACMS-CORE-1202][ACMS-UI-0176] the captcha of a window draws on each openi
 
     for (const opening of [1, 2]) {
         await window.locator('.auth-row a').click();
+        await expect(window.locator('input[name="login"]'), `the recovery opens at the opening ${opening}`).toBeVisible();
         const widget = window.locator('[data-captcha]');
         test.skip(await widget.count() === 0, 'the instance has no captcha');
         await expect(widget.locator(':scope > *').first(), `the captcha draws at the opening ${opening}`).toBeAttached();

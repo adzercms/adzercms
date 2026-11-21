@@ -31,4 +31,12 @@ final class Fragment
 
         return $response;
     }
+
+    public static function refresh(): Response
+    {
+        $response = new Response('', Response::HTTP_NO_CONTENT);
+        $response->headers->set('HX-Refresh', 'true');
+
+        return $response;
+    }
 }

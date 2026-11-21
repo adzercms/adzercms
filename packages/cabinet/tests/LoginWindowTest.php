@@ -17,19 +17,22 @@ final class LoginWindowTest extends SchemaTestCase
 
     private const WINDOW = ['HTTP_HX-Request' => 'true'];
 
-    /** @return iterable<string, array{string, string}> */
+    private const PAGE = 'http://localhost/fixture/account?tab=one';
+
+    /** @return iterable<string, array{string, string, string, string}> */
     public static function pages(): iterable
     {
-        yield 'a page of the site' => ['/fixture/account?tab=one', 'http://localhost/fixture/account?tab=one'];
-        yield 'a foreign address' => ['https://example.net/fixture/account', 'http://localhost/fixture/account'];
-        yield 'no page' => ['', 'http://localhost/cabinet'];
+        yield 'the page under the window' => ['/fixture/account?tab=one', self::PAGE, 'HX-Refresh', 'true'];
+        yield 'a page apart from the window' => ['/fixture/account?tab=one', 'http://localhost/', 'HX-Redirect', self::PAGE];
+        yield 'a foreign address' => ['https://example.net/fixture/account', 'http://localhost/', 'HX-Redirect', 'http://localhost/fixture/account'];
+        yield 'no page' => ['', 'http://localhost/', 'HX-Redirect', 'http://localhost/cabinet'];
     }
 
     #[DataProvider('pages')]
     #[Group('ACMS-CORE-1201')]
     #[Group('ACMS-UI-0176')]
     #[Group('ACMS-US-0002')]
-    public function testWindowKeepsRefusalAndSignsInToPageOfItsLink(string $back, string $target): void
+    public function testWindowKeepsRefusalAndSignsInToPageOfItsLink(string $back, string $current, string $header, string $value): void
     {
         $this->record('79990000001', 'human@example.org');
         $this->client->disableReboot();
@@ -38,24 +41,24 @@ final class LoginWindowTest extends SchemaTestCase
         self::assertCount(1, $window->filter('.modal-header'), 'a fragment of the login page is a window');
         self::assertCount(1, $window->filter('.modal-body[hx-target="#record"] form[action="/login"]'), 'the form of the window stays in the window');
 
-        $this->enter('wrong');
+        $this->enter('wrong', $current);
         self::assertResponseRedirects('/login');
         self::assertCount(1, $this->client->followRedirect()->filter('.modal-body .flash-error'), 'a refusal stays in the window');
 
-        $this->enter(self::PASSWORD);
+        $this->enter(self::PASSWORD, $current);
         self::assertResponseStatusCodeSame(204);
-        self::assertResponseHeaderSame('HX-Redirect', $target);
+        self::assertResponseHeaderSame($header, $value);
 
         $this->fragment('/login');
         self::assertResponseHeaderSame('HX-Redirect', '/cabinet', 'a window of a signed in record leads to the cabinet');
     }
 
-    private function enter(string $password): void
+    private function enter(string $password, string $current): void
     {
         $this->client->request('POST', '/login', [
             '_username' => 'human@example.org',
             '_password' => $password,
             '_csrf_token' => $this->formToken('authenticate'),
-        ], server: self::WINDOW);
+        ], server: self::WINDOW + ['HTTP_HX-Current-URL' => $current]);
     }
 }
