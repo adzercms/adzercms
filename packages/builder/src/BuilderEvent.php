@@ -10,6 +10,7 @@ enum BuilderEvent: string implements Event
 {
     case Offer = 'builder.event.offer';
     case Outcome = 'builder.event.outcome';
+    case Decision = 'builder.event.decision';
 
     public function key(): string
     {
@@ -21,6 +22,7 @@ enum BuilderEvent: string implements Event
         return match ($this) {
             self::Offer => '@Builder/notice/offer',
             self::Outcome => '@Builder/notice/outcome',
+            self::Decision => '@Builder/notice/decision',
         };
     }
 

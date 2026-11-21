@@ -7,6 +7,7 @@ namespace AdzerCMS\Builder\Controller;
 use AdzerCMS\Builder\Entity\ProjectVersion;
 use AdzerCMS\Builder\ProjectAlbums;
 use AdzerCMS\Builder\Repository\ProjectVersionRepository;
+use AdzerCMS\Core\Account\Role;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +33,7 @@ final class VersionController extends AbstractController
     private function seen(int $id): ProjectVersion
     {
         $version = $this->versions->find($id);
-        if (null === $version || $version->getProject()->getOwner() !== $this->getUser()) {
+        if (null === $version || ($version->getProject()->getOwner() !== $this->getUser() && !$this->isGranted(Role::ADMIN))) {
             throw $this->createNotFoundException();
         }
 

@@ -103,6 +103,12 @@
         <target>Элементы</target>
       </segment>
     </unit>
+    <unit id="builder.event.decision">
+      <segment>
+        <source>builder.event.decision</source>
+        <target>Решение по версии проекта</target>
+      </segment>
+    </unit>
     <unit id="builder.event.offer">
       <segment>
         <source>builder.event.offer</source>
@@ -137,6 +143,24 @@
       <segment>
         <source>builder.leave</source>
         <target>Выйти из редактора? Несохранённые правки пропадут</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.decision.body">
+      <segment>
+        <source>builder.notice.decision.body</source>
+        <target>Версия «{name}» проекта: {decision}.</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.decision.reason">
+      <segment>
+        <source>builder.notice.decision.reason</source>
+        <target>Причина: {reason}</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.decision.subject">
+      <segment>
+        <source>builder.notice.decision.subject</source>
+        <target>{brand}: версия «{name}»</target>
       </segment>
     </unit>
     <unit id="builder.notice.offer.body">
@@ -359,6 +383,30 @@
       <segment>
         <source>builder.style</source>
         <target>Стиль</target>
+      </segment>
+    </unit>
+    <unit id="builder.templates.author">
+      <segment>
+        <source>builder.templates.author</source>
+        <target>Автор</target>
+      </segment>
+    </unit>
+    <unit id="builder.templates.empty">
+      <segment>
+        <source>builder.templates.empty</source>
+        <target>Версий проектов на одобрение нет</target>
+      </segment>
+    </unit>
+    <unit id="builder.templates.menu">
+      <segment>
+        <source>builder.templates.menu</source>
+        <target>Шаблоны</target>
+      </segment>
+    </unit>
+    <unit id="builder.templates.submitted">
+      <segment>
+        <source>builder.templates.submitted</source>
+        <target>Подана</target>
       </segment>
     </unit>
     <unit id="builder.title">

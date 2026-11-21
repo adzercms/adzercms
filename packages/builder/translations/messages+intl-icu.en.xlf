@@ -103,6 +103,12 @@
         <target>Elements</target>
       </segment>
     </unit>
+    <unit id="builder.event.decision">
+      <segment>
+        <source>builder.event.decision</source>
+        <target>Decision on a version of a project</target>
+      </segment>
+    </unit>
     <unit id="builder.event.offer">
       <segment>
         <source>builder.event.offer</source>
@@ -137,6 +143,24 @@
       <segment>
         <source>builder.leave</source>
         <target>Leave the editor? The unsaved changes will be lost</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.decision.body">
+      <segment>
+        <source>builder.notice.decision.body</source>
+        <target>The version «{name}» of the project: {decision}.</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.decision.reason">
+      <segment>
+        <source>builder.notice.decision.reason</source>
+        <target>Reason: {reason}</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.decision.subject">
+      <segment>
+        <source>builder.notice.decision.subject</source>
+        <target>{brand}: the version «{name}»</target>
       </segment>
     </unit>
     <unit id="builder.notice.offer.body">
@@ -359,6 +383,30 @@
       <segment>
         <source>builder.style</source>
         <target>Style</target>
+      </segment>
+    </unit>
+    <unit id="builder.templates.author">
+      <segment>
+        <source>builder.templates.author</source>
+        <target>Author</target>
+      </segment>
+    </unit>
+    <unit id="builder.templates.empty">
+      <segment>
+        <source>builder.templates.empty</source>
+        <target>No versions of projects were submitted</target>
+      </segment>
+    </unit>
+    <unit id="builder.templates.menu">
+      <segment>
+        <source>builder.templates.menu</source>
+        <target>Templates</target>
+      </segment>
+    </unit>
+    <unit id="builder.templates.submitted">
+      <segment>
+        <source>builder.templates.submitted</source>
+        <target>Submitted</target>
       </segment>
     </unit>
     <unit id="builder.title">
