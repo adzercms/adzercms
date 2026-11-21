@@ -1,1 +1,1 @@
-<span class="picture-preview"><img src="{{ src }}" alt="">{% if schemes|default(false) %}<img src="{{ src }}" alt="">{% endif %}</span>
+<span class="picture-preview"{{ src ? '' : ' hidden' }}><img{% if src %} src="{{ src }}"{% endif %} alt="">{% if schemes|default(false) %}<img src="{{ src }}" alt="">{% endif %}</span>

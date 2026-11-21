@@ -373,6 +373,12 @@
         <target>Address: / or words of lowercase letters, digits and hyphens joined by /</target>
       </segment>
     </unit>
+    <unit id="pages.refusal.picture">
+      <segment>
+        <source>pages.refusal.picture</source>
+        <target>{field}: the picture is not found, upload it again</target>
+      </segment>
+    </unit>
     <unit id="pages.refusal.path_former">
       <segment>
         <source>pages.refusal.path_former</source>
@@ -401,6 +407,348 @@
       <segment>
         <source>pages.refusal.title</source>
         <target>Title: 1 to {limit} characters</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.background-color">
+      <segment>
+        <source>pages.style.background-color</source>
+        <target>Background color</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.border-color">
+      <segment>
+        <source>pages.style.border-color</source>
+        <target>Border color</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.border-radius">
+      <segment>
+        <source>pages.style.border-radius</source>
+        <target>Corner radius</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.border-style">
+      <segment>
+        <source>pages.style.border-style</source>
+        <target>Border style</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.border-width">
+      <segment>
+        <source>pages.style.border-width</source>
+        <target>Border width</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.color">
+      <segment>
+        <source>pages.style.color</source>
+        <target>Text color</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.font-size">
+      <segment>
+        <source>pages.style.font-size</source>
+        <target>Font size</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.font-style">
+      <segment>
+        <source>pages.style.font-style</source>
+        <target>Font style</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.font-weight">
+      <segment>
+        <source>pages.style.font-weight</source>
+        <target>Font weight</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.group.decoration">
+      <segment>
+        <source>pages.style.group.decoration</source>
+        <target>Background and border</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.group.size">
+      <segment>
+        <source>pages.style.group.size</source>
+        <target>Size</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.group.spacing">
+      <segment>
+        <source>pages.style.group.spacing</source>
+        <target>Spacing</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.group.text">
+      <segment>
+        <source>pages.style.group.text</source>
+        <target>Text</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.letter-spacing">
+      <segment>
+        <source>pages.style.letter-spacing</source>
+        <target>Letter spacing</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.line-height">
+      <segment>
+        <source>pages.style.line-height</source>
+        <target>Line height</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.margin-bottom">
+      <segment>
+        <source>pages.style.margin-bottom</source>
+        <target>Margin bottom</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.margin-left">
+      <segment>
+        <source>pages.style.margin-left</source>
+        <target>Margin left</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.margin-right">
+      <segment>
+        <source>pages.style.margin-right</source>
+        <target>Margin right</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.margin-top">
+      <segment>
+        <source>pages.style.margin-top</source>
+        <target>Margin top</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.max-width">
+      <segment>
+        <source>pages.style.max-width</source>
+        <target>Max width</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.min-height">
+      <segment>
+        <source>pages.style.min-height</source>
+        <target>Min height</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.opacity">
+      <segment>
+        <source>pages.style.opacity</source>
+        <target>Opacity</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.padding-bottom">
+      <segment>
+        <source>pages.style.padding-bottom</source>
+        <target>Padding bottom</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.padding-left">
+      <segment>
+        <source>pages.style.padding-left</source>
+        <target>Padding left</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.padding-right">
+      <segment>
+        <source>pages.style.padding-right</source>
+        <target>Padding right</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.padding-top">
+      <segment>
+        <source>pages.style.padding-top</source>
+        <target>Padding top</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.text-align">
+      <segment>
+        <source>pages.style.text-align</source>
+        <target>Alignment</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.text-decoration">
+      <segment>
+        <source>pages.style.text-decoration</source>
+        <target>Text line</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.text-transform">
+      <segment>
+        <source>pages.style.text-transform</source>
+        <target>Letter case</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.100">
+      <segment>
+        <source>pages.style.value.100</source>
+        <target>100 thin</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.200">
+      <segment>
+        <source>pages.style.value.200</source>
+        <target>200 extra light</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.300">
+      <segment>
+        <source>pages.style.value.300</source>
+        <target>300 light</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.400">
+      <segment>
+        <source>pages.style.value.400</source>
+        <target>400 regular</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.500">
+      <segment>
+        <source>pages.style.value.500</source>
+        <target>500 medium</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.600">
+      <segment>
+        <source>pages.style.value.600</source>
+        <target>600 semibold</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.700">
+      <segment>
+        <source>pages.style.value.700</source>
+        <target>700 bold</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.800">
+      <segment>
+        <source>pages.style.value.800</source>
+        <target>800 extra bold</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.900">
+      <segment>
+        <source>pages.style.value.900</source>
+        <target>900 black</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.auto">
+      <segment>
+        <source>pages.style.value.auto</source>
+        <target>Auto</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.bold">
+      <segment>
+        <source>pages.style.value.bold</source>
+        <target>Bold</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.capitalize">
+      <segment>
+        <source>pages.style.value.capitalize</source>
+        <target>Capitalize Each Word</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.center">
+      <segment>
+        <source>pages.style.value.center</source>
+        <target>Center</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.dashed">
+      <segment>
+        <source>pages.style.value.dashed</source>
+        <target>Dashed</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.dotted">
+      <segment>
+        <source>pages.style.value.dotted</source>
+        <target>Dotted</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.italic">
+      <segment>
+        <source>pages.style.value.italic</source>
+        <target>Italic</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.justify">
+      <segment>
+        <source>pages.style.value.justify</source>
+        <target>Justify</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.left">
+      <segment>
+        <source>pages.style.value.left</source>
+        <target>Left</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.line-through">
+      <segment>
+        <source>pages.style.value.line-through</source>
+        <target>Strikethrough</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.lowercase">
+      <segment>
+        <source>pages.style.value.lowercase</source>
+        <target>lowercase</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.none">
+      <segment>
+        <source>pages.style.value.none</source>
+        <target>None</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.normal">
+      <segment>
+        <source>pages.style.value.normal</source>
+        <target>Normal</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.right">
+      <segment>
+        <source>pages.style.value.right</source>
+        <target>Right</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.solid">
+      <segment>
+        <source>pages.style.value.solid</source>
+        <target>Solid</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.transparent">
+      <segment>
+        <source>pages.style.value.transparent</source>
+        <target>Transparent</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.underline">
+      <segment>
+        <source>pages.style.value.underline</source>
+        <target>Underline</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.uppercase">
+      <segment>
+        <source>pages.style.value.uppercase</source>
+        <target>UPPERCASE</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.width">
+      <segment>
+        <source>pages.style.width</source>
+        <target>Width</target>
       </segment>
     </unit>
     <unit id="pages.tab.menu">

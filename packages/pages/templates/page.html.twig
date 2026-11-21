@@ -14,5 +14,5 @@
             {% block content %}{% if tabs %}{% include '@Theme/_tabs.html.twig' with {tabs: tabs} only %}{% endif %}{% endblock %}
         {% endembed %}
     {% endif %}
-    {% for block in view.blocks %}{% include block.template with block only %}{% endfor %}
+    {% block blocks %}{% for block in view.blocks %}{% include block.template with block only %}{% endfor %}{% endblock %}
 {% endblock %}

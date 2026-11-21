@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="builder.action">
+      <segment>
+        <source>builder.action</source>
+        <target>Builder</target>
+      </segment>
+    </unit>
+    <unit id="builder.apply">
+      <segment>
+        <source>builder.apply</source>
+        <target>Apply</target>
+      </segment>
+    </unit>
+    <unit id="builder.blocks">
+      <segment>
+        <source>builder.blocks</source>
+        <target>Blocks</target>
+      </segment>
+    </unit>
+    <unit id="builder.exit">
+      <segment>
+        <source>builder.exit</source>
+        <target>Exit</target>
+      </segment>
+    </unit>
+    <unit id="builder.failed">
+      <segment>
+        <source>builder.failed</source>
+        <target>The page is not saved: check the connection and save again</target>
+      </segment>
+    </unit>
+    <unit id="builder.layers">
+      <segment>
+        <source>builder.layers</source>
+        <target>Layers</target>
+      </segment>
+    </unit>
+    <unit id="builder.leave">
+      <segment>
+        <source>builder.leave</source>
+        <target>Leave the editor? The unsaved changes will be lost</target>
+      </segment>
+    </unit>
+    <unit id="builder.pictures">
+      <segment>
+        <source>builder.pictures</source>
+        <target>Pictures</target>
+      </segment>
+    </unit>
+    <unit id="builder.redo">
+      <segment>
+        <source>builder.redo</source>
+        <target>Redo</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.document">
+      <segment>
+        <source>builder.refusal.document</source>
+        <target>The page changed after the editor opened: open the editor again</target>
+      </segment>
+    </unit>
+    <unit id="builder.saved">
+      <segment>
+        <source>builder.saved</source>
+        <target>The page is saved</target>
+      </segment>
+    </unit>
+    <unit id="builder.screen.desktop">
+      <segment>
+        <source>builder.screen.desktop</source>
+        <target>Computer</target>
+      </segment>
+    </unit>
+    <unit id="builder.screen.phone">
+      <segment>
+        <source>builder.screen.phone</source>
+        <target>Phone</target>
+      </segment>
+    </unit>
+    <unit id="builder.screen.tablet">
+      <segment>
+        <source>builder.screen.tablet</source>
+        <target>Tablet</target>
+      </segment>
+    </unit>
+    <unit id="builder.style">
+      <segment>
+        <source>builder.style</source>
+        <target>Style</target>
+      </segment>
+    </unit>
+    <unit id="builder.title">
+      <segment>
+        <source>builder.title</source>
+        <target>{title} · Builder</target>
+      </segment>
+    </unit>
+    <unit id="builder.undo">
+      <segment>
+        <source>builder.undo</source>
+        <target>Undo</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

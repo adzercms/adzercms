@@ -8,6 +8,7 @@
 
 {% block actions %}
     <a class="button secondary" href="{{ open }}" target="_blank" rel="noopener">{{ 'pages.open'|trans }}</a>
+    {% for part in fragments(constant('AdzerCMS\\Pages\\Controller\\Admin\\SiteController::ACTIONS'), page.id) %}{% include part.template with part.context only %}{% endfor %}
     <form method="post" action="{{ path('admin_page_drop', {id: page.id}) }}" data-confirm="{{ 'pages.page.drop_confirm'|trans({title: page.title}) }}">
         {{ csrf_field() }}<button type="submit" class="danger">{{ 'pages.page.drop'|trans }}</button>
     </form>

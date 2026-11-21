@@ -6,17 +6,22 @@ namespace AdzerCMS\Pages;
 
 use AdzerCMS\Core\Photo\Photos;
 use AdzerCMS\Pages\Controller\PageController;
+use AdzerCMS\Pages\Repository\PageBlockRepository;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
+use function Symfony\Component\Clock\now;
 
 final readonly class Pictures
 {
     private const PLACE = 'pages';
     private const SIDE = 1920;
+    private const TERM = '-1 day';
 
     public function __construct(
         private Photos $photos,
         private UrlGeneratorInterface $urls,
+        private PageBlockRepository $blocks,
     ) {
     }
 
@@ -36,13 +41,38 @@ final readonly class Pictures
         $path = $this->path($name);
         $size = null === $path ? false : getimagesize($path);
 
-        return false === $size ? null : ['src' => $this->urls->generate(PageController::PICTURE, ['file' => $name]), 'width' => $size[0], 'height' => $size[1]];
+        return false === $size ? null : ['src' => $this->src($name), 'width' => $size[0], 'height' => $size[1]];
+    }
+
+    /** @return list<array{src: string, name: string}> */
+    public function listed(): array
+    {
+        $names = $this->photos->names(self::PLACE);
+        $times = array_map(fn (string $name): int => (int) filemtime((string) $this->path($name)), $names);
+        array_multisort($times, \SORT_DESC, $names);
+
+        return array_map($this->entry(...), $names);
+    }
+
+    /** @return array{src: string, name: string} */
+    public function entry(string $name): array
+    {
+        return ['src' => $this->src($name), 'name' => $name];
     }
 
     /** @param array<array-key, string> $values */
     public function drop(array $values): void
     {
-        $this->photos->drop(self::PLACE, self::names($values));
+        $this->photos->drop(self::PLACE, array_values(array_diff(self::names($values), $this->held())));
+    }
+
+    public function sweep(): int
+    {
+        $limit = now()->modify(self::TERM)->getTimestamp();
+        $stale = array_values(array_filter(array_diff($this->photos->names(self::PLACE), $this->held()), fn (string $name): bool => filemtime((string) $this->path($name)) < $limit));
+        $this->photos->drop(self::PLACE, $stale);
+
+        return \count($stale);
     }
 
     /**
@@ -67,5 +97,16 @@ final readonly class Pictures
         }
 
         return $names;
+    }
+
+    private function src(string $name): string
+    {
+        return $this->urls->generate(PageController::PICTURE, ['file' => $name]);
+    }
+
+    /** @return list<string> */
+    private function held(): array
+    {
+        return self::names(array_merge([], ...array_map(array_values(...), $this->blocks->values())));
     }
 }

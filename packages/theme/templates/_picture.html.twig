@@ -1,0 +1,10 @@
+<div class="field-picture" data-picture>
+    {% if pick %}
+        <button type="button" class="secondary small" id="{{ id }}" data-picture-pick>{{ 'theme.picture.choose'|trans }}</button>
+    {% else %}
+        {% include '@Theme/_field.html.twig' with {field: field, id: id, name: name} only %}
+    {% endif %}
+    <input type="hidden" name="{{ name }}" value="{{ value }}">
+    {% include '@Theme/_preview.html.twig' with {src: value ? path(route, {file: value}) : ''} only %}
+    {% if value %}<button type="submit" class="secondary small" name="{{ drop }}" value="1" formnovalidate>{{ 'core.action.drop'|trans }}</button>{% endif %}
+</div>

@@ -23,6 +23,12 @@ class PageBlockRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('b')->where('b.page = :page')->setParameter('page', $page)->orderBy('b.position')->addOrderBy('b.id')->getQuery()->getResult();
     }
 
+    /** @return list<array<string, string>> */
+    public function values(): array
+    {
+        return array_column($this->createQueryBuilder('b')->select('b.values')->getQuery()->getArrayResult(), 'values');
+    }
+
     /** @return array<int, list<string>> */
     public function types(): array
     {

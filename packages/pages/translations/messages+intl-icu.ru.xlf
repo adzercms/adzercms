@@ -373,6 +373,12 @@
         <target>Адрес: / либо слова из строчных букв, цифр и дефиса через /</target>
       </segment>
     </unit>
+    <unit id="pages.refusal.picture">
+      <segment>
+        <source>pages.refusal.picture</source>
+        <target>{field}: картинка не найдена, загрузите её снова</target>
+      </segment>
+    </unit>
     <unit id="pages.refusal.path_former">
       <segment>
         <source>pages.refusal.path_former</source>
@@ -401,6 +407,348 @@
       <segment>
         <source>pages.refusal.title</source>
         <target>Заголовок: от 1 до {limit} знаков</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.background-color">
+      <segment>
+        <source>pages.style.background-color</source>
+        <target>Цвет фона</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.border-color">
+      <segment>
+        <source>pages.style.border-color</source>
+        <target>Цвет рамки</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.border-radius">
+      <segment>
+        <source>pages.style.border-radius</source>
+        <target>Скругление углов</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.border-style">
+      <segment>
+        <source>pages.style.border-style</source>
+        <target>Вид рамки</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.border-width">
+      <segment>
+        <source>pages.style.border-width</source>
+        <target>Толщина рамки</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.color">
+      <segment>
+        <source>pages.style.color</source>
+        <target>Цвет текста</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.font-size">
+      <segment>
+        <source>pages.style.font-size</source>
+        <target>Размер шрифта</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.font-style">
+      <segment>
+        <source>pages.style.font-style</source>
+        <target>Начертание</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.font-weight">
+      <segment>
+        <source>pages.style.font-weight</source>
+        <target>Насыщенность шрифта</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.group.decoration">
+      <segment>
+        <source>pages.style.group.decoration</source>
+        <target>Фон и рамка</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.group.size">
+      <segment>
+        <source>pages.style.group.size</source>
+        <target>Размер</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.group.spacing">
+      <segment>
+        <source>pages.style.group.spacing</source>
+        <target>Отступы</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.group.text">
+      <segment>
+        <source>pages.style.group.text</source>
+        <target>Текст</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.letter-spacing">
+      <segment>
+        <source>pages.style.letter-spacing</source>
+        <target>Межбуквенный интервал</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.line-height">
+      <segment>
+        <source>pages.style.line-height</source>
+        <target>Высота строки</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.margin-bottom">
+      <segment>
+        <source>pages.style.margin-bottom</source>
+        <target>Внешний отступ снизу</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.margin-left">
+      <segment>
+        <source>pages.style.margin-left</source>
+        <target>Внешний отступ слева</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.margin-right">
+      <segment>
+        <source>pages.style.margin-right</source>
+        <target>Внешний отступ справа</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.margin-top">
+      <segment>
+        <source>pages.style.margin-top</source>
+        <target>Внешний отступ сверху</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.max-width">
+      <segment>
+        <source>pages.style.max-width</source>
+        <target>Наибольшая ширина</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.min-height">
+      <segment>
+        <source>pages.style.min-height</source>
+        <target>Наименьшая высота</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.opacity">
+      <segment>
+        <source>pages.style.opacity</source>
+        <target>Непрозрачность</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.padding-bottom">
+      <segment>
+        <source>pages.style.padding-bottom</source>
+        <target>Внутренний отступ снизу</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.padding-left">
+      <segment>
+        <source>pages.style.padding-left</source>
+        <target>Внутренний отступ слева</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.padding-right">
+      <segment>
+        <source>pages.style.padding-right</source>
+        <target>Внутренний отступ справа</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.padding-top">
+      <segment>
+        <source>pages.style.padding-top</source>
+        <target>Внутренний отступ сверху</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.text-align">
+      <segment>
+        <source>pages.style.text-align</source>
+        <target>Выравнивание</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.text-decoration">
+      <segment>
+        <source>pages.style.text-decoration</source>
+        <target>Линия текста</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.text-transform">
+      <segment>
+        <source>pages.style.text-transform</source>
+        <target>Регистр</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.100">
+      <segment>
+        <source>pages.style.value.100</source>
+        <target>100 — тонкий</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.200">
+      <segment>
+        <source>pages.style.value.200</source>
+        <target>200 — сверхсветлый</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.300">
+      <segment>
+        <source>pages.style.value.300</source>
+        <target>300 — светлый</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.400">
+      <segment>
+        <source>pages.style.value.400</source>
+        <target>400 — обычный</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.500">
+      <segment>
+        <source>pages.style.value.500</source>
+        <target>500 — средний</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.600">
+      <segment>
+        <source>pages.style.value.600</source>
+        <target>600 — полужирный</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.700">
+      <segment>
+        <source>pages.style.value.700</source>
+        <target>700 — жирный</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.800">
+      <segment>
+        <source>pages.style.value.800</source>
+        <target>800 — сверхжирный</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.900">
+      <segment>
+        <source>pages.style.value.900</source>
+        <target>900 — чёрный</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.auto">
+      <segment>
+        <source>pages.style.value.auto</source>
+        <target>Авто</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.bold">
+      <segment>
+        <source>pages.style.value.bold</source>
+        <target>Жирный</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.capitalize">
+      <segment>
+        <source>pages.style.value.capitalize</source>
+        <target>С прописной каждое слово</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.center">
+      <segment>
+        <source>pages.style.value.center</source>
+        <target>По центру</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.dashed">
+      <segment>
+        <source>pages.style.value.dashed</source>
+        <target>Штриховая</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.dotted">
+      <segment>
+        <source>pages.style.value.dotted</source>
+        <target>Точечная</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.italic">
+      <segment>
+        <source>pages.style.value.italic</source>
+        <target>Курсив</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.justify">
+      <segment>
+        <source>pages.style.value.justify</source>
+        <target>По ширине</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.left">
+      <segment>
+        <source>pages.style.value.left</source>
+        <target>По левому краю</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.line-through">
+      <segment>
+        <source>pages.style.value.line-through</source>
+        <target>Зачёркнутый</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.lowercase">
+      <segment>
+        <source>pages.style.value.lowercase</source>
+        <target>строчные</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.none">
+      <segment>
+        <source>pages.style.value.none</source>
+        <target>Нет</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.normal">
+      <segment>
+        <source>pages.style.value.normal</source>
+        <target>Обычный</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.right">
+      <segment>
+        <source>pages.style.value.right</source>
+        <target>По правому краю</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.solid">
+      <segment>
+        <source>pages.style.value.solid</source>
+        <target>Сплошная</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.transparent">
+      <segment>
+        <source>pages.style.value.transparent</source>
+        <target>Прозрачный</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.underline">
+      <segment>
+        <source>pages.style.value.underline</source>
+        <target>Подчёркнутый</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.uppercase">
+      <segment>
+        <source>pages.style.value.uppercase</source>
+        <target>ПРОПИСНЫЕ</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.width">
+      <segment>
+        <source>pages.style.width</source>
+        <target>Ширина</target>
       </segment>
     </unit>
     <unit id="pages.tab.menu">

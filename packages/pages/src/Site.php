@@ -42,28 +42,33 @@ final readonly class Site
                 continue;
             }
             $shown[] = $block;
-            $stored = $block->getValues();
-            $values = [];
-            foreach ($type->fields() as $field) {
-                $value = $stored[$field->name] ?? '';
-                $values[$field->name] = match (true) {
-                    Type::Rows === $field->type => array_map(fn (array $row): array => $this->shown($field->fields, $row), Values::entries($field, $value)),
-                    $field->type->picture() => $this->picture($value),
-                    default => $value,
-                };
-            }
-            $blocks[] = ['template' => $type->template(), 'key' => $type->key(), 'id' => BlockStyle::anchor($block), 'values' => $values, 'data' => $type->data($stored), 'level' => 2];
-            $schema[] = $type->schema($stored);
+            $blocks[] = $this->block($type, $block->getValues(), BlockStyle::anchor($block), [] === $blocks);
+            $schema[] = $type->schema($block->getValues());
         }
 
         $title = $this->title($page);
-        $heading = $title;
-        if ([] !== $blocks && '' !== ($blocks[0]['values'][Block::TITLE] ?? '')) {
-            $blocks[0]['level'] = 1;
-            $heading = null;
+
+        return ['title' => $title, 'description' => $this->values->fill($page->getDescription() ?? ''), 'heading' => 1 === ($blocks[0]['level'] ?? null) ? null : $title, 'tabs' => $this->tabs($page), 'blocks' => $blocks, 'style' => BlockStyle::css($shown), 'schema' => array_values(array_filter($schema))];
+    }
+
+    /**
+     * @param array<string, string> $stored
+     *
+     * @return array{template: string, key: string, id: string, values: array<string, mixed>, data: array<string, mixed>, level: int}
+     */
+    public function block(Block $type, array $stored, string $id, bool $first): array
+    {
+        $values = [];
+        foreach ($type->fields() as $field) {
+            $value = $stored[$field->name] ?? '';
+            $values[$field->name] = match (true) {
+                Type::Rows === $field->type => array_map(fn (array $row): array => $this->shown($field->fields, $row), Values::entries($field, $value)),
+                $field->type->picture() => $this->picture($value),
+                default => $value,
+            };
         }
 
-        return ['title' => $title, 'description' => $this->values->fill($page->getDescription() ?? ''), 'heading' => $heading, 'tabs' => $this->tabs($page), 'blocks' => $blocks, 'style' => BlockStyle::css($shown), 'schema' => array_values(array_filter($schema))];
+        return ['template' => $type->template(), 'key' => $type->key(), 'id' => $id, 'values' => $values, 'data' => $type->data($stored), 'level' => $first && '' !== ($values[Block::TITLE] ?? '') ? 1 : 2];
     }
 
     /** @return list<array{label: string, href: string, active: bool}> */

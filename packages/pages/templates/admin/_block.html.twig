@@ -1,10 +1,11 @@
-{% include '@Theme/_modal_header.html.twig' with {title: block ? type.label|trans : 'pages.block.new'|trans} only %}
+{% include '@Theme/_modal_header.html.twig' with {title: types ? 'pages.block.new'|trans : type.label|trans} only %}
 
 <div class="modal-body">
     {% for refusal in refusals %}<p class="flash flash-error">{{ refusal.reason|trans }}</p>{% endfor %}
-    <form hx-post="{{ block ? path('admin_page_block', {id: block.id}) : path('admin_page_block_new', {id: page.id}) }}" hx-target="#record">
+    <form hx-post="{{ action }}" hx-target="#record">
         {{ csrf_field() }}
-        {% if not block %}
+        {% for name, value in hidden|default({}) %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+        {% if types %}
             <div class="fields">
                 <label>{{ 'pages.column.type'|trans }}
                     <select name="type" hx-get="{{ path('admin_page_block_new', {id: page.id}) }}" hx-trigger="change" hx-target="#record">
@@ -17,18 +18,9 @@
         {% endif %}
         <div class="fields aligned">
             {% for field in type.fields %}
-                {% embed '@Theme/_field_row.html.twig' with {field: field, id: 'block-' ~ field.name, name: 'value[' ~ field.name ~ ']', value: values[field.name], pictures: {route: 'pages_picture', drop: 'drop[' ~ field.name ~ ']'}} only %}
-                    {% block extra %}
-                        {% if field.type.picture and value %}
-                            <div class="field-extra">
-                                {% include '@Theme/_preview.html.twig' with {src: path('pages_picture', {file: value})} only %}
-                                <button type="submit" class="secondary small" name="drop[{{ field.name }}]" value="1" formnovalidate>{{ 'core.action.drop'|trans }}</button>
-                            </div>
-                        {% endif %}
-                    {% endblock %}
-                {% endembed %}
+                {% include '@Theme/_field_row.html.twig' with {field: field, id: 'block-' ~ field.name, name: 'value[' ~ field.name ~ ']', value: values[field.name], pictures: {route: 'pages_picture', drop: 'drop[' ~ field.name ~ ']', pick: pick|default(false)}} only %}
             {% endfor %}
         </div>
-        <button type="submit">{{ 'core.action.save'|trans }}</button>
+        <button type="submit">{{ submit|default('core.action.save')|trans }}</button>
     </form>
 </div>

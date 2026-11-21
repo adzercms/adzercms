@@ -1,0 +1,53 @@
+{% extends '@Theme/base.html.twig' %}
+
+{% import '@Theme/_icons.html.twig' as icon %}
+
+{% block title %}{{ 'builder.title'|trans({title: page.title}) }}{% endblock %}
+
+{% block meta %}
+    <link rel="stylesheet" href="{{ asset('vendor/grapesjs/dist/css/grapes.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/builder/editor.css') }}">
+    <script type="module" src="{{ asset('bundles/builder/editor.js') }}"></script>
+{% endblock %}
+
+{% block bodyclass %}builder-page{% endblock %}
+
+{% block shell %}
+<div class="builder" data-builder data-title="{{ page.title }}" data-frame="{{ frame }}" data-save="{{ save }}" data-version="{{ version }}" data-blocks="{{ blocks|json_encode }}" data-types="{{ types|json_encode }}" data-style="{{ sectors|json_encode }}"
+     data-pictures="{{ pictures|json_encode }}" data-upload="{{ upload }}" data-accept="{{ accept }}"
+     data-screens="{{ screens|map(screen => {id: screen.id, media: screen.media, width: screen.width})|json_encode }}"
+     data-unavailable="{{ 'pages.block.unavailable'|trans }}" data-failed="{{ 'builder.failed'|trans }}" data-leave="{{ 'builder.leave'|trans }}" data-edit="{{ 'core.action.edit'|trans }}">
+    <template data-edit-icon>{{ icon.edit() }}</template>
+    <header class="builder-bar">
+        <div class="builder-screens">
+            {% for screen in screens %}
+                <button type="button" class="secondary small" data-screen="{{ screen.id }}" aria-pressed="{{ loop.first ? 'true' : 'false' }}">{{ screen.label|trans }}</button>
+            {% endfor %}
+        </div>
+        <p class="builder-status" role="status" data-status></p>
+        <button type="button" class="secondary small" data-undo>{{ 'builder.undo'|trans }}</button>
+        <button type="button" class="secondary small" data-redo>{{ 'builder.redo'|trans }}</button>
+        <button type="button" class="small" data-save-document>{{ 'core.action.save'|trans }}</button>
+        <a class="button secondary small" href="{{ path('admin_page', {id: page.id}) }}" data-exit>{{ 'builder.exit'|trans }}</a>
+        <form method="dialog" data-ask hidden>{{ csrf_field() }}</form>
+    </header>
+    <aside class="builder-side">
+        <h2 class="builder-heading">{{ 'builder.blocks'|trans }}</h2>
+        <div data-palette></div>
+        <h2 class="builder-heading">{{ 'builder.layers'|trans }}</h2>
+        <div data-layers></div>
+    </aside>
+    <div class="builder-canvas" data-canvas></div>
+    <aside class="builder-style">
+        <h2 class="builder-heading">{{ 'builder.style'|trans }}</h2>
+        <div data-style-panel></div>
+    </aside>
+    <dialog class="modal" data-pictures-panel>
+        {% include '@Theme/_modal_header.html.twig' with {title: 'builder.pictures'|trans} only %}
+        <div class="modal-body">
+            <p class="flash flash-error" data-pictures-refusal hidden></p>
+            <div data-pictures-body></div>
+        </div>
+    </dialog>
+</div>
+{% endblock %}

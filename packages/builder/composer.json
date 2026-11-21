@@ -1,0 +1,53 @@
+{
+    "name": "adzercms/builder",
+    "type": "adzercms-module",
+    "description": "Visual page builder: the site pages in an editor with blocks, style and screen widths",
+    "keywords": [
+        "adzercms",
+        "symfony",
+        "page builder",
+        "grapesjs",
+        "website"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "adzercms/contracts": "^1.0",
+        "adzercms/core": "^1.0",
+        "adzercms/pages": "^1.0",
+        "adzercms/theme-implementation": "^1.0",
+        "doctrine/orm": "^3.7",
+        "symfony/dependency-injection": "7.4.*",
+        "symfony/framework-bundle": "7.4.*",
+        "symfony/http-foundation": "7.4.*",
+        "symfony/routing": "7.4.*",
+        "symfony/security-http": "7.4.*",
+        "symfony/translation": "7.4.*",
+        "symfony/translation-contracts": "^3.7"
+    },
+    "require-dev": {
+        "adzercms/admin": "^1.0",
+        "adzercms/cabinet": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdzerCMS\\Builder\\": "src/"
+        }
+    },
+    "extra": {
+        "adzercms": {
+            "bundle": "AdzerCMS\\Builder\\BuilderBundle",
+            "description": {
+                "ru": "Визуальный конструктор страниц: страницы сайта в редакторе с блоками, стилем и ширинами экрана"
+            },
+            "categories": ["content"],
+            "title": {
+                "en": "Page builder",
+                "ru": "Конструктор"
+            }
+        },
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

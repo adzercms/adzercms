@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
+  <file id="messages.ru">
+    <unit id="builder.action">
+      <segment>
+        <source>builder.action</source>
+        <target>Конструктор</target>
+      </segment>
+    </unit>
+    <unit id="builder.apply">
+      <segment>
+        <source>builder.apply</source>
+        <target>Применить</target>
+      </segment>
+    </unit>
+    <unit id="builder.blocks">
+      <segment>
+        <source>builder.blocks</source>
+        <target>Блоки</target>
+      </segment>
+    </unit>
+    <unit id="builder.exit">
+      <segment>
+        <source>builder.exit</source>
+        <target>Выйти</target>
+      </segment>
+    </unit>
+    <unit id="builder.failed">
+      <segment>
+        <source>builder.failed</source>
+        <target>Страница не сохранена: проверьте связь и сохраните снова</target>
+      </segment>
+    </unit>
+    <unit id="builder.layers">
+      <segment>
+        <source>builder.layers</source>
+        <target>Слои</target>
+      </segment>
+    </unit>
+    <unit id="builder.leave">
+      <segment>
+        <source>builder.leave</source>
+        <target>Выйти из редактора? Несохранённые правки пропадут</target>
+      </segment>
+    </unit>
+    <unit id="builder.pictures">
+      <segment>
+        <source>builder.pictures</source>
+        <target>Картинки</target>
+      </segment>
+    </unit>
+    <unit id="builder.redo">
+      <segment>
+        <source>builder.redo</source>
+        <target>Повторить</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.document">
+      <segment>
+        <source>builder.refusal.document</source>
+        <target>Страница изменилась после открытия редактора: откройте редактор заново</target>
+      </segment>
+    </unit>
+    <unit id="builder.saved">
+      <segment>
+        <source>builder.saved</source>
+        <target>Страница сохранена</target>
+      </segment>
+    </unit>
+    <unit id="builder.screen.desktop">
+      <segment>
+        <source>builder.screen.desktop</source>
+        <target>Компьютер</target>
+      </segment>
+    </unit>
+    <unit id="builder.screen.phone">
+      <segment>
+        <source>builder.screen.phone</source>
+        <target>Телефон</target>
+      </segment>
+    </unit>
+    <unit id="builder.screen.tablet">
+      <segment>
+        <source>builder.screen.tablet</source>
+        <target>Планшет</target>
+      </segment>
+    </unit>
+    <unit id="builder.style">
+      <segment>
+        <source>builder.style</source>
+        <target>Стиль</target>
+      </segment>
+    </unit>
+    <unit id="builder.title">
+      <segment>
+        <source>builder.title</source>
+        <target>{title} · Конструктор</target>
+      </segment>
+    </unit>
+    <unit id="builder.undo">
+      <segment>
+        <source>builder.undo</source>
+        <target>Отменить</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

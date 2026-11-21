@@ -116,9 +116,9 @@ final class AdminTest extends SchemaTestCase
         self::assertSame(['Internet'], $this->arrive($record)->filter('tbody tr td:nth-child(3)')->each(static fn (Crawler $cell): string => trim($cell->text())), 'the summary carries no file name');
 
         $edit = self::LIST.'/blocks/'.$hero->getId();
-        $refused = $this->post($edit, ['value' => ['title' => 'Internet']], ['value' => ['picture' => $this->scratchFile('fake.png', 'not a picture')]]);
+        $refused = $this->post($edit, ['value' => ['title' => 'Internet', 'picture' => $first]], ['value' => ['picture' => $this->scratchFile('fake.png', 'not a picture')]]);
         self::assertSame(self::phrase(t('core.photo.type', ['name' => 'fake.png'])), trim($refused->filter('.flash-error')->text()));
-        self::assertCount(1, $refused->filter('.picture-preview img'), 'a refused file leaves the stored picture');
+        self::assertSame($first, $refused->filter('input[type="hidden"][name="value[picture]"]')->attr('value'), 'a refused file leaves the stored picture');
 
         $this->post($edit, ['value' => ['title' => 'Internet']], ['value' => ['picture' => $this->picture('next.png')]]);
         $next = $this->reread($hero)->getValues()['picture'];
@@ -134,6 +134,11 @@ final class AdminTest extends SchemaTestCase
         self::assertNull(self::service(Pictures::class)->path($dropped->getValues()['picture']), 'a dropped block takes its file');
 
         $kept = $this->hero($page, 'Support')->getValues()['picture'];
+        $copy = new PageBlock($this->reread($page), 'hero', ['title' => 'Support copy', 'picture' => $kept]);
+        $this->em->persist($copy);
+        $this->em->flush();
+        $this->post(self::LIST.'/blocks/'.$copy->getId().'/drop');
+        self::assertNotNull(self::service(Pictures::class)->path($kept), 'a picture another block holds stays');
         $this->post($record.'/drop');
         self::assertNull(self::service(Pictures::class)->path($kept), 'a dropped page takes the files of its blocks');
     }
@@ -171,12 +176,12 @@ final class AdminTest extends SchemaTestCase
 
         $edit = self::LIST.'/blocks/'.$cards->getId();
         self::assertSame($first, $this->client->request('GET', $edit)->filter('input[type="hidden"][name="value[cards][0][picture]"]')->attr('value'));
-        $rows = [['picture' => $first, 'title' => 'Board'], ['picture' => $other, 'title' => 'Plans']];
+        $rows = [['picture' => $first, 'title' => 'Board'], ['picture' => $other, 'title' => 'Plans'], ['picture' => 'gone.webp', 'title' => 'Gone']];
         $this->post($edit, ['value' => ['title' => 'Works', 'cards' => $rows]], ['value' => ['cards' => [['picture' => $this->picture('next.png')]]]]);
         $pictures = self::pictures($this->reread($cards));
         $next = $pictures[0] ?? self::fail('the replacing picture is not stored');
         self::assertNotSame($first, $next);
-        self::assertNull($pictures[1], 'a name out of the pictures of the field leaves its cell empty');
+        self::assertSame([$other, null], [$pictures[1], $pictures[2]], 'a cell takes a photo of the module by its name, a name out of the photos leaves it empty');
         self::assertNull(self::service(Pictures::class)->path($first), 'a replaced picture takes its file');
         self::assertNotNull(self::service(Pictures::class)->path($other), 'a foreign name keeps its file');
 

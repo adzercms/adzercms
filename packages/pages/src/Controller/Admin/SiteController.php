@@ -30,6 +30,7 @@ final class SiteController extends AbstractController
 {
     public const LIST = 'admin_pages';
     public const PAGE = 'admin_page';
+    public const ACTIONS = 'pages.page.actions';
 
     private const ORDER = 'admin_pages_order';
     private const ROWS = '@Pages/admin/_pages.html.twig';
