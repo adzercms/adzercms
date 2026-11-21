@@ -1,0 +1,29 @@
+{% macro elements(items) %}
+    {%- import _self as free -%}
+    {%- for item in items -%}
+        {%- if item.kind == 'text' -%}
+            <div class="prose" data-element="{{ item.key }}">{% for paragraph in item.paragraphs %}<p>{% for run in paragraph %}{{ free.run(run) }}{% endfor %}</p>{% endfor %}</div>
+        {%- elseif item.kind == 'picture' and item.picture -%}
+            <img class="site-picture" data-element="{{ item.key }}" src="{{ item.picture.src }}" width="{{ item.picture.width }}" height="{{ item.picture.height }}" alt="{{ item.alt }}" loading="lazy">
+        {%- elseif item.kind == 'button' -%}
+            <a class="button" data-element="{{ item.key }}" href="{{ item.link }}"{{ free.away(item.link) }}>{{ item.label }}</a>
+        {%- elseif item.kind == 'line' -%}
+            <hr data-element="{{ item.key }}">
+        {%- elseif item.kind == 'box' -%}
+            <div data-element="{{ item.key }}">{{ free.elements(item.items) }}</div>
+        {%- endif -%}
+    {%- endfor -%}
+{% endmacro %}
+
+{% macro run(run) %}
+    {%- import _self as free -%}
+    {%- if run.link is defined -%}<a href="{{ run.link }}"{{ free.away(run.link) }}>{{ free.marked(run) }}</a>{%- else -%}{{ free.marked(run) }}{%- endif -%}
+{% endmacro %}
+
+{% macro marked(run) %}
+    {%- if run.bold|default(false) %}<strong>{% endif %}{% if run.italic|default(false) %}<em>{% endif -%}
+    {{ run.text }}
+    {%- if run.italic|default(false) %}</em>{% endif %}{% if run.bold|default(false) %}</strong>{% endif -%}
+{% endmacro %}
+
+{% macro away(link) %}{% if link starts with 'http' %} target="_blank" rel="noopener"{% endif %}{% endmacro %}

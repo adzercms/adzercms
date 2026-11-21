@@ -14,7 +14,7 @@ use function Symfony\Component\Translation\t;
 final class BlockStyle
 {
     public const BLOCK = '';
-    private const ELEMENT = '/^[a-z][a-z0-9-]{0,31}$/';
+    public const ELEMENT = '/^[a-z][a-z0-9-]{0,31}$/';
     private const ANCHOR = 'block-';
 
     /**

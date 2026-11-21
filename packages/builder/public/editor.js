@@ -5,24 +5,39 @@ import htmx from 'htmx.org';
 const PART = 'frame-part';
 const BLOCKS = 'page-blocks';
 const BLOCK = 'ready-block';
+const BODY = 'free-body';
+const TEXT = 'free-text';
+const PICTURE = 'free-picture';
+const BUTTON = 'free-button';
+const LINE = 'free-line';
+const BOX = 'free-box';
+const ELEMENTS = new Set([TEXT, PICTURE, BUTTON, LINE, BOX]);
+const HOLDERS = new Set([BODY, BOX]);
 const SKIPPED = 'script, template, noscript';
 const SHEETS = 'link[rel="stylesheet"]';
 const HEAD = 'link[rel="preload"], style';
 const LOCKED = {selectable: false, hoverable: false, highlightable: false, draggable: false, droppable: false, removable: false, copyable: false, layerable: false, editable: false, stylable: false, badgable: false};
 const UNAVAILABLE = 'builder-unavailable';
+const FREE_BODY = 'site-free-body';
+const KEY = 'data-element';
 const TOKEN = '_token';
 const DELETE = 'core:component-delete';
 const VALUES = 'builder-values';
 const JSON_TYPE = 'application/json';
 const FRESH = 'block-new-';
-const PICTURE = 'image';
+const PICTURE_ASSET = 'image';
 const FILES = 'files';
+const PARAGRAPHS = new Set(['p', 'div', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote']);
 
 const root = document.querySelector('[data-builder]');
 const blocks = JSON.parse(root.dataset.blocks);
 const screens = JSON.parse(root.dataset.screens);
 const kinds = JSON.parse(root.dataset.types);
 const sectors = JSON.parse(root.dataset.style);
+const elements = JSON.parse(root.dataset.elements);
+const traits = JSON.parse(root.dataset.traits);
+const pictures = JSON.parse(root.dataset.pictures);
+const free = root.dataset.free;
 const anchors = new Set(blocks.map(block => block.anchor));
 const record = document.getElementById('record');
 const panel = root.querySelector('[data-pictures-panel]');
@@ -48,12 +63,65 @@ const absent = block => {
     return {type: BLOCK, tagName: 'section', attributes: {id: block.anchor, class: UNAVAILABLE}, content: note.outerHTML, name: block.label, block};
 };
 
-const ready = block => {
-    const element = page.getElementById(block.anchor);
+const markup = paragraphs => paragraphs.map(runs => {
+    const line = document.createElement('p');
+    for (const run of runs) {
+        let node = document.createTextNode(run.text);
+        for (const [mark, tag] of [['italic', 'em'], ['bold', 'strong'], ['link', 'a']]) {
+            if (run[mark]) {
+                const wrap = document.createElement(tag);
+                if (mark === 'link') {
+                    wrap.setAttribute('href', run.link);
+                }
+                wrap.append(node);
+                node = wrap;
+            }
+        }
+        line.append(node);
+    }
 
-    return element
-        ? {type: BLOCK, tagName: element.localName, attributes: attributes(element), content: element.innerHTML, name: block.label, block}
-        : absent(block);
+    return line.outerHTML;
+}).join('');
+
+const source = name => pictures.find(one => one.name === name)?.src;
+
+const element = node => {
+    const own = {[KEY]: node.key};
+
+    return {
+        text: () => ({type: TEXT, attributes: {...own, class: 'prose'}, components: markup(node.paragraphs)}),
+        picture: () => ({type: PICTURE, attributes: {...own, class: 'site-picture', alt: node.alt ?? ''}, ...(source(node.name) ? {src: source(node.name)} : {})}),
+        button: () => ({type: BUTTON, attributes: {...own, class: 'button', href: node.link}, components: [{type: 'textnode', content: node.label}]}),
+        line: () => ({type: LINE, attributes: own}),
+        box: () => ({type: BOX, attributes: own, components: node.items.map(element)}),
+    }[node.kind]();
+};
+
+const framed = (node, items) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent.trim() === '' ? null : {type: 'textnode', content: node.textContent};
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) {
+        return null;
+    }
+    const own = {tagName: node.localName, attributes: attributes(node)};
+    if (node.classList.contains(FREE_BODY)) {
+        return {...own, type: BODY, components: items.map(element)};
+    }
+
+    return node.querySelector(`.${FREE_BODY}`)
+        ? {...own, type: PART, components: [...node.childNodes].map(child => framed(child, items)).filter(Boolean)}
+        : {...own, type: PART, content: node.innerHTML};
+};
+
+const shape = (drawn, block) => (block.type === free
+    ? {attributes: attributes(drawn), components: [...drawn.childNodes].map(node => framed(node, JSON.parse(block.values.elements ?? '[]'))).filter(Boolean)}
+    : {attributes: attributes(drawn), content: drawn.innerHTML});
+
+const ready = block => {
+    const drawn = page.getElementById(block.anchor);
+
+    return drawn ? {type: BLOCK, tagName: drawn.localName, ...shape(drawn, block), name: block.label, block} : absent(block);
 };
 
 const part = node => {
@@ -112,25 +180,112 @@ const field = ({property, label, kind, keywords, units, signed}) => ({
 const fill = (component, entry = component.get('block'), at = null) => {
     const first = component ? placed()[0] === component : !container().components().some((one, index) => index < at && one.get('type') === BLOCK);
     editing = {component, entry, at};
-    htmx.ajax('POST', entry.dialog, {target: '#record', values: {[TOKEN]: token(), stored: JSON.stringify(component ? entry.values : {}), first: first ? '1' : ''}});
+    htmx.ajax('POST', entry.dialog ?? entry.draw, {target: '#record', values: {[TOKEN]: token(), stored: JSON.stringify(component ? entry.values : {}), first: first ? '1' : ''}});
 };
 
 const filled = ({values, anchor, html}) => {
     const {component, entry, at} = editing;
-    const element = new DOMParser().parseFromString(html, 'text/html').getElementById(anchor);
+    const drawn = new DOMParser().parseFromString(html, 'text/html').getElementById(anchor);
     const block = component ? {...entry, values} : {...entry, values, style: {}, id: null, anchor: `${FRESH}${++fresh}`};
-    const shown = {attributes: {...attributes(element), id: block.anchor}, content: element.innerHTML, block};
+    const shown = {...shape(drawn, block), block};
+    shown.attributes.id = block.anchor;
     editing = null;
     record.close();
     if (component) {
         component.set(shown);
     } else {
-        editor.select(container().append({type: BLOCK, tagName: element.localName, name: block.label, ...shown}, {at})[0]);
+        editor.select(container().append({type: BLOCK, tagName: drawn.localName, name: block.label, ...shown}, {at})[0]);
     }
+};
+
+const keyOf = component => component.getAttributes()[KEY];
+
+const within = component => component.components().models.flatMap(child => [...(ELEMENTS.has(child.get('type')) ? [child] : []), ...within(child)]);
+
+const keyed = component => {
+    const block = component.closestType(BLOCK);
+    const taken = new Set(block ? within(block).filter(other => other !== component).map(keyOf) : []);
+    if (keyOf(component) && !taken.has(keyOf(component))) {
+        return;
+    }
+    let number = 1;
+    while (taken.has(`e${number}`)) {
+        number++;
+    }
+    component.addAttributes({[KEY]: `e${number}`});
+};
+
+const runs = node => {
+    const paragraphs = [];
+    let line = [];
+    const close = () => {
+        if (line.length > 0) {
+            paragraphs.push(line);
+        }
+        line = [];
+    };
+    const walk = (child, marks) => {
+        if (child.nodeType === Node.TEXT_NODE) {
+            const last = line.at(-1);
+            if (child.textContent === '') {
+                return;
+            }
+            if (last && last.bold === marks.bold && last.italic === marks.italic && last.link === marks.link) {
+                last.text += child.textContent;
+            } else {
+                line.push({text: child.textContent, ...marks});
+            }
+
+            return;
+        }
+        if (child.nodeType !== Node.ELEMENT_NODE) {
+            return;
+        }
+        const name = child.localName;
+        if (name === 'br') {
+            close();
+
+            return;
+        }
+        const own = {
+            bold: marks.bold || name === 'b' || name === 'strong' || undefined,
+            italic: marks.italic || name === 'i' || name === 'em' || undefined,
+            link: (name === 'a' && child.getAttribute('href')) || marks.link,
+        };
+        if (PARAGRAPHS.has(name)) {
+            close();
+        }
+        child.childNodes.forEach(next => walk(next, own));
+        if (PARAGRAPHS.has(name)) {
+            close();
+        }
+    };
+    node.childNodes.forEach(child => walk(child, {}));
+    close();
+
+    return paragraphs.map(one => one.map(({text, bold, italic, link}) => ({text, ...(bold ? {bold} : {}), ...(italic ? {italic} : {}), ...(link ? {link} : {})})));
+};
+
+const named = src => editor.AssetManager.getAll().find(asset => asset.getSrc() === src)?.get('name') ?? '';
+
+const nodeOf = component => {
+    const key = keyOf(component);
+    const own = component.getAttributes();
+
+    return {
+        [TEXT]: () => ({kind: 'text', key, paragraphs: runs(component.getEl())}),
+        [PICTURE]: () => ({kind: 'picture', key, name: named(component.get('src')), alt: own.alt ?? ''}),
+        [BUTTON]: () => ({kind: 'button', key, label: component.getEl().textContent.trim(), link: own.href ?? ''}),
+        [LINE]: () => ({kind: 'line', key}),
+        [BOX]: () => ({kind: 'box', key, items: component.components().map(nodeOf)}),
+    }[component.get('type')]();
 };
 
 const setup = editor => {
     const types = editor.DomComponents;
+    const placing = {draggable: (source, target) => HOLDERS.has(target.get('type')), copyable: false};
+    const holding = source => ELEMENTS.has(source.get('type'));
+    const never = () => false;
     types.addType(PART, {model: {defaults: LOCKED}});
     types.addType(BLOCKS, {model: {defaults: {...LOCKED, layerable: true, droppable: source => source.get('type') === BLOCK}}});
     types.addType(BLOCK, {model: {
@@ -142,14 +297,25 @@ const setup = editor => {
             }
         },
     }});
+    types.addType(BODY, {model: {defaults: {...LOCKED, highlightable: true, droppable: holding}}});
+    types.addType('link', {model: {defaults: {traits: [{name: 'href', label: traits.link}]}}});
+    types.addType(TEXT, {extend: 'text', isComponent: never, model: {defaults: {...placing, tagName: 'div', droppable: false}}});
+    types.addType(PICTURE, {extend: 'image', isComponent: never, model: {defaults: {...placing, traits: [{name: 'alt', label: traits.alt}]}}});
+    types.addType(BUTTON, {extend: 'link', isComponent: never, model: {defaults: {...placing, droppable: false, traits: [{name: 'href', label: traits.link}]}}});
+    types.addType(LINE, {isComponent: never, model: {defaults: {...placing, tagName: 'hr', void: true, droppable: false}}});
+    types.addType(BOX, {isComponent: never, model: {defaults: {...placing, tagName: 'div', droppable: holding}}});
 
     editor.Commands.add('tlb-delete', {run: ed => {
         const component = ed.getSelected();
-        ask(component.get('block').question, () => component.remove());
+        if (component.get('type') === BLOCK) {
+            ask(component.get('block').question, () => component.remove());
+        } else {
+            component.remove();
+        }
     }});
     editor.Commands.add(VALUES, {run: ed => fill(ed.getSelected())});
 
-    editor.AssetManager.addType(PICTURE, {view: {template() {
+    editor.AssetManager.addType(PICTURE_ASSET, {view: {template() {
         return `<div class="${this.pfx}preview-cont">${this.getPreview()}</div>`;
     }}});
     editor.on('modal', ({open, content}) => {
@@ -169,9 +335,19 @@ const setup = editor => {
         refusal.hidden = false;
     });
 
-    editor.on('block:drag:start', () => editor.UndoManager.stop());
+    editor.on('component:add', component => {
+        if (ELEMENTS.has(component.get('type'))) {
+            keyed(component);
+        }
+    });
+
+    editor.on('block:drag:start', block => {
+        if (block.get('content').type === BLOCK) {
+            editor.UndoManager.stop();
+        }
+    });
     editor.on('block:drag:stop', component => {
-        if (component) {
+        if (component?.get('type') === BLOCK) {
             const at = component.index();
             const entry = component.get('block');
             component.remove();
@@ -194,15 +370,26 @@ const setup = editor => {
         editor.Keymaps.remove(DELETE);
         editor.UndoManager.skip(() => {
             for (const component of placed()) {
-                const own = component.get('block').style[''] ?? {};
-                for (const screen of screens.filter(one => own[one.id])) {
-                    editor.Css.setIdRule(component.getId(), own[screen.id], {mediaText: media(screen)});
+                const {style} = component.get('block');
+                for (const [target, own] of [[component, style[''] ?? {}], ...within(component).map(one => [one, style[keyOf(one)] ?? {}])]) {
+                    for (const screen of screens.filter(one => own[one.id])) {
+                        editor.Css.setIdRule(target.getId(), own[screen.id], {mediaText: media(screen)});
+                    }
                 }
             }
         });
         saved = JSON.stringify(documentOf());
     });
 };
+
+const pieces = elements.map(({kind, label}) => ({
+    id: `free-${kind}`,
+    label,
+    attributes: {'data-element-kind': kind},
+    category: root.dataset.elementsLabel,
+    activate: kind === 'picture',
+    content: element({kind, key: '', paragraphs: [[{text: label}]], name: '', label, link: '/', items: []}),
+}));
 
 const editor = grapesjs.init({
     container: root.querySelector('[data-canvas]'),
@@ -214,13 +401,16 @@ const editor = grapesjs.init({
     panels: {defaults: []},
     protectedCss: '',
     canvas: {styles: [...page.head.querySelectorAll(SHEETS)].map(link => link.href)},
-    canvasCss: `.${UNAVAILABLE}{padding:1rem;border:1px dashed;opacity:.6}`,
+    canvasCss: `.${UNAVAILABLE}{padding:1rem;border:1px dashed;opacity:.6}.${FREE_BODY}:empty,[data-gjs-type="${BOX}"]:empty{min-height:3rem;outline:1px dashed}`,
     deviceManager: {devices: screens.map(({id, media, width}) => ({id, name: id, width: width ? `${width}px` : '', widthMedia: media ? `${media}px` : ''}))},
     mediaCondition: 'max-width',
+    domComponents: {disableTextInnerChilds: true},
     layerManager: {appendTo: root.querySelector('[data-layers]'), root: `[data-gjs-type="${BLOCKS}"]`},
     styleManager: {appendTo: root.querySelector('[data-style-panel]'), sectors: sectors.map(({id, name, properties}) => ({id, name, open: false, properties: properties.map(field)}))},
-    blockManager: {appendTo: root.querySelector('[data-palette]'), blocks: kinds.map(kind => ({id: kind.type, label: kind.label, content: {type: BLOCK, block: kind}}))},
-    assetManager: {assets: JSON.parse(root.dataset.pictures), upload: root.dataset.upload, uploadName: FILES, params: {[TOKEN]: token()}, showUrlInput: false},
+    traitManager: {appendTo: root.querySelector('[data-traits-panel]')},
+    blockManager: {appendTo: root.querySelector('[data-palette]'), blocks: [...kinds.map(kind => ({id: kind.type, label: kind.label, attributes: {'data-type': kind.type}, content: {type: BLOCK, block: kind}})), ...pieces]},
+    assetManager: {assets: pictures, upload: root.dataset.upload, uploadName: FILES, params: {[TOKEN]: token()}, showUrlInput: false},
+    richTextEditor: {actions: ['bold', 'italic', 'link']},
     modal: {custom: true},
     selectorManager: {componentFirst: true},
     i18n: {locale: document.documentElement.lang, detectLocale: false, localeFallback: 'en', messages: {ru}},
@@ -230,19 +420,33 @@ const editor = grapesjs.init({
 
 const container = () => editor.getWrapper().findType(BLOCKS)[0];
 const placed = () => container().components().filter(component => component.get('type') === BLOCK);
+const rulesOf = component => Object.fromEntries(screens
+    .map(screen => [screen.id, Object.entries(editor.Css.getIdRule(component.getId(), {mediaText: media(screen)})?.getStyle() ?? {}).filter(([, value]) => value !== '')])
+    .filter(([, properties]) => properties.length > 0)
+    .map(([screen, properties]) => [screen, sorted(Object.fromEntries(properties))]));
 const styleOf = component => {
-    const own = Object.fromEntries(screens
-        .map(screen => [screen.id, Object.entries(editor.Css.getIdRule(component.getId(), {mediaText: media(screen)})?.getStyle() ?? {}).filter(([, value]) => value !== '')])
-        .filter(([, properties]) => properties.length > 0)
-        .map(([screen, properties]) => [screen, sorted(Object.fromEntries(properties))]));
-    const rest = Object.entries(component.get('block').style).filter(([target]) => target !== '');
+    const own = rulesOf(component);
+    const {type, style} = component.get('block');
+    const rest = type === free
+        ? within(component).map(one => [keyOf(one), sorted(rulesOf(one))]).filter(([, rules]) => Object.keys(rules).length > 0)
+        : Object.entries(style).filter(([target]) => target !== '');
 
     return sorted(Object.fromEntries(Object.keys(own).length > 0 ? [...rest, ['', sorted(own)]] : rest));
 };
-const documentOf = () => ({version, blocks: placed().map(component => {
-    const {id, type, values} = component.get('block');
+const valuesOf = component => {
+    const {type, values} = component.get('block');
+    if (type !== free) {
+        return sorted(values);
+    }
+    const body = component.findType(BODY)[0];
+    const tree = body ? body.components().map(nodeOf) : [];
 
-    return {id, type, values: sorted(values), style: styleOf(component)};
+    return tree.length > 0 ? {elements: JSON.stringify(tree)} : {};
+};
+const documentOf = () => ({version, blocks: placed().map(component => {
+    const {id, type} = component.get('block');
+
+    return {id, type, values: valuesOf(component), style: styleOf(component)};
 })});
 const dirty = () => JSON.stringify(documentOf()) !== saved;
 

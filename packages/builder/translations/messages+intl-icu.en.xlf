@@ -13,10 +13,52 @@
         <target>Apply</target>
       </segment>
     </unit>
+    <unit id="builder.block.free">
+      <segment>
+        <source>builder.block.free</source>
+        <target>Free block</target>
+      </segment>
+    </unit>
     <unit id="builder.blocks">
       <segment>
         <source>builder.blocks</source>
         <target>Blocks</target>
+      </segment>
+    </unit>
+    <unit id="builder.element.box">
+      <segment>
+        <source>builder.element.box</source>
+        <target>Box</target>
+      </segment>
+    </unit>
+    <unit id="builder.element.button">
+      <segment>
+        <source>builder.element.button</source>
+        <target>Button</target>
+      </segment>
+    </unit>
+    <unit id="builder.element.line">
+      <segment>
+        <source>builder.element.line</source>
+        <target>Line</target>
+      </segment>
+    </unit>
+    <unit id="builder.element.picture">
+      <segment>
+        <source>builder.element.picture</source>
+        <target>Picture</target>
+      </segment>
+    </unit>
+    <unit id="builder.element.text">
+      <segment>
+        <source>builder.element.text</source>
+        <target>Text</target>
+      </segment>
+    </unit>
+    <unit id="builder.elements">
+      <segment>
+        <source>builder.elements</source>
+        <target>Elements</target>
       </segment>
     </unit>
     <unit id="builder.exit">
@@ -61,6 +103,24 @@
         <target>The page changed after the editor opened: open the editor again</target>
       </segment>
     </unit>
+    <unit id="builder.refusal.element">
+      <segment>
+        <source>builder.refusal.element</source>
+        <target>The free block holds an element or attribute the builder does not take</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.link">
+      <segment>
+        <source>builder.refusal.link</source>
+        <target>Link {link}: a site path from /, an http(s):// address, mailto: or tel:</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.picture">
+      <segment>
+        <source>builder.refusal.picture</source>
+        <target>A picture of the free block is not found, upload it again</target>
+      </segment>
+    </unit>
     <unit id="builder.saved">
       <segment>
         <source>builder.saved</source>
@@ -95,6 +155,24 @@
       <segment>
         <source>builder.title</source>
         <target>{title} · Builder</target>
+      </segment>
+    </unit>
+    <unit id="builder.trait.alt">
+      <segment>
+        <source>builder.trait.alt</source>
+        <target>Picture description</target>
+      </segment>
+    </unit>
+    <unit id="builder.trait.link">
+      <segment>
+        <source>builder.trait.link</source>
+        <target>Link</target>
+      </segment>
+    </unit>
+    <unit id="builder.traits">
+      <segment>
+        <source>builder.traits</source>
+        <target>Properties</target>
       </segment>
     </unit>
     <unit id="builder.undo">

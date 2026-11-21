@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Builder\Controller;
 
+use AdzerCMS\Builder\FreeBlock;
 use AdzerCMS\Builder\PageDocument;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Account\Role;
@@ -72,7 +73,7 @@ final class EditorController extends AbstractController
             'save' => $this->generateUrl(self::SAVE, ['id' => $page->getId()]),
             'version' => $document[PageDocument::VERSION],
             'blocks' => array_map(fn (array $block): array => [...$block, PageDocument::STYLE => (object) $block[PageDocument::STYLE], 'dialog' => $block['available'] ? $this->opening($page, $block['type']) : null], $document[PageDocument::BLOCKS]),
-            'types' => array_map(fn (array $type): array => $type + ['dialog' => $this->opening($page, $type['type'])], $this->document->types()),
+            'types' => array_map(fn (array $type): array => $type + ['dialog' => $this->opening($page, $type['type']), 'draw' => $this->drawing($page, $type['type'])], $this->document->types()),
             'screens' => array_map(static fn (Screen $screen): array => [
                 'id' => $screen->value,
                 'media' => $screen->width(),
@@ -83,6 +84,8 @@ final class EditorController extends AbstractController
             'pictures' => $this->pictures->listed(),
             'upload' => $this->generateUrl(self::PICTURES, ['id' => $page->getId()]),
             'accept' => implode(',', Photos::TYPES),
+            'free' => FreeBlock::KEY,
+            'elements' => array_map(fn (string $kind): array => ['kind' => $kind, 'label' => $this->translator->trans('builder.element.'.$kind)], FreeBlock::kinds()),
         ]);
     }
 
@@ -160,9 +163,14 @@ final class EditorController extends AbstractController
         return array_map(fn (Group $group): array => ['id' => $group->value, 'name' => $group->label()->trans($this->translator), 'properties' => $properties[$group->value] ?? []], Group::cases());
     }
 
-    private function opening(Page $page, string $type): string
+    private function opening(Page $page, string $type): ?string
     {
-        return $this->generateUrl(self::TYPE, ['id' => $page->getId(), 'type' => $type]);
+        return [] === $this->kind($type)->fields() ? null : $this->generateUrl(self::TYPE, ['id' => $page->getId(), 'type' => $type]);
+    }
+
+    private function drawing(Page $page, string $type): ?string
+    {
+        return [] === $this->kind($type)->fields() ? $this->generateUrl(self::FILL, ['id' => $page->getId(), 'type' => $type]) : null;
     }
 
     private function kind(string $key): Block
