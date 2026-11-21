@@ -1,6 +1,6 @@
 {% if logins %}
     <div class="divider"><span>{{ 'cabinet.login.with'|trans }}</span></div>
-    <div class="oauth-buttons">
+    <div class="oauth-buttons" hx-boost="false">
         {% for service, module in logins %}
             <a class="button oauth" href="{{ path('login_service', {service: service}) }}" style="--service: {{ module.color }}"
                title="{{ module.name|trans }}" aria-label="{{ module.name|trans }}">

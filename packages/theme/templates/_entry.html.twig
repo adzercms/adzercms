@@ -1,0 +1,2 @@
+{% set entry = app.user ? cabinet('home') : cabinet('login', {back: app.request.requestUri}) %}
+{% if entry %}<a{% if class|default %} class="{{ class }}"{% endif %} href="{{ entry }}"{% if not app.user %} data-record="{{ entry }}"{% endif %}>{{ (app.user ? 'theme.site.cabinet' : 'theme.site.login')|trans }}</a>{% endif %}

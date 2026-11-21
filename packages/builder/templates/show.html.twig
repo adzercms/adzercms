@@ -3,7 +3,8 @@
 {% block page %}
     {{ parent() }}
     {% if copy %}
-        <form class="preview-bar" method="post" action="{{ path('builder_show_copy', {token: version.project.token}) }}" data-template-copy>
+        {% set action = path('builder_show_copy', {token: version.project.token}) %}
+        <form class="preview-bar" method="post" action="{{ action }}"{% if not app.user %} hx-post="{{ action }}" hx-target="#record"{% endif %} data-template-copy>
             {{ csrf_field() }}
             <span class="preview-text">{{ version.name }}</span>
             <button type="submit">{{ 'builder.show.copy'|trans }}</button>

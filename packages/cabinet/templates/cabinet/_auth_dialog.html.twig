@@ -1,0 +1,7 @@
+{% include '@Theme/_modal_header.html.twig' with {title: block('title')} only %}
+
+<div class="modal-body auth-dialog" hx-boost="true" hx-target="#record" hx-push-url="false">
+    {% for label, messages in app.flashes %}{% for message in messages %}<p class="flash flash-{{ label }}">{{ message|trans }}</p>{% endfor %}{% endfor %}
+    {% block subtitle %}{% endblock %}
+    {% block auth %}{% endblock %}
+</div>

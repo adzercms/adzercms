@@ -62,8 +62,8 @@
 </div>
 {% endblock %}
 {% include '@Theme/_toasts.html.twig' %}
+<dialog class="modal" id="record" tabindex="-1"></dialog>
 {% if app.user %}
-    <dialog class="modal" id="record" tabindex="-1"></dialog>
     <dialog class="modal" id="confirm">
         {% include '@Theme/_modal_header.html.twig' with {title: 'theme.confirm.title'|trans} only %}
         <p class="modal-body" data-confirm-text></p>
