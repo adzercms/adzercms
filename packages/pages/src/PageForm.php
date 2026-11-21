@@ -52,19 +52,48 @@ final readonly class PageForm
      */
     public function add(InputBag $input): Page|array
     {
-        $title = $this->title($input);
+        $title = $this->title($input->getString(self::TITLE));
         $path = $this->path($input, null);
         if ($title instanceof Refusal || $path instanceof Refusal) {
             return self::refusals([self::TITLE => $title, self::PATH => $path]);
         }
 
-        $page = new Page($title, $path);
-        $page->place($this->pages->count() + 1);
-        $this->em->persist($page);
-        $this->release($path);
+        [$page] = $this->append([[$title, $path]]);
         $this->em->flush();
 
         return $page;
+    }
+
+    /**
+     * @param list<array{string, string}> $pages
+     *
+     * @return list<Page>
+     */
+    public function append(array $pages): array
+    {
+        $count = $this->pages->count();
+        $added = [];
+        foreach ($pages as [$title, $path]) {
+            $page = new Page($title, $path);
+            $page->place(++$count);
+            $this->em->persist($page);
+            $this->release($path);
+            $added[] = $page;
+        }
+
+        return $added;
+    }
+
+    /**
+     * @param list<string> $paths
+     *
+     * @return list<string>
+     */
+    public function taken(array $paths): array
+    {
+        $held = array_map(static fn (Page $page): string => $page->getPath(), $this->pages->holding($paths));
+
+        return array_values(array_filter($paths, fn (string $path): bool => \in_array($path, $held, true) || $this->routed($path)));
     }
 
     /**
@@ -74,7 +103,7 @@ final readonly class PageForm
      */
     public function save(Page $page, InputBag $input): array
     {
-        $title = $this->title($input);
+        $title = $this->title($input->getString(self::TITLE));
         $path = $this->path($input, $page);
         $former = $path instanceof Refusal ? [] : $this->former($input, $page, $path);
         $description = trim($input->getString(self::DESCRIPTION));
@@ -100,6 +129,16 @@ final readonly class PageForm
         $this->em->flush();
 
         return [];
+    }
+
+    public function title(string $input): string|Refusal
+    {
+        $title = trim($input);
+        if ('' === $title || mb_strlen($title) > Page::TITLE) {
+            return new Refusal(t('pages.refusal.title', ['limit' => Page::TITLE]));
+        }
+
+        return $this->values->refusal($title, t('pages.field.title')) ?? $title;
     }
 
     public function lines(Page $page): string
@@ -130,17 +169,6 @@ final readonly class PageForm
     private static function refusals(array $fields): array
     {
         return array_filter($fields, static fn (string|Refusal|null $field): bool => $field instanceof Refusal);
-    }
-
-    /** @param InputBag<string> $input */
-    private function title(InputBag $input): string|Refusal
-    {
-        $title = trim($input->getString(self::TITLE));
-        if ('' === $title || mb_strlen($title) > Page::TITLE) {
-            return new Refusal(t('pages.refusal.title', ['limit' => Page::TITLE]));
-        }
-
-        return $this->values->refusal($title, t('pages.field.title')) ?? $title;
     }
 
     /** @param InputBag<string> $input */

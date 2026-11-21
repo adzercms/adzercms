@@ -4,6 +4,7 @@
 
 {% block actions %}
     <button type="button" hx-get="{{ path('admin_page_new') }}" hx-target="#record">{{ 'pages.add'|trans }}</button>
+    {% for part in fragments(constant('AdzerCMS\\Pages\\Controller\\Admin\\SiteController::TOOLS')) %}{% include part.template with part.context only %}{% endfor %}
 {% endblock %}
 
 {% block page %}

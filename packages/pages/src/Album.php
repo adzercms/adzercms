@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Pages;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 
 interface Album
 {
-    public function store(UploadedFile $picture): string;
+    public function store(File $picture): string;
 
     public function path(string $name): ?string;
 

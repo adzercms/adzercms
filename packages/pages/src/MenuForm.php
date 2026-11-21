@@ -94,8 +94,7 @@ final readonly class MenuForm
         }
 
         if (null === $entry) {
-            $kept->place($this->entries->count() + 1);
-            $this->em->persist($kept);
+            $this->placed([$kept]);
         }
         $this->em->flush();
 
@@ -113,5 +112,21 @@ final readonly class MenuForm
     {
         $this->em->remove($entry);
         $this->em->flush();
+    }
+
+    /** @param list<Page> $pages */
+    public function append(array $pages): void
+    {
+        $this->placed(array_map(MenuEntry::ofPage(...), $pages));
+    }
+
+    /** @param list<MenuEntry> $entries */
+    private function placed(array $entries): void
+    {
+        $count = $this->entries->count();
+        foreach ($entries as $entry) {
+            $entry->place(++$count);
+            $this->em->persist($entry);
+        }
     }
 }
