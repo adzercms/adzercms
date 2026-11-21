@@ -7,5 +7,19 @@
 {% endblock %}
 
 {% block page %}
+{% if offers %}
+<div class="section">
+    <div class="section-head">
+        <h3>{{ 'builder.transfer.offers'|trans }}</h3>
+    </div>
+    {% for offer in offers %}
+        <form class="button-row" method="post" action="{{ path('builder_transfer_accept', {id: offer.id}) }}" data-offer>
+            {{ csrf_field() }}
+            <span>{{ 'builder.transfer.offer'|trans({name: offer.project.name, sender: login(offer.project.owner), expires: offer.expires}) }}</span>
+            <button type="submit">{{ 'builder.transfer.accept'|trans }}</button>
+        </form>
+    {% endfor %}
+</div>
+{% endif %}
 {% include '@Builder/cabinet/_projects.html.twig' %}
 {% endblock %}

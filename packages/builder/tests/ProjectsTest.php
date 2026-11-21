@@ -7,12 +7,14 @@ namespace AdzerCMS\Builder\Tests;
 use AdzerCMS\Builder\Entity\Project;
 use AdzerCMS\Builder\Entity\ProjectBlock;
 use AdzerCMS\Builder\Entity\ProjectPage;
+use AdzerCMS\Builder\Entity\ProjectTransfer;
 use AdzerCMS\Builder\ProjectAlbums;
 use AdzerCMS\Builder\ProjectFile;
 use AdzerCMS\Builder\Projects;
 use AdzerCMS\Builder\Repository\ProjectBlockRepository;
 use AdzerCMS\Builder\Repository\ProjectPageRepository;
 use AdzerCMS\Builder\Repository\ProjectRepository;
+use AdzerCMS\Builder\Repository\ProjectTransferRepository;
 use AdzerCMS\Core\Account\UserRemoval;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Tests\Accounts;
@@ -26,6 +28,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Filesystem\Filesystem;
 
+use function Symfony\Component\Clock\now;
 use function Symfony\Component\Translation\t;
 
 final class ProjectsTest extends SchemaTestCase
@@ -238,18 +241,26 @@ final class ProjectsTest extends SchemaTestCase
     }
 
     #[Group('ACMS-BLD-0021')]
+    #[Group('ACMS-BLD-0018')]
     #[Group('ACMS-US-0078')]
-    public function testRemovalOfUserTakesHisProjects(): void
+    public function testRemovalOfUserTakesHisProjectsAndTransfers(): void
     {
         [$project] = $this->project();
         $album = self::service(ProjectAlbums::class)->of($project);
         $picture = $album->store($this->picture('fiber.png'));
+        $other = $this->record('79990000003');
+        $kept = new Project($other, 'Kept');
+        $this->em->persist($kept);
+        $this->em->persist(new ProjectTransfer($project, $other, now()->modify('+1 day')));
+        $this->em->persist(new ProjectTransfer($kept, $this->user, now()->modify('+1 day')));
+        $this->em->flush();
 
         self::service(UserRemoval::class)->remove($this->user);
         $this->em->clear();
 
-        self::assertSame([], self::service(ProjectRepository::class)->findAll());
+        self::assertSame(['Kept'], array_map(static fn (Project $one): string => $one->getName(), self::service(ProjectRepository::class)->findAll()));
         self::assertSame([], self::service(ProjectPageRepository::class)->findAll());
+        self::assertSame([], self::service(ProjectTransferRepository::class)->findAll(), 'the transfers from the user and to him leave');
         self::assertNull($album->path($picture), 'the projects leave with their pictures');
     }
 

@@ -7,6 +7,13 @@
 {% block actions %}
     <button type="button" hx-get="{{ path('builder_project_page_new', {id: project.id}) }}" hx-target="#record">{{ 'pages.new'|trans }}</button>
     <a class="button secondary" href="{{ path('builder_project_file', {id: project.id}) }}" download>{{ 'builder.project.download'|trans }}</a>
+    {% if transfer %}
+        <form method="post" action="{{ path('builder_project_transfer_cancel', {id: project.id}) }}">
+            {{ csrf_field() }}<button type="submit" class="secondary">{{ 'builder.transfer.cancel'|trans }}</button>
+        </form>
+    {% else %}
+        <button type="button" class="secondary" hx-get="{{ path('builder_project_transfer', {id: project.id}) }}" hx-target="#record">{{ 'builder.transfer.action'|trans }}</button>
+    {% endif %}
     <form method="post" action="{{ path('builder_project_drop', {id: project.id}) }}" data-confirm="{{ 'builder.project.drop_confirm'|trans({name: project.name}) }}">
         {{ csrf_field() }}<button type="submit" class="danger">{{ 'builder.project.drop'|trans }}</button>
     </form>
@@ -14,5 +21,10 @@
 {% endblock %}
 
 {% block page %}
+{% if transfer %}
+<div class="section">
+    <p data-transfer>{{ 'builder.transfer.pending'|trans({recipient: login(transfer.recipient), expires: transfer.expires}) }}</p>
+</div>
+{% endif %}
 {% include '@Builder/cabinet/_pages.html.twig' %}
 {% endblock %}

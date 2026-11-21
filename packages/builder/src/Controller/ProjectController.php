@@ -11,6 +11,8 @@ use AdzerCMS\Builder\ProjectFile;
 use AdzerCMS\Builder\Projects;
 use AdzerCMS\Builder\Repository\ProjectPageRepository;
 use AdzerCMS\Builder\Repository\ProjectRepository;
+use AdzerCMS\Builder\Repository\ProjectTransferRepository;
+use AdzerCMS\Builder\Transfers;
 use AdzerCMS\Core\Account\Role;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Ui\Column;
@@ -48,6 +50,8 @@ final class ProjectController extends AbstractController
         private readonly Projects $work,
         private readonly ProjectAlbums $albums,
         private readonly ProjectFile $file,
+        private readonly ProjectTransferRepository $transfers,
+        private readonly Transfers $handing,
     ) {
     }
 
@@ -60,7 +64,9 @@ final class ProjectController extends AbstractController
         ], 'edited', t('builder.projects.empty'), ascending: false);
         $context = ['table' => $table, 'rows' => $this->projects->owned($user, $table)];
 
-        return $this->render($request->headers->has('HX-Request') ? '@Builder/cabinet/_projects.html.twig' : '@Builder/cabinet/projects.html.twig', $context);
+        return $request->headers->has('HX-Request')
+            ? $this->render('@Builder/cabinet/_projects.html.twig', $context)
+            : $this->render('@Builder/cabinet/projects.html.twig', $context + ['offers' => $this->transfers->offered($user)]);
     }
 
     #[Route('/new', name: self::NEW, methods: ['GET', 'POST'])]
@@ -83,7 +89,52 @@ final class ProjectController extends AbstractController
     {
         $project = $this->owned($user, $id);
 
-        return $this->render($request->headers->has('HX-Request') ? self::PAGES : '@Builder/cabinet/project.html.twig', $this->listing($project, $request));
+        return $request->headers->has('HX-Request')
+            ? $this->render(self::PAGES, $this->listing($project, $request))
+            : $this->render('@Builder/cabinet/project.html.twig', $this->listing($project, $request) + ['transfer' => $this->transfers->pending($project)]);
+    }
+
+    #[Route('/{id}/transfer', name: 'builder_project_transfer', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function transfer(#[CurrentUser] User $user, int $id, Request $request): Response
+    {
+        $project = $this->owned($user, $id);
+        $refusals = [];
+        if ($request->isMethod('POST')) {
+            $refusal = $this->handing->offer($project, $request->request->getString(Transfers::EMAIL));
+            if (null === $refusal) {
+                $this->addFlash('success', t('builder.transfer.offered', ['name' => $project->getName()]));
+
+                return Fragment::go($this->generateUrl(self::PROJECT, ['id' => $id]));
+            }
+            $refusals = [Transfers::EMAIL => $refusal];
+        }
+
+        return $this->render('@Builder/cabinet/_transfer.html.twig', ['project' => $project, 'input' => $request->request->all(), 'refusals' => $refusals]);
+    }
+
+    #[Route('/{id}/transfer/cancel', name: 'builder_project_transfer_cancel', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function cancel(#[CurrentUser] User $user, int $id): Response
+    {
+        $project = $this->owned($user, $id);
+        $this->handing->cancel($this->transfers->pending($project) ?? throw $this->createNotFoundException());
+        $this->addFlash('success', t('builder.transfer.withdrawn', ['name' => $project->getName()]));
+
+        return $this->redirectToRoute(self::PROJECT, ['id' => $id]);
+    }
+
+    #[Route('/transfers/{id}/accept', name: 'builder_transfer_accept', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function accept(#[CurrentUser] User $user, int $id): Response
+    {
+        $transfer = $this->transfers->received($user, $id) ?? throw $this->createNotFoundException();
+        $refusal = $this->handing->accept($transfer);
+        if (null !== $refusal) {
+            $this->addFlash('error', $refusal->reason);
+
+            return $this->redirectToRoute(self::LIST);
+        }
+        $this->addFlash('success', t('builder.transfer.taken', ['name' => $transfer->getProject()->getName()]));
+
+        return $this->redirectToRoute(self::PROJECT, ['id' => $transfer->getProject()->getId()]);
     }
 
     #[Route('/{id}/order', name: self::ORDER, requirements: ['id' => '\d+'], methods: ['POST'])]

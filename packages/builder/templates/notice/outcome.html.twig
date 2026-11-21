@@ -1,0 +1,15 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+{% import '@Core/notice/_macros.html.twig' as mail %}
+
+{% block subject %}{{ 'builder.notice.outcome.subject'|trans({brand: brand.title, name: name}) }}{% endblock %}
+
+{% block text %}
+{{ 'builder.notice.outcome.body'|trans({name: name, outcome: outcome}) }}
+{{ 'builder.projects.menu'|trans }}: {{ url('builder_projects') }}
+{% endblock %}
+
+{% block content %}
+<h2>{{ 'builder.event.outcome'|trans }}</h2>
+<p>{{ 'builder.notice.outcome.body'|trans({name: name, outcome: outcome}) }}</p>
+{{ mail.button(url('builder_projects'), 'builder.projects.menu'|trans) }}
+{% endblock %}

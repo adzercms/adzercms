@@ -1,0 +1,15 @@
+{% import '@Theme/_refusal.html.twig' as refusal %}
+{% include '@Theme/_modal_header.html.twig' with {title: 'builder.transfer.action'|trans} only %}
+
+<div class="modal-body">
+    <form hx-post="{{ path('builder_project_transfer', {id: project.id}) }}" hx-target="#record">
+        {{ csrf_field() }}
+        <div class="fields">
+            <label>{{ 'builder.transfer.email'|trans }}
+                <input type="email" name="{{ constant('AdzerCMS\\Builder\\Transfers::EMAIL') }}" value="{{ input.email ?? '' }}" required>
+                {{ refusal.of(refusals, constant('AdzerCMS\\Builder\\Transfers::EMAIL')) }}
+            </label>
+        </div>
+        <button type="submit">{{ 'builder.transfer.action'|trans }}</button>
+    </form>
+</div>

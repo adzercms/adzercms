@@ -61,6 +61,18 @@
         <target>Elements</target>
       </segment>
     </unit>
+    <unit id="builder.event.offer">
+      <segment>
+        <source>builder.event.offer</source>
+        <target>Project transfer</target>
+      </segment>
+    </unit>
+    <unit id="builder.event.outcome">
+      <segment>
+        <source>builder.event.outcome</source>
+        <target>Outcome of a project transfer</target>
+      </segment>
+    </unit>
     <unit id="builder.exit">
       <segment>
         <source>builder.exit</source>
@@ -83,6 +95,36 @@
       <segment>
         <source>builder.leave</source>
         <target>Leave the editor? The unsaved changes will be lost</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.offer.body">
+      <segment>
+        <source>builder.notice.offer.body</source>
+        <target>{sender} hands the project «{name}» over to you. Accept it in the cabinet by {expires, date, ::yMMddjmm}.</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.offer.short">
+      <segment>
+        <source>builder.notice.offer.short</source>
+        <target>{sender} hands the project «{name}» over to you, accept it in the cabinet.</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.offer.subject">
+      <segment>
+        <source>builder.notice.offer.subject</source>
+        <target>{brand}: the project «{name}» for you</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.outcome.body">
+      <segment>
+        <source>builder.notice.outcome.body</source>
+        <target>Transfer of the project «{name}»: {outcome}.</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.outcome.subject">
+      <segment>
+        <source>builder.notice.outcome.subject</source>
+        <target>{brand}: transfer of the project «{name}»</target>
       </segment>
     </unit>
     <unit id="builder.pictures">
@@ -211,6 +253,18 @@
         <target>Up to {limit, plural, one {# project} other {# projects}}: delete one to start another</target>
       </segment>
     </unit>
+    <unit id="builder.refusal.recipient">
+      <segment>
+        <source>builder.refusal.recipient</source>
+        <target>No registered user has the email {email}</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.recipient_owner">
+      <segment>
+        <source>builder.refusal.recipient_owner</source>
+        <target>The project is yours already: give the email of another user</target>
+      </segment>
+    </unit>
     <unit id="builder.refusal.size">
       <segment>
         <source>builder.refusal.size</source>
@@ -275,6 +329,84 @@
       <segment>
         <source>builder.traits</source>
         <target>Properties</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.accept">
+      <segment>
+        <source>builder.transfer.accept</source>
+        <target>Accept</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.accepted">
+      <segment>
+        <source>builder.transfer.accepted</source>
+        <target>accepted</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.action">
+      <segment>
+        <source>builder.transfer.action</source>
+        <target>Hand over</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.cancel">
+      <segment>
+        <source>builder.transfer.cancel</source>
+        <target>Cancel the transfer</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.cancelled">
+      <segment>
+        <source>builder.transfer.cancelled</source>
+        <target>cancelled by the sender</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.email">
+      <segment>
+        <source>builder.transfer.email</source>
+        <target>Email of the recipient</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.expired">
+      <segment>
+        <source>builder.transfer.expired</source>
+        <target>not accepted in time</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.offer">
+      <segment>
+        <source>builder.transfer.offer</source>
+        <target>«{name}» from {sender}, until {expires, date, ::yMMddjmm}</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.offered">
+      <segment>
+        <source>builder.transfer.offered</source>
+        <target>The project «{name}» waits for the recipient to accept it</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.offers">
+      <segment>
+        <source>builder.transfer.offers</source>
+        <target>Projects handed over to you</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.pending">
+      <segment>
+        <source>builder.transfer.pending</source>
+        <target>The project goes to {recipient} once accepted by {expires, date, ::yMMddjmm}</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.taken">
+      <segment>
+        <source>builder.transfer.taken</source>
+        <target>The project «{name}» is yours</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.withdrawn">
+      <segment>
+        <source>builder.transfer.withdrawn</source>
+        <target>The transfer of the project «{name}» is cancelled</target>
       </segment>
     </unit>
     <unit id="builder.undo">

@@ -60,4 +60,10 @@ class Project
     {
         $this->edited = now();
     }
+
+    public function handOver(User $owner): void
+    {
+        $this->owner = $owner;
+        $this->touch();
+    }
 }

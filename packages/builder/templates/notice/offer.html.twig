@@ -1,0 +1,15 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+{% import '@Core/notice/_macros.html.twig' as mail %}
+
+{% block subject %}{{ 'builder.notice.offer.subject'|trans({brand: brand.title, name: name}) }}{% endblock %}
+
+{% block text %}
+{{ 'builder.notice.offer.body'|trans({name: name, sender: sender, expires: expires}) }}
+{{ 'builder.projects.menu'|trans }}: {{ url('builder_projects') }}
+{% endblock %}
+
+{% block content %}
+<h2>{{ 'builder.event.offer'|trans }}</h2>
+<p>{{ 'builder.notice.offer.body'|trans({name: name, sender: sender, expires: expires}) }}</p>
+{{ mail.button(url('builder_projects'), 'builder.projects.menu'|trans) }}
+{% endblock %}
