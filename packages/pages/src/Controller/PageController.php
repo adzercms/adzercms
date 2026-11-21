@@ -35,7 +35,7 @@ final class PageController extends AbstractController
     ) {
     }
 
-    #[Route('/', name: self::ROOT, methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SITE])]
+    #[Route('/', name: self::ROOT, methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SITE], priority: -1)]
     public function root(Entries $entries): Response
     {
         $page = $this->pages->published(Page::ROOT);

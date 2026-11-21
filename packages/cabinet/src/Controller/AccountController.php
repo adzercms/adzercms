@@ -48,7 +48,7 @@ final class AccountController extends AbstractController
 {
     private const PROFILE_TABS = ['account', 'notices', 'security'];
 
-    #[Route('/', name: 'cabinet_root', methods: ['GET'], options: ['fallback' => true], priority: -1)]
+    #[Route('/', name: 'cabinet_root', methods: ['GET'], options: ['fallback' => true], priority: \PHP_INT_MIN)]
     public function root(): Response
     {
         return $this->redirectToRoute('cabinet_account');
