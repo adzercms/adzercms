@@ -55,11 +55,10 @@ final readonly class ProjectUpload
         }
 
         $blocks = [];
-        foreach ($pages as $at => $page) {
+        foreach (ProjectFile::renamed($pages, $stored) as $at => $page) {
             foreach ($page['blocks'] as $block) {
-                $values = array_map(static fn (string $value): string => strtr($value, $stored), $block['values']);
                 $type = $this->types->find($block['type']);
-                $values = null === $type ? $values : $this->document->stored($type, $values, $this->pictures);
+                $values = null === $type ? $block['values'] : $this->document->stored($type, $block['values'], $this->pictures);
                 if ($values instanceof Refusal) {
                     $this->pictures->drop(array_values($stored));
 

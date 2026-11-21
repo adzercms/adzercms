@@ -6,10 +6,14 @@ namespace AdzerCMS\Builder\Repository;
 
 use AdzerCMS\Builder\Entity\Project;
 use AdzerCMS\Builder\Entity\ProjectVersion;
+use AdzerCMS\Builder\Projects;
+use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Ui\Table;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+
+use function Symfony\Component\Translation\t;
 
 /** @extends ServiceEntityRepository<Project> */
 class ProjectRepository extends ServiceEntityRepository
@@ -52,8 +56,8 @@ class ProjectRepository extends ServiceEntityRepository
         return $covers;
     }
 
-    public function counted(User $owner): int
+    public function overflow(User $owner): ?Refusal
     {
-        return $this->count(['owner' => $owner]);
+        return $this->count(['owner' => $owner]) >= Projects::PROJECTS ? new Refusal(t('builder.refusal.projects', ['limit' => Projects::PROJECTS])) : null;
     }
 }

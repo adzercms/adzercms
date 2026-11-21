@@ -124,7 +124,7 @@ a:hover { text-decoration: underline; }
     font-size: 13px;
 }
 
-.preview-theme { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.preview-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .preview-bar button { flex: none; }
 
 .panel-header {

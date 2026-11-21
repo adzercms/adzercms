@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace AdzerCMS\Builder\Tests;
 
 use AdzerCMS\Builder\Entity\Project;
-use AdzerCMS\Builder\Entity\ProjectBlock;
 use AdzerCMS\Builder\Entity\ProjectPage;
 use AdzerCMS\Builder\ProjectAccess;
-use AdzerCMS\Builder\ProjectAlbums;
 use AdzerCMS\Builder\Repository\ProjectBlockRepository;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Moderation\Decision;
@@ -33,16 +31,8 @@ final class ShowTest extends SchemaTestCase
     {
         parent::setUp();
         $this->author = $this->record('79990000002', 'author@example.org');
-        $this->home = $this->home($this->author, 'Fiber', ProjectAccess::Link);
+        $this->home = $this->site($this->author, ProjectAccess::Link);
         $this->project = $this->home->getProject();
-        $about = new ProjectPage($this->project, 'About', '/about');
-        $about->place(2);
-        $this->em->persist($about);
-        $this->em->flush();
-        $picture = self::service(ProjectAlbums::class)->of($this->project)->store($this->picture('hero.png'));
-        $this->em->persist(new ProjectBlock($this->home, 'hero', ['title' => 'Fiber', 'picture' => $picture]));
-        $this->em->persist(new ProjectBlock($about, 'text', ['title' => 'Our team', 'text' => 'Fiber since 2020']));
-        $this->em->flush();
         $this->client->disableReboot();
     }
 

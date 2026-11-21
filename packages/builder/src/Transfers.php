@@ -72,8 +72,9 @@ final readonly class Transfers
     public function accept(ProjectTransfer $transfer): ?Refusal
     {
         $recipient = $transfer->getRecipient();
-        if ($this->projects->counted($recipient) >= Projects::PROJECTS) {
-            return new Refusal(t('builder.refusal.projects', ['limit' => Projects::PROJECTS]));
+        $refusal = $this->projects->overflow($recipient);
+        if (null !== $refusal) {
+            return $refusal;
         }
 
         $sender = $transfer->getProject()->getOwner();

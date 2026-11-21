@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace AdzerCMS\Builder;
 
 use AdzerCMS\Builder\Entity\Project;
+use AdzerCMS\Builder\Entity\ProjectBlock;
 use AdzerCMS\Builder\Entity\ProjectPage;
+use AdzerCMS\Builder\Entity\ProjectVersion;
 use AdzerCMS\Builder\Repository\ProjectPageRepository;
 use AdzerCMS\Builder\Repository\ProjectRepository;
 use AdzerCMS\Builder\Repository\ProjectTransferRepository;
@@ -49,8 +51,7 @@ final readonly class Projects
         $name = trim($input->getString(self::NAME));
         $refusal = match (true) {
             '' === $name || mb_strlen($name) > Project::NAME => new Refusal(t('builder.refusal.name', ['limit' => Project::NAME])),
-            $this->projects->counted($owner) >= self::PROJECTS => new Refusal(t('builder.refusal.projects', ['limit' => self::PROJECTS])),
-            default => null,
+            default => $this->projects->overflow($owner),
         };
         if (null !== $refusal) {
             return [self::NAME => $refusal];
@@ -64,6 +65,34 @@ final readonly class Projects
         $this->em->flush();
 
         return $root;
+    }
+
+    public function copy(User $owner, ProjectVersion $version): Project|Refusal
+    {
+        $refusal = $this->projects->overflow($owner);
+        if (null !== $refusal) {
+            return $refusal;
+        }
+
+        $project = new Project($owner, $version->getName());
+        $this->em->persist($project);
+        $this->em->flush();
+        $pages = $version->getPages();
+        $copied = $this->albums->copy($this->albums->ofVersion($version), $this->albums->of($project), ProjectFile::names($pages));
+        foreach (ProjectFile::renamed($pages, $copied) as $at => $one) {
+            $page = new ProjectPage($project, $one['title'], $one['path']);
+            $page->place($at + 1);
+            $this->em->persist($page);
+            foreach ($one['blocks'] as $position => $block) {
+                $record = new ProjectBlock($page, $block['type'], $block['values']);
+                $record->restyle($block['style']);
+                $record->place($position + 1);
+                $this->em->persist($record);
+            }
+        }
+        $this->em->flush();
+
+        return $project;
     }
 
     /**
