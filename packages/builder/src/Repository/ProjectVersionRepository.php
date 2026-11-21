@@ -11,6 +11,7 @@ use AdzerCMS\Core\Moderation\Decision;
 use AdzerCMS\Core\Ui\Filter;
 use AdzerCMS\Core\Ui\Table;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /** @extends ServiceEntityRepository<ProjectVersion> */
@@ -41,14 +42,22 @@ class ProjectVersionRepository extends ServiceEntityRepository
 
     public function shown(Project $project): ?ProjectVersion
     {
-        if (ProjectAccess::Personal === $project->getAccess()) {
-            return null;
-        }
-        $last = $this->createQueryBuilder('v')->where('v.project = :project')->andWhere('v.decision IN (:decided)')
-            ->setParameter('project', $project)->setParameter('decided', [Decision::Published->value, Decision::Withdrawn->value])
-            ->orderBy('v.id', 'DESC')->setMaxResults(1)->getQuery()->getOneOrNullResult();
+        return $this->shownOnes()->andWhere('v.project = :project')->setParameter('project', $project)->getQuery()->getOneOrNullResult();
+    }
 
-        return $last instanceof ProjectVersion && Decision::Published === $last->getDecision() ? $last : null;
+    /** @return list<ProjectVersion> */
+    public function catalog(Table $table): array
+    {
+        return $table->paginate($this->shownOnes()->andWhere('p.access = :open')->setParameter('open', ProjectAccess::Open->value)->orderBy('v.id', 'DESC')->getQuery());
+    }
+
+    private function shownOnes(): QueryBuilder
+    {
+        return $this->createQueryBuilder('v')->join('v.project', 'p')->addSelect('p')
+            ->where('v.decision = :published')->andWhere('p.access <> :personal')
+            ->andWhere(\sprintf('v.id = (SELECT MAX(w.id) FROM %s w WHERE w.project = p AND w.decision IN (:decided))', ProjectVersion::class))
+            ->setParameter('published', Decision::Published->value)->setParameter('personal', ProjectAccess::Personal->value)
+            ->setParameter('decided', [Decision::Published->value, Decision::Withdrawn->value]);
     }
 
     /**

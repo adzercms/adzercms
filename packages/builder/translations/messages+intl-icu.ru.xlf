@@ -67,6 +67,30 @@
         <target>Блоки</target>
       </segment>
     </unit>
+    <unit id="builder.catalog.description">
+      <segment>
+        <source>builder.catalog.description</source>
+        <target>Шаблоны сайтов из конструктора {brand}</target>
+      </segment>
+    </unit>
+    <unit id="builder.catalog.empty">
+      <segment>
+        <source>builder.catalog.empty</source>
+        <target>Шаблонов пока нет</target>
+      </segment>
+    </unit>
+    <unit id="builder.catalog.menu">
+      <segment>
+        <source>builder.catalog.menu</source>
+        <target>Шаблоны</target>
+      </segment>
+    </unit>
+    <unit id="builder.catalog.title">
+      <segment>
+        <source>builder.catalog.title</source>
+        <target>Шаблоны сайтов</target>
+      </segment>
+    </unit>
     <unit id="builder.element.box">
       <segment>
         <source>builder.element.box</source>

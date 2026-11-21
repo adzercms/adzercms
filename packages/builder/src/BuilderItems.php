@@ -4,21 +4,30 @@ declare(strict_types=1);
 
 namespace AdzerCMS\Builder;
 
+use AdzerCMS\Builder\Controller\CatalogController;
 use AdzerCMS\Builder\Controller\ProjectController;
 use AdzerCMS\Builder\Controller\TemplateController;
 use AdzerCMS\Contracts\Ui\Area;
 use AdzerCMS\Contracts\Ui\Menu;
 use AdzerCMS\Contracts\Ui\MenuItem;
+use AdzerCMS\Contracts\Ui\SiteSections;
 
 use function Symfony\Component\Translation\t;
 
-final readonly class BuilderItems implements Menu
+final readonly class BuilderItems implements Menu, SiteSections
 {
+    private const CATALOG = 300;
+
     public function items(Area $area): array
     {
         return match ($area) {
             Area::Cabinet => [new MenuItem(ProjectController::LIST, t('builder.projects.menu'), 450, [ProjectController::PROJECT])],
             Area::Admin => [new MenuItem(TemplateController::LIST, t('builder.templates.menu'), 610, [TemplateController::RECORD])],
         };
+    }
+
+    public function sections(): array
+    {
+        return [new MenuItem(CatalogController::CATALOG, t('builder.catalog.menu'), self::CATALOG)];
     }
 }

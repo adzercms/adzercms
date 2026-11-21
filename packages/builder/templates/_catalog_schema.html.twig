@@ -1,0 +1,19 @@
+{% set schema = {
+    '@type': 'CollectionPage',
+    name: 'builder.catalog.title'|trans,
+    url: url('builder_catalog'),
+    mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: rows|map((row, index) => {
+            '@type': 'ListItem',
+            position: table.offset + index + 1,
+            item: {
+                '@type': 'CreativeWork',
+                name: row.name,
+                url: url('builder_show', {token: row.project.token}),
+                image: url('builder_version_picture', {id: row.id, file: row.cover}),
+            },
+        }),
+    },
+} %}
+{% include '@Theme/_schema.html.twig' with {schema: [schema]} only %}
