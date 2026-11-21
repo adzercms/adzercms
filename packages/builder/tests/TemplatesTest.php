@@ -39,6 +39,7 @@ final class TemplatesTest extends SchemaTestCase
     #[Group('ACMS-BLD-0022')]
     #[Group('ACMS-BLD-0013')]
     #[Group('ACMS-BLD-0014')]
+    #[Group('ACMS-CORE-1198')]
     #[Group('ACMS-US-0080')]
     public function testOperatorDecidesVersionsWaitingFirstAndAuthorLearnsDecision(): void
     {
@@ -58,10 +59,16 @@ final class TemplatesTest extends SchemaTestCase
         $page = $this->client->request('GET', $pages);
         self::assertResponseHeaderSame('X-Robots-Tag', 'noindex, nofollow');
         self::assertSame([['Fiber', $pages]], $page->filter('.site-nav a')->each(static fn (Crawler $link): array => [$link->text(), $link->attr('href')]), 'the operator sees the pages of a version waiting for a decision');
-        $this->post($record.'/decide', [Moderation::DECISION => Decision::Rejected->value, Moderation::REASON => '']);
+        $decide = $this->client->request('GET', $record)->filter('form[hx-post$="/decide"]');
+        self::assertCount(1, $decide, 'the decisions go by one form');
+        self::assertSame(self::phrase(Decision::Rejected->reason()), trim($decide->filter('label')->text()), 'the field of the form is the reason of the rejection');
+        self::assertCount(1, $decide->filter('button[value="'.Decision::Published->value.'"][formnovalidate]'), 'the publication goes past the reason');
+        $reject = static fn (string $reason): array => array_replace($decide->selectButton(self::phrase(Decision::Rejected->action()))->form()->getPhpValues(), [Moderation::REASON => $reason]);
+
+        $this->client->request('POST', (string) $decide->attr('hx-post'), $reject(''));
         self::assertSelectorTextContains('.modal-body', self::phrase('core.moderation.refusal.reason'), 'a rejection takes a reason');
 
-        $this->post($record.'/decide', [Moderation::DECISION => Decision::Rejected->value, Moderation::REASON => 'No contacts']);
+        $this->client->request('POST', (string) $decide->attr('hx-post'), $reject('No contacts'));
         self::assertResponseHeaderSame('HX-Redirect', self::SECTION);
         self::assertSame(Decision::Rejected, $this->reread($waiting)->getDecision());
         self::assertSame(['author@example.org'], array_map(static fn ($address): string => $address->getAddress(), $this->letter()->getTo()), 'the author learns the decision');

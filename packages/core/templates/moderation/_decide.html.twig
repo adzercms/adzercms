@@ -1,15 +1,17 @@
-{% for decision in subject.decision.next %}
-    {% set publish = decision == constant('AdzerCMS\\Core\\Moderation\\Decision::Published') %}
+{% set published = constant('AdzerCMS\\Core\\Moderation\\Decision::Published') %}
+{% set reasoned = subject.decision.next|filter(decision => decision != published)|first %}
+{% if subject.decision.next %}
     <form hx-post="{{ action }}" hx-target="#record">
         {{ csrf_field() }}
-        <input type="hidden" name="{{ constant('AdzerCMS\\Core\\Moderation\\Moderation::DECISION') }}" value="{{ decision.value }}">
-        {% if not publish %}
+        {% if reasoned %}
             <div class="fields">
-                <label class="field-wide">{{ 'core.moderation.reason'|trans }}
+                <label class="field-wide">{{ reasoned.reason|trans }}
                     <textarea name="{{ constant('AdzerCMS\\Core\\Moderation\\Moderation::REASON') }}" required></textarea>
                 </label>
             </div>
         {% endif %}
-        <button type="submit" class="{{ publish ? '' : 'secondary' }}">{{ decision.action|trans }}</button>
+        {% for decision in subject.decision.next %}
+            <button type="submit" name="{{ constant('AdzerCMS\\Core\\Moderation\\Moderation::DECISION') }}" value="{{ decision.value }}"{% if decision == published %} formnovalidate{% else %} class="secondary"{% endif %}>{{ decision.action|trans }}</button>
+        {% endfor %}
     </form>
-{% endfor %}
+{% endif %}
