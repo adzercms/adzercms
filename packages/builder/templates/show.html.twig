@@ -3,7 +3,7 @@
 {% block page %}
     {{ parent() }}
     {% if copy %}
-        <form class="preview-bar" method="post" action="{{ path('builder_show_copy', {token: version.project.token}) }}" data-copy>
+        <form class="preview-bar" method="post" action="{{ path('builder_show_copy', {token: version.project.token}) }}" data-template-copy>
             {{ csrf_field() }}
             <span class="preview-text">{{ version.name }}</span>
             <button type="submit">{{ 'builder.show.copy'|trans }}</button>

@@ -52,7 +52,7 @@ final class CopyTest extends SchemaTestCase
     public function testVisitorCopiesShownVersionAsOwnPersonalProject(): void
     {
         $this->client->loginUser($this->visitor);
-        self::assertSame($this->copy, $this->client->request('GET', $this->show)->filter('[data-copy]')->attr('action'));
+        self::assertSame($this->copy, $this->client->request('GET', $this->show)->filter('[data-template-copy]')->attr('action'));
 
         $this->post($this->copy);
         $copy = $this->copied();
@@ -97,7 +97,7 @@ final class CopyTest extends SchemaTestCase
         $this->em->flush();
 
         $this->client->loginUser($this->author);
-        self::assertCount(0, $this->client->request('GET', $this->show)->filter('[data-copy]'), 'the owner has no copy of the own project');
+        self::assertCount(0, $this->client->request('GET', $this->show)->filter('[data-template-copy]'), 'the owner has no copy of the own project');
         $this->post($this->copy);
         self::assertResponseStatusCodeSame(404);
 
