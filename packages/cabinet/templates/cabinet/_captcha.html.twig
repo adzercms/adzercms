@@ -1,4 +1,3 @@
 {% if captcha|default({}) %}
-    <div class="{{ captcha.class }} captcha-widget" data-sitekey="{{ captcha.site_key }}"></div>
-    <script src="{{ captcha.js }}" async defer></script>
+    <div class="captcha-widget" data-captcha="{{ captcha.api }}" data-captcha-script="{{ captcha.js }}" data-captcha-onload="{{ captcha.onload }}" data-sitekey="{{ captcha.site_key }}"></div>
 {% endif %}

@@ -22,9 +22,9 @@ final readonly class HCaptchaService implements CaptchaService, Guided
         return [t('hcaptcha.guide.site'), t('hcaptcha.guide.secret')];
     }
 
-    public function script(): string
+    public function script(string $onload): string
     {
-        return 'https://js.hcaptcha.com/1/api.js';
+        return 'https://js.hcaptcha.com/1/api.js?render=explicit&onload='.$onload;
     }
 
     public function origins(): array
@@ -37,9 +37,9 @@ final readonly class HCaptchaService implements CaptchaService, Guided
         return 'https://api.hcaptcha.com/siteverify';
     }
 
-    public function widgetClass(): string
+    public function api(): string
     {
-        return 'h-captcha';
+        return 'hcaptcha';
     }
 
     public function field(): string

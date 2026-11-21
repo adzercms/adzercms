@@ -26,13 +26,14 @@ final class TurnstileTest extends SchemaTestCase
     #[Group('ACMS-CORE-0028')]
     #[Group('ACMS-CORE-1174')]
     #[Group('ACMS-CORE-0051')]
+    #[Group('ACMS-CORE-1202')]
     #[Group('ACMS-US-0001')]
     public function testEnabledCaptchaShowsItsWidgetAndOpensItsOrigins(): void
     {
         $this->enable();
         $captcha = self::captcha();
 
-        self::assertSame(['class' => 'cf-turnstile', 'js' => 'https://challenges.cloudflare.com/turnstile/v0/api.js', 'site_key' => 'site'], $captcha->widget());
+        self::assertSame(['api' => 'turnstile', 'js' => 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload='.Captcha::ONLOAD, 'onload' => Captcha::ONLOAD, 'site_key' => 'site'], $captcha->widget());
         self::assertSame(
             [ContentSource::SCRIPT => self::ORIGINS, ContentSource::CONNECT => self::ORIGINS, ContentSource::FRAME => self::ORIGINS, ContentSource::STYLE => self::ORIGINS],
             $captcha->sources(new Request()),
