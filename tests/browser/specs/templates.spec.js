@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 test.use({ storageState: { cookies: [], origins: [] } });
 
-test('[ACMS-BLD-0015][ACMS-BLD-0017][ACMS-US-0079] a card of the catalog keeps a column of its grid, the copy action of the show takes a guest to the sign-in', async ({ page }) => {
+test('[ACMS-BLD-0015][ACMS-BLD-0017][ACMS-UI-0176][ACMS-US-0079] a card of the catalog keeps a column of its grid, the copy action of the show opens the sign-in window to a guest', async ({ page }) => {
     const faults = [];
     page.on('console', (message) => message.type() === 'error' && faults.push(message.text()));
     page.on('pageerror', (error) => faults.push(error.message));
@@ -18,7 +18,9 @@ test('[ACMS-BLD-0015][ACMS-BLD-0017][ACMS-US-0079] a card of the catalog keeps a
 
     await card.locator('a').click();
     await expect(page).toHaveURL(/\/templates\/[0-9a-f]+/);
+    const show = page.url();
     await page.locator('[data-template-copy] button[type="submit"]').click();
-    await expect(page, 'a guest signs in before the copy').toHaveURL(/\/login$/);
+    await expect(page.locator('#record[open] input[name="_username"]'), 'a guest signs in by a window before the copy').toBeVisible();
+    expect(page.url(), 'the window leaves the show in place').toBe(show);
     expect(faults, 'the catalog and the show run without script errors').toEqual([]);
 });

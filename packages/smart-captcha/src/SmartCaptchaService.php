@@ -22,9 +22,9 @@ final readonly class SmartCaptchaService implements CaptchaService, Guided
         return [t('smartcaptcha.guide.create'), t('smartcaptcha.guide.keys')];
     }
 
-    public function script(): string
+    public function script(string $onload): string
     {
-        return 'https://smartcaptcha.yandexcloud.net/captcha.js';
+        return 'https://smartcaptcha.yandexcloud.net/captcha.js?render=onload&onload='.$onload;
     }
 
     public function origins(): array
@@ -37,9 +37,9 @@ final readonly class SmartCaptchaService implements CaptchaService, Guided
         return 'https://smartcaptcha.yandexcloud.net/validate';
     }
 
-    public function widgetClass(): string
+    public function api(): string
     {
-        return 'smart-captcha';
+        return 'smartCaptcha';
     }
 
     public function field(): string

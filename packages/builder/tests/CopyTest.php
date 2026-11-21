@@ -12,6 +12,7 @@ use AdzerCMS\Builder\Projects;
 use AdzerCMS\Builder\Repository\ProjectRepository;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Moderation\Decision;
+use AdzerCMS\Core\Security\CsrfGuard;
 use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\SchemaTestCase;
@@ -73,16 +74,23 @@ final class CopyTest extends SchemaTestCase
 
     #[Group('ACMS-BLD-0017')]
     #[Group('ACMS-CORE-0087')]
+    #[Group('ACMS-UI-0176')]
     #[Group('ACMS-US-0079')]
-    public function testGuestSignsInAndGetsCopyWithoutRepeatingAction(): void
+    public function testGuestSignsInByWindowAndGetsCopyWithoutRepeatingAction(): void
     {
-        $this->post($this->copy);
+        $window = ['HTTP_HX-Request' => 'true'];
+        $this->client->request('POST', $this->copy, [CsrfGuard::FIELD => $this->formToken(CsrfGuard::TOKEN_ID)], server: $window);
         $this->client->followRedirect();
         self::assertResponseRedirects('/login');
+        self::assertCount(1, $this->client->followRedirect()->filter('.modal-header'), 'the action of a guest opens the window of the login');
 
-        $this->signIn(self::VISITOR, self::PASSWORD);
-        self::assertResponseRedirects('http://localhost'.$this->copy);
-        $this->client->followRedirect();
+        $this->client->request('POST', '/login', [
+            '_username' => self::VISITOR,
+            '_password' => self::PASSWORD,
+            '_csrf_token' => $this->formToken('authenticate'),
+        ], server: $window);
+        self::assertResponseHeaderSame('HX-Redirect', 'http://localhost'.$this->copy);
+        $this->client->request('GET', $this->copy);
         self::assertResponseRedirects('/builder/projects/'.$this->copied()->getId());
     }
 

@@ -1,0 +1,14 @@
+{% extends '@Theme/base.html.twig' %}
+
+{% block bodyclass %}auth-page{% endblock %}
+
+{% block shell %}
+<div class="auth-container">
+    <div class="auth-logo">{% include '@Theme/_brand.html.twig' %}</div>
+
+    <h1>{{ block('title') }}</h1>
+    {% block subtitle %}{% endblock %}
+
+    {% block auth %}{% endblock %}
+</div>
+{% endblock %}

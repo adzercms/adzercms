@@ -36,13 +36,14 @@ final class SmartCaptchaTest extends SchemaTestCase
     #[Group('ACMS-CORE-0028')]
     #[Group('ACMS-CORE-1174')]
     #[Group('ACMS-CORE-0051')]
+    #[Group('ACMS-CORE-1202')]
     #[Group('ACMS-US-0001')]
     public function testEnabledCaptchaShowsItsWidgetAndOpensOnlyItsOrigin(): void
     {
         $this->enable();
         $captcha = self::captcha();
 
-        self::assertSame(['class' => 'smart-captcha', 'js' => self::ORIGIN.'/captcha.js', 'site_key' => 'site'], $captcha->widget());
+        self::assertSame(['api' => 'smartCaptcha', 'js' => self::ORIGIN.'/captcha.js?render=onload&onload='.Captcha::ONLOAD, 'onload' => Captcha::ONLOAD, 'site_key' => 'site'], $captcha->widget());
         self::assertSame(
             [ContentSource::SCRIPT => [self::ORIGIN], ContentSource::CONNECT => [self::ORIGIN], ContentSource::FRAME => [self::ORIGIN], ContentSource::STYLE => [self::ORIGIN]],
             $captcha->sources(new Request()),

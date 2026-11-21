@@ -8,14 +8,14 @@ use AdzerCMS\Contracts\Module\Switchable;
 
 interface CaptchaService extends Switchable
 {
-    public function script(): string;
+    public function script(string $onload): string;
+
+    public function api(): string;
 
     /** @return list<string> */
     public function origins(): array;
 
     public function verifier(): string;
-
-    public function widgetClass(): string;
 
     public function field(): string;
 

@@ -1,0 +1,4 @@
+{% set login = app.user ? null : cabinet('login') %}
+{% set window = login and login starts with '/' %}
+{% set entry = app.user ? cabinet('home') : (window ? cabinet('login', {back: app.request.requestUri}) : login) %}
+{% if entry %}<a{% if class|default %} class="{{ class }}"{% endif %} href="{{ entry }}"{% if window %} data-record="{{ entry }}"{% endif %}>{{ (app.user ? 'theme.site.cabinet' : 'theme.site.login')|trans }}</a>{% endif %}

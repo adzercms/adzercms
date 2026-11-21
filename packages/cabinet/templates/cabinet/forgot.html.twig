@@ -5,7 +5,7 @@
 {% block subtitle %}<p class="auth-subtitle">{{ (code ? 'cabinet.reset.code_hint' : 'cabinet.reset.link_hint')|trans }}</p>{% endblock %}
 
 {% block auth %}
-<form method="post">
+<form method="post" action="{{ app.request.requestUri }}">
     {{ csrf_field() }}
     {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
     <label>{{ 'cabinet.login.login'|trans }}

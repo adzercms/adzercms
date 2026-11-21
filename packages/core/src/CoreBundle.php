@@ -172,7 +172,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
             'password_hashers' => [PasswordAuthenticatedUserInterface::class => $hasher, Confirmations::HASHER => $hasher],
             'providers' => ['users' => ['id' => UserProvider::class], 'records' => ['id' => RecordProvider::class]],
             'role_hierarchy' => [Role::Admin->security() => [Role::User->security(), 'ROLE_ALLOWED_TO_SWITCH']],
-            'firewalls' => ['main' => [
+            'firewalls' => [LoginTarget::FIREWALL => [
                 'lazy' => true,
                 'provider' => 'users',
                 'user_checker' => UserChecker::class,

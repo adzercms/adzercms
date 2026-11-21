@@ -22,9 +22,9 @@ final readonly class TurnstileService implements CaptchaService, Guided
         return [t('turnstile.guide.widget'), t('turnstile.guide.keys')];
     }
 
-    public function script(): string
+    public function script(string $onload): string
     {
-        return 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+        return 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload='.$onload;
     }
 
     public function origins(): array
@@ -37,9 +37,9 @@ final readonly class TurnstileService implements CaptchaService, Guided
         return 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
     }
 
-    public function widgetClass(): string
+    public function api(): string
     {
-        return 'cf-turnstile';
+        return 'turnstile';
     }
 
     public function field(): string

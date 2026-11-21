@@ -14,6 +14,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final readonly class Captcha implements ContentSource
 {
+    public const ONLOAD = 'adzercmsCaptcha';
     private const TIMEOUT = 10.0;
 
     public function __construct(private Switches $switches, private HttpClientInterface $http)
@@ -31,7 +32,7 @@ final readonly class Captcha implements ContentSource
         return [self::SCRIPT => $origins, self::CONNECT => $origins, self::FRAME => $origins, self::STYLE => $origins];
     }
 
-    /** @return array{class: string, js: string, site_key: string}|array{} */
+    /** @return array{api: string, js: string, onload: string, site_key: string}|array{} */
     public function widget(): array
     {
         $active = $this->switches->first(CaptchaService::class);
@@ -40,7 +41,7 @@ final readonly class Captcha implements ContentSource
         }
         [$service, $credentials] = $active;
 
-        return ['class' => $service->widgetClass(), 'js' => $service->script(), 'site_key' => $credentials->get(Key::Site->value)];
+        return ['api' => $service->api(), 'js' => $service->script(self::ONLOAD), 'onload' => self::ONLOAD, 'site_key' => $credentials->get(Key::Site->value)];
     }
 
     public function passed(Request $request): bool

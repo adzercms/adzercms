@@ -402,6 +402,30 @@ document.addEventListener('change', event => {
     }
 });
 
+let captchaScript = null;
+
+const captchas = scope => {
+    const widgets = [...scope.querySelectorAll('[data-captcha]:not([data-drawn])')];
+    if (widgets.length === 0) {
+        return;
+    }
+
+    const [first] = widgets;
+    const api = window[first.dataset.captcha];
+    if (!api) {
+        if (!captchaScript) {
+            window[first.dataset.captchaOnload] = () => captchas(document);
+            captchaScript = document.head.appendChild(Object.assign(document.createElement('script'), {src: first.dataset.captchaScript, async: true}));
+        }
+        return;
+    }
+
+    widgets.forEach(widget => {
+        widget.dataset.drawn = '';
+        api.render(widget, {sitekey: widget.dataset.sitekey});
+    });
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const hashed = location.hash.length > 1 && document.querySelector(`[data-pane="${CSS.escape(location.hash.slice(1))}"]`);
     if (hashed) {
@@ -410,6 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.tabs > .tab.active').forEach(revealTab);
     conditionals(document);
     steppers(document);
+    captchas(document);
     document.querySelector('dialog[data-open]')?.showModal();
     document.querySelector('form[data-autosubmit]')?.requestSubmit();
     showToasts();
@@ -512,6 +537,7 @@ document.addEventListener('htmx:beforeSwap', event => {
 document.addEventListener('htmx:load', event => {
     conditionals(event.target);
     steppers(event.target);
+    captchas(event.target);
 });
 
 const ORDER_FIELD = 'ids[]';
