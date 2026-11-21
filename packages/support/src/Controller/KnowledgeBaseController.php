@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Support\Controller;
 
 use AdzerCMS\Core\Account\Role;
+use AdzerCMS\Core\Seo\Unindexed;
 use AdzerCMS\Core\Site\Hosts;
 use AdzerCMS\Support\Entity\HelpArticle;
 use AdzerCMS\Support\Entity\HelpCategory;
@@ -24,7 +25,6 @@ final class KnowledgeBaseController extends AbstractController
     public const PREVIEW = 'admin_help_article_preview';
 
     private const QUERY = 'q';
-    private const UNINDEXED = 'noindex, nofollow';
 
     public function __construct(
         private readonly KnowledgeBase $base,
@@ -68,14 +68,11 @@ final class KnowledgeBaseController extends AbstractController
         return $this->show($this->articles->published($category, $article) ?? throw $this->createNotFoundException());
     }
 
-    #[Route('/admin/help/articles/{id}/preview', name: self::PREVIEW, requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[Route('/admin/help/articles/{id}/preview', name: self::PREVIEW, requirements: ['id' => '\d+'], methods: ['GET'], defaults: [Unindexed::ROUTE => true])]
     #[IsGranted(Role::ADMIN)]
     public function preview(HelpArticle $article): Response
     {
-        $response = $this->show($article);
-        $response->headers->set('X-Robots-Tag', self::UNINDEXED);
-
-        return $response;
+        return $this->show($article);
     }
 
     private function show(HelpArticle $article): Response

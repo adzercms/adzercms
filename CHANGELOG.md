@@ -65,6 +65,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `Settings::within()`: whether a moment falls in the window of two time settings, across midnight when the start is later; the quiet hours of notifications use it
 - `adzercms/pages`: block style — rules for a block or an element of it on the computer, tablet and phone widths from a closed list of properties and their values, checked by `BlockStyle::rules()`; the page puts them into its head as CSS of the block anchor
 - `Moderation`: one core decision on what a user hands in to a module — pending, published, rejected or withdrawn; a rejection and a withdrawal carry a reason, the author gets the decision by the module's event; the extension catalog takes it; the decision is a badge with its label, its form is the core template `@Core/moderation/_decide.html.twig`
+- `Unindexed::ROUTE`: a route with this default answers with `X-Robots-Tag: noindex, nofollow` on any site frame; the previews of a page and of a help article take it
 
 ### Security
 

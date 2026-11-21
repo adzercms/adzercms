@@ -316,6 +316,8 @@ A site design is a module of the `design` kind: it provides `adzercms/design-imp
 
 The frame draws the site menu with its own markup from the `site_menu()` Twig function: a list of `SiteLink` with `label`, `url`, `current` and `external`, the last one opening the link in a new tab. The sections of the modules are arranged by the instance's only `SiteMenu` service, the Menu tab of the pages module, which mixes them with pages and links; without it the menu is the sections by weight.
 
+A route that search engines must not index, such as a preview, carries the default `AdzerCMS\Core\Seo\Unindexed::ROUTE` set to `true`: its answer gets the `X-Robots-Tag: noindex, nofollow` header whatever the frame.
+
 A design replaces a template of another module with the file of the same name under its `templates/bundles/<Bundle>/`, such as `templates/bundles/PagesBundle/blocks/hero.html.twig`; the original stays reachable as `@!Pages/blocks/hero.html.twig`. A section of the design's layout that no block type of the feature modules expresses is a block type of the design itself, a service of `AdzerCMS\Pages\Block`. A block template, its replacement in a design included, puts the `id` of its context on its root element, as `@Theme/_section.html.twig` does: the block style of the page targets the block by it.
 
 ## Moderation
