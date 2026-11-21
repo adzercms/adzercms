@@ -21,7 +21,6 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 trait Browser
 {
-    protected const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
     private const CONTAINER_PASSWORD = 'container-password';
 
     protected function formToken(string $id, ?KernelBrowser $browser = null): string
@@ -170,7 +169,7 @@ trait Browser
 
     protected function picture(string $name): UploadedFile
     {
-        return $this->scratchFile($name, (string) base64_decode(self::PNG, true));
+        return $this->scratchFile($name, self::dot());
     }
 
     protected function keepContainer(string $setting): void

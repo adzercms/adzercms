@@ -91,21 +91,21 @@ final class UploadTest extends SchemaTestCase
     {
         $hero = ['path' => '/tariffs', 'title' => 'Tariffs', 'blocks' => [['type' => 'hero', 'values' => ['title' => 'Fiber', 'picture' => self::PICTURE], 'style' => []]]];
 
-        yield 'paths of a page and of a module section' => [[['path' => '/', 'title' => 'Home', 'blocks' => []], $hero, ['path' => '/admin/pages', 'title' => 'Pages', 'blocks' => []]], ProjectFile::FORMAT, self::PNG, t('builder.refusal.taken', ['paths' => '/, /admin/pages'])];
-        yield 'format the module does not know' => [[$hero], ProjectFile::FORMAT + 1, self::PNG, t('builder.refusal.format', ['format' => ProjectFile::FORMAT + 1])];
-        yield 'picture that is not an image' => [[$hero], ProjectFile::FORMAT, base64_encode('text'), t('builder.refusal.file')];
-        yield 'style out of the list' => [[['path' => '/tariffs', 'title' => 'Tariffs', 'blocks' => [['type' => 'hero', 'values' => [], 'style' => ['' => ['desktop' => ['position' => 'fixed']]]]]]], ProjectFile::FORMAT, self::PNG, t('pages.refusal.style')];
-        yield 'values the type refuses' => [[['path' => '/tariffs', 'title' => 'Tariffs', 'blocks' => [['type' => 'hero', 'values' => ['title' => 'Fiber', 'picture' => self::PICTURE, 'link' => 'javascript:alert(1)'], 'style' => []]]]], ProjectFile::FORMAT, self::PNG, t('pages.refusal.link', ['field' => t('pages.field.link')])];
+        yield 'paths of a page and of a module section' => [[['path' => '/', 'title' => 'Home', 'blocks' => []], $hero, ['path' => '/admin/pages', 'title' => 'Pages', 'blocks' => []]], ProjectFile::FORMAT, self::dot(), t('builder.refusal.taken', ['paths' => '/, /admin/pages'])];
+        yield 'format the module does not know' => [[$hero], ProjectFile::FORMAT + 1, self::dot(), t('builder.refusal.format', ['format' => ProjectFile::FORMAT + 1])];
+        yield 'picture that is not an image' => [[$hero], ProjectFile::FORMAT, 'text', t('builder.refusal.file')];
+        yield 'style out of the list' => [[['path' => '/tariffs', 'title' => 'Tariffs', 'blocks' => [['type' => 'hero', 'values' => [], 'style' => ['' => ['desktop' => ['position' => 'fixed']]]]]]], ProjectFile::FORMAT, self::dot(), t('pages.refusal.style')];
+        yield 'values the type refuses' => [[['path' => '/tariffs', 'title' => 'Tariffs', 'blocks' => [['type' => 'hero', 'values' => ['title' => 'Fiber', 'picture' => self::PICTURE, 'link' => 'javascript:alert(1)'], 'style' => []]]]], ProjectFile::FORMAT, self::dot(), t('pages.refusal.link', ['field' => t('pages.field.link')])];
     }
 
     /** @param list<array<string, mixed>> $pages */
-    private function archive(array $pages, int $format = ProjectFile::FORMAT, string $picture = self::PNG): UploadedFile
+    private function archive(array $pages, int $format = ProjectFile::FORMAT, ?string $picture = null): UploadedFile
     {
         $file = $this->scratchFile('project.zip', '');
         $zip = new \ZipArchive();
         self::assertTrue($zip->open($file->getPathname(), \ZipArchive::OVERWRITE));
         $zip->addFromString(ProjectFile::DOCUMENT, json_encode(['format' => $format, 'pages' => $pages], \JSON_THROW_ON_ERROR));
-        $zip->addFromString(ProjectFile::PICTURES.self::PICTURE, (string) base64_decode($picture, true));
+        $zip->addFromString(ProjectFile::PICTURES.self::PICTURE, $picture ?? self::dot());
         $zip->close();
 
         return new UploadedFile($file->getPathname(), 'project.zip', null, null, true);

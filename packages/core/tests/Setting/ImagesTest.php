@@ -15,14 +15,12 @@ use Symfony\Component\Filesystem\Filesystem;
 
 final class ImagesTest extends SchemaTestCase
 {
-    private const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
-
     #[Group('ACMS-CORE-0061')]
     #[Group('ACMS-US-0004')]
     public function testImageByPathIsServedSandboxedAndRemovedWithFile(): void
     {
         $set = self::command('adzercms:setting');
-        self::assertSame(Command::SUCCESS, $set->execute(['name' => Brand::LOGO, 'value' => $this->upload((string) base64_decode(self::PNG))]));
+        self::assertSame(Command::SUCCESS, $set->execute(['name' => Brand::LOGO, 'value' => $this->upload(self::dot())]));
 
         $this->client->request('GET', '/setting/'.Brand::LOGO);
         self::assertResponseIsSuccessful();

@@ -48,6 +48,11 @@ abstract class SchemaTestCase extends WebTestCase
         self::$migrated = false;
     }
 
+    protected static function dot(): string
+    {
+        return (string) base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', true);
+    }
+
     /**
      * @template T of object
      *

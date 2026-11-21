@@ -10,14 +10,6 @@ use Symfony\Component\HttpClient\Response\MockResponse;
 
 trait Pictures
 {
-    protected static function dot(): string
-    {
-        $image = new \Imagick();
-        $image->newImage(1, 1, 'white', 'png');
-
-        return $image->getImageBlob();
-    }
-
     protected function avatar(User $user): string
     {
         self::service(HttpAnswers::class)->respond(new MockResponse(self::dot()));

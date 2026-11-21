@@ -151,7 +151,7 @@ final class ModuleWebTest extends SchemaTestCase
             ['name' => 'acme/look', 'type' => ExtensionType::Theme->value, 'demo' => 'https://look.example.test', 'images' => [self::COVER]],
             ['name' => 'adzercms/admin', 'demo' => 'https://admin.example.test', 'images' => [self::COVER]],
         ];
-        $this->pictures = [self::COVER => (string) base64_decode(self::PNG, true)];
+        $this->pictures = [self::COVER => self::dot()];
         self::command('adzercms:modules')->execute([]);
         $page = $this->client->request('GET', self::MODULES);
         $text = static fn (Crawler $node): string => trim($node->text());

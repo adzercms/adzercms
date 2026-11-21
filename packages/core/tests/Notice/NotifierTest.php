@@ -46,7 +46,6 @@ final class NotifierTest extends SchemaTestCase
     private const MINUTE = 60;
     private const DAY = 86400;
     private const QUIET = [QuietHours::FROM => '22:00', QuietHours::TO => '07:00'];
-    private const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
     private const SENT = 'sent';
 
     #[Group('ACMS-CORE-0118')]
@@ -217,7 +216,7 @@ final class NotifierTest extends SchemaTestCase
     {
         $this->configure(self::MAIL);
         $logo = self::parameter('adzercms.files_dir').'/upload/logo';
-        (new Filesystem())->dumpFile($logo, (string) base64_decode(self::PNG));
+        (new Filesystem())->dumpFile($logo, self::dot());
         self::assertSame(Command::SUCCESS, self::command('adzercms:setting')->execute(['name' => Brand::LOGO, 'value' => $logo]));
         $owner = $this->record('+7 900 111-22-33', 'owner@example.org');
 
