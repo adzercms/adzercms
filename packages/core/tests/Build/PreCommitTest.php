@@ -14,6 +14,7 @@ final class PreCommitTest extends TestCase
 {
     private const SCRIPT = __DIR__.'/../../bin/adzercms-pre-commit';
     private const MANIFEST = 'modules/design/composer.json';
+    private const MIGRATION = 'modules/design/migrations/Version20260101000000.php';
 
     private string $root;
 
@@ -65,18 +66,14 @@ final class PreCommitTest extends TestCase
     #[DataProvider('migrations')]
     public function testMigrationChangesOnlyTheTablesOfItsModule(bool $neighbour, string $table, bool $passes): void
     {
-        $files = new Filesystem();
-        $migration = 'modules/design/migrations/Version20260101000000.php';
-        $files->dumpFile($this->root.'/'.$migration, "<?php\n\nnamespace Acme\\Design\\Migrations;\n\nuse Doctrine\\DBAL\\Schema\\Schema;\nuse Doctrine\\Migrations\\AbstractMigration;\n\n"
-            ."final class Version20260101000000 extends AbstractMigration\n{\n    public function up(Schema \$schema): void\n    {\n        \$this->addSql('UPDATE {$table} SET name = name');\n    }\n}\n");
-        $files->symlink(__DIR__.'/Fixture/php', $this->root.'/vendor/bin/php-cs-fixer');
+        $this->migration("\$this->addSql('UPDATE {$table} SET name = name');");
         if ($neighbour) {
-            $files->dumpFile($this->root.'/modules/catalog/src/Entity/Product.php', "<?php\n\n#[ORM\\Table(name: 'products')]\nfinal class Product\n{\n}\n");
+            (new Filesystem())->dumpFile($this->root.'/modules/catalog/src/Entity/Product.php', "<?php\n\n#[ORM\\Table(name: 'products')]\nfinal class Product\n{\n}\n");
             $this->git('add', 'modules/catalog');
         }
-        $this->git('add', $migration);
+        $this->git('add', self::MIGRATION);
 
-        $this->assertGate($passes, $migration);
+        $this->assertGate($passes, self::MIGRATION);
     }
 
     /** @return iterable<string, array{bool, string, bool}> */
@@ -87,9 +84,39 @@ final class PreCommitTest extends TestCase
         yield 'a tree without entities of other modules' => [false, 'banners', true];
     }
 
-    private function assertGate(bool $passes, string $refused): void
+    #[Group('ACMS-CORE-0932')]
+    #[DataProvider('edits')]
+    public function testCommittedMigrationChangesBeyondCommentsOnlyNamedByTheCommit(string $statement, string $named, bool $passes): void
     {
-        $gate = new Process(['sh', self::SCRIPT], $this->root, ['PHP_BINARY' => \PHP_BINARY]);
+        $this->migration("\$this->addSql('UPDATE banners SET name = name');");
+        $this->git('add', self::MIGRATION);
+        $this->commit();
+        $this->migration($statement);
+        $this->git('add', self::MIGRATION);
+
+        $this->assertGate($passes, self::MIGRATION, ['ADZERCMS_MIGRATION_EDIT' => $named]);
+    }
+
+    /** @return iterable<string, array{string, string, bool}> */
+    public static function edits(): iterable
+    {
+        yield 'a comment' => ["// banners keep their names\n        \$this->addSql('UPDATE banners SET name = name');", '', true];
+        yield 'the code' => ["\$this->addSql('UPDATE banners SET name = title');", '', false];
+        yield 'the code of a file the commit names' => ["\$this->addSql('UPDATE banners SET name = title');", 'modules/catalog/migrations/Version20260101000001.php '.self::MIGRATION, true];
+    }
+
+    private function migration(string $statement): void
+    {
+        $files = new Filesystem();
+        $files->dumpFile($this->root.'/'.self::MIGRATION, "<?php\n\nnamespace Acme\\Design\\Migrations;\n\nuse Doctrine\\DBAL\\Schema\\Schema;\nuse Doctrine\\Migrations\\AbstractMigration;\n\n"
+            ."final class Version20260101000000 extends AbstractMigration\n{\n    public function up(Schema \$schema): void\n    {\n        {$statement}\n    }\n}\n");
+        $files->symlink(__DIR__.'/Fixture/php', $this->root.'/vendor/bin/php-cs-fixer');
+    }
+
+    /** @param array<string, string> $environment */
+    private function assertGate(bool $passes, string $refused, array $environment = []): void
+    {
+        $gate = new Process(['sh', self::SCRIPT], $this->root, ['PHP_BINARY' => \PHP_BINARY, ...$environment]);
         $gate->run();
 
         self::assertSame([$passes, !$passes], [$gate->isSuccessful(), str_contains($gate->getOutput(), $refused)], $gate->getOutput());

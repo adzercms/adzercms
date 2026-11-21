@@ -40,6 +40,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - Going back closes a modal dialog by the gesture and the browser button: the core script `adzercms/dialogs` keeps a history entry per open dialog, the theme imports it
 - `Table::paginate()`: a listing that fetches a collection of its rows pages with the offset paginator of Doctrine ORM and takes the total from it
 - A renamed namespace of a migration set or a migration moved to another set does not run again: the migrations console moves its mark to the migration with the same version number
+- The pre-commit hook lets through an edit of a committed migration beyond comments when the commit names the file in `ADZERCMS_MIGRATION_EDIT`: an edit that keeps the SQL of the migration, such as one for a new release of a library
 - String equality tells letters apart by diacritics, «е» from «ё», on every database: the migrations console gives a MySQL database `utf8mb4_0900_as_ci` and a MariaDB one `utf8mb4_uca1400_as_ci`, converting the tables of another collation
 - The verified mark in the module catalog: the version whose commit passed the module check of the engine; installing or updating to a version without it asks for confirmation, the `confirm` key of a row action gives the question
 - `adzercms-module-check` checks an installed module: the build with it, `composer audit` of the packages it adds, PHPStan and Psalm taint analysis of its code; the project template requires Psalm with its Symfony plugin for development

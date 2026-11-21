@@ -262,7 +262,7 @@ bin/console doctrine:migrations:generate --namespace='Acme\Shop\Migrations'
 
 The generated class won't run until you fill it in. Describe tables with DBAL `Table` objects and the `$this->platform` SQL instead of SQL strings — then the module works on MySQL, MariaDB and PostgreSQL. Migrations don't use the module's classes.
 
-An applied migration is remembered by its class name. If the module changes its namespace or a migration moves to another set, it won't run again: the migrations console moves the mark to the migration with the same version number. A committed migration is never changed: an instance that has already applied it won't run it again. So a schema change is always a new migration, and the `pre-commit` hook rejects edits to a committed one.
+An applied migration is remembered by its class name. If the module changes its namespace or a migration moves to another set, it won't run again: the migrations console moves the mark to the migration with the same version number. A committed migration is never changed: an instance that has already applied it won't run it again. So a schema change is always a new migration, and the `pre-commit` hook rejects edits to a committed one. An edit that keeps the SQL the migration runs, such as one for a new release of a library, goes through when the commit names the file by its path from the project root: `ADZERCMS_MIGRATION_EDIT='modules/acme/migrations/Version20260101000000.php' git commit`, several files separated by spaces.
 
 ## Settings
 
