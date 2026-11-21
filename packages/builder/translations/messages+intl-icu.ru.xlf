@@ -61,6 +61,18 @@
         <target>Элементы</target>
       </segment>
     </unit>
+    <unit id="builder.event.offer">
+      <segment>
+        <source>builder.event.offer</source>
+        <target>Передача проекта</target>
+      </segment>
+    </unit>
+    <unit id="builder.event.outcome">
+      <segment>
+        <source>builder.event.outcome</source>
+        <target>Исход передачи проекта</target>
+      </segment>
+    </unit>
     <unit id="builder.exit">
       <segment>
         <source>builder.exit</source>
@@ -83,6 +95,36 @@
       <segment>
         <source>builder.leave</source>
         <target>Выйти из редактора? Несохранённые правки пропадут</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.offer.body">
+      <segment>
+        <source>builder.notice.offer.body</source>
+        <target>{sender} передаёт вам проект «{name}». Примите его в кабинете до {expires, date, ::yMMddjmm}.</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.offer.short">
+      <segment>
+        <source>builder.notice.offer.short</source>
+        <target>{sender} передаёт вам проект «{name}», примите его в кабинете.</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.offer.subject">
+      <segment>
+        <source>builder.notice.offer.subject</source>
+        <target>{brand}: вам передают проект «{name}»</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.outcome.body">
+      <segment>
+        <source>builder.notice.outcome.body</source>
+        <target>Передача проекта «{name}»: {outcome}.</target>
+      </segment>
+    </unit>
+    <unit id="builder.notice.outcome.subject">
+      <segment>
+        <source>builder.notice.outcome.subject</source>
+        <target>{brand}: передача проекта «{name}»</target>
       </segment>
     </unit>
     <unit id="builder.pictures">
@@ -211,6 +253,18 @@
         <target>Не больше {limit, plural, one {# проекта} other {# проектов}}: удалите один, чтобы начать новый</target>
       </segment>
     </unit>
+    <unit id="builder.refusal.recipient">
+      <segment>
+        <source>builder.refusal.recipient</source>
+        <target>Нет зарегистрированного пользователя с почтой {email}</target>
+      </segment>
+    </unit>
+    <unit id="builder.refusal.recipient_owner">
+      <segment>
+        <source>builder.refusal.recipient_owner</source>
+        <target>Проект уже ваш: укажите почту другого пользователя</target>
+      </segment>
+    </unit>
     <unit id="builder.refusal.size">
       <segment>
         <source>builder.refusal.size</source>
@@ -275,6 +329,84 @@
       <segment>
         <source>builder.traits</source>
         <target>Свойства</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.accept">
+      <segment>
+        <source>builder.transfer.accept</source>
+        <target>Принять</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.accepted">
+      <segment>
+        <source>builder.transfer.accepted</source>
+        <target>принята</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.action">
+      <segment>
+        <source>builder.transfer.action</source>
+        <target>Передать</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.cancel">
+      <segment>
+        <source>builder.transfer.cancel</source>
+        <target>Отменить передачу</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.cancelled">
+      <segment>
+        <source>builder.transfer.cancelled</source>
+        <target>отменена отправителем</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.email">
+      <segment>
+        <source>builder.transfer.email</source>
+        <target>Почта адресата</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.expired">
+      <segment>
+        <source>builder.transfer.expired</source>
+        <target>не принята в срок</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.offer">
+      <segment>
+        <source>builder.transfer.offer</source>
+        <target>«{name}» от {sender}, до {expires, date, ::yMMddjmm}</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.offered">
+      <segment>
+        <source>builder.transfer.offered</source>
+        <target>Проект «{name}» ждёт принятия адресатом</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.offers">
+      <segment>
+        <source>builder.transfer.offers</source>
+        <target>Вам передают проекты</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.pending">
+      <segment>
+        <source>builder.transfer.pending</source>
+        <target>Проект передаётся {recipient}: ждёт принятия до {expires, date, ::yMMddjmm}</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.taken">
+      <segment>
+        <source>builder.transfer.taken</source>
+        <target>Проект «{name}» теперь ваш</target>
+      </segment>
+    </unit>
+    <unit id="builder.transfer.withdrawn">
+      <segment>
+        <source>builder.transfer.withdrawn</source>
+        <target>Передача проекта «{name}» отменена</target>
       </segment>
     </unit>
     <unit id="builder.undo">
