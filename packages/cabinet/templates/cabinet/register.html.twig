@@ -3,6 +3,10 @@
 {% block title %}{{ 'cabinet.register.title'|trans }}{% endblock %}
 
 {% block auth %}
+{% if sent %}
+<p class="flash flash-success" data-sent>{{ 'cabinet.register.sent'|trans({contact: sent|contact}) }}</p>
+<p class="auth-links"><a href="{{ path('cabinet_register') }}">{{ 'cabinet.register.again'|trans }}</a></p>
+{% else %}
 {% if error %}<p class="flash flash-error">{{ error|trans }}</p>{% endif %}
 {% for part in fragments(constant('AdzerCMS\\Contracts\\Ui\\Fragment::CABINET_REGISTER')) %}{% include part.template with part.context only %}{% endfor %}
 
@@ -20,7 +24,7 @@
                    autocomplete="{{ active.value == 'phone' ? 'tel' : 'email' }}" required autofocus>
         </label>
         {% include '@Cabinet/cabinet/_captcha.html.twig' %}
-        <button class="wide" type="submit">{{ 'cabinet.reset.send_code'|trans }}</button>
+        <button class="wide" type="submit">{{ 'cabinet.register.send'|trans }}</button>
     </form>
 {% endif %}
 
@@ -28,4 +32,5 @@
 {% include '@Cabinet/cabinet/_terms.html.twig' %}
 
 <p class="auth-links"><a href="{{ path('cabinet_login') }}">{{ 'cabinet.login.back'|trans }}</a></p>
+{% endif %}
 {% endblock %}

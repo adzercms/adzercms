@@ -529,16 +529,16 @@
         <target>Profile</target>
       </segment>
     </unit>
+    <unit id="cabinet.register.again">
+      <segment>
+        <source>cabinet.register.again</source>
+        <target>Send the link again</target>
+      </segment>
+    </unit>
     <unit id="cabinet.register.captcha">
       <segment>
         <source>cabinet.register.captcha</source>
         <target>Confirm that you are not a robot</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.register.code">
-      <segment>
-        <source>cabinet.register.code</source>
-        <target>The code is wrong or expired</target>
       </segment>
     </unit>
     <unit id="cabinet.register.code_label">
@@ -550,13 +550,7 @@
     <unit id="cabinet.register.confirm_title">
       <segment>
         <source>cabinet.register.confirm_title</source>
-        <target>Sign-up confirmation</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.register.create">
-      <segment>
-        <source>cabinet.register.create</source>
-        <target>Create cabinet</target>
+        <target>Sign in to your account</target>
       </segment>
     </unit>
     <unit id="cabinet.register.done">
@@ -574,13 +568,25 @@
     <unit id="cabinet.register.no_channel">
       <segment>
         <source>cabinet.register.no_channel</source>
-        <target>Sign-up by code is unavailable: the operator has not set up any delivery channel</target>
+        <target>Sign-up by contact is unavailable: the operator has set up no delivery channel</target>
       </segment>
     </unit>
-    <unit id="cabinet.register.other">
+    <unit id="cabinet.register.open">
       <segment>
-        <source>cabinet.register.other</source>
-        <target>Other data</target>
+        <source>cabinet.register.open</source>
+        <target>Sign in</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.send">
+      <segment>
+        <source>cabinet.register.send</source>
+        <target>Send</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.sent">
+      <segment>
+        <source>cabinet.register.sent</source>
+        <target>A sign-in link went to {contact}. Follow it and your account opens right away, the login and password come there too.</target>
       </segment>
     </unit>
     <unit id="cabinet.register.title">
@@ -592,7 +598,7 @@
     <unit id="cabinet.register.unavailable">
       <segment>
         <source>cabinet.register.unavailable</source>
-        <target>The code was not sent, check the contact or try again later</target>
+        <target>The link was not sent, check the contact or try again later</target>
       </segment>
     </unit>
     <unit id="cabinet.release.agree">

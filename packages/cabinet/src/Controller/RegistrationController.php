@@ -6,10 +6,10 @@ namespace AdzerCMS\Cabinet\Controller;
 
 use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Account\ContactOutcome;
-use AdzerCMS\Core\Account\Password;
 use AdzerCMS\Core\Account\Registration;
 use AdzerCMS\Core\Captcha\Captcha;
 use AdzerCMS\Core\Confirmation\ConfirmationService;
+use AdzerCMS\Core\Confirmation\Purpose;
 use AdzerCMS\Core\Login\Authorizations;
 use AdzerCMS\Core\Notice\Notifier;
 use AdzerCMS\Core\Security\Entry;
@@ -23,6 +23,8 @@ use function Symfony\Component\Translation\t;
 
 final class RegistrationController extends AbstractController
 {
+    private const SENT = 'cabinet.register.sent';
+
     public function __construct(
         private readonly ConfirmationService $confirmations,
         private readonly Registration $registration,
@@ -53,7 +55,9 @@ final class RegistrationController extends AbstractController
             };
 
             if (null === $error) {
-                return $this->redirectToRoute('cabinet_register_confirm', ['contact' => $contact]);
+                $request->getSession()->set(self::SENT, $contact);
+
+                return $this->redirectToRoute('cabinet_register');
             }
         }
 
@@ -61,6 +65,7 @@ final class RegistrationController extends AbstractController
         $wanted = '' === $contact ? ContactKind::tryFrom($request->query->getString('kind')) : ContactKind::of($contact);
 
         return $this->render('@Cabinet/cabinet/register.html.twig', [
+            'sent' => $request->isMethod('POST') ? null : $request->getSession()->remove(self::SENT),
             'contact' => $contact,
             'error' => $error,
             'captcha' => $this->captcha->widget(),
@@ -70,32 +75,20 @@ final class RegistrationController extends AbstractController
         ]);
     }
 
-    #[Route('/register/confirm', name: 'cabinet_register_confirm', methods: ['GET', 'POST'])]
-    public function confirm(Request $request): Response
+    #[Route('/register/{token}', name: 'cabinet_register_confirm', requirements: ['token' => '[0-9a-f]{64}'], methods: ['GET', 'POST'])]
+    public function confirm(Request $request, string $token): Response
     {
         $this->open();
-        $contact = $request->request->has('contact') ? $request->request->getString('contact') : $request->query->getString('contact');
-        $error = null;
+        $pending = $this->confirmations->pending(Purpose::Registration, $token);
+        $user = null !== $pending && $request->isMethod('POST') ? $this->confirmations->completeRegistration($pending) : null;
 
-        if ($request->isMethod('POST')) {
-            $password = $request->request->getString('password');
-            $error = Password::refusal($password)->reason
-                ?? ($password !== $request->request->getString('repeat') ? t('cabinet.register.mismatch') : null);
+        if (null !== $user) {
+            $this->addFlash('success', t('cabinet.register.done'));
 
-            if (null === $error) {
-                $user = $this->confirmations->completeRegistration($contact, $request->request->getString('code'), $password);
-
-                if (null !== $user) {
-                    $this->addFlash('success', t('cabinet.register.done'));
-
-                    return $this->entry->open($user);
-                }
-
-                $error = t('cabinet.register.code');
-            }
+            return $this->entry->open($user);
         }
 
-        return $this->render('@Cabinet/cabinet/register_confirm.html.twig', ['contact' => $contact, 'error' => $error]);
+        return $this->render('@Cabinet/cabinet/register_confirm.html.twig', ['pending' => null !== $pending && !$request->isMethod('POST')]);
     }
 
     private function open(): void

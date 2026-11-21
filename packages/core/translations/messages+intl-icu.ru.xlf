@@ -373,10 +373,16 @@
         <target>Восстановление пароля</target>
       </segment>
     </unit>
+    <unit id="core.event.registered">
+      <segment>
+        <source>core.event.registered</source>
+        <target>Логин и пароль регистрации</target>
+      </segment>
+    </unit>
     <unit id="core.event.registration">
       <segment>
         <source>core.event.registration</source>
-        <target>Код регистрации</target>
+        <target>Ссылка регистрации</target>
       </segment>
     </unit>
     <unit id="core.event.registration_known">
@@ -1009,12 +1015,6 @@
         <target>Ссылка действует {minutes, plural, one {# минуту} few {# минуты} other {# минут}}.</target>
       </segment>
     </unit>
-    <unit id="core.notice.lifetime_code">
-      <segment>
-        <source>core.notice.lifetime_code</source>
-        <target>Введите его в кабинете — код действует {minutes, plural, one {# минуту} few {# минуты} other {# минут}}.</target>
-      </segment>
-    </unit>
     <unit id="core.notice.mail_changed.action">
       <segment>
         <source>core.notice.mail_changed.action</source>
@@ -1153,10 +1153,46 @@
         <target>Смена пароля</target>
       </segment>
     </unit>
-    <unit id="core.notice.registration.code">
+    <unit id="core.notice.registered.body">
       <segment>
-        <source>core.notice.registration.code</source>
-        <target>Код регистрации: {code}, действует {minutes, plural, one {# минуту} few {# минуты} other {# минут}}</target>
+        <source>core.notice.registered.body</source>
+        <target>Кабинет открыт. Логин и пароль для входа:</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registered.short">
+      <segment>
+        <source>core.notice.registered.short</source>
+        <target>{brand}: кабинет открыт. Логин {login}, пароль {password}</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registered.subject">
+      <segment>
+        <source>core.notice.registered.subject</source>
+        <target>{brand}: логин и пароль от кабинета</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registered.title">
+      <segment>
+        <source>core.notice.registered.title</source>
+        <target>Кабинет открыт</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration.action">
+      <segment>
+        <source>core.notice.registration.action</source>
+        <target>Войти в кабинет</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration.body">
+      <segment>
+        <source>core.notice.registration.body</source>
+        <target>Перейдите по ссылке — кабинет на {brand} откроется сразу.</target>
+      </segment>
+    </unit>
+    <unit id="core.notice.registration.link">
+      <segment>
+        <source>core.notice.registration.link</source>
+        <target>{brand}: вход в кабинет — {url} Ссылка действует {minutes, plural, one {# минуту} few {# минуты} other {# минут}}.</target>
       </segment>
     </unit>
     <unit id="core.notice.registration.note">
@@ -1168,13 +1204,13 @@
     <unit id="core.notice.registration.subject">
       <segment>
         <source>core.notice.registration.subject</source>
-        <target>{brand}: код регистрации</target>
+        <target>{brand}: вход в кабинет</target>
       </segment>
     </unit>
     <unit id="core.notice.registration.title">
       <segment>
         <source>core.notice.registration.title</source>
-        <target>Код регистрации</target>
+        <target>Вход в кабинет</target>
       </segment>
     </unit>
     <unit id="core.notice.registration_known.action">

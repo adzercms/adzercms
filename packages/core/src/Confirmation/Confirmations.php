@@ -72,7 +72,7 @@ final class Confirmations implements Owner
     }
 
     /** @phpstan-impure */
-    public function code(Purpose $purpose, ?User $user, ?string $contact = null): ?string
+    public function code(Purpose $purpose, User $user, ?string $contact = null): ?string
     {
         $code = str_pad((string) random_int(0, 10 ** self::CODE_DIGITS - 1), self::CODE_DIGITS, '0', \STR_PAD_LEFT);
 
@@ -80,7 +80,7 @@ final class Confirmations implements Owner
     }
 
     /** @phpstan-impure */
-    public function link(Purpose $purpose, User $user, ?string $contact = null): ?string
+    public function link(Purpose $purpose, ?User $user, ?string $contact = null): ?string
     {
         $token = bin2hex(random_bytes(self::TOKEN_BYTES));
 
@@ -88,9 +88,9 @@ final class Confirmations implements Owner
     }
 
     /** @phpstan-impure */
-    public function matching(Purpose $purpose, User|string $addressee, string $code): ?Confirmation
+    public function matching(Purpose $purpose, User $user, string $code): ?Confirmation
     {
-        $confirmation = $this->confirmations->last($purpose, Kind::Code, $addressee);
+        $confirmation = $this->confirmations->last($purpose, Kind::Code, $user);
         if (null === $confirmation || !$confirmation->usable()) {
             return null;
         }

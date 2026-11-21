@@ -8,9 +8,11 @@ use AdzerCMS\Core\Account\ConsentKind;
 use AdzerCMS\Core\Account\Consents;
 use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Account\ContactOutcome;
+use AdzerCMS\Core\Account\LoginNames;
 use AdzerCMS\Core\Account\Status;
 use AdzerCMS\Core\Confirmation\ConfirmationService;
 use AdzerCMS\Core\Confirmation\Kind;
+use AdzerCMS\Core\Confirmation\Purpose;
 use AdzerCMS\Core\Entity\Consent;
 use AdzerCMS\Core\Entity\Notice;
 use AdzerCMS\Core\Notice\CoreEvent;
@@ -36,7 +38,6 @@ final class RegistrationTest extends SchemaTestCase
 
     private const PHONE = '79991234567';
     private const MAILBOX = 'human@example.org';
-    private const CHOSEN = 'chosen-password';
 
     protected function setUp(): void
     {
@@ -73,8 +74,9 @@ final class RegistrationTest extends SchemaTestCase
     #[Group('ACMS-CORE-0070')]
     #[Group('ACMS-CORE-0094')]
     #[Group('ACMS-CORE-0102')]
+    #[Group('ACMS-CORE-1200')]
     #[Group('ACMS-US-0001')]
-    public function testPhoneCodeOpensRecord(): void
+    public function testPhoneLinkOpensRecordWithIssuedPassword(): void
     {
         $service = self::service(ConfirmationService::class);
 
@@ -83,13 +85,13 @@ final class RegistrationTest extends SchemaTestCase
         $notice = $this->last();
         self::assertSame(ContactKind::Phone->channel(), $notice->getChannel());
         self::assertSame(self::PHONE, $notice->getRecipient());
-        self::assertSame([], self::service(UserRepository::class)->findAll(), 'the code comes before any record');
+        self::assertSame([], self::service(UserRepository::class)->findAll(), 'the link comes before any record');
 
-        $user = $service->completeRegistration(self::PHONE, self::code($this->texted()), self::CHOSEN) ?? self::fail('the code opened no record');
+        $user = $service->completeRegistration($service->pending(Purpose::Registration, self::token($this->texted())) ?? self::fail('the link is not pending')) ?? self::fail('the link opened no record');
 
         self::assertSame(self::PHONE, $user->getPhone());
         self::assertSame(Status::Active, $user->getStatus());
-        self::assertTrue(self::service(UserPasswordHasherInterface::class)->isPasswordValid($user, self::CHOSEN));
+        self::assertTrue(self::service(UserPasswordHasherInterface::class)->isPasswordValid($user, self::issued($this->texted())), 'the message to the contact carries the password of the record');
         self::assertSame([ConsentKind::Offer], array_map(
             static fn (Consent $consent): ConsentKind => $consent->getKind(),
             self::service(ConsentRepository::class)->findBy(['user' => $user]),
@@ -97,51 +99,61 @@ final class RegistrationTest extends SchemaTestCase
     }
 
     #[Group('ACMS-CORE-0070')]
+    #[Group('ACMS-CORE-1200')]
     #[Group('ACMS-US-0001')]
-    public function testMailCodeOpensRecord(): void
+    public function testMailLinkPageOpensCabinetAndMailsLoginAndPassword(): void
     {
-        $service = self::service(ConfirmationService::class);
+        self::service(OpenPolicy::class)->registration = true;
+        $form = $this->client->request('GET', '/register')->filter('form[method="post"]')->form();
+        $this->client->submit($form, ['contact' => 'Human@Example.Org']);
+        $token = self::token($this->letterText());
 
-        self::assertSame(ContactOutcome::Sent, $service->requestRegistration('Human@Example.Org'));
-        $user = $service->completeRegistration(self::MAILBOX, self::code($this->letterText()), self::CHOSEN) ?? self::fail('the code opened no record');
+        self::assertCount(1, $this->client->followRedirect()->filter('[data-sent]'), 'the form names the contact the link went to');
+        $confirm = $this->client->request('GET', '/register/'.$token);
+        self::assertSame([], self::service(UserRepository::class)->findAll(), 'opening the link alone opens no record');
 
-        self::assertSame(self::MAILBOX, $user->getEmail());
+        $this->client->submit($confirm->filter('form[data-autosubmit]')->form());
+
+        $user = self::service(UserRepository::class)->byLogin(self::MAILBOX) ?? self::fail('the link opened no record');
         self::assertNull($user->getPhone());
+        self::assertResponseRedirects('/cabinet', null, 'the record signs in');
+        self::assertSame(self::MAILBOX, $this->letter()->getTo()[0]->getAddress());
+        self::assertStringContainsString(self::service(LoginNames::class)->of($user), $this->letterText(), 'the letter names the login of the record');
+        self::assertTrue(self::service(UserPasswordHasherInterface::class)->isPasswordValid($user, self::issued($this->letterText())), 'the letter carries the password of the record');
     }
 
     #[Group('ACMS-CORE-0092')]
     #[Group('ACMS-US-0001')]
-    public function testMailedCodeNamesItsTerm(): void
+    public function testMailedLinkNamesItsTerm(): void
     {
         self::assertSame(ContactOutcome::Sent, self::service(ConfirmationService::class)->requestRegistration(self::MAILBOX));
 
-        $minutes = (string) Kind::Code->minutes();
-        self::assertStringContainsString($minutes, $this->letterText(), 'the letter text names the code term');
-        self::assertStringContainsString($minutes, (string) $this->letter()->getHtmlBody(), 'the letter markup names the code term');
+        $minutes = (string) Kind::Link->minutes();
+        self::assertStringContainsString($minutes, $this->letterText(), 'the letter text names the link term');
+        self::assertStringContainsString($minutes, (string) $this->letter()->getHtmlBody(), 'the letter markup names the link term');
     }
 
     #[Group('ACMS-CORE-0068')]
     #[Group('ACMS-CORE-0095')]
     #[Group('ACMS-US-0001')]
-    public function testKnownPhoneGetsRecoveryInsteadOfCode(): void
+    public function testKnownPhoneGetsRecoveryInsteadOfLink(): void
     {
         $known = $this->record(self::PHONE);
         $service = self::service(ConfirmationService::class);
 
-        self::assertSame(ContactOutcome::Sent, $service->requestRegistration('+7 999 123-45-67'), 'the form answers as on a sent code');
+        self::assertSame(ContactOutcome::Sent, $service->requestRegistration('+7 999 123-45-67'), 'the form answers as on a sent link');
 
         $notice = self::service(NoticeRepository::class)->findOneBy(['user' => $known]) ?? self::fail('the known record got nothing');
         self::assertSame(CoreEvent::RegistrationKnown->key(), $notice->getEvent());
         self::assertSame(ContactKind::Phone->channel(), $notice->getChannel());
         self::assertStringContainsString('/forgot?login='.self::PHONE, $notice->getBody());
-        self::assertCount(1, self::service(NoticeRepository::class)->findAll(), 'a known contact gets no registration code');
-        self::assertNull($service->completeRegistration(self::PHONE, '000001', self::CHOSEN));
+        self::assertCount(1, self::service(NoticeRepository::class)->findAll(), 'a known contact gets no registration link');
     }
 
     #[Group('ACMS-CORE-0068')]
     #[Group('ACMS-CORE-0095')]
     #[Group('ACMS-US-0001')]
-    public function testKnownMailGetsRecoveryInsteadOfCode(): void
+    public function testKnownMailGetsRecoveryInsteadOfLink(): void
     {
         $this->record(self::PHONE, self::MAILBOX);
 
@@ -157,7 +169,7 @@ final class RegistrationTest extends SchemaTestCase
     #[Group('ACMS-CORE-0093')]
     #[Group('ACMS-CORE-0095')]
     #[Group('ACMS-US-0001')]
-    public function testSecondCodeWaitsForThePauseOfEitherContact(): void
+    public function testSecondLinkWaitsForThePauseOfEitherContact(): void
     {
         self::mockTime('2026-10-16 10:00');
         $this->record('79990000001');
@@ -178,9 +190,10 @@ final class RegistrationTest extends SchemaTestCase
     #[Group('ACMS-CORE-1196')]
     #[Group('ACMS-US-0001')]
     #[Group('ACMS-US-0002')]
-    public function testCodeRequestsOfOneAddressStopAtThePublicFormLimit(): void
+    public function testRequestsOfOneAddressStopAtThePublicFormLimit(): void
     {
         self::service(OpenPolicy::class)->registration = true;
+        $this->client->followRedirects();
 
         foreach (['/register' => 'contact', '/forgot' => 'login'] as $path => $field) {
             for ($request = 0; $request <= PublicForm::LIMIT; ++$request) {
@@ -193,15 +206,23 @@ final class RegistrationTest extends SchemaTestCase
         self::assertCount(PublicForm::LIMIT, self::service(NoticeRepository::class)->findBy(['recipient' => array_map(static fn (int $request): string => 'human'.$request.'@example.org', range(0, PublicForm::LIMIT))]));
     }
 
-    #[Group('ACMS-CORE-0092')]
+    #[Group('ACMS-CORE-1200')]
     #[Group('ACMS-US-0001')]
-    public function testWrongCodeOpensNoRecord(): void
+    public function testLinkOfContactTakenSinceOpensNoRecord(): void
     {
+        self::service(OpenPolicy::class)->registration = true;
         $service = self::service(ConfirmationService::class);
-        $service->requestRegistration(self::PHONE);
+        $service->requestRegistration(self::MAILBOX);
+        $token = self::token($this->letterText());
+        $this->record(self::PHONE, self::MAILBOX);
 
-        self::assertNull($service->completeRegistration(self::PHONE, '000000', self::CHOSEN));
-        self::assertNull(self::service(UserRepository::class)->byLogin(self::PHONE));
+        $page = $this->client->request('GET', '/register/'.$token);
+        $this->client->submit($page->filter('form[data-autosubmit]')->form());
+
+        self::assertCount(1, self::service(UserRepository::class)->findAll(), 'a contact taken since the link opens no second record');
+        self::assertCount(0, $this->client->getCrawler()->filter('form[data-autosubmit]'), 'the page refuses the link');
+        $this->client->request('GET', '/register/'.str_repeat('0', 64));
+        self::assertCount(0, $this->client->getCrawler()->filter('form[data-autosubmit]'), 'an unknown link opens nothing');
     }
 
     #[Group('ACMS-CORE-0070')]
@@ -209,6 +230,16 @@ final class RegistrationTest extends SchemaTestCase
     public function testMalformedContactIsRefused(): void
     {
         self::assertSame(ContactOutcome::Unavailable, self::service(ConfirmationService::class)->requestRegistration('12345'));
+    }
+
+    private static function token(string $text): string
+    {
+        return 1 === preg_match('#/register/([0-9a-f]{64})#', $text, $match) ? $match[1] : self::fail('the message carries no registration link');
+    }
+
+    private static function issued(string $text): string
+    {
+        return 1 === preg_match('/([A-Za-z0-9]{12})$/m', $text, $match) ? $match[1] : self::fail('the message carries no password');
     }
 
     private function last(): Notice

@@ -1,0 +1,18 @@
+{% extends '@Core/notice/_layout.html.twig' %}
+{% import '@Core/notice/_macros.html.twig' as mail %}
+
+{% block subject %}{{ 'core.notice.registered.subject'|trans({brand: brand.title}) }}{% endblock %}
+
+{% block text %}
+{{ 'core.notice.registered.body'|trans }}
+{{ 'core.notice.password_issued.login'|trans({login: login(user)}) }}
+{{ 'core.notice.password_issued.password'|trans({password: password}) }}
+{{ cabinet('login', absolute: true) }}
+{% endblock %}
+
+{% block content %}
+<h2>{{ 'core.notice.registered.title'|trans }}</h2>
+<p>{{ 'core.notice.registered.body'|trans }}</p>
+<p>{{ 'core.notice.password_issued.login'|trans({login: login(user)}) }}<br>{{ 'core.notice.password_issued.password'|trans({password: password}) }}</p>
+{% if cabinet('login', absolute: true) %}{{ mail.button(cabinet('login', absolute: true), 'core.notice.password_issued.action'|trans) }}{% endif %}
+{% endblock %}

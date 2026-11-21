@@ -529,16 +529,16 @@
         <target>Профиль</target>
       </segment>
     </unit>
+    <unit id="cabinet.register.again">
+      <segment>
+        <source>cabinet.register.again</source>
+        <target>Отправить ссылку снова</target>
+      </segment>
+    </unit>
     <unit id="cabinet.register.captcha">
       <segment>
         <source>cabinet.register.captcha</source>
         <target>Подтвердите, что вы не робот</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.register.code">
-      <segment>
-        <source>cabinet.register.code</source>
-        <target>Код не подошёл либо истёк</target>
       </segment>
     </unit>
     <unit id="cabinet.register.code_label">
@@ -550,13 +550,7 @@
     <unit id="cabinet.register.confirm_title">
       <segment>
         <source>cabinet.register.confirm_title</source>
-        <target>Подтверждение регистрации</target>
-      </segment>
-    </unit>
-    <unit id="cabinet.register.create">
-      <segment>
-        <source>cabinet.register.create</source>
-        <target>Завести кабинет</target>
+        <target>Вход в кабинет</target>
       </segment>
     </unit>
     <unit id="cabinet.register.done">
@@ -574,13 +568,25 @@
     <unit id="cabinet.register.no_channel">
       <segment>
         <source>cabinet.register.no_channel</source>
-        <target>Регистрация кодом недоступна: оператор не настроил ни одного канала доставки</target>
+        <target>Регистрация по контакту недоступна: оператор не настроил ни одного канала доставки</target>
       </segment>
     </unit>
-    <unit id="cabinet.register.other">
+    <unit id="cabinet.register.open">
       <segment>
-        <source>cabinet.register.other</source>
-        <target>Другие данные</target>
+        <source>cabinet.register.open</source>
+        <target>Войти в кабинет</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.send">
+      <segment>
+        <source>cabinet.register.send</source>
+        <target>Отправить</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.register.sent">
+      <segment>
+        <source>cabinet.register.sent</source>
+        <target>Ссылка для входа отправлена на {contact}. Перейдите по ней — кабинет откроется сразу, логин и пароль придут туда же.</target>
       </segment>
     </unit>
     <unit id="cabinet.register.title">
@@ -592,7 +598,7 @@
     <unit id="cabinet.register.unavailable">
       <segment>
         <source>cabinet.register.unavailable</source>
-        <target>Код не отправился, проверьте контакт либо повторите позже</target>
+        <target>Ссылка не отправилась, проверьте контакт либо повторите позже</target>
       </segment>
     </unit>
     <unit id="cabinet.release.agree">
