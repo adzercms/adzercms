@@ -7,6 +7,7 @@ namespace AdzerCMS\Builder\Tests;
 use AdzerCMS\Builder\Entity\Project;
 use AdzerCMS\Builder\Entity\ProjectPage;
 use AdzerCMS\Builder\Entity\ProjectTransfer;
+use AdzerCMS\Builder\ProjectAccess;
 use AdzerCMS\Builder\Projects;
 use AdzerCMS\Builder\Repository\ProjectTransferRepository;
 use AdzerCMS\Builder\TransferOutcome;
@@ -98,6 +99,25 @@ final class TransfersTest extends SchemaTestCase
         yield 'email nobody registered' => ['nobody@example.org', 'builder.refusal.recipient'];
         yield 'not an email' => ['recipient', 'builder.refusal.recipient'];
         yield 'email of the owner' => ['sender@example.org', 'builder.refusal.recipient_owner'];
+    }
+
+    #[Group('ACMS-BLD-0012')]
+    #[Group('ACMS-BLD-0018')]
+    #[Group('ACMS-US-0078')]
+    public function testOnlyProjectOfOwnerAloneIsHandedOver(): void
+    {
+        $this->offer();
+        $base = self::SECTION.'/'.$this->project->getId();
+        $this->post($base.'/access', [Projects::ACCESS => ProjectAccess::Link->value]);
+        self::assertResponseHeaderSame('HX-Redirect', $base);
+        self::assertSame(ProjectAccess::Link, $this->reread($this->project)->getAccess());
+        self::assertSame(['recipient@example.org'], array_map(static fn ($address): string => $address->getAddress(), $this->letter()->getTo()), 'access beyond the owner cancels the transfer');
+        self::assertStringContainsString(self::phrase(TransferOutcome::Cancelled->label()), $this->letterText());
+        self::assertSame([], self::service(ProjectTransferRepository::class)->findAll());
+
+        $this->post($base.'/transfer', [Transfers::EMAIL => 'recipient@example.org']);
+        self::assertSelectorTextContains('.modal-body', self::phrase(t('builder.refusal.personal')));
+        self::assertSame([], self::service(ProjectTransferRepository::class)->findAll());
     }
 
     #[Group('ACMS-BLD-0018')]

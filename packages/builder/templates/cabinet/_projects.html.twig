@@ -2,6 +2,7 @@
     {% block row %}
         <tr class="clickable-row" data-href="{{ path('builder_project', {id: row.id}) }}">
             <td class="{{ table.aside('name') }}"><strong>{{ row.name }}</strong></td>
+            <td class="{{ table.aside('access') }}">{{ row.access.label|trans }}</td>
             <td class="{{ table.aside('edited') }}">{{ moment(row.edited) }}</td>
         </tr>
     {% endblock %}

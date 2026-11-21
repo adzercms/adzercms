@@ -8,6 +8,7 @@ use AdzerCMS\Builder\Entity\Project;
 use AdzerCMS\Builder\Entity\ProjectPage;
 use AdzerCMS\Builder\Repository\ProjectPageRepository;
 use AdzerCMS\Builder\Repository\ProjectRepository;
+use AdzerCMS\Builder\Repository\ProjectTransferRepository;
 use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Ui\Order;
@@ -26,12 +27,15 @@ final readonly class Projects
     public const NAME = 'name';
     public const TITLE = 'title';
     public const PATH = 'path';
+    public const ACCESS = 'access';
 
     public function __construct(
         private ProjectRepository $projects,
         private ProjectPageRepository $pages,
         private EntityManagerInterface $em,
         private ProjectAlbums $albums,
+        private ProjectTransferRepository $transfers,
+        private Transfers $handing,
     ) {
     }
 
@@ -96,6 +100,16 @@ final readonly class Projects
         $this->em->flush();
 
         return $page;
+    }
+
+    public function grant(Project $project, ProjectAccess $access): void
+    {
+        $transfer = $this->transfers->pending($project);
+        if (ProjectAccess::Personal !== $access && null !== $transfer) {
+            $this->handing->cancel($transfer);
+        }
+        $project->setAccess($access);
+        $this->em->flush();
     }
 
     /** @param list<int> $moved */
