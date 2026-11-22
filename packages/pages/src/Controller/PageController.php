@@ -46,7 +46,7 @@ final class PageController extends AbstractController
         return $this->moved(Page::ROOT) ?? $this->redirect($entries->url(CabinetEntry::Home) ?? throw $this->createNotFoundException());
     }
 
-    #[Route('/{path}', name: self::PAGE, requirements: ['path' => Page::FORMER], methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SITE], options: ['utf8' => true], priority: self::LAST)]
+    #[Route('/{path}', name: self::PAGE, requirements: ['path' => Page::FORMER], methods: ['GET'], defaults: [Hosts::ROLE => Hosts::SITE], options: ['utf8' => true, 'fallback' => true], priority: self::LAST)]
     public function page(string $path): Response
     {
         $page = $this->pages->published('/'.$path);
