@@ -224,10 +224,10 @@ final class SiteTest extends SchemaTestCase
         $entry = $this->client->request('GET', '/')->filter('.site-header .site-entry');
         self::assertSame(['a', 'button site-entry'], [$entry->nodeName(), $entry->attr('class')], 'a guest signs in by a button');
 
-        $this->client->loginUser($this->record('79990000005', 'mira@example.org'));
+        $this->client->loginUser($this->record('79990000005'));
         $entry = $this->client->request('GET', '/')->filter('.site-header .site-entry');
         self::assertSame('details', $entry->nodeName(), 'a record opens its menu');
-        self::assertSame('M', trim($entry->filter('summary > .avatar')->text()));
+        self::assertSame('U', trim($entry->filter('summary > .avatar')->text()), 'the avatar of a record without a photo is the first letter of its login');
     }
 
     #[Group('ACMS-UI-0154')]

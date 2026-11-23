@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Cabinet\Tests;
 
 use AdzerCMS\Cabinet\Tests\Fixture\Pager;
+use AdzerCMS\Core\Account\Avatars;
 use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Account\Theme;
 use AdzerCMS\Core\Confirmation\Confirmations;
@@ -23,9 +24,11 @@ use AdzerCMS\Core\Tests\Ui\Fixture\Desk;
 use AdzerCMS\Core\Ui\Back;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\DomCrawler\Field\FileFormField;
 use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\HttpClient\Response\JsonMockResponse;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 use function Symfony\Component\Translation\t;
@@ -149,6 +152,42 @@ final class CabinetWebTest extends SchemaTestCase
         self::assertResponseRedirects('/profile');
         $named = $this->reread($user);
         self::assertSame(['Petrov', 'Ivan', 'Sergeevich'], [$named->getLastName(), $named->getFirstName(), $named->getMiddleName()]);
+    }
+
+    #[Group('ACMS-CORE-1168')]
+    #[Group('ACMS-US-0002')]
+    public function testOwnPhotoReplacesAvatarAndRemovalLeavesLetter(): void
+    {
+        $user = $this->record('79990000010', 'abonent@example.org');
+        $this->client->loginUser($user);
+        $avatars = self::service(Avatars::class);
+        $form = fn (): Crawler => $this->client->request('GET', '/profile')->filter('form[action="/profile/avatar"]');
+        $send = function (UploadedFile $file) use ($form): void {
+            $sent = $form()->form();
+            $field = $sent['avatar'];
+            \assert($field instanceof FileFormField);
+            $field->upload($file->getPathname());
+            $this->client->submit($sent);
+        };
+
+        $send($this->picture('face.png'));
+        $first = (string) $this->reread($user)->getAvatar();
+        self::assertNotNull($avatars->path($first));
+        self::assertSame('/avatars/'.$first, $this->client->followRedirect()->filter('.account > summary > img.avatar')->attr('src'));
+
+        $send($this->picture('other.png'));
+        $second = (string) $this->reread($user)->getAvatar();
+        self::assertNotSame($first, $second);
+        self::assertNull($avatars->path($first), 'a new photo removes the former file');
+
+        $send($this->scratchFile('notes.txt', 'text'));
+        self::assertSame($second, $this->reread($user)->getAvatar());
+        self::assertStringContainsString('notes.txt', self::toast($this->client->followRedirect(), 'error'));
+
+        $this->client->submit($form()->selectButton(self::phrase('cabinet.avatar.drop'))->form());
+        self::assertNull($this->reread($user)->getAvatar());
+        self::assertNull($avatars->path($second));
+        self::assertSame('U', trim($this->client->followRedirect()->filter('.account > summary > .avatar')->text()), 'without a photo the avatar is the first letter of the login');
     }
 
     #[Group('ACMS-UI-0104')]

@@ -69,6 +69,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - `SiteNav::replace()`: a controller gives the page of its request its own site menu instead of the menu of the site, on any site frame
 - Saved site pages: a service worker at `/worker.js` of the site host, registered by a page of a site route, keeps the pages a guest opened and shows the saved page when the application fails or answers 5xx; `worker-src` of the content security policy keeps the own origin beside the declared sources
 - The theme header gives a signed in user an avatar that opens the account menu — the name and login, the cabinet, the profile and logging out — on every width of the panel and the site frames, and a guest the "Log in" button; an avatar without a photo shows the first letter of the name or the login; a click outside an open menu or Escape closes it
+- The profile of the cabinet takes the user's own photo for the avatar instead of the portrait of a login service and removes it, a new photo removing the former file
 
 ### Security
 
