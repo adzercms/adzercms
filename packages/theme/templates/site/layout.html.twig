@@ -15,7 +15,7 @@
         {% if brand.cabinetUrl %}
             <a class="button site-entry" href="{{ brand.cabinetUrl }}" target="_blank" rel="noopener">{{ 'theme.site.cabinet'|trans }}</a>
         {% else %}
-            {% include '@Theme/_entry.html.twig' with {class: 'button site-entry'} %}
+            {% include '@Theme/_entry.html.twig' with {class: 'site-entry'} %}
         {% endif %}
         {% if nav %}
             <label class="menu-toggle" for="site-menu" aria-label="{{ 'theme.menu'|trans }}">

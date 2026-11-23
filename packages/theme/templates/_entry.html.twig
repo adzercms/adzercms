@@ -1,4 +1,8 @@
-{% set login = app.user ? null : cabinet('login') %}
+{% if app.user %}
+{% include '@Theme/_account.html.twig' with {user: app.user, class: class|default('')} only %}
+{% else %}
+{% set login = cabinet('login') %}
 {% set window = login and login starts with '/' %}
-{% set entry = app.user ? cabinet('home') : (window ? cabinet('login', {back: app.request.requestUri}) : login) %}
-{% if entry %}<a{% if class|default %} class="{{ class }}"{% endif %} href="{{ entry }}"{% if window %} data-record="{{ entry }}"{% endif %}>{{ (app.user ? 'theme.site.cabinet' : 'theme.site.login')|trans }}</a>{% endif %}
+{% set entry = window ? cabinet('login', {back: app.request.requestUri}) : login %}
+{% if entry %}<a class="button{{ class|default('') ? ' ' ~ class }}" href="{{ entry }}"{% if window %} data-record="{{ entry }}"{% endif %}>{{ 'theme.site.login'|trans }}</a>{% endif %}
+{% endif %}

@@ -13,6 +13,7 @@ use AdzerCMS\Core\Tests\Accounts;
 use AdzerCMS\Core\Tests\Browser;
 use AdzerCMS\Core\Tests\Pictures;
 use AdzerCMS\Core\Tests\SchemaTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\AssetMapper\MappedAsset;
@@ -86,18 +87,44 @@ final class FrameTest extends SchemaTestCase
         self::assertSame('/', $page->filter('.header-logo')->attr('href'));
     }
 
+    /** @return iterable<string, array{?string, ?string, ?string, bool, string}> */
+    public static function faces(): iterable
+    {
+        yield 'a photo' => ['mira@example.org', 'ivan', null, true, 'img'];
+        yield 'a first name' => ['mira@example.org', 'ivan', 'Petrov', false, 'I'];
+        yield 'a last name' => ['mira@example.org', null, 'petrov', false, 'P'];
+        yield 'a login of a letter' => ['mira@example.org', null, null, false, 'M'];
+        yield 'a login of a sign' => [null, null, null, false, 'svg'];
+    }
+
+    #[DataProvider('faces')]
     #[Group('ACMS-US-0002')]
     #[Group('ACMS-CORE-1168')]
-    public function testHeaderShowsAvatarOfRecordBesideItsLogin(): void
+    #[Group('ACMS-UI-0178')]
+    #[Group('ACMS-UI-0179')]
+    public function testHeaderMenuOfRecordOpensByItsAvatar(?string $email, ?string $first, ?string $last, bool $photo, string $face): void
     {
-        $user = $this->record('+7 900 000-00-03');
-        $avatar = $this->avatar($user);
+        $user = $this->record('+7 900 000-00-03', $email)->setName($last, $first, null);
+        $avatar = $photo ? $this->avatar($user) : null;
         $this->em->flush();
         $this->client->loginUser($user);
+        $login = $email ?? '+7 900 000-00-03';
 
-        $page = $this->client->request('GET', self::FRAME);
+        $menu = $this->client->request('GET', self::FRAME)->filter('.panel-header details.menu.account');
 
-        self::assertCount(1, $page->filter(\sprintf('.menu > summary > img.avatar[src="/avatars/%s"]', $avatar)));
+        self::assertCount(1, $menu);
+        self::assertSame($login, $menu->filter('summary')->attr('aria-label'), 'the avatar button is named by the login');
+        $shown = $menu->filter('summary > .avatar');
+        self::assertSame($face, match (true) {
+            'img' === $shown->nodeName() => 'img',
+            $shown->filter('svg')->count() > 0 => 'svg',
+            default => trim($shown->text()),
+        });
+        if (null !== $avatar) {
+            self::assertSame('/avatars/'.$avatar, $shown->attr('src'));
+        }
+        self::assertSame(trim(implode(' ', array_filter([$first, $last])).' '.$login), trim($menu->filter('.account-head')->text()));
+        self::assertSame('/logout', $menu->filter('nav > a')->last()->attr('href'));
     }
 
     #[Group('ACMS-UI-0064')]

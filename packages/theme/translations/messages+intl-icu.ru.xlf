@@ -100,7 +100,7 @@
     <unit id="theme.logout">
       <segment>
         <source>theme.logout</source>
-        <target>Выход</target>
+        <target>Выйти</target>
       </segment>
     </unit>
     <unit id="theme.main">
