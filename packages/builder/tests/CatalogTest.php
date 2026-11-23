@@ -45,4 +45,29 @@ final class CatalogTest extends SchemaTestCase
         self::assertArrayHasKey('builder_catalog', self::service(SiteNav::class)->sections(), 'the catalog is a section of the site menu');
         self::assertContains('builder_catalog', array_map(static fn (Page $page): string => $page->route, self::service(PageMap::class)->all()), 'the catalog is a page of the instance');
     }
+
+    #[Group('ACMS-BLD-0024')]
+    #[Group('ACMS-UI-0176')]
+    #[Group('ACMS-US-0079')]
+    public function testCreateSiteOpensWindowOfNewProjectAfterSignInOfGuest(): void
+    {
+        $this->record('79990000003', 'visitor@example.org');
+        $start = fn (): Crawler => $this->client->request('GET', '/templates')->filter('.site-main a[data-record]');
+
+        $guest = $start();
+        self::assertSame(['/builder/projects', '/builder/projects'], [$guest->attr('href'), $guest->attr('data-record')], 'without a script the action leads to the projects');
+        $this->fragment('/builder/projects');
+        self::assertResponseRedirects('/login');
+        self::assertCount(1, $this->client->followRedirect()->filter('.modal-header'), 'a guest signs in by the window first');
+        $this->client->request('POST', '/login', [
+            '_username' => 'visitor@example.org',
+            '_password' => self::PASSWORD,
+            '_csrf_token' => $this->formToken('authenticate'),
+        ], server: ['HTTP_HX-Request' => 'true']);
+        self::assertResponseHeaderSame('HX-Redirect', 'http://localhost/builder/projects', 'the sign-in leads to the projects');
+
+        $window = $this->fragment((string) $start()->attr('data-record'));
+        self::assertCount(1, $window->filter('.modal-header'));
+        self::assertCount(1, $window->filter('form[hx-post="/builder/projects/new"]'), 'a signed in user names the new project in the window');
+    }
 }

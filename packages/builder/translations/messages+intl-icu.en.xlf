@@ -67,28 +67,46 @@
         <target>Blocks</target>
       </segment>
     </unit>
+    <unit id="builder.catalog.create">
+      <segment>
+        <source>builder.catalog.create</source>
+        <target>Create a site</target>
+      </segment>
+    </unit>
     <unit id="builder.catalog.description">
       <segment>
         <source>builder.catalog.description</source>
-        <target>Site templates from the builder of {brand}</target>
+        <target>The website builder of {brand}: put a site together from ready blocks in a visual editor or start from a template</target>
       </segment>
     </unit>
     <unit id="builder.catalog.empty">
       <segment>
         <source>builder.catalog.empty</source>
-        <target>No templates yet</target>
+        <target>No templates yet — start from an empty project</target>
+      </segment>
+    </unit>
+    <unit id="builder.catalog.lead">
+      <segment>
+        <source>builder.catalog.lead</source>
+        <target>Build a site yourself in a visual editor without code: drag ready blocks, change texts and pictures, check how it looks on a computer and a phone. Show the finished site by a link or download it as a file.</target>
       </segment>
     </unit>
     <unit id="builder.catalog.menu">
       <segment>
         <source>builder.catalog.menu</source>
+        <target>Builder</target>
+      </segment>
+    </unit>
+    <unit id="builder.catalog.templates">
+      <segment>
+        <source>builder.catalog.templates</source>
         <target>Templates</target>
       </segment>
     </unit>
     <unit id="builder.catalog.title">
       <segment>
         <source>builder.catalog.title</source>
-        <target>Site templates</target>
+        <target>Website builder</target>
       </segment>
     </unit>
     <unit id="builder.element.box">
