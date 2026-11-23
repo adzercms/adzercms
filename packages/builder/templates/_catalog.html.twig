@@ -1,13 +1,24 @@
-{% embed '@Theme/_table.html.twig' %}
-    {% block items %}
-        <div class="offer-grid fixed">
-            {% for row in rows %}
-                {% set show = path('builder_show', {token: row.project.token}) %}
-                <article class="offer-card clickable-row" data-href="{{ show }}" data-template>
-                    <img class="offer-cover" src="{{ path('builder_version_picture', {id: row.id, file: row.cover}) }}" alt="{{ row.name }}" loading="lazy">
-                    <h2 class="offer-title"><a href="{{ show }}">{{ row.name }}</a></h2>
-                </article>
-            {% endfor %}
-        </div>
-    {% endblock %}
-{% endembed %}
+<div class="section">
+    <p class="site-lead">{{ 'builder.catalog.lead'|trans }}</p>
+    <div class="button-row">
+        <a class="button" href="{{ path('builder_projects') }}" data-record="{{ path(app.user ? 'builder_project_new' : 'builder_projects') }}">{{ 'builder.catalog.create'|trans }}</a>
+    </div>
+</div>
+<div class="section">
+    <div class="section-head">
+        <h2>{{ 'builder.catalog.templates'|trans }}</h2>
+    </div>
+    {% embed '@Theme/_table.html.twig' %}
+        {% block items %}
+            <div class="offer-grid fixed">
+                {% for row in rows %}
+                    {% set show = path('builder_show', {token: row.project.token}) %}
+                    <article class="offer-card clickable-row" data-href="{{ show }}" data-template>
+                        <img class="offer-cover" src="{{ path('builder_version_picture', {id: row.id, file: row.cover}) }}" alt="{{ row.name }}" loading="lazy">
+                        <h3 class="offer-title"><a href="{{ show }}">{{ row.name }}</a></h3>
+                    </article>
+                {% endfor %}
+            </div>
+        {% endblock %}
+    {% endembed %}
+</div>

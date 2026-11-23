@@ -67,28 +67,46 @@
         <target>Блоки</target>
       </segment>
     </unit>
+    <unit id="builder.catalog.create">
+      <segment>
+        <source>builder.catalog.create</source>
+        <target>Создать сайт</target>
+      </segment>
+    </unit>
     <unit id="builder.catalog.description">
       <segment>
         <source>builder.catalog.description</source>
-        <target>Шаблоны сайтов из конструктора {brand}</target>
+        <target>Конструктор сайтов {brand}: соберите сайт из готовых блоков в визуальном редакторе или начните с шаблона</target>
       </segment>
     </unit>
     <unit id="builder.catalog.empty">
       <segment>
         <source>builder.catalog.empty</source>
-        <target>Шаблонов пока нет</target>
+        <target>Шаблонов пока нет — начните с пустого проекта</target>
+      </segment>
+    </unit>
+    <unit id="builder.catalog.lead">
+      <segment>
+        <source>builder.catalog.lead</source>
+        <target>Соберите сайт сами в визуальном редакторе без кода: перетаскивайте готовые блоки, меняйте тексты и картинки, проверяйте вид на компьютере и телефоне. Готовый сайт покажите по ссылке или скачайте файлом.</target>
       </segment>
     </unit>
     <unit id="builder.catalog.menu">
       <segment>
         <source>builder.catalog.menu</source>
+        <target>Конструктор</target>
+      </segment>
+    </unit>
+    <unit id="builder.catalog.templates">
+      <segment>
+        <source>builder.catalog.templates</source>
         <target>Шаблоны</target>
       </segment>
     </unit>
     <unit id="builder.catalog.title">
       <segment>
         <source>builder.catalog.title</source>
-        <target>Шаблоны сайтов</target>
+        <target>Конструктор сайтов</target>
       </segment>
     </unit>
     <unit id="builder.element.box">
