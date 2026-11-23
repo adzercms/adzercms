@@ -2,13 +2,7 @@
 
 {% block header_side %}
     {% for part in fragments('header', app.user.id) %}{% include part.template with part.context only %}{% endfor %}
-    <details class="menu">
-        <summary>{% include '@Theme/_avatar.html.twig' with {user: app.user} only %}{{ login(app.user) }}</summary>
-        <nav>
-            {% if cabinet('profile') %}<a href="{{ cabinet('profile') }}">{{ 'theme.profile'|trans }}</a>{% endif %}
-            <a href="{{ logout_path() }}">{{ 'theme.logout'|trans }}</a>
-        </nav>
-    </details>
+    {% include '@Theme/_account.html.twig' with {user: app.user} only %}
 {% endblock %}
 
 {% block submenu %}{% endblock %}

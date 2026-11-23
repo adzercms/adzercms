@@ -1,1 +1,5 @@
-{% if user.avatar %}<img class="avatar" src="{{ path('avatar', {file: user.avatar}) }}" alt="" width="24" height="24">{% endif %}
+{% set class = ('avatar ' ~ class|default(''))|trim %}
+{% if user.avatar %}<img class="{{ class }}" src="{{ path('avatar', {file: user.avatar}) }}" alt="" width="24" height="24">
+{%- else %}{% set letter = (user.firstName ?: user.lastName ?: name ?? login(user))|first|upper %}<span class="{{ class }}" aria-hidden="true">
+{%- if letter matches '/^\\p{L}$/u' %}{{ letter }}{% else %}{% import '@Theme/_icons.html.twig' as icon %}{{ icon.glyph('user') }}{% endif %}</span>
+{%- endif %}

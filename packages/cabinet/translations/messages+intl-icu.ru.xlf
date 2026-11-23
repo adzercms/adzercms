@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="ru">
   <file id="messages.ru">
+    <unit id="cabinet.avatar.drop">
+      <segment>
+        <source>cabinet.avatar.drop</source>
+        <target>Удалить фото</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.avatar.dropped">
+      <segment>
+        <source>cabinet.avatar.dropped</source>
+        <target>Фото удалено</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.avatar.save">
+      <segment>
+        <source>cabinet.avatar.save</source>
+        <target>Загрузить</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.avatar.saved">
+      <segment>
+        <source>cabinet.avatar.saved</source>
+        <target>Фото сохранено</target>
+      </segment>
+    </unit>
+    <unit id="cabinet.avatar.title">
+      <segment>
+        <source>cabinet.avatar.title</source>
+        <target>Фото</target>
+      </segment>
+    </unit>
     <unit id="cabinet.contact.add">
       <segment>
         <source>cabinet.contact.add</source>

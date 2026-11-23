@@ -10,6 +10,7 @@ use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Ui\Badge;
 use AdzerCMS\Contracts\Ui\Tabs;
 use AdzerCMS\Core\Account\AccountDeletion;
+use AdzerCMS\Core\Account\Avatars;
 use AdzerCMS\Core\Account\ContactKind;
 use AdzerCMS\Core\Account\ContactOutcome;
 use AdzerCMS\Core\Account\Role;
@@ -35,6 +36,7 @@ use AdzerCMS\Core\Ui\Intent;
 use AdzerCMS\Core\Ui\PageTabs;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -46,6 +48,8 @@ use function Symfony\Component\Translation\t;
 
 final class AccountController extends AbstractController
 {
+    public const AVATAR = 'avatar';
+    public const DROP = 'drop';
     private const PROFILE_TABS = ['account', 'notices', 'security'];
 
     #[Route('/', name: 'cabinet_root', methods: ['GET'], options: ['fallback' => true], priority: \PHP_INT_MIN)]
@@ -163,6 +167,23 @@ final class AccountController extends AbstractController
         );
         $em->flush();
         $this->addFlash('success', t('cabinet.profile.name_saved'));
+
+        return $this->redirectToRoute('cabinet_profile');
+    }
+
+    #[Route('/profile/avatar', name: 'cabinet_profile_avatar', methods: ['POST'])]
+    #[IsGranted(Role::USER)]
+    public function avatar(#[CurrentUser] User $user, Request $request, Avatars $avatars, EntityManagerInterface $em): Response
+    {
+        $photo = $request->files->get(self::AVATAR);
+        if ($request->request->has(self::DROP)) {
+            $avatars->drop($user);
+            $this->addFlash('success', t('cabinet.avatar.dropped'));
+        } elseif ($photo instanceof File) {
+            $refusal = $avatars->own($user, $photo);
+            null === $refusal ? $this->addFlash('success', t('cabinet.avatar.saved')) : $this->addFlash('error', $refusal->reason);
+        }
+        $em->flush();
 
         return $this->redirectToRoute('cabinet_profile');
     }

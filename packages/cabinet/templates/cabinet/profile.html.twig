@@ -100,6 +100,19 @@
         </div>
     {% endif %}
 {% else %}
+    <form method="post" action="{{ path('cabinet_profile_avatar') }}" enctype="multipart/form-data" class="section">
+        {{ csrf_field() }}
+        <div class="section-head">
+            <h3>{{ 'cabinet.avatar.title'|trans }}</h3>
+        </div>
+        <div class="avatar-field">
+            {% include '@Theme/_avatar.html.twig' with {user: user, class: 'large'} only %}
+            {% include '@Theme/_file.html.twig' with {name: constant('AdzerCMS\\Cabinet\\Controller\\AccountController::AVATAR'), accept: constant('AdzerCMS\\Core\\Photo\\Photos::TYPES')|join(','), required: true} only %}
+            <button type="submit">{{ 'cabinet.avatar.save'|trans }}</button>
+            {% if user.avatar %}<button type="submit" class="secondary" name="{{ constant('AdzerCMS\\Cabinet\\Controller\\AccountController::DROP') }}" value="1" formnovalidate>{{ 'cabinet.avatar.drop'|trans }}</button>{% endif %}
+        </div>
+    </form>
+
     <form method="post" action="{{ path('cabinet_profile_name') }}" class="section">
         {{ csrf_field() }}
         <div class="section-head">

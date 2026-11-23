@@ -213,7 +213,17 @@ summary::-webkit-details-marker { display: none; }
     border-radius: var(--radius);
 }
 .menu > summary::after { content: " ▾"; color: var(--text-gray); }
-.avatar { flex: none; width: 24px; height: 24px; margin-right: 0.4rem; border-radius: 50%; object-fit: cover; vertical-align: middle; }
+.avatar { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 24px; height: 24px; margin-right: 0.4rem; border-radius: 50%; object-fit: cover; vertical-align: middle; background: var(--primary); color: var(--on-primary); font-size: 12px; font-weight: 600; line-height: 1; }
+.avatar svg { width: 62%; height: 62%; }
+.account > summary { padding: 0; border: 0; border-radius: 50%; transition: box-shadow 0.15s; }
+.account > summary::after { content: none; }
+.account > summary:hover, .account[open] > summary { box-shadow: 0 0 0 3px var(--border); }
+.account > summary .avatar { width: var(--control-height-sm); height: var(--control-height-sm); margin: 0; font-size: 15px; }
+.account > nav { min-width: 14rem; max-width: min(20rem, calc(100vw - 24px)); }
+.account-head { display: flex; flex-direction: column; gap: 0.1rem; margin-bottom: 0.3rem; padding: 0.45rem 0.6rem 0.6rem; border-bottom: 1px solid var(--border-light); overflow-wrap: anywhere; }
+.account-head span { color: var(--text-gray); font-size: 13px; }
+.avatar.large { width: 96px; height: 96px; margin: 0; font-size: 40px; }
+.avatar-field { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; }
 .menu > nav {
     position: absolute;
     right: 0;
@@ -340,7 +350,7 @@ button.nav-item {
     .header-logo { order: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .header-right { order: 2; }
     .header-inner { gap: 0.6rem; padding: 0 12px; }
-    .header-right > .menu, .balance-display { display: none; }
+    .header-right > .menu:not(.account), .balance-display { display: none; }
     .impersonate-bar { gap: 0.5rem; font-size: 12px; }
     .preview-bar { bottom: calc(var(--bottom-nav-height) + 20px); }
 

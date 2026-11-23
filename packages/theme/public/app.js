@@ -361,6 +361,22 @@ document.addEventListener('invalid', event => {
 
 const midway = form => form?.matches('[data-steps]') && stepsOf(form).at(-1)?.dataset.step !== form.dataset.stepAt;
 
+const closeMenus = keep => document.querySelectorAll('details.menu[open]').forEach(menu => {
+    if (!menu.contains(keep)) {
+        menu.open = false;
+    }
+});
+
+document.addEventListener('click', event => closeMenus(event.target));
+
+document.addEventListener('keydown', event => {
+    const menu = event.key === 'Escape' && event.target.closest?.('details.menu[open]');
+    if (menu) {
+        menu.open = false;
+        menu.querySelector('summary').focus();
+    }
+});
+
 document.addEventListener('keydown', event => {
     if (event.key === 'Enter' && event.target.matches('input') && midway(event.target.form)) {
         event.preventDefault();

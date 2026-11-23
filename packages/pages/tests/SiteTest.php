@@ -214,6 +214,22 @@ final class SiteTest extends SchemaTestCase
         self::assertSame(['Home | VILLAGE.NET', 'Home'], $titles(), 'the ending follows the title after a space, the link card keeps the page title');
     }
 
+    #[Group('ACMS-UI-0177')]
+    #[Group('ACMS-UI-0178')]
+    #[Group('ACMS-US-0002')]
+    public function testHeaderEntryIsLoginButtonForGuestAndAvatarMenuForRecord(): void
+    {
+        $this->page('Home', Page::ROOT, published: true);
+
+        $entry = $this->client->request('GET', '/')->filter('.site-header .site-entry');
+        self::assertSame(['a', 'button site-entry'], [$entry->nodeName(), $entry->attr('class')], 'a guest signs in by a button');
+
+        $this->client->loginUser($this->record('79990000005'));
+        $entry = $this->client->request('GET', '/')->filter('.site-header .site-entry');
+        self::assertSame('details', $entry->nodeName(), 'a record opens its menu');
+        self::assertSame('U', trim($entry->filter('summary > .avatar')->text()), 'the avatar of a record without a photo is the first letter of its login');
+    }
+
     #[Group('ACMS-UI-0154')]
     #[Group('ACMS-US-0070')]
     public function testHeaderLeadsToCabinetOfAnotherSiteInNewTab(): void
