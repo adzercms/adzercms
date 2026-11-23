@@ -220,7 +220,7 @@ summary::-webkit-details-marker { display: none; }
 .account > summary:hover, .account[open] > summary { box-shadow: 0 0 0 3px var(--border); }
 .account > summary .avatar { width: var(--control-height-sm); height: var(--control-height-sm); margin: 0; font-size: 15px; }
 .account > nav { min-width: 14rem; max-width: min(20rem, calc(100vw - 24px)); }
-.account-head { display: flex; flex-direction: column; gap: 0.1rem; margin-bottom: 0.3rem; padding: 0.45rem 0.6rem 0.6rem; border-bottom: 1px solid var(--border-light); overflow-wrap: anywhere; }
+.account-head { display: flex; flex-direction: column; gap: 0.1rem; margin-bottom: 0.3rem; padding: 0.45rem 0.6rem 0.6rem; border-bottom: 1px solid var(--border-light); overflow-wrap: break-word; }
 .account-head span { color: var(--text-gray); font-size: 13px; }
 .avatar.large { width: 96px; height: 96px; margin: 0; font-size: 40px; }
 .avatar-field { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; }
