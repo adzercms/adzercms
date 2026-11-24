@@ -63,6 +63,27 @@ document.addEventListener('click', event => {
         return;
     }
 
+    const zoom = event.target.closest('dialog.zoom');
+    if (zoom) {
+        if (event.target === zoom.firstElementChild) {
+            zoom.classList.toggle('full');
+        } else {
+            zoom.close();
+        }
+        return;
+    }
+
+    const photo = event.target.closest('a[data-zoom]');
+    if (photo && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+        event.preventDefault();
+        const dialog = document.querySelector('dialog.zoom')
+            ?? document.body.appendChild(Object.assign(document.createElement('dialog'), {className: 'zoom'}));
+        dialog.classList.remove('full');
+        dialog.replaceChildren(Object.assign(document.createElement('img'), {src: photo.href, alt: photo.querySelector('img')?.alt ?? ''}));
+        dialog.showModal();
+        return;
+    }
+
     const opener = event.target.closest('[data-modal], [data-record]');
     if (opener && (opener.tagName !== 'TR' || !event.target.closest('a, button, input, select, form, [data-order-id]'))) {
         if (opener.tagName === 'A' && (event.ctrlKey || event.metaKey || event.shiftKey)) {
