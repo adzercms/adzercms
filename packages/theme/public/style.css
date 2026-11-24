@@ -1581,6 +1581,7 @@ form[data-steps] [data-step]:not(.current) { display: none; }
 .guide > li div[data-when]:not([hidden]) { display: grid; gap: 0.75rem; }
 .guide > li div[data-when]:not(:has(> :not([hidden]))) { display: none; }
 .guide > li div[data-when] > * { margin-block: 0; }
+.guide textarea[readonly] { field-sizing: content; }
 .guide > li::before {
     content: counter(part);
     grid-column: 1;
