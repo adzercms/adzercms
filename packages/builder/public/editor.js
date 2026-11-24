@@ -23,6 +23,13 @@ const KEY = 'data-element';
 const TOKEN = '_token';
 const DELETE = 'core:component-delete';
 const VALUES = 'builder-values';
+const UP = 'builder-up';
+const DOWN = 'builder-down';
+const COPY = 'builder-copy';
+const ADD = 'builder-add';
+const OWN = new Set([VALUES, UP, DOWN, COPY, ADD]);
+const KEPT = new Set(['tlb-move', 'tlb-delete']);
+const OPEN = 'background';
 const JSON_TYPE = 'application/json';
 const FRESH = 'block-new-';
 const PICTURE_ASSET = 'image';
@@ -41,6 +48,9 @@ const elements = JSON.parse(root.dataset.elements);
 const traits = JSON.parse(root.dataset.traits);
 const pictures = JSON.parse(root.dataset.pictures);
 const free = root.dataset.free;
+const actions = JSON.parse(root.dataset.actions);
+const icons = Object.fromEntries([...root.querySelectorAll('template[data-icon]')].map(one => [one.dataset.icon, one.innerHTML]));
+const library = root.querySelector('[data-library]');
 const pictured = new Set(sectors.flatMap(({properties}) => properties.filter(({kind}) => kind === 'picture').map(({property}) => property)));
 const anchors = new Set(blocks.map(block => block.anchor));
 const record = document.getElementById('record');
@@ -53,6 +63,7 @@ let leaving = false;
 let editing = null;
 let picking = null;
 let fresh = 0;
+let adding = null;
 
 const page = new DOMParser().parseFromString(await (await fetch(root.dataset.frame)).text(), 'text/html');
 const end = page.querySelector('[data-builder-end]');
@@ -309,10 +320,15 @@ const setup = editor => {
     types.addType(BLOCK, {model: {
         defaults: {draggable: (source, target) => target.get('type') === BLOCKS, droppable: false, copyable: false, editable: false, traits: []},
         init() {
-            if (this.get('block').dialog) {
-                const label = root.querySelector('[data-edit-icon]').innerHTML;
-                this.set('toolbar', [{label, attributes: {title: root.dataset.edit}, command: VALUES}, ...this.get('toolbar')]);
-            }
+            const item = (action, command) => ({label: icons[action], attributes: {title: actions[action], 'data-action': action}, command});
+            this.set('toolbar', [
+                ...(this.get('block').dialog ? [item('edit', VALUES)] : []),
+                item('up', UP),
+                item('down', DOWN),
+                item('copy', COPY),
+                item('add', ADD),
+                ...this.get('toolbar').filter(one => KEPT.has(one.command) && !OWN.has(one.command)),
+            ]);
         },
     }});
     types.addType(BODY, {model: {defaults: {...LOCKED, highlightable: true, droppable: holding}}});
@@ -332,6 +348,30 @@ const setup = editor => {
         }
     }});
     editor.Commands.add(VALUES, {run: ed => fill(ed.getSelected())});
+    editor.Commands.add(UP, {run: ed => {
+        const component = ed.getSelected();
+        const before = placed()[placed().indexOf(component) - 1];
+        if (before) {
+            component.move(container(), {at: before.index()});
+        }
+    }});
+    editor.Commands.add(DOWN, {run: ed => {
+        const component = ed.getSelected();
+        const after = placed()[placed().indexOf(component) + 1];
+        if (after) {
+            component.move(container(), {at: after.index() + 1});
+        }
+    }});
+    editor.Commands.add(COPY, {run: ed => {
+        const component = ed.getSelected();
+        const copy = component.clone();
+        copy.set('block', {...component.get('block'), id: null, anchor: copy.getId()});
+        ed.select(container().append(copy, {at: component.index() + 1})[0]);
+    }});
+    editor.Commands.add(ADD, {run: ed => {
+        adding = ed.getSelected().index() + 1;
+        library.showModal();
+    }});
 
     editor.AssetManager.addType(PICTURE_ASSET, {view: {
         template() {
@@ -434,7 +474,7 @@ const editor = grapesjs.init({
     mediaCondition: 'max-width',
     domComponents: {disableTextInnerChilds: true},
     layerManager: {appendTo: root.querySelector('[data-layers]'), root: `[data-gjs-type="${BLOCKS}"]`},
-    styleManager: {appendTo: root.querySelector('[data-style-panel]'), sectors: sectors.map(({id, name, properties}) => ({id, name, open: false, properties: properties.map(field)}))},
+    styleManager: {appendTo: root.querySelector('[data-style-panel]'), sectors: sectors.map(({id, name, properties}) => ({id, name, open: id === OPEN, properties: properties.map(field)}))},
     traitManager: {appendTo: root.querySelector('[data-traits-panel]')},
     blockManager: {appendTo: root.querySelector('[data-palette]'), blocks: [...kinds.map(kind => ({id: kind.type, label: kind.label, attributes: {'data-type': kind.type}, content: {type: BLOCK, block: kind}})), ...pieces]},
     assetManager: {assets: pictures, upload: root.dataset.upload, uploadName: FILES, params: {[TOKEN]: token()}, showUrlInput: false},
@@ -530,6 +570,14 @@ document.addEventListener('click', event => {
 });
 
 panel.addEventListener('close', () => editor.Modal.isOpen() && editor.Modal.close());
+
+library.addEventListener('click', event => {
+    const picked = event.target.closest('[data-library-type]');
+    if (picked) {
+        library.close();
+        fill(null, kinds.find(kind => kind.type === picked.dataset.libraryType), adding);
+    }
+});
 
 document.addEventListener('htmx:afterRequest', ({detail: {xhr, successful}}) => {
     if (editing && successful && xhr.getResponseHeader('Content-Type')?.startsWith(JSON_TYPE)) {

@@ -49,6 +49,30 @@
         <target>Конструктор</target>
       </segment>
     </unit>
+    <unit id="builder.action.add">
+      <segment>
+        <source>builder.action.add</source>
+        <target>Добавить блок ниже</target>
+      </segment>
+    </unit>
+    <unit id="builder.action.copy">
+      <segment>
+        <source>builder.action.copy</source>
+        <target>Дублировать</target>
+      </segment>
+    </unit>
+    <unit id="builder.action.down">
+      <segment>
+        <source>builder.action.down</source>
+        <target>Ниже</target>
+      </segment>
+    </unit>
+    <unit id="builder.action.up">
+      <segment>
+        <source>builder.action.up</source>
+        <target>Выше</target>
+      </segment>
+    </unit>
     <unit id="builder.apply">
       <segment>
         <source>builder.apply</source>
@@ -185,6 +209,12 @@
       <segment>
         <source>builder.leave</source>
         <target>Выйти из редактора? Несохранённые правки пропадут</target>
+      </segment>
+    </unit>
+    <unit id="builder.library">
+      <segment>
+        <source>builder.library</source>
+        <target>Добавить блок</target>
       </segment>
     </unit>
     <unit id="builder.notice.decision.body">
@@ -442,7 +472,7 @@
     <unit id="builder.style">
       <segment>
         <source>builder.style</source>
-        <target>Стиль</target>
+        <target>Оформление</target>
       </segment>
     </unit>
     <unit id="builder.templates.author">

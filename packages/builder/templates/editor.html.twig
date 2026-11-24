@@ -17,8 +17,12 @@
      data-pictures="{{ pictures|json_encode }}" data-upload="{{ upload }}" data-accept="{{ accept }}"
      data-free="{{ free }}" data-base="{{ base }}" data-elements="{{ elements|json_encode }}" data-elements-label="{{ 'builder.elements'|trans }}" data-traits="{{ {link: 'builder.trait.link'|trans, alt: 'builder.trait.alt'|trans}|json_encode }}"
      data-screens="{{ screens|map(screen => {id: screen.id, media: screen.media, width: screen.width})|json_encode }}"
-     data-unavailable="{{ 'pages.block.unavailable'|trans }}" data-failed="{{ 'builder.failed'|trans }}" data-leave="{{ 'builder.leave'|trans }}" data-edit="{{ 'core.action.edit'|trans }}">
-    <template data-edit-icon>{{ icon.edit() }}</template>
+     data-unavailable="{{ 'pages.block.unavailable'|trans }}" data-failed="{{ 'builder.failed'|trans }}" data-leave="{{ 'builder.leave'|trans }}" data-actions="{{ {edit: 'core.action.edit'|trans, up: 'builder.action.up'|trans, down: 'builder.action.down'|trans, copy: 'builder.action.copy'|trans, add: 'builder.action.add'|trans}|json_encode }}">
+    <template data-icon="edit">{{ icon.edit() }}</template>
+    <template data-icon="up">{{ icon.glyph('sorted-asc') }}</template>
+    <template data-icon="down">{{ icon.glyph('sorted-desc') }}</template>
+    <template data-icon="copy">{{ icon.glyph('copy') }}</template>
+    <template data-icon="add">{{ icon.glyph('plus') }}</template>
     <header class="builder-bar">
         <div class="builder-screens">
             {% for screen in screens %}
@@ -47,6 +51,14 @@
         <h2 class="builder-heading">{{ 'builder.style'|trans }}</h2>
         <div data-style-panel></div>
     </aside>
+    <dialog class="modal" data-library>
+        {% include '@Theme/_modal_header.html.twig' with {title: 'builder.library'|trans} only %}
+        <div class="modal-body builder-library">
+            {% for type in types %}
+                <button type="button" class="secondary" data-library-type="{{ type.type }}">{{ type.label }}</button>
+            {% endfor %}
+        </div>
+    </dialog>
     <dialog class="modal" data-pictures-panel>
         {% include '@Theme/_modal_header.html.twig' with {title: 'builder.pictures'|trans} only %}
         <div class="modal-body">
