@@ -1578,6 +1578,9 @@ form[data-steps] [data-step]:not(.current) { display: none; }
 .guide > li { counter-increment: part; display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: 0.75rem; align-content: start; }
 .guide > li > * { grid-column: 2; margin-block: 0; }
 .guide > li > :is(button, .button) { justify-self: start; }
+.guide > li div[data-when]:not([hidden]) { display: grid; gap: 0.75rem; }
+.guide > li div[data-when]:not(:has(> :not([hidden]))) { display: none; }
+.guide > li div[data-when] > * { margin-block: 0; }
 .guide > li::before {
     content: counter(part);
     grid-column: 1;
