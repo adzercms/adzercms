@@ -77,6 +77,8 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
     private const TEST_MAILER = 'null://null';
     private const LOCKS = 'adzercms.locks';
     private const LOCK_DIR = '%kernel.project_dir%/var/lock/%kernel.environment%';
+    private const LOCK_KIND = 'flock';
+    private const LOCK_FACTORY = 'lock.default.factory';
     private const TRANSLATOR = 'adzercms.translator';
     private const TRANSLATOR_DEFAULT = 'translator.default';
     private const IMPORTMAP_READER = 'asset_mapper.importmap.config_reader';
@@ -163,7 +165,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
             'translator' => ['fallbacks' => [self::FALLBACK_LOCALE]],
             'mailer' => ['dsn' => $test ? self::TEST_MAILER : MailTransport::DSN],
             'asset_mapper' => ['paths' => [self::IMPORTMAP_VENDOR => 'vendor'], 'public_prefix' => '%'.Kernel::ASSETS.'%', 'missing_import_mode' => 'strict', 'importmap_polyfill' => false],
-            'lock' => self::LOCKS,
+            'lock' => self::LOCK_KIND,
             'rate_limiter' => [PublicForm::LIMITER => ['policy' => 'fixed_window', 'limit' => PublicForm::LIMIT, 'interval' => PublicForm::INTERVAL]],
         ]);
 
@@ -210,6 +212,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
     {
         self::texts($container);
         Schedule::collect($container);
+        $container->getDefinition(self::LOCK_FACTORY)->replaceArgument(0, new Reference(self::LOCKS));
 
         if ($container->hasDefinition(self::ROUTER)) {
             $router = $container->getDefinition(self::ROUTER);
