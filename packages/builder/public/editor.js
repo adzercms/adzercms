@@ -186,12 +186,13 @@ const reason = error => {
 const field = ({property, label, kind, keywords, units, signed}) => ({
     property,
     label,
+    full: true,
     ...{
         color: {type: 'color', colorPicker: {showAlpha: true}},
         choice: {type: 'select', options: keywords},
         picture: {
             type: 'composite',
-            properties: [{type: 'file', id: 'src', property: `${property}-src`, label}],
+            properties: [{type: 'file', id: 'src', property: `${property}-src`, label: '', full: true}],
             toStyle: ({src}, {name}) => (src ? {[name]: layered(src), ...COVER} : {[name]: ''}),
             fromStyle: (style, {name}) => ({src: LAYERED.exec(style[name] ?? '')?.[1] ?? ''}),
         },
