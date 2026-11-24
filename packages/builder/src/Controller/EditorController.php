@@ -80,7 +80,7 @@ final class EditorController extends AbstractController
             'frame' => $this->url($document, self::FRAME),
             'save' => $this->url($document, self::SAVE),
             'version' => $opened[PageDocument::VERSION],
-            'blocks' => array_map(fn (array $block): array => [...$block, PageDocument::STYLE => (object) $block[PageDocument::STYLE], 'dialog' => $block['available'] ? $this->opening($document, $block['type']) : null], $opened[PageDocument::BLOCKS]),
+            'blocks' => array_map(fn (array $block): array => [...$block, PageDocument::VALUES => (object) $block[PageDocument::VALUES], PageDocument::STYLE => (object) $block[PageDocument::STYLE], 'dialog' => $block['available'] ? $this->opening($document, $block['type']) : null], $opened[PageDocument::BLOCKS]),
             'types' => array_map(fn (array $type): array => $type + ['dialog' => $this->opening($document, $type['type']), 'draw' => $this->drawing($document, $type['type'])], $this->document->types()),
             'screens' => array_map(static fn (Screen $screen): array => [
                 'id' => $screen->value,

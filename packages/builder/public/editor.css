@@ -24,3 +24,8 @@
 .builder .gjs-sm-label, .builder .gjs-label { color: var(--text-muted); }
 .builder .gjs-layer { background-color: var(--surface); }
 .builder .gjs-layer.gjs-selected .gjs-layer-item { background-color: var(--tint); }
+.builder .gjs-toolbar-item[data-action] svg { fill: none; }
+.builder .gjs-sm-composite { padding: 0; border: 0; background: none; }
+.builder .gjs-sm-property__background-image-src .gjs-sm-label { display: none; }
+.builder .gjs-sm-btn { padding: 0.4rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background-color: var(--surface); color: var(--text); text-shadow: none; box-shadow: none; font-size: 13px; }
+.builder .gjs-sm-btn:hover { border-color: var(--primary); color: var(--primary-text); }
