@@ -1562,6 +1562,7 @@ form[data-steps] [data-step]:not(.current) { display: none; }
     gap: 0.75rem;
     margin: 0.75rem 0;
 }
+.photos:not(:has(> :not([hidden]))) { display: none; }
 .photos img { aspect-ratio: 3 / 4; }
 :is(.photos, fieldset.choices label) img {
     display: block;
