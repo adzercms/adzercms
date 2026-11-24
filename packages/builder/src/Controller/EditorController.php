@@ -93,6 +93,7 @@ final class EditorController extends AbstractController
             'upload' => $this->url($document, self::PICTURES),
             'accept' => implode(',', Photos::TYPES),
             'free' => FreeBlock::KEY,
+            'base' => BlockStyle::BASE,
             'elements' => array_map(fn (string $kind): array => ['kind' => $kind, 'label' => $this->translator->trans('builder.element.'.$kind)], FreeBlock::kinds()),
         ]);
     }
