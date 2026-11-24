@@ -11,3 +11,16 @@
 .builder-canvas { grid-area: canvas; position: relative; min-height: 0; }
 .builder-canvas .gjs-cv-canvas { top: 0; width: 100%; height: 100%; }
 .builder-library { display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); gap: 0.5rem; }
+.builder .gjs-one-bg { background-color: var(--surface); }
+.builder .gjs-two-color { color: var(--text); }
+.builder .gjs-three-bg { background-color: var(--primary); color: var(--on-primary); }
+.builder .gjs-four-color, .builder .gjs-four-color-h:hover { color: var(--primary-text); }
+.builder .gjs-blocks-c { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0.5rem 1rem 1rem; }
+.builder .gjs-block { width: auto; min-height: 0; margin: 0; padding: 0.6rem 0.5rem; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: none; font-size: 13px; }
+.builder .gjs-block:hover { border-color: var(--primary); color: var(--primary-text); box-shadow: none; }
+.builder .gjs-block-label { line-height: 1.3; }
+.builder .gjs-title, .builder .gjs-sm-sector-title { background-color: var(--bg-light); border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; letter-spacing: 0; }
+.builder .gjs-field { background-color: var(--bg); border: 1px solid var(--border); color: var(--text); }
+.builder .gjs-sm-label, .builder .gjs-label { color: var(--text-muted); }
+.builder .gjs-layer { background-color: var(--surface); }
+.builder .gjs-layer.gjs-selected .gjs-layer-item { background-color: var(--tint); }

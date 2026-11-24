@@ -48,8 +48,10 @@
             <h2 class="builder-heading">{{ 'builder.traits'|trans }}</h2>
             <div data-traits-panel></div>
         </section>
-        <h2 class="builder-heading">{{ 'builder.style'|trans }}</h2>
-        <div data-style-panel></div>
+        <section data-design hidden>
+            <h2 class="builder-heading">{{ 'builder.style'|trans }}</h2>
+            <div data-style-panel></div>
+        </section>
     </aside>
     <dialog class="modal" data-library>
         {% include '@Theme/_modal_header.html.twig' with {title: 'builder.library'|trans} only %}

@@ -405,8 +405,10 @@ const setup = editor => {
     });
 
     const properties = root.querySelector('[data-properties]');
+    const design = root.querySelector('[data-design]');
     editor.on('component:toggled', () => {
         properties.hidden = !editor.getSelected()?.getTraits().length;
+        design.hidden = !editor.getSelected();
     });
 
     editor.on('block:drag:start', block => {
