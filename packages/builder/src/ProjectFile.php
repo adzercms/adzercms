@@ -54,13 +54,13 @@ final readonly class ProjectFile
     }
 
     /**
-     * @param list<array{blocks: list<array{values: array<string, string>}>}> $pages
+     * @param list<array{blocks: list<array{values: array<string, string>, style: array<string, array<string, array<string, string>>>}>}> $pages
      *
      * @return list<string>
      */
     public static function names(array $pages): array
     {
-        return array_values(array_unique(PhotoAlbum::names(array_merge([], ...array_map(static fn (array $page): array => array_merge([], ...array_map(static fn (array $block): array => array_values($block['values']), $page['blocks'])), $pages)))));
+        return PhotoAlbum::blocks(array_merge([], ...array_column($pages, 'blocks')));
     }
 
     /**
@@ -74,7 +74,7 @@ final readonly class ProjectFile
         return array_map(static fn (array $page): array => [
             'path' => $page['path'],
             'title' => $page['title'],
-            'blocks' => array_map(static fn (array $block): array => ['type' => $block['type'], 'values' => array_map(static fn (string $value): string => strtr($value, $names), $block['values']), 'style' => $block['style']], $page['blocks']),
+            'blocks' => array_map(static fn (array $block): array => ['type' => $block['type'], 'values' => array_map(static fn (string $value): string => strtr($value, $names), $block['values']), 'style' => BlockStyle::renamed($block['style'], $names)], $page['blocks']),
         ], $pages);
     }
 
@@ -129,8 +129,7 @@ final readonly class ProjectFile
                     $inside[substr($entry, \strlen(self::PICTURES))] = true;
                 }
             }
-            $values = array_merge([], ...array_map(static fn (array $page): array => array_merge([], ...array_map(static fn (array $block): array => array_values($block['values']), $page['blocks'])), $pages));
-            $pictures = array_values(array_filter(array_unique(PhotoAlbum::names($values)), static fn (string $name): bool => isset($inside[$name])));
+            $pictures = array_values(array_filter(self::names($pages), static fn (string $name): bool => isset($inside[$name])));
 
             return \count($pictures) > Projects::PICTURES ? new Refusal(t('builder.refusal.pictures', ['limit' => Projects::PICTURES])) : [$pages, $pictures];
         } finally {
@@ -219,7 +218,7 @@ final readonly class ProjectFile
         foreach ($blocks as $block) {
             $type = \is_array($block) ? $block['type'] ?? null : null;
             $values = \is_array($block) ? PageDocument::values($block['values'] ?? null) : null;
-            $style = \is_array($block) && \is_array($block['style'] ?? null) ? BlockStyle::rules($block['style']) : null;
+            $style = \is_array($block) && \is_array($block['style'] ?? null) ? BlockStyle::rules($block['style'], null) : null;
             if (!\is_string($type) || '' === $type || mb_strlen($type) > BlockRecord::TYPE || null === $values || null === $style) {
                 return null;
             }

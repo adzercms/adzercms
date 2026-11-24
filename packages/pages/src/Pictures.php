@@ -30,7 +30,7 @@ final readonly class Pictures implements Album
             self::PLACE,
             self::SIDE,
             static fn (string $name): string => $urls->generate(PageController::PICTURE, ['file' => $name]),
-            static fn (): array => PhotoAlbum::names(array_merge([], ...array_map(array_values(...), $blocks->values()))),
+            static fn (): array => PhotoAlbum::blocks($blocks->held()),
         );
     }
 

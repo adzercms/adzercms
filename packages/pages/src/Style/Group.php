@@ -12,6 +12,7 @@ use function Symfony\Component\Translation\t;
 enum Group: string implements Titled
 {
     case Text = 'text';
+    case Background = 'background';
     case Decoration = 'decoration';
     case Spacing = 'spacing';
     case Size = 'size';

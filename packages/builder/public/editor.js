@@ -28,6 +28,9 @@ const FRESH = 'block-new-';
 const PICTURE_ASSET = 'image';
 const FILES = 'files';
 const PARAGRAPHS = new Set(['p', 'div', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote']);
+const SHADE = 'var(--overlay)';
+const LAYERED = /url\("([^"]*)"\)$/;
+const COVER = {'background-size': 'cover', 'background-position': 'center', 'background-repeat': 'no-repeat'};
 
 const root = document.querySelector('[data-builder]');
 const blocks = JSON.parse(root.dataset.blocks);
@@ -38,6 +41,7 @@ const elements = JSON.parse(root.dataset.elements);
 const traits = JSON.parse(root.dataset.traits);
 const pictures = JSON.parse(root.dataset.pictures);
 const free = root.dataset.free;
+const pictured = new Set(sectors.flatMap(({properties}) => properties.filter(({kind}) => kind === 'picture').map(({property}) => property)));
 const anchors = new Set(blocks.map(block => block.anchor));
 const record = document.getElementById('record');
 const panel = root.querySelector('[data-pictures-panel]');
@@ -84,6 +88,8 @@ const markup = paragraphs => paragraphs.map(runs => {
 }).join('');
 
 const source = name => pictures.find(one => one.name === name)?.src;
+
+const layered = src => `linear-gradient(${SHADE},${SHADE}),url("${src}")`;
 
 const element = node => {
     const own = {[KEY]: node.key};
@@ -170,8 +176,14 @@ const field = ({property, label, kind, keywords, units, signed}) => ({
     property,
     label,
     ...{
-        color: {type: 'color', colorPicker: {showAlpha: false}},
+        color: {type: 'color', colorPicker: {showAlpha: true}},
         choice: {type: 'select', options: keywords},
+        picture: {
+            type: 'composite',
+            properties: [{type: 'file', id: 'src', property: `${property}-src`, label}],
+            toStyle: ({src}, {name}) => (src ? {[name]: layered(src), ...COVER} : {[name]: ''}),
+            fromStyle: (style, {name}) => ({src: LAYERED.exec(style[name] ?? '')?.[1] ?? ''}),
+        },
         fraction: {type: 'slider', min: 0, max: 1, step: 0.01},
         length: {type: 'number', units, fixedValues: keywords.map(({id}) => id), ...(signed ? {} : {min: 0})},
     }[kind],
@@ -268,6 +280,12 @@ const runs = node => {
 
 const named = src => editor.AssetManager.getAll().find(asset => asset.getSrc() === src)?.get('name') ?? '';
 
+const shown = properties => Object.fromEntries(Object.entries(properties)
+    .filter(([property, value]) => !pictured.has(property) || source(value))
+    .map(([property, value]) => [property, pictured.has(property) ? layered(source(value)) : value]));
+
+const stored = properties => Object.fromEntries(properties.map(([property, value]) => [property, pictured.has(property) ? named(LAYERED.exec(value)?.[1] ?? '') : value]));
+
 const nodeOf = component => {
     const key = keyOf(component);
     const own = component.getAttributes();
@@ -315,9 +333,14 @@ const setup = editor => {
     }});
     editor.Commands.add(VALUES, {run: ed => fill(ed.getSelected())});
 
-    editor.AssetManager.addType(PICTURE_ASSET, {view: {template() {
-        return `<div class="${this.pfx}preview-cont">${this.getPreview()}</div>`;
-    }}});
+    editor.AssetManager.addType(PICTURE_ASSET, {view: {
+        template() {
+            return `<div class="${this.pfx}preview-cont">${this.getPreview()}</div>`;
+        },
+        onClick() {
+            this.onDblClick();
+        },
+    }});
     editor.on('modal', ({open, content}) => {
         if (!open) {
             panel.close();
@@ -378,7 +401,7 @@ const setup = editor => {
                 const {style} = component.get('block');
                 for (const [target, own] of [[component, style[''] ?? {}], ...within(component).map(one => [one, style[keyOf(one)] ?? {}])]) {
                     for (const screen of screens.filter(one => own[one.id])) {
-                        editor.Css.setIdRule(target.getId(), own[screen.id], {mediaText: media(screen)});
+                        editor.Css.setIdRule(target.getId(), shown(own[screen.id]), {mediaText: media(screen)});
                     }
                 }
             }
@@ -406,7 +429,7 @@ const editor = grapesjs.init({
     panels: {defaults: []},
     protectedCss: '',
     canvas: {styles: [...page.head.querySelectorAll(SHEETS)].map(link => link.href)},
-    canvasCss: `.${UNAVAILABLE}{padding:1rem;border:1px dashed;opacity:.6}.${FREE_BODY}:empty,[data-gjs-type="${BOX}"]:empty{min-height:3rem;outline:1px dashed}`,
+    canvasCss: `${root.dataset.base}.${UNAVAILABLE}{padding:1rem;border:1px dashed;opacity:.6}.${FREE_BODY}:empty,[data-gjs-type="${BOX}"]:empty{min-height:3rem;outline:1px dashed}`,
     deviceManager: {devices: screens.map(({id, media, width}) => ({id, name: id, width: width ? `${width}px` : '', widthMedia: media ? `${media}px` : ''}))},
     mediaCondition: 'max-width',
     domComponents: {disableTextInnerChilds: true},
@@ -428,7 +451,7 @@ const placed = () => container().components().filter(component => component.get(
 const rulesOf = component => Object.fromEntries(screens
     .map(screen => [screen.id, Object.entries(editor.Css.getIdRule(component.getId(), {mediaText: media(screen)})?.getStyle() ?? {}).filter(([, value]) => value !== '')])
     .filter(([, properties]) => properties.length > 0)
-    .map(([screen, properties]) => [screen, sorted(Object.fromEntries(properties))]));
+    .map(([screen, properties]) => [screen, sorted(stored(properties))]));
 const styleOf = component => {
     const own = rulesOf(component);
     const {type, style} = component.get('block');

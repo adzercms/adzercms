@@ -46,6 +46,7 @@ final class UploadTest extends SchemaTestCase
 
     #[Group('ACMS-BLD-0019')]
     #[Group('ACMS-PAGE-0011')]
+    #[Group('ACMS-PAGE-0027')]
     #[Group('ACMS-US-0077')]
     public function testOwnerUploadsProjectFileAsUnpublishedPagesAtTheEndOfMenu(): void
     {
@@ -53,7 +54,7 @@ final class UploadTest extends SchemaTestCase
 
         $this->post(self::UPLOAD, [], [UploadController::FILE => $this->archive([
             ['path' => '/tariffs', 'title' => 'Tariffs', 'blocks' => [
-                ['type' => 'hero', 'values' => ['title' => 'Fiber', 'picture' => self::PICTURE], 'style' => ['' => ['desktop' => ['color' => '#112233']]]],
+                ['type' => 'hero', 'values' => ['title' => 'Fiber', 'picture' => self::PICTURE], 'style' => ['' => ['desktop' => ['color' => '#112233', 'background-image' => self::PICTURE]]]],
                 ['type' => 'gone', 'values' => ['title' => 'Kept'], 'style' => []],
             ]],
             ['path' => '/contacts', 'title' => 'Contacts', 'blocks' => []],
@@ -66,11 +67,11 @@ final class UploadTest extends SchemaTestCase
         self::assertSame(['/', '/tariffs', '/contacts'], array_map(static fn (MenuEntry $entry): ?string => $entry->getPage()?->getPath(), self::service(MenuEntryRepository::class)->ordered()), 'the menu of the project goes to the end of the menu');
 
         $blocks = self::service(PageBlockRepository::class)->of($pages[1]);
-        self::assertSame([['hero', ['color' => '#112233']], ['gone', []]], array_map(static fn (PageBlock $block): array => [$block->getType(), $block->getStyle()['']['desktop'] ?? []], $blocks));
-        self::assertSame(['title' => 'Kept'], $blocks[1]->getValues(), 'a block of a type without its module keeps its values');
         $picture = $blocks[0]->getValues()['picture'] ?? '';
         self::assertNotSame(self::PICTURE, $picture);
         self::assertNotNull(self::service(Pictures::class)->path($picture), 'the picture of a block goes to the photos of the site');
+        self::assertSame([['hero', ['color' => '#112233', 'background-image' => $picture]], ['gone', []]], array_map(static fn (PageBlock $block): array => [$block->getType(), $block->getStyle()['']['desktop'] ?? []], $blocks), 'the background picture of the style goes to the photos of the site under the same name');
+        self::assertSame(['title' => 'Kept'], $blocks[1]->getValues(), 'a block of a type without its module keeps its values');
     }
 
     /** @param list<array<string, mixed>> $pages */

@@ -287,6 +287,40 @@ test.describe('a page of the site', () => {
         }
     });
 
+    test('[ACMS-PAGE-0027][ACMS-BLD-0006][ACMS-FLOW-0022] a block takes a background picture of the panel under its shade, saving sends the name of the picture', async ({ page }) => {
+        const block = canvas(page).locator(READY).first();
+        const sector = page.locator('[data-style-panel] .gjs-sm-sector__background');
+        const panel = page.locator('[data-pictures-panel]');
+        const shade = sector.locator('.gjs-sm-property__--overlay input').first();
+
+        await block.click();
+        if (!(await shade.isVisible())) {
+            await sector.locator('.gjs-sm-sector-title').click();
+        }
+        await sector.locator('.gjs-sm-property__background-image-src button').click();
+        await expect(panel, 'the picture field opens the panel of pictures').toBeVisible();
+        await panel.locator('input[type="file"]').setInputFiles({ name: 'fiber.png', mimeType: 'image/png', buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64') });
+        await panel.locator('.gjs-am-asset').first().click();
+        await expect(panel, 'a click on a picture takes it').toBeHidden();
+        await expect.poll(() => block.evaluate((node) => getComputedStyle(node).backgroundImage), 'the canvas shows the picture').toMatch(/url\(".+\.webp"\)/);
+        await expect(block, 'the picture and its shade fill the block').toHaveCSS('background-size', 'cover, cover');
+
+        await shade.fill('rgba(0, 0, 0, 0.5)');
+        await shade.press('Enter');
+        await expect.poll(() => block.evaluate((node) => getComputedStyle(node).backgroundImage), 'the shade goes over the picture').toMatch(/^linear-gradient\(rgba\(0, 0, 0, 0\.5\), rgba\(0, 0, 0, 0\.5\)\), url\(/);
+
+        const sent = await saving(page);
+        await page.click('[data-save-document]');
+        await expect(page.locator('[data-status]')).toHaveText('saved');
+        expect(sent[0].blocks[0].style[''].desktop, 'saving sends the name of the picture with its shade and fill').toMatchObject({
+            'background-image': expect.stringMatching(/^[0-9a-f]{32}\.webp$/),
+            '--overlay': 'rgba(0,0,0,0.5)',
+            'background-size': 'cover',
+            'background-position': 'center',
+            'background-repeat': 'no-repeat',
+        });
+    });
+
     test('[ACMS-BLD-0004][ACMS-FLOW-0022] a free block takes its elements by dragging, its text changes in place, an element takes its link and style, saving sends the tree', async ({ page }) => {
         const root = page.locator('[data-builder]');
         const blocks = JSON.parse(await root.getAttribute('data-blocks'));

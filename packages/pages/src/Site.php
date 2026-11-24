@@ -59,7 +59,7 @@ final readonly class Site
             $schema[] = $type->schema($record->getValues());
         }
 
-        return ['title' => $title, 'description' => '', 'heading' => 1 === ($blocks[0]['level'] ?? null) ? null : $title, 'tabs' => [], 'blocks' => $blocks, 'style' => BlockStyle::css($shown), 'schema' => array_values(array_filter($schema))];
+        return ['title' => $title, 'description' => '', 'heading' => 1 === ($blocks[0]['level'] ?? null) ? null : $title, 'tabs' => [], 'blocks' => $blocks, 'style' => BlockStyle::css($shown, $album), 'schema' => array_values(array_filter($schema))];
     }
 
     /**

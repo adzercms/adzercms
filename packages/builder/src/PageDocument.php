@@ -87,7 +87,7 @@ final readonly class PageDocument
             return $refusal;
         }
 
-        $before = PhotoAlbum::names(array_merge([], ...array_map(static fn (BlockRecord $block): array => array_values($block->getValues()), array_values($stored))));
+        $before = PhotoAlbum::records($stored);
         $placed = [];
         foreach ($kept as [$block, $values, $style]) {
             $placed[] = $block;
@@ -101,7 +101,7 @@ final readonly class PageDocument
         }
         $document->touch();
         $this->em->flush();
-        $document->album()->drop(array_diff($before, PhotoAlbum::names(array_merge([], ...array_map(static fn (array $one): array => array_values($one[1]), $kept)))));
+        $document->album()->drop(array_diff($before, PhotoAlbum::blocks(array_map(static fn (array $one): array => ['values' => $one[1], 'style' => $one[2]], $kept))));
 
         return [self::VERSION => self::version($placed), self::BLOCKS => $placed];
     }
@@ -136,10 +136,10 @@ final readonly class PageDocument
         $block = \is_int($id) ? $left[$id] ?? null : null;
         $type = null === $id && \is_string($key) ? $this->types->find($key) : null;
         if (null !== $values && \is_array($style) && null !== $block) {
-            return self::kept($block, $this->checked($block, $values, $document->album()), self::sorted($style) === self::sorted($block->getStyle()) ? $block->getStyle() : BlockStyle::rules($style));
+            return self::kept($block, $this->checked($block, $values, $document->album()), self::sorted($style) === self::sorted($block->getStyle()) ? $block->getStyle() : BlockStyle::rules($style, $document->album()));
         }
         if (null !== $values && \is_array($style) && null !== $type) {
-            return self::kept($document->block($type->key()), $this->stored($type, $values, $document->album()), BlockStyle::rules($style));
+            return self::kept($document->block($type->key()), $this->stored($type, $values, $document->album()), BlockStyle::rules($style, $document->album()));
         }
 
         return new Refusal(t('builder.refusal.document'));

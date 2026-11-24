@@ -409,10 +409,46 @@
         <target>Title: 1 to {limit} characters</target>
       </segment>
     </unit>
+    <unit id="pages.style.--overlay">
+      <segment>
+        <source>pages.style.--overlay</source>
+        <target>Picture shade</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.background-attachment">
+      <segment>
+        <source>pages.style.background-attachment</source>
+        <target>Background scroll</target>
+      </segment>
+    </unit>
     <unit id="pages.style.background-color">
       <segment>
         <source>pages.style.background-color</source>
         <target>Background color</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.background-image">
+      <segment>
+        <source>pages.style.background-image</source>
+        <target>Background picture</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.background-position">
+      <segment>
+        <source>pages.style.background-position</source>
+        <target>Picture position</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.background-repeat">
+      <segment>
+        <source>pages.style.background-repeat</source>
+        <target>Picture repeat</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.background-size">
+      <segment>
+        <source>pages.style.background-size</source>
+        <target>Picture fill</target>
       </segment>
     </unit>
     <unit id="pages.style.border-color">
@@ -463,10 +499,16 @@
         <target>Font weight</target>
       </segment>
     </unit>
+    <unit id="pages.style.group.background">
+      <segment>
+        <source>pages.style.group.background</source>
+        <target>Background</target>
+      </segment>
+    </unit>
     <unit id="pages.style.group.decoration">
       <segment>
         <source>pages.style.group.decoration</source>
-        <target>Background and border</target>
+        <target>Border</target>
       </segment>
     </unit>
     <unit id="pages.style.group.size">
@@ -649,6 +691,12 @@
         <target>Bold</target>
       </segment>
     </unit>
+    <unit id="pages.style.value.bottom">
+      <segment>
+        <source>pages.style.value.bottom</source>
+        <target>Bottom</target>
+      </segment>
+    </unit>
     <unit id="pages.style.value.capitalize">
       <segment>
         <source>pages.style.value.capitalize</source>
@@ -661,6 +709,18 @@
         <target>Center</target>
       </segment>
     </unit>
+    <unit id="pages.style.value.contain">
+      <segment>
+        <source>pages.style.value.contain</source>
+        <target>Fit whole</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.cover">
+      <segment>
+        <source>pages.style.value.cover</source>
+        <target>Fill the block</target>
+      </segment>
+    </unit>
     <unit id="pages.style.value.dashed">
       <segment>
         <source>pages.style.value.dashed</source>
@@ -671,6 +731,12 @@
       <segment>
         <source>pages.style.value.dotted</source>
         <target>Dotted</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.fixed">
+      <segment>
+        <source>pages.style.value.fixed</source>
+        <target>Stays in place</target>
       </segment>
     </unit>
     <unit id="pages.style.value.italic">
@@ -703,6 +769,12 @@
         <target>lowercase</target>
       </segment>
     </unit>
+    <unit id="pages.style.value.no-repeat">
+      <segment>
+        <source>pages.style.value.no-repeat</source>
+        <target>No repeat</target>
+      </segment>
+    </unit>
     <unit id="pages.style.value.none">
       <segment>
         <source>pages.style.value.none</source>
@@ -715,16 +787,34 @@
         <target>Normal</target>
       </segment>
     </unit>
+    <unit id="pages.style.value.repeat">
+      <segment>
+        <source>pages.style.value.repeat</source>
+        <target>Repeat</target>
+      </segment>
+    </unit>
     <unit id="pages.style.value.right">
       <segment>
         <source>pages.style.value.right</source>
         <target>Right</target>
       </segment>
     </unit>
+    <unit id="pages.style.value.scroll">
+      <segment>
+        <source>pages.style.value.scroll</source>
+        <target>Scrolls with the page</target>
+      </segment>
+    </unit>
     <unit id="pages.style.value.solid">
       <segment>
         <source>pages.style.value.solid</source>
         <target>Solid</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.top">
+      <segment>
+        <source>pages.style.value.top</source>
+        <target>Top</target>
       </segment>
     </unit>
     <unit id="pages.style.value.transparent">
