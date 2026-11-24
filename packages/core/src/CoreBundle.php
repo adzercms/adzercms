@@ -62,6 +62,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\RetryableHttpClient;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use Symfony\Component\Lock\Store\FlockStore;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -74,7 +75,8 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
     private const FALLBACK_LOCALE = 'en';
     private const LOCALES = [self::FALLBACK_LOCALE, 'ru'];
     private const TEST_MAILER = 'null://null';
-    private const LOCKS = 'flock://%kernel.project_dir%/var/lock/%kernel.environment%';
+    private const LOCKS = 'adzercms.locks';
+    private const LOCK_DIR = '%kernel.project_dir%/var/lock/%kernel.environment%';
     private const TRANSLATOR = 'adzercms.translator';
     private const TRANSLATOR_DEFAULT = 'translator.default';
     private const IMPORTMAP_READER = 'asset_mapper.importmap.config_reader';
@@ -189,6 +191,7 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
         $container->parameters()->set('env(GEOIP_CITY_DB)', '');
         $container->import('../config/services.php');
         $builder->setAlias(self::TRANSLATOR, 'translator')->setPublic(true);
+        $builder->register(self::LOCKS, FlockStore::class)->setArguments([self::LOCK_DIR]);
         $builder->register(self::MIGRATION_MARKS, \Closure::class)
             ->setFactory([\Closure::class, 'fromCallable'])
             ->setArguments([[MigrationMarks::class, 'of']]);
