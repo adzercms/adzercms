@@ -10,7 +10,6 @@ use AdzerCMS\Core\Text\TextValues;
 use AdzerCMS\Core\Ui\Order;
 use AdzerCMS\Pages\Controller\PageController;
 use AdzerCMS\Pages\Entity\Page;
-use AdzerCMS\Pages\Entity\PageBlock;
 use AdzerCMS\Pages\Entity\PagePath;
 use AdzerCMS\Pages\Repository\PageBlockRepository;
 use AdzerCMS\Pages\Repository\PagePathRepository;
@@ -148,10 +147,10 @@ final readonly class PageForm
 
     public function drop(Page $page): void
     {
-        $values = array_merge(...array_map(static fn (PageBlock $block): array => array_values($block->getValues()), $this->blocks->of($page)));
+        $names = PhotoAlbum::records($this->blocks->of($page));
         $this->em->remove($page);
         $this->em->flush();
-        $this->pictures->drop($values);
+        $this->pictures->drop($names);
     }
 
     /** @param list<int> $moved */

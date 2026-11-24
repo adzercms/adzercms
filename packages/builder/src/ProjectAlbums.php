@@ -39,7 +39,7 @@ final readonly class ProjectAlbums
     {
         $id = (int) $project->getId();
 
-        return $this->album($id, fn (): array => $this->blocks->values([$id])[$id] ?? [], static fn (): array => array_filter([$project->getCover()]));
+        return $this->album($id, fn (): array => $this->blocks->held([$id])[$id] ?? [], static fn (): array => array_filter([$project->getCover()]));
     }
 
     public function ofVersion(ProjectVersion $version): PhotoAlbum
@@ -84,10 +84,10 @@ final readonly class ProjectAlbums
         $before = now()->modify(self::TERM)->getTimestamp();
         $swept = 0;
         foreach (array_chunk($this->projects->ids(), self::CHUNK) as $ids) {
-            $values = $this->blocks->values($ids);
+            $held = $this->blocks->held($ids);
             $covers = $this->projects->covers($ids);
             foreach ($ids as $id) {
-                $swept += $this->album($id, static fn (): array => $values[$id] ?? [], static fn (): array => array_filter([$covers[$id] ?? null]))->sweep($before);
+                $swept += $this->album($id, static fn (): array => $held[$id] ?? [], static fn (): array => array_filter([$covers[$id] ?? null]))->sweep($before);
             }
         }
 
@@ -95,17 +95,17 @@ final readonly class ProjectAlbums
     }
 
     /**
-     * @param \Closure(): list<array<string, string>> $values
-     * @param \Closure(): array<string>               $covers
+     * @param \Closure(): list<array{values: array<string, string>, style: array<string, array<string, array<string, string>>>}> $blocks
+     * @param \Closure(): array<string>                                                                                          $covers
      */
-    private function album(int $id, \Closure $values, \Closure $covers): PhotoAlbum
+    private function album(int $id, \Closure $blocks, \Closure $covers): PhotoAlbum
     {
         return new PhotoAlbum(
             $this->photos,
             self::PLACE.$id,
             self::SIDE,
             fn (string $name): string => $this->urls->generate(ProjectController::PICTURE, ['id' => $id, 'file' => $name]),
-            static fn (): array => [...PhotoAlbum::names(array_merge([], ...array_map(array_values(...), $values()))), ...array_values($covers())],
+            static fn (): array => [...PhotoAlbum::blocks($blocks()), ...array_values($covers())],
         );
     }
 }

@@ -409,10 +409,46 @@
         <target>Заголовок: от 1 до {limit} знаков</target>
       </segment>
     </unit>
+    <unit id="pages.style.--overlay">
+      <segment>
+        <source>pages.style.--overlay</source>
+        <target>Затемнение картинки</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.background-attachment">
+      <segment>
+        <source>pages.style.background-attachment</source>
+        <target>Прокрутка фона</target>
+      </segment>
+    </unit>
     <unit id="pages.style.background-color">
       <segment>
         <source>pages.style.background-color</source>
         <target>Цвет фона</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.background-image">
+      <segment>
+        <source>pages.style.background-image</source>
+        <target>Картинка фона</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.background-position">
+      <segment>
+        <source>pages.style.background-position</source>
+        <target>Положение картинки</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.background-repeat">
+      <segment>
+        <source>pages.style.background-repeat</source>
+        <target>Повтор картинки</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.background-size">
+      <segment>
+        <source>pages.style.background-size</source>
+        <target>Заполнение картинкой</target>
       </segment>
     </unit>
     <unit id="pages.style.border-color">
@@ -463,10 +499,16 @@
         <target>Насыщенность шрифта</target>
       </segment>
     </unit>
+    <unit id="pages.style.group.background">
+      <segment>
+        <source>pages.style.group.background</source>
+        <target>Фон</target>
+      </segment>
+    </unit>
     <unit id="pages.style.group.decoration">
       <segment>
         <source>pages.style.group.decoration</source>
-        <target>Фон и рамка</target>
+        <target>Рамка</target>
       </segment>
     </unit>
     <unit id="pages.style.group.size">
@@ -649,6 +691,12 @@
         <target>Жирный</target>
       </segment>
     </unit>
+    <unit id="pages.style.value.bottom">
+      <segment>
+        <source>pages.style.value.bottom</source>
+        <target>Снизу</target>
+      </segment>
+    </unit>
     <unit id="pages.style.value.capitalize">
       <segment>
         <source>pages.style.value.capitalize</source>
@@ -661,6 +709,18 @@
         <target>По центру</target>
       </segment>
     </unit>
+    <unit id="pages.style.value.contain">
+      <segment>
+        <source>pages.style.value.contain</source>
+        <target>Вписать целиком</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.cover">
+      <segment>
+        <source>pages.style.value.cover</source>
+        <target>Заполнить блок</target>
+      </segment>
+    </unit>
     <unit id="pages.style.value.dashed">
       <segment>
         <source>pages.style.value.dashed</source>
@@ -671,6 +731,12 @@
       <segment>
         <source>pages.style.value.dotted</source>
         <target>Точечная</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.fixed">
+      <segment>
+        <source>pages.style.value.fixed</source>
+        <target>Неподвижный</target>
       </segment>
     </unit>
     <unit id="pages.style.value.italic">
@@ -703,6 +769,12 @@
         <target>строчные</target>
       </segment>
     </unit>
+    <unit id="pages.style.value.no-repeat">
+      <segment>
+        <source>pages.style.value.no-repeat</source>
+        <target>Без повтора</target>
+      </segment>
+    </unit>
     <unit id="pages.style.value.none">
       <segment>
         <source>pages.style.value.none</source>
@@ -715,16 +787,34 @@
         <target>Обычный</target>
       </segment>
     </unit>
+    <unit id="pages.style.value.repeat">
+      <segment>
+        <source>pages.style.value.repeat</source>
+        <target>Повторять</target>
+      </segment>
+    </unit>
     <unit id="pages.style.value.right">
       <segment>
         <source>pages.style.value.right</source>
         <target>По правому краю</target>
       </segment>
     </unit>
+    <unit id="pages.style.value.scroll">
+      <segment>
+        <source>pages.style.value.scroll</source>
+        <target>Прокручивается со страницей</target>
+      </segment>
+    </unit>
     <unit id="pages.style.value.solid">
       <segment>
         <source>pages.style.value.solid</source>
         <target>Сплошная</target>
+      </segment>
+    </unit>
+    <unit id="pages.style.value.top">
+      <segment>
+        <source>pages.style.value.top</source>
+        <target>Сверху</target>
       </segment>
     </unit>
     <unit id="pages.style.value.transparent">

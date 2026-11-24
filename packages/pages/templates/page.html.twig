@@ -5,7 +5,7 @@
 {% block meta %}
     {% include '@Theme/_seo.html.twig' with {title: view.title, description: view.description} only %}
     {% include '@Theme/_schema.html.twig' with {schema: view.schema} only %}
-    {% if view.style %}<style>{{ view.style }}</style>{% endif %}
+    {% if view.style %}<style>{{ view.style|raw }}</style>{% endif %}
 {% endblock %}
 
 {% block page %}

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Pages;
 
 use AdzerCMS\Core\Photo\Photos;
+use AdzerCMS\Pages\Entity\BlockRecord;
 use Symfony\Component\HttpFoundation\File\File;
 
 final readonly class PhotoAlbum implements Album
@@ -70,6 +71,36 @@ final readonly class PhotoAlbum implements Album
         $this->photos->drop($this->place, $stale);
 
         return \count($stale);
+    }
+
+    /**
+     * @param iterable<array{values: array<string, string>, style: array<string, array<string, array<string, string>>>}> $blocks
+     *
+     * @return list<string>
+     */
+    public static function blocks(iterable $blocks): array
+    {
+        $names = [];
+        foreach ($blocks as $block) {
+            $names = [...$names, ...self::names($block['values']), ...BlockStyle::pictures($block['style'])];
+        }
+
+        return array_values(array_unique($names));
+    }
+
+    /**
+     * @param iterable<BlockRecord> $records
+     *
+     * @return list<string>
+     */
+    public static function records(iterable $records): array
+    {
+        $blocks = [];
+        foreach ($records as $record) {
+            $blocks[] = ['values' => $record->getValues(), 'style' => $record->getStyle()];
+        }
+
+        return self::blocks($blocks);
     }
 
     /**

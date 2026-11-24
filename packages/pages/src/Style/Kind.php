@@ -10,4 +10,5 @@ enum Kind: string
     case Length = 'length';
     case Choice = 'choice';
     case Fraction = 'fraction';
+    case Picture = 'picture';
 }

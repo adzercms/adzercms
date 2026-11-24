@@ -14,11 +14,18 @@ enum Property: string implements Titled
     public const UNITS = ['px', 'rem', 'em', '%', 'vw', 'vh'];
 
     private const NUMBER = '\d{1,4}(?:\.\d{1,2})?';
-    private const COLOR = '#[0-9a-f]{3,4}|#[0-9a-f]{6}|#[0-9a-f]{8}';
+    private const COLOR = '#[0-9a-f]{3,4}|#[0-9a-f]{6}|#[0-9a-f]{8}|rgba?\(\d{1,3}, ?\d{1,3}, ?\d{1,3}(?:, ?(?:0|1|0?\.\d{1,3}))?\)';
     private const FRACTION = '0|1|0?\.\d{1,2}';
+    private const PICTURE = '[0-9a-f]{32}\.webp';
 
     case Color = 'color';
     case Background = 'background-color';
+    case Picture = 'background-image';
+    case Overlay = '--overlay';
+    case PictureSize = 'background-size';
+    case PicturePosition = 'background-position';
+    case PictureRepeat = 'background-repeat';
+    case PictureScroll = 'background-attachment';
     case BorderColor = 'border-color';
     case FontSize = 'font-size';
     case FontWeight = 'font-weight';
@@ -57,8 +64,10 @@ enum Property: string implements Titled
     public function kind(): Kind
     {
         return match ($this) {
-            self::Color, self::Background, self::BorderColor => Kind::Color,
-            self::FontWeight, self::FontStyle, self::TextAlign, self::TextTransform, self::TextDecoration, self::BorderStyle => Kind::Choice,
+            self::Color, self::Background, self::Overlay, self::BorderColor => Kind::Color,
+            self::Picture => Kind::Picture,
+            self::FontWeight, self::FontStyle, self::TextAlign, self::TextTransform, self::TextDecoration, self::BorderStyle,
+            self::PictureSize, self::PicturePosition, self::PictureRepeat, self::PictureScroll => Kind::Choice,
             self::Opacity => Kind::Fraction,
             default => Kind::Length,
         };
@@ -68,7 +77,8 @@ enum Property: string implements Titled
     {
         return match ($this) {
             self::Color, self::FontSize, self::FontWeight, self::FontStyle, self::LineHeight, self::LetterSpacing, self::TextAlign, self::TextTransform, self::TextDecoration => Group::Text,
-            self::Background, self::BorderColor, self::BorderWidth, self::BorderStyle, self::BorderRadius, self::Opacity => Group::Decoration,
+            self::Background, self::Picture, self::Overlay, self::PictureSize, self::PicturePosition, self::PictureRepeat, self::PictureScroll => Group::Background,
+            self::BorderColor, self::BorderWidth, self::BorderStyle, self::BorderRadius, self::Opacity => Group::Decoration,
             self::PaddingTop, self::PaddingRight, self::PaddingBottom, self::PaddingLeft, self::MarginTop, self::MarginRight, self::MarginBottom, self::MarginLeft => Group::Spacing,
             self::Width, self::MaxWidth, self::MinHeight => Group::Size,
         };
@@ -78,7 +88,11 @@ enum Property: string implements Titled
     public function keywords(): array
     {
         return match ($this) {
-            self::Color, self::Background, self::BorderColor => ['transparent'],
+            self::Color, self::Background, self::Overlay, self::BorderColor => ['transparent'],
+            self::PictureSize => ['cover', 'contain', 'auto'],
+            self::PicturePosition => ['center', 'top', 'bottom', 'left', 'right'],
+            self::PictureRepeat => ['no-repeat', 'repeat'],
+            self::PictureScroll => ['scroll', 'fixed'],
             self::FontWeight => ['normal', 'bold', '100', '200', '300', '400', '500', '600', '700', '800', '900'],
             self::FontStyle => ['normal', 'italic'],
             self::TextAlign => ['left', 'center', 'right', 'justify'],
@@ -116,6 +130,7 @@ enum Property: string implements Titled
         $quoted = static fn (string $word): string => preg_quote($word, '/');
         $own = match ($this->kind()) {
             Kind::Color => [self::COLOR],
+            Kind::Picture => [self::PICTURE],
             Kind::Choice => [],
             Kind::Fraction => [self::FRACTION],
             Kind::Length => [($this->signed() ? '-?' : '').'(?:0|'.self::NUMBER.'(?:'.implode('|', array_map($quoted, $this->units())).'))'],

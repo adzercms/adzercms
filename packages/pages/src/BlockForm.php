@@ -132,10 +132,10 @@ final readonly class BlockForm
 
     public function drop(PageBlock $block): void
     {
-        $values = $block->getValues();
+        $names = PhotoAlbum::records([$block]);
         $this->em->remove($block);
         $this->em->flush();
-        $this->pictures->drop($values);
+        $this->pictures->drop($names);
     }
 
     /** @param list<int> $moved */

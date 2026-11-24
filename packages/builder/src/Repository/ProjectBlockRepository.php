@@ -33,16 +33,16 @@ class ProjectBlockRepository extends ServiceEntityRepository
     /**
      * @param list<int> $projects
      *
-     * @return array<int, list<array<string, string>>>
+     * @return array<int, list<array{values: array<string, string>, style: array<string, array<string, array<string, string>>>}>>
      */
-    public function values(array $projects): array
+    public function held(array $projects): array
     {
-        $values = [];
-        foreach ($this->createQueryBuilder('b')->select('IDENTITY(p.project) AS project', 'b.values')->join('b.page', 'p')->where('p.project IN (:projects)')->setParameter('projects', $projects)->getQuery()->getArrayResult() as $row) {
-            $values[(int) $row['project']][] = $row['values'];
+        $held = [];
+        foreach ($this->createQueryBuilder('b')->select('IDENTITY(p.project) AS project', 'b.values', 'b.style')->join('b.page', 'p')->where('p.project IN (:projects)')->setParameter('projects', $projects)->getQuery()->getArrayResult() as $row) {
+            $held[(int) $row['project']][] = ['values' => $row['values'], 'style' => $row['style']];
         }
 
-        return $values;
+        return $held;
     }
 
     /** @return list<array{values: array<string, string>, style: array<string, array<string, array<string, string>>>}> */
