@@ -49,6 +49,30 @@
         <target>Builder</target>
       </segment>
     </unit>
+    <unit id="builder.action.add">
+      <segment>
+        <source>builder.action.add</source>
+        <target>Add a block below</target>
+      </segment>
+    </unit>
+    <unit id="builder.action.copy">
+      <segment>
+        <source>builder.action.copy</source>
+        <target>Duplicate</target>
+      </segment>
+    </unit>
+    <unit id="builder.action.down">
+      <segment>
+        <source>builder.action.down</source>
+        <target>Move down</target>
+      </segment>
+    </unit>
+    <unit id="builder.action.up">
+      <segment>
+        <source>builder.action.up</source>
+        <target>Move up</target>
+      </segment>
+    </unit>
     <unit id="builder.apply">
       <segment>
         <source>builder.apply</source>
@@ -185,6 +209,12 @@
       <segment>
         <source>builder.leave</source>
         <target>Leave the editor? The unsaved changes will be lost</target>
+      </segment>
+    </unit>
+    <unit id="builder.library">
+      <segment>
+        <source>builder.library</source>
+        <target>Add a block</target>
       </segment>
     </unit>
     <unit id="builder.notice.decision.body">
@@ -442,7 +472,7 @@
     <unit id="builder.style">
       <segment>
         <source>builder.style</source>
-        <target>Style</target>
+        <target>Design</target>
       </segment>
     </unit>
     <unit id="builder.templates.author">

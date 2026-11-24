@@ -10,3 +10,4 @@
 .builder-heading { margin: 0; padding: 0.75rem 1rem; font-size: 14px; }
 .builder-canvas { grid-area: canvas; position: relative; min-height: 0; }
 .builder-canvas .gjs-cv-canvas { top: 0; width: 100%; height: 100%; }
+.builder-library { display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); gap: 0.5rem; }

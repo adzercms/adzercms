@@ -131,6 +131,45 @@ test.describe('a page of the site', () => {
         await expect.poll(() => canvas(page).locator(READY).evaluateAll((nodes) => nodes.map((node) => node.id))).toEqual([order.at(-1), ...order.slice(0, -1)]);
     });
 
+    test('[ACMS-BLD-0025][ACMS-FLOW-0022] a selected block goes down and up, duplicates under itself and takes a block of the library under itself', async ({ page }) => {
+        const root = page.locator('[data-builder]');
+        const blocks = JSON.parse(await root.getAttribute('data-blocks'));
+        const kinds = JSON.parse(await root.getAttribute('data-types'));
+        const kind = kinds.find((one) => one.type === 'text') ?? kinds[0];
+        const ready = canvas(page).locator(READY);
+        const order = () => ready.evaluateAll((nodes) => nodes.map((node) => node.id));
+        const act = (action) => page.locator(`.gjs-toolbar-item[data-action="${action}"]`).click();
+        const anchors = blocks.map((block) => block.anchor);
+        const library = page.locator('[data-library]');
+        const dialog = page.locator('#record');
+
+        await ready.first().click();
+        await act('down');
+        await expect.poll(order, 'down puts the block after the next one').toEqual([anchors[1], anchors[0], ...anchors.slice(2)]);
+        await act('up');
+        await expect.poll(order, 'up puts it back').toEqual(anchors);
+
+        await act('copy');
+        await expect(ready, 'the copy goes under the block').toHaveCount(blocks.length + 1);
+        await act('add');
+        await expect(library, 'adding opens the library of blocks').toBeVisible();
+        await library.locator(`[data-library-type="${kind.type}"]`).click();
+        await expect(dialog).toBeVisible();
+        await dialog.locator('input[name="value[title]"]').fill('Fiber to every flat');
+        await dialog.locator('form > button[type="submit"]').click();
+        await expect(dialog).toBeHidden();
+        await expect(ready.nth(2).locator('h1, h2').first(), 'the block of the library goes under the selected copy').toHaveText('Fiber to every flat');
+
+        const sent = await saving(page);
+        await page.click('[data-save-document]');
+        await expect(page.locator('[data-status]')).toHaveText('saved');
+        expect(sent[0].blocks.slice(0, 3), 'the copy is a new block with the values and the style of the block').toEqual([
+            { id: blocks[0].id, type: blocks[0].type, values: blocks[0].values, style: blocks[0].style },
+            { id: null, type: blocks[0].type, values: blocks[0].values, style: blocks[0].style },
+            { id: null, type: kind.type, values: { title: 'Fiber to every flat' }, style: {} },
+        ]);
+    });
+
     test('[ACMS-BLD-0003][ACMS-FLOW-0022] a ready block takes its values from the dialog, the canvas shows the block the server draws, saving sends them', async ({ page }) => {
         const root = page.locator('[data-builder]');
         const blocks = JSON.parse(await root.getAttribute('data-blocks'));
@@ -142,7 +181,7 @@ test.describe('a page of the site', () => {
 
         await canvas(page).locator(`#${target.anchor}`).click();
         await expect(page.locator('[data-traits-panel]'), 'a ready block has no properties besides its values').toBeHidden();
-        await page.locator(`.gjs-toolbar-item[title="${await root.getAttribute('data-edit')}"]`).click();
+        await page.locator('.gjs-toolbar-item[data-action="edit"]').click();
         await expect(dialog).toBeVisible();
         await expect(dialog.locator('input[name="value[title]"]'), 'the dialog shows the values of the block').toHaveValue(target.values.title);
         await dialog.locator('input[name="value[title]"]').fill('Fiber to every flat');
@@ -174,7 +213,7 @@ test.describe('a page of the site', () => {
         const upload = (name, buffer) => panel.locator('input[type="file"]').setInputFiles({ name, mimeType: 'image/png', buffer });
 
         await canvas(page).locator(`#${target.anchor}`).click();
-        await page.locator(`.gjs-toolbar-item[title="${await root.getAttribute('data-edit')}"]`).click();
+        await page.locator('.gjs-toolbar-item[data-action="edit"]').click();
         await expect(dialog).toBeVisible();
         await dialog.locator('[data-picture-pick]').click();
         await expect(panel, 'the panel opens over the dialog').toBeVisible();
