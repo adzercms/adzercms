@@ -48,6 +48,7 @@ const elements = JSON.parse(root.dataset.elements);
 const traits = JSON.parse(root.dataset.traits);
 const pictures = JSON.parse(root.dataset.pictures);
 const free = root.dataset.free;
+const loose = kinds.find(kind => kind.type === free);
 const actions = JSON.parse(root.dataset.actions);
 const icons = Object.fromEntries([...root.querySelectorAll('template[data-icon]')].map(one => [one.dataset.icon, one.innerHTML]));
 const library = root.querySelector('[data-library]');
@@ -201,16 +202,16 @@ const field = ({property, label, kind, keywords, units, signed}) => ({
     }[kind],
 });
 
-const fill = (component, entry = component.get('block'), at = null) => {
+const fill = (component, entry = component.get('block'), at = null, carried = null) => {
     const first = component ? placed()[0] === component : !container().components().some((one, index) => index < at && one.get('type') === BLOCK);
-    editing = {component, entry, at};
+    editing = {component, entry, at, carried};
     htmx.ajax('POST', entry.dialog ?? entry.draw, {target: '#record', values: {[TOKEN]: token(), stored: JSON.stringify(component ? entry.values : {}), first: first ? '1' : ''}});
 };
 
 const filled = ({values, anchor, html}) => {
-    const {component, entry, at} = editing;
+    const {component, entry, at, carried} = editing;
     const drawn = new DOMParser().parseFromString(html, 'text/html').getElementById(anchor);
-    const block = component ? {...entry, values} : {...entry, values, style: {}, id: null, anchor: `${FRESH}${++fresh}`};
+    const block = component ? {...entry, values} : {...entry, values: carried ? {...values, elements: JSON.stringify([carried])} : values, style: {}, id: null, anchor: `${FRESH}${++fresh}`};
     const shown = {...shape(drawn, block), block};
     shown.attributes.id = block.anchor;
     editing = null;
@@ -218,7 +219,15 @@ const filled = ({values, anchor, html}) => {
     if (component) {
         component.set(shown);
     } else {
-        editor.select(container().append({type: BLOCK, tagName: drawn.localName, name: block.label, ...shown}, {at})[0]);
+        const [added] = container().append({type: BLOCK, tagName: drawn.localName, name: block.label, ...shown}, {at});
+        editor.select(added);
+        within(added).forEach(settle);
+    }
+};
+
+const settle = component => {
+    if (component.get('type') === PICTURE) {
+        component.trigger('active');
     }
 };
 
@@ -313,11 +322,11 @@ const nodeOf = component => {
 
 const setup = editor => {
     const types = editor.DomComponents;
-    const placing = {draggable: (source, target) => HOLDERS.has(target.get('type')), copyable: false};
+    const placing = {draggable: (source, target) => HOLDERS.has(target.get('type')) || (loose && target.get('type') === BLOCKS && !HOLDERS.has(source.parent()?.get('type'))), copyable: false};
     const holding = source => ELEMENTS.has(source.get('type'));
     const never = () => false;
     types.addType(PART, {model: {defaults: LOCKED}});
-    types.addType(BLOCKS, {model: {defaults: {...LOCKED, layerable: true, droppable: source => source.get('type') === BLOCK}}});
+    types.addType(BLOCKS, {model: {defaults: {...LOCKED, layerable: true, droppable: source => source.get('type') === BLOCK || (loose && ELEMENTS.has(source.get('type')))}}});
     types.addType(BLOCK, {model: {
         defaults: {draggable: (source, target) => target.get('type') === BLOCKS, droppable: false, copyable: false, editable: false, traits: []},
         init() {
@@ -412,19 +421,27 @@ const setup = editor => {
         design.hidden = !editor.getSelected();
     });
 
-    editor.on('block:drag:start', block => {
-        if (block.get('content').type === BLOCK) {
-            editor.UndoManager.stop();
-        }
-    });
+    editor.on('block:drag:start', () => editor.UndoManager.stop());
     editor.on('block:drag:stop', component => {
+        const parent = component?.parent();
+        const at = component?.index();
         if (component?.get('type') === BLOCK) {
-            const at = component.index();
             const entry = component.get('block');
             component.remove();
+            editor.UndoManager.start();
             fill(null, entry, at);
+        } else if (component && ELEMENTS.has(component.get('type'))) {
+            const node = nodeOf(component);
+            component.remove();
+            editor.UndoManager.start();
+            if (parent.get('type') === BLOCKS) {
+                fill(null, loose, at, node);
+            } else {
+                settle(parent.append(element(node), {at})[0]);
+            }
+        } else {
+            editor.UndoManager.start();
         }
-        editor.UndoManager.start();
     });
 
     editor.on('canvas:frame:load:body', ({window: frame}) => {
@@ -458,7 +475,6 @@ const pieces = elements.map(({kind, label}) => ({
     label,
     attributes: {'data-element-kind': kind},
     category: root.dataset.elementsLabel,
-    activate: kind === 'picture',
     content: element({kind, key: '', paragraphs: [[{text: label}]], name: '', label, link: '/', items: []}),
 }));
 

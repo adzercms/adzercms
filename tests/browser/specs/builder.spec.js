@@ -427,6 +427,35 @@ test.describe('a page of the site', () => {
             { kind: 'button', key: 'e2', label: labels.button, link: 'https://t.me/fiber' },
         ]);
     });
+
+    test('[ACMS-BLD-0004][ACMS-FLOW-0022] an element of the panel dropped between the blocks takes a new free block at its place', async ({ page }) => {
+        const root = page.locator('[data-builder]');
+        const blocks = JSON.parse(await root.getAttribute('data-blocks'));
+        const free = await root.getAttribute('data-free');
+        test.skip(!JSON.parse(await root.getAttribute('data-types')).some((one) => one.type === free), 'the instance has no free block');
+        const labels = Object.fromEntries(JSON.parse(await root.getAttribute('data-elements')).map(({ kind, label }) => [kind, label]));
+        const ready = canvas(page).locator(READY);
+
+        const place = await carry(page, page.locator('[data-palette] [data-element-kind="text"]'), ready.first());
+        await hold(page, place.y);
+        await page.mouse.up();
+        await expect(ready, 'the element takes a free block').toHaveCount(blocks.length + 1);
+        await expect(page.locator('#record')).toBeHidden();
+        await expect(ready.first()).toHaveClass(/site-free/);
+        await expect(ready.first().locator('.site-free-body > [data-element]')).toHaveText(labels.text);
+
+        const sent = await saving(page);
+        await page.click('[data-save-document]');
+        await expect(page.locator('[data-status]')).toHaveText('saved');
+        expect(sent[0].blocks[0], 'saving sends the free block in the place of the drop').toMatchObject({ id: null, type: free });
+        expect(JSON.parse(sent[0].blocks[0].values.elements)).toEqual([{ kind: 'text', key: 'e1', paragraphs: [[{ text: labels.text }]] }]);
+
+        const below = await carry(page, page.locator('[data-palette] [data-element-kind="picture"]'), ready.first());
+        await hold(page, below.y);
+        await page.mouse.up();
+        await expect(page.locator('[data-pictures-panel]'), 'a dropped picture opens the panel of pictures').toBeVisible();
+        await expect(ready.first().locator('.site-free-body > img[data-element]')).toHaveCount(1);
+    });
 });
 
 test.describe('a page of a project', () => {
