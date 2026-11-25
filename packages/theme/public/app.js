@@ -147,6 +147,13 @@ document.addEventListener('input', event => {
     });
 });
 
+['click', 'auxclick'].forEach(type => document.addEventListener(type, event => {
+    const link = event.target.closest?.('a[data-from]');
+    if (link) {
+        link.href = link.dataset.url.replace('{}', encodeURIComponent(link.closest('form')?.elements[link.dataset.from]?.value ?? ''));
+    }
+}));
+
 document.addEventListener('input', event => {
     if (!event.target.matches('.pay input[name="amount"]')) {
         return;

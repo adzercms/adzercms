@@ -58,6 +58,8 @@ test('[ACMS-UI-0027] a field on several conditions shows only while all of them 
 });
 
 test('[ACMS-UI-0111] a link carries the value of the field it names', async ({ page }) => {
-    await field(page, 'input[name="provider_name"]').fill('Local ISP');
-    await expect(field(page, 'a[data-from]')).toHaveAttribute('href', 'https://search.test/?text=Local%20ISP support');
+    await page.evaluate(() => document.addEventListener('click', (event) => event.preventDefault()));
+    await field(page, 'input[name="provider_name"]').evaluate((input) => input.value = 'Local ISP');
+    await field(page, 'a[data-from]').click();
+    await expect(field(page, 'a[data-from]'), 'a value set without typing goes into the address too').toHaveAttribute('href', 'https://search.test/?text=Local%20ISP support');
 });
