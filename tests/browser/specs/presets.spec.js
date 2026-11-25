@@ -18,6 +18,7 @@ const FORM = `<form id="presets">
     <p data-when="ready=">guide</p>
     <input name="provider_name">
     <a data-from="provider_name" data-url="https://search.test/?text={} support" href="https://search.test/?text= support">search</a>
+    <textarea readonly data-from="provider_name" data-template="Your router ({}) to the bridge">Your router () to the bridge</textarea>
 </form>`;
 
 const field = (page, selector) => page.locator(`#presets ${selector}`);
@@ -62,4 +63,9 @@ test('[ACMS-UI-0111] a link carries the value of the field it names', async ({ p
     await field(page, 'input[name="provider_name"]').evaluate((input) => input.value = 'Local ISP');
     await field(page, 'a[data-from]').click();
     await expect(field(page, 'a[data-from]'), 'a value set without typing goes into the address too').toHaveAttribute('href', 'https://search.test/?text=Local%20ISP support');
+});
+
+test('[ACMS-UI-0111] a read-only text carries the value typed into the field it names', async ({ page }) => {
+    await field(page, 'input[name="provider_name"]').fill('Local ISP');
+    await expect(field(page, 'textarea[data-from]')).toHaveValue('Your router (Local ISP) to the bridge');
 });

@@ -155,6 +155,13 @@ document.addEventListener('input', event => {
 }));
 
 document.addEventListener('input', event => {
+    const field = event.target;
+    field.form?.querySelectorAll(`[data-template][data-from="${CSS.escape(field.name)}"]`).forEach(text => {
+        text.value = text.dataset.template.replace('{}', field.value);
+    });
+});
+
+document.addEventListener('input', event => {
     if (!event.target.matches('.pay input[name="amount"]')) {
         return;
     }

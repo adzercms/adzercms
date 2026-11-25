@@ -1432,7 +1432,7 @@ fieldset.choices {
     align-items: start;
 }
 
-fieldset.choices:has(img) { grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); gap: 0.75rem; align-items: stretch; }
+fieldset.choices:has(img) { grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr)); gap: 0.75rem; align-items: stretch; }
 fieldset.choices:has(img) label {
     align-content: start;
     padding: 0.75rem;
@@ -1442,7 +1442,7 @@ fieldset.choices:has(img) label {
 fieldset.choices:has(img) label:has(:checked) { border-color: var(--primary); background: var(--picked); }
 
 fieldset:is(.choices, .group) legend { padding: 0 0.4rem; font-weight: 600; }
-fieldset.choices legend { grid-column: 1 / -1; }
+fieldset.choices > :not(label) { grid-column: 1 / -1; }
 
 .schedule { display: grid; grid-template-columns: max-content minmax(0, 9rem) minmax(0, 9rem); align-items: center; gap: 0.4rem 0.8rem; }
 .schedule input { margin: 0; }
@@ -1457,7 +1457,7 @@ fieldset.choices label {
 }
 
 fieldset.choices label .muted { grid-column: 2; margin: 0; font-size: 12px; line-height: 1.35; }
-fieldset.choices label img { grid-column: 2; max-width: 12rem; aspect-ratio: 1; }
+fieldset.choices label img { grid-column: 2; max-width: 20rem; aspect-ratio: 1; }
 
 .setup-more { margin: 0.4rem 0; }
 .setup-more > summary { cursor: pointer; padding: 0.3rem 0; font-size: 13px; font-weight: 500; }
