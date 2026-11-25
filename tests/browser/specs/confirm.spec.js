@@ -65,7 +65,10 @@ test('[ACMS-TEST-0016][ACMS-TEST-0018][ACMS-UI-0026] a list asks the question of
     const form = page.locator('form').nth(at);
 
     await refused(page, action, question, async () => {
-        await form.locator('select:has(option[data-confirm])').selectOption(value);
-        await form.locator('button[type="submit"]').click();
+        const list = form.locator('select:has(option[data-confirm])');
+        await list.selectOption(value);
+        if (await list.evaluate((field) => !field.matches('[data-submit]'))) {
+            await form.locator('button[type="submit"]').click();
+        }
     });
 });
