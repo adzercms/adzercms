@@ -1442,6 +1442,7 @@ fieldset.choices:has(img) label {
 fieldset.choices:has(img) label:has(:checked) { border-color: var(--primary); background: var(--picked); }
 
 fieldset:is(.choices, .group) legend { padding: 0 0.4rem; font-weight: 600; }
+fieldset:is(.choices, .group) > :nth-last-child(1 of :not([hidden])) { margin-bottom: 0; }
 fieldset.choices > :not(label) { grid-column: 1 / -1; }
 
 .schedule { display: grid; grid-template-columns: max-content minmax(0, 9rem) minmax(0, 9rem); align-items: center; gap: 0.4rem 0.8rem; }
