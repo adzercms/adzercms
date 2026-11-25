@@ -15,6 +15,7 @@ final class Filter
 {
     public const TERM = 'q';
     public const DAY = '/^\d{4}-\d{2}-\d{2}$/';
+    private const PHONE = '/^[\d\s\p{Pd}+().]+$/u';
     private const INTEGER_MAX = 2147483647;
 
     /** @param array<array-key, string|TranslatableInterface> $options */
@@ -138,7 +139,7 @@ final class Filter
     public static function phone(QueryBuilder $builder, string $term, string $field): ?string
     {
         $digits = (string) preg_replace('/\D/', '', $term);
-        if ('' === $digits) {
+        if ('' === $digits || 1 !== preg_match(self::PHONE, $term)) {
             return null;
         }
         $builder->setParameter('digits', '%'.$digits.'%');

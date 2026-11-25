@@ -392,6 +392,7 @@ final class AdminWebTest extends SchemaTestCase
         foreach (['north@example', 'north 12', 'neighbour', 'ivanov', '1112233', '79991112233', '+7 999 111-22-33', 'ledger-150'] as $term) {
             self::assertSame([$found->getId()], self::ids($this->fragment('/admin/users?q='.rawurlencode($term))), $term);
         }
+        self::assertSame([], self::ids($this->fragment('/admin/users?q='.rawurlencode('North 4445566'))), 'a term with letters is no phone');
 
         self::assertSame([$stopped->getId()], self::ids($this->fragment('/admin/users?state='.Status::Stopped->value)));
         self::assertEqualsCanonicalizing([$this->admin->getId(), $found->getId()], self::ids($this->fragment('/admin/users?state='.Status::Active->value)));
