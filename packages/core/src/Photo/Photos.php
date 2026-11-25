@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AdzerCMS\Core\Photo;
 
 use AdzerCMS\Contracts\Refusal;
+use AdzerCMS\Core\Ui\DataUri;
 use Intervention\Image\Drivers\Imagick\Driver;
 use Intervention\Image\Encoders\WebpEncoder;
 use Intervention\Image\Exceptions\ImageException;
@@ -99,7 +100,7 @@ final readonly class Photos
     {
         $path = $this->path($place, $name);
 
-        return null === $path ? null : 'data:image/webp;base64,'.base64_encode((string) file_get_contents($path));
+        return null === $path ? null : DataUri::file($path);
     }
 
     /** @return list<string> */

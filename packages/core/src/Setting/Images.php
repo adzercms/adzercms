@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Type;
 use AdzerCMS\Core\Photo\Photos;
+use AdzerCMS\Core\Ui\DataUri;
 use Doctrine\ORM\EntityManagerInterface;
 use enshrined\svgSanitize\Sanitizer;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -121,7 +122,7 @@ final class Images
         $extension = pathinfo($path, \PATHINFO_EXTENSION);
         $bytes = (string) file_get_contents($path);
 
-        return \sprintf('data:%s;base64,%s', (string) array_search($extension, self::TYPES, true), base64_encode('svg' === $extension ? self::fixed($bytes) : $bytes));
+        return DataUri::of((string) array_search($extension, self::TYPES, true), 'svg' === $extension ? self::fixed($bytes) : $bytes);
     }
 
     public static function fixed(string $svg): string
