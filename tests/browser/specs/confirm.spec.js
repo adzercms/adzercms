@@ -56,14 +56,16 @@ test('[ACMS-TEST-0016][ACMS-TEST-0018][ACMS-UI-0026] a list asks the question of
     await met(page, choosing, 'the admin walk meets no list with a question');
 
     const option = choosing.locator('option[data-confirm]:not(:checked)').first();
-    const { action, value, question } = await option.evaluate((chosen) => ({
-        action: new URL(chosen.closest('form').action).pathname,
+    const { action, value, question, at } = await option.evaluate((chosen) => ({
+        action: new URL(chosen.form.action).pathname,
         value: chosen.value,
         question: chosen.dataset.confirm,
+        at: [...document.forms].indexOf(chosen.form),
     }));
+    const form = page.locator('form').nth(at);
 
     await refused(page, action, question, async () => {
-        await choosing.locator('select:has(option[data-confirm])').selectOption(value);
-        await choosing.locator('button[type="submit"]').click();
+        await form.locator('select:has(option[data-confirm])').selectOption(value);
+        await form.locator('button[type="submit"]').click();
     });
 });
