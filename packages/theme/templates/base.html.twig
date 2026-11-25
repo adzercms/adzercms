@@ -12,7 +12,7 @@
     {% if brand.icon %}<link rel="icon" href="{{ brand.icon }}">{% endif %}
     {% include '@Theme/_fonts.html.twig' %}
     <link rel="stylesheet" href="{{ asset('bundles/theme/style.css') }}">
-    {{ importmap('theme', {nonce: script_nonce()}) }}
+    {{ importmap('theme', {nonce: script_nonce(), blocking: 'render'}) }}
     {% for part in fragments('head') %}{% include part.template with part.context only %}{% endfor %}
     {% block meta %}{% endblock %}
 </head>

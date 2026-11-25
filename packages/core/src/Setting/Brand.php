@@ -177,9 +177,7 @@ final class Brand implements Owner
 
     private function image(Field $field): ?string
     {
-        return null === $this->images->path($field)
-            ? null
-            : $this->urls->generate('setting_image', ['name' => $field->name], UrlGeneratorInterface::ABSOLUTE_URL);
+        return $this->images->url($field, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     /**

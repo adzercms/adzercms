@@ -13,6 +13,7 @@ use enshrined\svgSanitize\Sanitizer;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use function Symfony\Component\Translation\t;
 
@@ -26,6 +27,8 @@ final class Images
         'image/vnd.microsoft.icon' => 'ico',
     ];
     public const INK = '1a1a1a';
+    public const VERSION = 'v';
+    private const DIGEST = 'xxh3';
     private const MAX_BYTES = 512000;
     private const PLACE = 'settings';
     private const SIDE = 1920;
@@ -39,6 +42,7 @@ final class Images
         private readonly Settings $settings,
         private readonly EntityManagerInterface $em,
         private readonly Photos $photos,
+        private readonly UrlGeneratorInterface $urls,
         #[Autowire('%adzercms.files_dir%')]
         string $files,
     ) {
@@ -77,6 +81,20 @@ final class Images
         $name = $this->settings->get($field->name);
 
         return '' !== $name && is_file($this->directory.'/'.$name) ? $this->directory.'/'.$name : null;
+    }
+
+    public function version(Field $field): ?string
+    {
+        $path = $this->path($field);
+
+        return null === $path ? null : (hash_file(self::DIGEST, $path) ?: null);
+    }
+
+    public function url(Field $field, int $reference = UrlGeneratorInterface::ABSOLUTE_PATH): ?string
+    {
+        $version = $this->version($field);
+
+        return null === $version ? null : $this->urls->generate('setting_image', ['name' => $field->name, self::VERSION => $version], $reference);
     }
 
     public function themedSvg(Field $field): ?string

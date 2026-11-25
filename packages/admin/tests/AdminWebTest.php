@@ -643,20 +643,32 @@ final class AdminWebTest extends SchemaTestCase
         $this->client->request('GET', '/setting/'.Brand::ICON);
         self::assertResponseIsSuccessful();
         self::assertResponseHasHeader('ETag');
+        self::assertStringContainsString('no-cache', (string) $this->client->getResponse()->headers->get('Cache-Control'), 'the address without the content version is revalidated');
         self::assertStringContainsString('sandbox', (string) $this->client->getResponse()->headers->get('Content-Security-Policy'));
         $this->client->request('GET', '/setting/'.Brand::LOGO);
         self::assertResponseStatusCodeSame(404);
 
         $header = $this->client->request('GET', '/admin');
         self::assertSame('Village network', trim($header->filter('.header-logo span')->text()), 'without a logo the title carries the brand');
-        self::assertStringEndsWith('/setting/'.Brand::ICON, (string) $header->filter('link[rel="icon"]')->attr('href'));
+        $icon = (string) $header->filter('link[rel="icon"]')->attr('href');
+        self::assertStringContainsString('/setting/'.Brand::ICON.'?v=', $icon);
+        $this->client->request('GET', $icon);
+        self::assertStringContainsString('immutable', (string) $this->client->getResponse()->headers->get('Cache-Control'), 'the address with the content version is kept for good');
+        self::assertStringContainsString('sandbox', (string) $this->client->getResponse()->headers->get('Content-Security-Policy'));
         self::assertStringEndsWith('/setting/'.Brand::ICON, (string) $this->client->request('GET', $brand)->filter('.picture-preview img')->attr('src'));
 
         $this->post($brand, [], ['value' => [Brand::LOGO => $this->picture('logo.png')]]);
         $logo = $this->client->request('GET', '/admin')->filter('.header-logo');
         self::assertCount(0, $logo->filter('span'), 'the logo stands in place of the title');
         self::assertSame('Village network', $logo->filter('img')->attr('alt'));
-        self::assertStringEndsWith('/setting/'.Brand::LOGO, (string) $logo->filter('img')->attr('src'));
+        $first = (string) $logo->filter('img')->attr('src');
+        self::assertStringContainsString('/setting/'.Brand::LOGO.'?v=', $first);
+
+        $this->post($brand, [], ['value' => [Brand::LOGO => $this->scratchFile('logo.svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><rect width="8" height="8" fill="#00f"/></svg>')]]);
+        self::assertNotSame($first, $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'new content takes a new address');
+        $this->client->request('GET', $first);
+        self::assertSame('image/svg+xml', $this->client->getResponse()->headers->get('Content-Type'), 'a former address takes the current content');
+        self::assertStringContainsString('no-cache', (string) $this->client->getResponse()->headers->get('Cache-Control'));
 
         $this->configure([Brand::LOGO_TITLE => Toggle::On->value]);
         $titled = $this->client->request('GET', '/admin')->filter('.header-logo');
@@ -665,11 +677,11 @@ final class AdminWebTest extends SchemaTestCase
         $this->configure([Brand::LOGO_TITLE => Toggle::Off->value]);
 
         $this->configure([Brand::THEME => Theme::Dark->value]);
-        self::assertStringEndsWith('/setting/'.Brand::LOGO, (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'without a dark theme logo the dark theme keeps the logo');
+        self::assertStringContainsString('/setting/'.Brand::LOGO.'?', (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'without a dark theme logo the dark theme keeps the logo');
         $this->post($brand, [], ['value' => [Brand::LOGO_DARK => $this->picture('logo-dark.png')]]);
-        self::assertStringEndsWith('/setting/'.Brand::LOGO_DARK, (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'));
+        self::assertStringContainsString('/setting/'.Brand::LOGO_DARK.'?', (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'));
         $this->configure([Brand::THEME => Theme::Light->value]);
-        self::assertStringEndsWith('/setting/'.Brand::LOGO, (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'the light theme keeps the logo');
+        self::assertStringContainsString('/setting/'.Brand::LOGO.'?', (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'the light theme keeps the logo');
 
         $this->post($brand, ['drop' => [Brand::ICON => '1']]);
         self::assertSame('', self::service(Settings::class)->get(Brand::ICON));
@@ -702,7 +714,7 @@ final class AdminWebTest extends SchemaTestCase
         $this->post($brand, [], ['value' => [Brand::LOGO => $this->scratchFile('logo.svg', $logo('#00f'))]]);
         $plain = $this->client->request('GET', '/admin')->filter('.header-logo');
         self::assertCount(0, $plain->filter('.brand-mark'), 'a logo of its own colors stays a picture');
-        self::assertStringEndsWith('/setting/'.Brand::LOGO, (string) $plain->filter('img')->attr('src'));
+        self::assertStringContainsString('/setting/'.Brand::LOGO.'?', (string) $plain->filter('img')->attr('src'));
     }
 
     #[Group('ACMS-UI-0086')]
