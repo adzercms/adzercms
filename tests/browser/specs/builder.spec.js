@@ -468,6 +468,23 @@ test.describe('a page of a project', () => {
         await expect(page).toHaveURL(/\/builder\/projects\/\d+\/pages\/\d+\/editor$/);
     });
 
+    test('[ACMS-UI-0187][ACMS-FLOW-0022] the blocks of an empty page take the free height of the canvas, an element of the panel dropped there takes a new free block', async ({ page }) => {
+        const root = page.locator('[data-builder]');
+        const free = await root.getAttribute('data-free');
+        test.skip(!JSON.parse(await root.getAttribute('data-types')).some((one) => one.type === free), 'the instance has no free block');
+        const ready = canvas(page).locator(READY);
+        const frame = await page.locator('iframe.gjs-frame').boundingBox();
+        const blocks = canvas(page).locator('.site-main');
+        expect((await blocks.boundingBox()).height, 'the blocks take the free height of the canvas').toBeGreaterThan(frame.height / 2);
+
+        const title = await canvas(page).locator('.site-title').boundingBox();
+        await carry(page, page.locator('[data-palette] [data-element-kind="text"]'), blocks);
+        await hold(page, title.y + title.height);
+        await page.mouse.up();
+        await expect(ready, 'the element takes a free block').toHaveCount(1);
+        await expect(ready.first()).toHaveClass(/site-free/);
+    });
+
     test('[ACMS-BLD-0011][ACMS-US-0078] a new project opens its home page in the editor, the page keeps a block with a picture of the project', async ({ page }) => {
         const editor = new URL(page.url()).pathname;
         const kinds = JSON.parse(await page.locator('[data-builder]').getAttribute('data-types'));
@@ -480,8 +497,9 @@ test.describe('a page of a project', () => {
         await expect(canvas(page).locator('.site-header'), 'the canvas carries the site frame').toBeVisible();
         await expect(ready, 'a new project starts with an empty home page').toHaveCount(0);
 
-        const place = await carry(page, page.locator(`[data-palette] [data-type="${kind.type}"]`), canvas(page).locator('.site-main > *').first());
-        await hold(page, place.y);
+        const title = await canvas(page).locator('.site-title').boundingBox();
+        await carry(page, page.locator(`[data-palette] [data-type="${kind.type}"]`), canvas(page).locator('.site-main'));
+        await hold(page, title.y + title.height);
         await page.mouse.up();
         await expect(dialog).toBeVisible();
         await dialog.locator('input[name="value[title]"]').fill('Fiber to every flat');
