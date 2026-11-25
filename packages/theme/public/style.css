@@ -488,7 +488,7 @@ label { display: block; margin-bottom: 0.9rem; font-size: 13px; font-weight: 500
 .credential-label { font-size: 13px; font-weight: 500; }
 .credential-row { display: flex; align-items: center; gap: 0.5rem; min-height: var(--control-height); margin-top: 0.3rem; }
 
-input, select, textarea {
+input, select, textarea, .copy-text {
     width: 100%;
     min-height: var(--control-height);
     margin-top: 0.3rem;

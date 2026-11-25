@@ -45,7 +45,7 @@ document.addEventListener('click', event => {
     const copier = event.target.closest('[data-copy]');
     if (copier) {
         const source = document.querySelector(copier.dataset.copy);
-        navigator.clipboard.writeText(source.value ?? source.textContent).then(() => {
+        navigator.clipboard.writeText(source.value ?? source.innerText).then(() => {
             copier.textContent = copier.dataset.copied;
         });
         return;
@@ -150,15 +150,14 @@ document.addEventListener('input', event => {
 ['click', 'auxclick'].forEach(type => document.addEventListener(type, event => {
     const link = event.target.closest?.('a[data-from]');
     if (link) {
-        link.href = link.dataset.url.replace('{}', encodeURIComponent(link.closest('form')?.elements[link.dataset.from]?.value ?? ''));
+        link.href = link.dataset.url.replace('{}', encodeURIComponent(shown(link.closest('form'), link.dataset.from)));
     }
 }));
 
 document.addEventListener('input', event => {
-    const field = event.target;
-    field.form?.querySelectorAll(`[data-template][data-from="${CSS.escape(field.name)}"]`).forEach(text => {
-        text.value = text.dataset.template.replace('{}', field.value);
-    });
+    if (event.target.form) {
+        showFields(event.target.form);
+    }
 });
 
 document.addEventListener('input', event => {
@@ -178,6 +177,16 @@ const liveValue = (fields, name) => {
 
     return named.find(field => !switchedOff(field) && (!['checkbox', 'radio'].includes(field.type) || field.checked))?.value ?? '';
 };
+
+const shown = (form, names) => {
+    const field = names.split(' ').map(name => form?.elements[name]).find(found => found && !switchedOff(found));
+
+    return field?.selectedOptions ? (field.value && field.selectedOptions[0].text) : field?.value ?? '';
+};
+
+const showFields = scope => scope.querySelectorAll('[data-from]:not(a)').forEach(node => {
+    node.textContent = shown(node.closest('form'), node.dataset.from);
+});
 
 const conditionals = scope => {
     const nodes = [...scope.querySelectorAll('[data-when]')];
@@ -206,6 +215,7 @@ const conditionals = scope => {
             delete field.dataset.whenOff;
         }
     });
+    showFields(scope);
 };
 
 const STEP = '[data-step]';
