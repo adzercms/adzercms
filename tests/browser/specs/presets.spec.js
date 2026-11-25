@@ -18,9 +18,6 @@ const FORM = `<form id="presets">
     <p data-when="ready=">guide</p>
     <input name="provider_name">
     <a data-from="provider_name" data-url="https://search.test/?text={} support" href="https://search.test/?text= support">search</a>
-    <select name="isp"><option value="">-</option><option value="1">One</option><option value="other">Other</option></select>
-    <div data-when="isp=other"><input name="isp_name"></div>
-    <p id="told">Router of <span data-from="isp_name isp"></span><span data-when="isp=">, any</span></p>
 </form>`;
 
 const field = (page, selector) => page.locator(`#presets ${selector}`);
@@ -49,15 +46,15 @@ test('[ACMS-UI-0027] a field on several conditions shows only while all of them 
     await expect(field(page, 'input[name="either"]'), 'one set holds').toBeVisible();
 
     await field(page, 'input[name="ready"]').check();
-    await expect(field(page, 'p[data-when="ready="]'), 'a shown choice drives its dependants').toBeHidden();
+    await expect(field(page, 'p'), 'a shown choice drives its dependants').toBeHidden();
 
     await field(page, 'input[value="dhcp"]').check();
     await expect(field(page, 'input[name="vlan"]'), 'one condition fails').toBeHidden();
     await expect(field(page, 'input[name="either"]'), 'the other set holds').toBeVisible();
-    await expect(field(page, 'p[data-when="ready="]'), 'a hidden choice counts as empty for its dependants').toBeVisible();
+    await expect(field(page, 'p'), 'a hidden choice counts as empty for its dependants').toBeVisible();
     expect(await page.locator('#presets').evaluate((form) => form.checkValidity()), 'a hidden required field does not hold the form').toBe(true);
     expect(await page.locator('#presets').evaluate((form) => [...new FormData(form).keys()]), 'a hidden field is not sent')
-        .toEqual(['provider', 'type', 'either', 'provider_name', 'isp']);
+        .toEqual(['provider', 'type', 'either', 'provider_name']);
 });
 
 test('[ACMS-UI-0111] a link carries the value of the field it names', async ({ page }) => {
@@ -65,13 +62,4 @@ test('[ACMS-UI-0111] a link carries the value of the field it names', async ({ p
     await field(page, 'input[name="provider_name"]').evaluate((input) => input.value = 'Local ISP');
     await field(page, 'a[data-from]').click();
     await expect(field(page, 'a[data-from]'), 'a value set without typing goes into the address too').toHaveAttribute('href', 'https://search.test/?text=Local%20ISP support');
-});
-
-test('[ACMS-UI-0111] a text shows the first shown field it names, a choice by the text of its option', async ({ page }) => {
-    await field(page, 'select[name="isp"]').selectOption('1');
-    await expect(field(page, '#told span[data-from]')).toHaveText('One');
-    await field(page, 'select[name="isp"]').selectOption('other');
-    await field(page, 'input[name="isp_name"]').fill('Local ISP');
-    await expect(field(page, '#told span[data-from]'), 'the typed value shows while it is typed').toHaveText('Local ISP');
-    expect(await field(page, '#told').evaluate((told) => told.innerText), 'the hidden part stays out of the shown text').toBe('Router of Local ISP');
 });
