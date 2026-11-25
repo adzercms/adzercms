@@ -630,6 +630,7 @@ final class AdminWebTest extends SchemaTestCase
     #[Group('ACMS-CORE-0061')]
     #[Group('ACMS-UI-0007')]
     #[Group('ACMS-UI-0141')]
+    #[Group('ACMS-UI-0185')]
     #[Group('ACMS-US-0004')]
     public function testBrandImagesAreUploadedServedAndDropped(): void
     {
@@ -661,12 +662,12 @@ final class AdminWebTest extends SchemaTestCase
         $logo = $this->client->request('GET', '/admin')->filter('.header-logo');
         self::assertCount(0, $logo->filter('span'), 'the logo stands in place of the title');
         self::assertSame('Village network', $logo->filter('img')->attr('alt'));
-        $first = (string) $logo->filter('img')->attr('src');
-        self::assertStringContainsString('/setting/'.Brand::LOGO.'?v=', $first);
+        $light = 'data:image/png;base64,'.base64_encode(self::dot());
+        self::assertSame($light, $logo->filter('img')->attr('src'), 'the page carries the logo in itself');
 
-        $this->post($brand, [], ['value' => [Brand::LOGO => $this->scratchFile('logo.svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><rect width="8" height="8" fill="#00f"/></svg>')]]);
-        self::assertNotSame($first, $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'new content takes a new address');
-        $this->client->request('GET', $first);
+        $this->post($brand, [], ['value' => [Brand::ICON => $this->scratchFile('icon.svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><rect width="8" height="8" fill="#00f"/></svg>')]]);
+        self::assertNotSame($icon, $this->client->request('GET', '/admin')->filter('link[rel="icon"]')->attr('href'), 'new content takes a new address');
+        $this->client->request('GET', $icon);
         self::assertSame('image/svg+xml', $this->client->getResponse()->headers->get('Content-Type'), 'a former address takes the current content');
         self::assertStringContainsString('no-cache', (string) $this->client->getResponse()->headers->get('Cache-Control'));
 
@@ -677,11 +678,12 @@ final class AdminWebTest extends SchemaTestCase
         $this->configure([Brand::LOGO_TITLE => Toggle::Off->value]);
 
         $this->configure([Brand::THEME => Theme::Dark->value]);
-        self::assertStringContainsString('/setting/'.Brand::LOGO.'?', (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'without a dark theme logo the dark theme keeps the logo');
-        $this->post($brand, [], ['value' => [Brand::LOGO_DARK => $this->picture('logo-dark.png')]]);
-        self::assertStringContainsString('/setting/'.Brand::LOGO_DARK.'?', (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'));
+        self::assertSame($light, $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'without a dark theme logo the dark theme keeps the logo');
+        $dark = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><rect width="8" height="8" fill="#000"/></svg>';
+        $this->post($brand, [], ['value' => [Brand::LOGO_DARK => $this->scratchFile('logo-dark.svg', $dark)]]);
+        self::assertSame('data:image/svg+xml;base64,'.base64_encode($dark), $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'));
         $this->configure([Brand::THEME => Theme::Light->value]);
-        self::assertStringContainsString('/setting/'.Brand::LOGO.'?', (string) $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'the light theme keeps the logo');
+        self::assertSame($light, $this->client->request('GET', '/admin')->filter('.header-logo img')->attr('src'), 'the light theme keeps the logo');
 
         $this->post($brand, ['drop' => [Brand::ICON => '1']]);
         self::assertSame('', self::service(Settings::class)->get(Brand::ICON));
@@ -714,7 +716,7 @@ final class AdminWebTest extends SchemaTestCase
         $this->post($brand, [], ['value' => [Brand::LOGO => $this->scratchFile('logo.svg', $logo('#00f'))]]);
         $plain = $this->client->request('GET', '/admin')->filter('.header-logo');
         self::assertCount(0, $plain->filter('.brand-mark'), 'a logo of its own colors stays a picture');
-        self::assertStringContainsString('/setting/'.Brand::LOGO.'?', (string) $plain->filter('img')->attr('src'));
+        self::assertSame('data:image/svg+xml;base64,'.base64_encode($logo('#00f')), $plain->filter('img')->attr('src'));
     }
 
     #[Group('ACMS-UI-0086')]

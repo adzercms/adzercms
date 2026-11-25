@@ -100,14 +100,19 @@ final class Brand implements Owner
         return false === $at ? [$title, '', ''] : [mb_substr($title, 0, $at), $accent, mb_substr($title, $at + mb_strlen($accent))];
     }
 
-    public function mark(?Theme $theme = null): ?string
+    public function mark(Theme $theme): ?string
     {
-        return $this->images->themedSvg(Theme::Dark === $theme && null !== $this->images->path(self::darkLogoField()) ? self::darkLogoField() : self::logoField());
+        return $this->images->themedSvg($this->themedLogoField($theme));
     }
 
-    public function logo(?Theme $theme = null): ?string
+    public function picture(Theme $theme): ?string
     {
-        return (Theme::Dark === $theme ? $this->image(self::darkLogoField()) : null) ?? $this->image(self::logoField());
+        return $this->images->dataUri($this->themedLogoField($theme));
+    }
+
+    public function logo(): ?string
+    {
+        return $this->image(self::logoField());
     }
 
     public function card(): ?string
@@ -191,6 +196,11 @@ final class Brand implements Owner
             array_map(static fn (Theme|Layout $case): string => $case->value, $cases),
             array_map(static fn (Theme|Layout $case): TranslatableInterface => $case->label(), $cases),
         );
+    }
+
+    private function themedLogoField(Theme $theme): Field
+    {
+        return Theme::Dark === $theme && null !== $this->images->path(self::darkLogoField()) ? self::darkLogoField() : self::logoField();
     }
 
     private static function logoField(): Field

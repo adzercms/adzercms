@@ -6,6 +6,7 @@ namespace AdzerCMS\Theme\Tests;
 
 use AdzerCMS\Contracts\Setting\Field;
 use AdzerCMS\Contracts\Setting\Type;
+use AdzerCMS\Core\Account\Avatars;
 use AdzerCMS\Core\Account\LoginNames;
 use AdzerCMS\Core\Setting\Brand;
 use AdzerCMS\Core\Setting\Layout;
@@ -102,6 +103,7 @@ final class FrameTest extends SchemaTestCase
     #[Group('ACMS-CORE-1168')]
     #[Group('ACMS-UI-0178')]
     #[Group('ACMS-UI-0179')]
+    #[Group('ACMS-UI-0185')]
     public function testHeaderMenuOfRecordOpensByItsAvatar(?string $first, ?string $last, bool $photo, string $face): void
     {
         $user = $this->record('+7 900 000-00-03')->setName($last, $first, null);
@@ -117,7 +119,7 @@ final class FrameTest extends SchemaTestCase
         $shown = $menu->filter('summary > .avatar');
         self::assertSame($face, 'img' === $shown->nodeName() ? 'img' : trim($shown->text()));
         if (null !== $avatar) {
-            self::assertSame('/avatars/'.$avatar, $shown->attr('src'));
+            self::assertSame('data:image/webp;base64,'.base64_encode((string) file_get_contents((string) self::service(Avatars::class)->path($avatar))), $shown->attr('src'), 'the page carries the header photo in itself');
         }
         self::assertSame(array_values(array_filter([implode(' ', array_filter([$first, $last])), $login])), $menu->filter('.account-head > *')->each(static fn (Crawler $line): string => trim($line->text())));
         self::assertSame('/logout', $menu->filter('nav > a')->last()->attr('href'));

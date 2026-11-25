@@ -173,7 +173,7 @@ final class CabinetWebTest extends SchemaTestCase
         $send($this->picture('face.png'));
         $first = (string) $this->reread($user)->getAvatar();
         self::assertNotNull($avatars->path($first));
-        self::assertSame('/avatars/'.$first, $this->client->followRedirect()->filter('.account > summary > img.avatar')->attr('src'));
+        self::assertSame('/avatars/'.$first, $this->client->followRedirect()->filter('.avatar-field > img.avatar')->attr('src'));
 
         $send($this->picture('other.png'));
         $second = (string) $this->reread($user)->getAvatar();

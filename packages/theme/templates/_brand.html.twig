@@ -1,5 +1,5 @@
 {% set mark = brand.mark(brand.theme) %}
-{% set logo = mark ? null : brand.logo(brand.theme) %}
+{% set logo = mark ? null : brand.picture(brand.theme) %}
 {% if mark %}
     <span class="brand-mark"{% if brand.titled %} aria-hidden="true"{% else %} role="img" aria-label="{{ brand.title }}"{% endif %}>{{ mark|raw }}</span>
 {% elseif logo %}

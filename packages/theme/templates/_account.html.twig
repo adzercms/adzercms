@@ -1,7 +1,7 @@
 {% set login = login(user) %}
 {% set name = [user.firstName, user.lastName]|filter(part => part)|join(' ') %}
 <details class="menu account{{ class|default('') ? ' ' ~ class }}">
-    <summary aria-label="{{ login }}">{% include '@Theme/_avatar.html.twig' with {user: user, name: login} only %}</summary>
+    <summary aria-label="{{ login }}">{% include '@Theme/_avatar.html.twig' with {user: user, name: login, embedded: true} only %}</summary>
     <nav>
         <div class="account-head">{% if name %}<strong>{{ name }}</strong>{% endif %}<span>{{ login }}</span></div>
         {% if cabinet('home') %}<a href="{{ cabinet('home') }}">{{ 'theme.site.cabinet'|trans }}</a>{% endif %}

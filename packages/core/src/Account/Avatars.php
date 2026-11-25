@@ -8,6 +8,7 @@ use AdzerCMS\Contracts\Refusal;
 use AdzerCMS\Core\Entity\User;
 use AdzerCMS\Core\Photo\Photos;
 use Symfony\Component\HttpFoundation\File\File;
+use Twig\Attribute\AsTwigFunction;
 
 final readonly class Avatars
 {
@@ -39,6 +40,12 @@ final readonly class Avatars
     public function path(string $name): ?string
     {
         return $this->photos->path(self::PLACE, $name);
+    }
+
+    #[AsTwigFunction('avatar_data')]
+    public function dataUri(string $name): ?string
+    {
+        return $this->photos->dataUri(self::PLACE, $name);
     }
 
     public function drop(User $user): void
