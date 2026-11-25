@@ -1736,7 +1736,8 @@ form[data-steps] [data-step]:not(.current) { display: none; }
     :root.layout-top .nav-item.active { background: none; border-bottom-color: var(--primary); }
 }
 
-.site { --header-height: 64px; font-size: 16px; background: var(--bg); }
+.site { --header-height: 64px; display: flex; flex-direction: column; min-height: 100vh; font-size: 16px; background: var(--bg); }
+.site-main { flex: 1 0 auto; }
 .site-menu-toggle { display: none; }
 .site-header { position: sticky; top: 0; z-index: 1000; display: flex; justify-content: center; height: var(--header-height); background: var(--surface); border-bottom: 1px solid var(--border-light); }
 .site-header-inner { display: flex; align-items: center; gap: 2rem; width: 100%; max-width: var(--page-width); padding: 0 20px; }
