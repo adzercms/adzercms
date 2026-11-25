@@ -5,6 +5,8 @@
     {% include '@Theme/_account.html.twig' with {user: app.user} only %}
 {% endblock %}
 
+{% block home %}{{ is_granted('ROLE_ADMIN') and menu('admin')|filter(group => group.items|filter(entry => entry.active)|length > 0)|length > 0 ? admin('dashboard') : home() }}{% endblock %}
+
 {% block submenu %}{% endblock %}
 
 {% macro items(area, title, class, submenu) %}

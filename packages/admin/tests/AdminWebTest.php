@@ -85,6 +85,15 @@ final class AdminWebTest extends SchemaTestCase
         self::assertStringNotContainsString('bottom-nav-shown', (string) $page->filter('html')->attr('class'));
     }
 
+    #[Group('ACMS-UI-0186')]
+    public function testLogoLeadsToStartOfAreaOfPage(): void
+    {
+        $this->client->loginUser($this->admin);
+
+        self::assertSame('/admin', $this->client->request('GET', '/admin/users')->filter('.header-logo')->attr('href'), 'a section of the admin leads to its dashboard');
+        self::assertSame('/cabinet', $this->client->request('GET', '/profile')->filter('.header-logo')->attr('href'), 'a cabinet page leads to the cabinet home');
+    }
+
     #[Group('ACMS-CORE-0086')]
     #[Group('ACMS-UI-0004')]
     #[Group('ACMS-US-0003')]
