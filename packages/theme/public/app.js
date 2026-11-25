@@ -463,20 +463,6 @@ const captchas = scope => {
     });
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    const hashed = location.hash.length > 1 && document.querySelector(`[data-pane="${CSS.escape(location.hash.slice(1))}"]`);
-    if (hashed) {
-        openPane(hashed);
-    }
-    document.querySelectorAll('.tabs > .tab.active').forEach(revealTab);
-    conditionals(document);
-    steppers(document);
-    captchas(document);
-    document.querySelector('dialog[data-open]')?.showModal();
-    document.querySelector('form[data-autosubmit]')?.requestSubmit();
-    showToasts();
-});
-
 const running = show => {
     const present = document.querySelector('.running-bar.page');
     if (show && !present) {
@@ -571,12 +557,6 @@ document.addEventListener('htmx:beforeSwap', event => {
     }
 });
 
-document.addEventListener('htmx:load', event => {
-    conditionals(event.target);
-    steppers(event.target);
-    captchas(event.target);
-});
-
 const ORDER_FIELD = 'ids[]';
 const ORDER_ANIMATION = 150;
 
@@ -627,15 +607,6 @@ document.querySelectorAll(FITTED).forEach(frame => {
     if (frame.contentDocument?.readyState === 'complete' && frame.contentDocument.URL !== 'about:blank') {
         fit(frame);
     }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    arrange(document);
-    photos(document);
-});
-document.addEventListener('htmx:load', event => {
-    arrange(event.target);
-    photos(event.target);
 });
 
 document.addEventListener('htmx:afterSwap', event => {
@@ -909,3 +880,23 @@ document.addEventListener('input', event => {
     const picked = palette.querySelector('input[type="radio"]:checked');
     document.documentElement.style.setProperty('--brand', picked.dataset.color ?? picked.value);
 });
+
+const enhance = scope => {
+    conditionals(scope);
+    steppers(scope);
+    captchas(scope);
+    arrange(scope);
+    photos(scope);
+};
+
+document.addEventListener('htmx:load', event => enhance(event.target));
+
+const hashed = location.hash.length > 1 && document.querySelector(`[data-pane="${CSS.escape(location.hash.slice(1))}"]`);
+if (hashed) {
+    openPane(hashed);
+}
+document.querySelectorAll('.tabs > .tab.active').forEach(revealTab);
+enhance(document);
+document.querySelector('dialog[data-open]')?.showModal();
+document.querySelector('form[data-autosubmit]')?.requestSubmit();
+showToasts();
