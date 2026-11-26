@@ -51,6 +51,7 @@ const swap = (block, fresh) => {
     const node = document.importNode(next, true);
     block.replaceWith(node);
     htmx.process(node);
+    htmx.trigger(node, 'htmx:load');
 };
 
 const refresh = async () => {

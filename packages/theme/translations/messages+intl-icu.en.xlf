@@ -43,6 +43,42 @@
         <target>Delete the saved data? Access by it will stop working.</target>
       </segment>
     </unit>
+    <unit id="theme.editor.bold">
+      <segment>
+        <source>theme.editor.bold</source>
+        <target>Bold</target>
+      </segment>
+    </unit>
+    <unit id="theme.editor.bullets">
+      <segment>
+        <source>theme.editor.bullets</source>
+        <target>Bulleted list</target>
+      </segment>
+    </unit>
+    <unit id="theme.editor.italic">
+      <segment>
+        <source>theme.editor.italic</source>
+        <target>Italic</target>
+      </segment>
+    </unit>
+    <unit id="theme.editor.numbers">
+      <segment>
+        <source>theme.editor.numbers</source>
+        <target>Numbered list</target>
+      </segment>
+    </unit>
+    <unit id="theme.editor.quote">
+      <segment>
+        <source>theme.editor.quote</source>
+        <target>Quote</target>
+      </segment>
+    </unit>
+    <unit id="theme.editor.source">
+      <segment>
+        <source>theme.editor.source</source>
+        <target>Markdown source</target>
+      </segment>
+    </unit>
     <unit id="theme.error.home">
       <segment>
         <source>theme.error.home</source>

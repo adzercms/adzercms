@@ -1346,6 +1346,16 @@ html:has(dialog[open]:modal) { overflow: hidden; }
 
 .chat-reply { padding: 1.25rem; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-lg); }
 .chat-reply textarea { resize: vertical; }
+
+.editor { margin-bottom: 0.9rem; }
+.editor > label { margin-bottom: 0; }
+.editor-bar { display: flex; flex-wrap: wrap; gap: 0.15rem; margin-top: 0.3rem; }
+.editor-bar [aria-pressed="true"] { color: var(--text); background: var(--bg-light); }
+.editor-source { margin-left: auto; font-size: 12px; font-weight: 600; }
+.editor-area { margin-top: 0.3rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); }
+.editor-area:focus-within { outline: 2px solid var(--focus-ring); border-color: var(--primary); }
+.editor-area > .tiptap { min-height: calc(var(--rows, 4) * 1.5em + 0.8rem); max-width: none; padding: 0.4rem 0.7rem; font-size: 14px; line-height: 1.5; outline: none; }
+.editor-area > .tiptap > :last-child { margin-bottom: 0; }
 .button-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
 .button-row + .flash { margin-top: 0.8rem; }
 

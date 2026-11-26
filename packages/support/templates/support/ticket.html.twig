@@ -67,7 +67,11 @@
                             <form class="modal-body" method="post" enctype="multipart/form-data"
                                   action="{{ path('support_message', {id: message.id, action: message.readAt ? 'redact' : 'edit'}) }}">
                                 {{ csrf_field() }}
-                                <label>{{ 'support.message.text'|trans }}<textarea name="body" rows="6" {{ message.readAt ? '' : 'required' }}>{{ message.body }}</textarea></label>
+                                {% if message.readAt %}
+                                    <label>{{ 'support.message.text'|trans }}<textarea name="body" rows="6">{{ message.body }}</textarea></label>
+                                {% else %}
+                                    {% include '@Theme/_editor.html.twig' with {id: 'edit-body-' ~ message.id, name: 'body', label: 'support.message.text'|trans, rows: 6, value: message.body, required: true} only %}
+                                {% endif %}
                                 {% for attachment in message.attachments %}
                                     <label class="check">
                                         <input type="checkbox" name="dropped[]" value="{{ attachment.id }}">
@@ -91,7 +95,7 @@
             {% else %}
                 <form class="chat-reply" method="post" enctype="multipart/form-data" action="{{ path('support_ticket_reply', {id: ticket.id}) }}">
                     {{ csrf_field() }}
-                    <label>{{ 'support.ticket.message'|trans }}<textarea name="body" rows="4" required></textarea></label>
+                    {% include '@Theme/_editor.html.twig' with {id: 'reply-body', name: 'body', label: 'support.ticket.message'|trans, rows: 4, value: '', required: true} only %}
                     {% include '@Theme/_attachments.html.twig' with {label: 'support.ticket.attachments'|trans, allowance: allowance} only %}
                     <div class="button-row">
                         <button type="submit">{{ 'support.ticket.send'|trans }}</button>

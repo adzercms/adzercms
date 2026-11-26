@@ -24,9 +24,7 @@
         </label>
     </div>
 
-    <label>{{ 'support.ticket.message'|trans }}
-        <textarea name="body" rows="8" required>{{ body }}</textarea>
-    </label>
+    {% include '@Theme/_editor.html.twig' with {id: 'ticket-body', name: 'body', label: 'support.ticket.message'|trans, rows: 8, value: body, required: true} only %}
 
     {% include '@Theme/_attachments.html.twig' with {label: 'support.ticket.attachments'|trans, allowance: allowance} only %}
 

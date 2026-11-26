@@ -1,0 +1,12 @@
+{% import '@Theme/_icons.html.twig' as icon %}
+<div class="editor" data-editor>
+    <label for="{{ id }}">{{ label }}</label>
+    <div class="editor-bar" role="toolbar" aria-label="{{ label }}" hidden>
+        {% for mark in ['bold', 'italic', 'bullets', 'numbers', 'quote'] %}
+            {% set caption = ('theme.editor.' ~ mark)|trans %}
+            <button type="button" class="icon-act" data-editor-mark="{{ mark }}" aria-pressed="false" aria-label="{{ caption }}" title="{{ caption }}">{{ icon.glyph(mark) }}</button>
+        {% endfor %}
+        <button type="button" class="icon-act editor-source" data-editor-source aria-pressed="false" aria-label="{{ 'theme.editor.source'|trans }}" title="{{ 'theme.editor.source'|trans }}">MD</button>
+    </div>
+    <textarea id="{{ id }}" name="{{ name }}" rows="{{ rows }}"{{ required|default(false) ? ' required' }}>{{ value }}</textarea>
+</div>

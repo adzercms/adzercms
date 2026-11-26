@@ -35,10 +35,7 @@ document.addEventListener('click', event => {
     const article = event.target.closest('[data-help-insert]');
     if (article) {
         const reply = document.querySelector('.chat-reply textarea[name="body"]');
-        const at = reply.selectionStart;
-        const before = reply.value.slice(0, at);
-        reply.setRangeText(`${before && !before.endsWith('\n') ? '\n' : ''}${article.dataset.helpInsert}\n`, at, reply.selectionEnd, 'end');
-        reply.focus();
+        import('adzercms/editor').then(editor => editor.insertLine(reply, article.dataset.helpInsert));
         return;
     }
 
@@ -93,7 +90,9 @@ document.addEventListener('click', event => {
         if (opener.dataset.record) {
             htmx.ajax('GET', opener.dataset.record, {target: '#record'});
         } else {
-            document.getElementById(opener.dataset.modal).showModal();
+            const modal = document.getElementById(opener.dataset.modal);
+            modal.showModal();
+            editors(modal);
         }
         return;
     }
@@ -881,7 +880,14 @@ document.addEventListener('input', event => {
     document.documentElement.style.setProperty('--brand', picked.dataset.color ?? picked.value);
 });
 
+const editors = scope => {
+    if (scope.querySelector('[data-editor]')) {
+        import('adzercms/editor').then(editor => editor.mount(scope));
+    }
+};
+
 const enhance = scope => {
+    editors(scope);
     conditionals(scope);
     steppers(scope);
     captchas(scope);
