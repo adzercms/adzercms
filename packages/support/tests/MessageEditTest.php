@@ -90,11 +90,13 @@ final class MessageEditTest extends SupportTestCase
         if ($impersonating) {
             $this->client->loginUser($this->staff);
             $this->arrive($page.'?_switch_user='.$user->getUserIdentifier());
+            self::assertSelectorTextContains('.chat', 'Reboot the router');
+            self::assertSelectorNotExists('form[data-seen]', 'the impersonated cabinet offers no seen form');
+            $this->client->request('POST', $page.'/read', [CsrfGuard::FIELD => $this->formToken(CsrfGuard::TOKEN_ID)]);
         } else {
             $this->client->loginUser($user);
-            $this->client->request('GET', $page);
+            self::assertStringContainsString('Reboot the router', $this->see($ticket)->filter('.chat')->text());
         }
-        self::assertSelectorTextContains('.chat', 'Reboot the router');
 
         $this->client->loginUser($this->staff);
         $crawler = $this->client->request('GET', $page);
@@ -128,7 +130,7 @@ final class MessageEditTest extends SupportTestCase
 
         if ($read) {
             $this->client->loginUser($user);
-            $this->client->request('GET', $page);
+            $this->see($ticket);
         }
         self::service(Tickets::class)->close($ticket);
 

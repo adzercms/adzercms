@@ -20,6 +20,7 @@ use AdzerCMS\Support\Repository\TicketMessageRepository;
 use AdzerCMS\Support\Repository\TicketRepository;
 use AdzerCMS\Support\SupportSettings;
 use AdzerCMS\Support\Tickets;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 abstract class SupportTestCase extends SchemaTestCase
@@ -70,6 +71,18 @@ abstract class SupportTestCase extends SchemaTestCase
     {
         $crawler = $this->client->request('GET', \sprintf('/support/%d', $ticket->getId()));
         $this->client->submit($crawler->filter('form.chat-reply')->form(['body' => $body]));
+    }
+
+    protected function see(Ticket $ticket): Crawler
+    {
+        $page = $this->client->request('GET', \sprintf('/support/%d', $ticket->getId()));
+        $seen = $page->filter('form[data-seen]');
+        if ($seen->count() > 0) {
+            $this->client->submit($seen->form());
+            self::assertResponseStatusCodeSame(204);
+        }
+
+        return $page;
     }
 
     protected function ticketOf(User $user): ?Ticket

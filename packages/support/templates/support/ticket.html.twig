@@ -93,6 +93,9 @@
                     {% endif %}
                 </div>
             {% endfor %}
+            {% if unread %}
+                <form method="post" action="{{ path('support_ticket_read', {id: ticket.id}) }}" data-seen hidden>{{ csrf_field() }}</form>
+            {% endif %}
         </div>
 
         <div id="live-reply" data-live>

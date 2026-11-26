@@ -137,10 +137,15 @@ final readonly class Tickets
         return null;
     }
 
+    public function unread(Ticket $ticket, bool $byStaff): bool
+    {
+        return [] !== self::unreadOf($ticket, $byStaff);
+    }
+
     public function read(Ticket $ticket, bool $byStaff): void
     {
-        $unread = $ticket->getMessages()->filter(static fn (TicketMessage $message): bool => $message->isFromStaff() !== $byStaff && null === $message->getReadAt());
-        if ($unread->isEmpty()) {
+        $unread = self::unreadOf($ticket, $byStaff);
+        if ([] === $unread) {
             return;
         }
 
@@ -270,6 +275,12 @@ final readonly class Tickets
             $message->getTicket()->getStatus()->isClosed() => new Refusal(t('support.refusal.closed')),
             default => null,
         };
+    }
+
+    /** @return list<TicketMessage> */
+    private static function unreadOf(Ticket $ticket, bool $byStaff): array
+    {
+        return array_values($ticket->getMessages()->filter(static fn (TicketMessage $message): bool => $message->isFromStaff() !== $byStaff && null === $message->getReadAt())->toArray());
     }
 
     private static function text(string $body): string

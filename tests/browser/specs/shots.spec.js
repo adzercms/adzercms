@@ -4,7 +4,7 @@ const { impersonate } = require('../crawl');
 const shots = process.env.ADZERCMS_SHOTS;
 const paths = (process.env.ADZERCMS_SHOT_PATHS ?? '').split(/\s+/).filter(Boolean);
 const site = (path) => /^https?:\/\//.test(path);
-const operator = (path) => path === '/admin' || path.startsWith('/admin/');
+const operator = (path) => process.env.ADZERCMS_SHOT_AS === 'operator' || path === '/admin' || path.startsWith('/admin/');
 
 const shoot = async (page, info, path) => {
     await page.goto(path, { waitUntil: 'networkidle' });

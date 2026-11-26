@@ -886,7 +886,31 @@ const editors = scope => {
     }
 };
 
+const unseen = new Set();
+const reported = new WeakSet();
+
+const report = () => {
+    if (document.visibilityState !== 'visible') {
+        return;
+    }
+    unseen.forEach(form => {
+        unseen.delete(form);
+        if (form.isConnected) {
+            reported.add(form);
+            fetch(form.action, {method: 'POST', body: new FormData(form), credentials: 'same-origin'}).catch(() => {});
+        }
+    });
+};
+
+const seen = scope => {
+    scope.querySelectorAll('form[data-seen]').forEach(form => reported.has(form) || unseen.add(form));
+    report();
+};
+
+document.addEventListener('visibilitychange', report);
+
 const enhance = scope => {
+    seen(scope);
     editors(scope);
     conditionals(scope);
     steppers(scope);

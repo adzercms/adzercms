@@ -122,18 +122,28 @@ final class SupportController extends AbstractController
     public function show(#[CurrentUser] User $user, int $id): Response
     {
         $ticket = $this->found($this->tickets->conversation($id, $this->owner($user)));
-        if (!$this->isGranted(AuthenticatedVoter::IS_IMPERSONATOR)) {
-            $this->service->read($ticket, $this->staff($user));
-        }
+        $staff = $this->staff($user);
 
         return $this->render('@Support/support/ticket.html.twig', [
             'ticket' => $ticket,
             'subjects' => $this->subjects->links($ticket, $user),
-            'staff' => $this->staff($user),
+            'staff' => $staff,
+            'unread' => !$this->isGranted(AuthenticatedVoter::IS_IMPERSONATOR) && $this->service->unread($ticket, $staff),
             'support_label' => $ticket->getDepartment(),
             'allowance' => $this->support->attachments(),
             'help' => $this->help->enabled(),
         ]);
+    }
+
+    #[Route('/{id}/read', name: 'support_ticket_read', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function read(#[CurrentUser] User $user, int $id): Response
+    {
+        $ticket = $this->found($this->tickets->conversation($id, $this->owner($user)));
+        if (!$this->isGranted(AuthenticatedVoter::IS_IMPERSONATOR)) {
+            $this->service->read($ticket, $this->staff($user));
+        }
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/{id}/reply', name: 'support_ticket_reply', requirements: ['id' => '\d+'], methods: ['POST'])]

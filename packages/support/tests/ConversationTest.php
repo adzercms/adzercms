@@ -135,24 +135,25 @@ final class ConversationTest extends SupportTestCase
 
     #[Group('ACMS-SUP-0020')]
     #[Group('ACMS-US-0008')]
-    public function testOwnMessageIsSentUntilTheOtherSideReadsIt(): void
+    public function testOwnMessageIsSentUntilTheOtherSideReportsSeeingIt(): void
     {
         $user = $this->member();
         $ticket = $this->ticket($user, 'No connection');
         $page = \sprintf('/support/%d', $ticket->getId());
 
-        $this->client->loginUser($user);
-        self::assertSame(['sent'], self::ticks($this->client->request('GET', $page)));
-
         $this->client->loginUser($this->staff);
         $this->reply($ticket, 'Checking');
-        self::assertSame(['sent'], self::ticks($this->client->request('GET', $page)), 'the operator sees the own answer unread');
 
         $this->client->loginUser($user);
-        self::assertSame(['read'], self::ticks($this->client->request('GET', $page)), 'the operator page read the message of the user');
+        self::assertSame(['sent'], self::ticks($this->see($ticket)), 'the operator page without the seen report reads nothing');
 
         $this->client->loginUser($this->staff);
-        self::assertSame(['read'], self::ticks($this->client->request('GET', $page)), 'the cabinet page read the answer');
+        self::assertSame(['read'], self::ticks($this->see($ticket)), 'the cabinet reported the answer seen');
+
+        $this->client->loginUser($user);
+        $crawler = $this->client->request('GET', $page);
+        self::assertSame(['read'], self::ticks($crawler), 'the operator reported the message of the user seen');
+        self::assertCount(0, $crawler->filter('form[data-seen]'), 'a read feed offers no seen form');
     }
 
     #[Group('ACMS-CORE-0067')]
