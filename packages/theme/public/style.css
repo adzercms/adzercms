@@ -1333,13 +1333,12 @@ html:has(dialog[open]:modal) { overflow: hidden; }
 .chat-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; margin-bottom: 0.4rem; }
 .chat-head form { margin: 0; }
 .chat-author { font-size: 13px; font-weight: 600; }
-.chat-time { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 12px; color: var(--text-gray); white-space: nowrap; }
+.chat-head > .icon-act:first-of-type { margin-left: auto; }
+.chat-text > :last-child { margin-bottom: 0; }
+.chat-meta { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 0 0.3rem; margin: 0.3rem -0.3rem -0.2rem 0; font-size: 12px; color: var(--text-gray); white-space: nowrap; }
 .chat-state { display: inline-flex; }
 .chat-state svg { width: 16px; height: 16px; }
 .chat-state.read { color: var(--primary); }
-.chat-head > .icon-act:first-of-type { margin-left: auto; }
-.chat-text > :last-child { margin-bottom: 0; }
-.chat-edited { font-size: 11px; color: var(--text-gray); white-space: nowrap; }
 .chat-redacted { padding: 0.1rem 0.4rem; background: var(--bg-gray); border-radius: var(--radius); color: var(--text-gray); font-size: 12px; font-style: italic; }
 
 .chat-files { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }

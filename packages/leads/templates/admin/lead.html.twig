@@ -141,7 +141,6 @@
                 <div class="chat-bubble">
                     <div class="chat-head">
                         <span class="chat-author">{{ lead.name ?? 'leads.lead.client'|trans }}</span>
-                        <span class="chat-time">{{ 'core.moment.day_time'|trans({at: lead.arrived}) }}</span>
                     </div>
                     {% if lead.message %}<div class="chat-text">{{ lead.message|nl2br }}</div>{% endif %}
                     {% if lead.attachments|length %}
@@ -156,6 +155,7 @@
                             {% endfor %}
                         </div>
                     {% endif %}
+                    <div class="chat-meta">{{ 'core.moment.day_time'|trans({at: lead.arrived}) }}</div>
                 </div>
             </div>
         {% endif %}
@@ -164,7 +164,6 @@
                 <div class="chat-bubble">
                     <div class="chat-head">
                         <span class="chat-author">{{ entry.author ? authors[entry.author.id] : cell(null) }}</span>
-                        <span class="chat-time">{{ 'core.moment.day_time'|trans({at: entry.written}) }}</span>
                     </div>
                     <div class="chat-text">
                         {% if entry.note %}{{ entry.note|nl2br }}{% endif %}
@@ -172,6 +171,7 @@
                             <div>{{ ('leads.field.' ~ change.field)|trans }}: {{ cell(change.was) }} → {{ cell(change.now) }}</div>
                         {% endfor %}
                     </div>
+                    <div class="chat-meta">{{ 'core.moment.day_time'|trans({at: entry.written}) }}</div>
                 </div>
             </div>
         {% endfor %}
