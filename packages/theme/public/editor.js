@@ -64,7 +64,7 @@ export const insertLine = (field, text) => {
     const box = field.closest('[data-editor]');
     const built = box && editors.get(box);
 
-    if (built && !field.hidden) {
+    if (built && field.hidden) {
         built.editor.chain().focus().insertContent({type: 'paragraph', content: [{type: 'text', text}]}).run();
         return;
     }
@@ -74,6 +74,12 @@ export const insertLine = (field, text) => {
     field.setRangeText(`${before && !before.endsWith('\n') ? '\n' : ''}${text}\n`, at, field.selectionEnd, 'end');
     field.focus();
 };
+
+document.addEventListener('mousedown', event => {
+    if (event.target.closest('[data-editor-mark]')) {
+        event.preventDefault();
+    }
+});
 
 document.addEventListener('click', event => {
     const box = event.target.closest('[data-editor]');
