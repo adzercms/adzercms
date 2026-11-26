@@ -122,8 +122,8 @@ final class SupportController extends AbstractController
     public function show(#[CurrentUser] User $user, int $id): Response
     {
         $ticket = $this->found($this->tickets->conversation($id, $this->owner($user)));
-        if (!$this->staff($user) && !$this->isGranted(AuthenticatedVoter::IS_IMPERSONATOR)) {
-            $this->service->read($ticket);
+        if (!$this->isGranted(AuthenticatedVoter::IS_IMPERSONATOR)) {
+            $this->service->read($ticket, $this->staff($user));
         }
 
         return $this->render('@Support/support/ticket.html.twig', [

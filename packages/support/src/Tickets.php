@@ -137,9 +137,9 @@ final readonly class Tickets
         return null;
     }
 
-    public function read(Ticket $ticket): void
+    public function read(Ticket $ticket, bool $byStaff): void
     {
-        $unread = $ticket->getMessages()->filter(static fn (TicketMessage $message): bool => $message->isFromStaff() && null === $message->getReadAt());
+        $unread = $ticket->getMessages()->filter(static fn (TicketMessage $message): bool => $message->isFromStaff() !== $byStaff && null === $message->getReadAt());
         if ($unread->isEmpty()) {
             return;
         }
@@ -154,7 +154,7 @@ final readonly class Tickets
     /** @param list<int> $dropped */
     public function redact(TicketMessage $message, string $body, array $dropped = []): ?Refusal
     {
-        if (null === $message->getReadAt()) {
+        if (!$message->isReadReply()) {
             return new Refusal(t('support.refusal.unread'));
         }
 
@@ -266,7 +266,7 @@ final readonly class Tickets
     private function locked(TicketMessage $message): ?Refusal
     {
         return match (true) {
-            null !== $message->getReadAt() => new Refusal(t('support.refusal.read')),
+            $message->isReadReply() => new Refusal(t('support.refusal.read')),
             $message->getTicket()->getStatus()->isClosed() => new Refusal(t('support.refusal.closed')),
             default => null,
         };

@@ -117,6 +117,11 @@ class TicketMessage
         return $this->readAt;
     }
 
+    public function isReadReply(): bool
+    {
+        return $this->fromStaff && null !== $this->readAt;
+    }
+
     public function redact(string $body, int $files): void
     {
         $this->body = $body;

@@ -427,6 +427,12 @@
         <target>исправлено</target>
       </segment>
     </unit>
+    <unit id="support.message.read">
+      <segment>
+        <source>support.message.read</source>
+        <target>прочитано {moment}</target>
+      </segment>
+    </unit>
     <unit id="support.message.redact">
       <segment>
         <source>support.message.redact</source>
@@ -443,6 +449,12 @@
       <segment>
         <source>support.message.redacted_files</source>
         <target>{count, plural, one {# файл удалён поддержкой} few {# файла удалены поддержкой} other {# файлов удалены поддержкой}}</target>
+      </segment>
+    </unit>
+    <unit id="support.message.sent">
+      <segment>
+        <source>support.message.sent</source>
+        <target>отправлено</target>
       </segment>
     </unit>
     <unit id="support.message.text">

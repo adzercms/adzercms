@@ -30,9 +30,15 @@
                     <div class="chat-bubble">
                         <div class="chat-head">
                             <span class="chat-author">{{ message.fromStaff ? support_label : author }}</span>
-                            <span class="chat-time">{{ 'core.moment.day_time'|trans({at: message.createdAt}) }}</span>
+                            <span class="chat-time">
+                                {{ 'core.moment.day_time'|trans({at: message.createdAt}) }}
+                                {% if own %}
+                                    {% set state = message.readAt ? 'support.message.read'|trans({moment: 'core.moment.day_time'|trans({at: message.readAt})}) : 'support.message.sent'|trans %}
+                                    <span class="chat-state{{ message.readAt ? ' read' }}" role="img" aria-label="{{ state }}" title="{{ state }}">{{ icon.glyph(message.readAt ? 'read' : 'sent') }}</span>
+                                {% endif %}
+                            </span>
                             {% if staff and message.editedAt %}<span class="chat-edited">{{ 'support.message.edited'|trans }}</span>{% endif %}
-                            {% if staff and message.readAt %}
+                            {% if staff and message.readReply %}
                                 <button type="button" class="icon-act" data-modal="edit-{{ message.id }}" aria-label="{{ 'support.message.redact'|trans }}" title="{{ 'support.message.redact'|trans }}">{{ icon.redact() }}</button>
                             {% elseif staff and not ticket.status.closed %}
                                 <button type="button" class="icon-act" data-modal="edit-{{ message.id }}" aria-label="{{ 'core.action.edit'|trans }}" title="{{ 'core.action.edit'|trans }}">{{ icon.edit() }}</button>
@@ -61,13 +67,13 @@
                         {% endif %}
                     </div>
 
-                    {% if staff and (message.readAt or not ticket.status.closed) %}
+                    {% if staff and (message.readReply or not ticket.status.closed) %}
                         <dialog class="modal" id="edit-{{ message.id }}">
-                            {% include '@Theme/_modal_header.html.twig' with {title: (message.readAt ? 'support.message.redact' : 'support.ticket.message')|trans} only %}
+                            {% include '@Theme/_modal_header.html.twig' with {title: (message.readReply ? 'support.message.redact' : 'support.ticket.message')|trans} only %}
                             <form class="modal-body" method="post" enctype="multipart/form-data"
-                                  action="{{ path('support_message', {id: message.id, action: message.readAt ? 'redact' : 'edit'}) }}">
+                                  action="{{ path('support_message', {id: message.id, action: message.readReply ? 'redact' : 'edit'}) }}">
                                 {{ csrf_field() }}
-                                {% if message.readAt %}
+                                {% if message.readReply %}
                                     <label>{{ 'support.message.text'|trans }}<textarea name="body" rows="6">{{ message.body }}</textarea></label>
                                 {% else %}
                                     {% include '@Theme/_editor.html.twig' with {id: 'edit-body-' ~ message.id, name: 'body', label: 'support.message.text'|trans, rows: 6, value: message.body, required: true} only %}
@@ -78,7 +84,7 @@
                                         {{ 'support.message.unattach'|trans({name: attachment.file.name}) }}
                                     </label>
                                 {% endfor %}
-                                {% if not message.readAt %}
+                                {% if not message.readReply %}
                                     {% include '@Theme/_attachments.html.twig' with {label: 'support.message.attach'|trans, allowance: allowance} only %}
                                 {% endif %}
                                 <button type="submit">{{ 'core.action.save'|trans }}</button>

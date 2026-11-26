@@ -133,6 +133,28 @@ final class ConversationTest extends SupportTestCase
         self::assertSame(['other', 'own'], self::sides($this->client->request('GET', $page)));
     }
 
+    #[Group('ACMS-SUP-0020')]
+    #[Group('ACMS-US-0008')]
+    public function testOwnMessageIsSentUntilTheOtherSideReadsIt(): void
+    {
+        $user = $this->member();
+        $ticket = $this->ticket($user, 'No connection');
+        $page = \sprintf('/support/%d', $ticket->getId());
+
+        $this->client->loginUser($user);
+        self::assertSame(['sent'], self::ticks($this->client->request('GET', $page)));
+
+        $this->client->loginUser($this->staff);
+        $this->reply($ticket, 'Checking');
+        self::assertSame(['sent'], self::ticks($this->client->request('GET', $page)), 'the operator sees the own answer unread');
+
+        $this->client->loginUser($user);
+        self::assertSame(['read'], self::ticks($this->client->request('GET', $page)), 'the operator page read the message of the user');
+
+        $this->client->loginUser($this->staff);
+        self::assertSame(['read'], self::ticks($this->client->request('GET', $page)), 'the cabinet page read the answer');
+    }
+
     #[Group('ACMS-CORE-0067')]
     #[Group('ACMS-US-0008')]
     public function testStaffSeesCommentAndNotesOfTheUserInTicket(): void
@@ -169,5 +191,11 @@ final class ConversationTest extends SupportTestCase
     private static function sides(Crawler $crawler): array
     {
         return $crawler->filter('.chat-message')->each(static fn (Crawler $message): string => trim(str_replace('chat-message', '', (string) $message->attr('class'))));
+    }
+
+    /** @return list<string> */
+    private static function ticks(Crawler $crawler): array
+    {
+        return $crawler->filter('.chat-message .chat-state')->each(static fn (Crawler $state): string => str_contains((string) $state->attr('class'), 'read') ? 'read' : 'sent');
     }
 }

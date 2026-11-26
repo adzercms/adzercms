@@ -1333,7 +1333,10 @@ html:has(dialog[open]:modal) { overflow: hidden; }
 .chat-head { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem; }
 .chat-head form { margin: 0; }
 .chat-author { font-size: 13px; font-weight: 600; }
-.chat-time { font-size: 12px; color: var(--text-gray); }
+.chat-time { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 12px; color: var(--text-gray); }
+.chat-state { display: inline-flex; }
+.chat-state svg { width: 16px; height: 16px; }
+.chat-state.read { color: var(--primary); }
 .chat-head > .icon-act:first-of-type { margin-left: auto; }
 .chat-text > :last-child { margin-bottom: 0; }
 .chat-edited { margin-left: 0.4rem; font-size: 11px; color: var(--text-gray); }
