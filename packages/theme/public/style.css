@@ -1335,7 +1335,7 @@ html:has(dialog[open]:modal) { overflow: hidden; }
 .chat-author { font-size: 13px; font-weight: 600; }
 .chat-time { font-size: 12px; color: var(--text-gray); }
 .chat-head > .icon-act:first-of-type { margin-left: auto; }
-.chat-text { line-height: 1.6; }
+.chat-text > :last-child { margin-bottom: 0; }
 .chat-edited { margin-left: 0.4rem; font-size: 11px; color: var(--text-gray); }
 .chat-redacted { padding: 0.1rem 0.4rem; background: var(--bg-gray); border-radius: var(--radius); color: var(--text-gray); font-size: 12px; font-style: italic; }
 
@@ -1362,7 +1362,8 @@ html:has(dialog[open]:modal) { overflow: hidden; }
 .page-lead { margin: 0 0 1rem; font-size: 17px; }
 
 .prose { max-width: 48rem; line-height: 1.6; }
-.prose :is(p, ul, ol, pre) { margin: 0 0 1rem; }
+.prose :is(p, ul, ol, pre, blockquote) { margin: 0 0 1rem; }
+.prose blockquote { padding-left: 0.8rem; border-left: 3px solid var(--border); color: var(--text-gray); }
 .prose :is(ul, ol) { padding-left: 1.4rem; }
 .prose li + li { margin-top: 0.25rem; }
 .prose li > :is(p, pre) { margin: 0.5rem 0; }

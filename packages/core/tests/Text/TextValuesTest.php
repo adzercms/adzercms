@@ -14,6 +14,7 @@ use AdzerCMS\Core\Tests\SchemaTestCase;
 use AdzerCMS\Core\Text\Markup;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use Symfony\Component\DomCrawler\Crawler;
 
 use function Symfony\Component\Translation\t;
 
@@ -44,6 +45,19 @@ final class TextValuesTest extends SchemaTestCase
             '1. Site <strong>shop</strong> of <a href="https://shop.test">shop</a>',
             self::service(Markup::class)->inline('1. Site **{{tally.site}}** of [{{tally.site}}](https://shop.test)'),
         );
+    }
+
+    #[Group('ACMS-CORE-1209')]
+    public function testMessageMarkupKeepsValuesBreaksLinesAndOpensHostLinksApart(): void
+    {
+        $html = new Crawler(self::service(Markup::class)->message("**{{tally.site}}**\nhttps://shop.test/a and [help](/help)"));
+
+        self::assertSame('{{tally.site}}', $html->filter('strong')->text());
+        self::assertCount(1, $html->filter('p > br'));
+        $outer = $html->filter('a[href="https://shop.test/a"]');
+        self::assertSame('_blank', $outer->attr('target'));
+        self::assertEqualsCanonicalizing(['noopener', 'noreferrer'], explode(' ', (string) $outer->attr('rel')));
+        self::assertNull($html->filter('a[href="/help"]')->attr('target'));
     }
 
     /** @return iterable<string, array{string, bool}> */

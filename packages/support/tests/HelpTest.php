@@ -96,19 +96,19 @@ final class HelpTest extends SupportTestCase
 
     #[Group('ACMS-SUP-0004')]
     #[Group('ACMS-US-0008')]
-    public function testMessageAddressIsLinkAndTextStaysEscaped(): void
+    public function testMessageIsMarkupWithAddressLinkAndEscapedHtml(): void
     {
-        $id = $this->ticket($this->user, 'Question', body: 'Article https://help.example.test/help/a?b=1&c=2. Otherwise <script>x</script>')->getId();
+        $id = $this->ticket($this->user, 'Question', body: '**Article** https://help.example.test/help/a?b=1&c=2. Otherwise <script>x</script>')->getId();
 
         $this->client->loginUser($this->user);
         $page = $this->client->request('GET', \sprintf('/support/%d', $id));
         self::assertResponseIsSuccessful();
         $text = $page->filter('.chat-text')->first();
 
+        self::assertSame('Article', $text->filter('strong')->text());
         $link = $text->filter('a');
         self::assertSame('https://help.example.test/help/a?b=1&c=2', $link->attr('href'));
         self::assertSame('_blank', $link->attr('target'));
-        self::assertSame('noreferrer noopener', $link->attr('rel'));
         self::assertCount(0, $text->filter('script'));
         self::assertStringContainsString('<script>x</script>', $text->text());
     }
