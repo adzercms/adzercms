@@ -2,6 +2,7 @@
 set -eu
 
 copy=${1:?copy of the instance}
+[ -n "$(ls -d "$copy"/modules/*/ 2>/dev/null)" ] || grep -qs '<testsuite ' "$copy/phpunit.dist.xml" || exit 0
 mkdir -p "$copy/var"
 ln -sfn "$(pwd -P)/var/tests.lock" "$copy/var/tests.lock"
 cd "$copy"
