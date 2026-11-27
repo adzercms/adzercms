@@ -36,7 +36,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - Module title `extra.adzercms.title.<language>` in every engine language: the module card and its settings page show it in the reader's language, `adzercms-check` refuses a module without it
 - File field `@Theme/_file.html.twig`: a button in the language of the page and the picked file names over the native field, which keeps drag and drop and form validation
 - Fragment place `Fragment::CABINET_PROFILE`: the profile under the contacts
-- Manual order of a list `Order`: rows are dragged by a handle within their group with SortableJS, the list posts the new order to its route; `Order::place()` puts the moved ids into the places they held; a click on the header of a column with an order sorts the list by it with dragging off, a click on its descending header brings back the manual order
+- Manual order of a list `Order`: rows are dragged by a handle within their group with SortableJS, the list posts the new order to its route; `Order::place()` puts the moved ids into the places they held
 - Going back closes a modal dialog by the gesture and the browser button: the core script `adzercms/dialogs` keeps a history entry per open dialog, the theme imports it
 - `Table::paginate()`: a listing that fetches a collection of its rows pages with the offset paginator of Doctrine ORM and takes the total from it
 - A renamed namespace of a migration set or a migration moved to another set does not run again: the migrations console moves its mark to the migration with the same version number
