@@ -69,6 +69,31 @@ final class TableTest extends TestCase
         yield 'empty' => [['state' => 'open'], [['e.closedAt IS NULL'], []]];
     }
 
+    /**
+     * @param array<string, string> $query
+     * @param list<string>          $rows
+     */
+    #[Group('ACMS-UI-0074')]
+    #[DataProvider('arrangements')]
+    public function testManualOrderHoldsUntilAColumnWithAnOrderSortsTheList(array $query, string $order, array $rows): void
+    {
+        $table = Table::of(new Request($query), 'list', [
+            Column::of('name', t('name'), 'e.name')->with(static fn (string $row): string => $row),
+            Column::plain('kind', t('kind')),
+        ], 'name', order: Order::of('list_order', 'e.position', 'e.id'));
+
+        self::assertSame([$order, $rows], [$table->order('x.id ASC'), $table->rows(['beta', 'alpha', 'gamma'])]);
+    }
+
+    /** @return iterable<string, array{array<string, string>, string, list<string>}> */
+    public static function arrangements(): iterable
+    {
+        yield 'manual' => [[], 'ORDER BY e.position ASC, e.id ASC, x.id ASC', ['beta', 'alpha', 'gamma']];
+        yield 'ascending' => [['sort' => 'name', 'order' => 'asc'], 'ORDER BY e.name ASC, x.id ASC', ['alpha', 'beta', 'gamma']];
+        yield 'descending' => [['sort' => 'name', 'order' => 'desc'], 'ORDER BY e.name DESC, x.id ASC', ['gamma', 'beta', 'alpha']];
+        yield 'column without order' => [['sort' => 'kind', 'order' => 'asc'], 'ORDER BY e.position ASC, e.id ASC, x.id ASC', ['beta', 'alpha', 'gamma']];
+    }
+
     #[Group('ACMS-UI-0096')]
     #[DataProvider('declarations')]
     public function testLabelledColumnWithoutOrderOfItsListingIsRefusedOutsideTheManualOrder(Column $column, bool $live, ?Order $order, bool $refused): void
