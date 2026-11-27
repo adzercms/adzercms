@@ -75,6 +75,7 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 ### Fixed
 
 - A module operation started by `adzercms:schedule` no longer waits forever for the hold: the run starts the due jobs and exits, each job enters the site by itself, and `config/hold.php` of the project template opens its locks close-on-exec, so a started process holds no entry of its parent; a site made from an earlier template takes the new `config/hold.php`
+- A module operation or refresh of a site without modules of its own in `modules/` and without test suites no longer fails on the check of its copy: such a copy has nothing of its own to check and goes unchecked, instead of warming the test environment that has no database
 
 ### Security
 

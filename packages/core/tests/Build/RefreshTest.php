@@ -77,6 +77,33 @@ final class RefreshTest extends TestCase
         self::assertSame([], null === $refusal ? [] : array_values(preg_grep('/^bin\/console /', $calls) ?: []), 'a refused copy leaves the live tree untouched');
     }
 
+    /** @return iterable<string, array{bool, bool, bool}> */
+    public static function owns(): iterable
+    {
+        yield 'suites of the instance' => [false, true, true];
+        yield 'modules of the instance' => [true, false, true];
+        yield 'neither' => [false, false, false];
+    }
+
+    #[Group('ACMS-CORE-1176')]
+    #[DataProvider('owns')]
+    public function testCopyIsCheckedOnlyWithModulesOrSuitesOfInstance(bool $modules, bool $suites, bool $checked): void
+    {
+        $files = new Filesystem();
+        if (!$suites) {
+            $files->dumpFile($this->root.'/phpunit.dist.xml', '<phpunit/>');
+        }
+        if ($modules) {
+            $files->mkdir($this->root.'/modules/acme');
+        }
+
+        $calls = $this->refresh(null);
+
+        self::assertSame($checked, [] !== preg_grep('/^copy bin\/console cache:warmup --env=test$/', $calls), 'a copy without modules and suites of the instance has nothing of its own to check');
+        self::assertSame($checked, is_file($this->root.'/copied'));
+        self::assertTrue(is_file($this->root.self::INSTALLED), 'the live tree takes the dependencies of the copy either way');
+    }
+
     #[Group('ACMS-CORE-1022')]
     #[DataProvider('checks')]
     public function testCopyReinstallsPackageOfChangedPatchForItsCheck(?string $refusal): void
