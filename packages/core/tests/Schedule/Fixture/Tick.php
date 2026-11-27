@@ -16,10 +16,14 @@ final class Tick
     public const NAME = 'adzercms-test:tick';
     public const CRON = '* * * * *';
     public const LINE = 'tick';
+    public const ENTERED = 'entered';
 
     public function __invoke(OutputInterface $output): int
     {
         $output->writeln(self::LINE);
+        if (\is_resource($GLOBALS['adzercms.entry'] ?? null)) {
+            $output->writeln(self::ENTERED);
+        }
 
         return Command::SUCCESS;
     }

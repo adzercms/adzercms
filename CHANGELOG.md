@@ -72,6 +72,10 @@ Notable changes of the engine packages. The format follows [Keep a Changelog](ht
 - The profile of the cabinet takes the user's own photo for the avatar instead of the portrait of a login service and removes it, a new photo removing the former file
 - `adzercms/builder`: the template catalog is the page "Website builder" — what the builder gives and "Create a site": a signed in user names a new project in a window and goes to its editor, a guest signs in or up in the window first and gets to the projects; the templates follow under their own heading, an empty catalog suggests starting from an empty project
 
+### Fixed
+
+- A module operation started by `adzercms:schedule` no longer waits forever for the hold: the run starts the due jobs and exits, each job enters the site by itself, and `config/hold.php` of the project template opens its locks close-on-exec, so a started process holds no entry of its parent; a site made from an earlier template takes the new `config/hold.php`
+
 ### Security
 
 - Sign-in through a login service finds a user, fills empty contacts and creates a user only by a phone or email the service vouches for: `Profile::$phoneVerified` and `Profile::$emailVerified`, set by the login module from the service's verification claim or from the service binding the contact only after confirming it. Before, a profile carrying someone else's unverified phone or email signed in to that person's account. An unvouched contact of another user now turns the sign-in away; the Telegram, Sber ID, VK ID and Yandex ID modules vouch for the phone, the Yandex ID module also for the mailbox of its own login on a Yandex mail domain
