@@ -65,6 +65,9 @@ final readonly class Indexing implements Owner
     {
         $request = $this->requests->getCurrentRequest() ?? throw new \LogicException('the page head needs a request');
         $route = (string) $request->attributes->get('_route');
+        if ('' === $route) {
+            return new Head(null, $request->getSchemeAndHttpHost().$request->getBaseUrl().$request->getPathInfo(), false);
+        }
         $parameters = (array) $request->attributes->get('_route_params');
         $page = $this->pages->of($route, $parameters);
 
