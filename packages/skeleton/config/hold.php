@@ -9,7 +9,7 @@
     is_dir($locks) || @mkdir($locks, 0777, true);
     $request = 'cli' !== \PHP_SAPI;
     [$hold, $entry] = array_map(
-        static fn (string $name) => fopen($locks.'/'.$name, 'c') ?: throw new RuntimeException(sprintf('lock %s of the instance is not opened', $name)),
+        static fn (string $name) => fopen($locks.'/'.$name, 'ce') ?: throw new RuntimeException(sprintf('lock %s of the instance is not opened', $name)),
         $request ? ['serve', 'served'] : ['refresh', 'entry'],
     );
 

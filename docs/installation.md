@@ -80,7 +80,7 @@ The engine updates with `composer update --no-install` and a commit of `composer
 
 ## Scheduler
 
-Add one line to the crontab of the user the site runs as; `/path` is the site directory. Every minute `adzercms:schedule` starts the due jobs of the core and the enabled modules, each in its own process, and skips a job still running from an earlier minute. A failed job makes the run exit with a non-zero code, and the output of the jobs isn't suppressed.
+Add one line to the crontab of the user the site runs as; `/path` is the site directory. Every minute `adzercms:schedule` starts the due jobs of the core and the enabled modules, each in its own process, and skips a job still running from an earlier minute. The run exits right after starting them and each job enters the site by itself; the jobs write to the output of the run, which isn't suppressed, so the error of a failed job lands there.
 
 ```crontab
 * * * * * /path/bin/php /path/bin/console adzercms:schedule

@@ -35,6 +35,12 @@ final class HoldTest extends TestCase
             require $argv[2];
             echo (new Symfony\Component\Process\Process([PHP_BINARY, __FILE__]))->mustRun()->getOutput();
         }
+        if ('start' === ($argv[1] ?? null)) {
+            proc_open([PHP_BINARY, '-r', 'touch($argv[1]); while (is_file($argv[1])) { usleep(10000); clearstatcache(); }', $root.'/started'], [['file', '/dev/null', 'r'], ['file', '/dev/null', 'w'], ['file', '/dev/null', 'w']], $pipes);
+            while (!is_file($root.'/started')) {
+                usleep(10000);
+            }
+        }
         PHP;
     private const STEP = __DIR__.'/Fixture/step';
 
@@ -147,6 +153,19 @@ final class HoldTest extends TestCase
 
         self::assertSame("entered\nentered\n", $parent->getOutput(), 'a child of an entered process enters');
         self::assertSame("entered\n", (new Process([\PHP_BINARY, $this->root.'/bin/console'], env: ['ADZERCMS_ENTRY' => $this->root], timeout: 10))->mustRun()->getOutput());
+    }
+
+    #[Group('ACMS-CORE-0965')]
+    #[Group('ACMS-CORE-0967')]
+    public function testProcessStartedByEnteredProcessHoldsNoEntryOfIt(): void
+    {
+        $this->console('start')->mustRun();
+        $entry = fopen($this->root.'/var/lock/entry', 'ce') ?: self::fail('the entry lock is not opened');
+        try {
+            self::assertTrue(flock($entry, \LOCK_EX | \LOCK_NB), 'the entry of a process that left is free while a process it started runs');
+        } finally {
+            fclose($entry);
+        }
     }
 
     private static function stock(string $tree): void

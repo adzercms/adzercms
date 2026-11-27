@@ -69,6 +69,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class CoreBundle extends AbstractBundle implements CompilerPassInterface
 {
+    public const LOCK_DIRECTORY = 'adzercms.lock_dir';
     private const RECONNECT_ATTEMPTS = 1;
     private const TEST_HASHER = ['algorithm' => 'auto', 'cost' => 4, 'time_cost' => 3, 'memory_cost' => 10];
     private const SESSION_GC_PROBABILITY = 1;
@@ -193,7 +194,8 @@ final class CoreBundle extends AbstractBundle implements CompilerPassInterface
         $container->parameters()->set('env(GEOIP_CITY_DB)', '');
         $container->import('../config/services.php');
         $builder->setAlias(self::TRANSLATOR, 'translator')->setPublic(true);
-        $builder->register(self::LOCKS, FlockStore::class)->setArguments([self::LOCK_DIR]);
+        $container->parameters()->set(self::LOCK_DIRECTORY, self::LOCK_DIR);
+        $builder->register(self::LOCKS, FlockStore::class)->setArguments(['%'.self::LOCK_DIRECTORY.'%']);
         $builder->register(self::MIGRATION_MARKS, \Closure::class)
             ->setFactory([\Closure::class, 'fromCallable'])
             ->setArguments([[MigrationMarks::class, 'of']]);
