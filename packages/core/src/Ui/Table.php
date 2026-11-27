@@ -65,10 +65,10 @@ final class Table
         ?Order $order = null,
     ): self {
         $sortable = [];
-        foreach (null === $order ? $columns : [] as $column) {
+        foreach ($columns as $column) {
             if (self::sorts($column, $live)) {
                 $sortable[$column->key] = true;
-            } elseif (null !== $column->label) {
+            } elseif (null === $order && null !== $column->label) {
                 throw new \LogicException(\sprintf('labelled column %s of listing %s has no order', $column->key, $route));
             }
         }
@@ -78,6 +78,9 @@ final class Table
         if (isset($sortable[$asked])) {
             $key = $asked;
             $ascending = 'asc' === $request->query->get(self::param($id, 'order'), 'desc');
+        } elseif (null !== $order) {
+            $key = '';
+            $ascending = true;
         }
 
         $table = new self(
@@ -87,7 +90,7 @@ final class Table
             array_filter($sticky, static fn (mixed $value): bool => '' !== $value && null !== $value),
             $key,
             $empty,
-            null === $order ? $ascending : true,
+            $ascending,
             max(1, $request->query->getInt(self::param($id, 'page'), 1)),
             $size,
             $live,
@@ -182,9 +185,15 @@ final class Table
     /** @return array<string, mixed> */
     public function link(string $key): array
     {
+        $chosen = $this->key === $key;
+
+        if ($chosen && !$this->ascending && null !== $this->order) {
+            return $this->query() + $this->sticky;
+        }
+
         return $this->query() + $this->sticky + [
             self::param($this->id, 'sort') => $key,
-            self::param($this->id, 'order') => $this->key === $key && $this->ascending ? 'desc' : 'asc',
+            self::param($this->id, 'order') => $chosen && $this->ascending ? 'desc' : 'asc',
         ];
     }
 
@@ -200,7 +209,12 @@ final class Table
 
     public function sortable(Column $column): bool
     {
-        return null === $this->order && self::sorts($column, $this->live);
+        return self::sorts($column, $this->live);
+    }
+
+    public function manual(): bool
+    {
+        return null !== $this->order && '' === $this->key;
     }
 
     public function offset(): int
@@ -374,7 +388,7 @@ final class Table
             }
         }
 
-        $column = null === $this->order ? $this->column($this->key) : null;
+        $column = $this->column($this->key);
 
         if (null !== $column?->value) {
             $direction = $this->ascending ? 1 : -1;
@@ -403,7 +417,7 @@ final class Table
     /** @return list<string> */
     private function fields(): array
     {
-        return $this->order->fields ?? $this->column($this->key)->fields ?? [];
+        return ($this->manual() ? $this->order?->fields : $this->column($this->key)?->fields) ?? [];
     }
 
     private function column(string $key): ?Column
