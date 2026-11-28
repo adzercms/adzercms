@@ -12,6 +12,8 @@ use AdzerCMS\Core\Tests\HttpAnswers;
 use AdzerCMS\Core\Tests\SchemaTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\HttpClient\Response\MockResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 final class IndexingTest extends SchemaTestCase
 {
@@ -66,6 +68,23 @@ final class IndexingTest extends SchemaTestCase
         self::assertSame('http://localhost/shelf/tales index', $this->client->getResponse()->getContent());
         $this->client->request('GET', '/shelf/other.pdf');
         self::assertSame('http://localhost/shelf/other.pdf index', $this->client->getResponse()->getContent());
+    }
+
+    #[Group('ACMS-SEO-0028')]
+    public function testPageWithoutRouteHeadsItsAddressUnindexed(): void
+    {
+        $this->configure([Indexing::NAME => '1']);
+        $stack = self::service(RequestStack::class);
+        $stack->push(Request::create('http://localhost/missing/page?utm_source=mail'));
+        try {
+            $head = self::service(Indexing::class)->head();
+        } finally {
+            $stack->pop();
+        }
+
+        self::assertNull($head->page);
+        self::assertSame('http://localhost/missing/page', $head->canonical);
+        self::assertFalse($head->indexed);
     }
 
     #[Group('ACMS-SEO-0034')]
