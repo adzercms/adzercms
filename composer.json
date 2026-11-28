@@ -128,6 +128,7 @@
             "AdzerCMS\\Telegram\\Tests\\": "packages/telegram/tests/",
             "AdzerCMS\\TelegramBot\\Tests\\": "packages/telegram-bot/tests/",
             "AdzerCMS\\Theme\\Tests\\": "packages/theme/tests/",
+            "AdzerCMS\\Trespass\\Tests\\": "packages/core/tests/Module/Trespass/tests/",
             "AdzerCMS\\Turnstile\\Tests\\": "packages/turnstile/tests/",
             "AdzerCMS\\VkId\\Tests\\": "packages/vk-id/tests/",
             "AdzerCMS\\YandexId\\Tests\\": "packages/yandex-id/tests/",

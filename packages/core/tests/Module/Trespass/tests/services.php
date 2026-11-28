@@ -1,0 +1,11 @@
+<?php
+
+declare(strict_types=1);
+
+use AdzerCMS\Core\Setting\Catalog;
+use AdzerCMS\Trespass\Tests\TrespassCatalog;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+
+return static function (ContainerConfigurator $container): void {
+    $container->services()->set(TrespassCatalog::class)->decorate(Catalog::class);
+};

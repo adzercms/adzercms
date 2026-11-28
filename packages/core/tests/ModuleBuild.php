@@ -15,6 +15,9 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 final readonly class ModuleBuild
 {
+    private const CACHE = 'APP_CACHE_DIR';
+    private const SURFACE_CACHE = '/var/cache/surface';
+
     public function __construct(private Registry $registry)
     {
     }
@@ -35,6 +38,8 @@ final readonly class ModuleBuild
             $_SERVER['DATABASE_URL'] = $_ENV['DATABASE_URL'] = $database;
         }
         $kernel = new Kernel('test', true);
+        $_SERVER[Kernel::SURFACE] = '1';
+        $_SERVER[self::CACHE] = $kernel->getProjectDir().self::SURFACE_CACHE;
         try {
             $kernel->boot();
 

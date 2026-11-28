@@ -34,6 +34,7 @@ abstract class Kernel extends BaseKernel
     }
 
     public const ASSETS = 'adzercms.assets';
+    public const SURFACE = 'ADZERCMS_SURFACE';
 
     private const TEST = 'test';
     private const TEST_SERVICES = '/tests/services.php';
@@ -233,7 +234,7 @@ abstract class Kernel extends BaseKernel
     {
         $this->configuredContainer($container);
 
-        if (self::TEST !== $this->environment) {
+        if (self::TEST !== $this->environment || isset($_SERVER[self::SURFACE])) {
             return;
         }
 
